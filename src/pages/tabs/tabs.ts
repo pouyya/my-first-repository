@@ -11,9 +11,9 @@ import { SetupPage } from '../setup/setup';
 export class TabsPage {
 
   tab1Root = HomePage;
-  tab2Root = ProductsPage;
-  tab3Root = SalePage;
-  tab4Root = SetupPage;
+  tab2Root = HomePage;
+  tab3Root = HomePage;
+  tab4Root = HomePage;
 
   constructor() {
 

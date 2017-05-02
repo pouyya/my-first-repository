@@ -2,13 +2,13 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { ProductsPage } from '../pages/products/products';
 import { SalePage } from '../pages/sale/sale';
 import { SetupPage } from '../pages/setup/setup';
+import { SettingsPage } from '../pages/settings/settings';
 import { TabsPage } from '../pages/tabs/tabs';
 
 @Component({
@@ -29,7 +29,7 @@ export class MyApp {
       { title: 'User', component: HomePage },
       { title: 'Ecommerce', component: ListPage },
       { title: 'Report', component: ListPage },
-      { title: 'Settings', component: ListPage },
+      { title: 'Settings', component: SettingsPage },
       { title: 'About us', component: ListPage } 
     ];
 

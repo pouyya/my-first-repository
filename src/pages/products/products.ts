@@ -11,4 +11,7 @@ export class ProductsPage {
 
   }
 
+  addProducts(){
+    
+  }
 }

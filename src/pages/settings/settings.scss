@@ -1,0 +1,67 @@
+page-settings {
+    .header{
+        height: 8%;
+        .toolbar{
+            height: 100%;
+        }
+    }
+    .toolbar-background{
+        background-color: #329e52;
+    }
+    .toolbar-title{
+        color: white;
+        padding: 0;
+        text-align: center;
+        font-size: 6vw;
+        font-weight: 400;
+    }
+    .bar-button-default{
+        background-color: transparent;
+        text-transform: none;
+        color: white;
+        font-size: 4.5vw;
+        font-weight: 400;
+        padding:0 5px!important;
+    }
+    .btn-left{
+        width: 25%;        
+    }
+    .btn-right{
+        width: 25%;       
+    }
+
+    ion-content{
+        background-color: white;      
+         
+        .btn-container{
+            width: 100%;
+            padding-top:30%;
+            padding-bottom:30%;
+            .custom-btn{
+                padding-left: 10%;
+                padding-right: 10%;
+                margin-bottom: 8%;
+                background-color:green;
+                height: 8.6%;                
+                .button{
+                    background-color: transparent;
+                    box-shadow: none;
+                }
+                .products{
+                    background-color:green;
+                     
+                }
+                .sales{
+                    background-color:green;
+                }
+                .inventory{
+                    background-color:green;
+                }
+                .scontactus{
+                   background-color:green;
+                }
+            }
+        }
+    }
+}
+
