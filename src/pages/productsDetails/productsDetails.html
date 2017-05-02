@@ -1,0 +1,78 @@
+<!--  Created By Michael Hanse
+      05/02/2017
+      ProductDetails Page Front-End
+  -->
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>Products Details</ion-title>
+    <button ion-button icon-only menuToggle class="btn-left">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+   
+    <ion-buttons end>
+      <button ion-button icon-only (click)="saveProducts()" >
+         Save
+      </button>
+     </ion-buttons>      
+    
+  </ion-navbar>
+</ion-header>
+<ion-content >
+  <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">Product Name:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Brand:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Tags:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+     <ion-item>
+      <ion-label class="item-name">Count:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+      <ion-select [(ngModel)]="counting" interface="popover">
+        <ion-option value="00">count00</ion-option>
+        <ion-option value="01">count02</ion-option>
+        <ion-option value="02">count04</ion-option>
+        <ion-option value="03">count06</ion-option>
+        <ion-option value="04">count08</ion-option>
+        <ion-option value="05">count10</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <div class="insert-image">
+    <p>
+      <ion-label class="item-addImageLabel">Add Image</ion-label>
+      <button color="vibrant" mini><ion-icon name="add"></ion-icon></button> 
+    </p>
+  </div>
+   <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">Employeer:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Variant:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Price:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+    <ion-item class="item-description">
+      <ion-label class="item-description">Description:</ion-label>
+      <ion-textarea class="item-text" placeholder=""></ion-textarea> 
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">SKU:</ion-label>
+      <ion-input type="text" value=""></ion-input>
+    </ion-item>
+  </ion-list>
+    
+</ion-content> 
+ 

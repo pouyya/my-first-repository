@@ -20,7 +20,15 @@
   </ion-navbar>
 </ion-header>
 <ion-content >
-   
-       
+  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-list>
+     <ion-item class="item">
+       <ion-avatar class="item-avatar" item-left>
+         <img src="assets/img/avatar-han.png">
+       </ion-avatar>
+       <h2 class="item-name">Product Type One</h2>
+       <button class="item-editbtn" ion-button clear item-right (click)="onProductDetails()">Edit</button>  
+     </ion-item>   
+  </ion-list>  
 </ion-content> 
  
