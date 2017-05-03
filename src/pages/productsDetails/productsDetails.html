@@ -22,19 +22,19 @@
   <ion-list inset>
     <ion-item>
       <ion-label class="item-name">Product Name:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="name" placeholder={{productItem.name}}></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Brand:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="brand" placeholder={{productItem.brand}}></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Tags:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="tag" placeholder={{productItem.tag}}></ion-input>
     </ion-item>
      <ion-item>
       <ion-label class="item-name">Count:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="count" placeholder={{productItem.count}}></ion-input>
       <ion-select [(ngModel)]="counting" interface="popover">
         <ion-option value="00">count00</ion-option>
         <ion-option value="01">count02</ion-option>
@@ -54,23 +54,23 @@
    <ion-list inset>
     <ion-item>
       <ion-label class="item-name">Employeer:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="employeer" placeholder={{productItem.employeer}}></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Variant:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="variant" placeholder={{productItem.variant}}></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Price:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="price" placeholder={{productItem.price}}></ion-input>
     </ion-item>
     <ion-item class="item-description">
       <ion-label class="item-description">Description:</ion-label>
-      <ion-textarea class="item-text" placeholder=""></ion-textarea> 
+      <ion-textarea class="item-text" [(ngModel)]="description" placeholder={{productItem.description}}></ion-textarea> 
     </ion-item>
     <ion-item>
       <ion-label class="item-name">SKU:</ion-label>
-      <ion-input type="text" value=""></ion-input>
+      <ion-input type="text" [(ngModel)]="sku" placeholder={{productItem.sku}}></ion-input>
     </ion-item>
   </ion-list>
     

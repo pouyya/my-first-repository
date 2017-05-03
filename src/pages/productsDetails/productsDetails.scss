@@ -34,8 +34,17 @@ page-productsDetails {
         background-color: #329e52;
         height:8%;
         color:white;
+         
     }
-    
+    .text-input:-ms-input-placeholder{
+        color:white;
+    }
+    .text-input::-moz-placeholder{
+        color:white;
+    }
+    .text-input::-webkit-input-placeholder{
+        color:white;
+    }
     .item-text{
         color:white;
         font-size:16px;

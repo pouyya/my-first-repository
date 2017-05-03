@@ -24743,6 +24743,8 @@ page-products .btn-right {
 page-products .item {
   background-color: #329e52;
   height: 8%;
+  border-radius: 5px;
+  margin-top: 0%;
 }
 
 page-products .item-name {
@@ -24798,6 +24800,18 @@ page-productsDetails .btn-right {
 page-productsDetails .item {
   background-color: #329e52;
   height: 8%;
+  color: white;
+}
+
+page-productsDetails .text-input:-ms-input-placeholder {
+  color: white;
+}
+
+page-productsDetails .text-input::-moz-placeholder {
+  color: white;
+}
+
+page-productsDetails .text-input::-webkit-input-placeholder {
   color: white;
 }
 
