@@ -7,10 +7,12 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { ProductsPage } from '../pages/products/products';
+import { ProductsDetailsPage } from '../pages/productsDetails/productsDetails';
+
 import { SalePage } from '../pages/sale/sale';
 import { SetupPage } from '../pages/setup/setup';
 import { TabsPage } from '../pages/tabs/tabs';
-
+import { SettingsPage } from '../pages/settings/settings';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -21,8 +23,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ListPage,
     InventoryPage,
     ProductsPage,
+    ProductsDetailsPage,
     SalePage,
     SetupPage,
+    SettingsPage,
     TabsPage
 
   ],
@@ -37,8 +41,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ListPage,
     InventoryPage,
     ProductsPage,
+    ProductsDetailsPage,
     SalePage,
     SetupPage,
+    SettingsPage,
     TabsPage
 
   ],

@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Settings</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div class="btn-container">
+    <div class="custom-btn" >
+      <button class="products" ion-button block large (click)="onProducts()">Products</button>
+    </div>
+    <div class="custom-btn" >
+      <button class="sales" ion-button block large (click)="onSales()">Sales</button>
+    </div>
+    <div class="custom-btn" >
+      <button class="inventory" ion-button block large (click)="onInventory()">Inventory</button>
+    </div>
+    <div class="custom-btn">
+      <button class="contactus" ion-button block large (click)="onContactUs()">Contact us</button>
+    </div>
+  </div>
+</ion-content>

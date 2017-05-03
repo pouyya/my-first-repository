@@ -1,0 +1,76 @@
+
+page-productsDetails {
+    .header{
+        height: 8%;
+        .toolbar{
+            height: 100%;
+        }
+    }
+    .toolbar-background{
+        background-color: #329e52;
+    }
+    .toolbar-title{
+        color: white;
+        padding: 0;
+        text-align: center;
+        font-size: 25px;
+        font-weight: 400;
+    }
+    .bar-button-default{
+        background-color: transparent;
+        text-transform: none;
+        color: white;
+        font-size: 4.5vw;
+        font-weight: 400;
+        padding:0 5px!important;
+    }
+    .btn-left{
+        width: 25%;        
+    }
+    .btn-right{
+        width: 25%;       
+    }
+    .item{
+        background-color: #329e52;
+        height:8%;
+        color:white;
+    }
+    
+    .item-text{
+        color:white;
+        font-size:16px;
+        text-align: center; 
+    }
+    .item-name{
+        color:white;
+        font-size:20px;
+        text-align: center;
+    }
+   .item-editbtn{
+       color:white;
+       background-color: transparent;
+       font-size: 20px;
+       text-align: center;
+   }
+   .item-description{
+       background-color: #329e52;
+       color:white;
+       height:50%;
+       font-size:20px;
+       padding-left:2%;
+       text-align: left;
+   }
+   .insert-image{
+      background-color: #329e52;
+      height: 25%;
+      margin-left: 4%;
+      margin-right: 4%;
+      text-align: center;
+      color:white;
+      font-size: 20px;
+      border-radius: 3px;
+      .item-addImageLabel{
+          padding-top:10px;
+      }
+   }
+}
