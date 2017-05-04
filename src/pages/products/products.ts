@@ -1,22 +1,37 @@
 
-import { Component } from '@angular/core';
-import { NavController, AlertController} from 'ionic-angular';
-import { ProductsDetailsPage } from '../productsDetails/productsDetails';
+import { Component, NgZone } from '@angular/core';
+import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
+import { ProductService} from '../../services/product.service';
+import { ProductsDetailsPage } from '../products/productsDetails';
 @Component({
   selector: 'page-products',
   templateUrl: 'products.html'
 })
 export class ProductsPage {
-   products = [
-    {name:'Mouse', brand:'apple',tags:'fashion', count:'6',employeer:'michael' , variant:'', price:'' ,description:'',sku:''},
-    {name:'Keyword', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''},
-    {name:'Bag', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''},
-    {name:'Shirt', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''}
-  ];
+   public products = [];
+  //   {name:'Mouse', brand:'apple',tags:'fashion', count:'6',employeer:'michael' , variant:'', price:'' ,description:'',sku:''},
+  //   {name:'Keyword', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''},
+  //   {name:'Bag', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''},
+  //   {name:'Shirt', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''}
+  // ];
 
-  constructor(public navCtrl: NavController, private alertCtrl:AlertController) {
+  constructor(public navCtrl: NavController,
+          private alertCtrl:AlertController,
+          private productService:ProductService,
+          private platform:Platform,
+          private zone: NgZone,
+          private modalCtrl: ModalController) {
+          
 
   }
+
+   ionViewDidLoad(){
+     this.productService.getSelectedProduct().then((data)=>{
+        if(data){
+          this.products = JSON.parse(data);
+        }
+     });
+   }
 
   addProducts(): void {
     let prompt = this.alertCtrl.create({
@@ -32,7 +47,7 @@ export class ProductsPage {
           text: 'Cancel'
         },
         {
-          text: 'Save',
+          text: 'Add',
           handler: data => {
             console.log('Name', data);
             this.products.push(data);
@@ -43,10 +58,28 @@ export class ProductsPage {
 
     prompt.present(prompt);
   }
-   
-  onProductDetails(item: string){
-    console.log("Selected Item", item);
-    this.navCtrl.push(ProductsDetailsPage,{ items:item});
+  
+  deleteProducts(item){
+     let index = this.products.indexOf(item);
+     if(index > -1){
+       this.products.splice(index, 1);
+     }
+     console.log('Remove Item', this.products);
+     this.saveProduct();
+  }
+
+  onProductDetails(item: string, idx: number){
+    console.log("index = ", idx);
+    let modal = this.modalCtrl.create(ProductsDetailsPage,{ items:item})
+    modal.onDidDismiss(
+        data=>{
+          if(data){
+            this.products[idx] = data;
+            this.saveProduct();
+          }
+        }
+    );
+    modal.present();
   }
   
   getItems(event){
@@ -59,5 +92,7 @@ export class ProductsPage {
        
     }
   }
-
+ saveProduct(){
+  this.productService.setSelectedProduct(this.products);
+ }
 }

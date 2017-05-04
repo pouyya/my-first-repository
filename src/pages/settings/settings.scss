@@ -38,28 +38,29 @@ page-settings {
             padding-top:30%;
             padding-bottom:30%;
             .custom-btn{
-                padding-left: 10%;
-                padding-right: 10%;
+                padding-left: 5%;
+                padding-right: 5%;
                 margin-bottom: 8%;
-                background-color:green;
-                height: 8.6%;                
+                background-color: transparent;
+                height: 8.6%;  
+                border-radius: 5px;              
                 .button{
                     background-color: transparent;
-                    box-shadow: none;
+                    box-shadow: 3px 3px 5px #888888;
                      
                 }
                 .products{
-                    background-color:green;
+                    background-color: #329e52;
                      
                 }
                 .sales{
-                    background-color:green;
+                    background-color: #329e52;
                 }
                 .inventory{
-                    background-color:green;
+                    background-color: #329e52;
                 }
-                .scontactus{
-                   background-color:green;
+                .contactus{
+                   background-color: #329e52;
                 }
             }
         }

@@ -24666,6 +24666,80 @@ ion-navbar.toolbar {
   }
 }
 
+page-about .header {
+  height: 8%;
+}
+
+page-about .header .toolbar {
+  height: 100%;
+}
+
+page-about .toolbar-background {
+  background-color: #329e52;
+}
+
+page-about .toolbar-title {
+  color: white;
+  padding: 0;
+  text-align: center;
+  font-size: 6vw;
+  font-weight: 400;
+}
+
+page-about .bar-button-default {
+  background-color: transparent;
+  text-transform: none;
+  color: white;
+  font-size: 4.5vw;
+  font-weight: 400;
+  padding: 0 5px !important;
+}
+
+page-about .btn-left {
+  width: 25%;
+}
+
+page-about .btn-right {
+  width: 25%;
+}
+
+page-ecommerce .header {
+  height: 8%;
+}
+
+page-ecommerce .header .toolbar {
+  height: 100%;
+}
+
+page-ecommerce .toolbar-background {
+  background-color: #329e52;
+}
+
+page-ecommerce .toolbar-title {
+  color: white;
+  padding: 0;
+  text-align: center;
+  font-size: 6vw;
+  font-weight: 400;
+}
+
+page-ecommerce .bar-button-default {
+  background-color: transparent;
+  text-transform: none;
+  color: white;
+  font-size: 4.5vw;
+  font-weight: 400;
+  padding: 0 5px !important;
+}
+
+page-ecommerce .btn-left {
+  width: 25%;
+}
+
+page-ecommerce .btn-right {
+  width: 25%;
+}
+
 page-home .header {
   height: 8%;
 }
@@ -24732,6 +24806,10 @@ page-products .bar-button-default {
   padding: 0 5px !important;
 }
 
+page-products .sliding {
+  background-color: #329e52;
+}
+
 page-products .btn-left {
   width: 25%;
 }
@@ -24777,7 +24855,6 @@ page-productsDetails .toolbar-title {
   padding: 0;
   text-align: center;
   font-size: 25px;
-  font-weight: 400;
 }
 
 page-productsDetails .bar-button-default {
@@ -24805,14 +24882,17 @@ page-productsDetails .item {
 
 page-productsDetails .text-input:-ms-input-placeholder {
   color: white;
+  font-size: 15px;
 }
 
 page-productsDetails .text-input::-moz-placeholder {
   color: white;
+  font-size: 15px;
 }
 
 page-productsDetails .text-input::-webkit-input-placeholder {
   color: white;
+  font-size: 15px;
 }
 
 page-productsDetails .item-text {
@@ -24823,14 +24903,15 @@ page-productsDetails .item-text {
 
 page-productsDetails .item-name {
   color: white;
-  font-size: 20px;
+  font-size: 15px;
   text-align: center;
+  font-weight: bold;
 }
 
 page-productsDetails .item-editbtn {
   color: white;
   background-color: transparent;
-  font-size: 20px;
+  font-size: 15px;
   text-align: center;
 }
 
@@ -24838,9 +24919,10 @@ page-productsDetails .item-description {
   background-color: #329e52;
   color: white;
   height: 50%;
-  font-size: 20px;
+  font-size: 15px;
   padding-left: 2%;
   text-align: left;
+  font-weight: bold;
 }
 
 page-productsDetails .insert-image {
@@ -24850,12 +24932,49 @@ page-productsDetails .insert-image {
   margin-right: 4%;
   text-align: center;
   color: white;
-  font-size: 20px;
+  font-size: 15px;
   border-radius: 3px;
 }
 
 page-productsDetails .insert-image .item-addImageLabel {
   padding-top: 10px;
+}
+
+page-report .header {
+  height: 8%;
+}
+
+page-report .header .toolbar {
+  height: 100%;
+}
+
+page-report .toolbar-background {
+  background-color: #329e52;
+}
+
+page-report .toolbar-title {
+  color: white;
+  padding: 0;
+  text-align: center;
+  font-size: 6vw;
+  font-weight: 400;
+}
+
+page-report .bar-button-default {
+  background-color: transparent;
+  text-transform: none;
+  color: white;
+  font-size: 4.5vw;
+  font-weight: 400;
+  padding: 0 5px !important;
+}
+
+page-report .btn-left {
+  width: 25%;
+}
+
+page-report .btn-right {
+  width: 25%;
 }
 
 page-settings .header {
@@ -24906,30 +25025,31 @@ page-settings ion-content .btn-container {
 }
 
 page-settings ion-content .btn-container .custom-btn {
-  padding-left: 10%;
-  padding-right: 10%;
+  padding-left: 5%;
+  padding-right: 5%;
   margin-bottom: 8%;
-  background-color: green;
+  background-color: transparent;
   height: 8.6%;
+  border-radius: 5px;
 }
 
 page-settings ion-content .btn-container .custom-btn .button {
   background-color: transparent;
-  box-shadow: none;
+  box-shadow: 3px 3px 5px #888888;
 }
 
 page-settings ion-content .btn-container .custom-btn .products {
-  background-color: green;
+  background-color: #329e52;
 }
 
 page-settings ion-content .btn-container .custom-btn .sales {
-  background-color: green;
+  background-color: #329e52;
 }
 
 page-settings ion-content .btn-container .custom-btn .inventory {
-  background-color: green;
+  background-color: #329e52;
 }
 
-page-settings ion-content .btn-container .custom-btn .scontactus {
-  background-color: green;
+page-settings ion-content .btn-container .custom-btn .contactus {
+  background-color: #329e52;
 }
