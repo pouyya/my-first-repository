@@ -2,6 +2,8 @@
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { ProductService} from '../../services/product.service';
+import { ProductsService} from '../../services/products.service';
+
 import { ProductsDetailsPage } from '../products/productsDetails';
 @Component({
   selector: 'page-products',
@@ -9,6 +11,9 @@ import { ProductsDetailsPage } from '../products/productsDetails';
 })
 export class ProductsPage {
    public products = [];
+   public isNew = true;
+   public action = 'Add';
+   public isoDate = '';
   //   {name:'Mouse', brand:'apple',tags:'fashion', count:'6',employeer:'michael' , variant:'', price:'' ,description:'',sku:''},
   //   {name:'Keyword', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''},
   //   {name:'Bag', brand:'',tags:'', count:'',employeer:'michael', variant:'', price:'' ,description:'',sku:''},
@@ -18,6 +23,7 @@ export class ProductsPage {
   constructor(public navCtrl: NavController,
           private alertCtrl:AlertController,
           private productService:ProductService,
+          private productsService:ProductsService,
           private platform:Platform,
           private zone: NgZone,
           private modalCtrl: ModalController) {
@@ -26,11 +32,24 @@ export class ProductsPage {
   }
 
    ionViewDidLoad(){
-     this.productService.getSelectedProduct().then((data)=>{
-        if(data){
-          this.products = JSON.parse(data);
-        }
-     });
+    //  this.productService.getSelectedProduct().then((data)=>{
+    //     if(data){
+    //       this.products = JSON.parse(data);
+    //     }
+    //  });
+
+    this.platform.ready().then(() => {
+            this.productsService.initDB();
+
+            this.productsService.getAll()
+                .then(data => {
+                    this.zone.run(() => {
+                        this.products = data;
+                    });
+                })
+                .catch(console.error.bind(console));
+        });
+
    }
 
   addProducts(): void {
@@ -75,6 +94,7 @@ export class ProductsPage {
         data=>{
           if(data){
             this.products[idx] = data;
+            this.isNew = false;
             this.saveProduct();
           }
         }
@@ -93,6 +113,11 @@ export class ProductsPage {
     }
   }
  saveProduct(){
-  this.productService.setSelectedProduct(this.products);
+  if(this.isNew){
+    this.productsService.addProduct(this.products).catch(console.error.bind(console));
+  }else{
+    this.productsService.updateProduct(this.products).catch(console.error.bind(console));
+  }    
+   
  }
 }

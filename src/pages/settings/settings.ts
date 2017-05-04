@@ -6,6 +6,7 @@ import { HomePage } from '../home/home';
 import { SalePage } from '../sale/sale';
 import { SetupPage } from '../setup/setup'
 import { AboutPage } from '../about/about';
+import { InventoryPage } from '../inventory/inventory';
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html'
@@ -23,7 +24,7 @@ export class SettingsPage {
     this.navCtrl.push(SalePage);
   }
   onInventory(){
-    this.navCtrl.push(HomePage);
+    this.navCtrl.push(InventoryPage);
   }
   onContactUs(){
     this.navCtrl.push(ContactPage);

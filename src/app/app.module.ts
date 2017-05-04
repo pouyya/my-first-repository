@@ -16,9 +16,11 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { SettingsPage } from '../pages/settings/settings';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { ProductService } from '../services/product.service';
 import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
+import { ContactPage } from '../pages/contact/contact';
+import { ProductService } from '../services/product.service';
+import { ProductsService } from '../services/products.service';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -33,6 +35,7 @@ const cloudSettings: CloudSettings = {
     AboutPage,
     InventoryPage,
     ProductsPage,
+    ContactPage,
     ProductsDetailsPage,
     SalePage,
     SetupPage,
@@ -65,6 +68,7 @@ const cloudSettings: CloudSettings = {
     SettingsPage,
     EcommercePage,
     ReportPage,
+    ContactPage,
     TabsPage
 
   ],
@@ -72,7 +76,8 @@ const cloudSettings: CloudSettings = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ProductService
+    ProductService,
+    ProductsService
   ]
 })
 export class AppModule {}
