@@ -1,4 +1,7 @@
-
+      // Created By Michael Hanse
+      // 05/02/2017
+      // Product Page TypeScript
+   
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { ProductService} from '../../services/product.service';
@@ -45,6 +48,7 @@ export class ProductsPage {
                 .then(data => {
                     this.zone.run(() => {
                         this.products = data;
+                        console.log('products===', data);
                     });
                 })
                 .catch(console.error.bind(console));

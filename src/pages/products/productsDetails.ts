@@ -19,8 +19,7 @@ export class ProductsDetailsPage {
   description:any;
   sku:any;
 
-
-  constructor(public navCtrl: NavController, 
+ constructor(public navCtrl: NavController, 
     private productService:ProductService,
     public navParams: NavParams,
     private viewCtrl: ViewController) {

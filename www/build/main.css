@@ -24851,6 +24851,31 @@ page-inventory .btn-right {
   width: 25%;
 }
 
+page-inventory .header-item {
+  background-color: pink;
+}
+
+page-inventory .header-item .item-price-title {
+  text-align: center;
+  padding-left: 3%;
+}
+
+page-inventory .content-item {
+  background-color: white;
+}
+
+page-inventory .content-item .item-name {
+  width: 46%;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+page-inventory .content-item .item-value {
+  border-left: 1px solid gray;
+  text-align: center;
+  color: blue;
+}
+
 page-products .header {
   height: 8%;
 }

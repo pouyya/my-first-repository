@@ -21,45 +21,44 @@ export class ProductService{
         // });
     }    
 
-    // public saveOrders(orders:any){
-    //     for(var i = 0 ; i < orders.length ; i++){
-    //         this.database.executeSql("INSERT INTO orders (brand, item, item_no, price, discount, enabled, status, mdate) VALUES (?,?,?,?,?,?,?,?)", [orders[i].brand, orders[i].item, orders[i].item_no, orders[i].price, orders[i].discount, orders[i].enabled, orders[i].status, orders[i].mdate]).then((data)=>{
-    //             console.log("INSERTED : ", JSON.stringify(data));
-    //         }, (error)=>{
-    //             console.log("ERROR : " + JSON.stringify(error));
-    //         });
-    //     }
-    // }
+    public saveProduct(orders:any){
+        for(var i = 0 ; i < orders.length ; i++){
+            this.database.executeSql("INSERT INTO orders (brand, item, item_no, price, discount, enabled, status, mdate) VALUES (?,?,?,?,?,?,?,?)", [orders[i].brand, orders[i].item, orders[i].item_no, orders[i].price, orders[i].discount, orders[i].enabled, orders[i].status, orders[i].mdate]).then((data)=>{
+                console.log("INSERTED : ", JSON.stringify(data));
+            }, (error)=>{
+                console.log("ERROR : " + JSON.stringify(error));
+            });
+        }
+    }
 
-    // public deleteOrders(){
-    //     return this.database.executeSql("DELETE FROM orders", []);
-    // }
+    public deleteProduct(){
+        return this.database.executeSql("DELETE FROM orders", []);
+    }
 
-    // public getOrders(){
-    //     return this.database.executeSql("SELECT * FROM orders", [])
-    // }
+    public getProduct(){
+        return this.database.executeSql("SELECT * FROM orders", [])
+    }
 
-    // public getAllOrderStatus(){
-    //     return this.database.executeSql("SELECT * FROM orders_status", []);
-    // }
+    public getAllProductStatus(){
+        return this.database.executeSql("SELECT * FROM orders_status", []);
+    }
 
-    // public getOrderStatus(status:string){
-    //     return this.database.executeSql("SELECT * FROM orders_status WHERE status = ?", ['saved']);
-    // }
+    public getProductStatus(status:string){
+        return this.database.executeSql("SELECT * FROM orders_status WHERE status = ?", ['saved']);
+    }
 
-    // public saveOrdersStatus(order:any){
-    //     return this.database.executeSql("INSERT INTO orders_status (price, status, mdate) VALUES (?,?,?)",[order.price, order.status, order.mdate]);
-    // }
+    public saveProductStatus(order:any){
+        return this.database.executeSql("INSERT INTO orders_status (price, status, mdate) VALUES (?,?,?)",[order.price, order.status, order.mdate]);
+    }
 
     
+    public updataProductStatusData(order:any){
+        return this.database.executeSql("UPDATE orders_status SET price = ?, mdate = ? WHERE status = ?", [order.price, order.mdate, order.status]);
+    }
 
-    // public updataOrderStatusData(order:any){
-    //     return this.database.executeSql("UPDATE orders_status SET price = ?, mdate = ? WHERE status = ?", [order.price, order.mdate, order.status]);
-    // }
-
-    // public updateOrderStatus(mdate:string){
-    //     return this.database.executeSql("UPDATE orders_status SET status = ?, mdate = ? WHERE status = ?", ['confirmed', mdate, 'saved']);
-    // }
+    public updateProductStatus(mdate:string){
+        return this.database.executeSql("UPDATE orders_status SET status = ?, mdate = ? WHERE status = ?", ['confirmed', mdate, 'saved']);
+    }
 
     public getSelectedProduct(){
         return this.storage.get('selectedProduct');
