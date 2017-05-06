@@ -11,7 +11,7 @@
     </button>
    
     <ion-buttons end>
-      <button ion-button icon-only (click)="addProducts()" >
+      <button ion-button icon-only (click)="showDetail()" >
         <ion-icon name="add"></ion-icon>
       </button>
      </ion-buttons>      
@@ -22,7 +22,7 @@
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
   <ion-list inset *ngFor="let item of products ; let idx=index">
     <ion-item-sliding class="sliding" >
-      <ion-item (click)="onProductDetails(item, idx)">
+      <ion-item (click)="showDetail(item)">
         <ion-avatar class="item-avatar" item-left>
           <img src="assets/img/avatar-han.png">
         </ion-avatar>
