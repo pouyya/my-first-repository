@@ -7,6 +7,11 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
- 
+<ion-menu id="sub-menu" side="right" [content]="subContent">
+  <p>hello sub menu</p>
+</ion-menu>
+
+<ion-content padding #subContent>
+  <button ion-button menuToggle="sub-menu">open sub menu</button>
+  <p>content of the sub page</p>
 </ion-content>
