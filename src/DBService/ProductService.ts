@@ -3,7 +3,7 @@ import * as PouchDB from 'pouchdb';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 
 @Injectable()
-export class ProductsService {  
+export class ProductService {  
     private _db;
     private _products;
 
@@ -17,11 +17,11 @@ export class ProductsService {
     }
 
     updateProduct(product) {  
-        return this._db.put(product);
+        return this._db.put(product._id, product._rev);
     }
 
     deleteProduct(product) {  
-        return this._db.remove(product);
+        return this._db.remove(product._id, product._rev);
     }
 
     getAll() {  

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { ProductsPage } from '../products/products';
+import { ProductsPage } from '../ProductViewModel/products';
 import { ContactPage } from '../contact/contact';
 import { HomePage } from '../home/home';
 import { SalePage } from '../sale/sale';
