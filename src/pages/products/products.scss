@@ -1,50 +1,12 @@
 page-products {
-    .header{
-        height: 8%;
-        .toolbar{
-            height: 100%;
-        }
-    }
-    .toolbar-background{
-        background-color: #329e52;
-    }
-    .toolbar-title{
-        color: white;
-        padding: 0;
-        text-align: center;
-        font-size: 6vw;
-        font-weight: 400;
-    }
-    .bar-button-default{
-        background-color: transparent;
-        text-transform: none;
-        color: white;
-        font-size: 4.5vw;
-        font-weight: 400;
-        padding:0 5px!important;
-    }
     .sliding{
         background-color: #329e52;
-     
     }
     .btn-left{
         width: 25%;        
     }
     .btn-right{
         width: 25%;       
-    }
-    .item{
-        background-color: #329e52;
-        height:8%;
-        border-radius: 5px;
-        margin-top: 0%;
-   
-       
-    }
-    .item-name{
-        color:white;
-        font-size:20px;
-        text-align: center;
     }
    .item-editbtn{
        color:white;

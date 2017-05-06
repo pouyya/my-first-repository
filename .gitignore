@@ -6,3 +6,4 @@ www/build/
 *.DS_Store
 *.log
 *.swp
+.io-config.json

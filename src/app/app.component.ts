@@ -21,20 +21,19 @@ export class MyApp {
 
   rootPage: any = TabsPage;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, icon: string, component: any}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'User', component: HomePage },
-      { title: 'Ecommerce', component: EcommercePage },
-      { title: 'Report', component: ReportPage },
-      { title: 'Settings', component: SettingsPage },
-      { title: 'About us', component: AboutPage } 
+      { title: 'Home', icon: 'home', component: HomePage },
+      { title: 'Ecommerce', icon: 'basket', component: EcommercePage },
+      { title: 'Report', icon: 'bookmark', component: ReportPage },
+      { title: 'Settings', icon: 'cog', component: SettingsPage },
+      { title: 'About us', icon: 'egg', component: AboutPage } 
     ];
-
   }
 
   initializeApp() {
