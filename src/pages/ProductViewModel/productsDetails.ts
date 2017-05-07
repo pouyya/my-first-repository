@@ -4,7 +4,7 @@ import { NavController,NavParams,ViewController } from 'ionic-angular';
 import { ProductService } from '../../DBService/ProductService';
 
 @Component({
-  selector: 'page-productsDetails',
+  selector: 'page-variables',
   templateUrl: 'productsDetails.html'
 })
 export class ProductsDetailsPage {

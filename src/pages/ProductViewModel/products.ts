@@ -8,7 +8,7 @@ import { ProductService } from '../../DBService/ProductService';
 import { ProductsDetailsPage } from '../ProductViewModel/productsDetails';
 
 @Component({
-  selector: 'page-products',
+  selector: 'page-variables',
   templateUrl: 'products.html'
 })
 export class ProductsPage {

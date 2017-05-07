@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 @Component({
-  selector: 'page-report',
+  selector: 'page-variables',
   templateUrl: 'report.html'
 })
 export class ReportPage {

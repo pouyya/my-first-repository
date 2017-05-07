@@ -4,7 +4,7 @@ import { ProductService} from '../../services/product.service';
 import { ProductsService} from '../../services/products.service';
 
 @Component({
-  selector: 'page-inventory',
+  selector: 'page-variables',
   templateUrl: 'inventory.html'
 })
 export class InventoryPage {
