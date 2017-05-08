@@ -8,7 +8,7 @@ import { SetupPage } from '../setup/setup'
 import { AboutPage } from '../about/about';
 import { InventoryPage } from '../inventory/inventory';
 @Component({
-  selector: 'page-settings',
+  selector: 'page-variables',
   templateUrl: 'settings.html'
 })
 export class SettingsPage {

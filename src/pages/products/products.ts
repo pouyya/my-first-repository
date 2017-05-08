@@ -8,7 +8,7 @@ import { ProductService } from '../../services/ProductService';
 import { ProductsDetailsPage } from '../productsDetails/productsDetails';
 
 @Component({
-  selector: 'page-products',
+  selector: 'page-variables',
   templateUrl: 'products.html'
 })
 export class ProductsPage {
