@@ -1,0 +1,30 @@
+<!--  Created By Michael Hanse
+      05/02/2017
+      ProductDetails Page Front-End
+  -->
+
+<ion-header>
+  <ion-navbar hideBackButton="true">
+    <ion-title>{{action}}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="saveService()" >
+        save
+      </button>
+     </ion-buttons>      
+    
+  </ion-navbar>
+</ion-header>
+<ion-content >
+  <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">NAME:</ion-label>
+      <ion-input type="text" [(ngModel)]="serviceItem.name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">PRICE($):</ion-label>
+      <ion-input type="text" [(ngModel)]="serviceItem.price"></ion-input>
+    </ion-item>
+     
+  </ion-list>    
+</ion-content> 
+ 

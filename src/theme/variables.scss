@@ -32,6 +32,18 @@ $colors: (
   dark:       #222
 );
 
+
+
+// App iOS Variables
+// --------------------------------------------------
+// iOS only Sass variables can go here
+
+
+
+
+// App Material Design Variables
+// --------------------------------------------------
+// Material Design only Sass variables can go here
 page-variables {
     .header{
         height: 8%;
@@ -46,8 +58,11 @@ page-variables {
         color: map-get($colors, light);
         padding: 0;
         text-align: center;
-        font-size: 6vw;
-        font-weight: 400;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        
     }
     .bar-button-default{
         background-color: transparent;
@@ -119,41 +134,19 @@ page-variables {
                 margin-bottom: 8%;
                 background-color: transparent;
                 height: 8.6%;  
-                border-radius: 5px;              
+                border-radius: 5px;
+                font-weight: bold;              
                 .button{
                     background-color: transparent;
                     box-shadow: 3px 3px 5px #888888;
-                     
-                }
-                .products{
-                    background-color: map-get($colors ,primary);
-                     
-                }
-                .sales{
+                    font-family: sans-serif;
                     background-color:map-get($colors ,primary);
-                }
-                .inventory{
-                    background-color:map-get($colors ,primary);
-                }
-                .contactus{
-                   background-color:map-get($colors ,primary);
+                     
                 }
             }
         }
     }
 }
-
-// App iOS Variables
-// --------------------------------------------------
-// iOS only Sass variables can go here
-
-
-
-
-// App Material Design Variables
-// --------------------------------------------------
-// Material Design only Sass variables can go here
-
 
 
 

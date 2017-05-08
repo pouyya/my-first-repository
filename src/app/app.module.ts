@@ -7,8 +7,13 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
+
 import { ProductsPage } from '../pages/products/products';
 import { ProductsDetailsPage } from '../pages/productsDetails/productsDetails';
+
+import { ServicesPage } from '../pages/service/service';
+import { ServiceDetailsPage } from '../pages/serviceDetails/serviceDetails';
+
 import { AboutPage } from '../pages/about/about';
 import { SalePage } from '../pages/sale/sale';
 import { SetupPage } from '../pages/setup/setup';
@@ -19,7 +24,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
 import { ContactPage } from '../pages/contact/contact';
+
 import { ProductService } from '../services/ProductService';
+import { ServiceService } from '../services/ServiceService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -36,6 +43,8 @@ const cloudSettings: CloudSettings = {
     ProductsPage,
     ContactPage,
     ProductsDetailsPage,
+    ServicesPage,
+    ServiceDetailsPage,
     SalePage,
     SetupPage,
     SettingsPage,
@@ -62,6 +71,8 @@ const cloudSettings: CloudSettings = {
     InventoryPage,
     ProductsPage,
     ProductsDetailsPage,
+    ServicesPage,
+    ServiceDetailsPage,
     SalePage,
     SetupPage,
     SettingsPage,
@@ -76,6 +87,7 @@ const cloudSettings: CloudSettings = {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ProductService,
+    ServiceService
   ]
 })
 export class AppModule {}
