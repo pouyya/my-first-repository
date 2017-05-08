@@ -32,10 +32,10 @@ export class ProductsDetailsPage {
 
   saveProducts(){
     if (this.isNew) {
-            this.productService.addProduct(this.productItem)
+            this.productService.add(this.productItem)
                 .catch(console.error.bind(console));
         } else {
-            this.productService.updateProduct(this.productItem)
+            this.productService.update(this.productItem)
                 .catch(console.error.bind(console));
         }
 

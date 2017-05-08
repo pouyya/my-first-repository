@@ -45,7 +45,7 @@ export class ProductsPage {
   } 
   
   deleteProducts(item){
-    this.productService.deleteProduct(item)
+    this.productService.delete(item)
             .catch(console.error.bind(console)); 
   }
 
