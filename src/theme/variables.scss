@@ -23,7 +23,6 @@ $font-path: "../assets/fonts";
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
- 
 $colors: (
   primary:    #488aff,
   secondary:  #32db64,
@@ -32,7 +31,13 @@ $colors: (
   dark:       #222
 );
 
+$toolbar-background: #3A4953;
+$toolbar-text-color: #CBCFD2;
+$list-background-color: #EBEBEB;
 
+$toolbar-md-text-color: #CBCFD2;
+
+$menu-width: 200px;
 
 // App iOS Variables
 // --------------------------------------------------
@@ -44,109 +49,7 @@ $colors: (
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
-page-variables {
-    .header{
-        height: 8%;
-        .toolbar{
-            height: 100%;
-        }
-    }
-    .toolbar-background{
-        background-color: map-get($colors, primary) ;
-    }
-    .toolbar-title{
-        color: map-get($colors, light);
-        padding: 0;
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        text-transform: uppercase;
-        font-family: sans-serif;
-        
-    }
-    .bar-button-default{
-        background-color: transparent;
-        text-transform: none;
-        color: white;
-        font-size: 4.5vw;
-        font-weight: 400;
-        padding:0 5px!important;
-    }
-    
-    .btn-left{
-        width: 25%;        
-    }
-    .btn-right{
-        width: 25%;       
-    }
-    
-   
-   ion-content{
-        background-color: white;      
 
-        .item{
-          background-color: map-get($colors, primary);
-          height:8%;
-          border-radius: 1px;
-          margin-top: 0%;
-          color: map-get($colors, light) ;
-        }   
-        .item-title{
-          color:white;
-          font-size:20px;
-          text-align: center;
-        }
-        .item-name{
-          color:white;
-          font-size:15px;
-          text-align: center;
-        }
-        .item-editbtn{
-          color:white;
-          background-color: transparent;
-          font-size: 20px;
-          text-align: center;
-        } 
-        .sliding{
-          background-color:  map-get($colors, primary);
-        }
-        .insert-image{
-          background-color: map-get($colors, primary);
-          height: 25%;
-          margin-left: 4%;
-          margin-right: 4%;
-          text-align: center;
-          color:white;
-          font-size: 15px;
-          border-radius: 3px;
-            
-            .item-addImageLabel{
-              padding-top:10px;
-            }
-         }
-        .btn-container{
-            width: 100%;
-            padding-top:30%;
-            padding-bottom:30%;
-            .custom-btn{
-                padding-left: 5%;
-                padding-right: 5%;
-                margin-bottom: 8%;
-                background-color: transparent;
-                height: 8.6%;  
-                border-radius: 5px;
-                font-weight: bold;              
-                .button{
-                    background-color: transparent;
-                    box-shadow: 3px 3px 5px #888888;
-                    font-family: sans-serif;
-                    background-color:map-get($colors ,primary);
-                     
-                }
-            }
-        }
-    }
-}
 
 
 
