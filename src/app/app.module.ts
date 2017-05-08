@@ -7,8 +7,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
-import { ProductsPage } from '../pages/ProductViewModel/products';
-import { ProductsDetailsPage } from '../pages/ProductViewModel/productsDetails';
+import { ProductsPage } from '../pages/products/products';
+import { ProductsDetailsPage } from '../pages/productsDetails/productsDetails';
 import { AboutPage } from '../pages/about/about';
 import { SalePage } from '../pages/sale/sale';
 import { SetupPage } from '../pages/setup/setup';
@@ -19,7 +19,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
 import { ContactPage } from '../pages/contact/contact';
-import { ProductService } from '../DBService/ProductService';
+import { ProductService } from '../services/ProductService';
 
 const cloudSettings: CloudSettings = {
   'core': {

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController,NavParams,ViewController } from 'ionic-angular';
 
-import { ProductService } from '../../DBService/ProductService';
+import { ProductService } from '../../services/ProductService';
 
 @Component({
   selector: 'page-productsDetails',

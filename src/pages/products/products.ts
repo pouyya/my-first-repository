@@ -4,8 +4,8 @@
    
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
-import { ProductService } from '../../DBService/ProductService';
-import { ProductsDetailsPage } from '../ProductViewModel/productsDetails';
+import { ProductService } from '../../services/ProductService';
+import { ProductsDetailsPage } from '../productsDetails/productsDetails';
 
 @Component({
   selector: 'page-products',
@@ -24,13 +24,10 @@ export class ProductsPage {
           private platform:Platform,
           private zone: NgZone,
           private modalCtrl: ModalController) {
-          
-
   }
 
    ionViewDidLoad(){
     this.platform.ready().then(() => {
-            this.productService.initDB();
 
             this.productService.getAll()
                 .then(data => {
@@ -48,10 +45,8 @@ export class ProductsPage {
   } 
   
   deleteProducts(item){
-
     this.productService.deleteProduct(item)
             .catch(console.error.bind(console)); 
-      
   }
 
   getItems(event){

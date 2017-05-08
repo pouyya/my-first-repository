@@ -4,7 +4,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
-import { ProductsPage } from '../pages/ProductViewModel/products';
+import { ProductsPage } from '../pages/products/products';
 import { SalePage } from '../pages/sale/sale';
 import { SetupPage } from '../pages/setup/setup';
 import { SettingsPage } from '../pages/settings/settings';

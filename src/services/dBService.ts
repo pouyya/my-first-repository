@@ -3,13 +3,13 @@ import * as PouchDB from 'pouchdb';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 
 @Injectable()
-export class ProductService {  
+export class DBService {  
     private _db;
     private _products;
 
-    initDB() {
+    constructor() {
         PouchDB.plugin(cordovaSqlitePlugin);
-        this._db = new PouchDB('products.db', { adapter: 'cordova-sqlite' });
+        this._db = new PouchDB('products.db');
     }
 
     addProduct(product) {  
