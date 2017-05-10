@@ -8,7 +8,7 @@ import { ProductService } from '../../services/ProductService';
 import { ProductsDetailsPage } from '../productsDetails/productsDetails';
 
 @Component({
-  selector: 'page-variables',
+  selector: 'page-products',
   templateUrl: 'products.html'
 })
 export class ProductsPage {
@@ -33,6 +33,7 @@ export class ProductsPage {
                 .then(data => {
                     this.zone.run(() => {
                         this.products = data;
+                        console.log('Products Page Data===', data);
                     });
                 })
                 .catch(console.error.bind(console));

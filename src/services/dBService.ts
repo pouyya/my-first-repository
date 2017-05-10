@@ -20,11 +20,18 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     add(entity : T) {  
+
         return this._db.post(entity);
     }
 
     update(entity : T) {  
-        return this._db.put(entity._id, entity._rev);
+        
+        return this._db.put(entity);
+        // return this._db.put(entity,{_id:entity._id, _rev:entity._rev}).then(function(response){
+        //     console.log('response===========', response);    
+        // }).catch(function(err){
+        //     console.log(err);
+        // });
     }
 
     delete(entity : T) {  
@@ -34,24 +41,24 @@ export class DBService<T extends DBBasedEntity> {
     getAll() {  
         var type = (new this.type()).type;
         
-        // if (!this._products) {
+        // if (!this._entities) {
             return this._db.find({ selector: {type: type}, include_docs: true})
                 .then(docs => {
 
                     // Each row has a .doc object and we just want to send an 
-                    // array of birthday objects back to the calling controller,
+                    // array of entity objects back to the calling controller,
                     // so let's map the array to contain just the .doc objects.
 
                     this._entities = docs.docs.map(row => {
                         // Dates are not automatically converted from a string.
-                        row.Date = new Date(row.Date);
+                        // row.Date = new Date(row.Date);
                         return row;
                     });
 
                     // Listen for changes on the database.
                     this._db.changes({ live: true, since: 'now', include_docs: true})
                         .on('change', this.onDatabaseChange);
-
+                        
                     return this._entities;
                 });
         // } else {
@@ -61,6 +68,9 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     private onDatabaseChange = (change) => {  
+
+        console.log('===============change=======', change);
+
         var index = this.findIndex(this._entities, change.id);
         var product = this._entities[index];
 
@@ -69,10 +79,13 @@ export class DBService<T extends DBBasedEntity> {
                 this._entities.splice(index, 1); // delete
             }
         } else {
-            change.doc.Date = new Date(change.doc.Date);
+            // change.doc.Date = new Date(change.doc.Date);
+              
             if (product && product._id === change.id) {
+                console.log("Change Document=====", change.doc);
                 this._entities[index] = change.doc; // update
             } else {
+                console.log("Insert Document=====", change.doc);
                 this._entities.splice(index, 0, change.doc) // insert
             }
         }

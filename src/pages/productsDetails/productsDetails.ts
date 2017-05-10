@@ -11,14 +11,15 @@ export class ProductsDetailsPage {
   public productItem:any={};
   public isNew = true;
   public action = 'Add';
+  public categories: any;
 
  constructor(public navCtrl: NavController, 
     private productService:ProductService,
     public navParams: NavParams,
     private viewCtrl: ViewController) {
-    
-    console.log('Product Items', this.productItem);
-    
+
+    this.categories=['one', 'two','three','four', 'five'];
+        
   }
 
   ionViewDidLoad(){
