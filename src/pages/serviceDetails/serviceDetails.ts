@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { NavController,NavParams,ViewController } from 'ionic-angular';
-
+import { Component, NgZone } from '@angular/core';
+import { NavController,NavParams,ViewController, Platform } from 'ionic-angular';
+import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/ServiceService';
 
 @Component({
@@ -9,12 +9,16 @@ import { ServiceService } from '../../services/ServiceService';
 })
 export class ServiceDetailsPage {
   public serviceItem:any={};
+  public categories = [];
   public isNew = true;
   public action = 'Add';
 
  constructor(public navCtrl: NavController, 
     private serviceService:ServiceService,
+    private categoryService:CategoryService,
     public navParams: NavParams,
+    private zone: NgZone,
+    private platform:Platform,
     private viewCtrl: ViewController) {
     
     console.log('Product Items', this.serviceItem);
@@ -28,6 +32,18 @@ export class ServiceDetailsPage {
       this.isNew = false;
       this.action = 'Edit';
     }
+    this.platform.ready().then(() => {
+      
+      this.categoryService.getAll()
+                .then(data => {
+                    this.zone.run(() => {
+                        this.categories = data;
+                        console.log('Category Datas in ServiceDetails Page===', data);
+                    });
+                })
+                .catch(console.error.bind(console));
+        });
+
   } 
 
   saveService(){

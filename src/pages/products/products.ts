@@ -8,7 +8,6 @@ import { ProductService } from '../../services/ProductService';
 import { ProductsDetailsPage } from '../productsDetails/productsDetails';
 
 @Component({
-  selector: 'page-products',
   templateUrl: 'products.html'
 })
 export class ProductsPage {
@@ -45,9 +44,10 @@ export class ProductsPage {
     this.navCtrl.push(ProductsDetailsPage, {product:product}); 
   } 
   
-  deleteProducts(item){
+  deleteProducts(item, idx){
     this.productService.delete(item)
             .catch(console.error.bind(console)); 
+    this.products.splice(idx, 1);
   }
 
   getItems(event){

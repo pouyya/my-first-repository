@@ -8,6 +8,7 @@ import { SetupPage } from '../setup/setup'
 import { AboutPage } from '../about/about';
 import { InventoryPage } from '../inventory/inventory';
 import { ServicesPage } from '../service/service';
+import { CategoryPage } from '../category/category';
 
 @Component({
   selector: 'page-variables',
@@ -26,7 +27,7 @@ export class SettingsPage {
     this.navCtrl.push(ServicesPage);
   }
   onInventory(){
-    this.navCtrl.push(InventoryPage);
+    this.navCtrl.push(CategoryPage);
   }
   onContactUs(){
     this.navCtrl.push(ContactPage);

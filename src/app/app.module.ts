@@ -14,6 +14,9 @@ import { ProductsDetailsPage } from '../pages/productsDetails/productsDetails';
 import { ServicesPage } from '../pages/service/service';
 import { ServiceDetailsPage } from '../pages/serviceDetails/serviceDetails';
 
+import { CategoryPage } from '../pages/category/category';
+import { CategoryDetailsPage } from '../pages/category/categoryDetails';
+
 import { AboutPage } from '../pages/about/about';
 import { SalePage } from '../pages/sale/sale';
 import { SetupPage } from '../pages/setup/setup';
@@ -27,6 +30,8 @@ import { ContactPage } from '../pages/contact/contact';
 
 import { ProductService } from '../services/ProductService';
 import { ServiceService } from '../services/ServiceService';
+import { CategoryService } from '../services/categoryService';
+
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -45,6 +50,8 @@ const cloudSettings: CloudSettings = {
     ProductsDetailsPage,
     ServicesPage,
     ServiceDetailsPage,
+    CategoryPage,
+    CategoryDetailsPage,
     SalePage,
     SetupPage,
     SettingsPage,
@@ -73,6 +80,8 @@ const cloudSettings: CloudSettings = {
     ProductsDetailsPage,
     ServicesPage,
     ServiceDetailsPage,
+    CategoryPage,
+    CategoryDetailsPage,
     SalePage,
     SetupPage,
     SettingsPage,
@@ -87,7 +96,8 @@ const cloudSettings: CloudSettings = {
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ProductService,
-    ServiceService
+    ServiceService,
+    CategoryService,
   ]
 })
 export class AppModule {}

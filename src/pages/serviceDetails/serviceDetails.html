@@ -24,7 +24,13 @@
       <ion-label class="item-name">PRICE($):</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.price"></ion-input>
     </ion-item>
-     
+    <ion-item>
+        <ion-label>CATEGORIES:</ion-label>
+        <ion-select [(ngModel)]="serviceItem.categories" multiple = "false" >   
+          <ion-option *ngFor="let item of categories ; let idx=index" value={{item.name}}>{{item.name}}</ion-option> 
+        </ion-select>
+       
+    </ion-item>     
   </ion-list>    
 </ion-content> 
  

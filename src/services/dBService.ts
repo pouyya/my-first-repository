@@ -27,11 +27,7 @@ export class DBService<T extends DBBasedEntity> {
     update(entity : T) {  
         
         return this._db.put(entity);
-        // return this._db.put(entity,{_id:entity._id, _rev:entity._rev}).then(function(response){
-        //     console.log('response===========', response);    
-        // }).catch(function(err){
-        //     console.log(err);
-        // });
+      
     }
 
     delete(entity : T) {  

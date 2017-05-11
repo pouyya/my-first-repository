@@ -44,9 +44,10 @@ export class ServicesPage {
     this.navCtrl.push(ServiceDetailsPage, {service:service}); 
   } 
   
-  deleteServices(item){
+  deleteServices(item, idx){
     this.serviceService.delete(item)
             .catch(console.error.bind(console)); 
+    this.services. splice(idx, 1);
   }
 
   getItems(event){

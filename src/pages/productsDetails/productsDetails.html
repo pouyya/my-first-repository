@@ -10,12 +10,12 @@
       <button ion-button icon-only (click)="saveProducts()" >
         save
       </button>
-     </ion-buttons>      
-    
+     </ion-buttons>     
   </ion-navbar>
 </ion-header>
-<ion-content >
-  <ion-list inset>
+
+<ion-content>
+  <ion-list>
     <ion-item>
       <ion-label class="item-name">NAME:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.name"></ion-input>
@@ -33,15 +33,12 @@
       <ion-input type="text" [(ngModel)]="productItem.count"></ion-input>
     </ion-item>
      <ion-item>
-        <ion-label class="item-categories">CATEGORIES:</ion-label>
-        <ion-select [(ngModel)]="productItem.categories" submitText="OK" cancelText="Cancel">   
-          <ion-option value="dos">DOS</ion-option>
-          <ion-option value="lunix">Linux</ion-option>
-          <ion-option value="mac7">Mac OS 7</ion-option>
-          <ion-option value="mac8">Mac OS 8</ion-option>         
-          </ion-select>
-    </ion-item>
-    
+        <ion-label>CATEGORIES:</ion-label>
+        <ion-select [(ngModel)]="productItem.categories"  [selectOptions]="categoryOpt">   
+          <ion-option *ngFor="let item of categories ; let idx=index" value={{item.name}}>{{item.name}}</ion-option> 
+        </ion-select>
+       
+    </ion-item>    
   </ion-list>
   <div class="insert-image">
     <p>
