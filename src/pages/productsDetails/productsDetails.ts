@@ -1,3 +1,6 @@
+// --------------------------------------------------
+// -------------ProductDetails.ts--------------------
+// --------------------------------------------------
 import { Component, NgZone } from '@angular/core';
 import { NavController,NavParams,ViewController,Platform } from 'ionic-angular';
 import { ProductService } from '../../services/ProductService';
@@ -13,26 +16,26 @@ export class ProductsDetailsPage {
   public action = 'Add';
   categoryOpt:{title:string}; 
 
- constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController, 
     private productService:ProductService,
     private categoryService:CategoryService,
     private platform:Platform,
     public navParams: NavParams,
     private zone: NgZone,
     private viewCtrl: ViewController) {
-      this.categoryOpt ={title:'Categories'};
-
+        
   }
-
+  //-------------------------------------------------   
+  // When the page is loaded, this function should be run.
   ionViewDidLoad(){
-    let editProduct = this.navParams.get('product');
-     if(editProduct){
-      this.productItem = editProduct;
-      this.isNew = false;
-      this.action = 'Edit';
-    }
+        let editProduct = this.navParams.get('product');
+        if(editProduct){
+            this.productItem = editProduct;
+            this.isNew = false;
+            this.action = 'Edit';
+        }
 
-    this.platform.ready().then(() => {
+        this.platform.ready().then(() => {
 
             this.categoryService.getAll()
                 .then(data => {
@@ -43,22 +46,26 @@ export class ProductsDetailsPage {
                 })
                 .catch(console.error.bind(console));
         });
-  } 
+    }
 
-  saveProducts(){
-    if (this.isNew) {
+    setAvailableCategory(){
+        
+    } 
+    //-------------------------------------------------   
+    // Save Product Function.
+    saveProducts(){
+        console.log('Product Categories===', this.productItem.categories);
+        if (this.isNew) {
             this.productService.add(this.productItem)
                 .catch(console.error.bind(console));
         } else {
             this.productService.update(this.productItem)
                 .catch(console.error.bind(console));
         }
+        this.navCtrl.pop();
+    }
 
-    this.navCtrl.pop();
-    
-  }
-
-   addImage(){
+    addImage(){
      
-   }
+    }
 }

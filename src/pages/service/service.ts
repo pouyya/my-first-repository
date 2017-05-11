@@ -13,6 +13,7 @@ import { ServiceDetailsPage } from '../serviceDetails/serviceDetails';
 })
 export class ServicesPage {
    public services = [];
+   public servicesBackup = [];
    public isNew = true;
    public action = 'Add';
    public isoDate = '';
@@ -33,6 +34,7 @@ export class ServicesPage {
                 .then(data => {
                     this.zone.run(() => {
                         this.services = data;
+                        this.servicesBackup = data;
                     });
                 })
                 .catch(console.error.bind(console));
@@ -51,13 +53,16 @@ export class ServicesPage {
   }
 
   getItems(event){
-
+    // Reset Services back to all of the Services
+    this.services = this.servicesBackup;
     //set val to the value of the event target
     var val = event.target.value;
-    console.log("event Value==", val);
+    
     //if the value is an empty string don`t filter the items
     if(val && val.trim() != ''){
-       
+       this.services = this.services.filter((service)=>{
+         return((service.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
+       })
     }
   }
   

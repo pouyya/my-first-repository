@@ -34,8 +34,8 @@
     </ion-item>
      <ion-item>
         <ion-label>CATEGORIES:</ion-label>
-        <ion-select [(ngModel)]="productItem.categories"  [selectOptions]="categoryOpt">   
-          <ion-option *ngFor="let item of categories ; let idx=index" value={{item.name}}>{{item.name}}</ion-option> 
+        <ion-select [(ngModel)]="productItem.categories"  multiple="true">   
+          <ion-option  *ngFor="let item of categories ; let idx=index" value={{item.name}}>{{item.name}}</ion-option> 
         </ion-select>
        
     </ion-item>    
