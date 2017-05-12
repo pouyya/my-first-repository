@@ -48,14 +48,30 @@ export class ProductsDetailsPage {
         });
     }
 
-    setAvailableCategory(){
-        
+    setAvailableCategory(items){
+
+        console.log("changed Used", items);
+
+        for(let item of items){
+            for(let cat of this.categories){
+                if(item == cat.name){
+                    cat.IsCategoryUsed = true;
+                    this.categoryService.update(cat);
+                }
+            }
+        }
+
+        console.log('changed Category===', this.categories);
     } 
     //-------------------------------------------------   
     // Save Product Function.
     saveProducts(){
-        console.log('Product Categories===', this.productItem.categories);
+        if(this.productItem.categories){
+                this.setAvailableCategory(this.productItem.categories);
+        }
+        
         if (this.isNew) {
+            
             this.productService.add(this.productItem)
                 .catch(console.error.bind(console));
         } else {

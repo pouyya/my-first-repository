@@ -62,7 +62,9 @@ export class CategoryPage {
   // Category Delete Function
   deleteCategories(item, idx){
     
-    if(item.IsCategoryUsed(item._id)){
+    console.log("category item===", item);
+
+    if(item.IsCategoryUsed){
       this.showConfirmAlert(item, idx);
     } else {
       
