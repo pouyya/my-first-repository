@@ -80,10 +80,12 @@ export class DBService<T extends DBBasedEntity> {
     
     private onDatabaseChange = (change) => {  
 
-        console.log('===============change=======', change);
+        // console.log('===============change=======', change);
 
         var index = this.findIndex(this._entities, change.id);
         var product = this._entities[index];
+
+        console.log("==========Change Doc======", product, change.doc);
 
         if (change.deleted) {
             if (product) {
@@ -95,7 +97,7 @@ export class DBService<T extends DBBasedEntity> {
             if (product && product._id === change.id) {
                 console.log("Update Document=====", change.doc);
                 this._entities[index] = change.doc; // update
-            } else {
+            } else if (change.doc.type && change.doc.type === product.type) {
                 console.log("Insert Document=====", change.doc);
                 this._entities.splice(index, 0, change.doc) // insert
             }

@@ -61,6 +61,7 @@ export class ProductsDetailsPage {
                      cat.isUsed = true;
                      this.isCategoryId.push(cat._id);
                      this.categoryService.update(cat).catch(console.error.bind(console));
+                     
                 }
             }
         }
