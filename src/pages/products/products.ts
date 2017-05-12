@@ -57,7 +57,7 @@ export class ProductsPage {
   deleteProducts(item, idx){
     this.productService.delete(item)
             .catch(console.error.bind(console)); 
-    this.products.splice(idx, 1);
+    // this.products.splice(idx, 1);
   }
   
   //-------------------------------------------------   

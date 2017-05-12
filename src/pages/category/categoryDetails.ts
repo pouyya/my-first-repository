@@ -17,12 +17,12 @@ export class CategoryDetailsPage {
     public navParams: NavParams,
     private viewCtrl: ViewController) {
     
-    console.log('Category Items', this.categoryItem);
     
   }
 
   ionViewDidLoad(){
     let editProduct = this.navParams.get('category');
+    console.log('Get from DB Category Items', editProduct);
     if(editProduct){
       this.categoryItem = editProduct;
       this.isNew = false;
@@ -31,13 +31,15 @@ export class CategoryDetailsPage {
   } 
 
   saveCategories(){
+   
+   console.log('Updated Category Items====',this.categoryItem);
     if (this.isNew) {
             this.categoryService.add(this.categoryItem)
                 .catch(console.error.bind(console));
-        } else {
+    } else {
             this.categoryService.update(this.categoryItem)
                 .catch(console.error.bind(console));
-        }
+    }
 
     this.navCtrl.pop();
     

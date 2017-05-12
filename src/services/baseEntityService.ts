@@ -30,4 +30,7 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     getAll() { 
         return this._dbService.getAll();
     }
+    IsCategoryUsed(item){
+        return this._dbService.IsCategoryUsed(item);
+    }
 }

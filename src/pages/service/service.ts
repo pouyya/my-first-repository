@@ -49,7 +49,7 @@ export class ServicesPage {
   deleteServices(item, idx){
     this.serviceService.delete(item)
             .catch(console.error.bind(console)); 
-    this.services. splice(idx, 1);
+    // this.services. splice(idx, 1);
   }
 
   getItems(event){

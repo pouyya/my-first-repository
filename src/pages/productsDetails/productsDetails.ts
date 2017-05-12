@@ -14,6 +14,8 @@ export class ProductsDetailsPage {
   public categories = [];
   public isNew = true;
   public action = 'Add';
+  public isCategoryId =[];
+  public isCategoryName =[];
   categoryOpt:{title:string}; 
 
   constructor(public navCtrl: NavController, 
@@ -26,22 +28,24 @@ export class ProductsDetailsPage {
         
   }
   //-------------------------------------------------   
-  // When the page is loaded, this function should be run.
+  // When the page is loaded, this function should be run. 
   ionViewDidLoad(){
-        let editProduct = this.navParams.get('product');
-        if(editProduct){
-            this.productItem = editProduct;
-            this.isNew = false;
-            this.action = 'Edit';
-        }
+    let editProduct = this.navParams.get('product');
+    if(editProduct){
+        this.productItem = editProduct;
+        this.isNew = false;
+        this.action = 'Edit';
+        if(this.productItem.categories){
+                this.isCategoryName = this.productItem.categories.categoryName;
+            }
+              
+    }
 
-        this.platform.ready().then(() => {
+    this.platform.ready().then(() => {
 
-            this.categoryService.getAll()
-                .then(data => {
-                    this.zone.run(() => {
+        this.categoryService.getAll().then(data => {this.zone.run(() => {
                         this.categories = data;
-                        console.log('Category Datas in Product Details Page===', data);
+                        
                     });
                 })
                 .catch(console.error.bind(console));
@@ -50,28 +54,30 @@ export class ProductsDetailsPage {
 
     setAvailableCategory(items){
 
-        console.log("changed Used", items);
-
-        for(let item of items){
-            for(let cat of this.categories){
-                if(item == cat.name){
-                    cat.IsCategoryUsed = true;
-                    this.categoryService.update(cat);
+        for(let cat of this.categories){
+            var cName = cat.name;
+            for(let it of items){
+                if(cName == it){
+                     cat.isUsed = true;
+                     this.isCategoryId.push(cat._id);
+                     this.categoryService.update(cat).catch(console.error.bind(console));
                 }
             }
         }
+        
+    }
 
-        console.log('changed Category===', this.categories);
-    } 
     //-------------------------------------------------   
     // Save Product Function.
     saveProducts(){
-        if(this.productItem.categories){
-                this.setAvailableCategory(this.productItem.categories);
+        if(this.isCategoryName){
+                this.setAvailableCategory(this.isCategoryName);
         }
-        
+        this.productItem.categories = {
+            categoryName: this.isCategoryName,
+            categoryID: this.isCategoryId,
+        }
         if (this.isNew) {
-            
             this.productService.add(this.productItem)
                 .catch(console.error.bind(console));
         } else {
