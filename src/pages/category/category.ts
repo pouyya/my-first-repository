@@ -34,6 +34,7 @@ export class CategoryPage {
           private platform:Platform,
           private zone: NgZone,
           private modalCtrl: ModalController) {
+            
   }
   
   //-------------------------------------------------   
@@ -45,6 +46,7 @@ export class CategoryPage {
                     this.zone.run(() => {
                         this.categories = data;
                         this.categoriesBackup = data;
+                        console.log("Category Data on CategoryJS===", this.categories);
                     });
                 })
                 .catch(console.error.bind(console));
@@ -61,22 +63,16 @@ export class CategoryPage {
   //-------------------------------------------------   
   // Category Delete Function
   deleteCategories(item, idx){
-    
-    console.log("category item===", item);
-
-    if(item.IsCategoryUsed){
-      this.showConfirmAlert(item, idx);
-    } else {
-      
-      this.categoryService.delete(item)
-            .catch(console.error.bind(console));
-      this.categories.splice(idx, 1);
-    }
-    
-    
-             
-  }
-  
+     console.log("Category Data=", this.categoryService.IsCategoryUsed(item));
+     
+     if(this.categoryService.IsCategoryUsed(item)){
+        this.showConfirmAlert(item, idx);
+     
+      }else{
+        this.categoryService.delete(item).catch(console.error.bind(console)); 
+     }
+     
+   }
   //-------------------------------------------------   
   // Category Delete Confirm Function
    showConfirmAlert(item, idx){
@@ -90,9 +86,8 @@ export class CategoryPage {
           handler: () => {
             console.log("Using Category Delete");
             
-            this.categoryService.delete(item)
-            .catch(console.error.bind(console));
-            this.categories.splice(idx, 1);  
+            this.categoryService.delete(item).catch(console.error.bind(console));
+            // this.categories.splice(idx, 1);  
               
           }
         },
