@@ -12,6 +12,24 @@ export class DBService<T extends DBBasedEntity> {
         PouchDB.plugin(pouchDBFind);
         this._db = new PouchDB('SimpleCuts.db');
         
+        var sync = PouchDB.sync('SimpleCuts.db', 'http://bitnami-couchdb-d399.cloudapp.net:5984/simplecuts_aria', {
+        live: true,
+        retry: true
+        }).on('change', function (info) {
+        // handle change
+        }).on('paused', function (err) {
+        // replication paused (e.g. replication up to date, user went offline)
+        }).on('active', function () {
+        // replicate resumed (e.g. new changes replicating, user went back online)
+        }).on('denied', function (err) {
+        // a document failed to replicate (e.g. due to permissions)
+        }).on('complete', function (info) {
+        // handle complete
+        }).on('error', function (err) {
+        // handle error
+        });
+
+
         PouchDB.debug.enable('*');
 
         this._db.createIndex({
