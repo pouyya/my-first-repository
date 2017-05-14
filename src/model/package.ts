@@ -1,6 +1,6 @@
 import { PurchasableItem } from './purchasableItem';
 
-export class Service implements PurchasableItem
+export class Package implements PurchasableItem
 {
     constructor() 
     {
@@ -9,12 +9,12 @@ export class Service implements PurchasableItem
         this.name = "";
         this.color = "";
         this.image = "";
-        this.type= "service";
+        this.type = "package";
     }
 
     public _id: string;
     public _rev: string;
-    public type: "service";
+    public type: "package";
     public name: string;
     public price: number;
     public color: string;

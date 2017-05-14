@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as PouchDB from 'pouchdb';
 import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity"; 
+import { ConfigService } from "./configService"
 
 @Injectable()
 export class DBService<T extends DBBasedEntity> {  
@@ -10,9 +11,14 @@ export class DBService<T extends DBBasedEntity> {
 
     constructor(private type) {
         PouchDB.plugin(pouchDBFind);
-        this._db = new PouchDB('SimpleCuts.db');
+
+        var currentInternalDBName = ConfigService.currentInternalDBName();
+
+        this._db = new PouchDB(currentInternalDBName);
         
-        var sync = PouchDB.sync('SimpleCuts.db', 'http://bitnami-couchdb-d399.cloudapp.net:5984/simplecuts_aria', {
+        //TODO AZ - To change below functions to have proper action (e.g. on going offline show popover that you are offline or such) and log the value 
+        // in proper logger!
+        var sync = PouchDB.sync(currentInternalDBName ,ConfigService.getCurrentFullExternalDBUrl() , {
         live: true,
         retry: true
         }).on('change', function (info) {
@@ -30,7 +36,10 @@ export class DBService<T extends DBBasedEntity> {
         });
 
 
-        PouchDB.debug.enable('*');
+        if(ConfigService.isDevelopment())
+        {
+            PouchDB.debug.enable('*');
+        }
 
         this._db.createIndex({
             index: {fields: ['type']}
@@ -59,15 +68,7 @@ export class DBService<T extends DBBasedEntity> {
             return this._db.find({ selector: {type: type}, include_docs: true})
                 .then(docs => {
 
-                    // Each row has a .doc object and we just want to send an 
-                    // array of entity objects back to the calling controller,
-                    // so let's map the array to contain just the .doc objects.
-
-                    this._entities = docs.docs.map(row => {
-                        // Dates are not automatically converted from a string.
-                        // row.Date = new Date(row.Date);
-                        return row;
-                    });
+                    this._entities = docs.docs;
 
                     // Listen for changes on the database.
                     this._db.changes({ live: true, since: 'now', include_docs: true})
@@ -75,11 +76,8 @@ export class DBService<T extends DBBasedEntity> {
                         
                     return this._entities;
                 });
-        // } else {
-        //     // Return cached data as a promise
-        //     return Promise.resolve(this._entities);
-        // }
     }
+    
     IsCategoryUsed(item){
          
        return this._db.find({selector: {type: "category", isUsed:true, _id:item._id}})
