@@ -7,6 +7,24 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
- 
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-4>
+        <ion-list>
+          <button ion-item *ngFor="let category of categories"
+          class="text-right"
+          [ngClass]="{'activeCategory': category.id == activeCategory.id }" 
+          (click)="itemSelected(category)">
+            {{ category.name }}
+          </button>
+        </ion-list>
+      </ion-col>
+      <ion-col col-8>
+        <div class="sc-category-items" 
+          *ngFor="let tile of activeItems" (click)="selectItem(tile)">{{ tile.name }}
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
