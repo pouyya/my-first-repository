@@ -1,6 +1,6 @@
 import { PurchasableItem } from './purchasableItem';
 
-export class Service extends PurchasableItem
+export class Package extends PurchasableItem
 {
     constructor() 
     {

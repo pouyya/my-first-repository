@@ -18,7 +18,7 @@ import { CategoryPage } from '../pages/category/category';
 import { CategoryDetailsPage } from '../pages/category/categoryDetails';
 
 import { AboutPage } from '../pages/about/about';
-import { SalePage } from '../pages/sale/sale';
+import { SalesPage } from '../pages/sales/sales';
 import { SetupPage } from '../pages/setup/setup';
 import { TabsPage } from '../pages/tabs/tabs';
 import { SettingsPage } from '../pages/settings/settings';
@@ -28,8 +28,8 @@ import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
 import { ContactPage } from '../pages/contact/contact';
 
-import { ProductService } from '../services/ProductService';
-import { ServiceService } from '../services/ServiceService';
+import { ProductService } from '../services/productService';
+import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
 
 
@@ -52,7 +52,7 @@ const cloudSettings: CloudSettings = {
     ServiceDetailsPage,
     CategoryPage,
     CategoryDetailsPage,
-    SalePage,
+    SalesPage,
     SetupPage,
     SettingsPage,
     EcommercePage,
@@ -82,7 +82,7 @@ const cloudSettings: CloudSettings = {
     ServiceDetailsPage,
     CategoryPage,
     CategoryDetailsPage,
-    SalePage,
+    SalesPage,
     SetupPage,
     SettingsPage,
     EcommercePage,
@@ -98,6 +98,7 @@ const cloudSettings: CloudSettings = {
     ProductService,
     ServiceService,
     CategoryService,
+      
   ]
 })
 export class AppModule {}

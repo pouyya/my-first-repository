@@ -1,9 +1,6 @@
-// --------------------------------------------------
-// -------------ProductDetails.ts--------------------
-// --------------------------------------------------
 import { Component, NgZone } from '@angular/core';
 import { NavController,NavParams,ViewController,Platform } from 'ionic-angular';
-import { ProductService } from '../../services/ProductService';
+import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 
 @Component({

@@ -9,8 +9,8 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetailsPage } from '../category/categoryDetails';
-import { ProductService } from '../../services/ProductService';
-import { ServiceService } from '../../services/ServiceService';
+import { ProductService } from '../../services/productService';
+import { ServiceService } from '../../services/serviceService';
 @Component({
   selector: 'page-variables',
   templateUrl: 'category.html'

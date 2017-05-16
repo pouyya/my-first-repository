@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 import { ProductsPage } from '../products/products';
 import { ContactPage } from '../contact/contact';
 import { HomePage } from '../home/home';
-import { SalePage } from '../sale/sale';
+import { SalesPage } from '../sales/sales';
 import { SetupPage } from '../setup/setup'
 import { AboutPage } from '../about/about';
 import { InventoryPage } from '../inventory/inventory';

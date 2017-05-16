@@ -1,16 +1,4 @@
-import { DBBasedEntity } from './dbBasedEntity';
+import { PurchasableItem } from './purchasableItem';
 
-
-export class Product implements DBBasedEntity
-{
-    constructor() 
-    {
-        this._id = "";
-        this._rev ="";
-        this.type= "product";
-    }
-
-    public _id: string;
-    public _rev: string;
-    public type: "product";
+export class Product extends PurchasableItem {
 }

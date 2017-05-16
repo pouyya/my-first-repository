@@ -1,7 +1,7 @@
 import { Component, NgZone } from '@angular/core';
 import { NavController,NavParams,ViewController, Platform } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
-import { ServiceService } from '../../services/ServiceService';
+import { ServiceService } from '../../services/serviceService';
 
 @Component({
   selector: 'page-variables',

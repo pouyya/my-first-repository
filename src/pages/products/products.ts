@@ -6,7 +6,7 @@
    
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
-import { ProductService } from '../../services/ProductService';
+import { ProductService } from '../../services/productService';
 import { ProductsDetailsPage } from '../productsDetails/productsDetails';
 
 @Component({
