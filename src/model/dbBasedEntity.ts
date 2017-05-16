@@ -8,9 +8,11 @@ export abstract class DBBasedEntity
         this._id = "";
         this._rev = "";
         this.entityTypeName = TypeHelper.getTypeName(this);
+        this.entityTypeNames = TypeHelper.getParentTypeNames(this);
     }
 
     public _id: string;
     public _rev: string;
     public readonly entityTypeName: string;
+    public readonly entityTypeNames: Array<string>;
 }

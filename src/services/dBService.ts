@@ -41,8 +41,12 @@ export class DBService<T extends DBBasedEntity> {
             PouchDB.debug.enable('*');
         }
 
+        // Listen for changes on the database.
+        this._db.changes({ live: true, since: 'now', include_docs: true})
+            .on('change', this.onDatabaseChange);        
+
         this._db.createIndex({
-            index: {fields: ['type']}
+            index: {fields: ['entityTypeName', 'entityTypeNames']}
         });        
     }
 
@@ -62,17 +66,13 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     getAll() {  
-        var entityTypeName = (new this.entityType()).entityTypeName.toLowerCase();
+        var entityTypeName = (new this.entityType()).entityTypeName;
         
         // if (!this._entities) {
             return this._db.find({ selector: {type: entityTypeName}, include_docs: true})
                 .then(docs => {
 
                     this._entities = docs.docs;
-
-                    // Listen for changes on the database.
-                    this._db.changes({ live: true, since: 'now', include_docs: true})
-                        .on('change', this.onDatabaseChange);
                         
                     return this._entities;
                 });
