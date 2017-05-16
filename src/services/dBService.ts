@@ -9,7 +9,7 @@ export class DBService<T extends DBBasedEntity> {
     private _db;
     private _entities;
 
-    constructor(private type) {
+    constructor(private entityType) {
         PouchDB.plugin(pouchDBFind);
 
         var currentInternalDBName = ConfigService.currentInternalDBName();
@@ -62,10 +62,10 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     getAll() {  
-        var type = (new this.type()).type;
+        var entityTypeName = (new this.entityType()).entityTypeName.toLowerCase();
         
         // if (!this._entities) {
-            return this._db.find({ selector: {type: type}, include_docs: true})
+            return this._db.find({ selector: {type: entityTypeName}, include_docs: true})
                 .then(docs => {
 
                     this._entities = docs.docs;

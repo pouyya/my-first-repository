@@ -1,20 +1,15 @@
 import { PurchasableItem } from './purchasableItem';
 
-export class Package implements PurchasableItem
+export class Package extends PurchasableItem
 {
     constructor() 
     {
-        this._id = "";
-        this._rev ="";
+        super();
         this.name = "";
         this.color = "";
         this.image = "";
-        this.type = "package";
     }
 
-    public _id: string;
-    public _rev: string;
-    public type: "package";
     public name: string;
     public price: number;
     public color: string;
