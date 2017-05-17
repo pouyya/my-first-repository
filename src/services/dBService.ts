@@ -38,6 +38,7 @@ export class DBService<T extends DBBasedEntity> {
         if(ConfigService.isDevelopment())
         {
             PouchDB.debug.enable('*');
+            window["PouchDB"] = PouchDB;            
         }
 
         // this._db.changes({ live: true, since: 'now', include_docs: true})

@@ -18,14 +18,22 @@ export class CategoryService extends BaseEntityService<Category> {
     public getAssociatedItems(_id: string): Promise<any> {
         return new Promise((_resolve, _reject) => {
             var productPromise = new Promise((resolve, reject) => {
-                this.productService.findBy({ selector: { categoryId: {$elemMatch: { $eq: _id}, include_docs: true }}}).then(
+                this.productService.findBy({
+        selector: {
+          categoryIDs: {$elemMatch: {$eq: _id}}
+        }
+      }).then(
                     products => resolve(products),
                     error => reject(error)
                 );
             });
 
             var servicePromise = new Promise((resolve, reject) => {
-                this.serviceService.findBy({ selector: { categoryId: {$elemMatch: { $eq: _id}, include_docs: true }}}).then(
+                this.serviceService.findBy({
+        selector: {
+          categoryIDs: {$elemMatch: {$eq: _id}}
+        }
+      }).then(
                     services => resolve(services),
                     error => reject(error)
                 )
