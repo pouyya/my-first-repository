@@ -28,6 +28,9 @@ import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
 import { ContactPage } from '../pages/contact/contact';
 
+// components
+import { TileItemsModule } from '../components/tile-items/tile-items.module';
+
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
@@ -67,8 +70,10 @@ const cloudSettings: CloudSettings = {
     IonicStorageModule.forRoot({
       name:'__mydb',
       driverOrder:['indexeddb', 'sqlite', 'websql']
-    })
+    }),
 
+    // custom
+    TileItemsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

@@ -19,10 +19,10 @@ export class CategoryService extends BaseEntityService<Category> {
         return new Promise((_resolve, _reject) => {
             var productPromise = new Promise((resolve, reject) => {
                 this.productService.findBy({
-        selector: {
-          categoryIDs: {$elemMatch: {$eq: _id}}
-        }
-      }).then(
+                    selector: {
+                    categoryIDs: {$elemMatch: {$eq: _id}}
+                }
+                }).then(
                     products => resolve(products),
                     error => reject(error)
                 );
@@ -30,10 +30,10 @@ export class CategoryService extends BaseEntityService<Category> {
 
             var servicePromise = new Promise((resolve, reject) => {
                 this.serviceService.findBy({
-        selector: {
-          categoryIDs: {$elemMatch: {$eq: _id}}
-        }
-      }).then(
+                    selector: {
+                    categoryIDs: {$elemMatch: {$eq: _id}}
+                }
+                }).then(
                     services => resolve(services),
                     error => reject(error)
                 )

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { AlertController } from 'ionic-angular';
 import { OnInit } from '@angular/core';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
@@ -8,7 +7,7 @@ import { CategoryService } from '../../services/categoryService';
 @Component({
   selector: 'page-variables',
   templateUrl: 'sales.html',
-  providers: [SalesServices]
+  providers: [SalesServices],
 })
 export class SalesPage implements OnInit {
 
@@ -21,7 +20,6 @@ export class SalesPage implements OnInit {
 
   constructor(
       public navCtrl: NavController,
-      public alertCtrl: AlertController,
       private salesService: SalesServices,
       private categoryService: CategoryService
   ) {}
@@ -48,14 +46,6 @@ export class SalesPage implements OnInit {
         items => this.activeTiles = items,
         error => { throw new Error(error) }
     );
-    return category.id == category.id;
+    return category._id == category._id;
   }
-
-  public selectItem(item) {
-    let alert = this.alertCtrl.create({
-      title: item.name,
-      buttons: ['OK']
-    });
-    alert.present();
-  }  
 }

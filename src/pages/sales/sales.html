@@ -14,16 +14,18 @@
         <ion-list>
           <button ion-item *ngFor="let category of categories"
           class="text-right"
-          [ngClass]="{'activeCategory': category.id == activeCategory.id }" 
+          [ngClass]="{'activeCategory': category._id == activeCategory._id }" 
           (click)="itemSelected(category)">
             {{ category.name }}
           </button>
         </ion-list>
       </ion-col>
       <ion-col col-8>
-        <div class="sc-category-items" 
-          *ngFor="let tile of activeItems" (click)="selectItem(tile)">{{ tile.name }}
-        </div>
+        <ion-grid>
+          <ion-row>
+            <tile-items [items]="activeTiles"></tile-items>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
   </ion-grid>
