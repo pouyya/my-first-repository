@@ -29,7 +29,8 @@ export class SalesPage implements OnInit {
   ngOnInit(): void {
     this.categoryService.getAll().then(
         categories => {
-          if(categories) {
+          if(categories && categories.length) {
+            this.categories = categories;
             this.activeCategory = this.categories[0];
             this.salesService.loadCategoryItems(categories[0]._id).then(
                 items => this.activeTiles = items,

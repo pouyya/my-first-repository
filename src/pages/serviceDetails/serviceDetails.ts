@@ -58,8 +58,4 @@ export class ServiceDetailsPage {
     this.navCtrl.pop();
     
   }
-
-   addImage(){
-     
-   }
 }

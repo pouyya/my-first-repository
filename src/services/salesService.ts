@@ -23,6 +23,10 @@ export class SalesServices {
     }
 
     private static _mergesAssociatedItems(products: Array<any>, services: Array<any>) {
+        if(!products)
+        {
+            return services;
+        }
         return products.concat(services);
     }
 }

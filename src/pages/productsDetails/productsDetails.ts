@@ -11,9 +11,6 @@ export class ProductsDetailsPage {
   public categories = [];
   public isNew = true;
   public action = 'Add';
-  public isCategoryId =[];
-  public isCategoryName =[];
-  categoryOpt:{title:string}; 
 
   constructor(public navCtrl: NavController, 
     private productService:ProductService,
@@ -26,55 +23,29 @@ export class ProductsDetailsPage {
   }
   //-------------------------------------------------   
   // When the page is loaded, this function should be run. 
-  ionViewDidLoad(){
+  ionViewDidLoad()
+  {
     let editProduct = this.navParams.get('product');
     if(editProduct){
         this.productItem = editProduct;
         this.isNew = false;
         this.action = 'Edit';
-        if(this.productItem.categories){
-                this.isCategoryName = this.productItem.categories.categoryName;
-            }
-              
     }
 
-    this.platform.ready().then(() => {
-
-        this.categoryService.getAll().then(data => {this.zone.run(() => {
+    this.platform.ready().then(() => 
+    {
+        this.categoryService.getAll().then(data => 
+                {
+                    this.zone.run(() => 
+                    {
                         this.categories = data;
-                        
                     });
                 })
                 .catch(console.error.bind(console));
         });
-    }
+  }
 
-    setAvailableCategory(items){
-
-        for(let cat of this.categories){
-            var cName = cat.name;
-            for(let it of items){
-                if(cName == it){
-                     cat.isUsed = true;
-                     this.isCategoryId.push(cat._id);
-                     this.categoryService.update(cat).catch(console.error.bind(console));
-                     
-                }
-            }
-        }
-        
-    }
-
-    //-------------------------------------------------   
-    // Save Product Function.
     saveProducts(){
-        if(this.isCategoryName){
-                this.setAvailableCategory(this.isCategoryName);
-        }
-        this.productItem.categories = {
-            categoryName: this.isCategoryName,
-            categoryID: this.isCategoryId,
-        }
         if (this.isNew) {
             this.productService.add(this.productItem)
                 .catch(console.error.bind(console));
@@ -85,7 +56,4 @@ export class ProductsDetailsPage {
         this.navCtrl.pop();
     }
 
-    addImage(){
-     
-    }
 }

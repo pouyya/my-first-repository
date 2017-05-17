@@ -63,14 +63,14 @@ export class CategoryPage {
   //-------------------------------------------------   
   // Category Delete Function
   deleteCategories(item, idx){
-     console.log("Category Data=", this.categoryService.IsCategoryUsed(item));
+     //console.log("Category Data=", this.categoryService.IsCategoryUsed(item));
      
-     if(this.categoryService.IsCategoryUsed(item)){
-        this.showConfirmAlert(item, idx);
+    //  if(this.categoryService.IsCategoryUsed(item)){
+    //     this.showConfirmAlert(item, idx);
      
-      }else{
+    //   }else{
         this.categoryService.delete(item).catch(console.error.bind(console)); 
-     }
+    //  }
      
    }
   //-------------------------------------------------   

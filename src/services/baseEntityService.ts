@@ -31,11 +31,7 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
         return this._dbService.getAll();
     }
 
-    findBy(property: string, value: any) {
-        return this._dbService.findBy(property, value);
-    }
-
-    IsCategoryUsed(item){
-        return this._dbService.IsCategoryUsed(item);
+    findBy(selector: any) {
+        return this._dbService.findBy(selector);
     }
 }
