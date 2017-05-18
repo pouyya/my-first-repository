@@ -1,8 +1,11 @@
+.idea/
 node_modules/
 temp/
 platforms/
 plugins/
 www/build/
+www/index.html
+www/assets
 *.DS_Store
 *.log
 *.swp
