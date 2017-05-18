@@ -39,7 +39,7 @@ export class CategoryPage {
   
   //-------------------------------------------------   
   // When the page is loaded, this function should be run.
-   ionViewDidLoad(){
+  ionViewDidEnter(){
       this.platform.ready().then(() => {
         this.categoryService.getAll()
                 .then(data => {

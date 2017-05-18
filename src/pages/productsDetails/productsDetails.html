@@ -1,11 +1,14 @@
 <ion-header>
-  <ion-navbar hideBackButton="true">
-    <ion-title>{{action}}</ion-title>
+  <ion-navbar>
+    <ion-title>{{action}} Product</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveProducts()" >
+      <button ion-button icon-only (click)="saveProducts()">
         save
       </button>
-     </ion-buttons>     
+      <button ion-button icon-only>
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 

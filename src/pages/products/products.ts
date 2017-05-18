@@ -30,7 +30,7 @@ export class ProductsPage {
   
   //-------------------------------------------------   
   // When the page is loaded, this function should be run.
-  ionViewDidLoad(){
+  ionViewDidEnter(){
      this.platform.ready().then(() => {
 
             this.productService.getAll()

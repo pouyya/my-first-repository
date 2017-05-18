@@ -4,16 +4,19 @@
   -->
 
 <ion-header>
-  <ion-navbar hideBackButton="true">
-    <ion-title>{{action}}</ion-title>
+  <ion-navbar>
+    <ion-title>{{action}} Service</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveService()" >
+      <button ion-button icon-only (click)="saveService()">
         save
       </button>
-     </ion-buttons>      
-    
+      <button ion-button icon-only>
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
+
 <ion-content >
   <ion-list inset>
     <ion-item>

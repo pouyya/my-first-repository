@@ -27,7 +27,7 @@ export class ServicesPage {
           private modalCtrl: ModalController) {
   }
 
-   ionViewDidLoad(){
+  ionViewDidEnter(){
     this.platform.ready().then(() => {
 
             this.serviceService.getAll()
