@@ -4,6 +4,12 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
+
+import { MdGridListModule, MaterialModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
@@ -71,6 +77,8 @@ const cloudSettings: CloudSettings = {
       name:'__mydb',
       driverOrder:['indexeddb', 'sqlite', 'websql']
     }),
+    MaterialModule,
+    BrowserAnimationsModule,
 
     // custom
     TileItemsModule
