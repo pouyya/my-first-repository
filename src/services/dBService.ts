@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
 import * as PouchDB from 'pouchdb';
 import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity"; 
 import { ConfigService } from "./configService"
 
-// @Injectable()
-export class DBService<T extends DBBasedEntity> {  
+export class DBService<T extends DBBasedEntity> {
     private _db;
 
     constructor(private entityType) {

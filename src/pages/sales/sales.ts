@@ -11,12 +11,9 @@ import { CategoryService } from '../../services/categoryService';
 })
 export class SalesPage implements OnInit {
 
+  public categories: Array<any>;
   public activeCategory: any;
   public activeTiles: Array<any>;
-  public categories: Array<any>;
-  public products: Array<any>;
-  public services: Array<any>;
-  public packages: Array<any>;
 
   constructor(
       public navCtrl: NavController,
@@ -39,7 +36,12 @@ export class SalesPage implements OnInit {
         error => { throw new Error(error) }
     );
   }
-  
+
+  /**
+   * Select a category and fetch it's items
+   * @param category
+   * @returns {boolean}
+   */
   public itemSelected(category) {
     this.activeCategory = category;
     this.salesService.loadCategoryItems(category._id).then(

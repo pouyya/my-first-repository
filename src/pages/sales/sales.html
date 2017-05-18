@@ -13,7 +13,7 @@
       <ion-col col-4>
         <ion-list>
           <button ion-item *ngFor="let category of categories"
-          class="text-right"
+          class="text-wrap"
           [ngClass]="{'activeCategory': category._id == activeCategory._id }" 
           (click)="itemSelected(category)">
             {{ category.name }}

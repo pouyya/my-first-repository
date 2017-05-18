@@ -9,6 +9,11 @@ export class SalesServices {
 
     }
 
+    /**
+     * Load Items on sales page by category id
+     * @param id
+     * @returns {any}
+     */
     public loadCategoryItems (id: string)  {
         return this.categoryService.getAssociatedItems(id);
     }
