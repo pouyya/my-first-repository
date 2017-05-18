@@ -15,35 +15,12 @@ export class CategoryService extends BaseEntityService<Category> {
         super(Category);
     }
 
-    public getAssociatedItems(_id: string): Promise<any> {
-        return new Promise((_resolve, _reject) => {
-            var productPromise = new Promise((resolve, reject) => {
-                this.productService.findBy({
-                    selector: {
-                    categoryIDs: {$elemMatch: {$eq: _id}}
-                }
-                }).then(
-                    products => resolve(products),
-                    error => reject(error)
-                );
-            });
+    public getAssociatedItems(_id: string) {
 
-            var servicePromise = new Promise((resolve, reject) => {
-                this.serviceService.findBy({
-                    selector: {
-                    categoryIDs: {$elemMatch: {$eq: _id}}
-                }
-                }).then(
-                    services => resolve(services),
-                    error => reject(error)
-                )
-            });
-
-            var promises: Array<any> = [productPromise, servicePromise];
-            Promise.all(promises).then(
-                items => _resolve({products: items[0], services: items[1]}),
-                error => _reject(error)
-            )
+        return this.findBy({
+                selector: {
+                categoryIDs: {$elemMatch: {$eq: _id}}
+            }
         });
     }
 }

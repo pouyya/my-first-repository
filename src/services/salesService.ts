@@ -9,24 +9,7 @@ export class SalesServices {
 
     }
 
-    /**
-     * Load Category Items
-     * @returns {Promise<T>}
-     */
-    public loadCategoryItems (id: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.categoryService.getAssociatedItems(id).then(
-                data => resolve(SalesServices._mergesAssociatedItems(data.products, data.services)),
-                error => reject(error)
-            );
-        });
-    }
-
-    private static _mergesAssociatedItems(products: Array<any>, services: Array<any>) {
-        if(!products)
-        {
-            return services;
-        }
-        return products.concat(services);
+    public loadCategoryItems (id: string)  {
+        return this.categoryService.getAssociatedItems(id);
     }
 }
