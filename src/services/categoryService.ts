@@ -1,11 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Category } from '../model/category';
-import { BaseEntityService } from  './BaseEntityService';
+import {Injectable} from '@angular/core';
+import {Category} from '../model/category';
+import {BaseEntityService} from  './BaseEntityService';
 
 @Injectable()
-export class CategoryService  extends BaseEntityService<Category> {  
-    constructor() 
-    {
+export class CategoryService extends BaseEntityService<Category> {
+    constructor() {
         super(Category);
+    }
+
+    /**
+     * Get associated items by category id
+     * @param _id
+     * @returns {any}
+     */
+    public getAssociatedItems(_id: string) {
+        return this.findBy({
+            selector: {
+                categoryIDs: {$elemMatch: {$eq: _id}}
+            }
+        });
     }
 }

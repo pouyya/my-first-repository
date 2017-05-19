@@ -4,16 +4,19 @@
   -->
 
 <ion-header>
-  <ion-navbar hideBackButton="true">
-    <ion-title>{{action}}</ion-title>
+  <ion-navbar>
+    <ion-title>{{action}} Service</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveService()" >
+      <button ion-button icon-only (click)="saveService()">
         save
       </button>
-     </ion-buttons>      
-    
+      <button ion-button icon-only>
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
+
 <ion-content >
   <ion-list inset>
     <ion-item>
@@ -24,10 +27,10 @@
       <ion-label class="item-name">PRICE($):</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.price"></ion-input>
     </ion-item>
-    <ion-item>
+     <ion-item>
         <ion-label>CATEGORIES:</ion-label>
-        <ion-select [(ngModel)]="serviceItem.categories" multiple = "false" >   
-          <ion-option *ngFor="let item of categories ; let idx=index" value={{item.name}}>{{item.name}}</ion-option> 
+        <ion-select [(ngModel)]="serviceItem.categoryIDs"  multiple="true">   
+          <ion-option  *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option> 
         </ion-select>
        
     </ion-item>     

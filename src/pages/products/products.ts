@@ -6,7 +6,7 @@
    
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
-import { ProductService } from '../../services/ProductService';
+import { ProductService } from '../../services/productService';
 import { ProductsDetailsPage } from '../productsDetails/productsDetails';
 
 @Component({
@@ -30,7 +30,7 @@ export class ProductsPage {
   
   //-------------------------------------------------   
   // When the page is loaded, this function should be run.
-  ionViewDidLoad(){
+  ionViewDidEnter(){
      this.platform.ready().then(() => {
 
             this.productService.getAll()

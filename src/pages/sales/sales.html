@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Sales</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-2>
+        <ion-list>
+          <button ion-item *ngFor="let category of categories"
+            class="text-wrap"
+            [ngClass]="{'activeCategory': category._id == activeCategory._id }" 
+            (click)="itemSelected(category)">
+              {{ category.name }}
+          </button>
+        </ion-list>
+      </ion-col>
+      <ion-col col-4>
+        <tile-items [items]="activeTiles"></tile-items>
+      </ion-col>
+      <ion-col col-3>
+        samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl 
+        samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl 
+      </ion-col>      
+      <ion-col col-3>
+        samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl 
+        samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl samepl 
+      </ion-col>            
+    </ion-row>
+  </ion-grid>
+</ion-content>

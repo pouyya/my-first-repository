@@ -1,13 +1,10 @@
-import { Injectable } from '@angular/core';
 import * as PouchDB from 'pouchdb';
 import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity"; 
 import { ConfigService } from "./configService"
 
-@Injectable()
-export class DBService<T extends DBBasedEntity> {  
+export class DBService<T extends DBBasedEntity> {
     private _db;
-    private _entities;
 
     constructor(private entityType) {
         PouchDB.plugin(pouchDBFind);
@@ -39,14 +36,14 @@ export class DBService<T extends DBBasedEntity> {
         if(ConfigService.isDevelopment())
         {
             PouchDB.debug.enable('*');
+            window["PouchDB"] = PouchDB;            
         }
 
-        // Listen for changes on the database.
-        this._db.changes({ live: true, since: 'now', include_docs: true})
-            .on('change', this.onDatabaseChange);        
+        // this._db.changes({ live: true, since: 'now', include_docs: true})
+        //     .on('change', this.onDatabaseChange);        
 
         this._db.createIndex({
-            index: {fields: ['entityTypeName', 'entityTypeNames']}
+            index: {fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs']}
         });        
     }
 
@@ -68,67 +65,12 @@ export class DBService<T extends DBBasedEntity> {
     getAll() {  
         var entityTypeName = (new this.entityType()).entityTypeName;
         
-        // if (!this._entities) {
-            return this._db.find({ selector: {type: entityTypeName}, include_docs: true})
-                .then(docs => {
-
-                    this._entities = docs.docs;
-                        
-                    return this._entities;
-                });
+        return this._db.find({ selector: {entityTypeName: entityTypeName}, include_docs: true})
+        .then(docs => { return docs.docs; });
     }
     
-    IsCategoryUsed(item){
-         
-       return this._db.find({selector: {type: "category", isUsed:true, _id:item._id}})
-            .then(function(result){
-                if(result){
-                    return true;
-                     
-                }else{
-                    return false;
-                }
-                
-            }).catch(function(err){
-                console.log(err);
-            });
+    findBy(selector) {
+        return this._db.find(selector)
+        .then(docs => { return docs.docs; });
     }
-    
-    private onDatabaseChange = (change) => {  
-
-        // console.log('===============change=======', change);
-
-        var index = this.findIndex(this._entities, change.id);
-        var product = this._entities[index];
-
-        console.log("==========Change Doc======", product, change.doc);
-
-        if (change.deleted) {
-            if (product) {
-                this._entities.splice(index, 1); // delete
-            }
-        } else {
-            // change.doc.Date = new Date(change.doc.Date);
-              
-            if (product && product._id === change.id) {
-                console.log("Update Document=====", change.doc);
-                this._entities[index] = change.doc; // update
-            } else if (change.doc.type && change.doc.type === product.type) {
-                console.log("Insert Document=====", change.doc);
-                this._entities.splice(index, 0, change.doc) // insert
-            }
-        }
-    }
-
-    // Binary search, the array is by default sorted by _id.
-    private findIndex(array, id) {  
-        var low = 0, high = array.length, mid;
-        while (low < high) {
-        mid = (low + high) >>> 1;
-        array[mid]._id < id ? low = mid + 1 : high = mid
-        }
-        return low;
-    }
-
-
 }

@@ -1,16 +1,14 @@
-<!--  Created By Michael Hanse
-      05/02/2017
-      ProductDetails Page Front-End
-  -->
-
 <ion-header>
-  <ion-navbar hideBackButton="true">
-    <ion-title>{{action}}</ion-title>
+  <ion-navbar>
+    <ion-title>{{action}} Product</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveProducts()" >
+      <button ion-button icon-only (click)="saveProducts()">
         save
       </button>
-     </ion-buttons>     
+      <button ion-button icon-only>
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -38,8 +36,8 @@
     </ion-item>
      <ion-item>
         <ion-label>CATEGORIES:</ion-label>
-        <ion-select [(ngModel)]="isCategoryName"  multiple="true">   
-          <ion-option  *ngFor="let item of categories ; let idx=index" value={{item.name}}>{{item.name}}</ion-option> 
+        <ion-select [(ngModel)]="productItem.categoryIDs"  multiple="true">   
+          <ion-option  *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option> 
         </ion-select>
        
     </ion-item>    

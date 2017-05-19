@@ -12,11 +12,11 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     }
 
     add(entity : T) {  
-        var entotyCopy = new this._type();
+        var entityCopy = new this._type();
         
-        for(var k in entity)  entotyCopy[k]=entity[k];
+        for(var k in entity)  entityCopy[k]=entity[k];
 
-        return this._dbService.add(entotyCopy);
+        return this._dbService.add(entityCopy);
     }
 
     update(entity : T) {  
@@ -30,7 +30,8 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     getAll() { 
         return this._dbService.getAll();
     }
-    IsCategoryUsed(item){
-        return this._dbService.IsCategoryUsed(item);
+
+    findBy(selector: any) {
+        return this._dbService.findBy(selector);
     }
 }

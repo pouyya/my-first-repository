@@ -4,6 +4,12 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
+
+import { MdGridListModule, MaterialModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
@@ -18,7 +24,7 @@ import { CategoryPage } from '../pages/category/category';
 import { CategoryDetailsPage } from '../pages/category/categoryDetails';
 
 import { AboutPage } from '../pages/about/about';
-import { SalePage } from '../pages/sale/sale';
+import { SalesPage } from '../pages/sales/sales';
 import { SetupPage } from '../pages/setup/setup';
 import { TabsPage } from '../pages/tabs/tabs';
 import { SettingsPage } from '../pages/settings/settings';
@@ -28,8 +34,11 @@ import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
 import { ContactPage } from '../pages/contact/contact';
 
-import { ProductService } from '../services/ProductService';
-import { ServiceService } from '../services/ServiceService';
+// components
+import { TileItemsModule } from '../components/tile-items/tile-items.module';
+
+import { ProductService } from '../services/productService';
+import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
 
 
@@ -52,7 +61,7 @@ const cloudSettings: CloudSettings = {
     ServiceDetailsPage,
     CategoryPage,
     CategoryDetailsPage,
-    SalePage,
+    SalesPage,
     SetupPage,
     SettingsPage,
     EcommercePage,
@@ -67,8 +76,12 @@ const cloudSettings: CloudSettings = {
     IonicStorageModule.forRoot({
       name:'__mydb',
       driverOrder:['indexeddb', 'sqlite', 'websql']
-    })
+    }),
+    MaterialModule,
+    BrowserAnimationsModule,
 
+    // custom
+    TileItemsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -82,7 +95,7 @@ const cloudSettings: CloudSettings = {
     ServiceDetailsPage,
     CategoryPage,
     CategoryDetailsPage,
-    SalePage,
+    SalesPage,
     SetupPage,
     SettingsPage,
     EcommercePage,
@@ -98,6 +111,7 @@ const cloudSettings: CloudSettings = {
     ProductService,
     ServiceService,
     CategoryService,
+      
   ]
 })
 export class AppModule {}
