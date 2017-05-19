@@ -9,8 +9,8 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetailsPage } from '../category/categoryDetails';
-import { ProductService } from '../../services/ProductService';
-import { ServiceService } from '../../services/ServiceService';
+import { ProductService } from '../../services/productService';
+import { ServiceService } from '../../services/serviceService';
 @Component({
   selector: 'page-variables',
   templateUrl: 'category.html'
@@ -39,7 +39,7 @@ export class CategoryPage {
   
   //-------------------------------------------------   
   // When the page is loaded, this function should be run.
-   ionViewDidLoad(){
+  ionViewDidEnter(){
       this.platform.ready().then(() => {
         this.categoryService.getAll()
                 .then(data => {
@@ -63,14 +63,14 @@ export class CategoryPage {
   //-------------------------------------------------   
   // Category Delete Function
   deleteCategories(item, idx){
-     console.log("Category Data=", this.categoryService.IsCategoryUsed(item));
+     //console.log("Category Data=", this.categoryService.IsCategoryUsed(item));
      
-     if(this.categoryService.IsCategoryUsed(item)){
-        this.showConfirmAlert(item, idx);
+    //  if(this.categoryService.IsCategoryUsed(item)){
+    //     this.showConfirmAlert(item, idx);
      
-      }else{
+    //   }else{
         this.categoryService.delete(item).catch(console.error.bind(console)); 
-     }
+    //  }
      
    }
   //-------------------------------------------------   
