@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Employee Info</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="employee">
+
+    <ion-item>
+      <ion-avatar item-left>
+        <img src="assets/img/avatar-default.png">
+      </ion-avatar>
+      <h2>{{employee.firstName + " " + employee.lastName}}</h2>
+      <p>{{employee.address}}&nbsp; ph# {{employee.phone}}</p>
+    </ion-item>
+
+    <ion-card-content>
+      <ion-label>Admin</ion-label>
+      <ion-checkbox [(ngModel)]="employee.isAdmin" (change)="updateIsAdmin()"></ion-checkbox>
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let store of employee.store">
+      <ion-item>
+        <h2>{{store.id.name}}</h2>
+      </ion-item>
+      <ion-item-options side="right" *ngIf="!employee.isAdmin">
+        <button ion-button [color]="store.role == 'staff' ? 'primary' : 'light'" (click)="updateRole(store.id._id, 'staff')">
+          <ion-icon name="person"></ion-icon>
+          Staff
+        </button>
+        <button ion-button [color]="store.role == 'manager' ? 'primary' : 'light'" (click)="updateRole(store.id._id, 'manager')">
+          <ion-icon name="person"></ion-icon>
+          Manager
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

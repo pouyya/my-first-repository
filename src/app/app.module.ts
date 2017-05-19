@@ -5,7 +5,7 @@ import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
 
-import { MdGridListModule, MaterialModule } from '@angular/material';
+import { MaterialModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -34,12 +34,16 @@ import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
 import { ContactPage } from '../pages/contact/contact';
 
+import { EmployeeDetails } from '../pages/employeeDetails/employeeDetails';
+
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
+import {StoreService} from "../services/storeService";
+import {EmployeeService} from "../services/employeeService";
 
 
 const cloudSettings: CloudSettings = {
@@ -66,8 +70,8 @@ const cloudSettings: CloudSettings = {
     SettingsPage,
     EcommercePage,
     ReportPage,
-    TabsPage
-
+    TabsPage,
+    EmployeeDetails
   ],
   imports: [
     BrowserModule,
@@ -101,8 +105,8 @@ const cloudSettings: CloudSettings = {
     EcommercePage,
     ReportPage,
     ContactPage,
-    TabsPage
-
+    TabsPage,
+    EmployeeDetails
   ],
   providers: [
     StatusBar,
@@ -111,7 +115,8 @@ const cloudSettings: CloudSettings = {
     ProductService,
     ServiceService,
     CategoryService,
-      
+    StoreService,
+    EmployeeService
   ]
 })
 export class AppModule {}

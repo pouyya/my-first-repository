@@ -48,13 +48,15 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     add(entity : T) {  
-
-        return this._db.post(entity);
+        var model: any;
+        model = JSON.stringify(entity);
+        return this._db.post(model);
     }
 
-    update(entity : T) {  
-        
-        return this._db.put(entity);
+    update(entity : T) {
+        var model: any;
+        model = JSON.stringify(entity);
+        return this._db.put(model);
       
     }
 

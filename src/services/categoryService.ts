@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Category} from '../model/category';
-import {BaseEntityService} from  './BaseEntityService';
+import {BaseEntityService} from  './baseEntityService';
 
 @Injectable()
 export class CategoryService extends BaseEntityService<Category> {

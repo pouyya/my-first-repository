@@ -12,6 +12,7 @@ import { AboutPage } from '../pages/about/about';
 import { TabsPage } from '../pages/tabs/tabs';
 import { EcommercePage } from '../pages/ecommerce/ecommerce';
 import { ReportPage } from '../pages/report/report';
+import { EmployeeDetails } from '../pages/employeeDetails/employeeDetails'
 
 @Component({
   templateUrl: 'app.html'
@@ -32,6 +33,7 @@ export class MyApp {
       { title: 'POS', icon: 'basket', component: SalesPage },
       { title: 'Report', icon: 'bookmark', component: ReportPage },
       { title: 'Settings', icon: 'cog', component: SettingsPage },
+      { title: 'Employee', icon: 'person', component: EmployeeDetails },
       { title: 'About us', icon: 'egg', component: AboutPage } 
     ];
   }
