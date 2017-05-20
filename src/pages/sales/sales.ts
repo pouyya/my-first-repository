@@ -7,6 +7,7 @@ import { CategoryService } from '../../services/categoryService';
 @Component({
   selector: 'page-variables',
   templateUrl: 'sales.html',
+  styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices],
 })
 export class SalesPage implements OnInit {
