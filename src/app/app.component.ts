@@ -1,3 +1,6 @@
+import { Stores } from './../pages/stores/stores';
+import { Employees } from './../pages/employees/employees';
+import { Services } from './../pages/service/service';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -21,7 +24,11 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', icon: 'home', component: HomePage },
-      { title: 'POS', icon: 'basket', component: Sales },
+      { title: 'POS', icon: 'cash', component: Sales },
+      { title: 'Products', icon: 'pricetags', component: Products },
+      { title: 'Service', icon: 'bowtie', component: Services },
+      { title: 'Employees', icon: 'contacts', component: Employees },
+      { title: 'Stores', icon: 'basket', component: Stores },
       { title: 'Settings', icon: 'cog', component: Settings },
     ];
   }
