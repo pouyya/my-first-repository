@@ -1,22 +1,24 @@
+import { EmployeeDetails } from './../employee-details/employee-details';
+import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, Platform} from 'ionic-angular';
-import { ProductService } from '../../services/productService';
-import { ProductDetails } from '../product-details/product-details';
+import { NavController, AlertController, Platform, NavParams} from 'ionic-angular';
 
 @Component({
-  templateUrl: 'products.html'
+  selector: 'page-employees',
+  templateUrl: 'employees.html',
 })
-export class Products {
+export class Employees {
+   
    public items = [];
    public itemsBackup = [];
 
   constructor(public navCtrl: NavController,
           private alertCtrl: AlertController,
-          private service: ProductService,
-          private platform:Platform,
+          private service: EmployeeService,
+          private platform: Platform,
           private zone: NgZone) {
   }
-  
+
   ionViewDidEnter(){
      this.platform.ready().then(() => {
 
@@ -32,7 +34,7 @@ export class Products {
  } 
   
   showDetail(item){
-    this.navCtrl.push(ProductDetails, {item:item}); 
+    this.navCtrl.push(EmployeeDetails, {item:item}); 
   } 
   
   delete(item, idx){
@@ -51,4 +53,5 @@ export class Products {
        })
     }
   }
+
 }

@@ -1,40 +1,35 @@
+import { Employee } from './../model/employee';
+import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
-
 import { MaterialModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 
-import { ProductsPage } from '../pages/products/products';
-import { ProductsDetailsPage } from '../pages/productsDetails/productsDetails';
+import { Products } from '../pages/products/products';
+import { ProductDetails } from '../pages/product-details/product-details';
 
-import { ServicesPage } from '../pages/service/service';
-import { ServiceDetailsPage } from '../pages/serviceDetails/serviceDetails';
+import { Services } from '../pages/service/service';
+import { ServiceDetails } from '../pages/service-details/service-details';
 
-import { CategoryPage } from '../pages/category/category';
-import { CategoryDetailsPage } from '../pages/category/categoryDetails';
+import { Category } from '../pages/category/category';
+import { CategoryDetails } from '../pages/category-details/category-details';
 
-import { AboutPage } from '../pages/about/about';
-import { SalesPage } from '../pages/sales/sales';
-import { SetupPage } from '../pages/setup/setup';
-import { TabsPage } from '../pages/tabs/tabs';
-import { SettingsPage } from '../pages/settings/settings';
+import { Sales } from '../pages/sales/sales';
+import { Settings } from '../pages/settings/settings';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { EcommercePage } from '../pages/ecommerce/ecommerce';
-import { ReportPage } from '../pages/report/report';
-import { ContactPage } from '../pages/contact/contact';
+import { Stores } from '../pages/stores/stores';
 
-import { EmployeeDetails } from '../pages/employeeDetails/employeeDetails';
+import { EmployeeDetails } from '../pages/employee-details/employee-details';
+import { Employees } from './../pages/employees/employees';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -42,9 +37,8 @@ import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
-import {StoreService} from "../services/storeService";
-import {EmployeeService} from "../services/employeeService";
-
+import { StoreService } from "../services/storeService";
+import { EmployeeService } from "../services/employeeService";
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -56,22 +50,19 @@ const cloudSettings: CloudSettings = {
   declarations: [
     MyApp,
     HomePage,
-    AboutPage,
     InventoryPage,
-    ProductsPage,
-    ContactPage,
-    ProductsDetailsPage,
-    ServicesPage,
-    ServiceDetailsPage,
-    CategoryPage,
-    CategoryDetailsPage,
-    SalesPage,
-    SetupPage,
-    SettingsPage,
-    EcommercePage,
-    ReportPage,
-    TabsPage,
-    EmployeeDetails
+    Products,
+    ProductDetails,
+    Services,
+    ServiceDetails,
+    Category,
+    CategoryDetails,
+    Sales,
+    Settings,
+    Stores,
+    StoreDetailsPage,
+    EmployeeDetails,
+    Employees
   ],
   imports: [
     BrowserModule,
@@ -91,22 +82,19 @@ const cloudSettings: CloudSettings = {
   entryComponents: [
     MyApp,
     HomePage,
-    AboutPage,
     InventoryPage,
-    ProductsPage,
-    ProductsDetailsPage,
-    ServicesPage,
-    ServiceDetailsPage,
-    CategoryPage,
-    CategoryDetailsPage,
-    SalesPage,
-    SetupPage,
-    SettingsPage,
-    EcommercePage,
-    ReportPage,
-    ContactPage,
-    TabsPage,
-    EmployeeDetails
+    Products,
+    ProductDetails,
+    Services,
+    ServiceDetails,
+    Category,
+    CategoryDetails,
+    Sales,
+    Settings,
+    Stores,
+    StoreDetailsPage,
+    EmployeeDetails,
+    Employees
   ],
   providers: [
     StatusBar,

@@ -15,22 +15,22 @@ export class DBService<T extends DBBasedEntity> {
         
         //TODO AZ - To change below functions to have proper action (e.g. on going offline show popover that you are offline or such) and log the value 
         // in proper logger!
-        var sync = PouchDB.sync(currentInternalDBName ,ConfigService.getCurrentFullExternalDBUrl() , {
-        live: true,
-        retry: true
-        }).on('change', function (info) {
-        // handle change
-        }).on('paused', function (err) {
-        // replication paused (e.g. replication up to date, user went offline)
-        }).on('active', function () {
-        // replicate resumed (e.g. new changes replicating, user went back online)
-        }).on('denied', function (err) {
-        // a document failed to replicate (e.g. due to permissions)
-        }).on('complete', function (info) {
-        // handle complete
-        }).on('error', function (err) {
-        // handle error
-        });
+        PouchDB.sync(currentInternalDBName ,ConfigService.getCurrentFullExternalDBUrl() , {
+            live: true,
+            retry: true
+            }).on('change', function (info) {
+            // handle change
+            }).on('paused', function (err) {
+            // replication paused (e.g. replication up to date, user went offline)
+            }).on('active', function () {
+            // replicate resumed (e.g. new changes replicating, user went back online)
+            }).on('denied', function (err) {
+            // a document failed to replicate (e.g. due to permissions)
+            }).on('complete', function (info) {
+            // handle complete
+            }).on('error', function (err) {
+            // handle error
+            });
 
 
         if(ConfigService.isDevelopment())
@@ -48,15 +48,11 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     add(entity : T) {  
-        var model: any;
-        model = JSON.stringify(entity);
-        return this._db.post(model);
+        return this._db.post(entity);
     }
 
     update(entity : T) {
-        var model: any;
-        model = JSON.stringify(entity);
-        return this._db.put(model);
+        return this._db.put(entity);
       
     }
 

@@ -4,9 +4,9 @@ import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 
 @Component({
-  templateUrl: 'productsDetails.html'
+  templateUrl: 'product-details.html'
 })
-export class ProductsDetailsPage {
+export class ProductDetails {
   public productItem:any={};
   public categories = [];
   public isNew = true;
@@ -21,8 +21,7 @@ export class ProductsDetailsPage {
     private viewCtrl: ViewController) {
         
   }
-  //-------------------------------------------------   
-  // When the page is loaded, this function should be run. 
+
   ionViewDidLoad()
   {
     let editProduct = this.navParams.get('product');

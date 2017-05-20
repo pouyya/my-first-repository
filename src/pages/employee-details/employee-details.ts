@@ -4,7 +4,7 @@ import {EmployeeService} from "../../services/employeeService";
 
 @Component({
   selector: 'employee-detail',
-  templateUrl: 'employeeDetails.html'
+  templateUrl: 'employee-details.html'
 })
 export class EmployeeDetails implements OnInit {
 
@@ -17,7 +17,6 @@ export class EmployeeDetails implements OnInit {
   }
 
   ngOnInit(): void {
-    // load employee
     this.employee = {};
     this.employeeService.getEmployee(this._id).then(
         (employee) => {

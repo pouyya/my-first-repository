@@ -1,35 +1,34 @@
+import { Employees } from './../employees/employees';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { ProductsPage } from '../products/products';
-import { ContactPage } from '../contact/contact';
-import { HomePage } from '../home/home';
-import { SalesPage } from '../sales/sales';
-import { SetupPage } from '../setup/setup'
-import { AboutPage } from '../about/about';
-import { InventoryPage } from '../inventory/inventory';
-import { ServicesPage } from '../service/service';
-import { CategoryPage } from '../category/category';
+import { Products } from '../products/products';
+import { Stores } from '../stores/stores';
+import { Sales } from '../sales/sales';
+import { Services } from '../service/service';
+import { Category } from '../category/category';
 
 @Component({
   selector: 'page-variables',
   templateUrl: 'settings.html'
 })
-export class SettingsPage {
+export class Settings {
 
   constructor(public navCtrl: NavController) {
-
   }
 
   onProducts(){
-    this.navCtrl.push(ProductsPage);
+    this.navCtrl.push(Products);
   }
-  onSales(){
-    this.navCtrl.push(ServicesPage);
+  onService(){
+    this.navCtrl.push(Services);
   }
   onInventory(){
-    this.navCtrl.push(CategoryPage);
+    this.navCtrl.push(Category);
   }
-  onContactUs(){
-    this.navCtrl.push(ContactPage);
+  onStores(){
+    this.navCtrl.push(Stores);
+  }
+  onEmployees(){
+    this.navCtrl.push(Employees);
   }
 }

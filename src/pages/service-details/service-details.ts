@@ -5,9 +5,9 @@ import { ServiceService } from '../../services/serviceService';
 
 @Component({
   selector: 'page-variables',
-  templateUrl: 'serviceDetails.html'
+  templateUrl: 'service-details.html'
 })
-export class ServiceDetailsPage {
+export class ServiceDetails {
   public serviceItem:any={};
   public categories = [];
   public isNew = true;
