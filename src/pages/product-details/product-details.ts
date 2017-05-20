@@ -24,7 +24,7 @@ export class ProductDetails {
 
   ionViewDidLoad()
   {
-    let editProduct = this.navParams.get('product');
+    let editProduct = this.navParams.get('item');
     if(editProduct){
         this.productItem = editProduct;
         this.isNew = false;
