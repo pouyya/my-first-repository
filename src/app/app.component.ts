@@ -13,7 +13,7 @@ import { Settings } from '../pages/settings/settings';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class ShortCutsApp {
   @ViewChild(Nav) nav: Nav;
   rootPage:any = HomePage;
   pages: Array<{title: string, icon: string, component: any}>;

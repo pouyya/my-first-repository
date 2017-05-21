@@ -9,7 +9,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MaterialModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MyApp } from './app.component';
+import { ShortCutsApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 
@@ -48,7 +48,7 @@ const cloudSettings: CloudSettings = {
 
 @NgModule({
   declarations: [
-    MyApp,
+    ShortCutsApp,
     HomePage,
     InventoryPage,
     Products,
@@ -66,7 +66,7 @@ const cloudSettings: CloudSettings = {
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp,{backButtonText:'',}),
+    IonicModule.forRoot(ShortCutsApp,{backButtonText:'',}),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name:'__mydb',
@@ -80,7 +80,7 @@ const cloudSettings: CloudSettings = {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,
+    ShortCutsApp,
     HomePage,
     InventoryPage,
     Products,
