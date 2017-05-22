@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
 @Component({
@@ -8,14 +8,33 @@ import { AlertController } from 'ionic-angular';
 })
 export class TileItemsComponent {
   @Input() items: Array<any>;
+  @Input() selectedItems: Array<any>;
+  @Output() onSelect = new EventEmitter<Object>();
 
   constructor(private alertController: AlertController) { }
 
   public selectItem(item) {
-    let alert = this.alertController.create({
-      title: item.name,
-      buttons: ['OK']
+    let proceed: boolean = true;
+    this.selectedItems.forEach((i, $i) => {
+      i._id === item._id && (proceed = false);
     });
-    alert.present();
-  }    
+    if(proceed) {
+      if(item.price) {
+        this.selectedItems.push(item);
+        this.onSelect.emit(item);
+      } else {
+        let alert = this.alertController.create({
+          title: "Item don't have any price",
+          buttons: ['OK']
+        });
+        alert.present();
+      }
+    } else {
+      let alert = this.alertController.create({
+        title: "This item has already been added. Please update quantity if requried!",
+        buttons: ['OK']
+      });
+      alert.present();      
+    }
+  }
 }

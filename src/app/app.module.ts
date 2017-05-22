@@ -39,6 +39,7 @@ import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
 import { StoreService } from "../services/storeService";
 import { EmployeeService } from "../services/employeeService";
+import { TaxService } from '../services/taxService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -104,7 +105,8 @@ const cloudSettings: CloudSettings = {
     ServiceService,
     CategoryService,
     StoreService,
-    EmployeeService
+    EmployeeService,
+    TaxService
   ]
 })
 export class AppModule {}
