@@ -1,6 +1,7 @@
 import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
+import {Employee} from "../../model/employee";
 import { NavController, AlertController, Platform, NavParams} from 'ionic-angular';
 
 @Component({
@@ -9,7 +10,7 @@ import { NavController, AlertController, Platform, NavParams} from 'ionic-angula
 })
 export class Employees {
    
-   public items = [];
+   public items:Array<Employee> = [];
    public itemsBackup = [];
 
   constructor(public navCtrl: NavController,
@@ -49,7 +50,7 @@ export class Employees {
     
     if(val && val.trim() != ''){
        this.items = this.items.filter((item)=>{
-         return((item.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
+         return((item.firstName + ' ' + item.lastName).toLowerCase().indexOf(val.toLowerCase()) > -1);
        })
     }
   }

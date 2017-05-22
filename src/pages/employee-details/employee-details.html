@@ -3,7 +3,11 @@
     <ion-title>{{action}} Employee</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="save()">
-        Save
+        {{action}}
+      </button>
+      &nbsp;
+      <button ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -35,14 +39,14 @@
       <ion-list>
         <ion-item-sliding *ngFor="let store of stores">
           <ion-item>
-            <h2>{{store.name}}</h2>
+            <h2>{{store.store.name}}</h2>
           </ion-item>
           <ion-item-options side="right" *ngIf="!item.isAdmin">
-            <button ion-button [color]="store.role == 'staff' ? 'primary' : 'light'">
+            <button ion-button (click)="changeRole('staff', store.id)" [color]="store.role == 'staff' ? 'primary' : 'light'">
               <ion-icon name="person"></ion-icon>
               Staff
             </button>
-            <button ion-button [color]="store.role == 'manager' ? 'primary' : 'light'">
+            <button ion-button (click)="changeRole('manager', store.id)" [color]="store.role == 'manager' ? 'primary' : 'light'">
               <ion-icon name="person"></ion-icon>
               Manager
             </button>

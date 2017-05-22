@@ -11,10 +11,10 @@ import { NavParams, Platform, NavController } from "ionic-angular";
 })
 export class EmployeeDetails {
 
-  public item:any={};
+  public item: any = {};
   public isNew = true;
   public action = 'Add';
-  public stores: Array<Store>;
+  public stores: Array<{ id: string, store: Store, role: string }> = [];
 
   constructor(private employeeService: EmployeeService, 
     private zone: NgZone,
@@ -33,17 +33,31 @@ export class EmployeeDetails {
     }
 
     this.platform.ready().then(() => {
-      this.storeService.getAll()
-          .then(data => {
-            this.zone.run(() => {
-              this.stores = data;
-            });
-          })
-          .catch(console.error.bind(console));
+      if(currentItem) {
+        this.employeeService.getAssociatedStores(this.item.store)
+            .then(stores => {
+              this.stores = stores;
+            })
+      } else {
+        this.storeService.getAll()
+            .then(data => {
+              this.zone.run(() => {
+                data.forEach((store, index) => {
+                  this.stores.push({id: store._id, store: store, role: 'staff'});
+                });
+              });
+            })
+            .catch(console.error.bind(console));
+      }
     });
   }
 
   public save(): void {
+    this.stores.forEach((store, index) => {
+      delete this.stores[index].store;
+    });
+    this.item.store = this.stores;
+    this.item.hasOwnProperty('name') && (delete this.item.name);
     if(this.isNew) {
       this.employeeService.add(this.item)
           .catch(console.error.bind(console));
@@ -52,5 +66,18 @@ export class EmployeeDetails {
           .catch(console.error.bind(console));
     }
     this.navCtrl.pop();
+  }
+
+  public remove(): void {
+    this.employeeService.delete(this.item)
+        .catch(console.error.bind(console));
+  }
+
+  public changeRole(role: string, id: string) {
+    this.stores.forEach((store, index) => {
+      if(store.id === id) {
+        this.stores[index].role = role;
+      }
+    });
   }
 }
