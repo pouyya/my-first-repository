@@ -53,23 +53,25 @@ export class EmployeeDetails {
   }
 
   public save(): void {
+    let storeToSave: Array<any> = [];
     this.stores.forEach((store, index) => {
-      delete this.stores[index].store;
+      storeToSave.push({id: store.id, role: store.role});
     });
-    this.item.store = this.stores;
-    this.item.hasOwnProperty('name') && (delete this.item.name);
+    this.item.store = storeToSave;
     if(this.isNew) {
       this.employeeService.add(this.item)
+          .then(this.navCtrl.pop())
           .catch(console.error.bind(console));
     } else {
       this.employeeService.update(this.item)
+          .then(this.navCtrl.pop())
           .catch(console.error.bind(console));
     }
-    this.navCtrl.pop();
   }
 
   public remove(): void {
     this.employeeService.delete(this.item)
+        .then(this.navCtrl.pop())
         .catch(console.error.bind(console));
   }
 
