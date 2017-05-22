@@ -24,37 +24,33 @@ export class EmployeeDetails {
     public navCtrl: NavController) {
   }
 
-
-  ionViewDidLoad()
-  {
+  ionViewDidLoad() {
     let currentItem = this.navParams.get('item');
-    if(currentItem){
-        this.item = currentItem;
-        this.isNew = false;
-        this.action = 'Edit';
+    if (currentItem) {
+      this.item = currentItem;
+      this.isNew = false;
+      this.action = 'Edit';
     }
 
-    this.platform.ready().then(() => 
-    {
+    this.platform.ready().then(() => {
       this.storeService.getAll()
-                  .then(data => {
-                      this.zone.run(() => {
-                          this.stores = data;
-                      });
-                  })
-                  .catch(console.error.bind(console));
-          });
+          .then(data => {
+            this.zone.run(() => {
+              this.stores = data;
+            });
+          })
+          .catch(console.error.bind(console));
+    });
   }
 
-  saveProducts(){
-      if (this.isNew) {
-          this.storeService.add(this.item)
-              .catch(console.error.bind(console));
-      } else {
-          this.storeService.update(this.item)
-              .catch(console.error.bind(console));
-      }
-      this.navCtrl.pop();
+  public save(): void {
+    if(this.isNew) {
+      this.employeeService.add(this.item)
+          .catch(console.error.bind(console));
+    } else {
+      this.employeeService.update(this.item)
+          .catch(console.error.bind(console));
+    }
+    this.navCtrl.pop();
   }
-
 }

@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Employee</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveProducts()">
+      <button ion-button icon-only (click)="save()">
         Save
       </button>
     </ion-buttons>
@@ -12,19 +12,25 @@
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label class="item-name">NAME:</ion-label>
-      <ion-input type="text" [(ngModel)]="item.name"></ion-input>
+      <ion-label class="item-name">First Name:</ion-label>
+      <ion-input type="text" [(ngModel)]="item.firstName"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Last Name:</ion-label>
+      <ion-input type="text" [(ngModel)]="item.lastName"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Address:</ion-label>
       <ion-input type="text" [(ngModel)]="item.address"></ion-input>
     </ion-item>
-
+    <ion-item>
+      <ion-label class="item-name">Phone:</ion-label>
+      <ion-input type="text" [(ngModel)]="item.phone"></ion-input>
+    </ion-item>
     <ion-item>
       <ion-label>Is Admin</ion-label>
       <ion-checkbox [(ngModel)]="item.isAdmin"></ion-checkbox>
-    </ion-item>    
-
+    </ion-item>
      <ion-item>
       <ion-list>
         <ion-item-sliding *ngFor="let store of stores">

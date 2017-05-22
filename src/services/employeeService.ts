@@ -53,4 +53,40 @@ export class EmployeeService extends BaseEntityService<Employee> {
       );
     });
   }
+
+  /**
+   * @Override
+   *
+   * Add Employee
+   * @param employee
+   * @returns {Promise<T>}
+   */
+  public add(employee: Employee) {
+    return new Promise((resolve, reject) => {
+      this.storeService.getAll().then(
+          stores => {
+            if(stores.length > 0) {
+              let storeData: Array<{id: string, role: string}> = [];
+              let role: string = 'staff'; // Default Role
+              stores.forEach(store => {
+                storeData.push({id: store._id, role});
+              });
+              employee.store = storeData;
+              super.add(employee).then(
+                  model => resolve(model),
+                  error => reject(error)
+              );
+            } else {
+              super.add(employee).then(
+                  model => resolve(model),
+                  error => reject(error)
+              );
+            }
+          },
+          error => {
+            reject(error);
+          }
+      );
+    });
+  }
 }
