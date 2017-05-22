@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar >
-    <ion-title>Products</ion-title>
+    <ion-title>Stores</ion-title>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -15,7 +15,7 @@
 </ion-header>
 <ion-content >
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
-  <ion-list inset *ngFor="let item of items ; let idx=index">
+  <ion-list inset *ngFor="let item of stores ; let idx=index">
     <ion-item-sliding class="sliding" >
       <ion-item (click)="showDetail(item)">
         <ion-avatar class="item-avatar" item-left>
@@ -32,4 +32,3 @@
     </ion-item-sliding>   
   </ion-list> 
 </ion-content> 
- 

@@ -1,22 +1,25 @@
+import { EmployeeDetails } from './../employee-details/employee-details';
+import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, Platform} from 'ionic-angular';
-import { ProductService } from '../../services/productService';
-import { ProductDetails } from '../product-details/product-details';
+import {Employee} from "../../model/employee";
+import { NavController, AlertController, Platform, NavParams} from 'ionic-angular';
 
 @Component({
-  templateUrl: 'products.html'
+  selector: 'page-employees',
+  templateUrl: 'employees.html',
 })
-export class Products {
-   public items = [];
+export class Employees {
+   
+   public items:Array<Employee> = [];
    public itemsBackup = [];
 
   constructor(public navCtrl: NavController,
           private alertCtrl: AlertController,
-          private service: ProductService,
-          private platform:Platform,
+          private service: EmployeeService,
+          private platform: Platform,
           private zone: NgZone) {
   }
-  
+
   ionViewDidEnter(){
      this.platform.ready().then(() => {
 
@@ -32,7 +35,7 @@ export class Products {
  } 
   
   showDetail(item){
-    this.navCtrl.push(ProductDetails, {item:item}); 
+    this.navCtrl.push(EmployeeDetails, {item:item}); 
   } 
   
   delete(item, idx){
@@ -47,8 +50,9 @@ export class Products {
     
     if(val && val.trim() != ''){
        this.items = this.items.filter((item)=>{
-         return((item.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
+         return((item.firstName + ' ' + item.lastName).toLowerCase().indexOf(val.toLowerCase()) > -1);
        })
     }
   }
+
 }

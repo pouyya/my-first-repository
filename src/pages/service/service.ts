@@ -1,17 +1,13 @@
-// Created By Michael Hanse
-// 05/02/2017
-// Product Page TypeScript
-   
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { ServiceService } from '../../services/serviceService';
-import { ServiceDetailsPage } from '../serviceDetails/serviceDetails';
+import { ServiceDetails } from '../service-details/service-details';
 
 @Component({
   selector: 'page-variables',
   templateUrl: 'service.html'
 })
-export class ServicesPage {
+export class Services {
    public services = [];
    public servicesBackup = [];
    public isNew = true;
@@ -43,27 +39,23 @@ export class ServicesPage {
    }
 
   showDetail(service){
-    this.navCtrl.push(ServiceDetailsPage, {service:service}); 
+    this.navCtrl.push(ServiceDetails, {service:service}); 
   } 
   
   deleteServices(item, idx){
     this.serviceService.delete(item)
             .catch(console.error.bind(console)); 
-    // this.services. splice(idx, 1);
+    this.services. splice(idx, 1);
   }
 
   getItems(event){
-    // Reset Services back to all of the Services
     this.services = this.servicesBackup;
-    //set val to the value of the event target
     var val = event.target.value;
     
-    //if the value is an empty string don`t filter the items
     if(val && val.trim() != ''){
        this.services = this.services.filter((service)=>{
          return((service.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
        })
     }
   }
-  
 }

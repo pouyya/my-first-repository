@@ -10,7 +10,7 @@ import { CategoryService } from '../../services/categoryService';
   styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices],
 })
-export class SalesPage implements OnInit {
+export class Sales implements OnInit {
 
   public categories: Array<any>;
   public activeCategory: any;

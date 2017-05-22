@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController,NavParams,ViewController } from 'ionic-angular';
-
 import { CategoryService } from '../../services/categoryService';
 
 @Component({
   selector: 'page-variables',
-  templateUrl: 'categoryDetails.html'
+  templateUrl: 'category-details.html'
 })
-export class CategoryDetailsPage {
+export class CategoryDetails {
   public categoryItem:any={};
   public isNew = true;
   public action = 'Add';
@@ -16,8 +15,6 @@ export class CategoryDetailsPage {
     private categoryService:CategoryService,
     public navParams: NavParams,
     private viewCtrl: ViewController) {
-    
-    
   }
 
   ionViewDidLoad(){
