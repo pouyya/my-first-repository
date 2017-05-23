@@ -6,7 +6,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
-import { MaterialModule } from '@angular/material';
+import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ShortCutsApp } from './app.component';
@@ -40,6 +40,7 @@ import { CategoryService } from '../services/categoryService';
 import { StoreService } from "../services/storeService";
 import { EmployeeService } from "../services/employeeService";
 import { TaxService } from '../services/taxService';
+import { CalculatorService } from './../services/calculatorService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -74,6 +75,7 @@ const cloudSettings: CloudSettings = {
       driverOrder:['indexeddb', 'sqlite', 'websql']
     }),
     MaterialModule,
+    MdInputModule,
     BrowserAnimationsModule,
 
     // custom
@@ -106,7 +108,8 @@ const cloudSettings: CloudSettings = {
     CategoryService,
     StoreService,
     EmployeeService,
-    TaxService
+    TaxService,
+    CalculatorService
   ]
 })
 export class AppModule {}

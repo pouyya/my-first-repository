@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-// import { ProductService } from '../services/productService';
-// import { ServiceService } from '../services/serviceService';
 import { CategoryService } from './categoryService';
 
 @Injectable()
@@ -16,5 +14,24 @@ export class SalesServices {
      */
     public loadCategoryItems (id: string)  {
         return this.categoryService.getAssociatedItems(id);
+    }
+
+    public prepareBucketItem(item: any) {
+        return {
+            _id: item._id,
+            _rev: item._rev,            
+            name: item.name,
+            color: item.color,
+            image: item.image,
+            price: parseInt(item.price),
+            categoryIDs: item.categoryIDs,
+            e:
+            {
+               quantity: 1,
+               discount: 0,
+               discountedPrice: parseInt(item.price),
+               quantityPrice: parseInt(item.price)
+            }
+        }
     }
 }

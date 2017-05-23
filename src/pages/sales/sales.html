@@ -12,33 +12,95 @@
     <ion-row class="full-height">
       <ion-col col-2>
         <ion-list>
-          <button ion-item *ngFor="let category of categories"
-            class="text-wrap"
-            [ngClass]="{'activeCategory': category._id == activeCategory._id }" 
+          <button ion-item *ngFor="let category of categories" class="text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
             (click)="itemSelected(category)">
               {{ category.name }}
           </button>
         </ion-list>
       </ion-col>
-      <ion-col col-6>
-        <tile-items 
-          [items]="activeTiles" 
-          [(selectedItems)]="itemsInBucket" 
-          (onSelect)="onSelect($event)">
+      <ion-col col-4>
+        <tile-items [items]="activeTiles" (onSelect)="onSelect($event)">
         </tile-items>
       </ion-col>
-      <ion-col col-4>
-        <!-- Bucket Start  -->
+      <ion-col col-6>
+        <!-- Bucket [start]  -->
         <ion-grid class="top-component">
           <ion-row>
             <ion-col col-12>
               <ion-list>
-                <ion-item *ngFor="let item of itemsInBucket; let $index=index">
-                  {{item.name}} &nbsp; {{item.price}} &nbsp;
-                  <button ion-button icon-only (click)="removeFromBasket(item, $index)">
-                    <ion-icon name="trash"></ion-icon>
-                  </button>
+                <!-- Items in the bucket [start] -->
+                <ion-item *ngFor="let item of itemsInBucket; let $index=index" 
+                [ngClass]="{active: isItemShown(item._id)}">
+
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-md-1>
+                        {{item.e.quantity}}
+                      </ion-col>
+                      <ion-col col-md-2>
+                        {{item.name}}
+                      </ion-col>
+                      <ion-col col-md-2>
+
+                      </ion-col>
+                      <ion-col col-md-2 offset-md-3 class="pull-right">
+                        ${{item.e.quantity > 1 ? item.e.quantityPrice : item.price}}
+                      </ion-col>
+                      <ion-col col-md-1 class="pull-right">
+                        <ion-icon name="trash" class="clickable" (click)="removeFromBasket(item, $index)"></ion-icon>
+                      </ion-col>
+                      <ion-col col-md-1 class="pull-right">
+                        <ion-icon color="success" class="clickable"
+                        (click)="toggleItem(item._id)"
+                        [name]="isItemShown(item._id) ? 'arrow-dropdown' : 'arrow-dropright'">
+                        </ion-icon>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+
+                  <div *ngIf="isItemShown(item._id)">
+                    <ion-grid>
+                      <ion-row>
+
+                        <!-- Quantity -->
+                        <ion-col col-md-4>
+                          <ion-item item-content>
+                            <ion-label color="primary" stacked>Quantity</ion-label>
+                            <ion-input type="number" min="1" 
+                            [ngModel]="item.e.quantity" 
+                            (ngModelChange)="addQuantity($event, $index); oldValue = item.e.quantity;"></ion-input>
+                          </ion-item>
+                        </ion-col>
+
+                        <!-- Price -->
+                        <ion-col col-md-4>
+                          <ion-item item-content>
+                            <ion-label color="primary" stacked>Price</ion-label>
+                            <ion-input type="text" [value]="item.e.quantity > 1 ? item.e.quantityPrice : item.price" disabled></ion-input>
+                          </ion-item>            
+                        </ion-col>
+
+                        <!-- Discount -->
+                        <ion-col col-md-4>
+                          <ion-item item-content>
+                            <ion-label color="primary" stacked>Discount(%)</ion-label>
+                            <ion-input type="number" [(ngModel)]="item.e.discount" min="0" max="99" (change)="calculateDiscount($index)"></ion-input>                             
+                          </ion-item>
+                        </ion-col>
+
+                        <ion-col col-md-12>
+                          <ion-item item-content>
+                            <ion-label color="primary" stacked>Notes</ion-label>
+                            <ion-textarea placeholder="Type to add note..."></ion-textarea>
+                          </ion-item>
+                        </ion-col>
+
+                      </ion-row>
+                    </ion-grid>
+                  </div>
                 </ion-item>
+                <!-- Items in the bucket [end] -->
+
               </ion-list>
             </ion-col>
           </ion-row>
@@ -48,11 +110,11 @@
             <ion-col col-12>
               <span text-left>Discount</span>
               <span text-right>$0.00</span>
-            </ion-col>            
+            </ion-col>
             <ion-col col-12>
               <span text-left>Subtotal</span>
               <span text-right>${{total}}</span>
-            </ion-col>            
+            </ion-col>
             <ion-col col-12>
               <span text-left>Tax (GST)</span>
               <span text-right>{{tax}}%</span>
@@ -66,8 +128,8 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-        <!-- Bucket End -->
-      </ion-col>        
+        <!-- Bucket [end] -->
+      </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
