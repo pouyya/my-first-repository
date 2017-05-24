@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { OnInit } from '@angular/core';
 import { SalesServices } from '../../services/salesService';
 import { TaxService } from '../../services/taxService';
 import { CalculatorService } from './../../services/calculatorService';
 import { CategoryService } from '../../services/categoryService';
 import { AlertController } from 'ionic-angular';
+
+import { Sale } from './../../model/sale';
+import { PurchasableItem } from './../../model/purchasableItem';
+import { BucketItem } from './../../model/bucketItem';
 
 @Component({
   selector: 'page-variables',
@@ -13,21 +16,16 @@ import { AlertController } from 'ionic-angular';
   styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices, TaxService, CalculatorService],
 })
-export class Sales implements OnInit {
+export class Sales {
 
   public categories: Array<any>;
   public activeCategory: any;
   public activeTiles: Array<any>;
-  public itemsInBucket: Array<any> = [];
-
-  public total: number = 0;
+  public invoice: Sale;
   public tax: number;
-  public totalWithTax: number = 0;
+  public oldValue: number = 1;
 
   private shownItem: any = null;
-  public discount: number = 0;
-
-  public oldValue: number = 1;
 
   constructor(
       public navCtrl: NavController,
@@ -35,12 +33,15 @@ export class Sales implements OnInit {
       private categoryService: CategoryService,
       private alertController: AlertController,
       private taxService: TaxService,
-      private calcService: CalculatorService
+      private calcService: CalculatorService,
+      private cdr: ChangeDetectorRef
   ) {
+    this.cdr.detach();
     this.tax = this.taxService.getTax();
   }
 
-  ngOnInit(): void {
+  ionViewDidEnter() {
+    // load categories on the left hand side
     this.categoryService.getAll().then(
         categories => {
           if(categories && categories.length) {
@@ -54,6 +55,14 @@ export class Sales implements OnInit {
         },
         error => { throw new Error(error) }
     );
+
+    // initiate POS Object
+    // if in local storage then load from there otherwise create a new one
+    var posId = 'AAD099786746352413F'; // hardcoded POS ID
+    this.salesService.instantiateInvoice(posId)
+    .then(
+      doc => {this.invoice = doc; this.cdr.reattach(); }
+    ).catch(console.error.bind(console));
   }
 
   /**
@@ -65,99 +74,86 @@ export class Sales implements OnInit {
     this.activeCategory = category;
     this.salesService.loadCategoryItems(category._id).then(
         items => this.activeTiles = items,
-        error => { throw new Error(error) }
+        error => { console.error(error); }
     );
     return category._id == category._id;
   }
 
   // Event
-  public onSelect(item: any) {
-    item = this.salesService.prepareBucketItem(item);
-    this.itemsInBucket.push(item);
-    try {
-      let result = this.calcService.calcTotalWithTax(this.total, parseInt(item.price), 'add');
-      this.total = result.total;
-      this.totalWithTax = result.totalWithTax;
-    } catch (e) {
-      console.error(e);
+  public onSelect(item: PurchasableItem) {
+    let bucketItem = this.salesService.prepareBucketItem(item);
+    this.invoice.items.push(bucketItem);
+    let result = this.calcService.calcTotalWithTax(
+      this.invoice.subTotal, bucketItem.reducedPrice, 'add');
+    this.invoice.subTotal = result.total;
+    this.invoice.taxTotal = result.totalWithTax;
+
+    //sync data
+    this.salesService.sync(this.invoice).then(
+      response => console.log(response)
+    ).catch(error => console.error(error));
+  }
+
+  public removeItem(item: BucketItem, $index) {
+    let result = this.calcService.calcTotalWithTax(this.invoice.subTotal, item.totalPrice, 'subtract');
+    this.invoice.subTotal = result.total;
+    this.invoice.taxTotal != 0 && (this.invoice.taxTotal = result.totalWithTax);
+    this.invoice.items.splice($index, 1);
+
+    // sync data
+    this.salesService.sync(this.invoice).then(
+      response => console.log(response)
+    ).catch(error => console.error(error));
+  }
+
+  public aQ(nv: any, item: BucketItem) {
+    nv = parseInt(nv);
+    var action = 'add';
+    if(nv > this.oldValue) {
+      item.quantity++;
+      item.totalPrice += item.reducedPrice;
+    } else if (nv < this.oldValue) {
+      item.quantity--;
+      item.totalPrice -= item.reducedPrice;
+      action = 'subtract';
     }
+
+    let result = this.calcService.calcTotalWithTax(this.invoice.subTotal, item.reducedPrice, action);
+    this.invoice.subTotal = result.total;
+    this.invoice.taxTotal = result.totalWithTax;   
+
+    // sync data
+    this.salesService.sync(this.invoice).then(
+      response => console.log(response)
+    ).catch(error => console.error(error));
   }
 
-  public removeFromBasket(item, $index) {
-    try {
-      let result = this.calcService.calcTotalWithTax(this.total, parseInt(item.e.quantityPrice), 'subtract');
-      this.total = result.total;
-      this.totalWithTax != 0 && (this.totalWithTax = result.totalWithTax); 
-      this.itemsInBucket.splice($index, 1);
-    } catch(e) {
-      console.error(e);
-    }
-  }
-
-  public addQuantity(newValue: string, $index: number) {
-    var q: number = parseInt(newValue);
-    var item = this.itemsInBucket[$index];
-    var price = item.e.discount > 0 ? item.e.discountedPrice : parseInt(item.price);
-    if(q > this.oldValue) {
-       this.itemsInBucket[$index].e.quantity++;
-       this.itemsInBucket[$index].e.quantityPrice += price;
-       try {
-         let result = this.calcService.calcTotalWithTax(this.total, price, 'add');
-         this.total = result.total;
-         this.totalWithTax = result.totalWithTax;
-       } catch(e) {
-         console.error(e);
-       }
-     } else if (q < this.oldValue) {
-       this.itemsInBucket[$index].e.quantity--;
-       this.itemsInBucket[$index].e.quantityPrice -= price;
-       try {
-         let result = this.calcService.calcTotalWithTax(this.total, price, 'subtract');
-         this.total = result.total;
-         this.totalWithTax = result.totalWithTax;
-       } catch(e) {
-         console.error(e);
-       }
-     }
-  }
-
-  public calculateDiscount($index: number) {
-    if(this.itemsInBucket[$index].e.discount > 0) {
-      let discount = this.calcService.calcTotalDiscount(
-        this.itemsInBucket[$index].e.discount,
-        this.itemsInBucket[$index].price,
-        this.itemsInBucket[$index].e.quantity
-      );
-      try {
-        let result = this.calcService.calcTotalWithTax(
-          this.total - this.itemsInBucket[$index].e.quantityPrice,
-          discount,
-          'add'
-        );
-        this.total = result.total;
-        this.totalWithTax = result.totalWithTax;
-        this.itemsInBucket[$index].e.quantityPrice = discount;
-      } catch (e) {
-        console.error(e);
-      }
+  public calculateDiscount(item: BucketItem) {
+    if(item.discount > 0) {
+      this.salesService.recalculateOnDiscount(item, this.invoice);
     } else {
-      this.total -= this.itemsInBucket[$index].e.quantityPrice;
-      this.itemsInBucket[$index].e.quantityPrice = this.itemsInBucket[$index].price;
-      for(let i = 2; i <= this.itemsInBucket[$index].e.quantity; i++) {
-        this.itemsInBucket[$index].e.quantityPrice += this.itemsInBucket[$index].price;
+      this.invoice.subTotal -= item.totalPrice;
+      item.totalPrice = item.actualPrice;
+      for(let i = 2; i <= item.quantity; i++) {
+        item.totalPrice += item.actualPrice;
       }
-      try {
-        let result = this.calcService.calcTotalWithTax(
-          this.total,
-          this.itemsInBucket[$index].e.quantityPrice,
-          'add'
-        );
-        this.total = result.total;
-        this.totalWithTax = result.totalWithTax;        
-      } catch(e) {
-        console.error(e);
-      }
+      let result = this.calcService.calcTotalWithTax(this.invoice.subTotal, item.totalPrice, 'add');
+      this.invoice.subTotal = result.total;
+      this.invoice.taxTotal = result.totalWithTax;
     }
+
+    // sync data
+    this.salesService.sync(this.invoice).then(
+      response => console.log(response)
+    ).catch(error => console.error(error));
+  }
+
+  public syncInvoice() {
+    setTimeout(() => {
+      this.salesService.sync(this.invoice).then(
+        response => console.log(response)
+      ).catch(error => console.error(error));      
+    }, 1000);
   }
 
   public toggleItem(id: string): void {

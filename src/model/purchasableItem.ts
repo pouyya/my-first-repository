@@ -6,4 +6,6 @@ export abstract class PurchasableItem extends DBBasedEntity
     public price: number;
     public color: string;
     public image: string;
+    public discount?: number;
+    public inStock?: number | boolean;
 }

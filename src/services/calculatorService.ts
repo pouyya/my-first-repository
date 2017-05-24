@@ -1,5 +1,5 @@
 import { TaxService } from './taxService';
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 
 @Injectable()
 export class CalculatorService {
@@ -13,14 +13,18 @@ export class CalculatorService {
    * @param action 
    */
   public calcTotalWithTax(total: number, amount: number, action: string) {
-    switch(action) {
+    switch (action) {
       case 'add': total += amount; break;
       case 'subtract': total -= amount; break;
       default:
         throw new Error('Invalid Operator!');
     }
 
-    return { total, totalWithTax: this.taxService.calculate(total) };
+    return {
+      total,
+      totalWithTax: this.taxService.getTax() > 0 ?
+        this.taxService.calculate(total) : total
+    };
   }
 
   /**
@@ -29,11 +33,11 @@ export class CalculatorService {
    * @param price 
    * @param quantity 
    */
-  public calcTotalDiscount(discount, price: number, quantity: number) {
+  public calcItemDiscount(discount, price: number, quantity: number) {
     var prices: Array<number> = [];
     var price: number = price;
 
-    for(let i = 1; i <= quantity; i++) {
+    for (let i = 1; i <= quantity; i++) {
       prices.push(price - ((parseInt(discount) / 100) * price));
     }
 

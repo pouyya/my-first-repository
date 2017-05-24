@@ -34,4 +34,8 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     findBy(selector: any) {
         return this._dbService.findBy(selector);
     }
+
+    get(id: any) {
+        return this._dbService.get(id);
+    }
 }

@@ -71,4 +71,8 @@ export class DBService<T extends DBBasedEntity> {
         return this._db.find(selector)
         .then(docs => { return docs.docs; });
     }
+
+    get(id) {
+        return this._db.get(id);
+    }
 }
