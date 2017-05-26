@@ -5,8 +5,6 @@ export class BucketItem {
   quantity: number;
   discount: number;
   actualPrice: number;
-  reducedPrice: number;
-  totalPrice: number;
+  finalPrice: number;
   notes: string;
-  inStock: number | boolean;
 }

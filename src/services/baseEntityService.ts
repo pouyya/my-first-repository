@@ -38,4 +38,8 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     get(id: any) {
         return this._dbService.get(id);
     }
+
+    put(id: string, entity: T) {
+        return this._dbService.put(id, entity);
+    }
 }

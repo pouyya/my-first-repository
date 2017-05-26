@@ -40,13 +40,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 			parseInt(item.price) : item.price;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;
-		bucketItem.inStock = item.inStock;
-		bucketItem.totalPrice = bucketItem.actualPrice;
-		bucketItem.reducedPrice = bucketItem.discount > 0 ? 
+		bucketItem.finalPrice = bucketItem.discount > 0 ? 
 			this.calcService.calcItemDiscount(
 					bucketItem.discount,
-					bucketItem.actualPrice,
-					bucketItem.quantity
+					bucketItem.actualPrice
 				) :
 			bucketItem.actualPrice;
 
@@ -90,20 +87,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public recalculateOnDiscount(item: BucketItem, invoice: Sale) {
-		let discount: number = this.calcService.calcItemDiscount(item.discount, item.actualPrice, item.quantity);
-		let result = this.calcService.calcTotalWithTax((invoice.subTotal - item.totalPrice), discount, 'add');
-		invoice.subTotal = result.total;
-		invoice.taxTotal = result.totalWithTax;
-		item.totalPrice = discount;
-		item.reducedPrice = item.actualPrice - ((item.discount / 100) * item.actualPrice);
-	}
-
 	public sync(invoice: Sale): Promise<any> {
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
-				console.log(invoice);
-				this.update(invoice).then(
+				this.put(invoice._id, invoice).then(
 					() => resolve("Invoice has synced")
 				).catch(error => reject(error));
 			}, 0);

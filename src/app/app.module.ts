@@ -1,4 +1,3 @@
-import { Employee } from './../model/employee';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -33,6 +32,7 @@ import { Employees } from './../pages/employees/employees';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
+import { BasketModule } from './../components/basket/basket.module';
 
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
@@ -79,7 +79,8 @@ const cloudSettings: CloudSettings = {
     BrowserAnimationsModule,
 
     // custom
-    TileItemsModule
+    TileItemsModule,
+    BasketModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

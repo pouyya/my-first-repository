@@ -28,19 +28,20 @@ export class CalculatorService {
   }
 
   /**
-   * Calculate Discount of Item(s)
-   * @param discount
-   * @param price 
-   * @param quantity 
+   * Calculate price reduction by a discount(%)
+   * @param discount {Number}
+   * @param price {Number}
    */
-  public calcItemDiscount(discount, price: number, quantity: number) {
-    var prices: Array<number> = [];
-    var price: number = price;
+  public calcItemDiscount(discount: number, price: number) {
+    return price - ((discount / 100) * price);
+  }
 
-    for (let i = 1; i <= quantity; i++) {
-      prices.push(price - ((parseInt(discount) / 100) * price));
-    }
-
-    return prices.reduce((a, b) => a + b);
+  /**
+   * Calculate discount(%) on an Item
+   * @param actualPrice {Number}
+   * @param newPrice {Number}
+   */
+  public findDiscountPercent(actualPrice: number, newPrice: number) {
+    return ((actualPrice - newPrice) * 100) / actualPrice;
   }
 }
