@@ -43,12 +43,12 @@ export class Sales {
 
   loader.present().then(() => {
       // load categories on the left hand side
-      this.categoryService.getAll().then(
+      var categoryPromis = this.categoryService.getAll().then(
         categories => {
           if (categories && categories.length) {
             this.categories = categories;
             this.activeCategory = this.categories[0];
-            this.salesService.loadCategoryItems(categories[0]._id).then(
+            return this.salesService.loadCategoryItems(categories[0]._id).then(
               items => this.activeTiles = items,
               error => { throw new Error(error) }
             );
@@ -60,16 +60,23 @@ export class Sales {
       // initiate POS Object
       // if in local storage then load from there otherwise create a new one
       var posId = 'AAD099786746352413F'; // hardcoded POS ID
-      this.salesService.instantiateInvoice(posId)
+      var salesPromis = this.salesService.instantiateInvoice(posId)
         .then(
         doc => { 
           this.invoice = doc; 
           this.invoice = {...this.invoice};
           this.cdr.reattach(); 
-          loader.dismiss();
         }
         ).catch(console.error.bind(console));
+
+        Promise.all([categoryPromis, salesPromis]).then(function()
+        {
+          loader.dismiss();
+        });
+
       });
+
+
   }
 
   /**
