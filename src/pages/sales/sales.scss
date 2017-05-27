@@ -1,1 +1,39 @@
 @import '../../theme/variables';
+
+.full-height {
+  height: 100%
+}
+
+.top-component {
+  overflow-y: scroll;
+  height: 400px;
+  position: absolute;
+  
+}
+
+.bottom-component {
+  position: absolute;
+  bottom: 0;
+}
+
+.list .item.item-accordion {
+  line-height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.09s all linear;
+}
+.list .item.item-accordion.ng-hide {
+  line-height: 0px;
+}
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove {
+  display: block !important;
+}
+
+.x {
+  display: hidden;
+}
+
+.y {
+  display: block;
+}

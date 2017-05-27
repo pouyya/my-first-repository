@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 
 @Component({
@@ -8,14 +8,11 @@ import { AlertController } from 'ionic-angular';
 })
 export class TileItemsComponent {
   @Input() items: Array<any>;
+  @Output() onSelect = new EventEmitter<Object>();
 
   constructor(private alertController: AlertController) { }
 
   public selectItem(item) {
-    let alert = this.alertController.create({
-      title: item.name,
-      buttons: ['OK']
-    });
-    alert.present();
-  }    
+    this.onSelect.emit(item);
+  }
 }

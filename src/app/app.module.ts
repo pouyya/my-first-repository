@@ -1,4 +1,3 @@
-import { Employee } from './../model/employee';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -6,7 +5,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 
-import { MaterialModule } from '@angular/material';
+import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ShortCutsApp } from './app.component';
@@ -33,12 +32,15 @@ import { Employees } from './../pages/employees/employees';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
+import { BasketModule } from './../components/basket/basket.module';
 
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
 import { StoreService } from "../services/storeService";
 import { EmployeeService } from "../services/employeeService";
+import { TaxService } from '../services/taxService';
+import { CalculatorService } from './../services/calculatorService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -73,10 +75,12 @@ const cloudSettings: CloudSettings = {
       driverOrder:['indexeddb', 'sqlite', 'websql']
     }),
     MaterialModule,
+    MdInputModule,
     BrowserAnimationsModule,
 
     // custom
-    TileItemsModule
+    TileItemsModule,
+    BasketModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -104,7 +108,9 @@ const cloudSettings: CloudSettings = {
     ServiceService,
     CategoryService,
     StoreService,
-    EmployeeService
+    EmployeeService,
+    TaxService,
+    CalculatorService
   ]
 })
 export class AppModule {}

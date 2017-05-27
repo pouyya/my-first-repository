@@ -71,4 +71,24 @@ export class DBService<T extends DBBasedEntity> {
         return this._db.find(selector)
         .then(docs => { return docs.docs; });
     }
+
+    get(id) {
+        return this._db.get(id);
+    }
+
+    put(id: string, entity : T) {
+        entity._id = id;
+        return this.get(id).then(result => {
+            entity._rev = result._rev;
+            return this._db.put(entity);
+        }, error => {
+            if(error.status == "404") {
+                return this._db.put(entity);
+            } else {
+                return new Promise((resolve, reject) => {
+                    reject(error);
+                });
+            }
+        });
+    }
 }
