@@ -8,7 +8,7 @@
                 [ngClass]="{active: isItemShown(item._id)}">
 
                   <ion-grid>
-                    <ion-row>
+                    <ion-row (click)="toggleItem(item._id)">
                       <ion-col col-md-1>
                         {{item.quantity}}
                       </ion-col>
