@@ -1,8 +1,7 @@
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController, LoadingController } from 'ionic-angular';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
-import { AlertController } from 'ionic-angular';
 
 import { BasketComponent } from './../../components/basket/basket.component';
 
@@ -31,38 +30,46 @@ export class Sales {
     private salesService: SalesServices,
     private categoryService: CategoryService,
     private alertController: AlertController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private loading: LoadingController
   ) {
     this.cdr.detach();
   }
 
   ionViewDidEnter() {
-    // load categories on the left hand side
-    this.categoryService.getAll().then(
-      categories => {
-        if (categories && categories.length) {
-          this.categories = categories;
-          this.activeCategory = this.categories[0];
-          this.salesService.loadCategoryItems(categories[0]._id).then(
-            items => this.activeTiles = items,
-            error => { throw new Error(error) }
-          );
-        }
-      },
-      error => { throw new Error(error) }
-    );
+    let loader = this.loading.create({
+    content: 'Loading data...',
+  });
 
-    // initiate POS Object
-    // if in local storage then load from there otherwise create a new one
-    var posId = 'AAD099786746352413F'; // hardcoded POS ID
-    this.salesService.instantiateInvoice(posId)
-      .then(
-      doc => { 
-        this.invoice = doc; 
-        this.invoice = {...this.invoice};
-        this.cdr.reattach(); 
-      }
-      ).catch(console.error.bind(console));
+  loader.present().then(() => {
+      // load categories on the left hand side
+      this.categoryService.getAll().then(
+        categories => {
+          if (categories && categories.length) {
+            this.categories = categories;
+            this.activeCategory = this.categories[0];
+            this.salesService.loadCategoryItems(categories[0]._id).then(
+              items => this.activeTiles = items,
+              error => { throw new Error(error) }
+            );
+          }
+        },
+        error => { throw new Error(error) }
+      );
+
+      // initiate POS Object
+      // if in local storage then load from there otherwise create a new one
+      var posId = 'AAD099786746352413F'; // hardcoded POS ID
+      this.salesService.instantiateInvoice(posId)
+        .then(
+        doc => { 
+          this.invoice = doc; 
+          this.invoice = {...this.invoice};
+          this.cdr.reattach(); 
+          loader.dismiss();
+        }
+        ).catch(console.error.bind(console));
+      });
   }
 
   /**
