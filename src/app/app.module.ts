@@ -41,6 +41,7 @@ import { StoreService } from "../services/storeService";
 import { EmployeeService } from "../services/employeeService";
 import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
+import { PosService } from "../services/posService";
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -110,7 +111,8 @@ const cloudSettings: CloudSettings = {
     StoreService,
     EmployeeService,
     TaxService,
-    CalculatorService
+    CalculatorService,
+    PosService
   ]
 })
 export class AppModule {}
