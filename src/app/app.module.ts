@@ -26,6 +26,9 @@ import { Settings } from '../pages/settings/settings';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Stores } from '../pages/stores/stores';
+import { PaymentsPage } from "../pages/payment/payment";
+import { CashModal } from '../pages/payment/modals/cash/cash';
+import { CreditCardModal } from './../pages/payment/modals/credit-card/credit-card';
 
 import { EmployeeDetails } from '../pages/employee-details/employee-details';
 import { Employees } from './../pages/employees/employees';
@@ -65,7 +68,10 @@ const cloudSettings: CloudSettings = {
     Stores,
     StoreDetailsPage,
     EmployeeDetails,
-    Employees
+    Employees,
+    PaymentsPage,
+    CashModal,
+    CreditCardModal
   ],
   imports: [
     BrowserModule,
@@ -99,7 +105,10 @@ const cloudSettings: CloudSettings = {
     Stores,
     StoreDetailsPage,
     EmployeeDetails,
-    Employees
+    Employees,
+    PaymentsPage,
+    CashModal,
+    CreditCardModal
   ],
   providers: [
     StatusBar,

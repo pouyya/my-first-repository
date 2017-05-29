@@ -3,7 +3,7 @@ import { CalculatorService } from './../../services/calculatorService';
 import { TaxService } from './../../services/taxService';
 import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
-import { Component, Input } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
 
 @Component({
@@ -20,6 +20,8 @@ export class BasketComponent {
     this.invoice = obj;
   }
   get model(): Sale { return this.invoice; }  
+
+  @Output() paymentClicked = new EventEmitter<boolean>();
 
   public tax: number;
   public oldValue: number = 1;
@@ -81,6 +83,10 @@ export class BasketComponent {
     return this.shownItem === id;
   }
 
+  public gotoPayment() {
+    this.paymentClicked.emit(true);
+  }
+
   public calculateTotal() {
     setTimeout(() => {
       if(this.invoice.items.length > 0) {
@@ -94,5 +100,5 @@ export class BasketComponent {
         this.invoice.subTotal = this.invoice.taxTotal = this.invoice.totalDiscount = 0;
       }
     }, 0);
-  }      
+  }
 }

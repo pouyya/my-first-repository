@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Payment</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="full-height">
+    <ion-row class="full-height">
+      <ion-col col-md-5>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-12>
+              <h3 text-center>Payment Summary</h3>
+            </ion-col>
+            <hr/>
+
+            <ion-col col-md-12 text-left>
+              <span>{{invoice.items.length}} item(s)</span>
+            </ion-col>
+
+            <ion-col col-md-12>
+              <ion-list>
+                <ion-item *ngFor="let item of invoice.items">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-md-1>{{item.quantity}}</ion-col>
+                      <ion-col col-md-4>{{item.name}}</ion-col>
+                      <ion-col col-md-4 offset-md-3 class="pull-right">${{item.finalPrice}}</ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>
+              </ion-list>
+
+              <hr/>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4>Sub-total</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.subTotal}}</ion-col>
+                  <ion-col col-md-4>Total Tax (GST)</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal - invoice.subTotal}}</ion-col>               
+                </ion-row>
+              </ion-grid>
+
+              <hr/>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4>Total</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal}}</ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <ion-list *ngIf="invoice.payments.length > 0">
+                <ion-item *ngFor="let payment of invoice.payments">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-md-4>Payment ({{payment.type}})</ion-col>
+                      <ion-col col-md-4 offset-md-3 class="pull-right">${{payment.amount}}</ion-col>                      
+                    </ion-row>
+                  </ion-grid>                  
+                </ion-item>
+              </ion-list>
+
+              <hr/>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4><h1>Balance</h1></ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right"><h1>${{balance}}</h1></ion-col>
+                </ion-row>
+              </ion-grid>
+
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+        
+      </ion-col>
+      <ion-col col-md-7>
+        <ion-grid>
+          <ion-row>
+
+            <ion-col col-md-3>
+              <h2>Pay</h2>
+            </ion-col>
+            <ion-col col-md-3 offset-md-6>
+              <ion-list>
+                <ion-item>
+                  <ion-input clearInput [(ngModel)]="amount"></ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+
+            <ion-col col-md-4>
+              <button ion-button color="secondary" large block (click)="payWithCash()">Cash</button>
+            </ion-col>
+            <ion-col col-md-4>
+              <button ion-button color="secondary" large block (click)="payWithCreditCard()">Credit Card</button>
+            </ion-col>
+            <ion-col col-md-4>
+              <button ion-button color="secondary" large block>Gift Card</button>
+            </ion-col>                        
+
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

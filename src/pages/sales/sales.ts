@@ -8,6 +8,7 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
 import { PosService } from "../../services/posService";
+import { PaymentsPage } from "../payment/payment";
 
 @Component({
   selector: 'page-variables',
@@ -100,4 +101,8 @@ export class Sales {
     this.basketComponent.addItemToBasket(item);
   }
 
+  // Event
+  public paymentClicked() {
+    this.navCtrl.push(PaymentsPage, { invoice: this.invoice });
+  }
 }
