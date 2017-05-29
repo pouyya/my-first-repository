@@ -6,13 +6,15 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import {BaseEntityService} from  './baseEntityService';
+import {PosService} from "./posService";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
 	constructor(
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
-		private taxService: TaxService
+		private taxService: TaxService,
+		private posService: PosService
 	) {
 		super(Sale);
 	}
@@ -56,29 +58,31 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public instantiateInvoice(id?: string): Promise<any> {
 		var tax = this.taxService.getTax() || 0;
+		var postID = this.posService.getCurrentPosID();
 		return new Promise((resolve, reject) => {		
 			if(id) {
 				this.get(id).then(
 					doc => {
-						doc ? resolve(doc) : resolve(createDefaultObject());
+						doc ? resolve(doc) : resolve(createDefaultObject(postID));
 					},
 					error => {
 						if(error.name == 'not_found') {
-							resolve(createDefaultObject());
+							resolve(createDefaultObject(postID));
 						} else {
 							throw new Error(error);
 						}
 					}
 				);
 			} else {
-				resolve(createDefaultObject());
+				resolve(createDefaultObject(postID));
 			}
 		});
 
-		function createDefaultObject() {
+
+		function createDefaultObject(posID: string) {
 			let invoice: Sale = new Sale();
-			invoice._id = 'AAD099786746352413F';
-			invoice.posID = 'AAD099786746352413F'; // Hardcoded Fixed UUID
+			invoice._id = posID;
+			invoice.posID = posID;
 			invoice.subTotal = 0;
 			invoice.tax = tax;
 			invoice.taxTotal = 0;

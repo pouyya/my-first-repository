@@ -7,6 +7,7 @@ import { BasketComponent } from './../../components/basket/basket.component';
 
 import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
+import { PosService } from "../../services/posService";
 
 @Component({
   selector: 'page-variables',
@@ -31,52 +32,53 @@ export class Sales {
     private categoryService: CategoryService,
     private alertController: AlertController,
     private cdr: ChangeDetectorRef,
-    private loading: LoadingController
+    private loading: LoadingController,
+    private posService: PosService
   ) {
     this.cdr.detach();
   }
 
   ionViewDidEnter() {
     let loader = this.loading.create({
-    content: 'Loading data...',
-  });
+      content: 'Loading data...',
+    });
 
-  loader.present().then(() => {
+    loader.present().then(() => {
       // load categories on the left hand side
-      var categoryPromis = this.categoryService.getAll().then(
-        categories => {
-          if (categories && categories.length) {
-            this.categories = categories;
-            this.activeCategory = this.categories[0];
-            return this.salesService.loadCategoryItems(categories[0]._id).then(
-              items => this.activeTiles = items,
-              error => { throw new Error(error) }
-            );
+      var categoryPromise = this.categoryService.getAll().then(
+          categories => {
+            if (categories && categories.length) {
+              this.categories = categories;
+              this.activeCategory = this.categories[0];
+              return this.salesService.loadCategoryItems(categories[0]._id).then(
+                  items => this.activeTiles = items,
+                  error => {
+                    throw new Error(error)
+                  }
+              );
+            }
+          },
+          error => {
+            throw new Error(error)
           }
-        },
-        error => { throw new Error(error) }
       );
 
       // initiate POS Object
       // if in local storage then load from there otherwise create a new one
-      var posId = 'AAD099786746352413F'; // hardcoded POS ID
-      var salesPromis = this.salesService.instantiateInvoice(posId)
-        .then(
-        doc => { 
-          this.invoice = doc; 
-          this.invoice = {...this.invoice};
-          this.cdr.reattach(); 
-        }
-        ).catch(console.error.bind(console));
+      var salesPromise = this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
+          .then(
+              doc => {
+                this.invoice = doc;
+                this.invoice = {...this.invoice};
+                this.cdr.reattach();
+              }
+          ).catch(console.error.bind(console));
 
-        Promise.all([categoryPromis, salesPromis]).then(function()
-        {
-          loader.dismiss();
-        });
-
+      Promise.all([categoryPromise, salesPromise]).then(function () {
+        loader.dismiss();
       });
 
-
+    });
   }
 
   /**
