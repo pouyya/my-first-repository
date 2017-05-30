@@ -38,33 +38,28 @@ export class BasketComponent {
   public addItemToBasket(item: PurchasableItem) {
     let bucketItem = this.salesService.prepareBucketItem(item);
     this.invoice.items.push(bucketItem);
-    this.calculateTotal();
-    this.salesService.update(this.invoice);
+    this.calculateTotal(() => this.salesService.update(this.invoice));
   }
 
-  public removeItem(item: BucketItem, $index) {
+  public removeItem(item: BucketItem, $index) {   
     this.invoice.items.splice($index, 1);
-    this.calculateTotal();
-    this.salesService.update(this.invoice);
+    this.calculateTotal(() => this.salesService.update(this.invoice));
   }
 
   public updatePrice(item: BucketItem) {
     item.discount = this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice);
-    this.calculateTotal();
-    this.salesService.update(this.invoice);
+    this.calculateTotal(() => this.salesService.update(this.invoice));
   }
 
   public calculateDiscount(item: BucketItem) {
     item.finalPrice = item.discount > 0 ?
       this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
       item.actualPrice;
-    this.calculateTotal();
-    this.salesService.update(this.invoice);
+    this.calculateTotal(() => this.salesService.update(this.invoice));
   }
 
   public addQuantity(item: BucketItem) {
-    this.calculateTotal();
-    this.salesService.update(this.invoice);
+    this.calculateTotal(() => this.salesService.update(this.invoice));
   }
 
   public syncInvoice() {
@@ -87,7 +82,7 @@ export class BasketComponent {
     this.paymentClicked.emit(true);
   }
 
-  public calculateTotal() {
+  public calculateTotal(callback) {
     setTimeout(() => {
       if(this.invoice.items.length > 0) {
         this.invoice.subTotal = this.invoice.totalDiscount = 0;
@@ -96,8 +91,10 @@ export class BasketComponent {
           this.invoice.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
         });
         this.invoice.taxTotal = this.taxService.calculate(this.invoice.subTotal);
+        callback();
       } else {
         this.invoice.subTotal = this.invoice.taxTotal = this.invoice.totalDiscount = 0;
+        callback();
       }
     }, 0);
   }

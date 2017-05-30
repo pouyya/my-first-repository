@@ -34,19 +34,26 @@ export class PaymentsPage {
   }
 
   private calculateBalance() {
-    this.amount = this.invoice.payments && this.invoice.payments.length > 0 ?
-      this.invoice.taxTotal - this.invoice.payments
+    var totalPayments = 0;
+    if (this.invoice.payments && this.invoice.payments.length > 0) {
+      totalPayments = this.invoice.payments
         .map(payment => payment.amount)
-        .reduce((a, b) => a + b) : this.invoice.taxTotal;
-    this.balance = this.amount;  
-    if(this.balance === this.invoice.taxTotal) {
+        .reduce((a, b) => a + b);
+    }
+
+    this.amount = this.invoice.taxTotal - totalPayments;
+    this.balance = this.amount;
+
+    if (totalPayments === this.invoice.taxTotal) {
       // Show Payment Completion Modal!
+      this.invoice.completed = true;
+      // sync afterwards
     }
   }
 
   public payWithCash() {
     let modal = this.modalCtrl.create(CashModal, {
-      amount: this.amount,
+      amount: Number(this.amount),
       total: this.invoice.taxTotal
     });
     modal.onDidDismiss(data => {
@@ -57,7 +64,7 @@ export class PaymentsPage {
 
   public payWithCreditCard() {
     let modal = this.modalCtrl.create(CreditCardModal, {
-      amount: this.amount,
+      amount: Number(this.amount),
       total: this.invoice.taxTotal
     });
     modal.onDidDismiss(data => {
@@ -67,13 +74,12 @@ export class PaymentsPage {
   }
 
   private addPayment(type: string) {
-    if(!this.invoice.payments)
-    {
+    if (!this.invoice.payments) {
       this.invoice.payments = [];
     }
     this.invoice.payments.push({
       type: type,
-      amount: this.amount
+      amount: Number(this.amount)
     });
     this.calculateBalance();
     this.salesService.update(this.invoice);

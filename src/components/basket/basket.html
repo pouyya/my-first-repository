@@ -114,15 +114,15 @@
             <ion-col col-md-3>Subtotal</ion-col>
             <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
 
-            <ion-col col-md-3>Tax (GST)</ion-col>
-            <ion-col col-md-3 offset-md-6 class="pull-right">{{tax}}%</ion-col>
+            <ion-col col-md-3>Tax (GST {{tax}}%)</ion-col>
+            <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal - invoice.subTotal | number : '1.2-2'}}</ion-col>
 
             <ion-col col-md-12><hr/></ion-col>
             <ion-col col-md-3>Total</ion-col>
             <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
 
             <ion-col col-12>
-              <button ion-button secondary block padding (click)="gotoPayment()">
+              <button ion-button secondary block padding [disabled]="invoice.completed" (click)="gotoPayment()">
                   <span class="button-inner pull-right" style="text-align: left">
                       Pay &nbsp;&nbsp; ${{invoice.taxTotal | number : '1.2-2'}}
                   </span>

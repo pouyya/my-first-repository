@@ -64,7 +64,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			if(id) {
 				this.get(id).then(
 					doc => {
-						doc ? resolve(doc) : resolve(createDefaultObject(postID));
+						doc && doc.completed === false ? resolve(doc) : resolve(createDefaultObject(postID));
 					},
 					error => {
 						if(error.name == 'not_found') {
