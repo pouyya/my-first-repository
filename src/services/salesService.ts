@@ -1,6 +1,6 @@
 import { BucketItem } from './../model/bucketItem';
 import { PurchasableItem } from './../model/purchasableItem';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
@@ -14,9 +14,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
-		private posService: PosService
+		private posService: PosService,
+		private zone : NgZone
 	) {
-		super(Sale);
+		super(Sale, zone);
 	}
 
 	/**
@@ -89,15 +90,5 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 			return invoice;
 		}
-	}
-
-	public sync(invoice: Sale): Promise<any> {
-		return new Promise((resolve, reject) => {
-			setTimeout(() => {
-				this.put(invoice._id, invoice).then(
-					() => resolve("Invoice has synced")
-				).catch(error => reject(error));
-			}, 0);
-		});
 	}
 }

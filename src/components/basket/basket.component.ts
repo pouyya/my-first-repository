@@ -39,19 +39,19 @@ export class BasketComponent {
     let bucketItem = this.salesService.prepareBucketItem(item);
     this.invoice.items.push(bucketItem);
     this.calculateTotal();
-    this.salesService.sync(this.invoice);
+    this.salesService.update(this.invoice);
   }
 
   public removeItem(item: BucketItem, $index) {
     this.invoice.items.splice($index, 1);
     this.calculateTotal();
-    this.salesService.sync(this.invoice);
+    this.salesService.update(this.invoice);
   }
 
   public updatePrice(item: BucketItem) {
     item.discount = this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice);
     this.calculateTotal();
-    this.salesService.sync(this.invoice);
+    this.salesService.update(this.invoice);
   }
 
   public calculateDiscount(item: BucketItem) {
@@ -59,17 +59,17 @@ export class BasketComponent {
       this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
       item.actualPrice;
     this.calculateTotal();
-    this.salesService.sync(this.invoice);
+    this.salesService.update(this.invoice);
   }
 
   public addQuantity(item: BucketItem) {
     this.calculateTotal();
-    this.salesService.sync(this.invoice);
+    this.salesService.update(this.invoice);
   }
 
   public syncInvoice() {
     setTimeout(() => {
-      this.salesService.sync(this.invoice).then(
+      this.salesService.update(this.invoice).then(
         response => console.log(response)
       ).catch(error => console.error(error));
     }, 100);

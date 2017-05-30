@@ -1,7 +1,6 @@
 import { Store } from './../../model/store';
 import { StoreService } from './../../services/storeService';
-import {Component, OnInit, NgZone} from "@angular/core";
-import {Employee} from "../../model/employee";
+import {Component, NgZone} from "@angular/core";
 import {EmployeeService} from "../../services/employeeService";
 import { NavParams, Platform, NavController } from "ionic-angular";
 

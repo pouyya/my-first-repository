@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Products } from '../products/products';
 import { Stores } from '../stores/stores';
-import { Sales } from '../sales/sales';
 import { Services } from '../service/service';
 import { Category } from '../category/category';
 

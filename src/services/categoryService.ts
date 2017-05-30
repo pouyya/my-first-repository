@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import {Category} from '../model/category';
 import {BaseEntityService} from  './baseEntityService';
 
 @Injectable()
 export class CategoryService extends BaseEntityService<Category> {
-    constructor() {
-        super(Category);
+    constructor(private zone : NgZone) {
+        super(Category, zone);
     }
 
     /**

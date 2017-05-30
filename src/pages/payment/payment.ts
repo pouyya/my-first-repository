@@ -34,7 +34,7 @@ export class PaymentsPage {
   }
 
   private calculateBalance() {
-    this.amount = this.invoice.payments.length > 0 ?
+    this.amount = this.invoice.payments && this.invoice.payments.length > 0 ?
       this.invoice.taxTotal - this.invoice.payments
         .map(payment => payment.amount)
         .reduce((a, b) => a + b) : this.invoice.taxTotal;
@@ -67,11 +67,15 @@ export class PaymentsPage {
   }
 
   private addPayment(type: string) {
+    if(!this.invoice.payments)
+    {
+      this.invoice.payments = [];
+    }
     this.invoice.payments.push({
       type: type,
       amount: this.amount
     });
     this.calculateBalance();
-    this.salesService.sync(this.invoice);
+    this.salesService.update(this.invoice);
   }
 }
