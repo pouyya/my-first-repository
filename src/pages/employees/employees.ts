@@ -2,7 +2,7 @@ import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import {Employee} from "../../model/employee";
-import { NavController, AlertController, Platform, NavParams} from 'ionic-angular';
+import { NavController, AlertController, Platform } from 'ionic-angular';
 
 @Component({
   selector: 'page-employees',

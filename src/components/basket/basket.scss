@@ -1,0 +1,16 @@
+.basket
+{
+    background-color: $basket-background-color;
+}
+
+.top-component {
+  overflow-y: scroll;
+  height: 400px;
+  position: absolute;
+  
+}
+
+.bottom-component {
+  position: absolute;
+  bottom: 0;
+}

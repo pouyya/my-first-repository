@@ -1,0 +1,180 @@
+<ion-header>
+  <!-- hideBackButton -->
+  <ion-navbar>
+    <ion-title style="text-Align:center">Payment</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="full-height">
+    <ion-row class="full-height">
+
+      <!-- Sales Summary :start: -->
+      <ion-col col-md-5>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-12>
+              <h3 text-center>Sales Summary</h3>
+            </ion-col>
+            <hr/>
+
+            <ion-col col-md-12 text-left>
+              <span>{{invoice.items.length}} item(s)</span>
+            </ion-col>
+
+            <ion-col col-md-12>
+              <ion-list>
+                <ion-item *ngFor="let item of invoice.items">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-md-1>{{item.quantity}}</ion-col>
+                      <ion-col col-md-4>{{item.name}}</ion-col>
+                      <ion-col col-md-4 offset-md-3 class="pull-right">${{item.finalPrice | number : '1.2-2'}}</ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>
+              </ion-list>
+
+              <hr/>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4>Sub-total</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
+                  <ion-col col-md-4>Total Tax (GST)</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal - invoice.subTotal | number : '1.2-2'}}</ion-col>               
+                </ion-row>
+              </ion-grid>
+
+              <hr/>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4>Total</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <ion-list *ngIf="invoice.payments && invoice.payments.length > 0">
+                <ion-item *ngFor="let payment of invoice.payments">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-md-4>Payment ({{payment.type}})</ion-col>
+                      <ion-col col-md-4 offset-md-4 class="pull-right">${{payment.amount | number : '1.2-2'}}</ion-col>                      
+                    </ion-row>
+                  </ion-grid>                  
+                </ion-item>
+              </ion-list>
+
+              <ion-grid *ngIf="change > 0">
+                <ion-row>
+                  <ion-col col-md-4>Change</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{change | number : '1.2-2'}}</ion-col>
+                </ion-row>
+              </ion-grid>              
+
+              <hr/>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4><h1>Balance</h1></ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right"><h1>${{balance < 0 ? '0.00' : balance | number : '1.2-2'}}</h1></ion-col>
+                </ion-row>
+              </ion-grid>
+
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+        
+      </ion-col>
+      <!-- Sales Summary :end: -->
+
+      <!-- Payment :start: -->
+      <ion-col col-md-7>
+        <ion-grid *ngIf="!invoice.completed">
+          <ion-row>
+            <ion-col col-md-3>
+              <h2>Pay</h2>
+            </ion-col>
+            <ion-col col-md-3 offset-md-6>
+              <span text-right>
+                <a class="link" href="#" (click)="goBack()"><ion-icon name="arrow-round-back"></ion-icon> Back to Sale</a>
+              </span>
+              <br/>
+              <ion-list>
+                <ion-item>
+                  <ion-input clearInput [(ngModel)]="amount" min="1"></ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+
+            <ion-col col-md-4>
+              <button ion-button color="secondary" large block (click)="payWithCash()" [disabled]="invoice.completed">Cash</button>
+            </ion-col>
+            <ion-col col-md-4>
+              <button ion-button color="secondary" large block (click)="payWithCreditCard()" [disabled]="invoice.completed">Credit Card</button>
+            </ion-col>
+            <ion-col col-md-4>
+              <button ion-button color="secondary" large block [disabled]="invoice.completed">Gift Card</button>
+            </ion-col>                        
+
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid *ngIf="invoice.completed">
+          <ion-row>
+            <ion-col col-md-12>
+
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-12 text-center>
+                    <h1><ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete</h1>
+                    <h5 *ngIf="change > 0">Issue change of ${{change | number : '1.2-2'}}</h5>                    
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <hr>
+              <ion-col col-md-12>
+
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-md-3></ion-col>
+                    <ion-col col-md-6 class="content-center">
+                      <a href="#"><ion-icon name="print" class="link"></ion-icon> Print Recipt</a>&nbsp;
+                      <a href="#"><ion-icon name="cube" class="link"></ion-icon> Gift Recipt</a>
+                    </ion-col>
+                    <ion-col col-md-3></ion-col>
+                  </ion-row>
+                </ion-grid>
+             
+              </ion-col>
+
+              <ion-col col-md-12>
+
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-md-9>
+                      <ion-input clearInput placeholder="Enter email..."></ion-input>
+                    </ion-col>
+                    <ion-col col-md-3>
+                      <button ion-button color="secondary">Email Recipt</button>
+                    </ion-col>                                     
+                  </ion-row>
+                </ion-grid>
+
+              </ion-col>
+
+              <ion-col col-md-12>
+                <button ion-button color="secondary" block large (click)="clearInvoice()">Done (Esc)</button>
+              </ion-col>
+
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-col>
+      <!-- Payment :end: -->
+
+    </ion-row>
+  </ion-grid>
+</ion-content>

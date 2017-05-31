@@ -1,134 +1,126 @@
-        <!-- Bucket [start]  -->
-        <ion-grid class="top-component">
-          <ion-row>
-            <ion-col col-12>
-              <ion-list>
-                <!-- Items in the bucket [start] -->
-                <ion-item *ngFor="let item of invoice.items; let $index=index" 
-                [ngClass]="{active: isItemShown(item._id)}">
+<!-- Bucket [start]  -->
+<ion-content class="basket" overflow-scroll="false">
+  <ion-grid class="top-component">
+    <ion-row>
+      <ion-col col-12>
+        <ion-list>
+          <!-- Items in the bucket [start] -->
+          <ion-item *ngFor="let item of invoice.items; let $index=index" [ngClass]="{active: isItemShown(item._id)}">
 
-                  <ion-grid>
-                    <ion-row (click)="toggleItem(item._id)">
-                      <ion-col col-md-1>
-                        {{item.quantity}}
-                      </ion-col>
-                      <ion-col col-md-2>
-                        {{item.name}}
-                      </ion-col>
-                      <ion-col col-md-2>
+            <ion-grid>
+              <ion-row (click)="toggleItem(item._id)">
+                <ion-col col-md-1>
+                  {{item.quantity}}
+                </ion-col>
+                <ion-col col-md-2>
+                  {{item.name}}
+                </ion-col>
+                <ion-col col-md-2>
 
-                      </ion-col>
-                      <ion-col col-md-2 offset-md-3 class="pull-right">
-                        <span>
-                          ${{item.finalPrice * item.quantity | number : '1.2-2'}}
-                        </span>
-                        <br/>
-                        <span *ngIf="item.actualPrice != item.finalPrice">
-                          <small><s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s></small>
-                        </span>
-                      </ion-col>
-                      <ion-col col-md-1 class="pull-right">
-                        <ion-icon name="trash" class="clickable" (click)="removeItem(item, $index)"></ion-icon>
-                      </ion-col>
-                      <ion-col col-md-1 class="pull-right">
-                        <ion-icon color="success" class="clickable"
-                        [name]="isItemShown(item._id) ? 'arrow-dropdown' : 'arrow-dropright'">
-                        </ion-icon>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
+                </ion-col>
+                <ion-col col-md-2 offset-md-3 class="pull-right">
+                  <span>
+                        ${{item.finalPrice * item.quantity | number : '1.2-2'}}
+                      </span>
+                  <br/>
+                  <span *ngIf="item.actualPrice != item.finalPrice">
+                        <small><s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s></small>
+                      </span>
+                </ion-col>
+                <ion-col col-md-1 class="pull-right">
+                  <ion-icon name="trash" class="clickable" (click)="removeItem(item, $index)"></ion-icon>
+                </ion-col>
+                <ion-col col-md-1 class="pull-right">
+                  <ion-icon color="success" class="clickable" [name]="isItemShown(item._id) ? 'arrow-dropdown' : 'arrow-dropright'">
+                  </ion-icon>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
 
-                  <div *ngIf="isItemShown(item._id)">
-                    <ion-grid>
-                      <ion-row>
+            <div *ngIf="isItemShown(item._id)">
+              <ion-grid>
+                <ion-row>
 
-                        <!-- Quantity -->
-                        <ion-col col-md-4>
-                          <ion-item item-content>
-                            <ion-label color="primary" stacked>Quantity</ion-label>
-                            <ion-input type="number" min="1" 
-                              [(ngModel)]="item.quantity"
-                              (change)="addQuantity(item);">
-                            </ion-input>
-                            <!-- (ngModelChange)="oldValue = item.quantity; addQuantity($event, item);" -->
-                          </ion-item>
-                        </ion-col>
+                  <!-- Quantity -->
+                  <ion-col col-md-4>
+                    <ion-item item-content>
+                      <ion-label color="primary" stacked>Quantity</ion-label>
+                      <ion-input type="number" min="1" [(ngModel)]="item.quantity" (change)="addQuantity(item);">
+                      </ion-input>
+                      <!-- (ngModelChange)="oldValue = item.quantity; addQuantity($event, item);" -->
+                    </ion-item>
+                  </ion-col>
 
-                        <!-- Price -->
-                        <ion-col col-md-4>
-                          <ion-item item-content>
-                            <ion-label color="primary" stacked>Price</ion-label>
-                            <ion-input type="text" 
-                            [(ngModel)]="item.finalPrice"
-                            (change)="updatePrice(item)">
-                            </ion-input>
-                          </ion-item>            
-                        </ion-col>
+                  <!-- Price -->
+                  <ion-col col-md-4>
+                    <ion-item item-content>
+                      <ion-label color="primary" stacked>Price</ion-label>
+                      <ion-input type="text" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
+                      </ion-input>
+                    </ion-item>
+                  </ion-col>
 
-                        <!-- Discount -->
-                        <ion-col col-md-4>
-                          <ion-item item-content>
-                            <ion-label color="primary" stacked>Discount(%)</ion-label>
-                            <ion-input type="number" [ngModel]="item.discount | number : '1.2-2'" min="0" max="99"
-                            (ngModelChange)="item.discount = $event"
-                            (change)="calculateDiscount(item)"></ion-input>
-                          </ion-item>
-                        </ion-col>
+                  <!-- Discount -->
+                  <ion-col col-md-4>
+                    <ion-item item-content>
+                      <ion-label color="primary" stacked>Discount(%)</ion-label>
+                      <ion-input type="number" [ngModel]="item.discount | number : '1.2-2'" min="0" max="99" (ngModelChange)="item.discount = $event"
+                        (change)="calculateDiscount(item)"></ion-input>
+                    </ion-item>
+                  </ion-col>
 
-                        <ion-col col-md-12>
-                          <ion-item item-content>
-                            <ion-label color="primary" stacked>Notes</ion-label>
-                            <!-- (change)="syncInvoice()" -->
-                            <ion-textarea 
-                              [(ngModel)]="item.notes"
-                              placeholder="Type to add notes...">
-                            </ion-textarea>
-                          </ion-item>
-                        </ion-col>
+                  <ion-col col-md-12>
+                    <ion-item item-content>
+                      <ion-label color="primary" stacked>Notes</ion-label>
+                      <!-- (change)="syncInvoice()" -->
+                      <ion-textarea [(ngModel)]="item.notes" placeholder="Type to add notes...">
+                      </ion-textarea>
+                    </ion-item>
+                  </ion-col>
 
-                      </ion-row>
-                    </ion-grid>
-                  </div>
-                </ion-item>
-                <!-- Items in the bucket [end] -->
+                </ion-row>
+              </ion-grid>
+            </div>
+          </ion-item>
+          <!-- Items in the bucket [end] -->
 
-              </ion-list>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        <ion-grid class="bottom-component">
-          <ion-row>
-            <ion-col col-md-12>
-              <hr/>
-              <ion-textarea 
-                [(ngModel)]="invoice.notes" 
-                (change)="syncInvoice()" 
-                placeholder="Add Sale Notes...">
-              </ion-textarea>              
-            </ion-col>
-            <ion-col col-md-3>Discount</ion-col>
-            <ion-col col-md-3 offset-md-6 class="pull-right">
-              ${{invoice.totalDiscount > 0 ? invoice.totalDiscount : 0.00 | number : '1.2-2'}}
-            </ion-col>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid class="bottom-component" overflow-scroll="false">
+    <ion-row>
+      <ion-col col-md-12>
+        <hr/>
+        <ion-textarea [(ngModel)]="invoice.notes" (change)="syncInvoice()" placeholder="Add Sale Notes...">
+        </ion-textarea>
+      </ion-col>
+      <ion-col col-md-3>Discount</ion-col>
+      <ion-col col-md-3 offset-md-6 class="pull-right">
+        ${{invoice.totalDiscount > 0 ? invoice.totalDiscount : 0.00 | number : '1.2-2'}}
+      </ion-col>
 
-            <ion-col col-md-3>Subtotal</ion-col>
-            <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
+      <ion-col col-md-3>Subtotal</ion-col>
+      <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
 
-            <ion-col col-md-3>Tax (GST)</ion-col>
-            <ion-col col-md-3 offset-md-6 class="pull-right">{{tax}}%</ion-col>
+      <ion-col col-md-3>Tax (GST {{tax}}%)</ion-col>
+      <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal - invoice.subTotal | number : '1.2-2'}}</ion-col>
 
-            <ion-col col-md-12><hr/></ion-col>
-            <ion-col col-md-3>Total</ion-col>
-            <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
+      <ion-col col-md-12>
+        <hr/>
+      </ion-col>
+      <ion-col col-md-3>Total</ion-col>
+      <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
 
-            <ion-col col-12>
-              <button ion-button secondary block padding>
-                  <span class="button-inner pull-right" style="text-align: left">
-                      Pay &nbsp;&nbsp; ${{invoice.taxTotal | number : '1.2-2'}}
-                  </span>
-              </button>
-            </ion-col>
-            
-          </ion-row>
-        </ion-grid>
-        <!-- Bucket [end] -->
+      <ion-col col-12>
+        <button ion-button secondary block padding [disabled]="invoice.taxTotal <= 0" (click)="gotoPayment()">
+                <span class="button-inner pull-right" style="text-align: left">
+                    Pay &nbsp;&nbsp; ${{invoice.taxTotal | number : '1.2-2'}}
+                </span>
+            </button>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+</ion-content>
+<!-- Bucket [end] -->

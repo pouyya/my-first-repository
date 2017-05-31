@@ -1,6 +1,11 @@
 import {DBBasedEntity} from './dbBasedEntity';
 import {BucketItem} from './bucketItem';
 
+interface PaymentsInterface {
+  type: string,
+  amount: number
+}
+
 export class Sale extends DBBasedEntity {
 
   public posID: string;
@@ -12,6 +17,7 @@ export class Sale extends DBBasedEntity {
   public completed: boolean;
   public totalDiscount: number;
   public state: string;
+  public payments: Array<PaymentsInterface>;
 
   constructor() {
     super();
@@ -19,5 +25,6 @@ export class Sale extends DBBasedEntity {
     this.items = [];
     this.totalDiscount = 0;
     this.state = 'parked'; // TODO: should be from dynamic source
+    this.payments = [];
   }
 }

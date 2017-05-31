@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Pay With Credit Card
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-12 class="content-center">
+        <h1 text-center>Collect ${{invoice.taxTotal | number : '1.2-2'}}</h1>
+      </ion-col>
+      <ion-col col-md-12 class="content-center">
+        <h3 text-center>Quick Cash Payment</h3>
+      </ion-col>
+      <ion-col col-md-12 class="content-center">
+        <button ion-button *ngIf="displayAmount < this.invoice.taxTotal" color="light" large (click)="pay(displayAmount)">${{displayAmount | number : '1.2-2'}}</button>
+        <button ion-button color="secondary" large (click)="pay(invoice.taxTotal)">${{invoice.taxTotal | number : '1.2-2'}}</button>
+        <button ion-button *ngFor="let cash of quickCash" color="primary" large (click)="pay(cash)">${{cash | number : '1.2-2'}}</button>
+        <!-- [disabled]="this.invoice.taxTotal < cash" -->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
