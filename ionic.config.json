@@ -1,7 +1,5 @@
 {
   "name": "SimpleCuts",
   "app_id": "7302dfdc",
-  "type": "ionic-angular",
-  "typescript": true,
-  "v2": true
+  "type": "ionic-angular"
 }

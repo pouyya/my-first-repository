@@ -16,6 +16,7 @@ export class PaymentsPage {
   public invoice: Sale
   public amount: number;
   public balance: number;
+  public change: number;
 
   constructor(
     private salesService: SalesServices,
@@ -24,6 +25,8 @@ export class PaymentsPage {
     public modalCtrl: ModalController) {
     // load invoice object
     this.invoice = navParams.get('invoice');
+    this.amount = this.balance = 0;
+    this.change = 0;
     this.calculateBalance();
   }
 
@@ -35,53 +38,80 @@ export class PaymentsPage {
 
   private calculateBalance() {
     var totalPayments = 0;
-    if (this.invoice.payments && this.invoice.payments.length > 0) {
-      totalPayments = this.invoice.payments
-        .map(payment => payment.amount)
-        .reduce((a, b) => a + b);
-    }
+    if(this.invoice.taxTotal > 0) {
+      if (this.invoice.payments && this.invoice.payments.length > 0) {
+        totalPayments = this.invoice.payments
+          .map(payment => payment.amount)
+          .reduce((a, b) => a + b);
+      }
 
-    this.amount = this.invoice.taxTotal - totalPayments;
-    this.balance = this.amount;
+      this.amount = this.invoice.taxTotal - totalPayments;
+      this.balance = this.amount;
 
-    if (totalPayments === this.invoice.taxTotal) {
-      // Show Payment Completion Modal!
-      this.invoice.completed = true;
-      // sync afterwards
+      if (totalPayments >= this.invoice.taxTotal) {
+        // Show Payment Completion Modal!
+        this.invoice.completed = true;
+        this.change = totalPayments - this.invoice.taxTotal;
+        // sync afterwards
+      }
     }
   }
 
   public payWithCash() {
     let modal = this.modalCtrl.create(CashModal, {
-      amount: Number(this.amount),
-      total: this.invoice.taxTotal
+      invoice: this.invoice,
+      amount: Number(this.amount)
     });
     modal.onDidDismiss(data => {
-      data && this.addPayment('cash');
+      data.status && this.addPayment('cash', data.data);
     });
     modal.present();
   }
 
   public payWithCreditCard() {
     let modal = this.modalCtrl.create(CreditCardModal, {
-      amount: Number(this.amount),
-      total: this.invoice.taxTotal
+      invoice: this.invoice,
+      amount: Number(this.amount)
     });
     modal.onDidDismiss(data => {
-      data && this.addPayment('credit_card');
+      data.status && this.addPayment('credit_card', data.data);
     });
     modal.present();
   }
 
-  private addPayment(type: string) {
+  private addPayment(type: string, payment: number) {
     if (!this.invoice.payments) {
       this.invoice.payments = [];
     }
     this.invoice.payments.push({
       type: type,
-      amount: Number(this.amount)
+      amount: Number(payment)
     });
     this.calculateBalance();
-    this.salesService.update(this.invoice);
+    this.salesService.put(this.invoice);
+  }
+
+  public clearInvoice() {
+    // delete current invoice for now, until pos id issue is not resolved
+    this.salesService.delete(this.invoice).then(() => {
+      this.navCtrl.pop();
+    }, (err) => {
+      console.log(new Error(err));
+      this.navCtrl.pop();
+    });
+
+    // TODO: Uncomment this code once hardcoded pos id issue resolved
+    /*
+    this.invoice.completed = true;
+    this.salesService.put(this.invoice).then(() => {
+      this.navCtrl.pop();
+    }, (err) => {
+      throw new Error(err);
+    });
+    */
+  }
+
+  public goBack() {
+    this.navCtrl.pop();
   }
 }

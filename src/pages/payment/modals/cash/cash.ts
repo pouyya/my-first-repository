@@ -1,5 +1,6 @@
+import { Sale } from './../../../../model/sale';
 import { Component } from '@angular/core';
-import { NavParams, ViewController  } from "ionic-angular";
+import { NavParams, ViewController } from "ionic-angular";
 
 @Component({
   selector: 'cash-modal',
@@ -8,21 +9,22 @@ import { NavParams, ViewController  } from "ionic-angular";
 })
 export class CashModal {
 
+  public invoice: Sale;
   public displayAmount: number;
-  public totalAmount: number;
+  public quickCash: Array<number> = [10, 20, 30];
 
   constructor(
     private navParams: NavParams,
     public viewCtrl: ViewController) {
+    this.invoice = navParams.get('invoice');
     this.displayAmount = navParams.get('amount');
-    this.totalAmount = navParams.get('total');
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss(false);
+    this.viewCtrl.dismiss({ status: false, data: null });
   }
 
-  public pay() {
-    this.viewCtrl.dismiss(true);
+  public pay(data) {
+    this.viewCtrl.dismiss({ status: true, data: Number(data) });
   }
 }

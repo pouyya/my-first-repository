@@ -1,5 +1,6 @@
 <ion-header>
-  <ion-navbar hideBackButton>
+  <!-- hideBackButton -->
+  <ion-navbar>
     <ion-title style="text-Align:center">Payment</ion-title>
   </ion-navbar>
 </ion-header>
@@ -29,7 +30,7 @@
                     <ion-row>
                       <ion-col col-md-1>{{item.quantity}}</ion-col>
                       <ion-col col-md-4>{{item.name}}</ion-col>
-                      <ion-col col-md-4 offset-md-3 class="pull-right">${{item.finalPrice}}</ion-col>
+                      <ion-col col-md-4 offset-md-3 class="pull-right">${{item.finalPrice | number : '1.2-2'}}</ion-col>
                     </ion-row>
                   </ion-grid>
                 </ion-item>
@@ -39,9 +40,9 @@
               <ion-grid>
                 <ion-row>
                   <ion-col col-md-4>Sub-total</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.subTotal}}</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
                   <ion-col col-md-4>Total Tax (GST)</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal - invoice.subTotal}}</ion-col>               
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal - invoice.subTotal | number : '1.2-2'}}</ion-col>               
                 </ion-row>
               </ion-grid>
 
@@ -49,7 +50,7 @@
               <ion-grid>
                 <ion-row>
                   <ion-col col-md-4>Total</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal}}</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
                 </ion-row>
               </ion-grid>
 
@@ -58,17 +59,24 @@
                   <ion-grid>
                     <ion-row>
                       <ion-col col-md-4>Payment ({{payment.type}})</ion-col>
-                      <ion-col col-md-4 offset-md-4 class="pull-right">${{payment.amount}}</ion-col>                      
+                      <ion-col col-md-4 offset-md-4 class="pull-right">${{payment.amount | number : '1.2-2'}}</ion-col>                      
                     </ion-row>
                   </ion-grid>                  
                 </ion-item>
               </ion-list>
 
+              <ion-grid *ngIf="change > 0">
+                <ion-row>
+                  <ion-col col-md-4>Change</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{change | number : '1.2-2'}}</ion-col>
+                </ion-row>
+              </ion-grid>              
+
               <hr/>
               <ion-grid>
                 <ion-row>
                   <ion-col col-md-4><h1>Balance</h1></ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right"><h1>${{balance}}</h1></ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right"><h1>${{balance < 0 ? '0.00' : balance | number : '1.2-2'}}</h1></ion-col>
                 </ion-row>
               </ion-grid>
 
@@ -88,10 +96,12 @@
               <h2>Pay</h2>
             </ion-col>
             <ion-col col-md-3 offset-md-6>
+              <span text-right>
+                <a class="link" href="#" (click)="goBack()"><ion-icon name="arrow-round-back"></ion-icon> Back to Sale</a>
+              </span>
+              <br/>
               <ion-list>
                 <ion-item>
-                  <a href="#" (click)="goBack()"><ion-icon name="arrow-round-back"></ion-icon> Back to Sale</a>
-                  <br/>
                   <ion-input clearInput [(ngModel)]="amount" min="1"></ion-input>
                 </ion-item>
               </ion-list>
@@ -112,16 +122,53 @@
 
         <ion-grid *ngIf="invoice.completed">
           <ion-row>
-            <ion-col col-md-12 text-center>
-              <h1><ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete</h1>
+            <ion-col col-md-12>
+
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-12 text-center>
+                    <h1><ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete</h1>
+                    <h5 *ngIf="change > 0">Issue change of ${{change | number : '1.2-2'}}</h5>                    
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+
+              <hr>
+              <ion-col col-md-12>
+
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-md-3></ion-col>
+                    <ion-col col-md-6 class="content-center">
+                      <a href="#"><ion-icon name="print" class="link"></ion-icon> Print Recipt</a>&nbsp;
+                      <a href="#"><ion-icon name="cube" class="link"></ion-icon> Gift Recipt</a>
+                    </ion-col>
+                    <ion-col col-md-3></ion-col>
+                  </ion-row>
+                </ion-grid>
+             
+              </ion-col>
+
+              <ion-col col-md-12>
+
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-md-9>
+                      <ion-input clearInput placeholder="Enter email..."></ion-input>
+                    </ion-col>
+                    <ion-col col-md-3>
+                      <button ion-button color="secondary">Email Recipt</button>
+                    </ion-col>                                     
+                  </ion-row>
+                </ion-grid>
+
+              </ion-col>
+
+              <ion-col col-md-12>
+                <button ion-button color="secondary" block large (click)="clearInvoice()">Done (Esc)</button>
+              </ion-col>
+
             </ion-col>
-            <ion-col col-md-3></ion-col>
-            <ion-col col-md-6>
-              <hr><br>
-              <a href=""><ion-icon name="print"></ion-icon> Print Recipt</a>&nbsp;
-              <a href=""><ion-icon name="cube"></ion-icon> Gift Recipt</a>
-            </ion-col>
-            <ion-col col-md-3></ion-col>
           </ion-row>
         </ion-grid>
 

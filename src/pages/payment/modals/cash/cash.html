@@ -5,8 +5,7 @@
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
-        <span ion-text color="primary" showWhen="ios">Cancel</span>
-        <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+        <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
   </ion-toolbar>
@@ -15,17 +14,18 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col col-md-12>
-        <h1 text-center>Collect ${{totalAmount | number : '1.2-2'}}</h1>
+      <ion-col col-md-12 class="content-center">
+        <h1 text-center>Collect ${{invoice.taxTotal | number : '1.2-2'}}</h1>
       </ion-col>
-      <ion-col col-md-12>
+      <ion-col col-md-12 class="content-center">
         <h3 text-center>Quick Cash Payment</h3>
       </ion-col>
-      <ion-col col-md-4></ion-col>
-      <ion-col col-md-4>
-        <button ion-button color="secondary" large (click)="pay()">${{displayAmount | number : '1.2-2'}}</button>
+      <ion-col col-md-12 class="content-center">
+        <button ion-button *ngIf="displayAmount < this.invoice.taxTotal" color="light" large (click)="pay(displayAmount)">${{displayAmount | number : '1.2-2'}}</button>
+        <button ion-button color="secondary" large (click)="pay(invoice.taxTotal)">${{invoice.taxTotal | number : '1.2-2'}}</button>
+        <button ion-button *ngFor="let cash of quickCash" color="primary" large (click)="pay(cash)">${{cash | number : '1.2-2'}}</button>
+        <!-- [disabled]="this.invoice.taxTotal < cash" -->
       </ion-col>
-      <ion-col col-md-4></ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
