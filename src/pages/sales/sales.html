@@ -18,11 +18,11 @@
           </button>
         </ion-list>
       </ion-col>
-      <ion-col col-4>
+      <ion-col col-6>
         <tile-items [items]="activeTiles" (onSelect)="onSelect($event)">
         </tile-items>
       </ion-col>
-      <ion-col col-6>
+      <ion-col col-4>
         <!-- Bucket [start]  -->
         <basket [_invoice]="invoice" (paymentClicked)="paymentClicked($event)"></basket>
         <!-- Bucket [end] -->

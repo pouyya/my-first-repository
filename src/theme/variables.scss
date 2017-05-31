@@ -31,6 +31,12 @@ $colors: (
   dark:       #222
 );
 
+$colors-md: (
+  primary: #5DAEA7
+);
+
+$background-color: #EDEEF2;
+
 $toolbar-background: #3A4953;
 $toolbar-text-color: #CBCFD2;
 $list-background-color: #EBEBEB;
@@ -40,7 +46,19 @@ $toolbar-md-text-color: #CBCFD2;
 
 $menu-width: 180px;
 $button-background-color: #3A4953;
- 
+
+$category: (
+  active: #FFFFFF
+); 
+
+$tile-background-color: #FFFFFF;
+$tile-background-color-border: #a9a9a9;
+$tile-background-color-top-border: #62676F;
+$tile-hover-background-color: #3F4A53;
+$tile-hover-color: #FFFFFF;
+
+$basket-background-color: #FFFFFF;
+
 
 // App iOS Variables
 // --------------------------------------------------
