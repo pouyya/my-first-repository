@@ -1,3 +1,5 @@
+import { HelperService } from './../services/helperService';
+import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -71,7 +73,8 @@ const cloudSettings: CloudSettings = {
     Employees,
     PaymentsPage,
     CashModal,
-    CreditCardModal
+    CreditCardModal,
+    ParkSale
   ],
   imports: [
     BrowserModule,
@@ -108,7 +111,8 @@ const cloudSettings: CloudSettings = {
     Employees,
     PaymentsPage,
     CashModal,
-    CreditCardModal
+    CreditCardModal,
+    ParkSale
   ],
   providers: [
     StatusBar,
@@ -121,7 +125,8 @@ const cloudSettings: CloudSettings = {
     EmployeeService,
     TaxService,
     CalculatorService,
-    PosService
+    PosService,
+    HelperService
   ]
 })
 export class AppModule {}

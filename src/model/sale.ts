@@ -24,7 +24,8 @@ export class Sale extends DBBasedEntity {
     this.completed = false;
     this.items = [];
     this.totalDiscount = 0;
-    this.state = 'parked'; // TODO: should be from dynamic source
+    this.state = 'current'; // TODO: should be from dynamic source
     this.payments = [];
+    this.notes = "";
   }
 }
