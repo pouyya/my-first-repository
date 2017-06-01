@@ -11,7 +11,7 @@
   <ion-grid class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
-        <ion-list>
+        <ion-list no-lines>
           <button ion-item *ngFor="let category of categories" class="text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
             (click)="itemSelected(category)">
               {{ category.name }}
