@@ -141,12 +141,6 @@ export class Sales {
       message: 'Do you wish to discard this sale ?',
       buttons: [
         {
-          text: 'No',
-          handler: () => {
-            console.log('Disagree clicked');
-          }
-        },
-        {
           text: 'Yes',
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
@@ -154,6 +148,12 @@ export class Sales {
               this.navCtrl.setRoot(this.navCtrl.getActive().component);
             }).catch((error) => console.log(new Error()));
 
+          }
+        },        
+        {
+          text: 'No',
+          handler: () => {
+            console.log('Disagree clicked');
           }
         }
       ]
