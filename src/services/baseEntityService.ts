@@ -39,8 +39,4 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     get(id: any) {
         return this._dbService.get(id);
     }
-
-    put(entity: T) {
-        return this._dbService.put(entity);
-    }
 }

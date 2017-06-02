@@ -13,6 +13,7 @@ export abstract class DBBasedEntity
 
     public _id: string;
     public _rev: string;
+    public _deleted: boolean;
     public readonly entityTypeName: string;
     public readonly entityTypeNames: Array<string>;
 }
