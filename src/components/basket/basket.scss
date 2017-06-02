@@ -1,5 +1,6 @@
-.basket
-{
+@import '../../theme/variables';
+
+.basket {
     background-color: $basket-background-color;
 }
 
@@ -13,4 +14,9 @@
 .bottom-component {
   position: absolute;
   bottom: 0;
+}
+
+#park-sale {
+  @extend .link;
+  margin-right: 2em;
 }

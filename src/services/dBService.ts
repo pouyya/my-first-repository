@@ -52,19 +52,34 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     add(entity: T) {
-        return this._db.post(entity);
+        if(!entity._id)
+        {
+            entity._id = new Date().toISOString();
+        }
+        return this.update(entity);
     }
 
     update(entity: T) {
-        return this._db.put(entity, function(err, resp) {
-            if(err) return;
-            entity._rev = resp.rev;
+        return this.get(entity._id).then(result => {
+            entity._rev = result._rev;
+            return this._db.put(entity).then(function(resultAfterUpdate) 
+            { 
+                entity._rev = resultAfterUpdate.rev;   
+            });
+        }, error => {
+            if (error.status == "404") {
+                return this._db.put(entity);
+            } else {
+                return new Promise((resolve, reject) => {
+                    reject(error);
+                });
+            }
         });
-
     }
 
     delete(entity: T) {
-        return this._db.remove(entity._id, entity._rev);
+        entity._deleted = true;
+        return this.update(entity);
     }
 
     getAll() {
@@ -84,21 +99,6 @@ export class DBService<T extends DBBasedEntity> {
 
     get(id) {
         return this._db.get(id);
-    }
-
-    put(entity: T) {
-        return this.get(entity._id).then(result => {
-            entity._rev = result._rev;
-            return this._db.put(entity);
-        }, error => {
-            if (error.status == "404") {
-                return this._db.put(entity);
-            } else {
-                return new Promise((resolve, reject) => {
-                    reject(error);
-                });
-            }
-        });
     }
 
     handleChange(change) {
