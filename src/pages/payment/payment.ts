@@ -1,3 +1,4 @@
+import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController } from "ionic-angular";
@@ -17,12 +18,14 @@ export class PaymentsPage {
   public amount: number;
   public balance: number;
   public change: number;
+  private callback: any;
 
   constructor(
     private salesService: SalesServices,
     public navCtrl: NavController,
     private navParams: NavParams,
-    public modalCtrl: ModalController) {
+    public modalCtrl: ModalController,
+    public helper: HelperService) {
     // load invoice object
     this.invoice = navParams.get('invoice');
     this.amount = this.balance = 0;
@@ -63,7 +66,7 @@ export class PaymentsPage {
       amount: Number(this.amount)
     });
     modal.onDidDismiss(data => {
-      data.status && this.addPayment('cash', data.data);
+      data && data.status && this.addPayment('cash', data.data);
     });
     modal.present();
   }
@@ -74,7 +77,7 @@ export class PaymentsPage {
       amount: Number(this.amount)
     });
     modal.onDidDismiss(data => {
-      data.status && this.addPayment('credit_card', data.data);
+      data && data.status && this.addPayment('credit_card', data.data);
     });
     modal.present();
   }
@@ -112,6 +115,9 @@ export class PaymentsPage {
   }
 
   public goBack() {
-    this.navCtrl.pop();
+    this.callback = this.navParams.get("callback")
+    this.callback(this.balance).then(()=>{
+        this.navCtrl.pop();
+    });
   }
 }

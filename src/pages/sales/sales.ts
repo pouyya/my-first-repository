@@ -103,6 +103,15 @@ export class Sales {
 
   // Event
   public paymentClicked() {
-    this.navCtrl.push(PaymentsPage, { invoice: this.invoice });
+    var myCallbackFunction = function(_params) {
+      return new Promise((resolve, reject) => {
+          resolve();
+      });
+    }
+
+    this.navCtrl.push(PaymentsPage, {
+      invoice: this.invoice,
+      callback: myCallbackFunction
+    });
   }
 }

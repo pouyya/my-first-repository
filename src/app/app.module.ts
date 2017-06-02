@@ -1,3 +1,4 @@
+import { HelperService } from './../services/helperService';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -121,7 +122,8 @@ const cloudSettings: CloudSettings = {
     EmployeeService,
     TaxService,
     CalculatorService,
-    PosService
+    PosService,
+    HelperService
   ]
 })
 export class AppModule {}
