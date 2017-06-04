@@ -120,7 +120,7 @@ export class Sales {
   public parkSale() {
     let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
     modal.onDidDismiss(data => {
-      if (data) {
+      if (data.status) {
         // clear invoice
         localStorage.removeItem('pos_id');
         let confirm = this.alertController.create({
@@ -137,7 +137,11 @@ export class Sales {
         });
         confirm.present();
       } else {
-        let error = this.alertController.create({ title: 'ERROR', message: 'An error has occurred :(', buttons: ['OK']});
+        let error = this.alertController.create({ 
+          title: 'ERROR', 
+          message: data.error || 'An error has occurred :(', 
+          buttons: ['OK']
+        });
         error.present();
       }
     });
