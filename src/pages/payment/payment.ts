@@ -91,7 +91,7 @@ export class PaymentsPage {
       amount: Number(payment)
     });
     this.calculateBalance();
-    this.salesService.put(this.invoice);
+    this.salesService.update(this.invoice);
   }
 
   public clearInvoice() {
@@ -106,7 +106,7 @@ export class PaymentsPage {
     // TODO: Uncomment this code once hardcoded pos id issue resolved
     /*
     this.invoice.completed = true;
-    this.salesService.put(this.invoice).then(() => {
+    this.salesService.update(this.invoice).then(() => {
       this.navCtrl.pop();
     }, (err) => {
       throw new Error(err);

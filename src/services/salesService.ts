@@ -57,38 +57,46 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * Instantiate a default Sale Object
 	 * @return {Sale}
 	 */
-	public instantiateInvoice(id?: string): Promise<any> {
+	public instantiateInvoice(posId: string): Promise<any> {
 		var tax = this.taxService.getTax() || 0;
-		var postID = this.posService.getCurrentPosID();
 		return new Promise((resolve, reject) => {		
-			if(id) {
-				this.get(id).then(
-					doc => {
-						doc && doc.completed === false ? resolve(doc) : resolve(createDefaultObject(postID));
+			if(posId) {
+				this.findBy({ "selector": { "posID": posId , "state": "current" }, include_docs: true})
+				.then(
+					docs => {
+						if(docs && docs.length > 0)
+						{
+							var doc = docs[0];
+							if(doc)
+							{
+								resolve(doc);
+							}
+						}
+
+						return resolve(createDefaultObject(posId));
 					},
 					error => {
 						if(error.name == 'not_found') {
-							resolve(createDefaultObject(postID));
+							resolve(createDefaultObject(posId));
 						} else {
 							throw new Error(error);
 						}
 					}
 				);
 			} else {
-				resolve(createDefaultObject(postID));
+				resolve(createDefaultObject(posId));
 			}
 		});
 
-
 		function createDefaultObject(posID: string) {
-			let invoice: Sale = new Sale();
-			invoice._id = posID;
-			invoice.posID = posID;
-			invoice.subTotal = 0;
-			invoice.tax = tax;
-			invoice.taxTotal = 0;
+			let sale: Sale = new Sale();
+			sale._id = new Date().toISOString();
+			sale.posID = posID;
+			sale.subTotal = 0;
+			sale.tax = tax;
+			sale.taxTotal = 0;
 
-			return invoice;
+			return sale;
 		}
 	}
 }

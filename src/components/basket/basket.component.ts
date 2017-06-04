@@ -64,8 +64,8 @@ export class BasketComponent {
   private calculateAndSync() {
     this.calculateTotal(() => {
       this.setBalance();
-      this.salesService.put(this.invoice)
-    });    
+      this.salesService.update(this.invoice)
+    });
   }
 
   public addItemToBasket(item: PurchasableItem) {
@@ -96,11 +96,9 @@ export class BasketComponent {
   }
 
   public syncInvoice() {
-    setTimeout(() => {
-      this.salesService.put(this.invoice).then(
-        response => console.log(response)
-      ).catch(error => console.error(error));
-    }, 100);
+    return this.salesService.update(this.invoice).then(
+      response => console.log(response)
+    ).catch(error => console.error(error));
   }
 
   public toggleItem(id: string): void {

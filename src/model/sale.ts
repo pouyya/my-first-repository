@@ -27,6 +27,7 @@ export class Sale extends DBBasedEntity {
     this.totalDiscount = 0;
     this.state = 'current'; // TODO: should be from dynamic source
     this.payments = [];
+    this.notes = "";
     this.round = 0;
   }
 }
