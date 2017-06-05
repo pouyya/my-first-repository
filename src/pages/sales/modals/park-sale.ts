@@ -22,7 +22,7 @@ export class ParkSale {
   }
 
   public dismissParkSale() {
-    this.viewCtrl.dismiss({ status: true, error: false });
+    this.viewCtrl.dismiss({ status: false, error: false });
   }
 
   public parkIt() {

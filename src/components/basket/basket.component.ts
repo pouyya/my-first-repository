@@ -85,6 +85,7 @@ export class BasketComponent {
   }
 
   public calculateDiscount(item: BucketItem) {
+    item.discount = this.helper.round2Dec(item.discount);
     item.finalPrice = item.discount > 0 ?
       this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
       item.actualPrice;

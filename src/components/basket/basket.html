@@ -64,7 +64,7 @@
                   <ion-col col-md-4>
                     <ion-item item-content>
                       <ion-label color="primary" stacked>Discount(%)</ion-label>
-                      <ion-input type="number" [ngModel]="item.discount | number : '1.2-2'" min="0" max="99" (ngModelChange)="item.discount = $event"
+                      <ion-input type="number" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event"
                         (change)="calculateDiscount(item)"></ion-input>
                     </ion-item>
                   </ion-col>
@@ -97,7 +97,7 @@
       </ion-col>
       <ion-col col-md-3>Discount</ion-col>
       <ion-col col-md-3 offset-md-6 class="pull-right">
-        ${{invoice.totalDiscount > 0 ? invoice.totalDiscount : 0.00 | number : '1.2-2'}}
+        ${{invoice.totalDiscount | number : '1.2-2'}}
       </ion-col>
 
       <ion-col col-md-3>Subtotal</ion-col>

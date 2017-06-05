@@ -7,8 +7,4 @@ export class StoreService extends BaseEntityService<Store> {
   constructor(private zone : NgZone) {
     super(Store, zone);
   }
-
-  getEmployees() {
-
-  }
 }
