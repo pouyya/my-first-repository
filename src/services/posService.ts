@@ -12,7 +12,7 @@ export class PosService {
     // TODO: Replace hardcoded POSID with sessions stored ID
     var posId = localStorage.getItem('pos_id');
     if(!posId) {
-      localStorage.setItem('pos_id', this.helper.getUUID());
+      localStorage.setItem('pos_id', new Date().toISOString());
       posId = localStorage.getItem('pos_id');
     }
     

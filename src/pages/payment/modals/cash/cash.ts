@@ -11,7 +11,7 @@ export class CashModal {
 
   public invoice: Sale;
   public displayAmount: number;
-  public quickCash: Array<number> = [10, 20, 30];
+  public quickCash: Array<number> = [5, 10, 20, 50, 100];
 
   constructor(
     private navParams: NavParams,
@@ -21,7 +21,7 @@ export class CashModal {
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss({ status: false, data: null });
+    this.viewCtrl.dismiss();
   }
 
   public pay(data) {

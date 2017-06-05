@@ -11,7 +11,6 @@ export class CreditCardModal {
 
   public invoice: Sale;
   public displayAmount: number;
-  public quickCash: Array<number> = [10, 20, 30];
 
   constructor(
     private navParams: NavParams,

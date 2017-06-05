@@ -18,6 +18,7 @@ export class Sale extends DBBasedEntity {
   public totalDiscount: number;
   public state: string;
   public payments: Array<PaymentsInterface>;
+  public round: number;
 
   constructor() {
     super();
@@ -27,5 +28,6 @@ export class Sale extends DBBasedEntity {
     this.state = 'current'; // TODO: should be from dynamic source
     this.payments = [];
     this.notes = "";
+    this.round = 0;
   }
 }

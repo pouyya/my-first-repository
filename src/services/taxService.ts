@@ -9,7 +9,11 @@ export class TaxService {
   }
 
   public calculate(price: number): number {
-    let amountToAdd = (this.tax / 100) * price;
-    return price + amountToAdd;
+    if(this.tax > 0) {
+      let amountToAdd = (this.tax / 100) * price;
+      return price + amountToAdd;
+    } else {
+      return price;
+    }
   }
 }

@@ -3,29 +3,43 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class HelperService {
 
-  public getUUID() {
-    if (typeof (window) !== "undefined" && typeof (window.crypto) !== "undefined" && typeof (window.crypto.getRandomValues) !== "undefined") {
-      var buf = new Uint16Array(8);
-      window.crypto.getRandomValues(buf);
-      return (this.pad4(buf[0]) + this.pad4(buf[1]) + "-" + this.pad4(buf[2]) + "-" + this.pad4(buf[3]) + "-" + this.pad4(buf[4]) + "-" + this.pad4(buf[5]) + this.pad4(buf[6]) + this.pad4(buf[7]));
+  private decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
     }
-    else {
-      return this.random4() + this.random4() + "-" + this.random4() + "-" + this.random4() + "-" +
-        this.random4() + "-" + this.random4() + this.random4() + this.random4();
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
     }
+    // If the value is negative...
+    if (value < 0) {
+      return -this.decimalAdjust(type, -value, exp);
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
   }
 
-  private pad4(num) {
-    var ret = num.toString(16);
-    while (ret.length < 4) {
-      ret = "0" + ret;
-    }
-    return ret;
+  public round10(value: number, exp: number): number {
+    return this.decimalAdjust('round', value, exp);
   }
 
-  private random4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
+  public floor10(value: number, exp: number): number {
+    return this.decimalAdjust('floor', value, exp);
   }
+
+  public ceil10(value: number, exp: number): number {
+    return this.decimalAdjust('ceil', value, exp);
+  }
+
+  public round2Dec(value: number): number {
+    return Math.round(value * 100) / 100;
+  }
+
 }

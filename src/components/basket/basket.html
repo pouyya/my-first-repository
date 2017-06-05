@@ -47,7 +47,6 @@
                       <ion-label color="primary" stacked>Quantity</ion-label>
                       <ion-input type="number" min="1" [(ngModel)]="item.quantity" (change)="addQuantity(item);">
                       </ion-input>
-                      <!-- (ngModelChange)="oldValue = item.quantity; addQuantity($event, item);" -->
                     </ion-item>
                   </ion-col>
 
@@ -64,7 +63,7 @@
                   <ion-col col-md-4>
                     <ion-item item-content>
                       <ion-label color="primary" stacked>Discount(%)</ion-label>
-                      <ion-input type="number" [ngModel]="item.discount | number : '1.2-2'" min="0" max="99" (ngModelChange)="item.discount = $event"
+                      <ion-input type="number" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event"
                         (change)="calculateDiscount(item)"></ion-input>
                     </ion-item>
                   </ion-col>
@@ -97,7 +96,7 @@
       </ion-col>
       <ion-col col-md-3>Discount</ion-col>
       <ion-col col-md-3 offset-md-6 class="pull-right">
-        ${{invoice.totalDiscount > 0 ? invoice.totalDiscount : 0.00 | number : '1.2-2'}}
+        ${{invoice.totalDiscount | number : '1.2-2'}}
       </ion-col>
 
       <ion-col col-md-3>Subtotal</ion-col>
@@ -115,7 +114,7 @@
       <ion-col col-12>
         <button ion-button secondary block padding [disabled]="invoice.taxTotal <= 0" (click)="gotoPayment()">
                 <span class="button-inner pull-right" style="text-align: left">
-                    Pay &nbsp;&nbsp; ${{invoice.taxTotal | number : '1.2-2'}}
+                    Pay &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
                 </span>
             </button>
       </ion-col>
