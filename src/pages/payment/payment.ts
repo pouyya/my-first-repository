@@ -18,7 +18,6 @@ export class PaymentsPage {
   public amount: number;
   public balance: number;
   public change: number;
-  private callback: any;
 
   constructor(
     private salesService: SalesServices,
@@ -115,9 +114,6 @@ export class PaymentsPage {
   }
 
   public goBack() {
-    this.callback = this.navParams.get("callback")
-    this.callback(this.balance).then(()=>{
-        this.navCtrl.pop();
-    });
+    this.navCtrl.pop();
   }
 }

@@ -26,6 +26,7 @@ export class BasketComponent {
   @Input('_invoice')
   set model(obj: Sale) {
     this.invoice = obj;
+    this.shownItem = null;
     this.setBalance();
   }
   get model(): Sale { return this.invoice; }
@@ -80,7 +81,7 @@ export class BasketComponent {
   }
 
   public updatePrice(item: BucketItem) {
-    item.discount = this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice);
+    item.discount = this.helper.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
     this.calculateAndSync();
   }
 

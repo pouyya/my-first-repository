@@ -105,15 +105,8 @@ export class Sales {
 
   // Event
   public paymentClicked() {
-    var myCallbackFunction = function(_params) {
-      return new Promise((resolve, reject) => {
-          resolve();
-      });
-    }
-
     this.navCtrl.push(PaymentsPage, {
-      invoice: this.invoice,
-      callback: myCallbackFunction
+      invoice: this.invoice
     });
   }
 
@@ -136,7 +129,7 @@ export class Sales {
           ]
         });
         confirm.present();
-      } else {
+      } else if(data.error) {
         let error = this.alertController.create({ 
           title: 'ERROR', 
           message: data.error || 'An error has occurred :(', 
