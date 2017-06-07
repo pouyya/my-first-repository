@@ -1,4 +1,4 @@
-import { AppMenu } from './menu/app.menu';
+import { AppMenu } from './../menus/app.menu';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -11,7 +11,7 @@ import { HomePage } from '../pages/home/home';
 export class ShortCutsApp {
   @ViewChild(Nav) nav: Nav;
   rootPage:any = HomePage;
-  pages: Array<{title: string, icon: string, component: any}>;
+  pages: Array<{title: string, icon: string, component: any, menu: any}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
