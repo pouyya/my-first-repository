@@ -26,7 +26,7 @@ export class ShortCutsApp {
   }
 
   openPage(page) {
-    page.menu !== null && ( this.pages = page.menu.routes );
+    page.menu !== null && ( this.pages = page.menu().routes );
     this.nav.setRoot(page.component);
 
   }

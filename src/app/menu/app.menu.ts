@@ -11,7 +11,7 @@ export class AppMenu {
 
   static routes: Array<any> = [
     { title: 'Home', icon: 'home', component: HomePage, menu: null },
-    { title: 'POS', icon: 'cash', component: Sales, menu: SalesMenu },
+    { title: 'POS', icon: 'cash', component: Sales, menu: () => SalesMenu },
     { title: 'Products', icon: 'pricetags', component: Products, menu: null },
     { title: 'Service', icon: 'bowtie', component: Services, menu: null },
     { title: 'Employees', icon: 'contacts', component: Employees, menu: null },
