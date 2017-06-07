@@ -2,8 +2,10 @@
   <ion-navbar>
     <ion-title>{{action}} Product</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="save()">
-        save
+      <button type="submit" ion-button icon-only
+      (click)="storeForm.ngSubmit.emit()"
+      [disabled]="!storeForm.form.valid">
+        Save
       </button>
       <button ion-button icon-only>
         <ion-icon name="trash"></ion-icon>
@@ -13,11 +15,72 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item>
-      <ion-label class="item-name">NAME:</ion-label>
-      <ion-input type="text" [(ngModel)]="item.name"></ion-input>
-    </ion-item>
-  </ion-list>
-</ion-content> 
- 
+  <form (ngSubmit)="onSubmit()" #storeForm="ngForm">    
+    <ion-list-header>Details</ion-list-header>
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Store Name*</ion-label>
+        <ion-input type="text" [(ngModel)]="item.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Order Number Prefix</ion-label>
+        <ion-input type="text" [(ngModel)]="item.orderNumPrefix" name="orderNumPrefix"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Order Number</ion-label>
+        <ion-input type="text" [(ngModel)]="item.orderNum" name="orderNum"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Supplier Return Prefix</ion-label>
+        <ion-input type="text" [(ngModel)]="item.supplierReturnPrefix" name="supplierReturnPrefix"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Supplier Return Number</ion-label>
+        <ion-input type="text" [(ngModel)]="item.supplierReturnNum" name="supplierReturnNum"></ion-input>
+      </ion-item>
+
+
+      <ion-list-header>Physical Address and Contact Details</ion-list-header>
+      <ion-item>
+        <ion-label class="item-name">Street</ion-label>
+        <ion-input type="text" [(ngModel)]="item.street" name="street"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Suburb</ion-label>
+        <ion-input type="text" [(ngModel)]="item.suburb" name="suburb"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">City</ion-label>
+        <ion-input type="text" [(ngModel)]="item.city" name="city"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Postcode</ion-label>
+        <ion-input type="text" [(ngModel)]="item.postCode" name="postCode"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">State</ion-label>
+        <ion-input type="text" [(ngModel)]="item.state" name="state"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Country</ion-label>
+        <ion-input type="text" [(ngModel)]="item.country" name="country"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Timezone</ion-label>
+        <ion-input type="text" [(ngModel)]="item.timezone" name="timezone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Email</ion-label>
+        <ion-input type="text" [(ngModel)]="item.email" name="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Phone</ion-label>
+        <ion-input type="text" [(ngModel)]="item.phone" name="phone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Twitter</ion-label>
+        <ion-input type="text" [(ngModel)]="item.twitter" name="twitter"></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

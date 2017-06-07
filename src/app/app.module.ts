@@ -2,6 +2,7 @@ import { HelperService } from './../services/helperService';
 import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
@@ -78,6 +79,7 @@ const cloudSettings: CloudSettings = {
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     IonicModule.forRoot(ShortCutsApp,{backButtonText:'',}),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
