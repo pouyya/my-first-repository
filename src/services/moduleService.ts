@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { BackOfficeModule } from './../modules/backOfficeModule';
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 import { ModuleBase } from "../modules/moduelBase";
 
 @Injectable()
 export class ModuleService {
     
-  constructor( private backOfficeModule: BackOfficeModule) {
+    defaultModule: BackOfficeModule;
+
+  constructor() {
+
+      this.defaultModule = new BackOfficeModule();
   }
 
     public getCurrentModule(currentPage: any = null) : ModuleBase {
@@ -14,7 +18,7 @@ export class ModuleService {
             return currentPage.component.prototype.Module;
         }
         else {
-            return this.backOfficeModule;
+            return this.defaultModule;
         }        
     }
 }

@@ -1,4 +1,3 @@
-import { BackOfficeModule } from './../modules/backOfficeModule';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
 import { ParkSale } from './../pages/sales/modals/park-sale';
@@ -129,8 +128,7 @@ const cloudSettings: CloudSettings = {
     CalculatorService,
     PosService,
     HelperService,
-    ModuleService,
-    BackOfficeModule
+    ModuleService
   ]
 })
 export class AppModule {}

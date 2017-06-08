@@ -1,12 +1,14 @@
 import { ModuleBase } from "../modules/moduelBase";
 
-export function PageModule<T extends ModuleBase>(getModule: Function) {
+export function PageModule(moduleType: any) {
   return function (target: Function) : any {
 
         Object.defineProperty(target.prototype, "Module", {
         get: function () {
-            var moduleType =  getModule();
+          if(moduleType) {
             return new moduleType();
+          }
+          return null;
         },
         enumerable: false,
         configurable: false

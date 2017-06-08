@@ -14,7 +14,7 @@ import { PosService } from "../../services/posService";
 import { PaymentsPage } from "../payment/payment";
 
 
-@PageModule(() => SalesModule)
+@PageModule(SalesModule)
 @Component({
   selector: 'page-variables',
   templateUrl: 'sales.html',
@@ -30,7 +30,6 @@ export class Sales {
   public activeCategory: any;
   public activeTiles: Array<any>;
   public invoice: Sale;
-
 
   constructor(
     public navCtrl: NavController,
