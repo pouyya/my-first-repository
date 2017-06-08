@@ -1,9 +1,11 @@
+import { ModuleService } from './../services/moduleService';
 import { AppMenu } from './../menus/app.menu';
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HomePage } from '../pages/home/home';
+import { ModuleBase } from "../modules/moduelBase";
 
 @Component({
   templateUrl: 'app.html'
@@ -11,11 +13,11 @@ import { HomePage } from '../pages/home/home';
 export class ShortCutsApp {
   @ViewChild(Nav) nav: Nav;
   rootPage:any = HomePage;
-  pages: Array<{title: string, icon: string, component: any, menu: any}>;
+  currentModule: ModuleBase;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private moduleService: ModuleService) {
     this.initializeApp();
-    this.pages = AppMenu.routes;
+    this.currentModule = this.moduleService.getCurrentModule();
   }
 
   initializeApp() {
@@ -26,8 +28,7 @@ export class ShortCutsApp {
   }
 
   openPage(page) {
-    page.menu !== null && ( this.pages = page.menu().routes );
+    this.currentModule = this.moduleService.getCurrentModule(page);
     this.nav.setRoot(page.component);
-
   }
 }
