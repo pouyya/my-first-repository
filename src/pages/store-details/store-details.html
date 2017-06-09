@@ -1,21 +1,19 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{action}} Product</ion-title>
+    <ion-title>{{action}} Store</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only
-      (click)="storeForm.ngSubmit.emit()"
-      [disabled]="!storeForm.form.valid">
+      <button type="submit" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
         Save
       </button>
       <button ion-button icon-only>
-        <ion-icon name="trash"></ion-icon>
+        <ion-icon name="trash" (click)="remove()"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-  <form (ngSubmit)="onSubmit()" #storeForm="ngForm">    
+  <form (ngSubmit)="onSubmit()" #storeForm="ngForm">
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
@@ -39,8 +37,10 @@
         <ion-input type="text" [(ngModel)]="item.supplierReturnNum" name="supplierReturnNum"></ion-input>
       </ion-item>
 
+    </ion-list>
 
-      <ion-list-header>Physical Address and Contact Details</ion-list-header>
+    <ion-list-header>Physical Address and Contact Details</ion-list-header>
+    <ion-list>
       <ion-item>
         <ion-label class="item-name">Street</ion-label>
         <ion-input type="text" [(ngModel)]="item.street" name="street"></ion-input>
@@ -63,6 +63,9 @@
       </ion-item>
       <ion-item>
         <ion-label class="item-name">Country</ion-label>
+        <ion-select [(ngModel)]="item.country" name="countries">
+          <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
+        </ion-select>        
         <ion-input type="text" [(ngModel)]="item.country" name="country"></ion-input>
       </ion-item>
       <ion-item>
@@ -83,4 +86,29 @@
       </ion-item>
     </ion-list>
   </form>
+
+  <ion-content *ngIf="registers && registers.length > 0">
+
+    <ion-grid>
+      <ion-row>
+        <ion-col col-md-12>
+          <button ion-button color="primary" block large (click)="addRegister()">Add Register</button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    
+    <ion-list inset *ngFor="let pos of registers ; let idx=index">
+      <ion-item-sliding class="sliding">
+        <ion-item (click)="showPos(pos)">
+          <h2 class="item-title">{{pos.name}}<span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span></h2>
+        </ion-item>
+        <ion-item-options>
+          <button ion-button color='danger' (click)="removePos()" icon=left>
+            <ion-icon name="trash"></ion-icon>
+            Delete
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-content>
 </ion-content>

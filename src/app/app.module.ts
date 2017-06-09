@@ -1,3 +1,4 @@
+import { PosDetailsPage } from './../pages/pos-details/pos-details';
 import { HelperService } from './../services/helperService';
 import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
@@ -7,6 +8,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
+import { HttpModule } from '@angular/http';
 
 import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -75,11 +77,13 @@ const cloudSettings: CloudSettings = {
     PaymentsPage,
     CashModal,
     CreditCardModal,
-    ParkSale
+    ParkSale,
+    PosDetailsPage
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    HttpModule,
     IonicModule.forRoot(ShortCutsApp,{backButtonText:'',}),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
@@ -114,7 +118,8 @@ const cloudSettings: CloudSettings = {
     PaymentsPage,
     CashModal,
     CreditCardModal,
-    ParkSale
+    ParkSale,
+    PosDetailsPage
   ],
   providers: [
     StatusBar,
