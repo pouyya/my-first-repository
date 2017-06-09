@@ -32,7 +32,6 @@ export class PosDetailsPage {
 
   public save() {
 		if (this.isNew) {
-      this.pos._id = "748743vr749nwqthrn67chctr7";
 			this.posService.add(this.pos).then(() => {
         let toast = this.toastCtrl.create({
           message: 'Register has been added successfully',
