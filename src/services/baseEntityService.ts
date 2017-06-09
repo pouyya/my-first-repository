@@ -7,28 +7,30 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     private _dbService;
     private _type;
 
-    constructor(type: { new(): T ;}, zone : NgZone) {
+    constructor(type: { new (): T; }, zone: NgZone) {
         this._dbService = new DBService<T>(type, zone);
-        this._type  = type;
+        this._type = type;
     }
 
-    add(entity : T) {  
+    add(entity: T) {
         var entityCopy = new this._type();
-        
-        for(var k in entity)  entityCopy[k]=entity[k];
+
+        for (var k in entity) entityCopy[k] = entity[k];
+
+        this.clearAllMethods(entityCopy);
 
         return this._dbService.add(entityCopy);
     }
 
-    update(entity : T) {  
+    update(entity: T) {
         return this._dbService.update(entity);
     }
 
-    delete(entity : T) {  
+    delete(entity: T) {
         return this._dbService.delete(entity);
     }
 
-    getAll() { 
+    getAll() {
         return this._dbService.getAll();
     }
 
@@ -38,5 +40,15 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
 
     get(id: any) {
         return this._dbService.get(id);
+    }
+
+    private clearAllMethods(entity: T) {
+        if (entity) {
+            for (var m in entity) {
+                if (typeof entity[m] == "function") {
+                    delete entity[m];
+                }
+            }
+        }
     }
 }
