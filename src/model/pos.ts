@@ -15,4 +15,6 @@ export class POS extends DBBasedEntity {
   public showDiscount: boolean = true;
   public selectUserForNextSale: boolean = false;
   public status: boolean = true;
+  public openTime: Date;
+  public openingAmount: number = 0;
 }

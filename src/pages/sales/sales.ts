@@ -1,3 +1,4 @@
+import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { ParkSale } from './modals/park-sale';
@@ -30,6 +31,7 @@ export class Sales {
   public activeCategory: any;
   public activeTiles: Array<any>;
   public invoice: Sale;
+  public register: POS;
 
   constructor(
     public navCtrl: NavController,
@@ -51,36 +53,52 @@ export class Sales {
 
     loader.present().then(() => {
       // load categories on the left hand side
-      var categoryPromise = this.categoryService.getAll().then(
-        categories => {
-          if (categories && categories.length) {
-            this.categories = categories;
-            this.activeCategory = this.categories[0];
-            return this.salesService.loadCategoryItems(categories[0]._id).then(
-              items => this.activeTiles = items,
-              error => {
-                throw new Error(error)
-              }
-            );
+      var categoryPromise = new Promise((resolve, reject) => {
+        this.categoryService.getAll().then(
+          categories => {
+            if (categories && categories.length) {
+              this.categories = categories;
+              this.activeCategory = this.categories[0];
+              this.salesService.loadCategoryItems(categories[0]._id).then(
+                items => {
+                  this.activeTiles = items;
+                  resolve();
+                },
+                error => {
+                  reject(new Error(error));
+                }
+              );
+            }
+          },
+          error => {
+            reject(new Error(error));
           }
-        },
-        error => {
-          throw new Error(error)
-        }
-      );
+        );
+      });
 
-      // initiate POS Object
-      // if in local storage then load from there otherwise create a new one
-      var salesPromise = this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
-        .then(
-        doc => {
-          this.invoice = doc;
-          this.invoice = { ...this.invoice };
-          this.cdr.reattach();
-        }
-        ).catch(console.error.bind(console));
+      var posPromise = new Promise((resolve, reject) => {
+        this.posService.setupRegister().then((register: POS) => {
+          if (register) {
+            this.register = register;
+            if (this.register.status) {
+              this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
+                .then(
+                doc => {
+                  this.invoice = doc;
+                  this.invoice = { ...this.invoice }; // TODO: need to attach an observable to it
+                  this.cdr.reattach();
+                  resolve();
+                }).catch((error) => {
+                  reject(new Error(error));
+                });
+            } else { resolve(); }
+          }
+        }).catch((error) => {
+          reject(new Error(error));
+        });
+      });
 
-      Promise.all([categoryPromise, salesPromise]).then(function () {
+      Promise.all([categoryPromise, posPromise]).then(function () {
         loader.dismiss();
       });
 
@@ -132,10 +150,10 @@ export class Sales {
           ]
         });
         confirm.present();
-      } else if(data.error) {
-        let error = this.alertController.create({ 
-          title: 'ERROR', 
-          message: data.error || 'An error has occurred :(', 
+      } else if (data.error) {
+        let error = this.alertController.create({
+          title: 'ERROR',
+          message: data.error || 'An error has occurred :(',
           buttons: ['OK']
         });
         error.present();
@@ -158,7 +176,7 @@ export class Sales {
             }).catch((error) => console.log(new Error()));
 
           }
-        },        
+        },
         {
           text: 'No',
           handler: () => {
@@ -168,5 +186,11 @@ export class Sales {
       ]
     });
     confirm.present();
+  }
+
+  public openRegister() {
+    this.register.openTime = new Date();
+    this.register.status = true;
+    this.posService.update(this.register)
   }
 }
