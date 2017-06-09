@@ -1,12 +1,17 @@
 import { HelperService } from './helperService';
-import { Injectable } from '@angular/core'
+import { Injectable, NgZone } from '@angular/core';
+import { BaseEntityService } from  './baseEntityService';
+import { POS } from './../model/pos';
 
 @Injectable()
-export class PosService {
+export class PosService extends BaseEntityService<POS> {
 
   constructor(
-    private helper: HelperService
-  ) {}
+    private helper: HelperService,
+    private zone: NgZone
+  ) {
+    super(POS, zone);
+  }
 
   public getCurrentPosID(): string {
     // TODO: Replace hardcoded POSID with sessions stored ID
