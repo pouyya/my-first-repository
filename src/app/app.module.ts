@@ -1,4 +1,4 @@
-import { PosDetailsPage } from './../pages/pos-details/pos-details';
+import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
 import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
@@ -50,6 +50,7 @@ import { EmployeeService } from "../services/employeeService";
 import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
 import { PosService } from "../services/posService";
+import { PosDetailsPage } from './../pages/pos-details/pos-details';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -133,7 +134,8 @@ const cloudSettings: CloudSettings = {
     TaxService,
     CalculatorService,
     PosService,
-    HelperService
+    HelperService,
+    ModuleService
   ]
 })
 export class AppModule {}
