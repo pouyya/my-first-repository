@@ -1,3 +1,5 @@
+import { SalesModule } from "../../modules/salesModule";
+import { PageModule } from './../../metadata/pageModule';
 import { ParkSale } from './modals/park-sale';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, AlertController, LoadingController, ModalController } from 'ionic-angular';
@@ -11,6 +13,8 @@ import { PurchasableItem } from './../../model/purchasableItem';
 import { PosService } from "../../services/posService";
 import { PaymentsPage } from "../payment/payment";
 
+
+@PageModule(SalesModule)
 @Component({
   selector: 'page-variables',
   templateUrl: 'sales.html',
@@ -26,7 +30,6 @@ export class Sales {
   public activeCategory: any;
   public activeTiles: Array<any>;
   public invoice: Sale;
-
 
   constructor(
     public navCtrl: NavController,
