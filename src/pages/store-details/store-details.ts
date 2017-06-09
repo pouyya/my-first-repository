@@ -1,11 +1,11 @@
+import { Component } from '@angular/core';
+import { Http } from '@angular/http';
+import { LoadingController, NavController, NavParams, Platform, ToastController } from 'ionic-angular';
+import { StoreService } from "../../services/storeService";
+import { Store } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
-import { Component } from '@angular/core';
-import { Http } from '@angular/http';
-import { NavController, NavParams, Platform } from 'ionic-angular';
-import { StoreService } from "../../services/storeService";
-import { Store } from './../../model/store';
 
 @Component({
 	templateUrl: 'store-details.html',
@@ -23,28 +23,51 @@ export class StoreDetailsPage {
 		private platform: Platform,
 		private storeService: StoreService,
 		private posService: PosService,
+		private loading: LoadingController,
+		private toastCtrl: ToastController,
 		private http: Http) {
 	}
 
 	ionViewDidEnter() {
-		let store = this.navParams.get('store');
-		if (store) {
-			this.item = store;
-			this.isNew = false;
-			this.action = 'Edit';
+	  let loader = this.loading.create({
+      content: 'Loading Store...'
+    });
 
-			// load registers/POS
-			this.posService.findBy({ selector: { storeId: this.item._id } }).then((registers) => {
-				if(registers && registers.length) {
-					this.registers = registers;
-				}
-			}).catch((error) => {
-				throw new Error(error);
-			});
-		}
+    loader.present().then(() => {
+      var storePromise = new Promise((resolve, reject) => {
+        let store = this.navParams.get('store');
+        if (store) {
+          this.item = store;
+          this.isNew = false;
+          this.action = 'Edit';
 
-		this.http.get('assets/countries.json')
-		.subscribe(res => this.countries = res.json());
+          // load registers/POS
+          this.posService.findBy({ selector: { storeId: this.item._id } }).then((registers) => {
+            if(registers && registers.length) {
+              this.registers = registers;
+            }
+            resolve();
+          }).catch((error) => {
+            reject(new Error(error));
+          });
+        } else {
+          resolve();
+        }
+      });
+
+      var countriesPromise = new Promise((resolve, reject) => {
+        this.http.get('assets/countries.json')
+            .subscribe(res => {
+              this.countries = res.json();
+              resolve();
+            });
+      });
+
+      Promise.all([storePromise, countriesPromise]).then(function () {
+        loader.dismiss();
+      });
+
+    });
 	}
 
 	onSubmit() {
@@ -60,7 +83,10 @@ export class StoreDetailsPage {
 	}
 
 	public showPos(pos: POS) {
-		this.navCtrl.push(PosDetailsPage, { pos: pos });
+		this.navCtrl.push(PosDetailsPage, {
+			pos: pos,
+			storeId: this.item._id
+		});
 	}
 
 	public removePos(pos, index) {
@@ -68,10 +94,20 @@ export class StoreDetailsPage {
 	}
 
 	public addRegister() {
-		this.navCtrl.push(PosDetailsPage, { pos: null });
+		this.navCtrl.push(PosDetailsPage, {
+			pos: null,
+			storeId: this.item._id
+		});
 	}
 
 	public remove() {
-		// this.posService.delete({ selector: { storeId: this.item._id } })
+		this.storeService.delete(this.item).then(() => {
+      let toast = this.toastCtrl.create({
+        message: 'Store has been deleted successfully',
+        duration: 3000
+      });
+      toast.present();
+      this.navCtrl.pop();			
+		})
 	}
 }

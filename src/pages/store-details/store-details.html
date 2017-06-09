@@ -5,8 +5,8 @@
       <button type="submit" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
         Save
       </button>
-      <button ion-button icon-only>
-        <ion-icon name="trash" (click)="remove()"></ion-icon>
+      <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -65,7 +65,7 @@
         <ion-label class="item-name">Country</ion-label>
         <ion-select [(ngModel)]="item.country" name="countries">
           <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
-        </ion-select>        
+        </ion-select>
         <ion-input type="text" [(ngModel)]="item.country" name="country"></ion-input>
       </ion-item>
       <ion-item>
@@ -86,29 +86,40 @@
       </ion-item>
     </ion-list>
   </form>
-
-  <ion-content *ngIf="registers && registers.length > 0">
-
+  <ion-content *ngIf="action == 'Edit'">
     <ion-grid>
       <ion-row>
-        <ion-col col-md-12>
-          <button ion-button color="primary" block large (click)="addRegister()">Add Register</button>
+
+        <ion-col col-md-6>
+          <h2>Registers</h2>
+        </ion-col>
+        <ion-col col-md-6 class="pull-right">
+          <button ion-button color="primary" (click)="addRegister()">Add Register</button>
+        </ion-col>
+
+        <ion-col col-md-12 *ngIf="registers && registers.length <= 0">
+          <h4 text-center>Sorry, there are no register associated with this store</h4>
+        </ion-col>
+
+        <ion-col col-md-12 *ngIf="registers && registers.length > 0">
+          <ion-list inset *ngFor="let pos of registers ; let idx=index">
+            <ion-item-sliding class="sliding">
+              <ion-item (click)="showPos(pos)">
+                <h2 class="item-title">{{pos.name}}<span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span></h2>
+              </ion-item>
+              <ion-item-options>
+                <button ion-button color='danger' (click)="removePos()" icon=left>
+                  <ion-icon name="trash"></ion-icon>
+                  Delete
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
         </ion-col>
       </ion-row>
     </ion-grid>
-    
-    <ion-list inset *ngFor="let pos of registers ; let idx=index">
-      <ion-item-sliding class="sliding">
-        <ion-item (click)="showPos(pos)">
-          <h2 class="item-title">{{pos.name}}<span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span></h2>
-        </ion-item>
-        <ion-item-options>
-          <button ion-button color='danger' (click)="removePos()" icon=left>
-            <ion-icon name="trash"></ion-icon>
-            Delete
-          </button>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
+
   </ion-content>
+
+
 </ion-content>

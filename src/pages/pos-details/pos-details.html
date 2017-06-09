@@ -2,68 +2,67 @@
   <ion-navbar>
     <ion-title>{{action}} Register</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="posForm.ngSubmit.emit()" [disabled]="!posForm.form.valid">
+      <button type="button" ion-button icon-only (click)="save()">
         Save
       </button>
-      <button ion-button icon-only>
-        <ion-icon name="trash" (click)="remove()"></ion-icon>
+      <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
-  <form (ngSubmit)="onSubmit()" #posForm="ngForm">
-    <ion-list-header>Details</ion-list-header>
-    <ion-list>
-      <ion-item>
-        <ion-label class="item-name">Name {{pos.name}}</ion-label>
-        <ion-input type="text" [(ngModel)]="pos.name" name="name" required></ion-input>
-      </ion-item>      
-    </ion-list>
 
-    <ion-list-header>Receipt</ion-list-header>
-    <ion-list>
-      <ion-item>
-        <ion-label class="item-name">Receipt Template</ion-label>
-        <ion-input type="text" [(ngModel)]="pos.receiptTemplate" name="name"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">number</ion-label>
-        <ion-input type="text" [(ngModel)]="pos.number" name="number"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Prefix</ion-label>
-        <ion-input type="text" [(ngModel)]="pos.prefix" name="prefix"></ion-input>
-      </ion-item>      
-      <ion-item>
-        <ion-label class="item-name">Suffix</ion-label>
-        <ion-input type="text" [(ngModel)]="pos.suffix" name="suffix"></ion-input>
-      </ion-item>      
-    </ion-list>
+  <ion-list-header>Details</ion-list-header>
+  <ion-list>
+    <ion-item>
+      <ion-label class="item-name">Name </ion-label>
+      <ion-input type="text" [(ngModel)]="pos.name" name="name" required></ion-input>
+    </ion-item>
+  </ion-list>
 
-    <ion-list-header>At end of sale</ion-list-header>
-    <ion-list>
-      <ion-item>
-        <ion-label class="item-name">Select User for next sale</ion-label>
-        <ion-toggle [(ngModel)]="pos.selectUserForNextSale" name="selectUserForNextSale"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Email Receipt</ion-label>
-        <ion-toggle [(ngModel)]="pos.emailReceipt" name="emailReceipt"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Print Receipt</ion-label>
-        <ion-toggle [(ngModel)]="pos.printReceipt" name="printReceipt"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">PrintNoteOnReceipt</ion-label>
-        <ion-toggle [(ngModel)]="pos.printNoteOnReceipt" name="printNoteOnReceipt"></ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Show Discount</ion-label>
-        <ion-toggle [(ngModel)]="pos.showDiscount" name="showDiscount"></ion-toggle>
-      </ion-item>      
-    </ion-list>    
-  </form>
+  <ion-list-header>Receipt</ion-list-header>
+  <ion-list>
+    <ion-item>
+      <ion-label class="item-name">Receipt Template</ion-label>
+      <ion-input type="text" [(ngModel)]="pos.receiptTemplate" name="name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">number</ion-label>
+      <ion-input type="text" [(ngModel)]="pos.number" name="number"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Prefix</ion-label>
+      <ion-input type="text" [(ngModel)]="pos.prefix" name="prefix"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Suffix</ion-label>
+      <ion-input type="text" [(ngModel)]="pos.suffix" name="suffix"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-list-header>At end of sale</ion-list-header>
+  <ion-list>
+    <ion-item>
+      <ion-label class="item-name">Select User for next sale</ion-label>
+      <ion-toggle [(ngModel)]="pos.selectUserForNextSale" name="selectUserForNextSale"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Email Receipt</ion-label>
+      <ion-toggle [(ngModel)]="pos.emailReceipt" name="emailReceipt"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Print Receipt</ion-label>
+      <ion-toggle [(ngModel)]="pos.printReceipt" name="printReceipt"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">PrintNoteOnReceipt</ion-label>
+      <ion-toggle [(ngModel)]="pos.printNoteOnReceipt" name="printNoteOnReceipt"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Show Discount</ion-label>
+      <ion-toggle [(ngModel)]="pos.showDiscount" name="showDiscount"></ion-toggle>
+    </ion-item>
+  </ion-list>
 </ion-content>
