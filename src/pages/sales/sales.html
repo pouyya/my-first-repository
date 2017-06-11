@@ -10,7 +10,7 @@
 <ion-content>
   <ion-grid class="full-height">
     <ion-row class="full-height">
-      <ion-col col-2>
+      <ion-col col-2 class="sales-category">
         <ion-list no-lines>
           <button ion-item *ngFor="let category of categories" class="text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
             (click)="itemSelected(category)">
@@ -23,10 +23,9 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <!-- Bucket [start]  -->
         <ion-grid style="background-color: #FFFFFF">
           <ion-row>
-            <ion-col col-md-12 class="pull-right">
+            <ion-col class="pull-right">
 
               <button ion-button clear (click)="parkSale()" [disabled]="invoice.items.length == 0">
                 <ion-icon name="timer"></ion-icon>&nbsp;&nbsp;Park Sale
@@ -34,12 +33,11 @@
               <button ion-button clear (click)="discardSale()" [disabled]="invoice.items.length == 0">
                 <ion-icon name="trash"></ion-icon>&nbsp;&nbsp;Discard Sale
               </button>
-                
+
             </ion-col>
           </ion-row>
-        </ion-grid>        
+        </ion-grid>
         <basket [_invoice]="invoice" (paymentClicked)="paymentClicked($event)"></basket>
-        <!-- Bucket [end] -->
       </ion-col>
     </ion-row>
   </ion-grid>

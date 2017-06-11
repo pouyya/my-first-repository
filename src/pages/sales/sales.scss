@@ -4,6 +4,22 @@
   height: 100%
 }
 
+.sales-category {
+  background-color: white;
+
+  ion-list {
+    height: 100%
+  }
+
+  button {
+    background-color: white;
+  }
+
+  .activeCategory {
+    background-color: #F7F7F7;
+  }
+}
+
 .list .item.item-accordion {
   line-height: 38px;
   padding-top: 0;

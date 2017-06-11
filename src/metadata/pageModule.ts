@@ -1,5 +1,3 @@
-import { ModuleBase } from "../modules/moduelBase";
-
 export function PageModule(moduleType: any) {
   return function (target: Function) : any {
 
