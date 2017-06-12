@@ -3,7 +3,7 @@
       class="tile"
       *ngFor="let tile of items" (click)="selectItem(tile)"
       [colspan]="1"
-      [rowspan]="1">
+      [rowspan]="1" tapabble >
 {{ tile.name }}
   </md-grid-tile>
 </md-grid-list>

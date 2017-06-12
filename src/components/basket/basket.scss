@@ -2,6 +2,10 @@
 
 .basket {
     background-color: $basket-background-color;
+
+    .name {
+      font-weight: 500;
+    }
 }
 
 .top-component {
