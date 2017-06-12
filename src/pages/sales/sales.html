@@ -22,12 +22,34 @@
         <tile-items [items]="activeTiles" (onSelect)="onSelect($event)">
         </tile-items>
       </ion-col>
-      <ion-col col-4>
+      <ion-col col-4 *ngIf="!register.status">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-12>
+              <form #openRegister="ngForm" (ngSubmit)="openRegister()">
+                <h2 text-center>Register Closed</h2>
+                <h5>Set an opening float to open the register and make sale</h5>
+
+                <ion-label stacked>Opening Float</ion-label>
+                <ion-input type="text" placeholder="$0.00" [(ngModel)]="register.openingAmount" name="openingAmount" required></ion-input>
+
+                <ion-label color="primary" stacked>Notes <small>optional</small></ion-label>
+                <ion-textarea placeholder="Enter Note">
+                </ion-textarea>
+
+                <button ion-button color="primary" block type="submit">
+                  Open Register
+                </button>
+              </form>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+      <ion-col col-4 *ngIf="register.status">
         <!-- Bucket [start]  -->
         <ion-grid style="background-color: #FFFFFF">
           <ion-row>
             <ion-col col-md-12 class="pull-right">
-
               <button ion-button clear (click)="parkSale()" [disabled]="invoice.items.length == 0">
                 <ion-icon name="timer"></ion-icon>&nbsp;&nbsp;Park Sale
               </button>
@@ -38,30 +60,7 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-content *ngIf="!register.status">
-          <ion-grid>
-            <ion-row>
-              <ion-col col-md-12>
-                <form #openRegister="ngForm" (ngSubmit)="openRegister()">
-                  <h2 text-center>Register Closed</h2>
-                  <h5>Set an opening float to open the register and make sale</h5>
-
-                  <ion-label stacked>Opening Float</ion-label>
-                  <ion-input type="text" placeholder="$0.00" [(ngModel)]="register.openingAmount" required></ion-input>
-
-                  <ion-label color="primary" stacked>Notes <small>optional</small></ion-label>
-                  <ion-textarea placeholder="Enter Note">
-                  </ion-textarea>
-
-                  <button ion-button color="primary" block type="submit">
-                    Open Register
-                  </button>
-                </form>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-content>
-        <basket *ngIf="register.status" [_invoice]="invoice" (paymentClicked)="paymentClicked($event)"></basket>
+        <basket [_invoice]="invoice" (paymentClicked)="paymentClicked($event)"></basket>
         <!-- Bucket [end] -->
       </ion-col>
     </ion-row>

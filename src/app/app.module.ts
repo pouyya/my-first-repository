@@ -1,3 +1,5 @@
+import { ClosureService } from './../services/closureService';
+import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
 import { ParkSale } from './../pages/sales/modals/park-sale';
@@ -79,7 +81,8 @@ const cloudSettings: CloudSettings = {
     CashModal,
     CreditCardModal,
     ParkSale,
-    PosDetailsPage
+    PosDetailsPage,
+    OpenCloseRegister
   ],
   imports: [
     BrowserModule,
@@ -120,7 +123,8 @@ const cloudSettings: CloudSettings = {
     CashModal,
     CreditCardModal,
     ParkSale,
-    PosDetailsPage
+    PosDetailsPage,
+    OpenCloseRegister
   ],
   providers: [
     StatusBar,
@@ -135,7 +139,8 @@ const cloudSettings: CloudSettings = {
     CalculatorService,
     PosService,
     HelperService,
-    ModuleService
+    ModuleService,
+    ClosureService
   ]
 })
 export class AppModule {}

@@ -59,9 +59,14 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public instantiateInvoice(posId: string): Promise<any> {
 		var tax = this.taxService.getTax() || 0;
+    var id = localStorage.getItem('invoice_id');
+    if(!id) {
+      localStorage.setItem('invoice_id', new Date().toISOString());
+      id = localStorage.getItem('invoice_id');
+    }
 		return new Promise((resolve, reject) => {		
 			if(posId) {
-				this.findBy({ "selector": { "posID": posId , "state": "current" }, include_docs: true})
+				this.findBy({ "selector": { _id: id, "posID": posId , "state": "current" }, include_docs: true})
 				.then(
 					docs => {
 						if(docs && docs.length > 0)
@@ -98,5 +103,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 			return sale;
 		}
+	}
+
+	public findAllByPosId(posId: string) {
+		return this.findBy({ selector: { posID: posId } })
 	}
 }
