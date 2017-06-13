@@ -73,6 +73,7 @@ export class Sales {
             this.register = register;
             if(this.register.status) {
               this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+                this.invoice = invoice;
                 this.invoice = { ...this.invoice };
                 resolve();
               }).catch((error) => {
@@ -90,7 +91,7 @@ export class Sales {
         });
       });
 
-      Promise.all([categoryPromise, posPromise]).then(function () {
+      Promise.all([categoryPromise, posPromise]).then(() => {
         this.cdr.reattach();
         loader.dismiss();
       });
@@ -181,12 +182,15 @@ export class Sales {
     confirm.present();
   }
 
-  public openRegister() {
-    this.register.openTime = new Date();
-    this.register.status = true;
-    this.posService.update(this.register);
+  public onSubmit() {
     this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+      this.register.openTime = new Date();
+      this.register.status = true;
+      this.posService.update(this.register);
+      this.invoice = invoice;  
       this.invoice = { ...this.invoice };
-    }).catch(console.error.bind(console));
+    }).catch((error) => {
+      console.error(new Error(error));
+    });
   }
 }

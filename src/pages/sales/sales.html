@@ -26,7 +26,7 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-12>
-              <form #openRegister="ngForm" (ngSubmit)="openRegister()">
+              <form (ngSubmit)="onSubmit()" #salesForm="ngForm">
                 <h2 text-center>Register Closed</h2>
                 <h5>Set an opening float to open the register and make sale</h5>
 
