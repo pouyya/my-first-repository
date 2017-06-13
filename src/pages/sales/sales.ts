@@ -52,50 +52,27 @@ export class Sales {
     });
 
     loader.present().then(() => {
-      // load categories on the left hand side
-      var categoryPromise = this.categoryService.getAll().then(
-        categories => {
-          if (categories && categories.length) {
-            this.categories = categories;
-            this.activeCategory = this.categories[0];
-            return this.salesService.loadCategoryItems(categories[0]._id).then(
-              items => this.activeTiles = items,
-              error => console.error(error)
-            );
-          }
-        },
-        error => console.error(error)
-      );
-
       var posPromise = new Promise((resolve, reject) => {
         this.posService.setupRegister().then((register: POS) => {
-          if(register) {
+          if (register) {
             this.register = register;
-            if(this.register.status) {
-              this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
-                this.invoice = invoice;
-                this.invoice = { ...this.invoice };
-                resolve();
-              }).catch((error) => {
-                reject(new Error(error));
+            if (this.register.status) {
+              this.initSalePageData().then(() => resolve()).catch((error) => {
+                throw new Error(error);
               });
-            } else {
-              this.invoice = new Sale();
-              resolve();
-            }
-          } else {
-            reject(new Error("Register not found"));
-          }
+            } else resolve();
+          } else reject(new Error("Register not found"));
         }).catch((error) => {
           reject(new Error(error));
         });
       });
 
-      Promise.all([categoryPromise, posPromise]).then(() => {
+      posPromise.then(() => {
         this.cdr.reattach();
         loader.dismiss();
+      }).catch((error) => {
+        throw new Error(error);
       });
-
     });
   }
 
@@ -182,15 +159,44 @@ export class Sales {
     confirm.present();
   }
 
+  private initSalePageData(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var promises: Array<Promise<any>> = [
+        new Promise((resolveA, rejectA) => {
+          this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
+            .then((invoice: Sale) => {
+              this.invoice = invoice;
+              this.invoice = { ...this.invoice };
+              resolveA();
+            })
+            .catch((error) => rejectA(error));
+        }),
+        new Promise((resolveA, rejectA) => {
+          this.categoryService.getAll()
+            .then((categories) => {
+              this.categories = categories;
+              this.activeCategory = this.categories[0];
+              this.salesService.loadCategoryItems(this.categories[0]._id).then((items: Array<any>) => {
+                this.activeTiles = items;
+                resolveA();
+              });
+            })
+            .catch((error) => rejectA(error));
+        })
+      ];
+
+      Promise.all(promises).then(() => resolve()).catch((error) => reject(error));
+    });
+  }
+
   public onSubmit() {
-    this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+    this.initSalePageData().then((response) => {
       this.register.openTime = new Date();
       this.register.status = true;
+      this.register.openingAmount = Number(this.register.openingAmount);
       this.posService.update(this.register);
-      this.invoice = invoice;  
-      this.invoice = { ...this.invoice };
     }).catch((error) => {
-      console.error(new Error(error));
+      throw new Error(error);
     });
   }
 }

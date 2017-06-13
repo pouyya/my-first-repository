@@ -45,3 +45,7 @@
   text-align: right;
   margin-bottom: 5px;
 }
+
+.error-text {
+  color: color($colors, danger);
+}

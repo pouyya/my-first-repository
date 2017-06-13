@@ -54,6 +54,7 @@ export class PaymentsPage {
         // Show Payment Completion Modal!
         this.invoice.completed = true;
         this.change = totalPayments - this.invoice.taxTotal;
+        this.invoice.completedAt = new Date();
         // sync afterwards
       }
     }

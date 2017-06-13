@@ -105,7 +105,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public findAllByPosId(posId: string) {
-		return this.findBy({ selector: { posID: posId } })
+	public findCompletedByPosId(posId: string) {
+		return this.findBy({ selector: { posID: posId, completed: true } })
 	}
 }

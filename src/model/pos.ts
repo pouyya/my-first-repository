@@ -17,4 +17,5 @@ export class POS extends DBBasedEntity {
   public status: boolean = true;
   public openTime: Date;
   public openingAmount: number = 0;
+  public openingNote: string;
 }

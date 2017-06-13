@@ -6,12 +6,13 @@ import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
 import { StoreService } from './../../services/storeService';
 import { PosService } from './../../services/posService';
-import { LoadingController } from 'ionic-angular';
+import { LoadingController, AlertController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',
-  styleUrls: [ '/pages/open-close-register.scss' ]
+  styleUrls: [ '/pages/open-close-register.scss' ],
+  providers: [ SalesServices, ClosureService, StoreService, PosService ]
 })
 export class OpenCloseRegister {
 
@@ -19,9 +20,11 @@ export class OpenCloseRegister {
   public store: Store;
   public closure: Closure;
   public posClosures: Array<Closure> = [];
-  public cashExpected: number = 0;
-  public ccExpected: number = 0;
-  public totalExpected: number = 0;
+  public expected: any = {
+    cash: 0,
+    cc: 0,
+    total: 0
+  }
 
   constructor(
     private loading: LoadingController,
@@ -29,7 +32,8 @@ export class OpenCloseRegister {
     private storeService: StoreService,
     private closureService: ClosureService,
     private cdr: ChangeDetectorRef,
-    private salesService: SalesServices
+    private salesService: SalesServices,
+    private alertCtrl: AlertController
   ) {
     this.cdr.detach();
     this.closure = new Closure();
@@ -58,26 +62,55 @@ export class OpenCloseRegister {
           console.error(new Error(error));
         });
 
-        var salesPromise = this.salesService.findAllByPosId(pos._id).then((invoices: Array<Sale>) => {
+        var salesPromise = this.salesService.findCompletedByPosId(pos._id).then((invoices: Array<Sale>) => {
           invoices.forEach((invoice) => {
             invoice.payments.forEach((payment) => {
               if(payment.type === 'credit_card') {
-                this.ccExpected += payment.amount;
+                this.expected.cc += Number(payment.amount);
               }
               if(payment.type === 'cash') {
-                this.cashExpected += payment.amount;
+                this.expected.cash += Number(payment.amount);
               }
             });
 
-            this.totalExpected = this.ccExpected + this.cashExpected;
+            this.expected.total = this.expected.cc + this.expected.cash;
           });
         });
 
         Promise.all([ storePromise, closuresPromise, salesPromise ]).then(() => {
+          this.closure.posId = this.register._id;
+          this.closure.posName = this.register.name;
+          this.closure.storeName = this.store.name;
           this.cdr.reattach();
           loader.dismiss();
         });
       });
     });
+  }
+
+  public calculateDiff(type) {
+    var counted = type + 'Counted';
+    var difference = type + 'Difference';
+    this.closure[counted] = Number(this.closure[counted])
+    this.closure[difference] = this.expected[type] - this.closure[counted];
+    this.closure.totalCounted = Number(this.closure.ccCounted) + Number(this.closure.cashCounted);
+    this.closure.totalDifference = this.expected.total - this.closure.totalCounted;
+  }
+
+  public closeRegister() {
+    this.closure.closeTime = new Date();
+    this.closureService.add(this.closure).then(() => {
+      this.register.status = false;
+      this.register.openingAmount = 0;
+      this.register.openTime = null;
+      this.register.openingNote = null;
+      this.posService.update(this.register);
+    }).catch((error) => {
+      throw new Error(error);
+    });
+  }
+
+  public generateReport() {
+
   }
 }

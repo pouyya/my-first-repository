@@ -14,4 +14,15 @@ export class Closure extends DBBasedEntity {
   public ccDifference: number;
   public totalCounted: number;
   public totalDifference: number;
+  public note: string;
+
+  constructor() {
+    super();
+    this.cashCounted = 0;
+    this.cashDifference = 0;
+    this.ccCounted = 0;
+    this.ccDifference = 0;
+    this.totalCounted = 0;
+    this.totalDifference = 0;
+  }
 }
