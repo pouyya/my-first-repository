@@ -8,6 +8,10 @@ import { StoreService } from './../../services/storeService';
 import { PosService } from './../../services/posService';
 import { LoadingController, AlertController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
+import { SalesModule } from "../../modules/salesModule";
+import { PageModule } from "../../metadata/pageModule";
+
+@PageModule(() => SalesModule)
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',

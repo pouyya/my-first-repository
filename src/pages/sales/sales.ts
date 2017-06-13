@@ -15,7 +15,7 @@ import { PosService } from "../../services/posService";
 import { PaymentsPage } from "../payment/payment";
 
 
-@PageModule(SalesModule)
+@PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',
   templateUrl: 'sales.html',
