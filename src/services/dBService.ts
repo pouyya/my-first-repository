@@ -20,8 +20,7 @@ export class DBService<T extends DBBasedEntity> {
         // in proper logger!
         PouchDB.sync(currentInternalDBName, ConfigService.getCurrentFullExternalDBUrl(), {
             live: true,
-            retry: true,
-            continuous: true
+            retry: true
         }).on('change', function (info) {
             //changed
         }).on('paused', function (err) {
