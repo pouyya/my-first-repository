@@ -191,7 +191,7 @@ export class Sales {
 
   public onSubmit() {
     this.initSalePageData().then((response) => {
-      this.register.openTime = new Date();
+      this.register.openTime = new Date().toISOString();
       this.register.status = true;
       this.register.openingAmount = Number(this.register.openingAmount);
       this.posService.update(this.register);

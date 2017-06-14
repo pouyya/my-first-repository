@@ -19,8 +19,8 @@ export class Sale extends DBBasedEntity {
   public state: string;
   public payments: Array<PaymentsInterface>;
   public round: number;
-  public created: Date;
-  public completedAt: Date;
+  public created: string;
+  public completedAt: string;
 
   constructor() {
     super();
@@ -31,6 +31,6 @@ export class Sale extends DBBasedEntity {
     this.payments = [];
     this.notes = "";
     this.round = 0;
-    this.created = new Date();
+    this.created = new Date().toISOString();
   }
 }

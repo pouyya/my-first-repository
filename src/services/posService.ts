@@ -21,7 +21,7 @@ export class PosService extends BaseEntityService<POS> {
   public setupRegister(): Promise<any> {
     return new Promise((resolve, reject) => {
       // Hardcoded UI
-      var posId = "22CB398C-BC5F-29F0-8F6B-8DC5522C945F";
+      var posId = this.getCurrentPosID();
       this.get(posId).then((pos) => {
         resolve(pos)
       }, (error) => {

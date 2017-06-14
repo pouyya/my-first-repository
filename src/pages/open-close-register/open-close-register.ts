@@ -24,6 +24,7 @@ export class OpenCloseRegister {
   public store: Store;
   public closure: Closure;
   public posClosures: Array<Closure> = [];
+  public showReport: Boolean;
   public expected: any = {
     cash: 0,
     cc: 0,
@@ -40,7 +41,7 @@ export class OpenCloseRegister {
     private alertCtrl: AlertController
   ) {
     this.cdr.detach();
-    this.closure = new Closure();
+    this.showReport = false;
   }
 
   ionViewDidEnter() {
@@ -66,7 +67,7 @@ export class OpenCloseRegister {
           console.error(new Error(error));
         });
 
-        var salesPromise = this.salesService.findCompletedByPosId(pos._id).then((invoices: Array<Sale>) => {
+        var salesPromise = this.salesService.findCompletedByPosId(pos._id, pos.openTime).then((invoices: Array<Sale>) => {
           invoices.forEach((invoice) => {
             invoice.payments.forEach((payment) => {
               if(payment.type === 'credit_card') {
@@ -82,6 +83,7 @@ export class OpenCloseRegister {
         });
 
         Promise.all([ storePromise, closuresPromise, salesPromise ]).then(() => {
+          this.closure = new Closure();
           this.closure.posId = this.register._id;
           this.closure.posName = this.register.name;
           this.closure.storeName = this.store.name;
@@ -102,19 +104,17 @@ export class OpenCloseRegister {
   }
 
   public closeRegister() {
-    this.closure.closeTime = new Date();
+    this.closure.closeTime = new Date().toISOString();
     this.closureService.add(this.closure).then(() => {
       this.register.status = false;
       this.register.openingAmount = 0;
       this.register.openTime = null;
       this.register.openingNote = null;
+      this.showReport = true;
       this.posService.update(this.register);
     }).catch((error) => {
       throw new Error(error);
     });
   }
-
-  public generateReport() {
-
-  }
+  
 }

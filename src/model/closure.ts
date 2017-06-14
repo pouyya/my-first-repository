@@ -4,8 +4,8 @@ export class Closure extends DBBasedEntity {
   public posId: string;
   public posName: string;
   public storeName: string;
-  public openTime: Date;
-  public closeTime: Date;
+  public openTime: string;
+  public closeTime: string;
   public closureNumber: number;
   public cashMovements: Array<any>;
   public cashCounted: number;
