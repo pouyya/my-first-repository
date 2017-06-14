@@ -3,7 +3,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { ParkSale } from './modals/park-sale';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, AlertController, LoadingController, ModalController } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, ModalController, NavParams } from 'ionic-angular';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 
@@ -41,7 +41,8 @@ export class Sales {
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private posService: PosService,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    private navParams: NavParams
   ) {
     this.cdr.detach();
   }
@@ -58,9 +59,26 @@ export class Sales {
             this.register = register;
             if (this.register.status) {
               this.initSalePageData().then(() => resolve()).catch((error) => {
-                throw new Error(error);
+                reject(new Error(error));
               });
-            } else resolve();
+            } else {
+              let openingAmount = this.navParams.get('openingAmount');
+              let openingNote = this.navParams.get('openingNotes');
+              if(openingAmount) {
+                this.initSalePageData().then((response) => {
+                  this.register.openTime = new Date().toISOString();
+                  this.register.status = true;
+                  this.register.openingAmount = Number(openingAmount);
+                  this.register.openingNote = openingNote;
+                  this.posService.update(this.register);
+                  resolve();
+                }).catch((error) => {
+                  reject(new Error(error));
+                });                
+              } else {
+                resolve();
+              }
+            }
           } else reject(new Error("Register not found"));
         }).catch((error) => {
           reject(new Error(error));

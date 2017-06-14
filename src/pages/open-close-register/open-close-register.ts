@@ -6,10 +6,11 @@ import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
 import { StoreService } from './../../services/storeService';
 import { PosService } from './../../services/posService';
-import { LoadingController, AlertController } from 'ionic-angular';
+import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from "../../metadata/pageModule";
+import { Sales } from "./../sales/sales.ts";
 
 @PageModule(() => SalesModule)
 @Component({
@@ -29,7 +30,11 @@ export class OpenCloseRegister {
     cash: 0,
     cc: 0,
     total: 0
-  }
+  };
+  public openingPos: any = {
+    amount: 0,
+    notes: null
+  };
 
   constructor(
     private loading: LoadingController,
@@ -38,7 +43,8 @@ export class OpenCloseRegister {
     private closureService: ClosureService,
     private cdr: ChangeDetectorRef,
     private salesService: SalesServices,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private navCtrl: NavController
   ) {
     this.cdr.detach();
     this.showReport = false;
@@ -87,6 +93,8 @@ export class OpenCloseRegister {
           this.closure.posId = this.register._id;
           this.closure.posName = this.register.name;
           this.closure.storeName = this.store.name;
+          this.calculateDiff('cash');
+          this.calculateDiff('cc');
           this.cdr.reattach();
           loader.dismiss();
         });
@@ -117,4 +125,8 @@ export class OpenCloseRegister {
     });
   }
   
+  public onSubmit() {
+    this.navCtrl.push(Sales, { openingAmount: this.openingPos.amount, openingNotes: this.openingPos.notes });
+  }
+
 }
