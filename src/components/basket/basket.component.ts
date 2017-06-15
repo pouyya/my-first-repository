@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { HelperService } from './../../services/helperService';
 import { Platform } from 'ionic-angular';
 import { SalesServices } from './../../services/salesService';
@@ -70,8 +71,13 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
-    let bucketItem = this.salesService.prepareBucketItem(item);
-    this.invoice.items.push(bucketItem);
+    var index = _.findIndex(this.invoice.items, { _id: item._id });
+    if(index === -1) {
+      let bucketItem = this.salesService.prepareBucketItem(item);
+      this.invoice.items.push(bucketItem);
+    } else {
+      this.invoice.items[index].quantity++ ;
+    }
     this.calculateAndSync();
   }
 
