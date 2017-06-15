@@ -1,3 +1,15 @@
+<ion-grid class="action-buttons basket">
+  <ion-row>
+    <ion-col class="pull-right">
+      <button ion-button clear (click)="parkSale()" [disabled]="invoice.items.length == 0">
+        <ion-icon name="timer"></ion-icon>&nbsp;&nbsp;Park Sale
+      </button>
+      <button ion-button clear (click)="discardSale()" [disabled]="invoice.items.length == 0">
+        <ion-icon name="trash"></ion-icon>&nbsp;&nbsp;Discard Sale
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 <ion-grid class="top-component basket">
   <ion-row>
     <ion-col col-12>
@@ -10,27 +22,18 @@
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
-              <ion-col col-md-2 class="name">
+              <ion-col col-md-4 class="name">
                 {{item.name}}
               </ion-col>
-              <ion-col col-md-2>
-
-              </ion-col>
-              <ion-col col-md-2 offset-md-3 class="pull-right">
-                <span>
-                        ${{item.finalPrice * item.quantity | number : '1.2-2'}}
-                      </span>
+              <ion-col col-md-3 offset-md-3 class="pull-right">
+                <span>${{item.finalPrice * item.quantity | number : '1.2-2'}}</span>
                 <br/>
                 <span *ngIf="item.actualPrice != item.finalPrice">
-                        <small><s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s></small>
-                      </span>
+                  <small><s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s></small>
+                </span>
               </ion-col>
               <ion-col col-md-1 class="pull-right">
                 <ion-icon name="trash" class="clickable" (click)="removeItem(item, $index)"></ion-icon>
-              </ion-col>
-              <ion-col col-md-1 class="pull-right">
-                <ion-icon color="success" class="clickable" [name]="isItemShown(item._id) ? 'arrow-dropdown' : 'arrow-dropright'">
-                </ion-icon>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -107,14 +110,10 @@
     </ion-col>
     <ion-col col-md-3>Total</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
-
-    <ion-col col-12>
-      <button ion-button secondary block padding [disabled]="invoice.taxTotal <= 0" (click)="gotoPayment()">
-                <span class="button-inner pull-right" style="text-align: left">
-                    Pay &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
-                </span>
-            </button>
-    </ion-col>
-
+    <button ion-button secondary block padding [disabled]="invoice.taxTotal <= 0" (click)="gotoPayment()">
+      <span class="button-inner pull-right" style="text-align: left">
+          Pay &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
+      </span>
+    </button>
   </ion-row>
 </ion-grid>

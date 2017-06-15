@@ -23,20 +23,6 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <ion-grid style="background-color: #FFFFFF">
-          <ion-row>
-            <ion-col class="pull-right">
-
-              <button ion-button clear (click)="parkSale()" [disabled]="invoice.items.length == 0">
-                <ion-icon name="timer"></ion-icon>&nbsp;&nbsp;Park Sale
-              </button>
-              <button ion-button clear (click)="discardSale()" [disabled]="invoice.items.length == 0">
-                <ion-icon name="trash"></ion-icon>&nbsp;&nbsp;Discard Sale
-              </button>
-
-            </ion-col>
-          </ion-row>
-        </ion-grid>
         <basket [_invoice]="invoice" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
       </ion-col>
     </ion-row>
