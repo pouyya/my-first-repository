@@ -113,7 +113,8 @@ export class SalesServices extends BaseEntityService<Sale> {
     return this.findBy({
       selector: {
         posID: posId,
-        completed: false
+        completed: false,
+				state: 'current'
       }
     })
 	}
