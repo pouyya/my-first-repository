@@ -1,6 +1,7 @@
 import _ from 'lodash';
+import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { HelperService } from './../../services/helperService';
-import { Platform } from 'ionic-angular';
+import { Platform, AlertController, ModalController, NavController } from 'ionic-angular';
 import { SalesServices } from './../../services/salesService';
 import { CalculatorService } from './../../services/calculatorService';
 import { TaxService } from './../../services/taxService';
@@ -39,7 +40,10 @@ export class BasketComponent {
     private taxService: TaxService,
     private calcService: CalculatorService,
     private platform: Platform,
-    private helper: HelperService
+    private helper: HelperService,
+    private alertController: AlertController,
+    private modalCtrl: ModalController,
+    private navCtrl: NavController
   ) {
     this.tax = this.taxService.getTax();
   }
@@ -119,6 +123,62 @@ export class BasketComponent {
 
   public gotoPayment() {
     this.paymentClicked.emit(true);
+  }
+
+  public parkSale() {
+    let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
+    modal.onDidDismiss(data => {
+      if (data.status) {
+        // clear invoice
+        localStorage.removeItem('pos_id');
+        let confirm = this.alertController.create({
+          title: 'Invoice Parked!',
+          subTitle: 'Your invoice has successfully been parked',
+          buttons: [
+            {
+              'text': 'OK',
+              handler: () => {
+                this.navCtrl.setRoot(this.navCtrl.getActive().component);
+              }
+            }
+          ]
+        });
+        confirm.present();
+      } else if(data.error) {
+        let error = this.alertController.create({ 
+          title: 'ERROR', 
+          message: data.error || 'An error has occurred :(', 
+          buttons: ['OK']
+        });
+        error.present();
+      }
+    });
+    modal.present();
+  }
+
+  public discardSale() {
+    let confirm = this.alertController.create({
+      title: 'Discard Sale',
+      message: 'Do you wish to discard this sale ?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.salesService.delete(this.invoice).then(() => {
+              localStorage.removeItem('pos_id');
+              this.navCtrl.setRoot(this.navCtrl.getActive().component);
+            }).catch((error) => console.log(new Error()));
+          }
+        },        
+        {
+          text: 'No',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        }
+      ]
+    });
+    confirm.present();
   }
 
   public calculateTotal(callback) {

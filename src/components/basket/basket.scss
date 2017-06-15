@@ -8,16 +8,19 @@
     }
 }
 
+.action-buttons {
+  height: 65px;
+}
+
 .top-component {
-  overflow-y: scroll;
-  height: 400px;
-  position: absolute;
-  
+  overflow-y: auto;
+  height: calc(100% - 345px);
 }
 
 .bottom-component {
-  position: absolute;
-  bottom: 0;
+  width: 100%;
+  height: 280px;
+  position: relative;
 }
 
 #park-sale {

@@ -1,7 +1,6 @@
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
-import { ParkSale } from './modals/park-sale';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, AlertController, LoadingController, ModalController, NavParams } from 'ionic-angular';
 import { SalesServices } from '../../services/salesService';
@@ -119,64 +118,7 @@ export class Sales {
       invoice: this.invoice
     });
   }
-
-  public parkSale() {
-    let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
-    modal.onDidDismiss(data => {
-      if (data.status) {
-        // clear invoice
-        localStorage.removeItem('pos_id');
-        let confirm = this.alertController.create({
-          title: 'Invoice Parked!',
-          subTitle: 'Your invoice has successfully been parked',
-          buttons: [
-            {
-              'text': 'OK',
-              handler: () => {
-                this.navCtrl.setRoot(this.navCtrl.getActive().component);
-              }
-            }
-          ]
-        });
-        confirm.present();
-      } else if (data.error) {
-        let error = this.alertController.create({
-          title: 'ERROR',
-          message: data.error || 'An error has occurred :(',
-          buttons: ['OK']
-        });
-        error.present();
-      }
-    });
-    modal.present();
-  }
-
-  public discardSale() {
-    let confirm = this.alertController.create({
-      title: 'Discard Sale',
-      message: 'Do you wish to discard this sale ?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            this.salesService.delete(this.invoice).then(() => {
-              localStorage.removeItem('pos_id');
-              this.navCtrl.setRoot(this.navCtrl.getActive().component);
-            }).catch((error) => console.log(new Error()));
-
-          }
-        },
-        {
-          text: 'No',
-          handler: () => {
-            console.log('Disagree clicked');
-          }
-        }
-      ]
-    });
-    confirm.present();
-  }
-
+  
   private initSalePageData(): Promise<any> {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
