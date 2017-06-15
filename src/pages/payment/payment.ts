@@ -95,15 +95,6 @@ export class PaymentsPage {
   }
 
   public clearInvoice() {
-    // delete current invoice for now, until pos id issue is not resolved
-    // this.salesService.delete(this.invoice).then(() => {
-    //   this.navCtrl.pop();
-    // }, (err) => {
-    //   console.log(new Error(err));
-    //   this.navCtrl.pop();
-    // });
-
-    // TODO: Uncomment this code once hardcoded pos id issue resolved
     this.invoice.completed = true;
     this.salesService.update(this.invoice).then(() => {
       this.navCtrl.pop();

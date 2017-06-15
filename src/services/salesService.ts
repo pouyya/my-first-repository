@@ -108,4 +108,13 @@ export class SalesServices extends BaseEntityService<Sale> {
 		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime })
 		return this.findBy(selector);
 	}
+
+	public findInCompletedByPosId(posId: string) {
+    return this.findBy({
+      selector: {
+        posID: posId,
+        completed: false
+      }
+    })
+	}
 }

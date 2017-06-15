@@ -112,16 +112,27 @@ export class OpenCloseRegister {
   }
 
   public closeRegister() {
-    this.closure.closeTime = new Date().toISOString();
-    this.closureService.add(this.closure).then(() => {
-      this.register.status = false;
-      this.register.openingAmount = 0;
-      this.register.openTime = null;
-      this.register.openingNote = null;
-      this.showReport = true;
-      this.posService.update(this.register);
-    }).catch((error) => {
-      throw new Error(error);
+    this.salesService.findInCompletedByPosId(this.register._id).then((sales) => {
+      if(sales.length > 0) {
+        let alert = this.alertCtrl.create({
+          title: 'Warning!',
+          subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
+          buttons: ['OK']
+        });
+        alert.present();
+      } else {
+        this.closure.closeTime = new Date().toISOString();
+        this.closureService.add(this.closure).then(() => {
+          this.register.status = false;
+          this.register.openingAmount = 0;
+          this.register.openTime = null;
+          this.register.openingNote = null;
+          this.showReport = true;
+          this.posService.update(this.register);
+        }).catch((error) => {
+          throw new Error(error);
+        });
+      }
     });
   }
   
