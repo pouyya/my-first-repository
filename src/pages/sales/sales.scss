@@ -7,10 +7,6 @@
 .sales-category {
   background-color: white;
 
-  ion-list {
-    height: 100%
-  }
-
   button {
     background-color: white;
   }
@@ -34,10 +30,10 @@
   display: block !important;
 }
 
-.x {
-  display: hidden;
-}
-
-.y {
-  display: block;
+.basket-component {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: $basket-background-color;
 }
