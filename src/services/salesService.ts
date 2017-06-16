@@ -5,8 +5,8 @@ import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
-import {BaseEntityService} from  './baseEntityService';
-import {PosService} from "./posService";
+import { BaseEntityService } from './baseEntityService';
+import { PosService } from "./posService";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -15,7 +15,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private posService: PosService,
-		private zone : NgZone
+		private zone: NgZone
 	) {
 		super(Sale, zone);
 	}
@@ -43,11 +43,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 			parseInt(item.price) : item.price;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;
-		bucketItem.finalPrice = bucketItem.discount > 0 ? 
+		bucketItem.finalPrice = bucketItem.discount > 0 ?
 			this.calcService.calcItemDiscount(
-					bucketItem.discount,
-					bucketItem.actualPrice
-				) :
+				bucketItem.discount,
+				bucketItem.actualPrice
+			) :
 			bucketItem.actualPrice;
 
 		return bucketItem;
@@ -59,16 +59,19 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public instantiateInvoice(posId: string): Promise<any> {
 		var tax = this.taxService.getTax() || 0;
-		return new Promise((resolve, reject) => {		
-			if(posId) {
-				this.findBy({ "selector": { "posID": posId , "state": "current" }, include_docs: true})
-				.then(
+		var id = localStorage.getItem('invoice_id');
+		if (!id) {
+			localStorage.setItem('invoice_id', new Date().toISOString());
+			id = localStorage.getItem('invoice_id');
+		}
+		return new Promise((resolve, reject) => {
+			if (posId) {
+				this.findBy({ "selector": { _id: id, "posID": posId, "state": "current" }, include_docs: true })
+					.then(
 					docs => {
-						if(docs && docs.length > 0)
-						{
+						if (docs && docs.length > 0) {
 							var doc = docs[0];
-							if(doc)
-							{
+							if (doc) {
 								resolve(doc);
 							}
 						}
@@ -76,13 +79,13 @@ export class SalesServices extends BaseEntityService<Sale> {
 						return resolve(createDefaultObject(posId));
 					},
 					error => {
-						if(error.name == 'not_found') {
+						if (error.name == 'not_found') {
 							resolve(createDefaultObject(posId));
 						} else {
 							throw new Error(error);
 						}
 					}
-				);
+					);
 			} else {
 				resolve(createDefaultObject(posId));
 			}
@@ -98,5 +101,21 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 			return sale;
 		}
+	}
+
+	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
+		var selector: any = { selector: { posID: posId } };
+		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime })
+		return this.findBy(selector);
+	}
+
+	public findInCompletedByPosId(posId: string) {
+    return this.findBy({
+      selector: {
+        posID: posId,
+        completed: false,
+				state: 'current'
+      }
+    })
 	}
 }

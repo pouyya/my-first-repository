@@ -1,10 +1,10 @@
-export function PageModule(moduleType: any) {
+export function PageModule(moduleTypeFunc: Function) {
   return function (target: Function) : any {
 
         Object.defineProperty(target.prototype, "Module", {
         get: function () {
-          if(moduleType) {
-            return new moduleType();
+          if(moduleTypeFunc) {
+            return new (moduleTypeFunc())();
           }
           return null;
         },

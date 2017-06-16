@@ -7,10 +7,34 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid class="full-height">
+<ion-content >
+
+  <ion-grid *ngIf="!register.status">
+    <ion-row>
+      <ion-col col-md-6 offset-md-3>
+        <form (ngSubmit)="onSubmit()" #salesForm="ngForm">
+          <h2 text-center>Register Closed</h2>
+          <h5 text-center>Set an opening float to open the register and make sale</h5>
+
+          <ion-label stacked>Opening Float</ion-label>
+          <ion-input type="text" placeholder="$0.00" [(ngModel)]="register.openingAmount" name="openingAmount" required></ion-input>
+
+          <ion-label color="primary" stacked>Notes <small>optional</small></ion-label>
+          <ion-textarea placeholder="Enter Note" [(ngModel)]="register.openingNote" name="openingNote">
+          </ion-textarea>
+
+          <button ion-button color="primary" block type="submit">
+            Open Register
+          </button>
+        </form>
+      </ion-col>
+      <ion-col col-md-3><!-- fill empty space --></ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="register.status" class="full-height">
     <ion-row class="full-height">
-      <ion-col col-2 class="sales-category">
+      <ion-col col-2>
         <ion-list no-lines>
           <button ion-item *ngFor="let category of categories" class="text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
             (click)="itemSelected(category)">

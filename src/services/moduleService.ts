@@ -1,4 +1,3 @@
-import { Component } from '@angular/core';
 import { BackOfficeModule } from './../modules/backOfficeModule';
 import { Injectable } from "@angular/core";
 import { ModuleBase } from "../modules/moduelBase";

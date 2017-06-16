@@ -1,0 +1,235 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Open/Close Register</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid *ngIf="!register.status"> <!-- If Register is closed -->
+    <ion-row>
+      <ion-col col-md-6 offset-md-3>
+        <form (ngSubmit)="onSubmit()" #salesForm="ngForm">
+          <h2 text-center>Register Closed</h2>
+          <h5 text-center>Set an opening float to open the register and make sale</h5>
+
+          <ion-label stacked>Opening Float</ion-label>
+          <ion-input type="number" [(ngModel)]="openingPos.amount" name="openingAmount" required></ion-input>
+
+          <ion-label color="primary" stacked>Notes <small>optional</small></ion-label>
+          <ion-textarea placeholder="Enter Note" [(ngModel)]="openingPos.notes" name="openingNote">
+          </ion-textarea>
+
+          <button ion-button color="primary" block type="submit">
+            Open Register
+          </button>
+        </form>
+      </ion-col>
+      <ion-col col-md-3></ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="!register.status && showReport">
+    <ion-row>
+      <ion-col col-md-12><h1>Last Register Close Summary</h1></ion-col>
+      <ion-col col-md-12>
+        <h3>Register Details</h3>
+      </ion-col>
+      <ion-col col-md-12><hr/></ion-col>      
+      
+      <ion-col col-md-3>
+        <p><small>Outlet</small></p>
+        <p><strong>{{ store.name }}</strong></p>   
+      </ion-col>
+      <ion-col col-md-3>
+        <p><small>Register</small></p>
+        <p><strong>{{ register.name }}</strong></p>
+      </ion-col>
+      <ion-col col-md-3>
+        <p><small>Closure</small></p>
+        <p><strong>#{{ posClosures.length }}</strong></p>       
+      </ion-col>
+      <ion-col col-md-3>
+        <p><small>Opening Time</small></p>
+        <p><strong>{{ register.openTime | date:'medium' }}</strong></p>
+      </ion-col>
+      <ion-col col-md-12>
+        <p><small>Closing Time</small></p>
+        <p><strong>{{ closure.openTime | date:'medium' }}</strong></p>
+      </ion-col>
+
+      <ion-col col-md-12>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-6>Payment Types</ion-col>
+            <ion-col col-md-2>Expected($)</ion-col>
+            <ion-col col-md-2>Counted($)</ion-col>
+            <ion-col col-md-2>Differences($)</ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-6>Cash <small>View Cash Payments, Floats and Movements</small></ion-col>
+            <ion-col col-md-2>{{ expected.cash }}</ion-col>
+            <ion-col col-md-2>{{closure.cashCounted}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.cashDifference > 0 ? 'error-text' : ''">{{closure.cashDifference * -1}}</ion-col>
+            <ion-col col-md-12 class="sub-drawer">
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4><strong>Cash Movements</strong></ion-col>
+                  <ion-col col-md-2><strong>Time</strong></ion-col>
+                  <ion-col col-md-2><strong>User</strong></ion-col>
+                  <ion-col col-md-2><strong>Amount($)</strong></ion-col>
+                  <ion-col col-md-2><strong>Reason</strong></ion-col>
+
+                  <ion-col col-md-2 offset-md-4>{{ register.openTime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2>-</ion-col>
+                  <ion-col col-md-2>${{ register.openingAmount }}</ion-col>
+                  <ion-col col-md-2>Opening Float</ion-col>                  
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-6>Cash Rounding</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+
+            <ion-col col-md-6>Credit Card</ion-col>
+            <ion-col col-md-2>{{expected.cc}}</ion-col>
+            <ion-col col-md-2>{{closure.ccCounted}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.ccDifference > 0 ? 'error-text' : ''">{{closure.ccDifference * -1}}</ion-col>
+
+            <ion-col col-md-6>Store Credit</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+
+            <ion-col col-md-12><hr/></ion-col>
+
+            <ion-col col-md-6>Totals</ion-col>
+            <ion-col col-md-2>{{expected.total}}</ion-col>
+            <ion-col col-md-2>{{closure.totalCounted}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.totalDifference > 0 ? 'error-text' : ''">{{closure.totalDifference * -1}}</ion-col>
+
+            <ion-col col-md-12>
+              <p>{{closure.note}}</p>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="register.status"> <!-- If Register is Opened -->
+    <ion-row>
+      <ion-col col-md-12>
+        <h1>Close Register</h1>
+      </ion-col>
+      <ion-col col-md-12>
+        <h3>Register Details</h3>
+      </ion-col>
+      <ion-col col-md-12><hr/></ion-col>      
+      
+      <ion-col col-md-3>
+        <p><small>Outlet</small></p>
+        <p><strong>{{ store.name }}</strong></p>   
+      </ion-col>
+      <ion-col col-md-3>
+        <p><small>Register</small></p>
+        <p><strong>{{ register.name }}</strong></p>
+      </ion-col>
+      <ion-col col-md-3>
+        <p><small>Closure</small></p>
+        <p><strong>#{{ posClosures.length }}</strong></p>       
+      </ion-col>
+      <ion-col col-md-3>
+        <p><small>Opening Time</small></p>
+        <p><strong>{{ register.openTime | date:'medium' }}</strong></p>
+      </ion-col>
+
+      <ion-col col-md-12>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-6>Payment Types</ion-col>
+            <ion-col col-md-2>Expected($)</ion-col>
+            <ion-col col-md-2>Counted($)</ion-col>
+            <ion-col col-md-2>Differences($)</ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-6>Cash <small>View Cash Payments, Floats and Movements</small></ion-col>
+            <ion-col col-md-2>{{ expected.cash }}</ion-col>
+            <ion-col col-md-2><ion-input type="number" (change)="calculateDiff('cash')" [(ngModel)]="closure.cashCounted" name="cashCounted"></ion-input></ion-col>
+            <ion-col col-md-2 [ngClass]="closure.cashDifference > 0 ? 'error-text' : ''">{{closure.cashDifference * -1}}</ion-col>
+            <ion-col col-md-12 class="sub-drawer">
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4><strong>Cash Movements</strong></ion-col>
+                  <ion-col col-md-2><strong>Time</strong></ion-col>
+                  <ion-col col-md-2><strong>User</strong></ion-col>
+                  <ion-col col-md-2><strong>Amount($)</strong></ion-col>
+                  <ion-col col-md-2><strong>Reason</strong></ion-col>
+
+                  <ion-col col-md-2 offset-md-4>{{ register.openTime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2>-</ion-col>
+                  <ion-col col-md-2>${{ register.openingAmount }}</ion-col>
+                  <ion-col col-md-2>Opening Float</ion-col>                  
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-6>Cash Rounding</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+
+            <ion-col col-md-6>Credit Card</ion-col>
+            <ion-col col-md-2>{{expected.cc}}</ion-col>
+            <ion-col col-md-2><ion-input type="number" (change)="calculateDiff('cc')" [(ngModel)]="closure.ccCounted" name="ccCounted"></ion-input></ion-col>
+            <ion-col col-md-2 [ngClass]="closure.ccDifference > 0 ? 'error-text' : ''">{{closure.ccDifference * -1}}</ion-col>
+
+            <ion-col col-md-6>Store Credit</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+            <ion-col col-md-2>0.00</ion-col>
+
+            <ion-col col-md-12><hr/></ion-col>
+
+            <ion-col col-md-6>Totals</ion-col>
+            <ion-col col-md-2>{{expected.total}}</ion-col>
+            <ion-col col-md-2>{{closure.totalCounted}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.totalDifference > 0 ? 'error-text' : ''">{{closure.totalDifference * -1}}</ion-col>
+
+            <ion-col col-md-12>
+              <ion-textarea placeholder="Type to add a register closure note" [(ngModel)]="closure.note"></ion-textarea>
+            </ion-col>
+
+            <ion-col col-md-12>
+              <button ion-button color="primary" (click)="closeRegister()" [disabled]="closure.cashCounted <= 0 && closure.ccCounted <= 0" block>Close Register</button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

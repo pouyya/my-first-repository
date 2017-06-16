@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { HelperService } from './../../services/helperService';
 import { Platform, AlertController, ModalController, NavController } from 'ionic-angular';
@@ -74,8 +75,13 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
-    let bucketItem = this.salesService.prepareBucketItem(item);
-    this.invoice.items.push(bucketItem);
+    var index = _.findIndex(this.invoice.items, { _id: item._id });
+    if(index === -1) {
+      let bucketItem = this.salesService.prepareBucketItem(item);
+      this.invoice.items.push(bucketItem);
+    } else {
+      this.invoice.items[index].quantity++ ;
+    }
     this.calculateAndSync();
   }
 
