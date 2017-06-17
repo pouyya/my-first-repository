@@ -1,3 +1,5 @@
+import { SwitchPosModal } from './modals/switch-pos/switch-pos';
+import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { ModuleService } from './../services/moduleService';
@@ -82,7 +84,8 @@ const cloudSettings: CloudSettings = {
     CreditCardModal,
     ParkSale,
     PosDetailsPage,
-    OpenCloseRegister
+    OpenCloseRegister,
+    SwitchPosModal
   ],
   imports: [
     BrowserModule,
@@ -124,7 +127,8 @@ const cloudSettings: CloudSettings = {
     CreditCardModal,
     ParkSale,
     PosDetailsPage,
-    OpenCloseRegister
+    OpenCloseRegister,
+    SwitchPosModal
   ],
   providers: [
     StatusBar,
@@ -140,7 +144,8 @@ const cloudSettings: CloudSettings = {
     PosService,
     HelperService,
     ModuleService,
-    ClosureService
+    ClosureService,
+    UserService
   ]
 })
 export class AppModule {}

@@ -123,13 +123,15 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
-            .then((invoice: Sale) => {
-              this.invoice = invoice;
-              this.invoice = { ...this.invoice };
-              resolveA();
-            })
-            .catch((error) => rejectA(error));
+          this.posService.getCurrentPosID().then((posId: string) => {
+            this.salesService.instantiateInvoice(posId)
+              .then((invoice: Sale) => {
+                this.invoice = invoice;
+                this.invoice = { ...this.invoice };
+                resolveA();
+              })
+              .catch((error) => rejectA(error));
+          });
         }),
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()
