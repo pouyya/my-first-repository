@@ -5,9 +5,7 @@ import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, AlertController, LoadingController, ModalController, NavParams } from 'ionic-angular';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
-
 import { BasketComponent } from './../../components/basket/basket.component';
-
 import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
 import { PosService } from "../../services/posService";
@@ -53,7 +51,7 @@ export class Sales {
 
     loader.present().then(() => {
       var posPromise = new Promise((resolve, reject) => {
-        this.posService.setupRegister().then((register: POS) => {
+        this.posService.getCurrentPos().then((register: POS) => {
           if (register) {
             this.register = register;
             if (this.register.status) {
@@ -123,15 +121,13 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          this.posService.getCurrentPosID().then((posId: string) => {
-            this.salesService.instantiateInvoice(posId)
-              .then((invoice: Sale) => {
-                this.invoice = invoice;
-                this.invoice = { ...this.invoice };
-                resolveA();
-              })
-              .catch((error) => rejectA(error));
-          });
+          this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
+            .then((invoice: Sale) => {
+              this.invoice = invoice;
+              this.invoice = { ...this.invoice };
+              resolveA();
+            })
+            .catch((error) => rejectA(error));
         }),
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()

@@ -56,7 +56,7 @@ export class OpenCloseRegister {
     });
 
     loader.present().then(() => {
-      this.posService.setupRegister().then((pos: POS) => {
+      this.posService.getCurrentPos().then((pos: POS) => {
         this.register = pos;
 
         var storePromise = this.storeService.get(pos.storeId).then((store: Store) => {

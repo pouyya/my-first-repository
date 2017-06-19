@@ -1,11 +1,13 @@
-import { User } from './../../../model/user';
-import { UserService } from './../../../services/userService';
+import { UserSettings } from './../../../model/userSettings';
+import { UserSettingsService } from './../../../services/userSettingsService';
 import { POS } from './../../../model/pos';
 import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
 import { Store } from './../../../model/store';
-import { ViewController, Platform, LoadingController, NavParams} from 'ionic-angular';
-import { Component } from '@angular/core';
+import { ViewController, Platform, LoadingController, NavParams } from 'ionic-angular';
+import { Component, ChangeDetectorRef } from '@angular/core';
+
+
 @Component({
   selector: "switch-pos",
   templateUrl: "switch-pos.html"
@@ -15,7 +17,7 @@ export class SwitchPosModal {
   public stores: Array<any> = [];
   public storeId: string;
   public currentStore: any;
-  public user: User;
+  public userSettings: UserSettings;
 
   constructor(
     private viewCtrl: ViewController,
@@ -24,10 +26,9 @@ export class SwitchPosModal {
     private posService: PosService,
     private loading: LoadingController,
     private navParams: NavParams,
-    private userService: UserService
+    private userSettingsService: UserSettingsService,
+    private cdr: ChangeDetectorRef
   ) {
-      this.currentStore = navParams.get('store');
-      this.storeId = this.currentStore._id;
   }
 
   ionViewDidEnter() {
@@ -36,13 +37,12 @@ export class SwitchPosModal {
     });
 
     loader.present().then(() => {
-
       this.storeService.getAll().then((stores: Array<Store>) => {
         var storePromises: Array<Promise<any>> = [];
         stores.forEach((store, index) => {
           storePromises.push(new Promise((resolve, reject) => {
             this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
-              if(registers.length > 0) {
+              if (registers.length > 0) {
                 this.stores.push({ ...store, registers });
               }
               resolve();
@@ -53,20 +53,22 @@ export class SwitchPosModal {
         });
 
         Promise.all(storePromises).then(() => {
-          this.userService.getLoggedInUser().then((user) => {
-            this.user = user;
+          this.userSettingsService.getSettings().then((userSettings) => {
+            this.userSettings = userSettings;
+            this.currentStore = this.navParams.get('store');
+            this.storeId = this.currentStore._id;
+            loader.dismiss();
           }).catch((error) => {
             throw new Error(error);
           })
-          loader.dismiss()
         })
-        .catch((error) => {
-          throw new Error(error);
-        })
+          .catch((error) => {
+            throw new Error(error);
+          })
 
       }).catch((error) => {
         throw new Error(error);
-      });      
+      });
     });
   }
 
@@ -76,9 +78,9 @@ export class SwitchPosModal {
   }
 
   public switchRegister(register: POS) {
-    this.user.currentStore = register.storeId;
-    this.user.currentPos = register._id;
-    this.userService.update(this.user).then(() => {
+    this.userSettings.currentStore = register.storeId;
+    this.userSettings.currentPos = register._id;
+    this.userSettingsService.update(this.userSettings).then(() => {
       this.viewCtrl.dismiss();
     }).catch((error) => {
       throw new Error(error);

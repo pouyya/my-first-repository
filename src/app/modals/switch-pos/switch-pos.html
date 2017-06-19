@@ -19,9 +19,19 @@
     </ion-segment-button>
   </ion-segment>
 
-  <ion-list>
+  <ion-list *ngIf="currentStore">
     <ion-item *ngFor="let register of currentStore.registers" (click)="switchRegister(register)">
-      {{ register.name }}
+      <ion-card>
+        <ion-card-header text-center>
+          {{register.name}}
+        </ion-card-header>
+        <ion-card-content *ngIf="!register.status" text-center>
+          Closed
+        </ion-card-content>
+        <ion-card-content *ngIf="register.status" text-center>
+          Opened at {{register.openTime | date:'medium'}}
+        </ion-card-content>
+      </ion-card>
     </ion-item>
   </ion-list>
 

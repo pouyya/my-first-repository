@@ -11,4 +11,12 @@ export class UserService extends BaseEntityService<User> {
   public getLoggedInUser() {
     return this.get("2017-06-16T10:19:57.208Z");
   }
+
+  public getUser() {
+    try {
+      return JSON.parse(localStorage.getItem('user'));
+    } catch(e) {
+      throw new Error(e);
+    }
+  }
 }
