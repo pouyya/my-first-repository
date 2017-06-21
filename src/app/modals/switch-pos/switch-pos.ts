@@ -1,5 +1,3 @@
-import { UserSettings } from './../../../model/userSettings';
-import { UserSettingsService } from './../../../services/userSettingsService';
 import { POS } from './../../../model/pos';
 import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
@@ -16,8 +14,10 @@ export class SwitchPosModal {
 
   public stores: Array<any> = [];
   public storeId: string;
+  public posId: string;
   public currentStore: any;
-  public userSettings: UserSettings;
+  public registers: Array<any> = [];
+  private user: any;
 
   constructor(
     private viewCtrl: ViewController,
@@ -26,7 +26,6 @@ export class SwitchPosModal {
     private posService: PosService,
     private loading: LoadingController,
     private navParams: NavParams,
-    private userSettingsService: UserSettingsService,
     private cdr: ChangeDetectorRef
   ) {
   }
@@ -37,13 +36,20 @@ export class SwitchPosModal {
     });
 
     loader.present().then(() => {
+      this.user = JSON.parse(localStorage.getItem('user'));
+      this.posId = this.user.settings.currentPos;
+      this.storeId = this.user.settings.currentStore;
+      
       this.storeService.getAll().then((stores: Array<Store>) => {
         var storePromises: Array<Promise<any>> = [];
-        stores.forEach((store, index) => {
+        stores.forEach((store: Store, index) => {
           storePromises.push(new Promise((resolve, reject) => {
             this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
               if (registers.length > 0) {
                 this.stores.push({ ...store, registers });
+                if(store._id === this.user.settings.currentStore) {
+                  this.currentStore = { ...store, registers };
+                }
               }
               resolve();
             }).catch((error) => {
@@ -53,16 +59,8 @@ export class SwitchPosModal {
         });
 
         Promise.all(storePromises).then(() => {
-          this.userSettingsService.getSettings().then((userSettings) => {
-            this.userSettings = userSettings;
-            this.currentStore = this.navParams.get('store');
-            this.storeId = this.currentStore._id;
-            loader.dismiss();
-          }).catch((error) => {
-            throw new Error(error);
-          })
-        })
-          .catch((error) => {
+          loader.dismiss();
+        }) .catch((error) => {
             throw new Error(error);
           })
 
@@ -78,13 +76,12 @@ export class SwitchPosModal {
   }
 
   public switchRegister(register: POS) {
-    this.userSettings.currentStore = register.storeId;
-    this.userSettings.currentPos = register._id;
-    this.userSettingsService.update(this.userSettings).then(() => {
-      this.viewCtrl.dismiss();
-    }).catch((error) => {
-      throw new Error(error);
-    });
+    this.user.settings.currentStore = register.storeId;
+    this.user.settings.currentPos = register._id;
+    this.user.currentPos = { ...register };
+    this.user.currentStore = this.stores.find((store) => store._id == register.storeId);
+    localStorage.setItem('user', JSON.stringify(this.user));
+    this.viewCtrl.dismiss();
   }
 
   public dismiss() {

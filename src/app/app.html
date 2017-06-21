@@ -8,10 +8,10 @@
 
   <ion-header *ngIf="moduleName == 'SalesModule'">
     <ion-toolbar>
-      <ion-title>{{store.name}}</ion-title>
-      <ion-title><small>{{register.name}}</small></ion-title>
+      <ion-title>{{user.currentStore.name}}</ion-title>
+      <ion-title><small>{{user.currentPos.name}}</small></ion-title>
       <ion-title>
-        <small><button ion-title color="primary" (click)="switchRegister()">Switch</button></small>
+        <small><button ion-button full small color="primary" (click)="switchRegister()">Switch</button></small>
       </ion-title>
     </ion-toolbar>
   </ion-header>

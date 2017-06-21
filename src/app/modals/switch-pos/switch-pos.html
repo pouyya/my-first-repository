@@ -23,7 +23,7 @@
     <ion-item *ngFor="let register of currentStore.registers" (click)="switchRegister(register)">
       <ion-card>
         <ion-card-header text-center>
-          {{register.name}}
+          {{register.name}} <small *ngIf="register._id == posId">Disabled</small>
         </ion-card-header>
         <ion-card-content *ngIf="!register.status" text-center>
           Closed
