@@ -1,3 +1,4 @@
+import { UserService } from './../../services/userService';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -39,7 +40,8 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     public modalCtrl: ModalController,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private userService: UserService
   ) {
     this.cdr.detach();
   }
@@ -51,35 +53,30 @@ export class Sales {
 
     loader.present().then(() => {
       var posPromise = new Promise((resolve, reject) => {
-        this.posService.getCurrentPos().then((register: POS) => {
-          if (register) {
-            this.register = register;
-            if (this.register.status) {
-              this.initSalePageData().then(() => resolve()).catch((error) => {
-                reject(new Error(error));
-              });
-            } else {
-              let openingAmount = this.navParams.get('openingAmount');
-              let openingNote = this.navParams.get('openingNotes');
-              if(openingAmount) {
-                this.initSalePageData().then((response) => {
-                  this.register.openTime = new Date().toISOString();
-                  this.register.status = true;
-                  this.register.openingAmount = Number(openingAmount);
-                  this.register.openingNote = openingNote;
-                  this.posService.update(this.register);
-                  resolve();
-                }).catch((error) => {
-                  reject(new Error(error));
-                });                
-              } else {
-                resolve();
-              }
-            }
-          } else reject(new Error("Register not found"));
-        }).catch((error) => {
-          reject(new Error(error));
-        });
+        var user = this.userService.getLoggedInUser();
+        this.register = user.currentPos;
+        if (this.register.status) {
+          this.initSalePageData().then(() => resolve()).catch((error) => {
+            reject(new Error(error));
+          });
+        } else {
+          let openingAmount = this.navParams.get('openingAmount');
+          let openingNote = this.navParams.get('openingNotes');
+          if (openingAmount) {
+            this.initSalePageData().then((response) => {
+              this.register.openTime = new Date().toISOString();
+              this.register.status = true;
+              this.register.openingAmount = Number(openingAmount);
+              this.register.openingNote = openingNote;
+              this.posService.update(this.register);
+              resolve();
+            }).catch((error) => {
+              reject(new Error(error));
+            });
+          } else {
+            resolve();
+          }
+        }
       });
 
       posPromise.then(() => {
@@ -116,7 +113,7 @@ export class Sales {
       invoice: this.invoice
     });
   }
-  
+
   private initSalePageData(): Promise<any> {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
