@@ -52,12 +52,11 @@ export class ShortCutsApp {
   switchRegister() {
     let modal = this.modalCtrl.create(SwitchPosModal);
     modal.onDidDismiss(data => {
-      this.cdr.detach();
       let loader = this.loading.create();
 
       loader.present().then(() => {
-        this.cdr.reattach();
-        this.initializeApp();
+        this.user = this.userService.getLoggedInUser();
+        this.nav.setRoot(this.nav.getActive().component);
         loader.dismiss();
       });
     });
