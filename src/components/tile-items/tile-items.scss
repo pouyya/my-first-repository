@@ -6,11 +6,11 @@
   display: inline-block;
   vertical-align: top;
   border: 1px solid $tile-background-color-border;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-}
+} 
 
-.tile:hover {
-  background-color: $tile-hover-background-color;
-  color: $tile-hover-color;
+.tile-icon {
+  font-size:90px;
+  color:#F0F0F0;
 }
