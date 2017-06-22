@@ -32,14 +32,17 @@ $colors: (
 );
 
 $colors-md: (
-  primary: #5DAEA7
+  primary: #3784C6
 );
 
-$background-color: #EDEEF2;
+$font-family-base: "LatoWeb", "Helvetica Neue", "Roboto", sans-serif !default;
+$font-family-md-base: "LatoWeb", "Roboto", "Helvetica Neue", sans-serif !default;
+
+$background-color: #F6F6F6;
 
 $toolbar-background: #3A4953;
 $toolbar-text-color: #CBCFD2;
-$list-background-color: #EBEBEB;
+$list-background-color: #F7F7F7;
 $list-background-color-border: #a9a9a9;
 
 $toolbar-md-text-color: #CBCFD2;
@@ -101,8 +104,11 @@ $basket-background-color: #FFFFFF;
 // Fonts
 // --------------------------------------------------
 
+@import "lato";
 @import "roboto";
 @import "noto-sans";
+@import "flaticon";
+@import "barber-color";
 
 
 // Global Styles

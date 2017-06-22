@@ -4,15 +4,33 @@
   height: 100%
 }
 
+.no-margin {
+  margin: 0;
+}
+
 .sales-category {
   background-color: white;
 
   button {
+    text-align: center;
+    color: #585858;
     background-color: white;
+
+    .category-icon {
+      color: #B2B2B2;
+      padding-bottom: 10px;
+      font-size: 35pt;
+      display: block;
+    }
   }
 
   .activeCategory {
+    color: #000000;
     background-color: #F7F7F7;
+
+    .category-icon {
+      color: #000000;
+    }    
   }
 }
 

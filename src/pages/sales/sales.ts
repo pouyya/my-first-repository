@@ -1,4 +1,4 @@
-import { UserService } from './../../services/userService';
+import _ from 'lodash';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -11,6 +11,7 @@ import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
 import { PosService } from "../../services/posService";
 import { PaymentsPage } from "../payment/payment";
+import { UserService } from './../../services/userService';
 
 
 @PageModule(() => SalesModule)
@@ -129,6 +130,27 @@ export class Sales {
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()
             .then((categories) => {
+              // categories = _.map(categories, function (cat, index) {
+              //   if (index == 0) {
+              //     cat.icon = "icon-barbc-hair-cream";
+              //   }
+              //   if (index == 1) {
+              //     cat.icon = "icon-barbc-beard";
+              //   }
+              //   if (index == 2) {
+              //     cat.icon = "icon-barbc-bow-tie";
+              //   }
+              //   if (index == 3) {
+              //     cat.icon = "icon-barbc-razor-2";
+              //   }
+              //   if (index == 4) {
+              //     cat.icon = "icon-barbc-scissors-1";
+              //   }
+              //   if (index == 5) {
+              //     cat.icon = "icon-barbc-barbershop";
+              //   }
+              //   return cat;
+              // });
               this.categories = categories;
               this.activeCategory = this.categories[0];
               this.salesService.loadCategoryItems(this.categories[0]._id).then((items: Array<any>) => {

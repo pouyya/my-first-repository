@@ -23,6 +23,11 @@
   position: relative;
 }
 
+.pay-button {
+  height: 80px;
+  font-size: large;
+}
+
 #park-sale {
   @extend .link;
   margin-right: 2em;

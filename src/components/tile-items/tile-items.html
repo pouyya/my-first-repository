@@ -1,9 +1,13 @@
-<md-grid-list cols="4" rowHeight="2:2">
+<md-grid-list cols="4" rowHeight="2:2" gutterSize="10px">
   <md-grid-tile
       class="tile"
       *ngFor="let tile of items" (click)="selectItem(tile)"
       [colspan]="1"
-      [rowspan]="1" tapabble >
-{{ tile.name }}
+      [rowspan]="1" tapabble>
+          <ion-icon class="tile-icon" name="pricetags"></ion-icon>
+        <md-grid-tile-footer [style.background]="'#3A4953'">
+          <h2 md-line>{{ tile.name }}</h2>
+          <!--<h3 md-line>${{ tile.price | number : '1.2-2' }}</h3>-->
+        </md-grid-tile-footer>
   </md-grid-tile>
 </md-grid-list>
