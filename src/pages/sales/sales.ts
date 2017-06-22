@@ -96,7 +96,7 @@ export class Sales {
    */
   public itemSelected(category) {
     this.activeCategory = category;
-    this.salesService.loadCategoryItems(category._id).then(
+    this.salesService.loadPurchasableItems(category._id).then(
       items => this.activeTiles = items,
       error => { console.error(error); }
     );
@@ -153,7 +153,7 @@ export class Sales {
               // });
               this.categories = categories;
               this.activeCategory = this.categories[0];
-              this.salesService.loadCategoryItems(this.categories[0]._id).then((items: Array<any>) => {
+              this.salesService.loadPurchasableItems(this.categories[0]._id).then((items: Array<any>) => {
                 this.activeTiles = items;
                 resolveA();
               });
