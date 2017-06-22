@@ -1,3 +1,4 @@
+import { UserService } from './../../../services/userService';
 import { POS } from './../../../model/pos';
 import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
@@ -26,7 +27,8 @@ export class SwitchPosModal {
     private posService: PosService,
     private loading: LoadingController,
     private navParams: NavParams,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private userService: UserService,
   ) {
   }
 
@@ -36,7 +38,7 @@ export class SwitchPosModal {
     });
 
     loader.present().then(() => {
-      this.user = JSON.parse(localStorage.getItem('user'));
+      this.user = this.userService.getUser();
       this.posId = this.user.settings.currentPos;
       this.storeId = this.user.settings.currentStore;
       
