@@ -1,3 +1,4 @@
+import { UserService } from './../../services/userService';
 import { Sale } from './../../model/sale';
 import { SalesServices } from './../../services/salesService';
 import { ClosureService } from './../../services/closureService';
@@ -16,8 +17,8 @@ import { Sales } from "./../sales/sales.ts";
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',
-  styleUrls: [ '/pages/open-close-register.scss' ],
-  providers: [ SalesServices, ClosureService, StoreService, PosService ]
+  styleUrls: ['/pages/open-close-register.scss'],
+  providers: [SalesServices, ClosureService, StoreService, PosService]
 })
 export class OpenCloseRegister {
 
@@ -44,7 +45,8 @@ export class OpenCloseRegister {
     private cdr: ChangeDetectorRef,
     private salesService: SalesServices,
     private alertCtrl: AlertController,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private userService: UserService
   ) {
     this.cdr.detach();
     this.showReport = false;
@@ -56,48 +58,41 @@ export class OpenCloseRegister {
     });
 
     loader.present().then(() => {
-      this.posService.setupRegister().then((pos: POS) => {
-        this.register = pos;
+      var user = this.userService.getLoggedInUser();
+      this.register = user.currentPos;
+      this.store = user.currentStore;
+      var closuresPromise = this.closureService.getAllByPOSId(this.register._id).then((closures: Array<Closure>) => {
+        if (closures.length > 0) {
+          this.posClosures = closures;
+        }
+      }).catch((error) => {
+        console.error(new Error(error));
+      });
 
-        var storePromise = this.storeService.get(pos.storeId).then((store: Store) => {
-          this.store = store;
-        }).catch((error) => {
-          console.error(new Error(error));
-        });
-
-        var closuresPromise = this.closureService.getAllByPOSId(pos._id).then((closures: Array<Closure>) => {
-          if(closures.length > 0) {
-            this.posClosures = closures;
-          }
-        }).catch((error) => {
-          console.error(new Error(error));
-        });
-
-        var salesPromise = this.salesService.findCompletedByPosId(pos._id, pos.openTime).then((invoices: Array<Sale>) => {
-          invoices.forEach((invoice) => {
-            invoice.payments.forEach((payment) => {
-              if(payment.type === 'credit_card') {
-                this.expected.cc += Number(payment.amount);
-              }
-              if(payment.type === 'cash') {
-                this.expected.cash += Number(payment.amount);
-              }
-            });
-
-            this.expected.total = this.expected.cc + this.expected.cash;
+      var salesPromise = this.salesService.findCompletedByPosId(this.register._id, this.register.openTime).then((invoices: Array<Sale>) => {
+        invoices.forEach((invoice) => {
+          invoice.payments.forEach((payment) => {
+            if (payment.type === 'credit_card') {
+              this.expected.cc += Number(payment.amount);
+            }
+            if (payment.type === 'cash') {
+              this.expected.cash += Number(payment.amount);
+            }
           });
-        });
 
-        Promise.all([ storePromise, closuresPromise, salesPromise ]).then(() => {
-          this.closure = new Closure();
-          this.closure.posId = this.register._id;
-          this.closure.posName = this.register.name;
-          this.closure.storeName = this.store.name;
-          this.calculateDiff('cash');
-          this.calculateDiff('cc');
-          this.cdr.reattach();
-          loader.dismiss();
+          this.expected.total = this.expected.cc + this.expected.cash;
         });
+      });
+
+      Promise.all([closuresPromise, salesPromise]).then(() => {
+        this.closure = new Closure();
+        this.closure.posId = this.register._id;
+        this.closure.posName = this.register.name;
+        this.closure.storeName = this.store.name;
+        this.calculateDiff('cash');
+        this.calculateDiff('cc');
+        this.cdr.reattach();
+        loader.dismiss();
       });
     });
   }
@@ -113,7 +108,7 @@ export class OpenCloseRegister {
 
   public closeRegister() {
     this.salesService.findInCompletedByPosId(this.register._id).then((sales) => {
-      if(sales.length > 0) {
+      if (sales.length > 0) {
         let alert = this.alertCtrl.create({
           title: 'Warning!',
           subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
@@ -135,7 +130,7 @@ export class OpenCloseRegister {
       }
     });
   }
-  
+
   public onSubmit() {
     this.navCtrl.push(Sales, { openingAmount: this.openingPos.amount, openingNotes: this.openingPos.notes });
   }
