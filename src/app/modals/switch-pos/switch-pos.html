@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Select POS
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-segment [(ngModel)]="storeId">
+    <ion-segment-button (click)="selectStore(store._id, i)" *ngFor="let store of stores; let i = index" [value]="store._id">
+      {{store.name}}
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-list *ngIf="currentStore">
+    <ion-item *ngFor="let register of currentStore.registers">
+      <ion-card class="clickable" (click)="switchRegister(register)">
+        <ion-card-header text-center>
+          {{register.name}}
+        </ion-card-header>
+        <ion-card-content *ngIf="!register.status" text-center>
+          <span>Closed</span>
+        </ion-card-content>
+        <ion-card-content *ngIf="register.status" text-center>
+          Opened at {{register.openTime | date:'medium'}}
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

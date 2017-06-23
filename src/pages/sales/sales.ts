@@ -6,13 +6,12 @@ import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, AlertController, LoadingController, ModalController, NavParams } from 'ionic-angular';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
-
 import { BasketComponent } from './../../components/basket/basket.component';
-
 import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
 import { PosService } from "../../services/posService";
 import { PaymentsPage } from "../payment/payment";
+import { UserService } from './../../services/userService';
 
 
 @PageModule(() => SalesModule)
@@ -42,7 +41,8 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     public modalCtrl: ModalController,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private userService: UserService
   ) {
     this.cdr.detach();
   }
@@ -54,35 +54,30 @@ export class Sales {
 
     loader.present().then(() => {
       var posPromise = new Promise((resolve, reject) => {
-        this.posService.setupRegister().then((register: POS) => {
-          if (register) {
-            this.register = register;
-            if (this.register.status) {
-              this.initSalePageData().then(() => resolve()).catch((error) => {
-                reject(new Error(error));
-              });
-            } else {
-              let openingAmount = this.navParams.get('openingAmount');
-              let openingNote = this.navParams.get('openingNotes');
-              if (openingAmount) {
-                this.initSalePageData().then((response) => {
-                  this.register.openTime = new Date().toISOString();
-                  this.register.status = true;
-                  this.register.openingAmount = Number(openingAmount);
-                  this.register.openingNote = openingNote;
-                  this.posService.update(this.register);
-                  resolve();
-                }).catch((error) => {
-                  reject(new Error(error));
-                });
-              } else {
-                resolve();
-              }
-            }
-          } else reject(new Error("Register not found"));
-        }).catch((error) => {
-          reject(new Error(error));
-        });
+        var user = this.userService.getLoggedInUser();
+        this.register = user.currentPos;
+        if (this.register.status) {
+          this.initSalePageData().then(() => resolve()).catch((error) => {
+            reject(new Error(error));
+          });
+        } else {
+          let openingAmount = this.navParams.get('openingAmount');
+          let openingNote = this.navParams.get('openingNotes');
+          if (openingAmount) {
+            this.initSalePageData().then((response) => {
+              this.register.openTime = new Date().toISOString();
+              this.register.status = true;
+              this.register.openingAmount = Number(openingAmount);
+              this.register.openingNote = openingNote;
+              this.posService.update(this.register);
+              resolve();
+            }).catch((error) => {
+              reject(new Error(error));
+            });
+          } else {
+            resolve();
+          }
+        }
       });
 
       posPromise.then(() => {
@@ -135,27 +130,27 @@ export class Sales {
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()
             .then((categories) => {
-              categories = _.map(categories, function (cat, index) {
-                if (index == 0) {
-                  cat.icon = "icon-barbc-hair-cream";
-                }
-                if (index == 1) {
-                  cat.icon = "icon-barbc-beard";
-                }
-                if (index == 2) {
-                  cat.icon = "icon-barbc-bow-tie";
-                }
-                if (index == 3) {
-                  cat.icon = "icon-barbc-razor-2";
-                }
-                if (index == 4) {
-                  cat.icon = "icon-barbc-scissors-1";
-                }
-                if (index == 5) {
-                  cat.icon = "icon-barbc-barbershop";
-                }
-                return cat;
-              });
+              // categories = _.map(categories, function (cat, index) {
+              //   if (index == 0) {
+              //     cat.icon = "icon-barbc-hair-cream";
+              //   }
+              //   if (index == 1) {
+              //     cat.icon = "icon-barbc-beard";
+              //   }
+              //   if (index == 2) {
+              //     cat.icon = "icon-barbc-bow-tie";
+              //   }
+              //   if (index == 3) {
+              //     cat.icon = "icon-barbc-razor-2";
+              //   }
+              //   if (index == 4) {
+              //     cat.icon = "icon-barbc-scissors-1";
+              //   }
+              //   if (index == 5) {
+              //     cat.icon = "icon-barbc-barbershop";
+              //   }
+              //   return cat;
+              // });
               this.categories = categories;
               this.activeCategory = this.categories[0];
               this.salesService.loadCategoryItems(this.categories[0]._id).then((items: Array<any>) => {
