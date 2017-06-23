@@ -31,6 +31,7 @@ export class Sales {
   public activeTiles: Array<any>;
   public invoice: Sale;
   public register: POS;
+  public doRefund: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -44,6 +45,7 @@ export class Sales {
     private navParams: NavParams,
     private userService: UserService
   ) {
+    this.doRefund = false;
     this.cdr.detach();
   }
 
@@ -119,13 +121,19 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
-            .then((invoice: Sale) => {
-              this.invoice = invoice;
-              this.invoice = { ...this.invoice };
-              resolveA();
-            })
-            .catch((error) => rejectA(error));
+          let invoiceData: Sale = this.navParams.get('invoice');
+          if(invoiceData) {
+            this.doRefund = this.navParams.get('doRefund');
+            this.invoice = invoiceData;
+            resolve();
+          } else {
+            this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
+              .then((invoice: Sale) => {
+                this.invoice = invoice;
+                resolveA();
+              })
+              .catch((error) => rejectA(error));
+          }
         }),
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()

@@ -21,14 +21,21 @@ export class BasketComponent {
   public invoice: Sale;
   public tax: number;
   public oldValue: number = 1;
-  private shownItem: any = null;
   public disablePayBtn = false;
   public balance: number = 0;
+  private shownItem: any = null;
 
+  @Input() refund: boolean; 
   @Input('_invoice')
   set model(obj: Sale) {
     this.invoice = obj;
     this.shownItem = null;
+    if(this.refund) {
+      this.invoice.items = this.invoice.items.map((item) => {
+        item.quantity = item.quantity * -1;
+        return item;
+      });    
+    }
     this.setBalance();
   }
   get model(): Sale { return this.invoice; }

@@ -53,7 +53,7 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket [_invoice]="invoice" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
+        <basket [_invoice]="invoice" [refund]="doRefund" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
       </ion-col>
     </ion-row>
   </ion-grid>

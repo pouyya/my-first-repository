@@ -22,14 +22,15 @@ export class Sale extends DBBasedEntity {
   public created: string;
   public completedAt: string;
   public status: string;
+  public receiptNo: number;
+  public customerName: string;
 
   constructor() {
     super();
     this.completed = false;
     this.items = [];
     this.totalDiscount = 0;
-    this.state = 'current'; // [ current, parked, discarded ]
-    this.status = 'normal'; // [ normal, refund, completed ]
+    this.state = 'current'; // [ current, parked, discarded, refund ]
     this.payments = [];
     this.notes = "";
     this.round = 0;

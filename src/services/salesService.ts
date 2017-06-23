@@ -121,7 +121,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public findAllSalesByPosId(posId) {
 		return this.findBy({
-			limit: 5,
+			limit: 50,
 			selector: {
 				posID: posId
 			}
