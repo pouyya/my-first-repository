@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Sales History</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-4></ion-col>
+      <ion-col col-md-4>
+        <p>Customer</p>
+        <ion-searchbar></ion-searchbar>
+      </ion-col>
+      <ion-col col-md-4>
+        <p>Receipt No#</p>
+        <ion-searchbar></ion-searchbar>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-2><strong>Date</strong></ion-col>
+          <ion-col col-md-1><strong>Receipt</strong></ion-col>
+          <ion-col col-md-2><strong>Sold by</strong></ion-col>
+          <ion-col col-md-2><strong>Customer</strong></ion-col>
+          <ion-col col-md-2><strong>Note</strong></ion-col>
+          <ion-col col-md-1><strong>Sale Total</strong></ion-col>
+          <ion-col col-md-1><strong>Status</strong></ion-col>
+          <ion-col col-md-1></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item *ngFor="let invoice of invoices">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-2>{{ invoice.created | date:'short' }}</ion-col>
+          <ion-col col-md-1>1</ion-col>
+          <ion-col col-md-2>Omer Wahla</ion-col>
+          <ion-col col-md-2>-</ion-col>
+          <ion-col col-md-2>{{ invoice.notes }}</ion-col>
+          <ion-col col-md-1>{{ invoice.taxTotal }}</ion-col>
+          <ion-col col-md-1><strong>{{ invoice.state }}</strong></ion-col>
+          <ion-col col-md-1></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+</ion-content>

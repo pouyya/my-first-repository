@@ -1,4 +1,10 @@
-// core
+import { SalesHistoryPage } from './../pages/sales-history/sales-history';
+import { ClosureService } from './../services/closureService';
+import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
+import { ModuleService } from './../services/moduleService';
+import { HelperService } from './../services/helperService';
+import { ParkSale } from './../pages/sales/modals/park-sale';
+import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
@@ -83,6 +89,7 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
+    SalesHistoryPage,
     SwitchPosModal
   ],
   imports: [
@@ -126,6 +133,7 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
+    SalesHistoryPage,
     SwitchPosModal
   ],
   providers: [
