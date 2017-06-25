@@ -1,3 +1,4 @@
+import { CacheService } from './cacheService';
 import { BucketItem } from './../model/bucketItem';
 import { PurchasableItem } from './../model/purchasableItem';
 import { Injectable, NgZone } from '@angular/core';
@@ -15,7 +16,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private posService: PosService,
-		private zone: NgZone
+		private zone: NgZone,
+		private cacheService: CacheService 
 	) {
 		super(Sale, zone);
 	}
@@ -26,7 +28,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @returns {any}
 	 */
 	public loadPurchasableItems(id: string) {
-		return this.categoryService.getAssociatedItems(id);
+		return this.cacheService.getAndPut('sales-cache' + id, key => this.categoryService.getAssociatedItems(id))
 	}
 
 	/**

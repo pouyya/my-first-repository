@@ -10,6 +10,7 @@ import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CacheFactory } from 'cachefactory';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -53,6 +54,7 @@ import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
+import { CacheService } from "../services/cacheService";
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -132,6 +134,7 @@ const cloudSettings: CloudSettings = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
@@ -144,7 +147,8 @@ const cloudSettings: CloudSettings = {
     ModuleService,
     ClosureService,
     UserService,
-    UserSettingsService
+    UserSettingsService,
+    CacheService
   ]
 })
 export class AppModule {}
