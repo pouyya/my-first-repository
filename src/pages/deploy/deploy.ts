@@ -1,17 +1,23 @@
 import { HomePage } from './../home/home';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { Deploy } from '@ionic/cloud-angular';  
+import { NavController, NavParams, Platform } from 'ionic-angular';
+import { Deploy } from '@ionic/cloud-angular';
 
 @Component({
-  selector: 'page-deploy',
-  templateUrl: 'deploy.html'
+	selector: 'page-deploy',
+	templateUrl: 'deploy.html'
 })
 export class DeployPage {
 
 	public updateText: String = '';
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public deploy: Deploy) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public platform: Platform, public deploy: Deploy) {
+
+		if (platform.is('core')) {
+			navCtrl.setRoot(HomePage);
+			return;
+		}
+
 		this.deploy.channel = 'dev';
 		this.deploy.check().then((snapshotAvailable: boolean) => {
 			if (snapshotAvailable) {
@@ -24,16 +30,16 @@ export class DeployPage {
 				}).then(() => {
 					this.deploy.load();
 				});
-			}else{
+			} else {
 				console.log('No new code :(');
 
 				navCtrl.setRoot(HomePage);
 			}
-		});	
+		});
 	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad DeployPage');
-  }
+	ionViewDidLoad() {
+		console.log('ionViewDidLoad DeployPage');
+	}
 
 }
