@@ -14,6 +14,7 @@ import { CacheFactory } from 'cachefactory';
 
 // pages
 import { ShortCutsApp } from './app.component';
+import { DeployPage } from './../pages/deploy/deploy';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -58,13 +59,14 @@ import { CacheService } from "../services/cacheService";
 
 const cloudSettings: CloudSettings = {
   'core': {
-    'app_id': "036318f3"
+    'app_id': "5bf5f6a2"
   }
 };
 
 @NgModule({
   declarations: [
     ShortCutsApp,
+    DeployPage,
     HomePage,
     InventoryPage,
     Products,
@@ -108,6 +110,7 @@ const cloudSettings: CloudSettings = {
   bootstrap: [IonicApp],
   entryComponents: [
     ShortCutsApp,
+    DeployPage,
     HomePage,
     InventoryPage,
     Products,

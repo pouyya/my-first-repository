@@ -22,7 +22,7 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
-    <preference name="orientation" value="landscape"/>
+    <preference name="orientation" value="landscape" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources\android\icon\drawable-ldpi-icon.png" />
@@ -92,4 +92,5 @@
     <plugin name="cordova-sqlite-storage" spec="~2.0.4" />
     <icon src="resources\android\icon\drawable-xhdpi-icon.png" />
     <engine name="android" spec="~6.1.2" />
+    <plugin name="ionic-plugin-deploy" spec="~0.6.7" />
 </widget>
