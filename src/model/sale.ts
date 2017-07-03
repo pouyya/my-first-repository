@@ -30,10 +30,11 @@ export class Sale extends DBBasedEntity {
     this.completed = false;
     this.items = [];
     this.totalDiscount = 0;
-    this.state = 'current'; // [ current, parked, discarded, refund ]
+    this.state = 'current'; // [ current, parked, discarded, refund, completed ]
     this.payments = [];
     this.notes = "";
     this.round = 0;
     this.created = new Date().toISOString();
+    this.customerName = "";
   }
 }

@@ -89,7 +89,7 @@
 
       <!-- Payment :start: -->
       <ion-col col-md-7>
-        <ion-grid *ngIf="!invoice.completed">
+        <ion-grid *ngIf="!invoice.completed || doRefund">
           <ion-row>
             <ion-col col-md-3>
               <h2>Pay</h2>
@@ -119,7 +119,7 @@
           </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="invoice.completed">
+        <ion-grid *ngIf="invoice.completed && !doRefund">
           <ion-row>
             <ion-col col-md-12>
 

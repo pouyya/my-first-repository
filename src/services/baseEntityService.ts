@@ -30,8 +30,8 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
         return this._dbService.delete(entity);
     }
 
-    getAll() {
-        return this._dbService.getAll();
+    getAll(raw: boolean = false) {
+        return this._dbService.getAll(raw);
     }
 
     findBy(selector: any) {

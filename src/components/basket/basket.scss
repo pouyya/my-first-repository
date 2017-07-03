@@ -28,6 +28,14 @@
   font-size: large;
 }
 
+.pay {
+  background-color: color($colors, primary)
+}
+
+.return {
+  background-color: color($colors, danger);
+}
+
 #park-sale {
   @extend .link;
   margin-right: 2em;

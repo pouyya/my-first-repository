@@ -25,18 +25,22 @@ export class BasketComponent {
   public balance: number = 0;
   private shownItem: any = null;
 
-  @Input() refund: boolean; 
+  @Input() refund: boolean;
   @Input('_invoice')
   set model(obj: Sale) {
     this.invoice = obj;
     this.shownItem = null;
-    if(this.refund) {
+    if (this.refund) {
       this.invoice.items = this.invoice.items.map((item) => {
         item.quantity = item.quantity * -1;
         return item;
-      });    
+      });
+      this.invoice.subTotal *= -1;
+      this.invoice.taxTotal *= -1;
+      this.balance = this.invoice.taxTotal;
+    } else {
+      this.setBalance();
     }
-    this.setBalance();
   }
   get model(): Sale { return this.invoice; }
 
@@ -83,11 +87,11 @@ export class BasketComponent {
 
   public addItemToBasket(item: PurchasableItem) {
     var index = _.findIndex(this.invoice.items, { _id: item._id });
-    if(index === -1) {
+    if (index === -1) {
       let bucketItem = this.salesService.prepareBucketItem(item);
       this.invoice.items.push(bucketItem);
     } else {
-      this.invoice.items[index].quantity++ ;
+      this.invoice.items[index].quantity++;
     }
     this.calculateAndSync();
   }
@@ -137,7 +141,7 @@ export class BasketComponent {
     modal.onDidDismiss(data => {
       if (data.status) {
         // clear invoice
-        localStorage.removeItem('pos_id');
+        localStorage.removeItem('invoice_id');
         let confirm = this.alertController.create({
           title: 'Invoice Parked!',
           subTitle: 'Your invoice has successfully been parked',
@@ -151,10 +155,10 @@ export class BasketComponent {
           ]
         });
         confirm.present();
-      } else if(data.error) {
-        let error = this.alertController.create({ 
-          title: 'ERROR', 
-          message: data.error || 'An error has occurred :(', 
+      } else if (data.error) {
+        let error = this.alertController.create({
+          title: 'ERROR',
+          message: data.error || 'An error has occurred :(',
           buttons: ['OK']
         });
         error.present();
@@ -176,7 +180,7 @@ export class BasketComponent {
               this.navCtrl.setRoot(this.navCtrl.getActive().component);
             }).catch((error) => console.log(new Error()));
           }
-        },        
+        },
         {
           text: 'No',
           handler: () => {

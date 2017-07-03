@@ -113,7 +113,8 @@ export class Sales {
   // Event
   public paymentClicked() {
     this.navCtrl.push(PaymentsPage, {
-      invoice: this.invoice
+      invoice: this.invoice,
+      doRefund: this.doRefund
     });
   }
 

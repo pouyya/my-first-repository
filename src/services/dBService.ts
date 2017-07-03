@@ -81,13 +81,16 @@ export class DBService<T extends DBBasedEntity> {
         return this.update(entity);
     }
 
-    getAll() {
+    getAll(raw: boolean = false) {
         var entityTypeName = (new this.entityType()).entityTypeName;
-
         return this._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true })
             .then(docs => {
-                this._data = docs.docs;
-                return this._data;
+                if(raw) {
+                    return docs;
+                } else {
+                    this._data = docs.docs;
+                    return this._data;
+                }
             });
     }
 

@@ -18,6 +18,7 @@ export class PaymentsPage {
   public amount: number;
   public balance: number;
   public change: number;
+  public doRefund: boolean;
 
   constructor(
     private salesService: SalesServices,
@@ -27,6 +28,7 @@ export class PaymentsPage {
     public helper: HelperService) {
     // load invoice object
     this.invoice = navParams.get('invoice');
+    this.doRefund = navParams.get('doRefund');
     this.amount = this.balance = 0;
     this.change = 0;
     this.calculateBalance();
@@ -96,6 +98,7 @@ export class PaymentsPage {
 
   public clearInvoice() {
     this.invoice.completed = true;
+    this.invoice.state = 'completed';
     this.salesService.update(this.invoice).then(() => {
       this.navCtrl.pop();
     }, (err) => {

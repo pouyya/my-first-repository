@@ -110,18 +110,27 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public findInCompletedByPosId(posId: string) {
-    return this.findBy({
-      selector: {
-        posID: posId,
-        completed: false,
+		return this.findBy({
+			selector: {
+				posID: posId,
+				completed: false,
 				state: 'current'
-      }
-    })
+			}
+		})
 	}
 
-	public findAllSalesByPosId(posId) {
+	public recordsCount() {
+		return new Promise((resolve, reject) => {
+			this.getAll(true).then(docs => {
+				resolve(docs.docs.length);
+			}).catch(error => reject(error));
+		});
+	}
+
+	public findAllSalesByPosId(posId, limit, offset) {
 		return this.findBy({
-			limit: 50,
+			limit: limit,
+			skip: offset,
 			selector: {
 				posID: posId
 			}
