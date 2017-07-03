@@ -11,12 +11,14 @@ export class CreditCardModal {
 
   public invoice: Sale;
   public displayAmount: number;
+  public isRefund: boolean;
 
   constructor(
     private navParams: NavParams,
     public viewCtrl: ViewController) {
     this.displayAmount = navParams.get('amount');
     this.invoice = navParams.get('invoice');
+    this.isRefund = navParams.get('refund');
   }
 
   public dismiss() {

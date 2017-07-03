@@ -19,6 +19,7 @@ export class PaymentsPage {
   public balance: number;
   public change: number;
   public doRefund: boolean;
+  public refundCompleted: boolean = false;
 
   constructor(
     private salesService: SalesServices,
@@ -31,7 +32,11 @@ export class PaymentsPage {
     this.doRefund = navParams.get('doRefund');
     this.amount = this.balance = 0;
     this.change = 0;
-    this.calculateBalance();
+    if(this.doRefund) {
+      this.balance = this.amount = this.invoice.taxTotal;
+    } else {
+      this.calculateBalance();
+    }
   }
 
   ionViewDidEnter() {
@@ -57,7 +62,6 @@ export class PaymentsPage {
         this.invoice.completed = true;
         this.change = totalPayments - this.invoice.taxTotal;
         this.invoice.completedAt = new Date().toISOString();
-        // sync afterwards
       }
     }
   }
@@ -65,10 +69,13 @@ export class PaymentsPage {
   public payWithCash() {
     let modal = this.modalCtrl.create(CashModal, {
       invoice: this.invoice,
-      amount: Number(this.amount)
+      amount: Number(this.amount),
+      refund: this.doRefund
     });
     modal.onDidDismiss(data => {
-      data && data.status && this.addPayment('cash', data.data);
+      if(data && data.status) {
+        this.doRefund ? this.completeRefund(data.data) : this.addPayment('cash', data.data);
+      }
     });
     modal.present();
   }
@@ -76,12 +83,22 @@ export class PaymentsPage {
   public payWithCreditCard() {
     let modal = this.modalCtrl.create(CreditCardModal, {
       invoice: this.invoice,
-      amount: Number(this.amount)
+      amount: Number(this.amount),
+      refund: this.doRefund
     });
     modal.onDidDismiss(data => {
-      data && data.status && this.addPayment('credit_card', data.data);
+      if(data && data.status) {
+        this.doRefund ? this.completeRefund(data.data) : this.addPayment('credit_card', data.data);
+      }
     });
     modal.present();
+  }
+
+  private completeRefund(payment: number) {
+    this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
+    if(this.refundCompleted) {
+      this.invoice.state = 'refund';
+    }
   }
 
   private addPayment(type: string, payment: number) {
@@ -98,8 +115,9 @@ export class PaymentsPage {
 
   public clearInvoice() {
     this.invoice.completed = true;
-    this.invoice.state = 'completed';
+    this.invoice.state = this.doRefund ? 'refund' : 'completed';
     this.salesService.update(this.invoice).then(() => {
+      localStorage.removeItem('invoice_id');
       this.navCtrl.pop();
     }, (err) => {
       console.log(new Error(err));

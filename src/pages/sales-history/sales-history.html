@@ -11,14 +11,10 @@
   <ion-grid>
     <ion-row>
       <ion-col col-md-4>
-        <ion-list>
-          <ion-item>
-            <ion-label>{{ selectedStatus.text }}</ion-label>
-            <ion-select [(ngModel)]="selectedStatus" (ionChange)="getByState()">
-              <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
-            </ion-select>
-          </ion-item>
-        </ion-list>
+        <p>Status</p>
+        <ion-select [(ngModel)]="selectedStatus" (ionChange)="getByState()">
+          <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
+        </ion-select>
       </ion-col>
       <ion-col col-md-4>
         <p>Customer</p>
@@ -49,19 +45,18 @@
   <ion-list>
     <ion-item *ngFor="let invoice of invoices; let $index = index" [ngClass]="{active: isItemShown(invoice._id)}">
       <ion-grid>
-        <ion-row (click)="toggleItem(invoice._id)">
-          <ion-col col-md-2>{{ invoice.created | date:'short' }}</ion-col>
-          <ion-col col-md-1>1</ion-col>
-          <ion-col col-md-2>Omer Wahla</ion-col>
+        <ion-row (click)="toggleItem(invoice._id, invoice.state)">
+          <ion-col col-md-2>{{invoice.created | date:'short'}}</ion-col>
+          <ion-col col-md-1>{{invoice.receiptNo}}</ion-col>
+          <ion-col col-md-2>{{invoice.customerName}}</ion-col>
           <ion-col col-md-2>-</ion-col>
-          <ion-col col-md-2>{{ invoice.notes }}</ion-col>
-          <ion-col col-md-1>${{ invoice.taxTotal }}</ion-col>
+          <ion-col col-md-2>{{invoice.notes}}</ion-col>
+          <ion-col col-md-1>${{invoice.taxTotal}}</ion-col>
           <ion-col col-md-1>
-            <strong *ngIf="invoice.completed">Completed</strong>
-            <strong *ngIf="!invoice.completed">{{ states[invoice.state] }}</strong>
+            <strong>{{states[invoice.state]}}</strong>
           </ion-col>
           <ion-col col-md-1 class="clickable">
-            <ion-icon name="refresh" text-center *ngIf="invoice.completed" (click)="gotoSales(invoice, true, $index)"></ion-icon>
+            <ion-icon name="refresh" text-center *ngIf="invoice.state == 'completed'" (click)="gotoSales(invoice, true, $index)"></ion-icon>
             <ion-icon name="share-alt" text-center *ngIf="invoice.state == 'parked'" (click)="gotoSales(invoice, false, $index)"></ion-icon>
           </ion-col>
         </ion-row>
@@ -85,26 +80,56 @@
                 </ion-row>
               </ion-grid>
             </ion-col>
-            <ion-col col-md-2 >
+            <ion-col col-md-2>
               <ion-item class="clickable" (click)="gotoSales(invoice, false, $index)">
-                <ion-icon name="share-alt" ></ion-icon> Continue Sale
+                <ion-icon name="share-alt"></ion-icon> Continue Sale
               </ion-item>
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col col-md-5>Note</ion-col>
-            <ion-col col-md-5>
-              SubTotal<br/>
-              Total Tax (No Tax)
+            <ion-col col-md-4>Note</ion-col>
+            <ion-col col-md-4>
+              SubTotal<br/> Total Tax (No Tax)
             </ion-col>
-            <ion-col col-md-2>
-              ${{invoice.taxTotal}}<br/>
-              $0.00
+            <ion-col col-md-4>
+              ${{invoice.taxTotal}}<br/> $0.00
             </ion-col>
-          </ion-row>   
+          </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="invoice.state === 'completed'"></ion-grid>
+        <ion-grid *ngIf="invoice.state === 'completed'">
+          <ion-row>
+            <ion-col col-md-10>
+              <ion-grid>
+                <ion-row *ngFor="let item of invoice.items">
+                  <ion-col col-md-5>
+                    {{item.quantity}}&nbsp;&nbsp;{{item.name}}
+                  </ion-col>
+                  <ion-col col-md-5>
+                    @ ${{item.actualPrice}}
+                  </ion-col>
+                  <ion-col col-md-2>
+                    ${{item.finalPrice}}
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+            <ion-col col-md-2>
+              <ion-item class="clickable" (click)="gotoSales(invoice, true, $index)">
+                <ion-icon name="refresh"></ion-icon> Return Items
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col col-md-4>Note</ion-col>
+            <ion-col col-md-4>
+              SubTotal<br/> Total Tax (No Tax)
+            </ion-col>
+            <ion-col col-md-4>
+              ${{invoice.taxTotal}}<br/> $0.00
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
     </ion-item>
   </ion-list>
