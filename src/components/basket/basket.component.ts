@@ -44,7 +44,7 @@ export class BasketComponent {
   }
   get model(): Sale { return this.invoice; }
 
-  @Output() paymentClicked = new EventEmitter<boolean>();
+  @Output() paymentClicked = new EventEmitter<any>();
 
   constructor(
     private salesService: SalesServices,
@@ -86,6 +86,7 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
+    this.invoice.completed = false;
     var index = _.findIndex(this.invoice.items, { _id: item._id });
     if (index === -1) {
       let bucketItem = this.salesService.prepareBucketItem(item);
@@ -97,16 +98,19 @@ export class BasketComponent {
   }
 
   public removeItem(item: BucketItem, $index) {
+    this.invoice.completed = false;
     this.invoice.items.splice($index, 1);
     this.calculateAndSync();
   }
 
   public updatePrice(item: BucketItem) {
+    this.invoice.completed = false;
     item.discount = this.helper.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
     this.calculateAndSync();
   }
 
   public calculateDiscount(item: BucketItem) {
+    this.invoice.completed = false;
     item.discount = this.helper.round2Dec(item.discount);
     item.finalPrice = item.discount > 0 ?
       this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
@@ -115,6 +119,7 @@ export class BasketComponent {
   }
 
   public addQuantity(item: BucketItem) {
+    this.invoice.completed = false;
     this.calculateAndSync();
   }
 
@@ -133,7 +138,7 @@ export class BasketComponent {
   }
 
   public gotoPayment() {
-    this.paymentClicked.emit(true);
+    this.paymentClicked.emit({balance: this.balance});
   }
 
   public parkSale() {
@@ -176,7 +181,7 @@ export class BasketComponent {
           text: 'Yes',
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
-              localStorage.removeItem('pos_id');
+              localStorage.removeItem('invoice_id');
               this.navCtrl.setRoot(this.navCtrl.getActive().component);
             }).catch((error) => console.log(new Error()));
           }

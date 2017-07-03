@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { BucketItem } from './../model/bucketItem';
 import { PurchasableItem } from './../model/purchasableItem';
 import { Injectable, NgZone } from '@angular/core';
@@ -76,24 +77,24 @@ export class SalesServices extends BaseEntityService<Sale> {
 							}
 						}
 
-						return resolve(createDefaultObject(posId));
+						return resolve(createDefaultObject(posId, id));
 					},
 					error => {
 						if (error.name == 'not_found') {
-							resolve(createDefaultObject(posId));
+							resolve(createDefaultObject(posId, id));
 						} else {
 							throw new Error(error);
 						}
 					}
 					);
 			} else {
-				resolve(createDefaultObject(posId));
+				resolve(createDefaultObject(posId, id));
 			}
 		});
 
-		function createDefaultObject(posID: string) {
+		function createDefaultObject(posID: string, invoiceId: string) {
 			let sale: Sale = new Sale();
-			sale._id = new Date().toISOString();
+			sale._id = invoiceId;
 			sale.posID = posID;
 			sale.subTotal = 0;
 			sale.tax = tax;
@@ -127,13 +128,17 @@ export class SalesServices extends BaseEntityService<Sale> {
 		});
 	}
 
-	public findAllSalesByPosId(posId, limit, offset) {
+	public searchSales(posId, limit, offset, options) {
+		var query = { posID: posId };
+		_.each(options, (value, key) => {
+			if(value) {
+				query[key] = value;
+			}
+		});
 		return this.findBy({
 			limit: limit,
 			skip: offset,
-			selector: {
-				posID: posId
-			}
+			selector: query
 		});
 	}
 }

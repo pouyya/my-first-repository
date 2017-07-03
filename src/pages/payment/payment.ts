@@ -98,6 +98,7 @@ export class PaymentsPage {
     this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
     if(this.refundCompleted) {
       this.invoice.state = 'refund';
+      this.balance = 0;
     }
   }
 

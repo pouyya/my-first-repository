@@ -111,7 +111,8 @@ export class Sales {
   }
 
   // Event
-  public paymentClicked() {
+  public paymentClicked($event) {
+    this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
       invoice: this.invoice,
       doRefund: this.doRefund

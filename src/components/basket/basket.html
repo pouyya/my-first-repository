@@ -55,7 +55,7 @@
                 <ion-col col-md-4>
                   <ion-item item-content>
                     <ion-label color="primary" stacked>Price</ion-label>
-                    <ion-input type="text" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
+                    <ion-input type="text" [disabled]="item.quantity < 0" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
                     </ion-input>
                   </ion-item>
                 </ion-col>
@@ -64,7 +64,7 @@
                 <ion-col col-md-4>
                   <ion-item item-content>
                     <ion-label color="primary" stacked>Discount(%)</ion-label>
-                    <ion-input type="number" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
+                    <ion-input type="number" [disabled]="item.quantity < 0" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
                   </ion-item>
                 </ion-col>
 
