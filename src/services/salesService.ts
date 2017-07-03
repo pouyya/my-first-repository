@@ -25,7 +25,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param id
 	 * @returns {any}
 	 */
-	public loadCategoryItems(id: string) {
+	public loadPurchasableItems(id: string) {
 		return this.categoryService.getAssociatedItems(id);
 	}
 
