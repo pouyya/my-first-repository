@@ -110,7 +110,7 @@ export class SalesHistoryPage {
 
     if (val && val.trim() != '') {
       this.invoices = this.invoices.filter((item) => {
-        return item.receiptNo == Number(val);
+        return item.receiptNo == val;
       })
     }
   }

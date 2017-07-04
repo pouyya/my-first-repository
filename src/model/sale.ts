@@ -22,7 +22,7 @@ export class Sale extends DBBasedEntity {
   public created: string;
   public completedAt: string;
   public status: string;
-  public receiptNo: number;
+  public receiptNo: string;
   public customerName: string;
 
   constructor() {
@@ -36,5 +36,6 @@ export class Sale extends DBBasedEntity {
     this.round = 0;
     this.created = new Date().toISOString();
     this.customerName = "";
+    this.receiptNo = "";
   }
 }

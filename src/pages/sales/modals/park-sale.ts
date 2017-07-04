@@ -14,9 +14,9 @@ export class ParkSale {
 
   constructor(
     public viewCtrl: ViewController,
+    public alertController: AlertController,
     private navParams: NavParams,
-    private salesService: SalesServices,
-    public alertController: AlertController
+    private salesService: SalesServices
   ) {
     this.invoice = navParams.get('invoice');
   }
@@ -35,6 +35,7 @@ export class ParkSale {
             'text': 'Yes',
             handler: () => {
               this.invoice.state = 'parked';
+              !this.invoice.receiptNo && (this.invoice.receiptNo = this.salesService.getReceiptNumber());
               this.salesService.update(this.invoice).then(() => {
                 this.viewCtrl.dismiss({ status: true, error: false });
               }).catch((error) => {
@@ -49,6 +50,7 @@ export class ParkSale {
       confirm.present();
     } else {
       this.invoice.state = 'parked';
+      !this.invoice.receiptNo && (this.invoice.receiptNo = this.salesService.getReceiptNumber());
       this.salesService.update(this.invoice).then(() => {
         this.viewCtrl.dismiss({ status: true, error: false });
       }).catch((error) => {

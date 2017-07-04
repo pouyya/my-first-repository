@@ -117,6 +117,7 @@ export class PaymentsPage {
   public clearInvoice() {
     this.invoice.completed = true;
     this.invoice.state = this.doRefund ? 'refund' : 'completed';
+    !this.invoice.receiptNo && (this.invoice.receiptNo = this.salesService.getReceiptNumber());
     this.salesService.update(this.invoice).then(() => {
       localStorage.removeItem('invoice_id');
       this.navCtrl.pop();

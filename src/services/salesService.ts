@@ -1,3 +1,4 @@
+import { UserService } from './userService';
 import _ from 'lodash';
 import { BucketItem } from './../model/bucketItem';
 import { PurchasableItem } from './../model/purchasableItem';
@@ -16,6 +17,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private posService: PosService,
+		private userService: UserService,
 		private zone: NgZone
 	) {
 		super(Sale, zone);
@@ -140,5 +142,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 			skip: offset,
 			selector: query
 		});
+	}
+
+	public getReceiptNumber() {
+		var user = this.userService.getLoggedInUser();
+		user.currentStore.saleLastNumber++;
+		this.userService.persistUser(user);
+		return `${user.currentStore.saleNumberPrefix}${user.currentStore.saleLastNumber}`;
 	}
 }
