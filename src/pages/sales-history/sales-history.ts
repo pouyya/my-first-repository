@@ -135,42 +135,34 @@ export class SalesHistoryPage {
     return this.shownItem === id;
   }
 
-  public gotoSales(invoice, doRefund, $index) {
+  public gotoSales(invoice, doRefund, saleIndex) {
     let invoiceId = localStorage.getItem('invoice_id');
     if (invoiceId) {
-      this.salesService.get(invoiceId).then((data: Sale) => {
-        let confirm = this.alertController.create({
-          title: 'Warning!',
-          message: 'There is a sale already exists in your memory. What do you want with it ?',
-          buttons: [
-            {
-              text: 'Discard It!',
-              handler: () => {
-                localStorage.removeItem('invoice_id');
-                let toast = this.toastCtrl.create({
-                  message: 'Sale has been discarded! Your selected sale is now loaded.',
-                  duration: 5000
-                });
-                toast.present();
-                this.navCtrl.push(Sales, { invoice, doRefund });
-              }
-            },
-            {
-              text: 'Take me to that Sale',
-              handler: () => {
-                this.navCtrl.push(Sales);
-              }
+      let confirm = this.alertController.create({
+        title: 'Warning!',
+        message: 'There is a sale already exists in your memory. What do you want with it ?',
+        buttons: [
+          {
+            text: 'Discard It!',
+            handler: () => {
+              localStorage.removeItem('invoice_id');
+              let toast = this.toastCtrl.create({
+                message: 'Sale has been discarded! Your selected sale is now loaded.',
+                duration: 5000
+              });
+              toast.present();
+              this.navCtrl.push(Sales, { invoice, doRefund });
             }
-          ]
-        });
-        confirm.present();
-      }).catch((error) => {
-        if (error.name == 'not_found') {
-          this.navCtrl.push(Sales, { invoice, doRefund });
-        } else {
-          throw new Error(error);
-        }
+          },
+          {
+            text: 'Take me to that Sale',
+            handler: () => {
+              this.navCtrl.push(Sales);
+            }
+          }
+        ]
       });
+      confirm.present();
     } else {
       this.navCtrl.push(Sales, { invoice, doRefund });
     }

@@ -53,6 +53,7 @@ import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
+import { FountainService } from './../services/fountainService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -146,7 +147,8 @@ const cloudSettings: CloudSettings = {
     ModuleService,
     ClosureService,
     UserService,
-    UserSettingsService
+    UserSettingsService,
+    FountainService
   ]
 })
 export class AppModule {}

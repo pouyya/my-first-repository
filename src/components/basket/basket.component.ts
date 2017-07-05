@@ -1,3 +1,4 @@
+import { FountainService } from './../../services/fountainService';
 import _ from 'lodash';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { HelperService } from './../../services/helperService';
@@ -21,7 +22,6 @@ export class BasketComponent {
   public invoice: Sale;
   public tax: number;
   public oldValue: number = 1;
-  public disablePayBtn = false;
   public balance: number = 0;
   private shownItem: any = null;
 
@@ -30,17 +30,7 @@ export class BasketComponent {
   set model(obj: Sale) {
     this.invoice = obj;
     this.shownItem = null;
-    if (this.refund) {
-      this.invoice.items = this.invoice.items.map((item) => {
-        item.quantity = item.quantity * -1;
-        return item;
-      });
-      this.invoice.subTotal *= -1;
-      this.invoice.taxTotal *= -1;
-      this.balance = this.invoice.taxTotal;
-    } else {
-      this.setBalance();
-    }
+    this.setBalance(); 
   }
   get model(): Sale { return this.invoice; }
 
@@ -50,6 +40,7 @@ export class BasketComponent {
     private salesService: SalesServices,
     private taxService: TaxService,
     private calcService: CalculatorService,
+    private fountainService: FountainService,
     private platform: Platform,
     private helper: HelperService,
     private alertController: AlertController,
@@ -59,29 +50,27 @@ export class BasketComponent {
     this.tax = this.taxService.getTax();
   }
 
-  ionViewDidEnter() {
-    this.platform.ready().then(() => {
-      this.setBalance();
-    });
-  }
-
   private setBalance() {
-    if (this.invoice.payments && this.invoice.payments.length > 0) {
-      // disable the pay button if all payments were made
-      let balance = this.invoice.taxTotal - this.invoice.payments
+    if(!this.refund) {
+      this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
+      this.invoice.taxTotal - this.invoice.payments
         .map(payment => payment.amount)
-        .reduce((a, b) => a + b);
-      balance < 1 && (this.disablePayBtn = true);
-      this.balance = balance;
+        .reduce((a, b) => a + b) : this.invoice.taxTotal;
     } else {
-      this.balance = this.invoice.taxTotal;
+      this.invoice.items = this.invoice.items.map((item) => {
+        item.quantity*=-1
+        return item;
+      });
+      this.invoice.subTotal *= -1;
+      this.invoice.taxTotal *= -1;
+      this.balance = this.invoice.taxTotal;      
     }
   }
 
   private calculateAndSync() {
     this.calculateTotal(() => {
       this.setBalance();
-      this.salesService.update(this.invoice)
+      this.salesService.update(this.invoice);
     });
   }
 
@@ -147,6 +136,7 @@ export class BasketComponent {
       if (data.status) {
         // clear invoice
         localStorage.removeItem('invoice_id');
+        !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
         let confirm = this.alertController.create({
           title: 'Invoice Parked!',
           subTitle: 'Your invoice has successfully been parked',

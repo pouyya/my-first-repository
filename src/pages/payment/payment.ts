@@ -1,3 +1,4 @@
+import { FountainService } from './../../services/fountainService';
 import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
@@ -23,20 +24,17 @@ export class PaymentsPage {
 
   constructor(
     private salesService: SalesServices,
+    private fountainService: FountainService,
     public navCtrl: NavController,
     private navParams: NavParams,
     public modalCtrl: ModalController,
     public helper: HelperService) {
-    // load invoice object
+
     this.invoice = navParams.get('invoice');
     this.doRefund = navParams.get('doRefund');
     this.amount = this.balance = 0;
     this.change = 0;
-    if(this.doRefund) {
-      this.balance = this.amount = this.invoice.taxTotal;
-    } else {
-      this.calculateBalance();
-    }
+    this.calculateBalance();
   }
 
   ionViewDidEnter() {
@@ -47,8 +45,8 @@ export class PaymentsPage {
 
   private calculateBalance() {
     var totalPayments = 0;
-    if(this.invoice.taxTotal > 0) {
-      if (this.invoice.payments && this.invoice.payments.length > 0) {
+    if (!this.doRefund) {
+      if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
         totalPayments = this.invoice.payments
           .map(payment => payment.amount)
           .reduce((a, b) => a + b);
@@ -56,13 +54,10 @@ export class PaymentsPage {
 
       this.amount = this.invoice.taxTotal - totalPayments;
       this.balance = this.amount;
-
-      if (totalPayments >= this.invoice.taxTotal) {
-        // Show Payment Completion Modal!
-        this.invoice.completed = true;
-        this.change = totalPayments - this.invoice.taxTotal;
-        this.invoice.completedAt = new Date().toISOString();
-      }
+      // Check for payment completion
+      totalPayments >= this.invoice.taxTotal && (this.completeSale(totalPayments));
+    } else {
+      this.balance = this.amount = this.invoice.taxTotal;
     }
   }
 
@@ -73,7 +68,7 @@ export class PaymentsPage {
       refund: this.doRefund
     });
     modal.onDidDismiss(data => {
-      if(data && data.status) {
+      if (data && data.status) {
         this.doRefund ? this.completeRefund(data.data) : this.addPayment('cash', data.data);
       }
     });
@@ -87,7 +82,7 @@ export class PaymentsPage {
       refund: this.doRefund
     });
     modal.onDidDismiss(data => {
-      if(data && data.status) {
+      if (data && data.status) {
         this.doRefund ? this.completeRefund(data.data) : this.addPayment('credit_card', data.data);
       }
     });
@@ -96,7 +91,7 @@ export class PaymentsPage {
 
   private completeRefund(payment: number) {
     this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
-    if(this.refundCompleted) {
+    if (this.refundCompleted) {
       this.invoice.state = 'refund';
       this.balance = 0;
     }
@@ -114,17 +109,18 @@ export class PaymentsPage {
     this.salesService.update(this.invoice);
   }
 
-  public clearInvoice() {
+  private completeSale(payments: number) {
     this.invoice.completed = true;
-    this.invoice.state = this.doRefund ? 'refund' : 'completed';
-    !this.invoice.receiptNo && (this.invoice.receiptNo = this.salesService.getReceiptNumber());
-    this.salesService.update(this.invoice).then(() => {
-      localStorage.removeItem('invoice_id');
-      this.navCtrl.pop();
-    }, (err) => {
-      console.log(new Error(err));
-      this.navCtrl.pop();
-    });
+    this.change = payments - this.invoice.taxTotal;
+    this.invoice.completedAt = new Date().toISOString();
+    this.invoice.state = 'completed';
+    !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
+    this.salesService.update(this.invoice);
+  }
+
+  public clearInvoice() {
+    localStorage.removeItem('invoice_id');
+    this.goBack();
   }
 
   public goBack() {
