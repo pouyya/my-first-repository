@@ -35,13 +35,13 @@ export class Sales {
 
   constructor(
     public navCtrl: NavController,
+    public modalCtrl: ModalController,
     private salesService: SalesServices,
     private categoryService: CategoryService,
     private alertController: AlertController,
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private posService: PosService,
-    public modalCtrl: ModalController,
     private navParams: NavParams,
     private userService: UserService
   ) {
