@@ -23,6 +23,8 @@ export class SalesHistoryPage {
   public filtersEnabled: boolean = false;
   private user: any;
   private limit: number;
+  private readonly defaultLimit = 5;
+  private readonly defaultOffset = 0;
   private offset: number;
   private total: number;
   private shownItem: any = null;
@@ -43,6 +45,9 @@ export class SalesHistoryPage {
   ) {
     this.invoices = [];
     this.invoicesBackup = [];
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.total = 0;
     this.statusList = [
       { value: '', text: 'Default' },
       { value: 'completed', text: 'Completed' },
@@ -61,9 +66,6 @@ export class SalesHistoryPage {
 
   ionViewDidEnter() {
     this.platform.ready().then(() => {
-      this.limit = 5;
-      this.offset = 0;
-      this.total = 0;
       this.user = this.userService.getLoggedInUser();
       var promises: Array<Promise<any>> = [
         // get total count
@@ -90,43 +92,8 @@ export class SalesHistoryPage {
     });
   }
 
-  public getByCustomer(event) {
-    this.invoices = this.invoicesBackup;
-    var val = event.target.value;
-    this.filters.customerName = val || false;
-
-    if (val && val.trim() != '') {
-      this.invoices = this.invoices.filter((item) => {
-        return ((item.customerName).toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
-    }
-  }
-
-  public getByReceiptNumber(event) {
-
-    this.invoices = this.invoicesBackup;
-    var val = event.target.value;
-    this.filters.receiptNo = val || false
-
-    if (val && val.trim() != '') {
-      this.invoices = this.invoices.filter((item) => {
-        return item.receiptNo == val;
-      })
-    }
-  }
-
-  getByState() {
-    this.invoices = this.invoicesBackup;
-    this.filters.state = this.selectedStatus || false;
-    if(this.selectedStatus) {
-      this.invoices = this.invoices.filter((item) => {
-        return item.state == this.selectedStatus;
-      });
-    }
-  }
-
   public toggleItem(id: string, state: string): void {
-    if(['parked', 'completed'].indexOf(state) > -1) {
+    if (['parked', 'completed'].indexOf(state) > -1) {
       this.shownItem = this.isItemShown(id) ? null : id;
     }
   }
@@ -169,18 +136,59 @@ export class SalesHistoryPage {
     }
   }
 
-  public loadMoreSale(infiniteScroll) {
-    if (this.total > this.invoices.length) {
-      this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters).then((invoices: Array<Sale>) => {
-        this.offset += this.limit;
-        this.invoices = this.invoices.concat(invoices);
-        this.invoicesBackup = this.invoices;
-        infiniteScroll.complete();
-      }).catch((error) => {
-        throw new Error(error);
-      });
-    } else {
-      infiniteScroll.complete();
+  public searchBy(event: any, key: string) {
+    this.invoices = this.invoicesBackup;
+    switch (key) {
+      case 'customerName':
+        this.filters.customerName = event.target.value || false;
+        break;
+      case 'receiptNo':
+        this.filters.receiptNo = event.target.value || false;
+        break;
+      case 'state':
+        this.filters.state = this.selectedStatus || false;
+        break;
+      default:
+      this.filters[key] = event.target.value;
+        break;
     }
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.invoices = [];
+    this.getSales().catch((error) => {
+      console.error(error);
+    });
+  }
+
+  getByState() {
+    this.invoices = this.invoicesBackup;
+    this.filters.state = this.selectedStatus || false;
+    if (this.selectedStatus) {
+      this.invoices = this.invoices.filter((item) => {
+        return item.state == this.selectedStatus;
+      });
+    }
+  }
+
+  private getSales(limit?: number, offset?: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.total > this.invoices.length) {
+        this.salesService.searchSales(
+          this.user.settings.currentPos,
+          limit | this.limit, offset | this.offset,
+          this.filters).then((invoices: Array<Sale>) => {
+            this.invoices = this.invoices.concat(invoices);
+            this.invoicesBackup = this.invoices;
+            resolve();
+          }).catch(error => reject(error));
+      } else resolve();
+    });
+  }
+
+  public loadMoreSale(infiniteScroll) {
+    this.getSales().then(() => {
+      this.offset += this.limit;
+      infiniteScroll.complete();
+    }).catch((error) => console.error(error));
   }
 }

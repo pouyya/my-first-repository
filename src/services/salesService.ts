@@ -92,6 +92,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 		function createDefaultObject(posID: string, invoiceId: string) {
 			let sale: Sale = new Sale();
+
+			// This is piece of code temporary and used for setting dummy customer names for search
+			let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
+			sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
+
 			sale._id = invoiceId;
 			sale.posID = posID;
 			sale.subTotal = 0;
@@ -127,17 +132,17 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public searchSales(posId, limit, offset, options) {
-		var query = { posID: posId };
-		_.each(options, (value, key) => {
-			if(value) {
-				query[key] = value;
-			}
-		});
-		return this.findBy({
+		var query = {
 			limit: limit,
 			skip: offset,
-			selector: query
+			selector: { posID: posId }
+		};
+		_.each(options, (value, key) => {
+			if(value) {
+				query.selector[key] = value;
+			}
 		});
+		return this.findBy(query);
 	}
 
 	public manageInvoiceId(invoice: Sale) {

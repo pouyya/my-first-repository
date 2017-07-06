@@ -12,17 +12,17 @@
     <ion-row>
       <ion-col col-md-4>
         <p>Status</p>
-        <ion-select [(ngModel)]="selectedStatus" (ionChange)="getByState()">
+        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchBy($event, 'state')">
           <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
         </ion-select>
       </ion-col>
       <ion-col col-md-4>
         <p>Customer</p>
-        <ion-searchbar (ionInput)="getByCustomer($event)"></ion-searchbar>
+        <ion-searchbar (ionInput)="searchBy($event, 'customerName')" [debounce]="1000" [animated]="true"></ion-searchbar>
       </ion-col>
       <ion-col col-md-4>
         <p>Receipt No#</p>
-        <ion-searchbar (ionInput)="getByReceiptNumber($event)"></ion-searchbar>
+        <ion-searchbar (ionInput)="searchBy($event, 'receiptNo')" [debounce]="1000" [animated]="true"></ion-searchbar>
       </ion-col>
     </ion-row>
   </ion-grid>
