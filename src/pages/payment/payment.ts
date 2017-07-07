@@ -21,6 +21,10 @@ export class PaymentsPage {
   public change: number;
   public doRefund: boolean;
   public refundCompleted: boolean = false;
+  public payTypes: any = {
+    'cash': { text: 'Cash', component: CashModal },
+    'credit_card': { text: 'Credit Card', component: CreditCardModal }
+  };
 
   constructor(
     private salesService: SalesServices,
@@ -61,32 +65,19 @@ export class PaymentsPage {
     }
   }
 
-  public payWithCash() {
-    let modal = this.modalCtrl.create(CashModal, {
+  public payWith(type: string) {
+    let modal = this.modalCtrl.create(this.payTypes[type].component, {
       invoice: this.invoice,
       amount: Number(this.amount),
       refund: this.doRefund
     });
     modal.onDidDismiss(data => {
       if (data && data.status) {
-        this.doRefund ? this.completeRefund(data.data) : this.addPayment('cash', data.data);
+        this.doRefund ? this.completeRefund(data.data) : this.addPayment(type, data.data);
+        this.salesService.update(this.invoice);
       }
     });
-    modal.present();
-  }
-
-  public payWithCreditCard() {
-    let modal = this.modalCtrl.create(CreditCardModal, {
-      invoice: this.invoice,
-      amount: Number(this.amount),
-      refund: this.doRefund
-    });
-    modal.onDidDismiss(data => {
-      if (data && data.status) {
-        this.doRefund ? this.completeRefund(data.data) : this.addPayment('credit_card', data.data);
-      }
-    });
-    modal.present();
+    modal.present();    
   }
 
   private completeRefund(payment: number) {
@@ -106,7 +97,6 @@ export class PaymentsPage {
       amount: Number(payment)
     });
     this.calculateBalance();
-    this.salesService.update(this.invoice);
   }
 
   private completeSale(payments: number) {
@@ -115,7 +105,6 @@ export class PaymentsPage {
     this.invoice.completedAt = new Date().toISOString();
     this.invoice.state = 'completed';
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
-    this.salesService.update(this.invoice);
   }
 
   public clearInvoice() {

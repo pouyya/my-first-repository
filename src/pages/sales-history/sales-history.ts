@@ -49,16 +49,15 @@ export class SalesHistoryPage {
     this.offset = this.defaultOffset;
     this.total = 0;
     this.statusList = [
-      { value: '', text: 'Default' },
+      { value: '', text: 'All' },
       { value: 'completed', text: 'Completed' },
       { value: 'refund', text: 'Refund' },
       { value: 'parked', text: 'Parked' },
-      { value: 'voided', text: 'Voided' }
+      { value: 'current', text: 'Voided' }
     ];
     this.states = {
       current: 'Voided',
       parked: 'Parked',
-      discarded: 'Discarded',
       refund: 'Refund Completed',
       completed: 'Completed'
     }

@@ -124,7 +124,7 @@ export class Sales {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
           let invoiceData: Sale = this.navParams.get('invoice');
-          if(invoiceData) {
+          if(invoiceData && invoiceData.completed && invoiceData.state != 'refund') {
             this.doRefund = this.navParams.get('doRefund');
             this.invoice = invoiceData;
             resolve();
