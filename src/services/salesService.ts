@@ -1,4 +1,3 @@
-import { UserService } from './userService';
 import _ from 'lodash';
 import { BucketItem } from './../model/bucketItem';
 import { PurchasableItem } from './../model/purchasableItem';
@@ -9,6 +8,7 @@ import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
 import { PosService } from "./posService";
+import { UserService } from './userService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -62,11 +62,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public instantiateInvoice(posId: string): Promise<any> {
 		var tax = this.taxService.getTax() || 0;
-		var id = localStorage.getItem('invoice_id');
-		if (!id) {
-			localStorage.setItem('invoice_id', new Date().toISOString());
-			id = localStorage.getItem('invoice_id');
-		}
+		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
 		return new Promise((resolve, reject) => {
 			if (posId) {
 				this.findBy({ "selector": { _id: id, "posID": posId, "state": "current" }, include_docs: true })
@@ -96,6 +92,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 		function createDefaultObject(posID: string, invoiceId: string) {
 			let sale: Sale = new Sale();
+
+			// This is piece of code temporary and used for setting dummy customer names for search
+			let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
+			sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
+
 			sale._id = invoiceId;
 			sale.posID = posID;
 			sale.subTotal = 0;
@@ -131,23 +132,25 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public searchSales(posId, limit, offset, options) {
-		var query = { posID: posId };
-		_.each(options, (value, key) => {
-			if(value) {
-				query[key] = value;
-			}
-		});
-		return this.findBy({
+		var query = {
 			limit: limit,
 			skip: offset,
-			selector: query
+			selector: { posID: posId }
+		};
+		_.each(options, (value, key) => {
+			if(value) {
+				query.selector[key] = value;
+			}
 		});
+		return this.findBy(query);
 	}
 
-	public getReceiptNumber() {
-		var user = this.userService.getLoggedInUser();
-		user.currentStore.saleLastNumber++;
-		this.userService.persistUser(user);
-		return `${user.currentStore.saleNumberPrefix}${user.currentStore.saleLastNumber}`;
+	public manageInvoiceId(invoice: Sale) {
+    if(invoice.items.length > 0) {
+      let invoiceId = localStorage.getItem('invoice_id');
+      invoiceId != invoice._id && (localStorage.setItem('invoice_id', invoice._id));
+    } else {
+      localStorage.removeItem('invoice_id');
+    }
 	}
 }

@@ -1,3 +1,4 @@
+import { FountainService } from './../../../services/fountainService';
 import { SalesServices } from './../../../services/salesService';
 import { Sale } from './../../../model/sale';
 import { ViewController, NavParams, AlertController } from 'ionic-angular';
@@ -16,7 +17,8 @@ export class ParkSale {
     public viewCtrl: ViewController,
     public alertController: AlertController,
     private navParams: NavParams,
-    private salesService: SalesServices
+    private salesService: SalesServices,
+    private fountainService: FountainService
   ) {
     this.invoice = navParams.get('invoice');
   }
@@ -26,6 +28,19 @@ export class ParkSale {
   }
 
   public parkIt() {
+
+    var doPark = () => {
+      localStorage.removeItem('invoice_id');
+      this.invoice.state = 'parked';
+      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
+      this.salesService.update(this.invoice).then(() => {
+        this.viewCtrl.dismiss({ status: true, error: false });
+      }).catch((error) => {
+        console.log(new Error(error));
+        this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
+      });
+    }
+
     if (!this.invoice.notes || this.invoice.notes == "") {
       let confirm = this.alertController.create({
         title: 'Hey!',
@@ -33,30 +48,14 @@ export class ParkSale {
         buttons: [
           {
             'text': 'Yes',
-            handler: () => {
-              this.invoice.state = 'parked';
-              !this.invoice.receiptNo && (this.invoice.receiptNo = this.salesService.getReceiptNumber());
-              this.salesService.update(this.invoice).then(() => {
-                this.viewCtrl.dismiss({ status: true, error: false });
-              }).catch((error) => {
-                console.log(new Error(error));
-                this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
-              });
-            }
+            handler: () => doPark()
           },
           'No'
         ]
       });
       confirm.present();
     } else {
-      this.invoice.state = 'parked';
-      !this.invoice.receiptNo && (this.invoice.receiptNo = this.salesService.getReceiptNumber());
-      this.salesService.update(this.invoice).then(() => {
-        this.viewCtrl.dismiss({ status: true, error: false });
-      }).catch((error) => {
-        console.log(new Error(error));
-        this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
-      });
+      doPark();
     }
   }
 }

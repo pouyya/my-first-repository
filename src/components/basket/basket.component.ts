@@ -30,7 +30,7 @@ export class BasketComponent {
   set model(obj: Sale) {
     this.invoice = obj;
     this.shownItem = null;
-    this.setBalance(); 
+    this.setBalance();
   }
   get model(): Sale { return this.invoice; }
 
@@ -51,23 +51,24 @@ export class BasketComponent {
   }
 
   private setBalance() {
-    if(!this.refund) {
+    if (!this.refund) {
       this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
-      this.invoice.taxTotal - this.invoice.payments
-        .map(payment => payment.amount)
-        .reduce((a, b) => a + b) : this.invoice.taxTotal;
+        this.invoice.taxTotal - this.invoice.payments
+          .map(payment => payment.amount)
+          .reduce((a, b) => a + b) : this.invoice.taxTotal;
     } else {
       this.invoice.items = this.invoice.items.map((item) => {
-        item.quantity*=-1
+        item.quantity *= -1
         return item;
       });
       this.invoice.subTotal *= -1;
       this.invoice.taxTotal *= -1;
-      this.balance = this.invoice.taxTotal;      
+      this.balance = this.invoice.taxTotal;
     }
   }
 
   private calculateAndSync() {
+    this.salesService.manageInvoiceId(this.invoice);
     this.calculateTotal(() => {
       this.setBalance();
       this.salesService.update(this.invoice);
@@ -127,16 +128,13 @@ export class BasketComponent {
   }
 
   public gotoPayment() {
-    this.paymentClicked.emit({balance: this.balance});
+    this.paymentClicked.emit({ balance: this.balance });
   }
 
   public parkSale() {
     let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
     modal.onDidDismiss(data => {
       if (data.status) {
-        // clear invoice
-        localStorage.removeItem('invoice_id');
-        !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
         let confirm = this.alertController.create({
           title: 'Invoice Parked!',
           subTitle: 'Your invoice has successfully been parked',
@@ -187,7 +185,7 @@ export class BasketComponent {
     confirm.present();
   }
 
-  public calculateTotal(callback) {
+  private calculateTotal(callback) {
     setTimeout(() => {
       if (this.invoice.items.length > 0) {
         this.invoice.subTotal = this.invoice.totalDiscount = 0;
