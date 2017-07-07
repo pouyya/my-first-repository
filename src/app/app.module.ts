@@ -1,3 +1,5 @@
+import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
+import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -83,7 +85,8 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
-    SwitchPosModal
+    SwitchPosModal,
+    ItemInfoModal
   ],
   imports: [
     BrowserModule,
@@ -101,7 +104,8 @@ const cloudSettings: CloudSettings = {
 
     // custom
     TileItemsModule,
-    BasketModule
+    BasketModule,
+    PurchasableItemInfoModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -126,7 +130,8 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
-    SwitchPosModal
+    SwitchPosModal,
+    ItemInfoModal
   ],
   providers: [
     StatusBar,

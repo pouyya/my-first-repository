@@ -9,6 +9,7 @@ import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
+import { ItemInfoModal } from './item-info-modal/item-info';
 
 @Component({
   selector: 'basket',
@@ -111,6 +112,14 @@ export class BasketComponent {
     return this.salesService.update(this.invoice).then(
       response => console.log(response)
     ).catch(error => console.error(error));
+  }
+
+  public viewInfo(item: BucketItem) {
+    let modal = this.modalCtrl.create(ItemInfoModal, { purchaseableItem: item });
+    modal.onDidDismiss(data => {
+
+    });
+    modal.present();
   }
 
   public toggleItem(id: string): void {

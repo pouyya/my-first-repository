@@ -17,8 +17,8 @@
         <!-- Items in the bucket [start] -->
         <ion-item *ngFor="let item of invoice.items; let $index=index" [ngClass]="{active: isItemShown(item._id)}">
 
-          <ion-grid>
-            <ion-row (click)="toggleItem(item._id)">
+          <ion-grid> <!-- (click)="toggleItem(item._id)" -->
+            <ion-row (click)="viewInfo(item)">
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
