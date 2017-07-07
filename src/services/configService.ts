@@ -10,12 +10,12 @@ export class ConfigService {
 
     static externalDBBaseUrl() : string
     {
-        return "http://bitnami-couchdb-d399.cloudapp.net:5984/";
+        return "http://simplepos-appserver.azurewebsites.net";
     }
 
     static currentExternalDBName(): string
     {
-        return 'simplecuts_aria';
+        return '/db';
     }
 
     static getCurrentFullExternalDBUrl() : string {
