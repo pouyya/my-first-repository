@@ -53,11 +53,11 @@
                 </ion-row>
               </ion-grid>
 
-              <ion-list *ngIf="invoice.payments && invoice.payments.length > 0">
-                <ion-item *ngFor="let payment of invoice.payments">
+              <ion-list *ngIf="paymentsBuffer && paymentsBuffer.length > 0">
+                <ion-item *ngFor="let payment of paymentsBuffer">
                   <ion-grid>
                     <ion-row>
-                      <ion-col col-md-4>Payment ({{payment.type}})</ion-col>
+                      <ion-col col-md-4>Payment ({{payTypes[payment.type].text}})</ion-col>
                       <ion-col col-md-4 offset-md-4 class="pull-right">${{payment.amount | number : '1.2-2'}}</ion-col>
                     </ion-row>
                   </ion-grid>
@@ -111,10 +111,10 @@
             </ion-col>
 
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCash()" [disabled]="invoice.completed && !doRefund">Cash</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith('cash')" [disabled]="invoice.completed && !doRefund">Cash</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCreditCard()" [disabled]="invoice.completed && !doRefund">Credit Card</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith('credit_card')" [disabled]="invoice.completed && !doRefund">Credit Card</button>
             </ion-col>
             <ion-col col-md-4>
               <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block [disabled]="invoice.completed">Gift Card</button>

@@ -30,7 +30,7 @@ export class BasketComponent {
   set model(obj: Sale) {
     this.invoice = obj;
     this.shownItem = null;
-    this.setBalance();
+    !this.refund ? this.setBalance() : this.enableRefundMode();
   }
   get model(): Sale { return this.invoice; }
 
@@ -50,25 +50,32 @@ export class BasketComponent {
     this.tax = this.taxService.getTax();
   }
 
+  private enableRefundMode() {
+    this.invoice.items = this.invoice.items.map((item) => {
+      item.quantity > 0 &&  (item.quantity *= -1)
+      return item;
+    });
+    this.calculateTotal(() => {
+      this.balance = this.invoice.taxTotal;
+    });
+    // this.invoice.subTotal *= -1;
+    // this.invoice.taxTotal *= -1;
+  }
+
   private setBalance() {
-    if (!this.refund) {
+    if(!this.refund) {
       this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
         this.invoice.taxTotal - this.invoice.payments
           .map(payment => payment.amount)
-          .reduce((a, b) => a + b) : this.invoice.taxTotal;
+          .reduce((a, b) => a + b) : this.invoice.taxTotal;      
     } else {
-      this.invoice.items = this.invoice.items.map((item) => {
-        item.quantity *= -1
-        return item;
-      });
-      this.invoice.subTotal *= -1;
-      this.invoice.taxTotal *= -1;
       this.balance = this.invoice.taxTotal;
     }
   }
 
   private calculateAndSync() {
     this.salesService.manageInvoiceId(this.invoice);
+    this.markAsCurrent();
     this.calculateTotal(() => {
       this.setBalance();
       this.salesService.update(this.invoice);
@@ -76,7 +83,6 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
-    this.invoice.completed = false;
     var index = _.findIndex(this.invoice.items, { _id: item._id });
     if (index === -1) {
       let bucketItem = this.salesService.prepareBucketItem(item);
@@ -88,19 +94,16 @@ export class BasketComponent {
   }
 
   public removeItem(item: BucketItem, $index) {
-    this.invoice.completed = false;
     this.invoice.items.splice($index, 1);
     this.calculateAndSync();
   }
 
   public updatePrice(item: BucketItem) {
-    this.invoice.completed = false;
     item.discount = this.helper.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
     this.calculateAndSync();
   }
 
   public calculateDiscount(item: BucketItem) {
-    this.invoice.completed = false;
     item.discount = this.helper.round2Dec(item.discount);
     item.finalPrice = item.discount > 0 ?
       this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
@@ -109,7 +112,6 @@ export class BasketComponent {
   }
 
   public addQuantity(item: BucketItem) {
-    this.invoice.completed = false;
     this.calculateAndSync();
   }
 
@@ -183,6 +185,11 @@ export class BasketComponent {
       ]
     });
     confirm.present();
+  }
+
+  private markAsCurrent() {
+    this.invoice.state = "current";
+    this.invoice.completed = false;
   }
 
   private calculateTotal(callback) {
