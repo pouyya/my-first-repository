@@ -21,6 +21,7 @@ export class PaymentsPage {
   public change: number;
   public doRefund: boolean;
   public refundCompleted: boolean = false;
+  public paymentsBuffer: Array<any> = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
@@ -38,6 +39,7 @@ export class PaymentsPage {
     this.doRefund = navParams.get('doRefund');
     this.amount = this.balance = 0;
     this.change = 0;
+    this.paymentsBuffer = this.invoice.payments.map((payment) => payment);
     this.calculateBalance();
   }
 
@@ -49,7 +51,7 @@ export class PaymentsPage {
 
   private calculateBalance() {
     var totalPayments = 0;
-    if (!this.doRefund) {
+    if (!this.doRefund || !this.invoice.completed) {
       if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
         totalPayments = this.invoice.payments
           .map(payment => payment.amount)
@@ -73,29 +75,41 @@ export class PaymentsPage {
     });
     modal.onDidDismiss(data => {
       if (data && data.status) {
-        this.doRefund ? this.completeRefund(data.data) : this.addPayment(type, data.data);
+        this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data);
         this.salesService.update(this.invoice);
       }
     });
     modal.present();    
   }
 
-  private completeRefund(payment: number) {
+  private completeRefund(payment: number, type: string) {
     this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
     if (this.refundCompleted) {
+      this.paymentsBuffer.push({
+        type: type,
+        amount: Number(payment) * -1
+      });
       this.invoice.state = 'refund';
+      this.invoice.completed = true;
       this.balance = 0;
+      this.invoice.payments = [];
+      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
     }
   }
 
   private addPayment(type: string, payment: number) {
     if (!this.invoice.payments) {
-      this.invoice.payments = [];
+      this.invoice.payments = this.paymentsBuffer = [];
     }
     this.invoice.payments.push({
       type: type,
       amount: Number(payment)
     });
+    this.paymentsBuffer.push({
+      type: type,
+      amount: Number(payment)
+    });
+
     this.calculateBalance();
   }
 
@@ -104,6 +118,7 @@ export class PaymentsPage {
     this.change = payments - this.invoice.taxTotal;
     this.invoice.completedAt = new Date().toISOString();
     this.invoice.state = 'completed';
+    this.invoice.payments = [];
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
   }
 

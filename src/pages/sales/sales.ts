@@ -123,8 +123,8 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          let invoiceData: Sale = this.navParams.get('invoice');
-          if(invoiceData && invoiceData.completed && invoiceData.state != 'refund') {
+          let invoiceData: any = this.navParams.get('invoice');
+          if(invoiceData && (invoiceData.state != "completed" || invoiceData.state != "refund")) {
             this.doRefund = this.navParams.get('doRefund');
             this.invoice = invoiceData;
             resolve();
