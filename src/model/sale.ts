@@ -24,6 +24,7 @@ export class Sale extends DBBasedEntity {
   public status: string;
   public receiptNo: string;
   public customerName: string;
+  public originalSalesId: string;
 
   constructor() {
     super();
@@ -37,5 +38,6 @@ export class Sale extends DBBasedEntity {
     this.created = new Date().toISOString();
     this.customerName = "";
     this.receiptNo = "";
+    this.originalSalesId = "";
   }
 }

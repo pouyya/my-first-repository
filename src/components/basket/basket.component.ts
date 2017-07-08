@@ -30,7 +30,8 @@ export class BasketComponent {
   set model(obj: Sale) {
     this.invoice = obj;
     this.shownItem = null;
-    !this.refund ? this.setBalance() : this.enableRefundMode();
+    this.setBalance();
+    this.invoice.completed = false;
   }
   get model(): Sale { return this.invoice; }
 
@@ -50,18 +51,6 @@ export class BasketComponent {
     this.tax = this.taxService.getTax();
   }
 
-  private enableRefundMode() {
-    this.invoice.items = this.invoice.items.map((item) => {
-      item.quantity > 0 &&  (item.quantity *= -1)
-      return item;
-    });
-    this.calculateTotal(() => {
-      this.balance = this.invoice.taxTotal;
-    });
-    // this.invoice.subTotal *= -1;
-    // this.invoice.taxTotal *= -1;
-  }
-
   private setBalance() {
     if(!this.refund) {
       this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
@@ -71,11 +60,12 @@ export class BasketComponent {
     } else {
       this.balance = this.invoice.taxTotal;
     }
+    this.invoice.state  = this.balance > 0 ? 'current' : 'refund';
   }
 
   private calculateAndSync() {
     this.salesService.manageInvoiceId(this.invoice);
-    this.markAsCurrent();
+    // this.markAsCurrent();
     this.calculateTotal(() => {
       this.setBalance();
       this.salesService.update(this.invoice);
@@ -194,24 +184,26 @@ export class BasketComponent {
 
   private calculateTotal(callback) {
     setTimeout(() => {
-      if (this.invoice.items.length > 0) {
-        this.invoice.subTotal = this.invoice.totalDiscount = 0;
-        this.invoice.items.forEach(item => {
-          this.invoice.subTotal += (item.finalPrice * item.quantity);
-          this.invoice.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
-        });
-        this.invoice.taxTotal = this.helper.round2Dec(this.taxService.calculate(this.invoice.subTotal));
-        let roundedTotal = this.helper.round10(this.invoice.taxTotal, -1);
-        this.invoice.round = roundedTotal - this.invoice.taxTotal;
-        this.invoice.taxTotal = roundedTotal;
-        callback();
-      } else {
-        this.invoice.subTotal = 0;
-        this.invoice.taxTotal = 0;
-        this.invoice.round = 0;
-        this.invoice.totalDiscount = 0;
-        callback();
-      }
+      this.salesService.calculateSale(this.invoice);
+      callback();
+      // if (this.invoice.items.length > 0) {
+      //   this.invoice.subTotal = this.invoice.totalDiscount = 0;
+      //   this.invoice.items.forEach(item => {
+      //     this.invoice.subTotal += (item.finalPrice * item.quantity);
+      //     this.invoice.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
+      //   });
+      //   this.invoice.taxTotal = this.helper.round2Dec(this.taxService.calculate(this.invoice.subTotal));
+      //   let roundedTotal = this.helper.round10(this.invoice.taxTotal, -1);
+      //   this.invoice.round = roundedTotal - this.invoice.taxTotal;
+      //   this.invoice.taxTotal = roundedTotal;
+      //   callback();
+      // } else {
+      //   this.invoice.subTotal = 0;
+      //   this.invoice.taxTotal = 0;
+      //   this.invoice.round = 0;
+      //   this.invoice.totalDiscount = 0;
+      //   callback();
+      // }
     }, 0);
   }
 }

@@ -1,3 +1,5 @@
+import { FountainService } from './fountainService';
+import { HelperService } from './helperService';
 import _ from 'lodash';
 import { BucketItem } from './../model/bucketItem';
 import { PurchasableItem } from './../model/purchasableItem';
@@ -18,6 +20,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private taxService: TaxService,
 		private posService: PosService,
 		private userService: UserService,
+		private helperService: HelperService,
+		private fountainService: FountainService,
 		private zone: NgZone
 	) {
 		super(Sale, zone);
@@ -152,5 +156,41 @@ export class SalesServices extends BaseEntityService<Sale> {
     } else {
       localStorage.removeItem('invoice_id');
     }
+	}
+
+	public instantiateRefundSale(originalSale: Sale): Sale {
+		let sale = new Sale();
+		sale._id = new Date().toISOString();
+		sale.posID = originalSale.posID;
+		sale.originalSalesId = originalSale._id;
+		sale.items = originalSale.items.map((item) => {
+      item.quantity > 0 && (item.quantity *= -1);
+      return item;
+    });
+		sale.completed = false;
+		sale.state = 'refund';
+		sale.receiptNo = this.fountainService.getReceiptNumber();
+		sale.payments = [];
+		this.calculateSale(sale);
+		return sale;
+	}
+
+	public calculateSale(sale: Sale): void {
+		if (sale.items.length > 0) {
+			sale.subTotal = sale.totalDiscount = 0;
+			sale.items.forEach(item => {
+				sale.subTotal += (item.finalPrice * item.quantity);
+				sale.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
+			});
+			sale.taxTotal = this.helperService.round2Dec(this.taxService.calculate(sale.subTotal));
+			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
+			sale.round = roundedTotal - sale.taxTotal;
+			sale.taxTotal = roundedTotal;
+		} else {
+			sale.subTotal = 0;
+			sale.taxTotal = 0;
+			sale.round = 0;
+			sale.totalDiscount = 0;
+		}	
 	}
 }

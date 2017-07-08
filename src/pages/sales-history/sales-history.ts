@@ -91,9 +91,9 @@ export class SalesHistoryPage {
     });
   }
 
-  public toggleItem(id: string, state: string): void {
-    if (['parked', 'completed'].indexOf(state) > -1) {
-      this.shownItem = this.isItemShown(id) ? null : id;
+  public toggleItem(invoice: Sale): void {
+    if (['parked', 'completed'].indexOf(invoice.state) > -1) {
+      this.shownItem = this.isItemShown(invoice._id) ? null : invoice._id;
     }
   }
 
@@ -103,6 +103,17 @@ export class SalesHistoryPage {
 
   public gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
     let invoiceId = localStorage.getItem('invoice_id');
+    var generateRefundAndOpen = () => {
+      if(doRefund && invoice.completed && !invoice.originalSalesId) {
+        let refundInvoice = this.salesService.instantiateRefundSale(invoice);
+        localStorage.setItem('invoice_id', refundInvoice._id);
+        this.navCtrl.setRoot(Sales, { refundInvoice, doRefund });                
+      } else {
+        localStorage.setItem('invoice_id', invoice._id);
+        this.navCtrl.setRoot(Sales, { invoice, doRefund });
+      }
+    }
+
     if (invoiceId) {
       let confirm = this.alertController.create({
         title: 'Warning!',
@@ -111,13 +122,12 @@ export class SalesHistoryPage {
           {
             text: 'Discard It!',
             handler: () => {
-              localStorage.setItem('invoice_id', invoice._id);
               let toast = this.toastCtrl.create({
                 message: 'Sale has been discarded! Your selected sale is now loaded.',
                 duration: 5000
               });
               toast.present();
-              this.navCtrl.setRoot(Sales, { invoice, doRefund });
+              generateRefundAndOpen();
             }
           },
           {
@@ -130,8 +140,7 @@ export class SalesHistoryPage {
       });
       confirm.present();
     } else {
-      localStorage.setItem('invoice_id', invoice._id);
-      this.navCtrl.setRoot(Sales, { invoice, doRefund });
+      generateRefundAndOpen();
     }
   }
 

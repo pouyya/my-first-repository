@@ -124,7 +124,7 @@ export class Sales {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
           let invoiceData: any = this.navParams.get('invoice');
-          if(invoiceData && (invoiceData.state != "completed" || invoiceData.state != "refund")) {
+          if(invoiceData) {
             this.doRefund = this.navParams.get('doRefund');
             this.invoice = invoiceData;
             resolve();
@@ -140,27 +140,6 @@ export class Sales {
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()
             .then((categories) => {
-              // categories = _.map(categories, function (cat, index) {
-              //   if (index == 0) {
-              //     cat.icon = "icon-barbc-hair-cream";
-              //   }
-              //   if (index == 1) {
-              //     cat.icon = "icon-barbc-beard";
-              //   }
-              //   if (index == 2) {
-              //     cat.icon = "icon-barbc-bow-tie";
-              //   }
-              //   if (index == 3) {
-              //     cat.icon = "icon-barbc-razor-2";
-              //   }
-              //   if (index == 4) {
-              //     cat.icon = "icon-barbc-scissors-1";
-              //   }
-              //   if (index == 5) {
-              //     cat.icon = "icon-barbc-barbershop";
-              //   }
-              //   return cat;
-              // });
               this.categories = categories;
               this.activeCategory = this.categories[0];
               this.salesService.loadPurchasableItems(this.categories[0]._id).then((items: Array<any>) => {

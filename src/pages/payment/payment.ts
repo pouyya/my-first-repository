@@ -82,21 +82,6 @@ export class PaymentsPage {
     modal.present();    
   }
 
-  private completeRefund(payment: number, type: string) {
-    this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
-    if (this.refundCompleted) {
-      this.paymentsBuffer.push({
-        type: type,
-        amount: Number(payment) * -1
-      });
-      this.invoice.state = 'refund';
-      this.invoice.completed = true;
-      this.balance = 0;
-      this.invoice.payments = [];
-      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
-    }
-  }
-
   private addPayment(type: string, payment: number) {
     if (!this.invoice.payments) {
       this.invoice.payments = this.paymentsBuffer = [];
@@ -111,6 +96,21 @@ export class PaymentsPage {
     });
 
     this.calculateBalance();
+  }
+
+  private completeRefund(payment: number, type: string) {
+    this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
+    if (this.refundCompleted) {
+      this.paymentsBuffer.push({
+        type: type,
+        amount: Number(payment) * -1
+      });
+      this.invoice.state = 'refund';
+      this.invoice.completed = true;
+      this.balance = 0;
+      this.invoice.payments = [];
+      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
+    }
   }
 
   private completeSale(payments: number) {
