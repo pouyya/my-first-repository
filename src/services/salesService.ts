@@ -136,16 +136,18 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public searchSales(posId, limit, offset, options) {
-		var query = {
+		var query: any = {
 			limit: limit,
 			skip: offset,
 			selector: { posID: posId }
 		};
 		_.each(options, (value, key) => {
 			if(value) {
-				query.selector[key] = value;
+				query.selector[key] = _.isArray(value) ? { $in: value } : value;
 			}
 		});
+		options.hasOwnProperty('completed') && (query.selector.completed = options.completed);
+		// query.sort = [{createdAt: 'desc'}];
 		return this.findBy(query);
 	}
 
@@ -168,6 +170,7 @@ export class SalesServices extends BaseEntityService<Sale> {
       return item;
     });
 		sale.completed = false;
+		sale.customerName = originalSale.customerName;
 		sale.state = 'refund';
 		sale.receiptNo = this.fountainService.getReceiptNumber();
 		sale.payments = [];

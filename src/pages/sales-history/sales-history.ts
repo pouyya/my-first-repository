@@ -51,16 +51,10 @@ export class SalesHistoryPage {
     this.statusList = [
       { value: '', text: 'All' },
       { value: 'completed', text: 'Completed' },
-      { value: 'refund', text: 'Refund' },
+      { value: 'refundCompleted', text: 'Refund' },
       { value: 'parked', text: 'Parked' },
-      { value: 'current', text: 'Voided' }
+      { value: 'voided', text: 'Voided' }
     ];
-    this.states = {
-      current: 'Voided',
-      parked: 'Parked',
-      refund: 'Refund Completed',
-      completed: 'Completed'
-    }
   }
 
   ionViewDidEnter() {
@@ -92,28 +86,33 @@ export class SalesHistoryPage {
   }
 
   public toggleItem(invoice: Sale): void {
-    if (['parked', 'completed'].indexOf(invoice.state) > -1) {
-      this.shownItem = this.isItemShown(invoice._id) ? null : invoice._id;
-    }
+    this.shownItem = this.isItemShown(invoice._id) ? null : invoice._id;
   }
 
   public isItemShown(id: string): boolean {
     return this.shownItem === id;
   }
 
-  public gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
-    let invoiceId = localStorage.getItem('invoice_id');
-    var generateRefundAndOpen = () => {
-      if(doRefund && invoice.completed && !invoice.originalSalesId) {
-        let refundInvoice = this.salesService.instantiateRefundSale(invoice);
-        localStorage.setItem('invoice_id', refundInvoice._id);
-        this.navCtrl.setRoot(Sales, { refundInvoice, doRefund });                
+  public getState(invoice: Sale) {
+    var state = "";
+    if(invoice.completed) {
+      if(invoice.state == 'completed') {
+        state = 'Completed';
+      } else if(invoice.state == 'refund') {
+        state = 'Refund Completed';
+      }
+    } else {
+      if(invoice.state == 'parked') {
+        state = 'Parked';
       } else {
-        localStorage.setItem('invoice_id', invoice._id);
-        this.navCtrl.setRoot(Sales, { invoice, doRefund });
+        state = 'Voided';
       }
     }
+    return state;
+  }
 
+  public gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
+    let invoiceId = localStorage.getItem('invoice_id');
     if (invoiceId) {
       let confirm = this.alertController.create({
         title: 'Warning!',
@@ -127,7 +126,7 @@ export class SalesHistoryPage {
                 duration: 5000
               });
               toast.present();
-              generateRefundAndOpen();
+              this.loadSelected(invoice, doRefund);
             }
           },
           {
@@ -140,26 +139,13 @@ export class SalesHistoryPage {
       });
       confirm.present();
     } else {
-      generateRefundAndOpen();
+      this.loadSelected(invoice, doRefund);
     }
   }
 
   public searchBy(event: any, key: string) {
     this.invoices = this.invoicesBackup;
-    switch (key) {
-      case 'customerName':
-        this.filters.customerName = event.target.value || false;
-        break;
-      case 'receiptNo':
-        this.filters.receiptNo = event.target.value || false;
-        break;
-      case 'state':
-        this.filters.state = this.selectedStatus || false;
-        break;
-      default:
-      this.filters[key] = event.target.value;
-        break;
-    }
+    this.filters[key] = event.target.value || false;
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
@@ -168,19 +154,41 @@ export class SalesHistoryPage {
     });
   }
 
-  getByState() {
+  public searchByState() {
     this.invoices = this.invoicesBackup;
-    this.filters.state = this.selectedStatus || false;
-    if (this.selectedStatus) {
-      this.invoices = this.invoices.filter((item) => {
-        return item.state == this.selectedStatus;
-      });
+    switch(this.selectedStatus) {
+      case 'parked':
+        this.filters.state = 'parked';
+        this.filters.completed = false;
+        break;
+      case 'refundCompleted':
+        this.filters.state = 'refund';
+        this.filters.completed = true;
+        break;
+      case 'completed':
+        this.filters.state = 'completed';
+        this.filters.completed = true;
+        break;
+      case 'voided':
+        this.filters.state = [ 'current', 'refund' ];
+        this.filters.completed = false;
+        break;
+      default:
+        this.filters.state = false;
+        delete this.filters.completed;
+        break;
     }
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.invoices = [];
+    this.getSales().catch((error) => {
+      console.error(error);
+    });    
   }
 
   private getSales(limit?: number, offset?: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.total > this.invoices.length) {
+      if (this.total - 1> this.invoices.length) {
         this.salesService.searchSales(
           this.user.settings.currentPos,
           limit | this.limit, offset | this.offset,
@@ -191,6 +199,14 @@ export class SalesHistoryPage {
           }).catch(error => reject(error));
       } else resolve();
     });
+  }
+
+  private loadSelected(invoice: Sale, doRefund: boolean) {
+    var newInvoice: Sale;
+    newInvoice = (doRefund && invoice.completed && invoice.state == 'completed') ?
+      this.salesService.instantiateRefundSale(invoice) : { ...invoice };
+    localStorage.setItem('invoice_id', newInvoice._id);
+    this.navCtrl.setRoot(Sales, { invoice: newInvoice, doRefund });    
   }
 
   public loadMoreSale(infiniteScroll) {

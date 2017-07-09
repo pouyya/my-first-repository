@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -32,6 +31,7 @@ export class Sales {
   public invoice: Sale;
   public register: POS;
   public doRefund: boolean;
+  private invoiceParam: any;
 
   constructor(
     public navCtrl: NavController,
@@ -46,6 +46,7 @@ export class Sales {
     private userService: UserService
   ) {
     this.doRefund = false;
+    this.invoiceParam = this.navParams.get('invoice');
     this.cdr.detach();
   }
 
@@ -112,10 +113,20 @@ export class Sales {
 
   // Event
   public paymentClicked($event) {
+    var pushCallback = (_params) => {
+      return new Promise((resolve, reject) => {
+        if(_params) {
+          this.invoiceParam = null;
+        }
+        resolve();
+      });
+    }
+    
     this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
       invoice: this.invoice,
-      doRefund: this.doRefund
+      doRefund: this.doRefund,
+      callback: pushCallback
     });
   }
 
@@ -123,10 +134,9 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          let invoiceData: any = this.navParams.get('invoice');
-          if(invoiceData) {
+          if(this.invoiceParam) {
             this.doRefund = this.navParams.get('doRefund');
-            this.invoice = invoiceData;
+            this.invoice = this.invoiceParam;
             resolve();
           } else {
             this.salesService.instantiateInvoice(this.posService.getCurrentPosID())

@@ -20,12 +20,12 @@ export class PaymentsPage {
   public balance: number;
   public change: number;
   public doRefund: boolean;
-  public refundCompleted: boolean = false;
   public paymentsBuffer: Array<any> = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
   };
+  private navPopCallback: any;
 
   constructor(
     private salesService: SalesServices,
@@ -37,6 +37,7 @@ export class PaymentsPage {
 
     this.invoice = navParams.get('invoice');
     this.doRefund = navParams.get('doRefund');
+    this.navPopCallback = this.navParams.get("callback")
     this.amount = this.balance = 0;
     this.change = 0;
     this.paymentsBuffer = this.invoice.payments.map((payment) => payment);
@@ -51,7 +52,7 @@ export class PaymentsPage {
 
   private calculateBalance() {
     var totalPayments = 0;
-    if (!this.doRefund || !this.invoice.completed) {
+    if (!this.doRefund) {
       if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
         totalPayments = this.invoice.payments
           .map(payment => payment.amount)
@@ -99,8 +100,8 @@ export class PaymentsPage {
   }
 
   private completeRefund(payment: number, type: string) {
-    this.refundCompleted = Math.abs(this.amount) === Math.abs(payment);
-    if (this.refundCompleted) {
+    var isCompleted: boolean = Math.abs(this.amount) === Math.abs(payment);
+    if (isCompleted) {
       this.paymentsBuffer.push({
         type: type,
         amount: Number(payment) * -1
@@ -128,6 +129,8 @@ export class PaymentsPage {
   }
 
   public goBack() {
-    this.navCtrl.pop();
+    this.navPopCallback(true).then(()=>{
+      this.navCtrl.pop();
+    });
   }
 }

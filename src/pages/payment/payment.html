@@ -38,6 +38,7 @@
               <hr/>
               <ion-grid>
                 <ion-row>
+
                   <ion-col col-md-4>Sub-total</ion-col>
                   <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
                   <ion-col col-md-4>Total Tax (GST)</ion-col>
@@ -93,7 +94,7 @@
 
       <!-- Payment :start: -->
       <ion-col col-md-7>
-        <ion-grid *ngIf="!invoice.completed || (!refundCompleted && doRefund)">
+        <ion-grid *ngIf="!invoice.completed">
           <ion-row>
             <ion-col col-md-3>
               <h2>{{ doRefund ? 'Return' : 'Pay' }}</h2>
@@ -125,19 +126,19 @@
 
         <ion-grid>
           <ion-row>
-            <ion-col col-md-12 text-center *ngIf="!doRefund && invoice.completed">
+            <ion-col col-md-12 text-center *ngIf="invoice.completed && !doRefund">
               <h1>
                 <ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete</h1>
               <h5 *ngIf="change > 0">Issue change of ${{change | number : '1.2-2'}}</h5>
             </ion-col>
-            <ion-col col-md-12 text-center *ngIf="doRefund && refundCompleted">
+            <ion-col col-md-12 text-center *ngIf="invoice.completed && doRefund">
               <h1>
                 <ion-icon name="checkmark-circle-outline"></ion-icon> Refund Complete</h1>
             </ion-col>
           </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="(!doRefund && invoice.completed) || (doRefund && refundCompleted)">
+        <ion-grid *ngIf="invoice.completed">
           <ion-row>
             <ion-col col-md-12>
 

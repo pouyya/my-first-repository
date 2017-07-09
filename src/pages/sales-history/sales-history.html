@@ -12,7 +12,7 @@
     <ion-row>
       <ion-col col-md-4>
         <p>Status</p>
-        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchBy($event, 'state')">
+        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchByState()">
           <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
         </ion-select>
       </ion-col>
@@ -53,7 +53,7 @@
           <ion-col col-md-2>{{invoice.notes}}</ion-col>
           <ion-col col-md-1>${{invoice.taxTotal}}</ion-col>
           <ion-col col-md-1>
-            <strong>{{states[invoice.state]}}</strong>
+            <strong>{{getState(invoice)}}</strong>
           </ion-col>
           <ion-col col-md-1 class="clickable">
             <ion-icon name="refresh" text-center *ngIf="invoice.state == 'completed'" (click)="gotoSales(invoice, true, $index)"></ion-icon>
@@ -63,7 +63,7 @@
       </ion-grid>
       <div *ngIf="isItemShown(invoice._id)">
         <hr/>
-        <ion-grid *ngIf="invoice.state === 'parked' && !invoice.completed">
+        <ion-grid *ngIf="!invoice.completed">
           <ion-row>
             <ion-col col-md-10>
               <ion-grid>
@@ -81,7 +81,7 @@
               </ion-grid>
             </ion-col>
             <ion-col col-md-2>
-              <ion-item class="clickable" (click)="gotoSales(invoice, false, $index)">
+              <ion-item *ngIf="invoice.state === 'parked'" class="clickable" (click)="gotoSales(invoice, false, $index)">
                 <ion-icon name="share-alt"></ion-icon> Continue Sale
               </ion-item>
             </ion-col>
@@ -97,7 +97,7 @@
           </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="invoice.state === 'completed' && invoice.completed">
+        <ion-grid *ngIf="invoice.completed">
           <ion-row>
             <ion-col col-md-10>
               <ion-grid>
@@ -115,7 +115,7 @@
               </ion-grid>
             </ion-col>
             <ion-col col-md-2>
-              <ion-item class="clickable" (click)="gotoSales(invoice, true, $index)">
+              <ion-item *ngIf="invoice.state === 'completed'" class="clickable" (click)="gotoSales(invoice, true, $index)">
                 <ion-icon name="refresh"></ion-icon> Return Items
               </ion-item>
             </ion-col>
