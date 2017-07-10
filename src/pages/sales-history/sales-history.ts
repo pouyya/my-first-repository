@@ -62,17 +62,19 @@ export class SalesHistoryPage {
       this.user = this.userService.getLoggedInUser();
       var promises: Array<Promise<any>> = [
         // get total count
-        new Promise((resolve, reject) => {
-          this.salesService.recordsCount().then((length: number) => {
-            this.total = length;
-            resolve();
-          }).catch(error => reject(error));
-        }),
+        // new Promise((resolve, reject) => {
+        //   this.salesService.recordsCount().then((length: number) => {
+        //     this.total = length;
+        //     resolve();
+        //   }).catch(error => reject(error));
+        // }),
         // get records
         new Promise((resolve, reject) => {
-          this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters).then((invoices: Array<Sale>) => {
+          this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters)
+          .then((result: any) => {
+            this.total = result.totalCount;
             this.offset += this.limit;
-            this.invoices = invoices;
+            this.invoices = result.docs;
             this.invoicesBackup = this.invoices;
             resolve();
           }).catch(error => reject(error));
@@ -188,12 +190,13 @@ export class SalesHistoryPage {
 
   private getSales(limit?: number, offset?: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.total - 1> this.invoices.length) {
+      if (this.total > this.invoices.length) {
         this.salesService.searchSales(
           this.user.settings.currentPos,
           limit | this.limit, offset | this.offset,
-          this.filters).then((invoices: Array<Sale>) => {
-            this.invoices = this.invoices.concat(invoices);
+          this.filters).then((result: any) => {
+            this.total = result.totalCount;
+            this.invoices = this.invoices.concat(result.docs);
             this.invoicesBackup = this.invoices;
             resolve();
           }).catch(error => reject(error));

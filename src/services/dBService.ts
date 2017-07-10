@@ -50,6 +50,10 @@ export class DBService<T extends DBBasedEntity> {
         });
     }
 
+    getDB() {
+        return this._db;
+    }
+
     add(entity: T) {
         if(!entity._id)
         {

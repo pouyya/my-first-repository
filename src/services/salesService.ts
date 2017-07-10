@@ -135,20 +135,45 @@ export class SalesServices extends BaseEntityService<Sale> {
 		});
 	}
 
-	public searchSales(posId, limit, offset, options) {
-		var query: any = {
-			limit: limit,
-			skip: offset,
-			selector: { posID: posId }
-		};
-		_.each(options, (value, key) => {
-			if(value) {
-				query.selector[key] = _.isArray(value) ? { $in: value } : value;
-			}
+	public searchSales(posId, limit, offset, options): Promise<any> {
+		// TODO: Unless count query is not cleared, I have to retrieve all record and count them
+		// Of course this is a bad approach, but to do it with pouchdb is weird
+		return new Promise((resolve, reject) => {
+			var query: any = {
+				selector: { posID: posId }
+			};
+			_.each(options, (value, key) => {
+				if(value) {
+					query.selector[key] = _.isArray(value) ? { $in: value } : value;
+				}
+			});
+			options.hasOwnProperty('completed') && (query.selector.completed = options.completed);
+
+			var countQuery = { ...query };
+			query.limit = limit;
+			query.offset = offset;
+			query.sort = [{_id: 'desc'}];
+			
+			var promises: Array<Promise<any>> = [
+				new Promise((_resolve, _reject) => {
+					this.findBy(countQuery).then((data) => _resolve(data.length));
+				}),
+				new Promise((_resolve, _reject) => {
+					this.findBy(query).then((data) => _resolve(data));
+				})
+			];
+
+			Promise.all(promises).then((result) => {
+				resolve({ totalCount: result[0], docs: result[1] });
+			})
 		});
-		options.hasOwnProperty('completed') && (query.selector.completed = options.completed);
-		// query.sort = [{createdAt: 'desc'}];
-		return this.findBy(query);
+
+		// var db = this.getDB();
+		// return db.createIndex({
+		// 	index: {fields: ['created']}
+		// }).then(() => {
+		// 	return this.findBy(query);
+		// });		
 	}
 
 	public manageInvoiceId(invoice: Sale) {
