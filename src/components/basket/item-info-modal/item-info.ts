@@ -9,15 +9,21 @@ import { Component } from '@angular/core';
 export class ItemInfoModal {
 
   public purchaseableItem: BucketItem;
+  private bufferItem: BucketItem;
 
   constructor(
     private navParams: NavParams,
     private viewCtrl: ViewController
   ) {
     this.purchaseableItem = this.navParams.get("purchaseableItem");
+    this.bufferItem = { ...this.purchaseableItem };
+  }
+
+  public dismiss() {
+    this.viewCtrl.dismiss({ hasChanged: false, item: this.bufferItem });
   }
 
   public confirmChanges() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({ hasChanged: true, item: this.purchaseableItem });
   }
 }

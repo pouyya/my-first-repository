@@ -22,14 +22,12 @@ export class BasketComponent {
   public invoice: Sale;
   public tax: number;
   public oldValue: number = 1;
-  private shownItem: any = null;
   public disablePayBtn = false;
   public balance: number = 0;
 
   @Input('_invoice')
   set model(obj: Sale) {
     this.invoice = obj;
-    this.shownItem = null;
     this.setBalance();
   }
   get model(): Sale { return this.invoice; }
@@ -76,7 +74,7 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
-    var index = _.findIndex(this.invoice.items, { _id: item._id });
+    var index = _.findIndex(this.invoice.items, (_f) => _f.finalPrice == item.price);
     if(index === -1) {
       let bucketItem = this.salesService.prepareBucketItem(item);
       this.invoice.items.push(bucketItem);
@@ -91,43 +89,19 @@ export class BasketComponent {
     this.calculateAndSync();
   }
 
-  public updatePrice(item: BucketItem) {
-    item.discount = this.helper.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
-    this.calculateAndSync();
-  }
-
-  public calculateDiscount(item: BucketItem) {
-    item.discount = this.helper.round2Dec(item.discount);
-    item.finalPrice = item.discount > 0 ?
-      this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
-      item.actualPrice;
-    this.calculateAndSync();
-  }
-
-  public addQuantity(item: BucketItem) {
-    this.calculateAndSync();
-  }
-
   public syncInvoice() {
     return this.salesService.update(this.invoice).then(
       response => console.log(response)
     ).catch(error => console.error(error));
   }
 
-  public viewInfo(item: BucketItem) {
+  public viewInfo(item: BucketItem, $index) {
     let modal = this.modalCtrl.create(ItemInfoModal, { purchaseableItem: item });
     modal.onDidDismiss(data => {
-
+      this.invoice.items[$index] = data.item;
+      data.hasChanged && this.calculateAndSync();
     });
     modal.present();
-  }
-
-  public toggleItem(id: string): void {
-    this.shownItem = this.isItemShown(id) ? null : id;
-  }
-
-  public isItemShown(id: string): boolean {
-    return this.shownItem === id;
   }
 
   public gotoPayment() {
