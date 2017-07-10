@@ -74,7 +74,7 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
-    var index = _.findIndex(this.invoice.items, (_f) => _f.finalPrice == item.price);
+    var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.price));
     if(index === -1) {
       let bucketItem = this.salesService.prepareBucketItem(item);
       this.invoice.items.push(bucketItem);
