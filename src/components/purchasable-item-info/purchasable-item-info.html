@@ -1,0 +1,39 @@
+<ion-grid>
+  <ion-row>
+
+    <!-- Quantity -->
+    <ion-col col-md-4>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>Quantity</ion-label>
+        <ion-input type="number" min="1" [(ngModel)]="item.quantity" (change)="addQuantity(item)">
+        </ion-input>
+      </ion-item>
+    </ion-col>
+
+    <!-- Price -->
+    <ion-col col-md-4>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>Price</ion-label>
+        <ion-input type="text" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
+        </ion-input>
+      </ion-item>
+    </ion-col>
+
+    <!-- Discount -->
+    <ion-col col-md-4>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>Discount(%)</ion-label>
+        <ion-input type="number" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
+      </ion-item>
+    </ion-col>
+
+    <ion-col col-md-12>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>Notes</ion-label>
+        <ion-textarea [(ngModel)]="item.notes" placeholder="Type to add notes...">
+        </ion-textarea>
+      </ion-item>
+    </ion-col>
+
+  </ion-row>
+</ion-grid>
