@@ -15,10 +15,10 @@
     <ion-col col-12>
       <ion-list>
         <!-- Items in the bucket [start] -->
-        <ion-item *ngFor="let item of invoice.items; let $index=index" [ngClass]="{active: isItemShown(item._id)}">
+        <ion-item *ngFor="let item of invoice.items; let $index=index">
 
           <ion-grid>
-            <ion-row (click)="toggleItem(item._id)">
+            <ion-row (click)="viewInfo(item, $index)">
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
@@ -37,48 +37,6 @@
               </ion-col>
             </ion-row>
           </ion-grid>
-
-          <div *ngIf="isItemShown(item._id)">
-            <ion-grid>
-              <ion-row>
-
-                <!-- Quantity -->
-                <ion-col col-md-4>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Quantity</ion-label>
-                    <ion-input type="number" [(ngModel)]="item.quantity" (change)="addQuantity(item);">
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-
-                <!-- Price -->
-                <ion-col col-md-4>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Price</ion-label>
-                    <ion-input type="text" [disabled]="item.quantity < 0" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-
-                <!-- Discount -->
-                <ion-col col-md-4>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Discount(%)</ion-label>
-                    <ion-input type="number" [disabled]="item.quantity < 0" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
-                  </ion-item>
-                </ion-col>
-
-                <ion-col col-md-12>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Notes</ion-label>
-                    <ion-textarea [(ngModel)]="item.notes" placeholder="Type to add notes...">
-                    </ion-textarea>
-                  </ion-item>
-                </ion-col>
-
-              </ion-row>
-            </ion-grid>
-          </div>
         </ion-item>
         <!-- Items in the bucket [end] -->
 

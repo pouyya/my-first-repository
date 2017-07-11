@@ -167,13 +167,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 				resolve({ totalCount: result[0], docs: result[1] });
 			})
 		});
-
-		// var db = this.getDB();
-		// return db.createIndex({
-		// 	index: {fields: ['created']}
-		// }).then(() => {
-		// 	return this.findBy(query);
-		// });		
 	}
 
 	public manageInvoiceId(invoice: Sale) {

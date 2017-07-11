@@ -60,28 +60,13 @@ export class SalesHistoryPage {
   ionViewDidEnter() {
     this.platform.ready().then(() => {
       this.user = this.userService.getLoggedInUser();
-      var promises: Array<Promise<any>> = [
-        // get total count
-        // new Promise((resolve, reject) => {
-        //   this.salesService.recordsCount().then((length: number) => {
-        //     this.total = length;
-        //     resolve();
-        //   }).catch(error => reject(error));
-        // }),
-        // get records
-        new Promise((resolve, reject) => {
-          this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters)
-          .then((result: any) => {
-            this.total = result.totalCount;
-            this.offset += this.limit;
-            this.invoices = result.docs;
-            this.invoicesBackup = this.invoices;
-            resolve();
-          }).catch(error => reject(error));
-        })
-      ];
-
-      Promise.all(promises).catch(error => {
+      this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters)
+      .then((result: any) => {
+        this.total = result.totalCount;
+        this.offset += this.limit;
+        this.invoices = result.docs;
+        this.invoicesBackup = this.invoices;
+      }).catch(error => {
         throw new Error(error);
       });
     });

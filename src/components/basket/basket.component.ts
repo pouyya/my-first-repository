@@ -11,6 +11,7 @@ import { PurchasableItem } from './../../model/purchasableItem';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
+import { ItemInfoModal } from './item-info-modal/item-info';
 
 @Component({
   selector: 'basket',
@@ -26,17 +27,11 @@ export class BasketComponent {
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
-  private shownItem: any = null;
-
-  static readonly PAY = 'Pay';
-  static readonly RETURN = 'Return';
-  static readonly DONE = 'Done';
 
   @Input() refund: boolean;
   @Input('_invoice')
   set model(obj: Sale) {
     this.invoice = obj;
-    this.shownItem = null;
     this.setBalance();
     this.invoice.completed = false;
   }
@@ -80,8 +75,8 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: PurchasableItem) {
-    var index = _.findIndex(this.invoice.items, { _id: item._id });
-    if (index === -1) {
+    var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.price));
+    if(index === -1) {
       let bucketItem = this.salesService.prepareBucketItem(item);
       this.invoice.items.push(bucketItem);
     } else {
@@ -95,35 +90,19 @@ export class BasketComponent {
     this.calculateAndSync();
   }
 
-  public updatePrice(item: BucketItem) {
-    item.discount = this.helper.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
-    this.calculateAndSync();
-  }
-
-  public calculateDiscount(item: BucketItem) {
-    item.discount = this.helper.round2Dec(item.discount);
-    item.finalPrice = item.discount > 0 ?
-      this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
-      item.actualPrice;
-    this.calculateAndSync();
-  }
-
-  public addQuantity(item: BucketItem) {
-    this.calculateAndSync();
-  }
-
   public syncInvoice() {
     return this.salesService.update(this.invoice).then(
       response => console.log(response)
     ).catch(error => console.error(error));
   }
 
-  public toggleItem(id: string): void {
-    this.shownItem = this.isItemShown(id) ? null : id;
-  }
-
-  public isItemShown(id: string): boolean {
-    return this.shownItem === id;
+  public viewInfo(item: BucketItem, $index) {
+    let modal = this.modalCtrl.create(ItemInfoModal, { purchaseableItem: item });
+    modal.onDidDismiss(data => {
+      this.invoice.items[$index] = data.item;
+      data.hasChanged && this.calculateAndSync();
+    });
+    modal.present();
   }
 
   public gotoPayment() {
