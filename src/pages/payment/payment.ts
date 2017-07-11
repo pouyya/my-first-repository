@@ -1,3 +1,4 @@
+import { GlobalConstants } from './../../metadata/globalConstants';
 import { FountainService } from './../../services/fountainService';
 import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
@@ -35,13 +36,19 @@ export class PaymentsPage {
     public modalCtrl: ModalController,
     public helper: HelperService) {
 
+    let operation = navParams.get('operation');
     this.invoice = navParams.get('invoice');
     this.doRefund = navParams.get('doRefund');
     this.navPopCallback = this.navParams.get("callback")
+
     this.amount = this.balance = 0;
     this.change = 0;
-    this.paymentsBuffer = this.invoice.payments.map((payment) => payment);
-    this.calculateBalance();
+    if (operation == GlobalConstants.DONE_BTN) {
+      this.completeSale(0);
+    } else {
+      this.paymentsBuffer = this.invoice.payments.map((payment) => payment);
+      this.calculateBalance();
+    }
   }
 
   ionViewDidEnter() {
@@ -80,7 +87,7 @@ export class PaymentsPage {
         this.salesService.update(this.invoice);
       }
     });
-    modal.present();    
+    modal.present();
   }
 
   private addPayment(type: string, payment: number) {
@@ -116,20 +123,20 @@ export class PaymentsPage {
 
   private completeSale(payments: number) {
     this.invoice.completed = true;
-    this.change = payments - this.invoice.taxTotal;
     this.invoice.completedAt = new Date().toISOString();
     this.invoice.state = 'completed';
     this.invoice.payments = [];
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
+    payments != 0 && (this.change = payments - this.invoice.taxTotal);
   }
 
   public clearInvoice() {
     localStorage.removeItem('invoice_id');
-    this.goBack();
+    this.goBack(true);
   }
 
-  public goBack() {
-    this.navPopCallback(true).then(()=>{
+  public goBack(state: boolean = false) {
+    this.navPopCallback(state).then(() => {
       this.navCtrl.pop();
     });
   }

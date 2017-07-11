@@ -1,7 +1,7 @@
-import { FountainService } from './../../services/fountainService';
 import _ from 'lodash';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { HelperService } from './../../services/helperService';
+import { FountainService } from './../../services/fountainService';
 import { Platform, AlertController, ModalController, NavController } from 'ionic-angular';
 import { SalesServices } from './../../services/salesService';
 import { CalculatorService } from './../../services/calculatorService';
@@ -10,6 +10,7 @@ import { Sale } from './../../model/sale';
 import { PurchasableItem } from './../../model/purchasableItem';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
+import { GlobalConstants } from './../../metadata/globalConstants';
 
 @Component({
   selector: 'basket',
@@ -23,7 +24,13 @@ export class BasketComponent {
   public tax: number;
   public oldValue: number = 1;
   public balance: number = 0;
+  public disablePaymentBtn = false;
+  public payBtnText = "Pay";
   private shownItem: any = null;
+
+  static readonly PAY = 'Pay';
+  static readonly RETURN = 'Return';
+  static readonly DONE = 'Done';
 
   @Input() refund: boolean;
   @Input('_invoice')
@@ -67,6 +74,7 @@ export class BasketComponent {
     this.salesService.manageInvoiceId(this.invoice);
     this.calculateTotal(() => {
       this.setBalance();
+      this.generatePaymentBtnText();
       this.salesService.update(this.invoice);
     });
   }
@@ -119,8 +127,22 @@ export class BasketComponent {
   }
 
   public gotoPayment() {
-    this.paymentClicked.emit({ balance: this.balance });
+    this.paymentClicked.emit({ balance: this.balance, operation: this.payBtnText });
   }
+
+	private generatePaymentBtnText() {
+    this.payBtnText = GlobalConstants.PAY_BTN
+		if(this.invoice.items.length > 0) {
+      this.disablePaymentBtn = false;
+      if(this.balance == 0) {
+        this.payBtnText = GlobalConstants.DONE_BTN
+      } else if(this.balance < 0) {
+        this.payBtnText = GlobalConstants.RETURN_BTN;
+      }
+		} else {
+      this.disablePaymentBtn = true;
+    }
+	}
 
   public parkSale() {
     let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
