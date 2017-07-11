@@ -34,6 +34,7 @@ export class BasketComponent {
     this.invoice = obj;
     this.setBalance();
     this.invoice.completed = false;
+    this.generatePaymentBtnText();
   }
   get model(): Sale { return this.invoice; }
 

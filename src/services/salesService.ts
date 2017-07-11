@@ -69,7 +69,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
 		return new Promise((resolve, reject) => {
 			if (posId) {
-				this.findBy({ "selector": { _id: id, "posID": posId, "state": "current" }, include_docs: true })
+				this.findBy({ selector: { _id: id, posID: posId, state: { $in: [ 'current', 'refund' ] } }, include_docs: true })
 					.then(
 					docs => {
 						if (docs && docs.length > 0) {
