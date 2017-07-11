@@ -8,4 +8,5 @@ export abstract class PurchasableItem extends DBBasedEntity
     public image: string;
     public discount?: number;
     public inStock?: number | boolean;
+    public icon: string;
 }

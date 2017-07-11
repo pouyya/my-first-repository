@@ -40,6 +40,9 @@ import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 
+// pipes
+import { KeysPipe } from './pipes/keys.pipe';
+
 // services
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
@@ -86,7 +89,8 @@ const cloudSettings: CloudSettings = {
     PosDetailsPage,
     OpenCloseRegister,
     SwitchPosModal,
-    ItemInfoModal
+    ItemInfoModal,
+    KeysPipe
   ],
   imports: [
     BrowserModule,
