@@ -12,7 +12,12 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
         this._type = type;
     }
 
+    getDB() {
+        return this._dbService.getDB();
+    }
+
     add(entity: T) {
+        
         var entityCopy = new this._type();
 
         for (var k in entity) entityCopy[k] = entity[k];
@@ -30,8 +35,8 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
         return this._dbService.delete(entity);
     }
 
-    getAll() {
-        return this._dbService.getAll();
+    getAll(raw: boolean = false) {
+        return this._dbService.getAll(raw);
     }
 
     findBy(selector: any) {

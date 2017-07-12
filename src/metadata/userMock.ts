@@ -70,6 +70,8 @@ export let userData = {
     twitter: "",
     timeZone: "Asia/Karachi",
     supplierReturnPrefix: "",
-    supplierReturnNum: 0
+    supplierReturnNum: 0,
+    saleNumberPrefix: "DB",
+    saleLastNumber: 0
   }
 }

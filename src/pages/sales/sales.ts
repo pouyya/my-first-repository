@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -31,19 +30,23 @@ export class Sales {
   public activeTiles: Array<any>;
   public invoice: Sale;
   public register: POS;
+  public doRefund: boolean;
+  private invoiceParam: any;
 
   constructor(
     public navCtrl: NavController,
+    public modalCtrl: ModalController,
     private salesService: SalesServices,
     private categoryService: CategoryService,
     private alertController: AlertController,
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private posService: PosService,
-    public modalCtrl: ModalController,
     private navParams: NavParams,
     private userService: UserService
   ) {
+    this.doRefund = false;
+    this.invoiceParam = this.navParams.get('invoice');
     this.cdr.detach();
   }
 
@@ -109,9 +112,21 @@ export class Sales {
   }
 
   // Event
-  public paymentClicked() {
+  public paymentClicked($event) {
+    var pushCallback = (_params) => {
+      return new Promise((resolve, reject) => {
+        if(_params) {
+          this.invoiceParam = null;
+        }
+        resolve();
+      });
+    }
+    
+    this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
-      invoice: this.invoice
+      invoice: this.invoice,
+      doRefund: this.doRefund,
+      callback: pushCallback
     });
   }
 
@@ -119,38 +134,22 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
-            .then((invoice: Sale) => {
-              this.invoice = invoice;
-              this.invoice = { ...this.invoice };
-              resolveA();
-            })
-            .catch((error) => rejectA(error));
+          if(this.invoiceParam) {
+            this.doRefund = this.navParams.get('doRefund');
+            this.invoice = this.invoiceParam;
+            resolve();
+          } else {
+            this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
+              .then((invoice: Sale) => {
+                this.invoice = invoice;
+                resolveA();
+              })
+              .catch((error) => rejectA(error));
+          }
         }),
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()
             .then((categories) => {
-              // categories = _.map(categories, function (cat, index) {
-              //   if (index == 0) {
-              //     cat.icon = "icon-barbc-hair-cream";
-              //   }
-              //   if (index == 1) {
-              //     cat.icon = "icon-barbc-beard";
-              //   }
-              //   if (index == 2) {
-              //     cat.icon = "icon-barbc-bow-tie";
-              //   }
-              //   if (index == 3) {
-              //     cat.icon = "icon-barbc-razor-2";
-              //   }
-              //   if (index == 4) {
-              //     cat.icon = "icon-barbc-scissors-1";
-              //   }
-              //   if (index == 5) {
-              //     cat.icon = "icon-barbc-barbershop";
-              //   }
-              //   return cat;
-              // });
               this.categories = categories;
               this.activeCategory = this.categories[0];
               this.salesService.loadPurchasableItems(this.categories[0]._id).then((items: Array<any>) => {
