@@ -21,16 +21,23 @@ export class Sale extends DBBasedEntity {
   public round: number;
   public created: string;
   public completedAt: string;
+  public status: string;
+  public receiptNo: string;
+  public customerName: string;
+  public originalSalesId: string;
 
   constructor() {
     super();
     this.completed = false;
     this.items = [];
     this.totalDiscount = 0;
-    this.state = 'current'; // TODO: should be from dynamic source
+    this.state = 'current'; // [ current, parked, discarded, refund, completed ]
     this.payments = [];
     this.notes = "";
     this.round = 0;
     this.created = new Date().toISOString();
+    this.customerName = "";
+    this.receiptNo = "";
+    this.originalSalesId = "";
   }
 }

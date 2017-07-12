@@ -89,10 +89,6 @@ export class StoreDetailsPage {
 		});
 	}
 
-	public removePos(pos, index) {
-
-	}
-
 	public addRegister() {
 		this.navCtrl.push(PosDetailsPage, {
 			pos: null,

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -40,7 +40,7 @@
         <ion-list no-lines class="full-height no-margin sales-category">
           <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
             (click)="itemSelected(category)">
-                <span class="category-icon {{category.icon}}">
+                <span class="category-icon">
                   <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span><span class="path11"></span><span class="path12"></span><span class="path13"></span><span class="path14"></span><span class="path15"></span><span class="path16"></span><span class="path17"></span><span class="path18"></span><span class="path19"></span><span class="path20"></span>
                 </span>
                 <!--<ion-icon class="category-icon "></ion-icon>-->
@@ -53,7 +53,7 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket [_invoice]="invoice" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
+        <basket [_invoice]="invoice" [refund]="doRefund" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -82,7 +82,7 @@ export class SwitchPosModal {
     this.user.settings.currentPos = register._id;
     this.user.currentPos = { ...register };
     this.user.currentStore = this.stores.find((store) => store._id == register.storeId);
-    localStorage.setItem('user', JSON.stringify(this.user));
+    this.userService.persistUser(this.user);
     this.viewCtrl.dismiss();
   }
 

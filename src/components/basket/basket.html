@@ -15,10 +15,10 @@
     <ion-col col-12>
       <ion-list>
         <!-- Items in the bucket [start] -->
-        <ion-item *ngFor="let item of invoice.items; let $index=index" [ngClass]="{active: isItemShown(item._id)}">
+        <ion-item *ngFor="let item of invoice.items; let $index=index">
 
           <ion-grid>
-            <ion-row (click)="toggleItem(item._id)">
+            <ion-row (click)="viewInfo(item, $index)">
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
@@ -37,48 +37,6 @@
               </ion-col>
             </ion-row>
           </ion-grid>
-
-          <div *ngIf="isItemShown(item._id)">
-            <ion-grid>
-              <ion-row>
-
-                <!-- Quantity -->
-                <ion-col col-md-4>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Quantity</ion-label>
-                    <ion-input type="number" min="1" [(ngModel)]="item.quantity" (change)="addQuantity(item);">
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-
-                <!-- Price -->
-                <ion-col col-md-4>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Price</ion-label>
-                    <ion-input type="text" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
-                    </ion-input>
-                  </ion-item>
-                </ion-col>
-
-                <!-- Discount -->
-                <ion-col col-md-4>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Discount(%)</ion-label>
-                    <ion-input type="number" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
-                  </ion-item>
-                </ion-col>
-
-                <ion-col col-md-12>
-                  <ion-item item-content>
-                    <ion-label color="primary" stacked>Notes</ion-label>
-                    <ion-textarea [(ngModel)]="item.notes" placeholder="Type to add notes...">
-                    </ion-textarea>
-                  </ion-item>
-                </ion-col>
-
-              </ion-row>
-            </ion-grid>
-          </div>
         </ion-item>
         <!-- Items in the bucket [end] -->
 
@@ -109,10 +67,12 @@
     </ion-col>
     <ion-col col-md-3>Total</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
-    <ion-col col-md-12 no-padding >
-      <button ion-button secondary block padding [disabled]="invoice.taxTotal <= 0" (click)="gotoPayment()" class="pay-button">
+    <ion-col col-md-12 no-padding>
+      <button ion-button danger block padding (click)="gotoPayment()" class="pay-button"
+        [disabled]="disablePaymentBtn"
+        [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
         <span class="button-inner pull-right" style="text-align: left">
-            Pay &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
+            {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
         </span>
       </button>
     </ion-col>

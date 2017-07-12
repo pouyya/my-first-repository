@@ -35,10 +35,13 @@ import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
+import { SalesHistoryPage } from './../pages/sales-history/sales-history';
+import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
+import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
 
 // services
 import { ProductService } from '../services/productService';
@@ -56,6 +59,7 @@ import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
 import { CacheService } from "../services/cacheService";
+import { FountainService } from './../services/fountainService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -87,7 +91,9 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
-    SwitchPosModal
+    SalesHistoryPage,
+    SwitchPosModal,
+    ItemInfoModal
   ],
   imports: [
     BrowserModule,
@@ -105,7 +111,8 @@ const cloudSettings: CloudSettings = {
 
     // custom
     TileItemsModule,
-    BasketModule
+    BasketModule,
+    PurchasableItemInfoModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -131,7 +138,9 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
-    SwitchPosModal
+    SalesHistoryPage,
+    SwitchPosModal,
+	ItemInfoModal
   ],
   providers: [
     StatusBar,
@@ -151,7 +160,8 @@ const cloudSettings: CloudSettings = {
     ClosureService,
     UserService,
     UserSettingsService,
-    CacheService
+    CacheService,
+    FountainService
   ]
 })
 export class AppModule {}
