@@ -1,7 +1,7 @@
 import { CalculatorService } from './../../services/calculatorService';
 import { HelperService } from './../../services/helperService';
 import { BucketItem } from './../../model/bucketItem';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'purchasable-item-info',
@@ -10,13 +10,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class PurchasableItemInfoComponent {
 
   @Input() item: BucketItem;
-  @Output() notifyChange = new EventEmitter<boolean>();
 
   constructor(
     private helperService: HelperService,
     private calcService: CalculatorService
-  ) {
-  }
+  ) { }
 
   public calculateDiscount(item: BucketItem) {
     item.discount = this.helperService.round2Dec(item.discount);

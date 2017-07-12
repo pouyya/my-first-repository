@@ -26,4 +26,12 @@ export class UserService extends BaseEntityService<User> {
       throw new Error(e);
     }
   }
+
+  public persistUser(user) {
+    try {
+      localStorage.setItem('user', JSON.stringify(user));
+    } catch(e) {
+      throw new Error(e);
+    }
+  }
 }

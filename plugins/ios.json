@@ -33,6 +33,9 @@
         },
         "cordova-plugin-websql": {
             "PACKAGE_NAME": "com.ionicframework.simplecuts548824"
+        },
+        "ionic-plugin-deploy": {
+            "PACKAGE_NAME": "com.ionicframework.simplecuts548824"
         }
     },
     "dependent_plugins": {}

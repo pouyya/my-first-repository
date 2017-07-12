@@ -64,6 +64,14 @@ module.exports = [
         "clobbers": [
             "SQLitePlugin"
         ]
+    },
+    {
+        "file": "plugins/ionic-plugin-deploy/www/ionicdeploy.js",
+        "id": "ionic-plugin-deploy.IonicDeploy",
+        "pluginId": "ionic-plugin-deploy",
+        "clobbers": [
+            "IonicDeploy"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -77,7 +85,8 @@ module.exports.metadata =
     "ionic-plugin-keyboard": "2.2.1",
     "cordova-plugin-sqlite-2": "1.0.4",
     "cordova-sqlite-storage": "2.0.4",
-    "cordova-plugin-websql": "0.0.10"
+    "cordova-plugin-websql": "0.0.10",
+    "ionic-plugin-deploy": "0.6.7"
 }
 // BOTTOM OF METADATA
 });

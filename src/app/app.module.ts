@@ -1,7 +1,3 @@
-import { IconSelectModule } from './../components/icon-select/icon-select.module';
-import { CategoryIconSelectModal } from './../pages/category-details/modals/category-icon-select/category-icon-select';
-import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
-import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -14,9 +10,11 @@ import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CacheFactory } from 'cachefactory';
 
 // pages
 import { ShortCutsApp } from './app.component';
+import { DeployPage } from './../pages/deploy/deploy';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -37,10 +35,15 @@ import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
+import { SalesHistoryPage } from './../pages/sales-history/sales-history';
+import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
+import { CategoryIconSelectModal } from './../pages/category-details/modals/category-icon-select/category-icon-select';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
+import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
+import { IconSelectModule } from './../components/icon-select/icon-select.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -60,16 +63,19 @@ import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
+import { CacheService } from "../services/cacheService";
+import { FountainService } from './../services/fountainService';
 
 const cloudSettings: CloudSettings = {
   'core': {
-    'app_id': "036318f3"
+    'app_id': "5bf5f6a2"
   }
 };
 
 @NgModule({
   declarations: [
     ShortCutsApp,
+    DeployPage,
     HomePage,
     InventoryPage,
     Products,
@@ -90,6 +96,7 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
+    SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
     CategoryIconSelectModal,
@@ -118,6 +125,7 @@ const cloudSettings: CloudSettings = {
   bootstrap: [IonicApp],
   entryComponents: [
     ShortCutsApp,
+    DeployPage,
     HomePage,
     InventoryPage,
     Products,
@@ -138,6 +146,7 @@ const cloudSettings: CloudSettings = {
     ParkSale,
     PosDetailsPage,
     OpenCloseRegister,
+    SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
     CategoryIconSelectModal
@@ -146,6 +155,7 @@ const cloudSettings: CloudSettings = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
@@ -158,7 +168,9 @@ const cloudSettings: CloudSettings = {
     ModuleService,
     ClosureService,
     UserService,
-    UserSettingsService
+    UserSettingsService,
+    CacheService,
+    FountainService
   ]
 })
 export class AppModule {}

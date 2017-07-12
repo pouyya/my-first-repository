@@ -50,3 +50,11 @@
 .error-text {
   color: color($colors, danger);
 }
+
+.pay {
+  background-color: color($colors, primary)
+}
+
+.return {
+  background-color: color($colors, danger);
+}
