@@ -10,9 +10,11 @@ import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CacheFactory } from 'cachefactory';
 
 // pages
 import { ShortCutsApp } from './app.component';
+import { DeployPage } from './../pages/deploy/deploy';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -56,17 +58,19 @@ import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
+import { CacheService } from "../services/cacheService";
 import { FountainService } from './../services/fountainService';
 
 const cloudSettings: CloudSettings = {
   'core': {
-    'app_id': "036318f3"
+    'app_id': "5bf5f6a2"
   }
 };
 
 @NgModule({
   declarations: [
     ShortCutsApp,
+    DeployPage,
     HomePage,
     InventoryPage,
     Products,
@@ -113,6 +117,7 @@ const cloudSettings: CloudSettings = {
   bootstrap: [IonicApp],
   entryComponents: [
     ShortCutsApp,
+    DeployPage,
     HomePage,
     InventoryPage,
     Products,
@@ -141,6 +146,7 @@ const cloudSettings: CloudSettings = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
@@ -154,6 +160,7 @@ const cloudSettings: CloudSettings = {
     ClosureService,
     UserService,
     UserSettingsService,
+    CacheService,
     FountainService
   ]
 })

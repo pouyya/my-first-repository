@@ -151,17 +151,37 @@ export class Sales {
           this.categoryService.getAll()
             .then((categories) => {
               this.categories = categories;
-              this.activeCategory = this.categories[0];
-              this.salesService.loadPurchasableItems(this.categories[0]._id).then((items: Array<any>) => {
-                this.activeTiles = items;
-                resolveA();
-              });
+              this.loadCategoriesAssociation(categories).then(() => resolveA());
             })
             .catch((error) => rejectA(error));
         })
       ];
 
       Promise.all(promises).then(() => resolve()).catch((error) => reject(error));
+    });
+  }
+
+  private loadCategoriesAssociation(categories:Array<any>) {
+    return new Promise((resolve, reject) => {
+      var promiseCategories = new Array<Promise<any>>();
+      for (var categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
+        promiseCategories.push(new Promise((resolveB, rejectB) => {
+          if (categoryIndex === 0) {
+            this.activeCategory = categories[categoryIndex];
+            this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
+              this.activeTiles = items;
+              resolveB();
+            });
+          }
+          else {
+            this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then(() => {
+              resolveB();
+            });
+          }
+        }));
+      }
+
+      Promise.all(promiseCategories).then(() => resolve());
     });
   }
 

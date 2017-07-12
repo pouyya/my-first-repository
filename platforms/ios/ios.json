@@ -39,6 +39,10 @@
                         {
                             "xml": "<feature name=\"SQLitePlugin\"><param name=\"ios-package\" value=\"SQLitePlugin\" /></feature>",
                             "count": 2
+                        },
+                        {
+                            "xml": "<feature name=\"IonicDeploy\"><param name=\"ios-package\" onload=\"true\" value=\"IonicDeploy\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -71,6 +75,9 @@
             "PACKAGE_NAME": "com.ionicframework.simplecuts548824"
         },
         "cordova-plugin-websql": {
+            "PACKAGE_NAME": "com.ionicframework.simplecuts548824"
+        },
+        "ionic-plugin-deploy": {
             "PACKAGE_NAME": "com.ionicframework.simplecuts548824"
         }
     },
@@ -140,6 +147,14 @@
             "clobbers": [
                 "SQLitePlugin"
             ]
+        },
+        {
+            "file": "plugins/ionic-plugin-deploy/www/ionicdeploy.js",
+            "id": "ionic-plugin-deploy.IonicDeploy",
+            "pluginId": "ionic-plugin-deploy",
+            "clobbers": [
+                "IonicDeploy"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -151,6 +166,7 @@
         "ionic-plugin-keyboard": "2.2.1",
         "cordova-plugin-sqlite-2": "1.0.4",
         "cordova-sqlite-storage": "2.0.4",
-        "cordova-plugin-websql": "0.0.10"
+        "cordova-plugin-websql": "0.0.10",
+        "ionic-plugin-deploy": "0.6.7"
     }
 }

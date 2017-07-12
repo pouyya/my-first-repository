@@ -1,3 +1,4 @@
+import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
 import _ from 'lodash';
@@ -10,7 +11,6 @@ import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
 import { PosService } from "./posService";
-import { UserService } from './userService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -19,10 +19,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private posService: PosService,
-		private userService: UserService,
 		private helperService: HelperService,
 		private fountainService: FountainService,
-		private zone: NgZone
+		private zone: NgZone,
+		private cacheService: CacheService 
 	) {
 		super(Sale, zone);
 	}
@@ -33,7 +33,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @returns {any}
 	 */
 	public loadPurchasableItems(id: string) {
-		return this.categoryService.getAssociatedItems(id);
+		return this.cacheService.getAndPut('sales-cache' + id, key => this.categoryService.getAssociatedItems(id))
 	}
 
 	/**

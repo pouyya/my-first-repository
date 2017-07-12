@@ -1,4 +1,3 @@
-import { UserSettingsService } from './../services/userSettingsService';
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -6,17 +5,16 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { UserService } from './../services/userService';
 import { PosService } from './../services/posService';
-import { StoreService } from './../services/storeService';
 import { ModuleService } from './../services/moduleService';
-import { HomePage } from '../pages/home/home';
 import { ModuleBase } from "../modules/moduelBase";
+import { DeployPage } from "../pages/deploy/deploy";
 
 @Component({
   templateUrl: 'app.html'
 })
 export class ShortCutsApp {
   @ViewChild(Nav) nav: Nav;
-  rootPage: any = HomePage;
+  rootPage: any = DeployPage;
   currentModule: ModuleBase;
   moduleName: string;
   user: any;
@@ -26,10 +24,8 @@ export class ShortCutsApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     private moduleService: ModuleService,
-    private storeService: StoreService,
     private posService: PosService,
     private userService: UserService,
-    private userSettingsService: UserSettingsService,
     private modalCtrl: ModalController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef
