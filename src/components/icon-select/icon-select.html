@@ -1,0 +1,11 @@
+<ion-list radio-group>
+  <ion-list-header>
+    Icons
+  </ion-list-header>
+
+  <ion-item *ngFor="let icon of icons">
+    <ion-label>{{ icon.name }}</ion-label>
+    <ion-radio checked="true" value="{{icon.name}}"></ion-radio>
+  </ion-item>
+
+</ion-list>

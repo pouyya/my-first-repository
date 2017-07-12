@@ -1,3 +1,5 @@
+import { IconSelectModule } from './../components/icon-select/icon-select.module';
+import { CategoryIconSelectModal } from './../pages/category-details/modals/category-icon-select/category-icon-select';
 import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
 import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
 // core
@@ -41,7 +43,7 @@ import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 
 // pipes
-import { KeysPipe } from './pipes/keys.pipe';
+import { KeysPipe } from './../pipes/keys.pipe';
 
 // services
 import { ProductService } from '../services/productService';
@@ -90,6 +92,7 @@ const cloudSettings: CloudSettings = {
     OpenCloseRegister,
     SwitchPosModal,
     ItemInfoModal,
+    CategoryIconSelectModal,
     KeysPipe
   ],
   imports: [
@@ -109,7 +112,8 @@ const cloudSettings: CloudSettings = {
     // custom
     TileItemsModule,
     BasketModule,
-    PurchasableItemInfoModule
+    PurchasableItemInfoModule,
+    IconSelectModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -135,7 +139,8 @@ const cloudSettings: CloudSettings = {
     PosDetailsPage,
     OpenCloseRegister,
     SwitchPosModal,
-    ItemInfoModal
+    ItemInfoModal,
+    CategoryIconSelectModal
   ],
   providers: [
     StatusBar,

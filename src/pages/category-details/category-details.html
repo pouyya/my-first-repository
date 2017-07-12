@@ -18,15 +18,18 @@
       <ion-label class="item-name">Name</ion-label>
       <ion-input type="text" [(ngModel)]="categoryItem.name"></ion-input>
     </ion-item>
-     <ion-item>
+     <!-- <ion-item>
         <ion-label class="item-name">Icon</ion-label>
         <ion-select [(ngModel)]="selectedIcon">
           <ion-option value="icon.key" *ngFor="let icon of icons | keys">
-            {{ icon.value.name }}
+            <span class="pull-left"><strong>{{ icon.value.name }}</strong> <small>{{ icon.value.type }}</small></span>
+            <span class="pull-right"><ion-icon name="eye" (click)="previewIcon(icon.value)"></ion-icon></span>
           </ion-option>
       </ion-select>       
+     </ion-item> -->
+     <ion-item>
+       <button ion-button (click)="selectIcon()">Select Icon</button>
      </ion-item>
-     
   </ion-list>    
 </ion-content> 
  

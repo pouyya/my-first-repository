@@ -1,5 +1,6 @@
+import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
 
@@ -17,7 +18,9 @@ export class CategoryDetails {
   constructor(public navCtrl: NavController,
     private categoryService: CategoryService,
     public navParams: NavParams,
-    private viewCtrl: ViewController) {
+    private viewCtrl: ViewController,
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController) {
     this.icons = icons;
   }
 
@@ -31,7 +34,7 @@ export class CategoryDetails {
     }
   }
 
-  saveCategories() {
+  public saveCategories() {
     if (this.isNew) {
       this.categoryService.add(this.categoryItem)
         .catch(console.error.bind(console));
@@ -42,6 +45,23 @@ export class CategoryDetails {
 
     this.navCtrl.pop();
 
+  }
+
+  public selectIcon() {
+    let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
+    modal.onDidDismiss(data => {
+      
+    });
+    modal.present();    
+  }
+
+  public previewIcon(icon: any) {
+    let alert = this.alertCtrl.create({
+      title: icon.name,
+      subTitle: `<ion-icon name="${icon.name}"></ion-icon>`,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
   addImage() {
