@@ -1,7 +1,7 @@
 import { CalculatorService } from './../../services/calculatorService';
 import { HelperService } from './../../services/helperService';
 import { BucketItem } from './../../model/bucketItem';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'purchasable-item-info',

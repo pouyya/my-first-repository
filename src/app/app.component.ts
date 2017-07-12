@@ -6,7 +6,6 @@ import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { UserService } from './../services/userService';
 import { PosService } from './../services/posService';
 import { ModuleService } from './../services/moduleService';
-import { HomePage } from '../pages/home/home';
 import { ModuleBase } from "../modules/moduelBase";
 import { DeployPage } from "../pages/deploy/deploy";
 

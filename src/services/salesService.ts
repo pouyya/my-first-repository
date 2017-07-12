@@ -11,7 +11,6 @@ import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
 import { PosService } from "./posService";
-import { UserService } from './userService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
