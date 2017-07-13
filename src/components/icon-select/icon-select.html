@@ -1,11 +1,21 @@
-<ion-list radio-group>
+<ion-list radio-group [(ngModel)]="selectedIcon">
   <ion-list-header>
     Icons
   </ion-list-header>
 
   <ion-item *ngFor="let icon of icons">
-    <ion-label>{{ icon.name }}</ion-label>
-    <ion-radio checked="true" value="{{icon.name}}"></ion-radio>
+    <ion-label>
+      <span *ngIf="icon.type == 'font'">
+        <ion-icon [name]="icon.name"></ion-icon>
+      </span>
+      <span *ngIf="icon.type == 'svg'">
+        <span class="{{icon.name}}">
+          <span *ngFor="let path of icon.noOfPaths" class="path{{path}}"></span>
+        </span>        
+      </span>
+      &nbsp;{{ icon.name }} <small>{{ icon.type }}</small>
+    </ion-label>
+    <ion-radio [value]="icon.name"></ion-radio>
   </ion-item>
 
 </ion-list>

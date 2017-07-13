@@ -1,3 +1,4 @@
+import { icons } from './../../metadata/itemIcons';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -31,6 +32,7 @@ export class Sales {
   public invoice: Sale;
   public register: POS;
   public doRefund: boolean;
+  public icons: any;
   private invoiceParam: any;
 
   constructor(
@@ -56,6 +58,7 @@ export class Sales {
     });
 
     loader.present().then(() => {
+
       var posPromise = new Promise((resolve, reject) => {
         var user = this.userService.getLoggedInUser();
         this.register = user.currentPos;
@@ -100,7 +103,18 @@ export class Sales {
   public itemSelected(category) {
     this.activeCategory = category;
     this.salesService.loadPurchasableItems(category._id).then(
-      items => this.activeTiles = items,
+      items => {
+        items.forEach((item, index, array) => {
+          if (item.hasOwnProperty('icon') && item.icon.type == 'svg' && item.icon.hasOwnProperty('noOfPaths')) {
+            let paths = [];
+            for (let i = 1; i <= item.icon.noOfPaths; i++) {
+              paths.push(i);
+            }
+            array[index].icon.noOfPaths = paths;
+          }
+        });
+        this.activeTiles = items;
+      },
       error => { console.error(error); }
     );
     return category._id == category._id;
@@ -115,13 +129,13 @@ export class Sales {
   public paymentClicked($event) {
     var pushCallback = (_params) => {
       return new Promise((resolve, reject) => {
-        if(_params) {
+        if (_params) {
           this.invoiceParam = null;
         }
         resolve();
       });
     }
-    
+
     this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
       invoice: this.invoice,
@@ -134,7 +148,7 @@ export class Sales {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
         new Promise((resolveA, rejectA) => {
-          if(this.invoiceParam) {
+          if (this.invoiceParam) {
             this.doRefund = this.navParams.get('doRefund');
             this.invoice = this.invoiceParam;
             resolve();
@@ -161,7 +175,7 @@ export class Sales {
     });
   }
 
-  private loadCategoriesAssociation(categories:Array<any>) {
+  private loadCategoriesAssociation(categories: Array<any>) {
     return new Promise((resolve, reject) => {
       var promiseCategories = new Array<Promise<any>>();
       for (var categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
@@ -169,6 +183,15 @@ export class Sales {
           if (categoryIndex === 0) {
             this.activeCategory = categories[categoryIndex];
             this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
+              items.forEach((item, index, array) => {
+                if (item.hasOwnProperty('icon') && item.icon.type == 'svg' && item.icon.hasOwnProperty('noOfPaths')) {
+                  let paths = [];
+                  for (let i = 1; i <= item.icon.noOfPaths; i++) {
+                    paths.push(i);
+                  }
+                  array[index].icon.noOfPaths = paths;
+                }
+              });
               this.activeTiles = items;
               resolveB();
             });

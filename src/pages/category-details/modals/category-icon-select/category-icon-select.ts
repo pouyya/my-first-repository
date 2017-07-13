@@ -7,18 +7,20 @@ import { Component } from '@angular/core';
 })
 export class CategoryIconSelectModal {
 
-  public selectedIcon: any;
+  public selectedIcon: string;
+  public bufferedSelection: string;
 
-  constructor(navParams: NavParams, viewCtrl: ViewController) {
+  constructor(private navParams: NavParams, private viewCtrl: ViewController) {
     this.selectedIcon = navParams.get('selectedIcon');
   }
 
   public confirm() {
-
+    this.selectedIcon = this.bufferedSelection;
+    this.viewCtrl.dismiss(this.selectedIcon);
   }
 
   public dismiss() {
-    
+    this.viewCtrl.dismiss(this.selectedIcon);
   }
 
 }

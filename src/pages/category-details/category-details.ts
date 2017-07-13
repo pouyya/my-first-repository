@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
+import ionicons from 'ionicons-svg/ios-card';
 
 @Component({
   selector: 'page-variables',
@@ -13,7 +14,8 @@ export class CategoryDetails {
   public isNew = true;
   public action = 'Add';
   public icons: any;
-  public selectedIcon: any;
+  public selectedIcon: string;
+  public ionicons: any;
 
   constructor(public navCtrl: NavController,
     private categoryService: CategoryService,
@@ -22,15 +24,18 @@ export class CategoryDetails {
     private alertCtrl: AlertController,
     private modalCtrl: ModalController) {
     this.icons = icons;
+    this.ionicons = ionicons;
   }
 
   ionViewDidLoad() {
     let editProduct = this.navParams.get('category');
-    console.log('Get from DB Category Items', editProduct);
     if (editProduct) {
       this.categoryItem = editProduct;
       this.isNew = false;
       this.action = 'Edit';
+      if(this.categoryItem.hasOwnProperty('icon') && this.categoryItem.icon) {
+        this.selectedIcon = this.categoryItem.icon.name;
+      }
     }
   }
 
@@ -50,7 +55,8 @@ export class CategoryDetails {
   public selectIcon() {
     let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
     modal.onDidDismiss(data => {
-      
+      this.selectedIcon = data;
+      this.categoryItem.icon = this.icons[this.selectedIcon];
     });
     modal.present();    
   }

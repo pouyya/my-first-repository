@@ -1,15 +1,22 @@
 export let icons = {
-  "icon-font-water": {
-    "name": "water",
-    "type": "font"
-  },
-  "icon-svg-water": {
-    "name": "water",
+  "icon-barbc-hair-cream": {
+    "name": "icon-barbc-hair-cream",
     "type": "svg",
-    "numberOfPaths": 5
+    "noOfPaths": 10
   },
-  "icon-font-rose": {
-    "name": "rose",
-    "type": "font"
+  "icon-barbc-beard": {
+    "name": "icon-barbc-beard",
+    "type": "svg",
+    "noOfPaths": 11
+  },
+  "icon-barbc-bow-tie": {
+    "name": "icon-barbc-bow-tie",
+    "type": "svg",
+    "noOfPaths": 5
+  },
+  "icon-barbc-barbershop": {
+    "name": "icon-barbc-barbershop",
+    "type": "svg",
+    "noOfPaths": 16
   }
 }
