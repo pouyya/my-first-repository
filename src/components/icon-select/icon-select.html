@@ -5,14 +5,7 @@
 
   <ion-item *ngFor="let icon of icons">
     <ion-label>
-      <span *ngIf="icon.type == 'font'">
-        <ion-icon [name]="icon.name"></ion-icon>
-      </span>
-      <span *ngIf="icon.type == 'svg'">
-        <span class="{{icon.name}}">
-          <span *ngFor="let path of icon.noOfPaths" class="path{{path}}"></span>
-        </span>        
-      </span>
+      <sp-icon [icon]="icon"></sp-icon>
       &nbsp;{{ icon.name }} <small>{{ icon.type }}</small>
     </ion-label>
     <ion-radio [value]="icon.name"></ion-radio>

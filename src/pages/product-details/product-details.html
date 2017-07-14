@@ -66,6 +66,10 @@
       <ion-label class="item-name">SKU:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.sku"></ion-input>
     </ion-item>
+     <ion-item>
+       <button ion-button (click)="selectIcon()">Select Icon</button>
+       <span *ngIf="selectedIcon">{{ selectedIcon }}</span>
+     </ion-item>    
   </ion-list>
     
 </ion-content> 

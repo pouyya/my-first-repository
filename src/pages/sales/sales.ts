@@ -104,15 +104,6 @@ export class Sales {
     this.activeCategory = category;
     this.salesService.loadPurchasableItems(category._id).then(
       items => {
-        items.forEach((item, index, array) => {
-          if (item.hasOwnProperty('icon') && item.icon.type == 'svg' && item.icon.hasOwnProperty('noOfPaths')) {
-            let paths = [];
-            for (let i = 1; i <= item.icon.noOfPaths; i++) {
-              paths.push(i);
-            }
-            array[index].icon.noOfPaths = paths;
-          }
-        });
         this.activeTiles = items;
       },
       error => { console.error(error); }
@@ -183,15 +174,6 @@ export class Sales {
           if (categoryIndex === 0) {
             this.activeCategory = categories[categoryIndex];
             this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
-              items.forEach((item, index, array) => {
-                if (item.hasOwnProperty('icon') && item.icon.type == 'svg' && item.icon.hasOwnProperty('noOfPaths')) {
-                  let paths = [];
-                  for (let i = 1; i <= item.icon.noOfPaths; i++) {
-                    paths.push(i);
-                  }
-                  array[index].icon.noOfPaths = paths;
-                }
-              });
               this.activeTiles = items;
               resolveB();
             });

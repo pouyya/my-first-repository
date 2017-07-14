@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
-import ionicons from 'ionicons-svg/ios-card';
 
 @Component({
   selector: 'page-variables',
@@ -15,7 +14,6 @@ export class CategoryDetails {
   public action = 'Add';
   public icons: any;
   public selectedIcon: string;
-  public ionicons: any;
 
   constructor(public navCtrl: NavController,
     private categoryService: CategoryService,
@@ -24,7 +22,6 @@ export class CategoryDetails {
     private alertCtrl: AlertController,
     private modalCtrl: ModalController) {
     this.icons = icons;
-    this.ionicons = ionicons;
   }
 
   ionViewDidLoad() {
