@@ -1,0 +1,8 @@
+<span *ngIf="sicon && sicon.type == 'font'">
+  <ion-icon [name]="sicon.name"></ion-icon>
+</span>
+<span *ngIf="sicon && sicon.type == 'svg'">
+  <span class="{{sicon.name}}">
+    <span *ngFor="let path of sicon.noOfPaths" class="path{{path}}"></span>
+  </span>        
+</span>    

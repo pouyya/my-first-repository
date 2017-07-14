@@ -5,14 +5,7 @@
       [colspan]="1"
       [rowspan]="1" tapabble>
           <!-- <ion-icon class="tile-icon" name="pricetags"></ion-icon> -->
-        <span *ngIf="tile.icon && tile.icon.type == 'font'">
-          <ion-icon [name]="tile.icon.name"></ion-icon>
-        </span>
-        <span *ngIf="tile.icon && tile.icon.type == 'svg'">
-          <span class="{{tile.icon.name}}">
-            <span *ngFor="let path of tile.icon.noOfPaths" class="path{{path}}"></span>
-          </span>        
-        </span>          
+        <sp-icon [sicon]="tile.icon"></sp-icon>
         <md-grid-tile-footer [style.background]="'#3A4953'">
           <h2 md-line>{{ tile.name }}</h2>
           <!--<h3 md-line>${{ tile.price | number : '1.2-2' }}</h3>-->

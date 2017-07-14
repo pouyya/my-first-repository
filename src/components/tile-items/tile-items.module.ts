@@ -1,3 +1,4 @@
+import { SPIconModule } from './../sp-icon/sp-icon.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TileItemsComponent } from './tile-items.component';
@@ -9,7 +10,8 @@ import { MdGridListModule } from '@angular/material';
   imports: [ 
     CommonModule, 
     IonicPageModule.forChild(TileItemsComponent),
-    MdGridListModule
+    MdGridListModule,
+    SPIconModule
   ],
   exports: [ TileItemsComponent ]
 })

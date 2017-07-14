@@ -1,3 +1,4 @@
+import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -120,7 +121,8 @@ const cloudSettings: CloudSettings = {
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
-    IconSelectModule
+    IconSelectModule,
+    SPIconModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
