@@ -1,3 +1,5 @@
+import { SalesTaxService } from './../services/salesTaxService';
+import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -93,7 +95,8 @@ const cloudSettings: CloudSettings = {
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
-    ItemInfoModal
+    ItemInfoModal,
+    SaleTaxPage
   ],
   imports: [
     BrowserModule,
@@ -140,7 +143,8 @@ const cloudSettings: CloudSettings = {
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
-	ItemInfoModal
+    ItemInfoModal,
+    SaleTaxPage
   ],
   providers: [
     StatusBar,
@@ -161,7 +165,8 @@ const cloudSettings: CloudSettings = {
     UserService,
     UserSettingsService,
     CacheService,
-    FountainService
+    FountainService,
+    SalesTaxService
   ]
 })
 export class AppModule {}

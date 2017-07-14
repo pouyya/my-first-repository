@@ -1,10 +1,11 @@
+import { SaleTaxPage } from './../admin/sale-tax/sale-tax';
+import { Category } from './../category/category';
 import { Employees } from './../employees/employees';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Products } from '../products/products';
 import { Stores } from '../stores/stores';
 import { Services } from '../service/service';
-import { Category } from '../category/category';
 
 @Component({
   selector: 'page-variables',
@@ -12,22 +13,20 @@ import { Category } from '../category/category';
 })
 export class Settings {
 
+  private pages = {
+    products: Products,
+    services: Services,
+    category: Category,
+    stores: Stores,
+    employees: Employees,
+    saleTax: SaleTaxPage
+  };
+
   constructor(public navCtrl: NavController) {
   }
 
-  onProducts(){
-    this.navCtrl.push(Products);
+  public navigateTo(name: string) {
+    this.navCtrl.push(this.pages[name]);
   }
-  onService(){
-    this.navCtrl.push(Services);
-  }
-  onInventory(){
-    this.navCtrl.push(Category);
-  }
-  onStores(){
-    this.navCtrl.push(Stores);
-  }
-  onEmployees(){
-    this.navCtrl.push(Employees);
-  }
+  
 }
