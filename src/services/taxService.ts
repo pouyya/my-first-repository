@@ -1,19 +1,23 @@
+import { StoreService } from './storeService';
 import {Injectable} from '@angular/core';
 
 @Injectable()
 export class TaxService {
-  private tax: number = 10;
+  private tax: number;
+
+  constructor(private storeService: StoreService) {
+    this.storeService.getDefaultTax().then((store: any) => {
+      this.tax = Number(store[0].defaultSaleTaxId);
+    }).catch((error) => {
+      throw new Error(error);
+    })
+  }
 
   public getTax() {
     return this.tax;
   }
 
   public calculate(price: number): number {
-    if(this.tax > 0) {
-      let amountToAdd = (this.tax / 100) * price;
-      return price + amountToAdd;
-    } else {
-      return price;
-    }
+    return this.tax > 0 ? price + ((this.tax / 100) * price) : price;
   }
 }

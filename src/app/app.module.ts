@@ -1,3 +1,4 @@
+import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SalesTaxService } from './../services/salesTaxService';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 // core
@@ -96,7 +97,8 @@ const cloudSettings: CloudSettings = {
     SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
-    SaleTaxPage
+    SaleTaxPage,
+    SaleTaxDetails
   ],
   imports: [
     BrowserModule,
@@ -144,7 +146,8 @@ const cloudSettings: CloudSettings = {
     SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
-    SaleTaxPage
+    SaleTaxPage,
+    SaleTaxDetails
   ],
   providers: [
     StatusBar,
