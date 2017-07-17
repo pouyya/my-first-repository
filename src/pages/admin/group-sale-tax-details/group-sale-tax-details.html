@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title style="text-Align:center">Group Sales Tax page</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="upsert()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">Name</ion-label>
+      <ion-input type="text" [(ngModel)]="groupSalesTax.name"></ion-input>      
+    </ion-item>
+    <ion-item >
+        <ion-label class="item-name">Select Sales Tax</ion-label>
+        <ion-select [(ngModel)]="salesTaxes" name="salesTax">
+          <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{tax.name}} (%{{tax.rate}})</ion-option>
+        </ion-select>      
+    </ion-item>
+  </ion-list>
+</ion-content>

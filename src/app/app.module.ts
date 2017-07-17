@@ -1,3 +1,6 @@
+import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details/group-sale-tax-details';
+import { GroupSalesTaxService } from './../services/groupSalesTaxService';
+import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SalesTaxService } from './../services/salesTaxService';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
@@ -98,7 +101,9 @@ const cloudSettings: CloudSettings = {
     SwitchPosModal,
     ItemInfoModal,
     SaleTaxPage,
-    SaleTaxDetails
+    SaleTaxDetails,
+    GroupSaleTaxPage,
+    GroupSaleTaxDetailsPage
   ],
   imports: [
     BrowserModule,
@@ -147,7 +152,9 @@ const cloudSettings: CloudSettings = {
     SwitchPosModal,
     ItemInfoModal,
     SaleTaxPage,
-    SaleTaxDetails
+    SaleTaxDetails,
+    GroupSaleTaxPage,
+    GroupSaleTaxDetailsPage
   ],
   providers: [
     StatusBar,
@@ -169,7 +176,8 @@ const cloudSettings: CloudSettings = {
     UserSettingsService,
     CacheService,
     FountainService,
-    SalesTaxService
+    SalesTaxService,
+    GroupSalesTaxService
   ]
 })
 export class AppModule {}

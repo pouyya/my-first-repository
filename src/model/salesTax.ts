@@ -1,4 +1,4 @@
-import {DBBasedEntity} from './dbBasedEntity';
+import { DBBasedEntity } from './dbBasedEntity';
 
 export class SalesTax extends DBBasedEntity {
 

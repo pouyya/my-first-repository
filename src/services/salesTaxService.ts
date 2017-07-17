@@ -13,4 +13,10 @@ export class SalesTaxService extends BaseEntityService<SalesTax> {
     let user = this.userService.getLoggedInUser();
     return this.findBy({ selector: { userId: user._id } });
   }
+
+  public add(tax: SalesTax) {
+    let user = this.userService.getLoggedInUser();
+    tax.userId = user._id;
+    return super.add(tax);
+  }
 }
