@@ -21,7 +21,12 @@ export let userData = {
     ],
     userId: "2017-06-16T10:19:57.208Z",
     currentStore: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
-    currentPos: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F"
+    currentPos: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F",
+    defaultIcon: {
+      name: "icon-barbc-barber-shop-1",
+      type: "svg",
+      noOfPaths: 17
+    }
   },
   currentPos: {
     _id: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F",

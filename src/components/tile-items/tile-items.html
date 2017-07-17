@@ -4,7 +4,8 @@
       *ngFor="let tile of items" (click)="selectItem(tile)"
       [colspan]="1"
       [rowspan]="1" tapabble>
-          <ion-icon class="tile-icon" name="pricetags"></ion-icon>
+          <!-- <ion-icon class="tile-icon" name="pricetags"></ion-icon> -->
+        <sp-icon [icon]="tile.icon"></sp-icon>
         <md-grid-tile-footer [style.background]="'#3A4953'">
           <h2 md-line>{{ tile.name }}</h2>
           <!--<h3 md-line>${{ tile.price | number : '1.2-2' }}</h3>-->

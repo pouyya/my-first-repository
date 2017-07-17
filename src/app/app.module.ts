@@ -1,3 +1,4 @@
+import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -37,11 +38,16 @@ import { ParkSale } from './../pages/sales/modals/park-sale';
 import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { SalesHistoryPage } from './../pages/sales-history/sales-history';
 import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
+import { CategoryIconSelectModal } from './../pages/category-details/modals/category-icon-select/category-icon-select';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
+import { IconSelectModule } from './../components/icon-select/icon-select.module';
+
+// pipes
+import { KeysPipe } from './../pipes/keys.pipe';
 
 // services
 import { ProductService } from '../services/productService';
@@ -93,7 +99,9 @@ const cloudSettings: CloudSettings = {
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
-    ItemInfoModal
+    ItemInfoModal,
+    CategoryIconSelectModal,
+    KeysPipe
   ],
   imports: [
     BrowserModule,
@@ -112,7 +120,9 @@ const cloudSettings: CloudSettings = {
     // custom
     TileItemsModule,
     BasketModule,
-    PurchasableItemInfoModule
+    PurchasableItemInfoModule,
+    IconSelectModule,
+    SPIconModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -140,7 +150,8 @@ const cloudSettings: CloudSettings = {
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
-	ItemInfoModal
+    ItemInfoModal,
+    CategoryIconSelectModal
   ],
   providers: [
     StatusBar,

@@ -28,7 +28,11 @@
           <ion-option  *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option> 
         </ion-select>
        
-    </ion-item>     
+    </ion-item>
+     <ion-item>
+       <button ion-button (click)="selectIcon()">Select Icon</button>
+      <span *ngIf="selectedIcon"><sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
+     </ion-item>      
   </ion-list>    
 </ion-content> 
  
