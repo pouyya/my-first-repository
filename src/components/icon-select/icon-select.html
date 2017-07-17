@@ -8,7 +8,7 @@
       <sp-icon [icon]="icon"></sp-icon>
       &nbsp;{{ icon.name }} <small>{{ icon.type }}</small>
     </ion-label>
-    <ion-radio [value]="icon.name"></ion-radio>
+    <ion-radio [value]="icon.name" (click)="select()"></ion-radio>
   </ion-item>
 
 </ion-list>

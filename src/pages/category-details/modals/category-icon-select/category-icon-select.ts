@@ -15,12 +15,15 @@ export class CategoryIconSelectModal {
   }
 
   public confirm() {
-    this.selectedIcon = this.bufferedSelection;
-    this.viewCtrl.dismiss(this.selectedIcon);
+    this.viewCtrl.dismiss({ status: true, selected: this.bufferedSelection });
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss(this.selectedIcon);
+    this.viewCtrl.dismiss({ status: false, selected: null });
+  }
+
+  public confirmSelection(event) {
+    this.bufferedSelection = event.selectedIcon;
   }
 
 }

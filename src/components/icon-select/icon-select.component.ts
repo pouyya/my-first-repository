@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { icons } from './../../metadata/itemIcons';
 
 @Component({
@@ -8,18 +8,16 @@ import { icons } from './../../metadata/itemIcons';
 })
 export class IconSelectComponent {
 
-  public name: string;
+  @Input() selectedIcon: string;
+  @Output() confirmSelection: EventEmitter<any> = new EventEmitter<any>();
   public icons: Array<any>;
-  @Input('selectedIcon')
-  set model(name: string) {
-    this.name = name;
-  }
-  get model() {
-    return this.name;
-  }  
 
   constructor() {
     this.icons = _.values(icons);
+  }
+
+  public select() {
+    this.confirmSelection.emit({ selectedIcon: this.selectedIcon });
   }
 
 }

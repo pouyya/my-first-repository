@@ -68,7 +68,7 @@
     </ion-item>
      <ion-item>
        <button ion-button (click)="selectIcon()">Select Icon</button>
-       <span *ngIf="selectedIcon">{{ selectedIcon }}</span>
+      <span *ngIf="selectedIcon"><sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
      </ion-item>    
   </ion-list>
     

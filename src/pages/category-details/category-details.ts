@@ -1,3 +1,4 @@
+import { UserService } from './../../services/userService';
 import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
@@ -13,10 +14,11 @@ export class CategoryDetails {
   public isNew = true;
   public action = 'Add';
   public icons: any;
-  public selectedIcon: string;
+  public selectedIcon: string = "";
 
   constructor(public navCtrl: NavController,
     private categoryService: CategoryService,
+    private userService: UserService,
     public navParams: NavParams,
     private viewCtrl: ViewController,
     private alertCtrl: AlertController,
@@ -33,6 +35,10 @@ export class CategoryDetails {
       if(this.categoryItem.hasOwnProperty('icon') && this.categoryItem.icon) {
         this.selectedIcon = this.categoryItem.icon.name;
       }
+    } else {
+			let user = this.userService.getLoggedInUser();
+			this.categoryItem.icon = user.settings.defaultIcon;
+			this.selectedIcon = this.categoryItem.icon.name;
     }
   }
 
@@ -52,19 +58,12 @@ export class CategoryDetails {
   public selectIcon() {
     let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
     modal.onDidDismiss(data => {
-      this.selectedIcon = data;
-      this.categoryItem.icon = this.icons[this.selectedIcon];
+      if(data.status) {
+        this.selectedIcon = data.selected;
+        this.categoryItem.icon = this.icons[this.selectedIcon];
+      }
     });
     modal.present();    
-  }
-
-  public previewIcon(icon: any) {
-    let alert = this.alertCtrl.create({
-      title: icon.name,
-      subTitle: `<ion-icon name="${icon.name}"></ion-icon>`,
-      buttons: ['OK']
-    });
-    alert.present();
   }
 
   addImage() {

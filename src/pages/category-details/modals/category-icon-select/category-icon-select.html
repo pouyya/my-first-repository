@@ -12,7 +12,7 @@
 </ion-header>
 
 <ion-content>
-  <icon-select [(selectedIcon)]="bufferedSelection"></icon-select>
+  <icon-select [selectedIcon]="bufferedSelection" (confirmSelection)="confirmSelection($event)" ></icon-select>
 </ion-content>
 
 <ion-footer>
