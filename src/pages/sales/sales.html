@@ -40,8 +40,7 @@
         <ion-list no-lines class="full-height no-margin sales-category">
           <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
             (click)="itemSelected(category)">
-                <sp-icon [icon]="category.icon"></sp-icon>
-                <!--<ion-icon class="category-icon "></ion-icon>-->
+                <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
               {{ category.name }}
           </button>
         </ion-list>
