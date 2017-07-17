@@ -1,4 +1,3 @@
-import { icons } from './../../metadata/itemIcons';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
