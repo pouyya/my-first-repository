@@ -19,4 +19,10 @@ export class GroupSalesTaxService extends BaseEntityService<GroupSaleTax> {
     return this.findBy({ selector: { userId } });
   }
 
+  public add(group: GroupSaleTax) {
+    let user = this.userService.getLoggedInUser();
+    group.userId = user._id;
+    return super.add(group);
+  }
+
 }

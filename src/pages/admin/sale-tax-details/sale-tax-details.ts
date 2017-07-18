@@ -38,12 +38,20 @@ export class SaleTaxDetails {
   }
 
   public upsert() {
-    this.tax.rate = Number(this.tax.rate);
-    this.salesTaxService[this.isNew ? 'add' : 'update'](this.tax).then(() => {
-      this.navCtrl.pop();
-    }).catch((error) => {
-      throw new Error(error);
-    });
+    if(this.tax && this.tax.rate) {
+      this.tax.rate = Number(this.tax.rate);
+      this.salesTaxService[this.isNew ? 'add' : 'update'](this.tax).then(() => {
+        this.navCtrl.pop();
+      }).catch((error) => {
+        throw new Error(error);
+      });
+    } else {
+      let toast = this.toastCtrl.create({
+        message: `Some fields are empty!`,
+        duration: 3000
+      });
+      toast.present();      
+    }
   }
 
   public remove() {

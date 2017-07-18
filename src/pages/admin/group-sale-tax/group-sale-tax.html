@@ -13,7 +13,7 @@
 <ion-content>
   <ion-list inset *ngFor="let group of groupSaleTaxes ; let idx = index">
     <ion-item-sliding class="sliding" cancelable=false>
-      <ion-item (click)="upsert(tax)">
+      <ion-item (click)="upsert(group)">
         <h2 class="item-title">{{group.name}}&nbsp; <small>({{ group.salesTaxes.length }} taxes)</small></h2>
       </ion-item>
     </ion-item-sliding>   
