@@ -20,7 +20,7 @@ export let userData = {
       "DBBasedEntity"
     ],
     userId: "2017-06-16T10:19:57.208Z",
-    currentStore: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
+    currentStore: "2017-07-10T04:15:39.087Z",
     currentPos: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F"
   },
   currentPos: {
@@ -31,7 +31,7 @@ export let userData = {
       "POS",
       "DBBasedEntity"
     ],
-    storeId: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
+    storeId: "2017-07-10T04:15:39.087Z",
     name: "Dixon POS Basic",
     receiptTemplate: "some template",
     number: 0,
@@ -48,30 +48,17 @@ export let userData = {
     openingNote: null
   },
   currentStore: {
-    _id: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
-    _rev: "10-28014ac32cffbfb851b32e27a4696345",
+    _id: "2017-07-10T04:15:39.087Z",
+    _rev: "7-2d1a71538ed099211621ad8e375de1fc",
     entityTypeName: "Store",
     entityTypeNames: [
       "Store",
       "DBBasedEntity"
     ],
-    name: "Dixon Barber",
-    address: "14th Street",
-    orderNumPrefix: "",
-    orderNum: "2",
-    street: "Ahmed Road",
-    suburb: "Gulshan-e-Hameed",
-    city: "Karachi",
-    postCode: "75590",
-    state: "Sindh",
-    country: "PK",
-    email: "dixon_barber@gmail.com",
-    phone: 123456789,
-    twitter: "",
-    timeZone: "Asia/Karachi",
-    supplierReturnPrefix: "",
-    supplierReturnNum: 0,
-    saleNumberPrefix: "DB",
-    saleLastNumber: 0
+    name: "Mens cuts ",
+    city: "Sydney",
+    saleLastNumber: 1,
+    saleNumberPrefix: "MC",
+    defaultSaleTaxId: "2017-07-15T05:45:00.050Z"
   }
 }
