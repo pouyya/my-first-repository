@@ -116,7 +116,6 @@ export class PaymentsPage {
       this.invoice.state = 'refund';
       this.invoice.completed = true;
       this.balance = 0;
-      // this.invoice.payments = [];
       !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
     }
   }
@@ -125,7 +124,6 @@ export class PaymentsPage {
     this.invoice.completed = true;
     this.invoice.completedAt = new Date().toISOString();
     this.invoice.state = 'completed';
-    // this.invoice.payments = [];
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
   }
