@@ -20,8 +20,8 @@ export let userData = {
       "DBBasedEntity"
     ],
     userId: "2017-06-16T10:19:57.208Z",
-    currentStore: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
-    currentPos: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F",
+    currentStore: "2017-07-18T11:40:07.245Z",
+    currentPos: "2017-07-18T11:40:52.927Z",
     defaultIcon: {
       name: "icon-barbc-barber-shop-1",
       type: "svg",
@@ -29,54 +29,36 @@ export let userData = {
     }
   },
   currentPos: {
-    _id: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F",
-    _rev: "43-e7f984b6b1533a1cecac1584ed50ac83",
-    entityTypeName: "POS",
-    entityTypeNames: [
+    "_id": "2017-07-18T11:40:52.927Z",
+    "_rev": "5-312f66a64863acca39ce9393b3f70a10",
+    "entityTypeName": "POS",
+    "entityTypeNames": [
       "POS",
       "DBBasedEntity"
     ],
-    storeId: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
-    name: "Dixon POS Basic",
-    receiptTemplate: "some template",
-    number: 0,
-    prefix: "",
-    suffix: "",
-    emailReceipt: false,
-    printReceipt: true,
-    askForNote: "",
-    printNoteOnReceipt: true,
-    showDiscount: true,
-    status: true,
-    openTime: "2017-06-18T21:45:42.195Z",
-    openingAmount: 100,
-    openingNote: null
+    "emailReceipt": false,
+    "printReceipt": true,
+    "printNoteOnReceipt": false,
+    "showDiscount": true,
+    "selectUserForNextSale": false,
+    "status": true,
+    "openingAmount": 1000,
+    "storeId": "2017-07-18T11:40:07.245Z",
+    "name": "Main Point-of-Sale",
+    "openingNote": "Opening with a thousand dollars",
+    "openTime": "2017-07-18T11:56:51.593Z"
   },
   currentStore: {
-    _id: "22CB398C-BC5F-29F0-8F6B-8DC5522C936F",
-    _rev: "10-28014ac32cffbfb851b32e27a4696345",
-    entityTypeName: "Store",
-    entityTypeNames: [
+    "_id": "2017-07-18T11:40:07.245Z",
+    "_rev": "2-e5d1f64b4a6a1b5b72f79851cde817cc",
+    "entityTypeName": "Store",
+    "entityTypeNames": [
       "Store",
       "DBBasedEntity"
     ],
-    name: "Dixon Barber",
-    address: "14th Street",
-    orderNumPrefix: "",
-    orderNum: "2",
-    street: "Ahmed Road",
-    suburb: "Gulshan-e-Hameed",
-    city: "Karachi",
-    postCode: "75590",
-    state: "Sindh",
-    country: "PK",
-    email: "dixon_barber@gmail.com",
-    phone: 123456789,
-    twitter: "",
-    timeZone: "Asia/Karachi",
-    supplierReturnPrefix: "",
-    supplierReturnNum: 0,
-    saleNumberPrefix: "DB",
-    saleLastNumber: 0
+    "saleLastNumber": 1,
+    "name": "Modern Hairdressers",
+    "saleNumberPrefix": "MHR",
+    "country": "PK"
   }
 }
