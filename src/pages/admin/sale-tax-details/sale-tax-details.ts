@@ -62,9 +62,13 @@ export class SaleTaxDetails {
           text: 'Yes',
           handler: () => {
             let tax = this.tax;
-            this.salesTaxService.delete(tax).then(() => {
+            this.salesTaxService.delete(tax).then((status) => {
+              let message = `${tax.name} has been deleted successfully`;
+              if(!status) {
+                message = `Unable to Delete! There should be atleast 1 tax present in the system`
+              }
               let toast = this.toastCtrl.create({
-                message: `${tax.name} has been deleted successfully`,
+                message: message,
                 duration: 3000
               });
               toast.present();

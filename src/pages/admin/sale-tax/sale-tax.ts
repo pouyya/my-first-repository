@@ -28,10 +28,7 @@ export class SaleTaxPage {
     this.platform.ready().then(() => {
       this.salesTaxService.getUserSalesTax().then((taxes: Array<SalesTax>) => {
         this.zone.run(() => {
-          // TODO: Don't know why but the code is also retrieving GroupSaleTex objects
-          this.salesTaxes = _.filter(taxes, (tax) => {
-            return tax.entityTypeName === 'SalesTax';
-          });
+          this.salesTaxes = taxes;
         });
       }).catch((error) => {
         throw new Error(error);
