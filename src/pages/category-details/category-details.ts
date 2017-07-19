@@ -1,48 +1,72 @@
+import { UserService } from './../../services/userService';
+import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
-import { NavController,NavParams,ViewController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
+import { icons } from './../../metadata/itemIcons';
 
 @Component({
   selector: 'page-variables',
   templateUrl: 'category-details.html'
 })
 export class CategoryDetails {
-  public categoryItem:any={};
+  public categoryItem: any = {};
   public isNew = true;
   public action = 'Add';
+  public icons: any;
+  public selectedIcon: string = "";
 
- constructor(public navCtrl: NavController, 
-    private categoryService:CategoryService,
+  constructor(public navCtrl: NavController,
+    private categoryService: CategoryService,
+    private userService: UserService,
     public navParams: NavParams,
-    private viewCtrl: ViewController) {
+    private viewCtrl: ViewController,
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController) {
+    this.icons = icons;
   }
 
-  ionViewDidLoad(){
+  ionViewDidLoad() {
     let editProduct = this.navParams.get('category');
-    console.log('Get from DB Category Items', editProduct);
-    if(editProduct){
+    if (editProduct) {
       this.categoryItem = editProduct;
       this.isNew = false;
       this.action = 'Edit';
-    }
-  } 
-
-  saveCategories(){
-   
-   console.log('Updated Category Items====',this.categoryItem);
-    if (this.isNew) {
-            this.categoryService.add(this.categoryItem)
-                .catch(console.error.bind(console));
+      if(this.categoryItem.hasOwnProperty('icon') && this.categoryItem.icon) {
+        this.selectedIcon = this.categoryItem.icon.name;
+      }
     } else {
-            this.categoryService.update(this.categoryItem)
-                .catch(console.error.bind(console));
+			let user = this.userService.getLoggedInUser();
+			this.categoryItem.icon = user.settings.defaultIcon;
+			this.selectedIcon = this.categoryItem.icon.name;
+    }
+  }
+
+  public saveCategories() {
+    if (this.isNew) {
+      this.categoryService.add(this.categoryItem)
+        .catch(console.error.bind(console));
+    } else {
+      this.categoryService.update(this.categoryItem)
+        .catch(console.error.bind(console));
     }
 
     this.navCtrl.pop();
-    
+
   }
 
-   addImage(){
-     
-   }
+  public selectIcon() {
+    let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
+    modal.onDidDismiss(data => {
+      if(data.status) {
+        this.selectedIcon = data.selected;
+        this.categoryItem.icon = this.icons[this.selectedIcon];
+      }
+    });
+    modal.present();    
+  }
+
+  addImage() {
+
+  }
 }

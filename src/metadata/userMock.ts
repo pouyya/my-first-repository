@@ -20,45 +20,45 @@ export let userData = {
       "DBBasedEntity"
     ],
     userId: "2017-06-16T10:19:57.208Z",
-    currentStore: "2017-07-10T04:15:39.087Z",
-    currentPos: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F"
+    currentStore: "2017-07-18T11:40:07.245Z",
+    currentPos: "2017-07-18T11:40:52.927Z",
+    defaultIcon: {
+      name: "icon-barbc-barber-shop-1",
+      type: "svg",
+      noOfPaths: 17
+    }
   },
   currentPos: {
-    _id: "22CB398C-BC5F-29F0-8F6B-8DC5522C945F",
-    _rev: "43-e7f984b6b1533a1cecac1584ed50ac83",
-    entityTypeName: "POS",
-    entityTypeNames: [
+    "_id": "2017-07-18T11:40:52.927Z",
+    "_rev": "5-312f66a64863acca39ce9393b3f70a10",
+    "entityTypeName": "POS",
+    "entityTypeNames": [
       "POS",
       "DBBasedEntity"
     ],
-    storeId: "2017-07-10T04:15:39.087Z",
-    name: "Dixon POS Basic",
-    receiptTemplate: "some template",
-    number: 0,
-    prefix: "",
-    suffix: "",
-    emailReceipt: false,
-    printReceipt: true,
-    askForNote: "",
-    printNoteOnReceipt: true,
-    showDiscount: true,
-    status: true,
-    openTime: "2017-06-18T21:45:42.195Z",
-    openingAmount: 100,
-    openingNote: null
+    "emailReceipt": false,
+    "printReceipt": true,
+    "printNoteOnReceipt": false,
+    "showDiscount": true,
+    "selectUserForNextSale": false,
+    "status": true,
+    "openingAmount": 1000,
+    "storeId": "2017-07-18T11:40:07.245Z",
+    "name": "Main Point-of-Sale",
+    "openingNote": "Opening with a thousand dollars",
+    "openTime": "2017-07-18T11:56:51.593Z"
   },
   currentStore: {
-    _id: "2017-07-10T04:15:39.087Z",
-    _rev: "7-2d1a71538ed099211621ad8e375de1fc",
-    entityTypeName: "Store",
-    entityTypeNames: [
+    "_id": "2017-07-18T11:40:07.245Z",
+    "_rev": "2-e5d1f64b4a6a1b5b72f79851cde817cc",
+    "entityTypeName": "Store",
+    "entityTypeNames": [
       "Store",
       "DBBasedEntity"
     ],
-    name: "Mens cuts ",
-    city: "Sydney",
-    saleLastNumber: 1,
-    saleNumberPrefix: "MC",
-    defaultSaleTaxId: "2017-07-15T05:45:00.050Z"
+    "saleLastNumber": 1,
+    "name": "Modern Hairdressers",
+    "saleNumberPrefix": "MHR",
+    "country": "PK"
   }
 }
