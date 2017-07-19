@@ -1,3 +1,4 @@
+import { PriceBookService } from './../services/priceBookService';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
@@ -172,7 +173,8 @@ const cloudSettings: CloudSettings = {
     UserService,
     UserSettingsService,
     CacheService,
-    FountainService
+    FountainService,
+    PriceBookService
   ]
 })
 export class AppModule {}

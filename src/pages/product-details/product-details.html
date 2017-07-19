@@ -22,37 +22,37 @@
     <ion-item>
       <ion-label class="item-name">SKU/Barcode:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.sku"></ion-input>
-    </ion-item>    
+    </ion-item>
     <ion-item>
       <ion-label class="item-name">TAGS:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.tag"></ion-input>
     </ion-item>
-     <ion-item>
+    <ion-item>
       <ion-label class="item-name">COUNT:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.count"></ion-input>
     </ion-item>
-     <ion-item>
-        <ion-label>CATEGORIES:</ion-label>
-        <ion-select [(ngModel)]="productItem.categoryIDs"  multiple="true">   
-          <ion-option  *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option> 
-        </ion-select>
-       
-    </ion-item>    
+    <ion-item>
+      <ion-label>CATEGORIES:</ion-label>
+      <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true">
+        <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
+      </ion-select>
+
+    </ion-item>
   </ion-list>
   <div class="insert-image">
     <p>
       <ion-label class="item-addImageLabel">ADD IMAGE</ion-label>
-      <button ion-button icon-only (click)="addImage()"><ion-icon name="camera"></ion-icon></button> 
+      <button ion-button icon-only (click)="addImage()"><ion-icon name="camera"></ion-icon></button>
     </p>
   </div>
-   <ion-list inset>
+  <ion-list inset>
     <ion-item>
       <ion-label class="item-name">EMPLOYEER:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.employeer"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">VARIANT:</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.variant" ></ion-input>
+      <ion-input type="text" [(ngModel)]="productItem.variant"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">PRICE:</ion-label>
@@ -60,17 +60,69 @@
     </ion-item>
     <ion-item>
       <ion-label class="item-name">DESCRIPTION:</ion-label>
-      <ion-textarea class="item-text" [(ngModel)]="productItem.description"></ion-textarea> 
+      <ion-textarea class="item-text" [(ngModel)]="productItem.description"></ion-textarea>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">SKU:</ion-label>
       <ion-input type="text" [(ngModel)]="productItem.sku"></ion-input>
     </ion-item>
-     <ion-item>
-       <button ion-button (click)="selectIcon()">Select Icon</button>
+    <ion-item>
+      <button ion-button (click)="selectIcon()">Select Icon</button>
       <span *ngIf="selectedIcon"><sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
-     </ion-item>    
+    </ion-item>
   </ion-list>
-    
-</ion-content> 
- 
+  <ion-grid>
+    <ion-row>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>Supply price</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.priceBook.supplyPrice" (change)="onSupplyPriceChange(defaultPriceBook)">
+          </ion-input><br/>
+          <small>Excluding Tax</small>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>x Markup (%)</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.priceBook.markup" (change)="onMarkupChange(defaultPriceBook)">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>= Retail Price</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.priceBook.retailPrice" (change)="onRetailPriceChange(defaultPriceBook)" required></ion-input>
+          <br/>
+          <small>Excluding Tax</small>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-4>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>+ Sales Tax</ion-label>
+          <ion-select [(ngModel)]="defaultPriceBook.tax" (ionChange)="onSalesTaxChange(defaultPriceBook)">
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
+          </ion-select><br/>
+          <small>Currently</small>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>= Retail Price</ion-label>
+          <ion-input type="number" 
+            [(ngModel)]="defaultPriceBook.retailPriceTax"
+            (change)="onRetailPriceTaxInclusiveChange(defaultPriceBook)">
+          </ion-input>
+          <br/>
+          <small>Including Tax</small>
+        </ion-item>
+      </ion-col>      
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
