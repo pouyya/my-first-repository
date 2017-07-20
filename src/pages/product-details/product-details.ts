@@ -1,18 +1,23 @@
+import _ from 'lodash';
+import { SalesTaxService } from './../../services/salesTaxService';
+import { SalesTax } from './../../model/salesTax';
+import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { UserService } from './../../services/userService';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, ViewController, Platform, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
 
-interface ItemPrice {
-	priceBook: PriceBook,
-	tax: any, /* Sales Tax */
-	retailPriceTax: number
+interface InteractableItemPriceInterface {
+	id: string;
+	tax: any,
+	item: PurchasableItemPriceInterface,
+	isDefault: boolean
 }
 
 @Component({
@@ -20,62 +25,152 @@ interface ItemPrice {
 })
 export class ProductDetails {
 	public productItem: Product = new Product();
-	public defaultPriceBook: ItemPrice = {
-		priceBook: new PriceBook(),
-		tax: {},
-		retailPriceTax: 0
-	};
-	public priceBooks: Array<ItemPrice> = [];
-	public salesTaxes: Array<any> = [];
+	public priceBooks: Array<InteractableItemPriceInterface> = [];
+	public salesTaxes: Array<SalesTax> = [];
 	public categories = [];
 	public isNew = true;
 	public action = 'Add';
 	public selectedIcon: string = "";
 	public icons: any;
+	public defaultPriceBook: InteractableItemPriceInterface = {
+		id: "",
+		tax: {},
+		item: {
+			id: "",
+			retailPrice: 0,
+			inclusivePrice: 0,
+			supplyPrice: 0,
+			markup: 0,
+			salesTaxId: ""
+		},
+		isDefault: false
+	};
+	private _defaultPriceBook: PriceBook;
+	private _priceBooks: Array<PriceBook>;
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
 		private categoryService: CategoryService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
+		private salesTaxService: SalesTaxService,
 		private platform: Platform,
 		private navParams: NavParams,
+		private loading: LoadingController,
 		private zone: NgZone,
 		private viewCtrl: ViewController,
 		private modalCtrl: ModalController) {
 		this.icons = icons;
-		// TODO: These will be removed with real taxes from database later
-		this.salesTaxes = [
-			{ _id: "1", name: "Default Tax", rate: 0 },
-			{ _id: "2", name: "General Sales Tax", rate: 10 },
-			{ _id: "3", name: "Super Tax", rate: 15 }
-		];
-		this.defaultPriceBook.priceBook.purchasableItemId = this.productItem._id;
-		this.defaultPriceBook.tax = this.salesTaxes[0];
 	}
 
 	ionViewDidLoad() {
-		let editProduct = this.navParams.get('item');
-		if (editProduct) {
-			this.productItem = editProduct;
-			this.isNew = false;
-			this.action = 'Edit';
-			if (this.productItem.hasOwnProperty('icon') && this.productItem.icon) {
-				this.selectedIcon = this.productItem.icon.name;
-			}
-		} else {
-			let user = this.userService.getLoggedInUser();
-			this.productItem.icon = user.settings.defaultIcon;
-			this.selectedIcon = this.productItem.icon.name;
-		}
-
 		this.platform.ready().then(() => {
-			this.categoryService.getAll().then(data => {
-				this.zone.run(() => {
-					this.categories = data;
-				});
-			})
-				.catch(console.error.bind(console));
+
+			let loader = this.loading.create({
+				content: 'Loading Screen,,,',
+			});
+
+			loader.present().then(() => {
+				let editProduct = this.navParams.get('item');
+				if (editProduct) {
+					this.productItem = editProduct;
+					this.isNew = false;
+					this.action = 'Edit';
+					if (this.productItem.hasOwnProperty('icon') && this.productItem.icon) {
+						this.selectedIcon = this.productItem.icon.name;
+					}
+				} else {
+					let user = this.userService.getLoggedInUser();
+					this.productItem.icon = user.settings.defaultIcon;
+					this.selectedIcon = this.productItem.icon.name;
+				}
+				var promises = [
+					new Promise((_resolve, _reject) => {
+						this.categoryService.getAll().then(data => {
+							_resolve(data);
+						})
+							.catch(console.error.bind(console));
+					}),
+					new Promise((_resolve, _reject) => {
+						this.salesTaxService.getUserSalesTax().then((salesTaxes: Array<SalesTax>) => {
+							_resolve(salesTaxes);
+						}).catch(error => _reject(error));
+					}),
+					new Promise((_resolve, _reject) => {
+						this.priceBookService.getDefaultPriceBook().then((priceBook: PriceBook) => {
+							_resolve(priceBook);
+						}).catch(error => _reject(error));
+					}),
+					new Promise((_resolve, _reject) => {
+						this.priceBookService.getPriceBooks().then((priceBooks: PriceBook) => {
+							_resolve(priceBooks);
+						}).catch(error => _reject(error));
+					})
+				];
+
+				Promise.all(promises).then((results: Array<any>) => {
+					this.zone.run(() => {
+						this.categories = results[0];
+						this.salesTaxes = results[1];
+						this._defaultPriceBook = results[2];
+						this._priceBooks = results[3]
+
+						if (this.isNew) {
+							this.defaultPriceBook = {
+								id: this._defaultPriceBook._id,
+								isDefault: true,
+								tax: this.salesTaxes[0],
+								item: {
+									id: "",
+									retailPrice: 0,
+									inclusivePrice: 0,
+									salesTaxId: "", // will set upon save
+									supplyPrice: 0,
+									markup: 0
+								}
+							};
+
+							this._priceBooks.forEach((priceBook: PriceBook) => {
+								this.priceBooks.push({
+									id: priceBook._id,
+									isDefault: false,
+									tax: this.salesTaxes[0],
+									item: {
+										id: "",
+										retailPrice: 0,
+										inclusivePrice: 0,
+										salesTaxId: "", // will set upon save
+										supplyPrice: 0,
+										markup: 0
+									}
+								});
+							});
+						} else {
+							let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
+							this.defaultPriceBook = {
+								id: this._defaultPriceBook._id,
+								isDefault: true,
+								tax: _.find(this.salesTaxes, { _id: productPriceBook.salesTaxId }),
+								item: productPriceBook
+							};
+
+							this._priceBooks.forEach((priceBook: PriceBook) => {
+								productPriceBook = _.find(priceBook.purchasableItems, { id: this.productItem._id });
+								this.priceBooks.push({
+									id: priceBook._id,
+									isDefault: false,
+									tax: _.find(this.salesTaxes, { _id: productPriceBook.salesTaxId }),
+									item: productPriceBook
+								});
+							});
+
+						}
+						loader.dismiss();
+
+					});
+				}).catch(console.error.bind(console));
+			});
+
 		});
 	}
 
@@ -90,54 +185,121 @@ export class ProductDetails {
 		modal.present();
 	}
 
-	public onRetailPriceChange(itemPrice: ItemPrice) {
-		itemPrice.priceBook.supplyPrice = 0;
-		itemPrice.priceBook.markup = 0;
+
+	public onRetailPriceChange(itemPrice: InteractableItemPriceInterface) {
+		itemPrice.item.supplyPrice = 0;
+		itemPrice.item.markup = 0;
 		this.onSalesTaxChange(itemPrice);
 	}
 
-	public onSupplyPriceChange(itemPrice: ItemPrice) {
-		itemPrice.priceBook.retailPrice = itemPrice.priceBook.markup > 0 ?
+	public onSupplyPriceChange(itemPrice: InteractableItemPriceInterface) {
+		itemPrice.item.retailPrice = itemPrice.item.markup > 0 ?
 			this.priceBookService.calculateRetailPriceTaxInclusive(
-				Number(itemPrice.priceBook.supplyPrice), Number(itemPrice.priceBook.markup)
-			) : Number(itemPrice.priceBook.supplyPrice);
+				Number(itemPrice.item.supplyPrice), Number(itemPrice.item.markup)
+			) : Number(itemPrice.item.supplyPrice);
 		this.onSalesTaxChange(itemPrice);
 	}
 
-	public onMarkupChange(itemPrice: ItemPrice) {
-		if (itemPrice.priceBook.supplyPrice > 0) {
-			itemPrice.priceBook.retailPrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-				Number(itemPrice.priceBook.supplyPrice), Number(itemPrice.priceBook.markup)
+	public onMarkupChange(itemPrice: InteractableItemPriceInterface) {
+		if (itemPrice.item.supplyPrice > 0) {
+			itemPrice.item.retailPrice = this.priceBookService.calculateRetailPriceTaxInclusive(
+				Number(itemPrice.item.supplyPrice), Number(itemPrice.item.markup)
 			);
 			this.onSalesTaxChange(itemPrice);
 		}
 	}
 
-	public onSalesTaxChange(itemPrice: ItemPrice) {
-		itemPrice.retailPriceTax = this.priceBookService.calculateRetailPriceTaxInclusive(
-			Number(itemPrice.priceBook.retailPrice), Number(itemPrice.tax.rate)
+	public onSalesTaxChange(itemPrice: InteractableItemPriceInterface) {
+		itemPrice.item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
+			Number(itemPrice.item.retailPrice), Number(itemPrice.tax.rate)
 		);
 	}
 
-	public onRetailPriceTaxInclusiveChange(itemPrice: ItemPrice) {
-		itemPrice.priceBook.supplyPrice = 0;
-		itemPrice.priceBook.markup = 0;
-		itemPrice.priceBook.retailPrice = this.priceBookService.calculateRetailPriceTaxExclusive(
-			Number(itemPrice.retailPriceTax), Number(itemPrice.tax.rate)
+	public onRetailPriceTaxInclusiveChange(itemPrice: InteractableItemPriceInterface) {
+		itemPrice.item.supplyPrice = 0;
+		itemPrice.item.markup = 0;
+		itemPrice.item.retailPrice = this.priceBookService.calculateRetailPriceTaxExclusive(
+			Number(itemPrice.item.inclusivePrice), Number(itemPrice.tax.rate)
 		);
 	}
 
 	saveProducts() {
 		if (this.isNew) {
-			this.productService.add(this.productItem).then(() => {
-				let priceBook = this.defaultPriceBook.priceBook;
-				priceBook.salesTaxId = this.defaultPriceBook.tax._id;
-				this.priceBookService.add(priceBook)
-					.catch(console.error.bind(console));
-			})
-				.catch(console.error.bind(console));
+			this.productService.add(this.productItem).then((res) => {
+				var promises: Array<Promise<any>> = [
+					new Promise((_resolve, _reject) => {
+						this._defaultPriceBook.purchasableItems.push({
+							id: res.id,
+							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
+							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
+							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
+							markup: Number(this.defaultPriceBook.item.markup),
+							salesTaxId: this.defaultPriceBook.tax._id
+						});
+						this.priceBookService.update(this._defaultPriceBook)
+							.then(() => _resolve()).catch(error => _reject(error));
+					}),
+					new Promise((_resolve, _reject) => {
+						let priceBookUpdate: Array<Promise<any>> = [];
+						this.priceBooks.forEach((priceBook: InteractableItemPriceInterface, index: number) => {
+							this._priceBooks[index].purchasableItems.push({
+								id: res.id,
+								retailPrice: Number(priceBook.item.retailPrice),
+								inclusivePrice: Number(priceBook.item.inclusivePrice),
+								supplyPrice: Number(priceBook.item.supplyPrice),
+								markup: Number(priceBook.item.markup),
+								salesTaxId: priceBook.tax._id
+							});
+							priceBookUpdate.push(this.priceBookService.update(this._priceBooks[index]));
+						});
+
+						Promise.all(priceBookUpdate)
+							.then(() => _resolve()).catch(error => _reject());
+					})
+				];
+
+				Promise.all(promises).catch(console.error.bind(console));
+
+			}).catch(console.error.bind(console));
 		} else {
-			this.productService.update(this.productItem)
+			this.productService.update(this.productItem).then(() => {
+				var promises: Array<Promise<any>> = [
+					new Promise((_resolve, _reject) => {
+						let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
+						this._defaultPriceBook.purchasableItems[index] = {
+							id: this.productItem._id,
+							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
+							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
+							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
+							markup: Number(this.defaultPriceBook.item.markup),
+							salesTaxId: this.defaultPriceBook.tax._id							
+						};
+
+						this.priceBookService.update(this._defaultPriceBook)
+							.then(() => _resolve()).catch(error => _reject(error));						
+					}),
+					new Promise((_resolve, _reject) => {
+						let priceBookUpdate: Array<Promise<any>> = [];
+						this.priceBooks.forEach((priceBook: InteractableItemPriceInterface, index: number) => {
+							let idx = _.findIndex(this._priceBooks[index].purchasableItems, { id: this.productItem._id })
+							this._priceBooks[index].purchasableItems[idx] = {
+								id: this.productItem._id,
+								retailPrice: Number(priceBook.item.retailPrice),
+								inclusivePrice: Number(priceBook.item.inclusivePrice),
+								supplyPrice: Number(priceBook.item.supplyPrice),
+								markup: Number(priceBook.item.markup),
+								salesTaxId: priceBook.tax._id
+							};
+							priceBookUpdate.push(this.priceBookService.update(this._priceBooks[index]));
+						});
+
+						Promise.all(priceBookUpdate)
+							.then(() => _resolve()).catch(error => _reject());
+					})					
+				];
+
+				Promise.all(promises).catch(console.error.bind(console));
+			})
 				.catch(console.error.bind(console));
 		}
 		this.navCtrl.pop();
