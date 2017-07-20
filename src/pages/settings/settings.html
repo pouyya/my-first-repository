@@ -10,19 +10,22 @@
 <ion-content padding>
   <div class="btn-container">
     <div class="custom-btn" >
-      <button ion-button block large (click)="onProducts()">PRODUCTS</button>
+      <button ion-button block large (click)="navigateTo('products')">Products</button>
     </div>
     <div class="custom-btn" >
-      <button ion-button block large (click)="onService()">SERVICES</button>
+      <button ion-button block large (click)="navigateTo('services')">Services</button>
     </div>
     <div class="custom-btn" >
-      <button ion-button block large (click)="onInventory()">CATEGORIES</button>
+      <button ion-button block large (click)="navigateTo('categories')">Categories</button>
     </div>
     <div class="custom-btn">
-      <button ion-button block large (click)="onStores()">STORES</button>
+      <button ion-button block large (click)="navigateTo('stores')">Stores</button>
     </div>
     <div class="custom-btn">
-      <button ion-button block large (click)="onEmployees()">Employees</button>
-    </div>    
+      <button ion-button block large (click)="navigateTo('employees')">Employees</button>
+    </div>
+    <div class="custom-btn">
+      <button ion-button block large (click)="navigateTo('saleTax')">Sale Tax</button>
+    </div>  
   </div>
 </ion-content>

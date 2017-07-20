@@ -9,6 +9,14 @@ export class StoreService extends BaseEntityService<Store> {
     super(Store, zone);
   }
 
+  public getDefaultTax(): Promise<any> {
+    let user = this.userService.getLoggedInUser();
+    return this.findBy({
+      selector: { _id: user.settings.currentStore },
+      fields: [ "defaultSaleTaxId" ]
+    });
+  }
+
   public update(store: Store): Promise<any> {
     return new Promise((resolve, reject) => {
       super.update(store).then(() => {

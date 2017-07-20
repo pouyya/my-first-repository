@@ -20,4 +20,5 @@ export class Store extends DBBasedEntity {
   public supplierReturnNum?: number;
   public saleNumberPrefix: string;
   public saleLastNumber: number = 0;
+  public defaultSaleTaxId: string;
 }

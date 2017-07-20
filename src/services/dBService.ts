@@ -98,7 +98,9 @@ export class DBService<T extends DBBasedEntity> {
             });
     }
 
-    findBy(selector) {
+    findBy(selector: any) {
+        var entityTypeName = (new this.entityType()).entityTypeName;
+        selector.entityTypeName = entityTypeName;
         return this._db.find(selector)
             .then(docs => { return docs.docs; });
     }

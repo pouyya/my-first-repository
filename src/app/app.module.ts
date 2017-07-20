@@ -1,5 +1,11 @@
 import { PriceBookService } from './../services/priceBookService';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
+import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details/group-sale-tax-details';
+import { GroupSalesTaxService } from './../services/groupSalesTaxService';
+import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
+import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
+import { SalesTaxService } from './../services/salesTaxService';
+import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -101,6 +107,10 @@ const cloudSettings: CloudSettings = {
     SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
+    SaleTaxPage,
+    SaleTaxDetails,
+    GroupSaleTaxPage,
+    GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     KeysPipe
   ],
@@ -152,6 +162,10 @@ const cloudSettings: CloudSettings = {
     SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
+    SaleTaxPage,
+    SaleTaxDetails,
+    GroupSaleTaxPage,
+    GroupSaleTaxDetailsPage,
     CategoryIconSelectModal
   ],
   providers: [
@@ -174,7 +188,9 @@ const cloudSettings: CloudSettings = {
     UserSettingsService,
     CacheService,
     FountainService,
-    PriceBookService
+    PriceBookService,
+    SalesTaxService,
+    GroupSalesTaxService
   ]
 })
 export class AppModule {}

@@ -6,6 +6,8 @@ import { Store } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
+import { SalesTax } from './../../model/salesTax';
+import { SalesTaxService } from './../../services/salesTaxService';
 
 @Component({
 	templateUrl: 'store-details.html',
@@ -16,12 +18,14 @@ export class StoreDetailsPage {
 	public action: string = 'Add';
 	public registers: Array<POS> = [];
 	public countries: Array<any> = [];
+	public salesTaxes: Array<SalesTax> = [];
 
 	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
+		private navCtrl: NavController,
+		private navParams: NavParams,
 		private platform: Platform,
 		private storeService: StoreService,
+		private salesTaxService: SalesTaxService,
 		private posService: PosService,
 		private loading: LoadingController,
 		private toastCtrl: ToastController,
@@ -29,45 +33,57 @@ export class StoreDetailsPage {
 	}
 
 	ionViewDidEnter() {
-	  let loader = this.loading.create({
-      content: 'Loading Store...'
-    });
+		let loader = this.loading.create({
+			content: 'Loading Store...'
+		});
 
-    loader.present().then(() => {
-      var storePromise = new Promise((resolve, reject) => {
-        let store = this.navParams.get('store');
-        if (store) {
-          this.item = store;
-          this.isNew = false;
-          this.action = 'Edit';
+		loader.present().then(() => {
+			let promises: Array<Promise<any>> = [
+				// load store data
+				new Promise((resolve, reject) => {
+					let store = this.navParams.get('store');
+					if (store) {
+						this.item = store;
+						this.isNew = false;
+						this.action = 'Edit';
 
-          // load registers/POS
-          this.posService.findBy({ selector: { storeId: this.item._id } }).then((registers) => {
-            if(registers && registers.length) {
-              this.registers = registers;
-            }
-            resolve();
-          }).catch((error) => {
-            reject(new Error(error));
-          });
-        } else {
-          resolve();
-        }
-      });
+						// load registers/POS
+						this.posService.findBy({ selector: { storeId: this.item._id } }).then((registers) => {
+							if (registers && registers.length) {
+								this.registers = registers;
+							}
+							resolve();
+						}).catch((error) => {
+							reject(new Error(error));
+						});
+					} else {
+						resolve();
+					}
+				}),
+				// load countries list
+				new Promise((resolve, reject) => {
+					this.http.get('assets/countries.json')
+						.subscribe(res => {
+							this.countries = res.json();
+							resolve();
+						});
+				}),
+				// load sales tax
+				new Promise((resolve, reject) => {
+					this.salesTaxService.getUserSalesTax().then((taxes: Array<SalesTax>) => {
+						this.salesTaxes = taxes;
+						resolve();
+					}).catch((error) => {
+						resolve(error);
+					});
+				})
+			];
 
-      var countriesPromise = new Promise((resolve, reject) => {
-        this.http.get('assets/countries.json')
-            .subscribe(res => {
-              this.countries = res.json();
-              resolve();
-            });
-      });
+			Promise.all(promises).then(function () {
+				loader.dismiss();
+			});
 
-      Promise.all([storePromise, countriesPromise]).then(function () {
-        loader.dismiss();
-      });
-
-    });
+		});
 	}
 
 	onSubmit() {
@@ -98,12 +114,12 @@ export class StoreDetailsPage {
 
 	public remove() {
 		this.storeService.delete(this.item).then(() => {
-      let toast = this.toastCtrl.create({
-        message: 'Store has been deleted successfully',
-        duration: 3000
-      });
-      toast.present();
-      this.navCtrl.pop();			
+			let toast = this.toastCtrl.create({
+				message: 'Store has been deleted successfully',
+				duration: 3000
+			});
+			toast.present();
+			this.navCtrl.pop();
 		})
 	}
 }

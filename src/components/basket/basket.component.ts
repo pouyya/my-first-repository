@@ -51,7 +51,11 @@ export class BasketComponent {
     private modalCtrl: ModalController,
     private navCtrl: NavController
   ) {
-    this.tax = this.taxService.getTax();
+    this.taxService._init().then(() => {
+      this.tax = this.taxService.getTax();
+    }).catch(error => {
+      throw new Error(error);
+    });
   }
 
   private setBalance() {
