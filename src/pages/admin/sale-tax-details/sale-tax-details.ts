@@ -38,7 +38,7 @@ export class SaleTaxDetails {
   }
 
   public upsert() {
-    if(this.tax && this.tax.rate) {
+    if (this.tax && this.tax.rate) {
       this.tax.rate = Number(this.tax.rate);
       this.salesTaxService[this.isNew ? 'add' : 'update'](this.tax).then(() => {
         this.navCtrl.pop();
@@ -50,7 +50,7 @@ export class SaleTaxDetails {
         message: `Some fields are empty!`,
         duration: 3000
       });
-      toast.present();      
+      toast.present();
     }
   }
 
@@ -62,20 +62,26 @@ export class SaleTaxDetails {
           text: 'Yes',
           handler: () => {
             let tax = this.tax;
-            this.salesTaxService.delete(tax).then((status) => {
-              let message = `${tax.name} has been deleted successfully`;
-              if(!status) {
-                message = `Unable to Delete! There should be atleast 1 tax present in the system`
-              }
-              let toast = this.toastCtrl.create({
-                message: message,
-                duration: 3000
+
+            this.salesTaxService.removeSalesTaxFromGroups(tax).then(() => {
+              this.salesTaxService.delete(tax).then((status) => {
+                let message = `${tax.name} has been deleted successfully`;
+                if (!status) {
+                  message = `Unable to Delete! There should be atleast 1 tax present in the system`
+                }
+                let toast = this.toastCtrl.create({
+                  message: message,
+                  duration: 3000
+                });
+                toast.present();
+                this.navCtrl.pop();
+              }).catch(error => {
+                throw new Error(error);
               });
-              toast.present();
-              this.navCtrl.pop();
-            }).catch(error => {
+            }).catch((error) => {
               throw new Error(error);
-            });            
+            });
+
           }
         }, 'No'
       ]

@@ -8,24 +8,18 @@
 </ion-header>
 
 <ion-content padding>
-  <div class="btn-container">
-    <div class="custom-btn" >
-      <button ion-button block large (click)="navigateTo('products')">Products</button>
-    </div>
-    <div class="custom-btn" >
-      <button ion-button block large (click)="navigateTo('services')">Services</button>
-    </div>
-    <div class="custom-btn" >
-      <button ion-button block large (click)="navigateTo('categories')">Categories</button>
-    </div>
-    <div class="custom-btn">
-      <button ion-button block large (click)="navigateTo('stores')">Stores</button>
-    </div>
-    <div class="custom-btn">
-      <button ion-button block large (click)="navigateTo('employees')">Employees</button>
-    </div>
-    <div class="custom-btn">
-      <button ion-button block large (click)="navigateTo('saleTax')">Sale Tax</button>
-    </div>  
-  </div>
+  <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">Tax Default</ion-label>
+        <ion-select [(ngModel)]="selectedTax" name="salesTax" (ionChange)="onTaxChange($event)">
+          <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{tax.name}} (%{{tax.rate}})</ion-option>
+        </ion-select>      
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Tax Type</ion-label>
+        <ion-select [(ngModel)]="selectedType" name="taxType" (ionChange)="onTaxTypeChange($event)">
+          <ion-option [value]="type._id" *ngFor="let type of taxTypes">{{type.type}}</ion-option>
+        </ion-select>      
+    </ion-item>
+  </ion-list>
 </ion-content>

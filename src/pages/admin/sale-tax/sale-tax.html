@@ -1,26 +1,29 @@
 <ion-header>
   <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title style="text-Align:center">General Sales Tax</ion-title>
-  <ion-buttons end>
-    <button ion-button icon-only (click)="upsert()">
+    <ion-buttons end>
+      <button ion-button icon-only (click)="upsert()">
       <ion-icon name="add"></ion-icon>
     </button>
-  </ion-buttons>
-    
+    </ion-buttons>
+
   </ion-navbar>
 </ion-header>
 
 <ion-content>
   <div class="btn-container">
-    <div class="custom-btn" >
+    <div class="custom-btn">
       <button ion-button block large (click)="gotoGroupSalesTax()">Group Sales Tax</button>
     </div>
-  </div>      
+  </div>
   <ion-list inset *ngFor="let tax of salesTaxes ; let idx = index">
     <ion-item-sliding class="sliding" cancelable=false>
       <ion-item (click)="upsert(tax)">
         <h2 class="item-title">{{tax.name}}</h2>
       </ion-item>
-    </ion-item-sliding>   
-  </ion-list> 
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>

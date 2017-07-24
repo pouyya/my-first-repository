@@ -1,3 +1,4 @@
+import { AppSettingsService } from './../services/appSettingsService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -192,7 +193,8 @@ const cloudSettings: CloudSettings = {
     FountainService,
     PriceBookService,
     SalesTaxService,
-    GroupSalesTaxService
+    GroupSalesTaxService,
+    AppSettingsService
   ]
 })
 export class AppModule {}

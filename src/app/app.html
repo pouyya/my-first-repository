@@ -5,6 +5,11 @@
       <ion-title>Simple Cuts</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-header *ngIf="moduleName == 'SettingsModule'">
+    <ion-toolbar>
+      <ion-title>Settings</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
   <ion-header *ngIf="moduleName == 'SalesModule'">
     <ion-toolbar>

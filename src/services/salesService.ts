@@ -48,7 +48,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @return {BucketItem}
 	 */
 	public prepareBucketItem(item: any): BucketItem {
-		let inclTax = this._user.settings.includeItemTax;
+		let inclTax = this._user.settings.taxType;
 
 		let bucketItem = new BucketItem();
 		bucketItem._id = item._id;

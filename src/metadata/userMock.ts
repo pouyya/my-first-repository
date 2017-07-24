@@ -27,6 +27,8 @@ export let userData = {
       type: "svg",
       noOfPaths: 17
     },
+    defaultTax: "2017-07-19T07:24:26.941Z",
+    taxType: "0",
     includeItemTax: true
   },
   currentPos: {

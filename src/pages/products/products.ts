@@ -3,6 +3,10 @@ import { NavController, AlertController, Platform} from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { ProductDetails } from '../product-details/product-details';
 
+import { PageModule } from './../../metadata/pageModule';
+import { SalesTaxModule } from './../../modules/salesTaxModule';
+
+@PageModule(() => SalesTaxModule)
 @Component({
   templateUrl: 'products.html'
 })
