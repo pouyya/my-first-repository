@@ -13,7 +13,7 @@
     <!-- Price -->
     <ion-col col-md-4>
       <ion-item item-content>
-        <ion-label color="primary" stacked>Price</ion-label>
+        <ion-label color="primary" stacked>Price <small *ngIf="item.priceBook && item.priceBook.isTaxIncl">({{item.tax.rate}}% Tax Incl.)</small></ion-label>
         <ion-input type="text" [disabled]="item.quantity < 0" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
         </ion-input>
       </ion-item>

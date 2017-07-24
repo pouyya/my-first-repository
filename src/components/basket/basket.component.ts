@@ -79,10 +79,10 @@ export class BasketComponent {
     });
   }
 
-  public addItemToBasket(item: PurchasableItem) {
+  public addItemToBasket(item: any) {
     var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.price));
     if(index === -1) {
-      let bucketItem = this.salesService.prepareBucketItem(item);
+      let bucketItem: BucketItem = this.salesService.prepareBucketItem(item);
       this.invoice.items.push(bucketItem);
     } else {
       this.invoice.items[index].quantity++;

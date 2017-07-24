@@ -33,7 +33,7 @@ export class CalculatorService {
    * @param price {Number}
    */
   public calcItemDiscount(discount: number, price: number) {
-    return price - ((discount / 100) * price);
+    return discount > 0 ?  price - ((discount / 100) * price) : price;
   }
 
   /**

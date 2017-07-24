@@ -1,3 +1,4 @@
+import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
@@ -14,6 +15,9 @@ import { PosService } from "./posService";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
+
+	private _user: any;
+
 	constructor(
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
@@ -21,10 +25,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private posService: PosService,
 		private helperService: HelperService,
 		private fountainService: FountainService,
+		private userService: UserService,
 		private zone: NgZone,
-		private cacheService: CacheService 
+		private cacheService: CacheService
 	) {
 		super(Sale, zone);
+		this._user = this.userService.getLoggedInUser();
 	}
 
 	/**
@@ -41,21 +47,27 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param item {PurchasableItem}
 	 * @return {BucketItem}
 	 */
-	public prepareBucketItem(item: PurchasableItem): BucketItem {
+	public prepareBucketItem(item: any): BucketItem {
+		let inclTax = this._user.settings.includeItemTax;
+
 		let bucketItem = new BucketItem();
 		bucketItem._id = item._id;
 		item._rev && (bucketItem._rev = item._rev);
 		bucketItem.name = item.name;
-		bucketItem.actualPrice = typeof item.price != 'number' ?
-			parseInt(item.price) : item.price;
+		bucketItem.tax = item.tax;
+		bucketItem.priceBook = item.priceBook;
+		bucketItem.actualPrice = item.priceBook.retailPrice;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;
-		bucketItem.finalPrice = bucketItem.discount > 0 ?
+		let discountedPrice = bucketItem.discount > 0 ?
 			this.calcService.calcItemDiscount(
 				bucketItem.discount,
 				bucketItem.actualPrice
 			) :
 			bucketItem.actualPrice;
+		bucketItem.finalPrice = inclTax ? this.taxService.calculate(discountedPrice, item.tax.rate) :
+			discountedPrice;
+		bucketItem.isTaxIncl = inclTax;
 
 		return bucketItem;
 	}
@@ -69,7 +81,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
 		return new Promise((resolve, reject) => {
 			if (posId) {
-				this.findBy({ selector: { _id: id, posID: posId, state: { $in: [ 'current', 'refund' ] } }, include_docs: true })
+				this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
 					.then(
 					docs => {
 						if (docs && docs.length > 0) {
@@ -143,7 +155,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				selector: { posID: posId }
 			};
 			_.each(options, (value, key) => {
-				if(value) {
+				if (value) {
 					query.selector[key] = _.isArray(value) ? { $in: value } : value;
 				}
 			});
@@ -152,8 +164,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 			var countQuery = { ...query };
 			query.limit = limit;
 			query.offset = offset;
-			query.sort = [{_id: 'desc'}];
-			
+			query.sort = [{ _id: 'desc' }];
+
 			var promises: Array<Promise<any>> = [
 				new Promise((_resolve, _reject) => {
 					this.findBy(countQuery).then((data) => _resolve(data.length));
@@ -170,12 +182,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public manageInvoiceId(invoice: Sale) {
-    if(invoice.items.length > 0) {
-      let invoiceId = localStorage.getItem('invoice_id');
-      invoiceId != invoice._id && (localStorage.setItem('invoice_id', invoice._id));
-    } else {
-      localStorage.removeItem('invoice_id');
-    }
+		if (invoice.items.length > 0) {
+			let invoiceId = localStorage.getItem('invoice_id');
+			invoiceId != invoice._id && (localStorage.setItem('invoice_id', invoice._id));
+		} else {
+			localStorage.removeItem('invoice_id');
+		}
 	}
 
 	public instantiateRefundSale(originalSale: Sale): Sale {
@@ -184,9 +196,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.posID = originalSale.posID;
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {
-      item.quantity > 0 && (item.quantity *= -1);
-      return item;
-    });
+			item.quantity > 0 && (item.quantity *= -1);
+			return item;
+		});
 		sale.completed = false;
 		sale.customerName = originalSale.customerName;
 		sale.state = 'refund';
@@ -212,6 +224,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 			sale.taxTotal = 0;
 			sale.round = 0;
 			sale.totalDiscount = 0;
-		}	
+		}
 	}
 }

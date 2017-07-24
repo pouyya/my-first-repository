@@ -26,7 +26,8 @@ export let userData = {
       name: "icon-barbc-barber-shop-1",
       type: "svg",
       noOfPaths: 17
-    }
+    },
+    includeItemTax: true
   },
   currentPos: {
     "_id": "2017-07-18T11:40:52.927Z",

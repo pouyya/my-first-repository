@@ -115,7 +115,9 @@ export class ProductDetails {
 						this._defaultPriceBook = results[2];
 						this._priceBooks = results[3]
 
-						if (this.isNew) {
+						let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
+
+						if (!productPriceBook) {
 							this.defaultPriceBook = {
 								id: this._defaultPriceBook._id,
 								isDefault: true,
@@ -146,7 +148,6 @@ export class ProductDetails {
 								});
 							});
 						} else {
-							let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 							this.defaultPriceBook = {
 								id: this._defaultPriceBook._id,
 								isDefault: true,
@@ -266,7 +267,7 @@ export class ProductDetails {
 				var promises: Array<Promise<any>> = [
 					new Promise((_resolve, _reject) => {
 						let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
-						this._defaultPriceBook.purchasableItems[index] = {
+						let dBuffer = {
 							id: this.productItem._id,
 							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
 							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
@@ -274,15 +275,18 @@ export class ProductDetails {
 							markup: Number(this.defaultPriceBook.item.markup),
 							salesTaxId: this.defaultPriceBook.tax._id							
 						};
+						
+						index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer : 
+						this._defaultPriceBook.purchasableItems.push(dBuffer);
 
 						this.priceBookService.update(this._defaultPriceBook)
-							.then(() => _resolve()).catch(error => _reject(error));						
+							.then(() => _resolve()).catch(error => _reject(error));			
 					}),
 					new Promise((_resolve, _reject) => {
 						let priceBookUpdate: Array<Promise<any>> = [];
 						this.priceBooks.forEach((priceBook: InteractableItemPriceInterface, index: number) => {
-							let idx = _.findIndex(this._priceBooks[index].purchasableItems, { id: this.productItem._id })
-							this._priceBooks[index].purchasableItems[idx] = {
+							let idx = _.findIndex(this._priceBooks[index].purchasableItems, { id: this.productItem._id });
+							let dBuffer = {
 								id: this.productItem._id,
 								retailPrice: Number(priceBook.item.retailPrice),
 								inclusivePrice: Number(priceBook.item.inclusivePrice),
@@ -290,6 +294,9 @@ export class ProductDetails {
 								markup: Number(priceBook.item.markup),
 								salesTaxId: priceBook.tax._id
 							};
+							idx > -1 ? this._priceBooks[index].purchasableItems[idx] = dBuffer :
+							this._priceBooks[index].purchasableItems.push(dBuffer);
+
 							priceBookUpdate.push(this.priceBookService.update(this._priceBooks[index]));
 						});
 

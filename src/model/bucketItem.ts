@@ -1,3 +1,6 @@
+import { SalesTax } from './salesTax';
+import { PriceBook } from './priceBook';
+
 export class BucketItem {
   _id: string;
   _rev?: string;
@@ -7,4 +10,7 @@ export class BucketItem {
   actualPrice: number;
   finalPrice: number;
   notes: string;
+  priceBook?: PriceBook;
+  tax: SalesTax;
+  isTaxIncl: boolean;
 }

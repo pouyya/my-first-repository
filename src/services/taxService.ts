@@ -29,7 +29,8 @@ export class TaxService {
     return this.tax;
   }
 
-  public calculate(price: number): number {
-    return this.tax > 0 ? price + ((this.tax / 100) * price) : price;
+  public calculate(price: number, tax?: number): number {
+    let _tax = tax != undefined ? tax : this.tax;
+    return _tax > 0 ? price + ((_tax / 100) * price) : price;
   }
 }

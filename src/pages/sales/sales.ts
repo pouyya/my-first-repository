@@ -1,3 +1,9 @@
+import { SalesTax } from './../../model/salesTax';
+import { SalesTaxService } from './../../services/salesTaxService';
+import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
+import _ from 'lodash';
+import { PriceBookService } from './../../services/priceBookService';
+import { PriceBook } from './../../model/priceBook';
 import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -33,12 +39,17 @@ export class Sales {
   public doRefund: boolean;
   public icons: any;
   private invoiceParam: any;
+  private priceBook: PriceBook;
+  private salesTaxes: Array<SalesTax>;
+  private user: any;
 
   constructor(
-    public navCtrl: NavController,
-    public modalCtrl: ModalController,
+    private navCtrl: NavController,
+    private modalCtrl: ModalController,
     private salesService: SalesServices,
     private categoryService: CategoryService,
+    private priceBookService: PriceBookService,
+    private salesTaxService: SalesTaxService,
     private alertController: AlertController,
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
@@ -60,6 +71,7 @@ export class Sales {
 
       var posPromise = new Promise((resolve, reject) => {
         var user = this.userService.getLoggedInUser();
+        this.user = user;
         this.register = user.currentPos;
         if (this.register.status) {
           this.initSalePageData().then(() => resolve()).catch((error) => {
@@ -112,7 +124,10 @@ export class Sales {
 
   // Event
   public onSelect(item: PurchasableItem) {
-    this.basketComponent.addItemToBasket(item);
+    let interactableItem: any = { ...item, tax: null, priceBook: null };
+    interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id  }) as any;
+    interactableItem.tax = _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId  });
+    this.basketComponent.addItemToBasket(interactableItem);
   }
 
   // Event
@@ -137,6 +152,8 @@ export class Sales {
   private initSalePageData(): Promise<any> {
     return new Promise((resolve, reject) => {
       var promises: Array<Promise<any>> = [
+
+        // load invoice data
         new Promise((resolveA, rejectA) => {
           if (this.invoiceParam) {
             this.doRefund = this.navParams.get('doRefund');
@@ -151,6 +168,24 @@ export class Sales {
               .catch((error) => rejectA(error));
           }
         }),
+
+        // load salesTax
+        new Promise((resolveA, resolveB) => {
+          this.salesTaxService.getUserSalesTax().then((salesTax: Array<SalesTax>) => {
+            this.salesTaxes = salesTax;
+            resolve();
+          }).catch(error => reject(error));
+        }),
+
+        // load priceBook
+        new Promise((resolveA, rejectA) => {
+          this.priceBookService.getPriceBookByCriteria().then((priceBook: PriceBook) => {
+            this.priceBook = priceBook;
+            resolveA();
+          }).catch(error => rejectA(error));
+        }),
+
+        // Load Categories and Associated Purcshable Items
         new Promise((resolveA, rejectA) => {
           this.categoryService.getAll()
             .then((categories) => {

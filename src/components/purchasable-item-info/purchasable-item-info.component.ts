@@ -1,3 +1,4 @@
+import { TaxService } from './../../services/taxService';
 import { CalculatorService } from './../../services/calculatorService';
 import { HelperService } from './../../services/helperService';
 import { BucketItem } from './../../model/bucketItem';
@@ -13,17 +14,21 @@ export class PurchasableItemInfoComponent {
 
   constructor(
     private helperService: HelperService,
-    private calcService: CalculatorService
+    private calcService: CalculatorService,
+    private taxService: TaxService
   ) { }
 
   public calculateDiscount(item: BucketItem) {
     item.discount = this.helperService.round2Dec(item.discount);
-    item.finalPrice = item.discount > 0 ?
+    let actualPrice = item.discount > 0 ?
       this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
       item.actualPrice;
+    item.finalPrice = item.isTaxIncl ? this.taxService.calculate(actualPrice, item.tax.rate) : actualPrice;
   }
 
   public updatePrice(item: BucketItem) {
+    item.finalPrice = Number(item.finalPrice);
+    item.finalPrice = item.isTaxIncl ? this.taxService.calculate(item.finalPrice, item.tax.rate) : item.finalPrice;
     item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
   }
 
