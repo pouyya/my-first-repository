@@ -67,7 +67,7 @@ export class ProductDetails {
 		this.platform.ready().then(() => {
 
 			let loader = this.loading.create({
-				content: 'Loading Screen,,,',
+				content: 'Loading Product...',
 			});
 
 			loader.present().then(() => {
@@ -84,12 +84,10 @@ export class ProductDetails {
 					this.productItem.icon = user.settings.defaultIcon;
 					this.selectedIcon = this.productItem.icon.name;
 				}
-				var promises = [
+				var promises: Array<Promise<any>> = [
 					new Promise((_resolve, _reject) => {
-						this.categoryService.getAll().then(data => {
-							_resolve(data);
-						})
-							.catch(console.error.bind(console));
+						this.categoryService.getAll().then(data => _resolve(data))
+							.catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
 						this.salesTaxService.getUserSalesTax().then((salesTaxes: Array<SalesTax>) => {
@@ -302,7 +300,7 @@ export class ProductDetails {
 
 						Promise.all(priceBookUpdate)
 							.then(() => _resolve()).catch(error => _reject());
-					})					
+					})
 				];
 
 				Promise.all(promises).catch(console.error.bind(console));
