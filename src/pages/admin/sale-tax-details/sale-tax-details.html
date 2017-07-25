@@ -5,7 +5,7 @@
       <button ion-button icon-only (click)="upsert()">
         save
       </button>
-      <button *ngIf="!isNew" ion-button icon-only (click)="remove()">
+      <button *ngIf="!isNew && !tax.isDefault" ion-button icon-only (click)="remove()">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
@@ -20,8 +20,8 @@
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Rate %</ion-label>
-      <ion-input type="text" [(ngModel)]="tax.rate"></ion-input>
+      <ion-input type="number" min="0" [(ngModel)]="tax.rate"></ion-input>
     </ion-item>
-  </ion-list>    
+  </ion-list>
 </ion-content> 
  

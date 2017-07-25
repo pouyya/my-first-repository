@@ -24,7 +24,7 @@ export class GroupSaleTaxPage {
 
   ionViewDidEnter() {
     this.platform.ready().then(() => {
-      this.groupSalesTaxService.getForUser().then((groups: Array<GroupSaleTax>) => {
+      this.groupSalesTaxService.getAll().then((groups: Array<GroupSaleTax>) => {
         this.zone.run(() => {
           // TODO: Don't know why but the code is also retrieving SaleTex objects
           this.groupSaleTaxes = _.filter(groups, (group) => {

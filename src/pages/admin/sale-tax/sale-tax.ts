@@ -29,7 +29,7 @@ export class SaleTaxPage {
 
   ionViewDidEnter() {
     this.platform.ready().then(() => {
-      this.salesTaxService.getUserSalesTax().then((taxes: Array<SalesTax>) => {
+      this.salesTaxService.getAll().then((taxes: Array<SalesTax>) => {
         this.zone.run(() => {
           this.salesTaxes = taxes;
         });

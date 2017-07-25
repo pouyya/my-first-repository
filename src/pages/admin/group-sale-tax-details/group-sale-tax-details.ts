@@ -61,7 +61,10 @@ export class GroupSaleTaxDetailsPage {
         if(!this.isNew && this.groupSalesTax.salesTaxes.length > 0) {
           this.salesTaxes = this.salesTaxes.map((tax) => {
             let item = _.find(this.groupSalesTax.salesTaxes, { _id: tax._id  });
-            item && ( tax.checked = true  );
+            if(item) {
+              tax.checked = true;
+              this.selectedSalesTaxes.push(tax);
+            }
             return tax;
           })
         }

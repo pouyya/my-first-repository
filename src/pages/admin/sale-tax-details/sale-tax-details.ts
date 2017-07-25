@@ -12,6 +12,7 @@ export class SaleTaxDetails {
   public tax: SalesTax;
   public isNew: boolean;
   public action: string;
+  private isDefault: boolean;
 
   constructor(
     private platform: Platform,
@@ -34,6 +35,7 @@ export class SaleTaxDetails {
         this.isNew = false;
         this.action = 'Edit';
       }
+      this.isDefault = this.tax.isDefault;
     }).catch(console.error.bind(console));
   }
 
@@ -64,13 +66,9 @@ export class SaleTaxDetails {
             let tax = this.tax;
 
             this.salesTaxService.removeSalesTaxFromGroups(tax).then(() => {
-              this.salesTaxService.delete(tax).then((status) => {
-                let message = `${tax.name} has been deleted successfully`;
-                if (!status) {
-                  message = `Unable to Delete! There should be atleast 1 tax present in the system`
-                }
+              this.salesTaxService.delete(tax).then(() => {
                 let toast = this.toastCtrl.create({
-                  message: message,
+                  message: `${tax.name} has been deleted successfully`,
                   duration: 3000
                 });
                 toast.present();

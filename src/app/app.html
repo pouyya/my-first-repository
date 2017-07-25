@@ -10,6 +10,11 @@
       <ion-title>Settings</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-header *ngIf="moduleName == 'SalesTaxModule'">
+    <ion-toolbar>
+      <ion-title>Sales Tax</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
   <ion-header *ngIf="moduleName == 'SalesModule'">
     <ion-toolbar>

@@ -18,7 +18,6 @@ export class StoreDetailsPage {
 	public action: string = 'Add';
 	public registers: Array<POS> = [];
 	public countries: Array<any> = [];
-	public salesTaxes: Array<SalesTax> = [];
 
 	constructor(
 		private navCtrl: NavController,
@@ -67,15 +66,6 @@ export class StoreDetailsPage {
 							this.countries = res.json();
 							resolve();
 						});
-				}),
-				// load sales tax
-				new Promise((resolve, reject) => {
-					this.salesTaxService.getUserSalesTax().then((taxes: Array<SalesTax>) => {
-						this.salesTaxes = taxes;
-						resolve();
-					}).catch((error) => {
-						resolve(error);
-					});
 				})
 			];
 
