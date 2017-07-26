@@ -8,7 +8,7 @@ export class SalesModule  implements ModuleBase {
   public pages: Array<any> = [
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Open/Close', icon: 'bookmarks', component: OpenCloseRegister },
-    { title: 'Back Office', icon: 'build', component: HomePage },
-    { title: 'Sales History', icon: 'cash', component: SalesHistoryPage }
+    { title: 'Sales History', icon: 'cash', component: SalesHistoryPage },
+    { title: 'Back Office', icon: 'build', component: HomePage }
   ];
 }

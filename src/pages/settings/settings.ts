@@ -21,7 +21,7 @@ export class Settings {
   public defaultTax: string;
   public setting: AppSettings;
   public taxTypes: Array<any> = [];
-  public selectedType: string;
+  public selectedType: boolean;
   public selectedTax: string;
   private oldTax: any;
 
@@ -35,8 +35,8 @@ export class Settings {
     private toast: ToastController
   ) {
     this.taxTypes = [
-      { _id: "0", type: 'Tax Exclusive' },
-      { _id: "1", type: 'Tax Inclusive' }
+      { _id: false, type: 'Tax Exclusive' },
+      { _id: true, type: 'Tax Inclusive' }
     ]
   }
 

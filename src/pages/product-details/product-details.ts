@@ -47,6 +47,7 @@ export class ProductDetails {
 	};
 	private _defaultPriceBook: PriceBook;
 	private _priceBooks: Array<PriceBook>;
+	private _user: any;
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -72,6 +73,7 @@ export class ProductDetails {
 
 			loader.present().then(() => {
 				let editProduct = this.navParams.get('item');
+				this._user = this.userService.getLoggedInUser();
 				if (editProduct) {
 					this.productItem = editProduct;
 					this.isNew = false;
@@ -80,8 +82,7 @@ export class ProductDetails {
 						this.selectedIcon = this.productItem.icon.name;
 					}
 				} else {
-					let user = this.userService.getLoggedInUser();
-					this.productItem.icon = user.settings.defaultIcon;
+					this.productItem.icon = this._user.settings.defaultIcon;
 					this.selectedIcon = this.productItem.icon.name;
 				}
 				var promises: Array<Promise<any>> = [
@@ -90,7 +91,13 @@ export class ProductDetails {
 							.catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.salesTaxService.getUserSalesTax().then((salesTaxes: Array<SalesTax>) => {
+						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: SalesTax) => {
+							salesTax.name = "Account Sales Tax (Default)";
+							_resolve(salesTax);
+						}).catch(error => _reject(error));
+					}),
+					new Promise((_resolve, _reject) => {
+						this.salesTaxService.getAll().then((salesTaxes: Array<SalesTax>) => {
 							_resolve(salesTaxes);
 						}).catch(error => _reject(error));
 					}),
@@ -109,9 +116,10 @@ export class ProductDetails {
 				Promise.all(promises).then((results: Array<any>) => {
 					this.zone.run(() => {
 						this.categories = results[0];
-						this.salesTaxes = results[1];
-						this._defaultPriceBook = results[2];
-						this._priceBooks = results[3]
+						this.salesTaxes.push(results[1]);
+						this.salesTaxes =  this.salesTaxes.concat(results[2]);
+						this._defaultPriceBook = results[3];
+						this._priceBooks = results[4];
 
 						let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
