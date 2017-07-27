@@ -6,5 +6,5 @@ export interface PurchasableItemPriceInterface {
   supplyPrice: number;
   markup: number
   salesTaxId: string;
-
+  saleTaxEntity?: string;
 }

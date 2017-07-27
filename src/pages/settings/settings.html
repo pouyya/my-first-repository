@@ -12,7 +12,7 @@
     <ion-item>
       <ion-label class="item-name">Tax Default</ion-label>
         <ion-select [(ngModel)]="selectedTax" name="salesTax" (ionChange)="makeItDefault($event)">
-          <ion-option [value]="tax.model._id" *ngFor="let tax of salesTaxes">{{tax.model.name}} ({{ tax.noOfTaxes ? tax.noOfTaxes + ' taxes' : '%'+tax.model.rate  }})</ion-option>
+          <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{tax.name}} ({{ tax.noOfTaxes ? tax.noOfTaxes + ' taxes' : '%'+tax.rate  }})</ion-option>
         </ion-select>      
     </ion-item>
     <ion-item>

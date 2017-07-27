@@ -1,3 +1,4 @@
+import { AppSettingsService } from './../../services/appSettingsService';
 import { SalesTax } from './../../model/salesTax';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
@@ -55,7 +56,8 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private userService: UserService
+    private userService: UserService,
+    private appSettingsService: AppSettingsService
   ) {
     this.doRefund = false;
     this.invoiceParam = this.navParams.get('invoice');
@@ -154,45 +156,45 @@ export class Sales {
       var promises: Array<Promise<any>> = [
 
         // load invoice data
-        new Promise((resolveA, rejectA) => {
+        new Promise((_resolve, _reject) => {
           if (this.invoiceParam) {
             this.doRefund = this.navParams.get('doRefund');
             this.invoice = this.invoiceParam;
-            resolve();
+            _resolve();
           } else {
             this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
               .then((invoice: Sale) => {
                 this.invoice = invoice;
-                resolveA();
+                _resolve();
               })
-              .catch((error) => rejectA(error));
+              .catch((error) => _reject(error));
           }
         }),
 
         // load salesTax
-        new Promise((resolveA, resolveB) => {
-          this.salesTaxService.getUserSalesTax().then((salesTax: Array<SalesTax>) => {
-            this.salesTaxes = salesTax;
-            resolve();
-          }).catch(error => reject(error));
+        new Promise((_resolve, _reject) => {
+          this.appSettingsService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
+            this.salesTaxes = salesTaxes;
+            _resolve();
+          }).catch(error => _reject(error));
         }),
 
         // load priceBook
-        new Promise((resolveA, rejectA) => {
+        new Promise((_resolve, _reject) => {
           this.priceBookService.getPriceBookByCriteria().then((priceBook: PriceBook) => {
             this.priceBook = priceBook;
-            resolveA();
-          }).catch(error => rejectA(error));
+            _resolve();
+          }).catch(error => _reject(error));
         }),
 
-        // Load Categories and Associated Purcshable Items
-        new Promise((resolveA, rejectA) => {
+        // Load Categories and _reject Purcshable Items
+        new Promise((_resolve, _reject) => {
           this.categoryService.getAll()
             .then((categories) => {
               this.categories = categories;
-              this.loadCategoriesAssociation(categories).then(() => resolveA());
+              this.loadCategoriesAssociation(categories).then(() => _resolve());
             })
-            .catch((error) => rejectA(error));
+            .catch((error) => _reject(error));
         })
       ];
 

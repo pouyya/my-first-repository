@@ -127,7 +127,7 @@
         <ion-item item-content>
           <ion-label color="primary" stacked>+ Sales Tax</ion-label>
           <ion-select [(ngModel)]="priceBook.tax" (ionChange)="onSalesTaxChange(priceBook)">
-            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.name }} {{ tax.noOfTaxes ? tax.noOfTaxes.length : '' }} <small>({{ tax.rate }}%)</small></ion-option>
           </ion-select><br/>
           <small>Currently</small>
         </ion-item>

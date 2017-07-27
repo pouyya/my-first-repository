@@ -25,19 +25,8 @@ export class TaxService {
       if (user.settings.taxType) {
         let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
         this[service[user.settings.taxEntity]].get(user.settings.defaultTax).then((tax: any) => {
-          if (user.settings.taxEntity == "GroupSaleTax") {
-            var promises = [];
-            tax.salesTaxes.forEach((saleTax: any) => {
-              promises.push(this.salesTaxService.get(saleTax._id));
-            });
-            Promise.all(promises).then((results: Array<any>) => {
-              this.tax = _.reduce(results.map((model: any) => model.rate), (sum, n) => sum + n, 0);
-              resolve();
-            }).catch(error => reject(error));
-          } else {
-            this.tax = tax.rate; resolve();
-          }
-
+          this.tax = tax.rate;
+          resolve();
         }).catch((error) => {
           reject(error);
         });

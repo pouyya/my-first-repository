@@ -30,11 +30,11 @@ export class AppSettingsService extends BaseEntityService<AppSettings> {
       let taxes: Array<any> = [];
       this.salesTaxService.getAll().then((_salesTaxes: Array<SalesTax>) => {
         taxes = _salesTaxes.map((salesTax => {
-          return { model: salesTax, entity: salesTax.entityTypeName, noOfTaxes: 0 };
+          return { ...salesTax, noOfTaxes: 0 };
         }));
         this.groupSalesTaxService.getAll().then((_groupSalesTaxes: Array<GroupSaleTax>) => {
           taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
-            return { model: groupSaleTax, entity: groupSaleTax.entityTypeName, noOfTaxes: groupSaleTax.salesTaxes.length };
+            return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
           })));
           resolve(taxes);
         }).catch(error => reject(error));

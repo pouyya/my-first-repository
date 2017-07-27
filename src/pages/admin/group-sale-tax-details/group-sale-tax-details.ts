@@ -91,6 +91,7 @@ export class GroupSaleTaxDetailsPage {
       return { _id: selected._id  };
     });
     if(this.groupSalesTax.name && this.groupSalesTax.salesTaxes.length > 0) {
+      this.groupSalesTax.rate = _.reduce(this.selectedSalesTaxes.map((selected) => Number(selected.rate)), (sum, n) => sum + n, 0);
       this.groupSalesTaxService[this.isNew ? 'add' : 'update'](this.groupSalesTax).then(() => {
         this.navCtrl.pop();
       }).catch((error) => {

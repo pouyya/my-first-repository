@@ -62,7 +62,7 @@ export class Settings {
           this.selectedType = this.setting.taxType;
           this.selectedTax = this.setting.defaultTax;
           this.oldTax = _.find(this.salesTaxes, (saleTax) => {
-            return saleTax.model._id === this.setting.defaultTax;
+            return saleTax._id === this.setting.defaultTax;
           });
         });
       })
@@ -71,19 +71,19 @@ export class Settings {
 
   public makeItDefault() {
     let defaultTax: any = _.find(this.salesTaxes, (saleTax) => {
-      return saleTax.model._id === this.selectedTax;
+      return saleTax._id === this.selectedTax;
     });
-    this.setting.defaultTax = defaultTax.model._id;
-    this.setting.taxEntity = defaultTax.entity || defaultTax.model.entityTypeName;
+    this.setting.defaultTax = defaultTax._id;
+    this.setting.taxEntity = defaultTax.entityTypeName;
     this.appSettingsService.update(this.setting).then(() => {
-      this.salesTaxService.makeDefault(defaultTax.model, this.oldTax.model).then(() => {
+      this.salesTaxService.makeDefault(defaultTax, this.oldTax).then(() => {
         this.oldTax = defaultTax;
         // a weird hack
         this.appSettingsService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
           this.salesTaxes = taxes;
           let user = this.userService.getLoggedInUser();
-          user.settings.defaultTax = defaultTax.model._id;
-          user.settings.taxEntity = defaultTax.entity || defaultTax.model.entityTypeName;
+          user.settings.defaultTax = defaultTax._id;
+          user.settings.taxEntity = defaultTax.entityTypeName;
           this.userService.persistUser(user);
           let toast = this.toast.create({
             message: "Settings have been saved",

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { AppSettingsService } from './../../services/appSettingsService';
 import { Service } from './../../model/service';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { SalesTax } from './../../model/salesTax';
@@ -27,7 +28,7 @@ interface InteractableItemPriceInterface {
 export class ServiceDetails {
 	public serviceItem: Service = new Service();
 	public priceBooks: Array<InteractableItemPriceInterface> = [];
-	public salesTaxes: Array<SalesTax> = [];
+	public salesTaxes: Array<any> = [];
 	public categories = [];
 	public isNew = true;
 	public action = 'Add';
@@ -56,6 +57,7 @@ export class ServiceDetails {
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private userService: UserService,
+		private appSettingsService: AppSettingsService,
 		private navParams: NavParams,
 		private zone: NgZone,
 		private platform: Platform,
@@ -95,13 +97,15 @@ export class ServiceDetails {
 							.catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: SalesTax) => {
+						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
 							salesTax.name = "Account Sales Tax (Default)";
-							_resolve(salesTax);
+							_resolve({ 
+								...salesTax,
+								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0  });
 						}).catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.salesTaxService.getUserSalesTax().then((salesTaxes: Array<SalesTax>) => {
+						this.appSettingsService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
 							_resolve(salesTaxes);
 						}).catch(error => _reject(error));
 					}),
@@ -244,7 +248,8 @@ export class ServiceDetails {
 							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
 							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
 							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax._id
+							salesTaxId: this.defaultPriceBook.tax._id,
+							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
 						});
 						this.priceBookService.update(this._defaultPriceBook)
 							.then(() => _resolve()).catch(error => _reject(error));
@@ -258,7 +263,8 @@ export class ServiceDetails {
 								inclusivePrice: Number(priceBook.item.inclusivePrice),
 								supplyPrice: Number(priceBook.item.supplyPrice),
 								markup: Number(priceBook.item.markup),
-								salesTaxId: priceBook.tax._id
+								salesTaxId: priceBook.tax._id,
+								saleTaxEntity: priceBook.tax.entityTypeName
 							});
 							priceBookUpdate.push(this.priceBookService.update(this._priceBooks[index]));
 						});
@@ -267,6 +273,9 @@ export class ServiceDetails {
 							.then(() => _resolve()).catch(error => _reject());
 					})
 				];
+
+				Promise.all(promises).catch(console.error.bind(console));
+
 			}).catch(console.error.bind(console));
 		} else {
 			this.serviceService.update(this.serviceItem).then((res) => {
@@ -279,7 +288,8 @@ export class ServiceDetails {
 							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
 							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
 							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax._id
+							salesTaxId: this.defaultPriceBook.tax._id,
+							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
 						};
 
 						index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
@@ -298,7 +308,8 @@ export class ServiceDetails {
 								inclusivePrice: Number(priceBook.item.inclusivePrice),
 								supplyPrice: Number(priceBook.item.supplyPrice),
 								markup: Number(priceBook.item.markup),
-								salesTaxId: priceBook.tax._id
+								salesTaxId: priceBook.tax._id,
+								saleTaxEntity: priceBook.tax.entityTypeName
 							};
 							idx > -1 ? this._priceBooks[index].purchasableItems[idx] = dBuffer :
 								this._priceBooks[index].purchasableItems.push(dBuffer);
