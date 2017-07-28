@@ -6,7 +6,7 @@ import { ModuleBase, PageSettingsInterface } from './moduelBase';
 
 export class SettingsModule  implements ModuleBase {
   public pages: Array<PageSettingsInterface> = [
-    { title: 'Sales Tax', icon: 'cash', component: SaleTaxPage },
+    { title: 'Sales Tax', icon: 'cash', component: SaleTaxPage, pushNavigation: true },
     { title: 'Group Sales Tax', icon: 'cash', component: GroupSaleTaxPage, pushNavigation: true },
     { title: 'Back Office', icon: 'build', component: HomePage }
   ];
