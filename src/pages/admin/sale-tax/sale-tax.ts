@@ -1,14 +1,10 @@
-import _ from 'lodash';
 import { GroupSaleTaxPage } from './../group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../sale-tax-details/sale-tax-details';
 import { Platform, NavController, ToastController } from 'ionic-angular';
 import { SalesTax } from './../../../model/salesTax';
 import { SalesTaxService } from './../../../services/salesTaxService';
 import { Component, NgZone } from '@angular/core';
-import { PageModule } from './../../../metadata/pageModule';
-import { SalesTaxModule } from './../../../modules/salesTaxModule';
 
-@PageModule(() => SalesTaxModule)
 @Component({
   selector: 'sale-tax-page',
   templateUrl: 'sale-tax.html'

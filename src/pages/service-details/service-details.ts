@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { AppSettingsService } from './../../services/appSettingsService';
 import { Service } from './../../model/service';
 import { SalesTaxService } from './../../services/salesTaxService';
-import { SalesTax } from './../../model/salesTax';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
@@ -48,7 +47,6 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-	private _priceBooks: Array<PriceBook>;
 	private _user: any;
 
 	constructor(public navCtrl: NavController,
@@ -113,11 +111,6 @@ export class ServiceDetails {
 						this.priceBookService.getDefaultPriceBook().then((priceBook: PriceBook) => {
 							_resolve(priceBook);
 						}).catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						this.priceBookService.getPriceBooks().then((priceBooks: PriceBook) => {
-							_resolve(priceBooks);
-						}).catch(error => _reject(error));
 					})
 				];
 
@@ -127,7 +120,6 @@ export class ServiceDetails {
 						this.salesTaxes.push(results[1]);
 						this.salesTaxes = this.salesTaxes.concat(results[2]);
 						this._defaultPriceBook = results[3];
-						this._priceBooks = results[4];
 
 						let servicePriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
 
@@ -145,22 +137,6 @@ export class ServiceDetails {
 									markup: 0
 								}
 							};
-
-							this._priceBooks.forEach((priceBook: PriceBook) => {
-								this.priceBooks.push({
-									id: priceBook._id,
-									isDefault: false,
-									tax: this.salesTaxes[0],
-									item: {
-										id: "",
-										retailPrice: 0,
-										inclusivePrice: 0,
-										salesTaxId: "", // will set upon save
-										supplyPrice: 0,
-										markup: 0
-									}
-								});
-							});
 						} else {
 							this.defaultPriceBook = {
 								id: this._defaultPriceBook._id,
@@ -168,16 +144,6 @@ export class ServiceDetails {
 								tax: _.find(this.salesTaxes, { _id: servicePriceBook.salesTaxId }),
 								item: servicePriceBook
 							};
-
-							this._priceBooks.forEach((priceBook: PriceBook) => {
-								servicePriceBook = _.find(priceBook.purchasableItems, { id: this.serviceItem._id });
-								this.priceBooks.push({
-									id: priceBook._id,
-									isDefault: false,
-									tax: _.find(this.salesTaxes, { _id: servicePriceBook.salesTaxId }),
-									item: servicePriceBook
-								});
-							});
 
 						}
 						loader.dismiss();
@@ -253,24 +219,6 @@ export class ServiceDetails {
 						});
 						this.priceBookService.update(this._defaultPriceBook)
 							.then(() => _resolve()).catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						let priceBookUpdate: Array<Promise<any>> = [];
-						this.priceBooks.forEach((priceBook: InteractableItemPriceInterface, index: number) => {
-							this._priceBooks[index].purchasableItems.push({
-								id: res.id,
-								retailPrice: Number(priceBook.item.retailPrice),
-								inclusivePrice: Number(priceBook.item.inclusivePrice),
-								supplyPrice: Number(priceBook.item.supplyPrice),
-								markup: Number(priceBook.item.markup),
-								salesTaxId: priceBook.tax._id,
-								saleTaxEntity: priceBook.tax.entityTypeName
-							});
-							priceBookUpdate.push(this.priceBookService.update(this._priceBooks[index]));
-						});
-
-						Promise.all(priceBookUpdate)
-							.then(() => _resolve()).catch(error => _reject());
 					})
 				];
 
@@ -297,28 +245,6 @@ export class ServiceDetails {
 
 						this.priceBookService.update(this._defaultPriceBook)
 							.then(() => _resolve()).catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						let priceBookUpdate: Array<Promise<any>> = [];
-						this.priceBooks.forEach((priceBook: InteractableItemPriceInterface, index: number) => {
-							let idx = _.findIndex(this._priceBooks[index].purchasableItems, { id: this.serviceItem._id });
-							let dBuffer = {
-								id: this.serviceItem._id,
-								retailPrice: Number(priceBook.item.retailPrice),
-								inclusivePrice: Number(priceBook.item.inclusivePrice),
-								supplyPrice: Number(priceBook.item.supplyPrice),
-								markup: Number(priceBook.item.markup),
-								salesTaxId: priceBook.tax._id,
-								saleTaxEntity: priceBook.tax.entityTypeName
-							};
-							idx > -1 ? this._priceBooks[index].purchasableItems[idx] = dBuffer :
-								this._priceBooks[index].purchasableItems.push(dBuffer);
-
-							priceBookUpdate.push(this.priceBookService.update(this._priceBooks[index]));
-						});
-
-						Promise.all(priceBookUpdate)
-							.then(() => _resolve()).catch(error => _reject());
 					})
 				];
 

@@ -1,6 +1,3 @@
-import _ from 'lodash';
-import { GroupSaleTax } from './../model/groupSalesTax';
-import { SalesTax } from './../model/salesTax';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { UserService } from './userService';
 import { SalesTaxService } from './salesTaxService';

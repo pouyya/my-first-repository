@@ -3,7 +3,6 @@ import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
 import { AppSettings } from './../../model/appSettings';
 import { AppSettingsService } from './../../services/appSettingsService';
-import { SalesTax } from './../../model/salesTax';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { SettingsModule } from './../../modules/settingsModule';
 import { Component } from '@angular/core';
@@ -21,9 +20,10 @@ export class Settings {
   public defaultTax: string;
   public setting: AppSettings;
   public taxTypes: Array<any> = [];
-  public selectedType: boolean;
+  public selectedType: number;
   public selectedTax: string;
-  private oldTax: any;
+  private currentTax: any;
+  private newTax: any;
 
   constructor(
     private navCtrl: NavController,
@@ -35,8 +35,8 @@ export class Settings {
     private toast: ToastController
   ) {
     this.taxTypes = [
-      { _id: false, type: 'Tax Exclusive' },
-      { _id: true, type: 'Tax Inclusive' }
+      { _id: 0, type: 'Tax Exclusive' },
+      { _id: 1, type: 'Tax Inclusive' }
     ]
   }
 
@@ -59,9 +59,9 @@ export class Settings {
 
       Promise.all(promises).then(() => {
         this.zone.run(() => {
-          this.selectedType = this.setting.taxType;
+          this.selectedType = !this.setting.taxType ? 0 : 1;
           this.selectedTax = this.setting.defaultTax;
-          this.oldTax = _.find(this.salesTaxes, (saleTax) => {
+          this.currentTax = _.find(this.salesTaxes, (saleTax) => {
             return saleTax._id === this.setting.defaultTax;
           });
         });
@@ -69,21 +69,23 @@ export class Settings {
     })
   }
 
-  public makeItDefault() {
-    let defaultTax: any = _.find(this.salesTaxes, (saleTax) => {
+  public save() {
+    this.setting.taxType = this.selectedType == 0 ? false : true;
+    this.newTax = _.find(this.salesTaxes, (saleTax) => {
       return saleTax._id === this.selectedTax;
     });
-    this.setting.defaultTax = defaultTax._id;
-    this.setting.taxEntity = defaultTax.entityTypeName;
+    this.setting.defaultTax = this.newTax._id;
+    this.setting.taxEntity = this.newTax.entityTypeName;    
     this.appSettingsService.update(this.setting).then(() => {
-      this.salesTaxService.makeDefault(defaultTax, this.oldTax).then(() => {
-        this.oldTax = defaultTax;
+      this.salesTaxService.makeDefault(this.newTax, this.currentTax).then(() => {
+        this.currentTax = this.newTax
         // a weird hack
         this.appSettingsService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
           this.salesTaxes = taxes;
           let user = this.userService.getLoggedInUser();
-          user.settings.defaultTax = defaultTax._id;
-          user.settings.taxEntity = defaultTax.entityTypeName;
+          user.settings.defaultTax = this.newTax._id;
+          user.settings.taxEntity = this.newTax.entityTypeName;
+          user.settings.taxType = this.selectedType;
           this.userService.persistUser(user);
           let toast = this.toast.create({
             message: "Settings have been saved",
@@ -95,22 +97,6 @@ export class Settings {
       }).catch(error => {
         throw new Error(error);
       });
-    }).catch(error => {
-      throw new Error(error);
-    });
-  }
-
-  public onTaxTypeChange() {
-    this.setting.taxType = this.selectedType;
-    this.appSettingsService.update(this.setting).then(() => {
-      let user = this.userService.getLoggedInUser();
-      user.settings.taxType = this.selectedType;
-      this.userService.persistUser(user);
-      let toast = this.toast.create({
-        message: "Settings have been saved",
-        duration: 2000
-      });
-      toast.present();
     }).catch(error => {
       throw new Error(error);
     });

@@ -1,10 +1,9 @@
+import _ from 'lodash';
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
-import _ from 'lodash';
 import { BucketItem } from './../model/bucketItem';
-import { PurchasableItem } from './../model/purchasableItem';
 import { Injectable, NgZone } from '@angular/core';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';

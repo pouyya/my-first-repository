@@ -6,7 +6,6 @@ import { Store } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
-import { SalesTax } from './../../model/salesTax';
 import { SalesTaxService } from './../../services/salesTaxService';
 
 @Component({

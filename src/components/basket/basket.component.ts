@@ -7,7 +7,6 @@ import { SalesServices } from './../../services/salesService';
 import { CalculatorService } from './../../services/calculatorService';
 import { TaxService } from './../../services/taxService';
 import { Sale } from './../../model/sale';
-import { PurchasableItem } from './../../model/purchasableItem';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';

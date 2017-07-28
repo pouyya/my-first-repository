@@ -1,8 +1,7 @@
+import _ from 'lodash';
 import { AppSettingsService } from './../../services/appSettingsService';
 import { SalesTax } from './../../model/salesTax';
 import { SalesTaxService } from './../../services/salesTaxService';
-import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
-import _ from 'lodash';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { POS } from './../../model/pos';
