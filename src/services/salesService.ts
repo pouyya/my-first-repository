@@ -1,5 +1,8 @@
-import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
+import { PriceBook } from './../model/priceBook';
+import { PriceBookService } from './priceBookService';
+import { AppSettingsService } from './appSettingsService';
 import _ from 'lodash';
+import { Observable } from "rxjs/Rx";
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
@@ -27,7 +30,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private fountainService: FountainService,
 		private userService: UserService,
 		private zone: NgZone,
-		private cacheService: CacheService
+		private cacheService: CacheService,
+		private appSettingsService: AppSettingsService,
+		private priceBookService: PriceBookService
 	) {
 		super(Sale, zone);
 		this._user = this.userService.getLoggedInUser();
@@ -66,10 +71,37 @@ export class SalesServices extends BaseEntityService<Sale> {
 			) :
 			bucketItem.actualPrice;
 		bucketItem.finalPrice = discountedPrice;
-			discountedPrice;
+		discountedPrice;
 		bucketItem.isTaxIncl = inclTax;
 
 		return bucketItem;
+	}
+
+	public initializeSalesData(invoiceParam: any): Observable<Array<any>> {
+		return Observable.forkJoin(
+			new Promise((resolve, reject) => {
+				if (invoiceParam) {
+					resolve(invoiceParam);
+				} else {
+					this.instantiateInvoice(this.posService.getCurrentPosID())
+						.then((invoice: Sale) => {
+							resolve(invoice);
+						}).catch((error) => reject(error));
+				}
+			}),
+
+			new Promise((resolve, reject) => {
+				this.appSettingsService.loadSalesAndGroupTaxes()
+					.then((salesTaxes: Array<any>) => resolve(salesTaxes))
+					.catch(error => reject(error));
+			}),
+
+			new Promise((resolve, reject) => {
+				this.priceBookService.getPriceBookByCriteria()
+					.then((priceBook: PriceBook) => resolve(priceBook))
+					.catch(error => reject(error));
+			})
+		);
 	}
 
 	/**

@@ -36,7 +36,7 @@ export class Sales {
   public activeTiles: Array<any>;
   public invoice: Sale;
   public register: POS;
-  public doRefund: boolean;
+  public doRefund: boolean = false;
   public icons: any;
   private invoiceParam: any;
   private priceBook: PriceBook;
@@ -58,53 +58,49 @@ export class Sales {
     private userService: UserService,
     private appSettingsService: AppSettingsService
   ) {
-    this.doRefund = false;
     this.invoiceParam = this.navParams.get('invoice');
+    this.doRefund = this.navParams.get('doRefund');
+    this.user = this.userService.getLoggedInUser();
+    this.register = this.user.currentPos;
     this.cdr.detach();
   }
 
-  ionViewDidEnter() {
-    let loader = this.loading.create({
-      content: 'Loading data...',
-    });
+  ionViewDidLoad() {
 
-    loader.present().then(() => {
+    let _init: boolean = false;
+    if (!this.register.status) {
+      let openingAmount: number = Number(this.navParams.get('openingAmount'));
+      let openingNote: string = this.navParams.get('openingNotes');
+      if (openingAmount && openingAmount > 0) {
+        this.register.openTime = new Date().toISOString();
+        this.register.status = true;
+        this.register.openingAmount = Number(openingAmount);
+        this.register.openingNote = openingNote;
+        this.posService.update(this.register);
+        _init = true;
+      }
+    } else {
+      _init = true;
+    }
 
-      var posPromise = new Promise((resolve, reject) => {
-        var user = this.userService.getLoggedInUser();
-        this.user = user;
-        this.register = user.currentPos;
-        if (this.register.status) {
-          this.initSalePageData().then(() => resolve()).catch((error) => {
-            reject(new Error(error));
-          });
-        } else {
-          let openingAmount = this.navParams.get('openingAmount');
-          let openingNote = this.navParams.get('openingNotes');
-          if (openingAmount) {
-            this.initSalePageData().then((response) => {
-              this.register.openTime = new Date().toISOString();
-              this.register.status = true;
-              this.register.openingAmount = Number(openingAmount);
-              this.register.openingNote = openingNote;
-              this.posService.update(this.register);
-              resolve();
-            }).catch((error) => {
-              reject(new Error(error));
-            });
-          } else {
-            resolve();
-          }
-        }
+    if (_init) {
+      // load in parallel
+      this.categoryService.getAll().then((categories) => {
+        this.categories = categories;
+        this.loadCategoriesAssociation(categories);
       });
 
-      posPromise.then(() => {
-        this.cdr.reattach();
-        loader.dismiss();
-      }).catch((error) => {
-        throw new Error(error);
+      let loader = this.loading.create({
+        content: 'Loading Register...',
       });
-    });
+
+      loader.present().then(() => {
+        this.initSalePageData().then(() => {
+         this.cdr.reattach();
+          loader.dismiss();
+        })
+      });
+    }
   }
 
   /**
@@ -126,8 +122,8 @@ export class Sales {
   // Event
   public onSelect(item: PurchasableItem) {
     let interactableItem: any = { ...item, tax: null, priceBook: null };
-    interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id  }) as any;
-    interactableItem.priceBook.salesTaxId != null && (interactableItem.tax = _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId  }));
+    interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
+    interactableItem.priceBook.salesTaxId != null && (interactableItem.tax = _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }));
     this.basketComponent.addItemToBasket(interactableItem);
   }
 
@@ -151,53 +147,13 @@ export class Sales {
   }
 
   private initSalePageData(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var promises: Array<Promise<any>> = [
-
-        // load invoice data
-        new Promise((_resolve, _reject) => {
-          if (this.invoiceParam) {
-            this.doRefund = this.navParams.get('doRefund');
-            this.invoice = this.invoiceParam;
-            _resolve();
-          } else {
-            this.salesService.instantiateInvoice(this.posService.getCurrentPosID())
-              .then((invoice: Sale) => {
-                this.invoice = invoice;
-                _resolve();
-              })
-              .catch((error) => _reject(error));
-          }
-        }),
-
-        // load salesTax
-        new Promise((_resolve, _reject) => {
-          this.appSettingsService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
-            this.salesTaxes = salesTaxes;
-            _resolve();
-          }).catch(error => _reject(error));
-        }),
-
-        // load priceBook
-        new Promise((_resolve, _reject) => {
-          this.priceBookService.getPriceBookByCriteria().then((priceBook: PriceBook) => {
-            this.priceBook = priceBook;
-            _resolve();
-          }).catch(error => _reject(error));
-        }),
-
-        // Load Categories and _reject Purcshable Items
-        new Promise((_resolve, _reject) => {
-          this.categoryService.getAll()
-            .then((categories) => {
-              this.categories = categories;
-              this.loadCategoriesAssociation(categories).then(() => _resolve());
-            })
-            .catch((error) => _reject(error));
-        })
-      ];
-
-      Promise.all(promises).then(() => resolve()).catch((error) => reject(error));
+    return new Promise((res, rej) => {
+      this.salesService.initializeSalesData(this.invoiceParam).subscribe((data: any) => {
+        this.invoice = data[0] as Sale;
+        this.salesTaxes = data[1] as Array<any>;
+        this.priceBook = data[2] as PriceBook;
+        res();
+      }, error => rej(error));
     });
   }
 
