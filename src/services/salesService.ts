@@ -1,3 +1,4 @@
+import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import _ from 'lodash';
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
@@ -46,16 +47,16 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param item {PurchasableItem}
 	 * @return {BucketItem}
 	 */
-	public prepareBucketItem(item: any): BucketItem {
+	public prepareBucketItem(item: any, tax?: number): BucketItem {
 		let inclTax = this._user.settings.taxType;
 
 		let bucketItem = new BucketItem();
 		bucketItem._id = item._id;
 		item._rev && (bucketItem._rev = item._rev);
 		bucketItem.name = item.name;
-		bucketItem.tax = item.tax;
+		bucketItem.tax = { rate: item.tax };
 		bucketItem.priceBook = item.priceBook;
-		bucketItem.actualPrice = item.priceBook.retailPrice;
+		bucketItem.actualPrice = inclTax ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;
 		let discountedPrice = bucketItem.discount > 0 ?
@@ -64,7 +65,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				bucketItem.actualPrice
 			) :
 			bucketItem.actualPrice;
-		bucketItem.finalPrice = inclTax ? this.taxService.calculate(discountedPrice, item.tax.rate) :
+		bucketItem.finalPrice = discountedPrice;
 			discountedPrice;
 		bucketItem.isTaxIncl = inclTax;
 

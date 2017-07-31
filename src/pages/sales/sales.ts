@@ -127,7 +127,7 @@ export class Sales {
   public onSelect(item: PurchasableItem) {
     let interactableItem: any = { ...item, tax: null, priceBook: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id  }) as any;
-    interactableItem.tax = _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId  });
+    interactableItem.priceBook.salesTaxId != null && (interactableItem.tax = _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId  }));
     this.basketComponent.addItemToBasket(interactableItem);
   }
 

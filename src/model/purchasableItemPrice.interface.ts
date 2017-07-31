@@ -5,6 +5,6 @@ export interface PurchasableItemPriceInterface {
   inclusivePrice: number;
   supplyPrice: number;
   markup: number
-  salesTaxId: string;
-  saleTaxEntity?: string;
+  salesTaxId: string | null;
+  saleTaxEntity?: string | null;
 }

@@ -95,6 +95,7 @@ export class ProductDetails {
 							salesTax.name = "Account Sales Tax (Default)";
 							_resolve({ 
 								...salesTax,
+								isDefault: true,
 								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0  });
 						}).catch(error => _reject(error));
 					}),
@@ -137,7 +138,7 @@ export class ProductDetails {
 							this.defaultPriceBook = {
 								id: this._defaultPriceBook._id,
 								isDefault: true,
-								tax: _.find(this.salesTaxes, { _id: productPriceBook.salesTaxId }),
+								tax: productPriceBook.salesTaxId == null ? this.salesTaxes[0] : _.find(this.salesTaxes, { _id: productPriceBook.salesTaxId }),
 								item: productPriceBook
 							};
 						}
@@ -210,7 +211,7 @@ export class ProductDetails {
 							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
 							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
 							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax._id,
+							salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
 							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
 						});
 						this.priceBookService.update(this._defaultPriceBook)
@@ -232,7 +233,7 @@ export class ProductDetails {
 							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
 							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
 							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax._id,
+							salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
 							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
 						};
 						

@@ -11,6 +11,6 @@ export class BucketItem {
   finalPrice: number;
   notes: string;
   priceBook?: PriceBook;
-  tax: SalesTax;
+  tax: any;
   isTaxIncl: boolean;
 }

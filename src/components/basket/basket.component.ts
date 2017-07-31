@@ -79,9 +79,9 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: any) {
-    var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.price));
+    var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.priceBook.retailPrice));
     if(index === -1) {
-      let bucketItem: BucketItem = this.salesService.prepareBucketItem(item);
+      let bucketItem: BucketItem = this.salesService.prepareBucketItem(item, this.tax);
       this.invoice.items.push(bucketItem);
     } else {
       this.invoice.items[index].quantity++;
