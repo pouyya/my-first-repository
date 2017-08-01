@@ -1,22 +1,26 @@
 import _ from 'lodash';
-import { AppSettingsService } from './../../services/appSettingsService';
-import { SalesTax } from './../../model/salesTax';
-import { SalesTaxService } from './../../services/salesTaxService';
-import { PriceBookService } from './../../services/priceBookService';
-import { PriceBook } from './../../model/priceBook';
-import { POS } from './../../model/pos';
-import { SalesModule } from "../../modules/salesModule";
-import { PageModule } from './../../metadata/pageModule';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, AlertController, LoadingController, ModalController, NavParams } from 'ionic-angular';
+
+import { AppSettingsService } from './../../services/appSettingsService';
+import { SalesTaxService } from './../../services/salesTaxService';
+import { PriceBookService } from './../../services/priceBookService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
-import { BasketComponent } from './../../components/basket/basket.component';
-import { Sale } from './../../model/sale';
-import { PurchasableItem } from './../../model/purchasableItem';
 import { PosService } from "../../services/posService";
-import { PaymentsPage } from "../payment/payment";
 import { UserService } from './../../services/userService';
+
+import { POS } from './../../model/pos';
+import { Sale } from './../../model/sale';
+import { SalesTax } from './../../model/salesTax';
+import { PriceBook } from './../../model/priceBook';
+import { PurchasableItem } from './../../model/purchasableItem';
+
+import { SalesModule } from "../../modules/salesModule";
+import { PageModule } from './../../metadata/pageModule';
+import { BasketComponent } from './../../components/basket/basket.component';
+import { PaymentsPage } from "../payment/payment";
+
 
 
 @PageModule(() => SalesModule)
@@ -96,7 +100,7 @@ export class Sales {
 
       loader.present().then(() => {
         this.initSalePageData().then(() => {
-         this.cdr.reattach();
+          this.cdr.reattach();
           loader.dismiss();
         })
       });
@@ -123,7 +127,11 @@ export class Sales {
   public onSelect(item: PurchasableItem) {
     let interactableItem: any = { ...item, tax: null, priceBook: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
-    interactableItem.priceBook.salesTaxId != null && (interactableItem.tax = _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }));
+    if(interactableItem.priceBook.salesTaxId != null) {
+      interactableItem.tax = _.pick(_.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }), [
+        'rate', 'name'
+      ]);
+    }    
     this.basketComponent.addItemToBasket(interactableItem);
   }
 
@@ -132,7 +140,10 @@ export class Sales {
     var pushCallback = (_params) => {
       return new Promise((resolve, reject) => {
         if (_params) {
-          this.invoiceParam = null;
+          this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+            this.invoiceParam = null;
+            this.invoice = invoice;
+          });
         }
         resolve();
       });
@@ -144,6 +155,14 @@ export class Sales {
       doRefund: this.doRefund,
       callback: pushCallback
     });
+  }
+
+  // Event
+  public notify($event) {
+    if($event.clearSale) {
+      this.invoiceParam = null;
+      
+    }
   }
 
   private initSalePageData(): Promise<any> {

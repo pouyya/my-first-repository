@@ -43,7 +43,9 @@ export class GroupSaleTaxDetailsPage {
           resolve();
         }),
         new Promise((resolve, reject) => {
-          this.salesTaxService.getUserSalesTax().then((taxes: Array<any>) => {
+          this.salesTaxService.findBy({
+            selector: { _id: { $ne: "no_sales_tax" } }
+          }).then((taxes: Array<any>) => {
             this.salesTaxes = _.filter(taxes, (tax) => {
               return tax.entityTypeName === 'SalesTax';
             }).map((tax) => {

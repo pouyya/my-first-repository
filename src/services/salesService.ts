@@ -53,26 +53,27 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @return {BucketItem}
 	 */
 	public prepareBucketItem(item: any, tax?: number): BucketItem {
-		let inclTax = this._user.settings.taxType;
+		let taxInclusive = this._user.settings.taxType;
 
 		let bucketItem = new BucketItem();
 		bucketItem._id = item._id;
 		item._rev && (bucketItem._rev = item._rev);
 		bucketItem.name = item.name;
-		bucketItem.tax = { rate: item.tax };
+		bucketItem.tax = {
+			...item.tax,
+			amount: item.priceBook.inclusivePrice - item.priceBook.retailPrice
+		};
 		bucketItem.priceBook = item.priceBook;
-		bucketItem.actualPrice = inclTax ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
+		bucketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;
-		let discountedPrice = bucketItem.discount > 0 ?
+		bucketItem.finalPrice = bucketItem.discount > 0 ?
 			this.calcService.calcItemDiscount(
 				bucketItem.discount,
 				bucketItem.actualPrice
 			) :
 			bucketItem.actualPrice;
-		bucketItem.finalPrice = discountedPrice;
-		discountedPrice;
-		bucketItem.isTaxIncl = inclTax;
+		bucketItem.isTaxIncl = taxInclusive;
 
 		return bucketItem;
 	}
@@ -240,14 +241,16 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public calculateSale(sale: Sale): void {
+	public calculateSale(sale: Sale): any {
+		var tax = 0;
 		if (sale.items.length > 0) {
 			sale.subTotal = sale.totalDiscount = 0;
 			sale.items.forEach(item => {
-				sale.subTotal += (item.finalPrice * item.quantity);
+				sale.subTotal += (item.priceBook.retailPrice * item.quantity);
 				sale.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
 			});
-			sale.taxTotal = this.helperService.round2Dec(this.taxService.calculate(sale.subTotal));
+			tax = this.helperService.round2Dec(_.reduce(sale.items.map((selected) => Number(selected.tax.amount)), (sum, n) => sum + n, 0));
+			sale.taxTotal = this.helperService.round2Dec(sale.subTotal + tax);
 			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
 			sale.round = roundedTotal - sale.taxTotal;
 			sale.taxTotal = roundedTotal;
@@ -256,6 +259,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 			sale.taxTotal = 0;
 			sale.round = 0;
 			sale.totalDiscount = 0;
+		}
+
+		return {
+			tax
 		}
 	}
 }

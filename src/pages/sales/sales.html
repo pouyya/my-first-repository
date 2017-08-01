@@ -52,7 +52,12 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket [_invoice]="invoice" [refund]="doRefund" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
+        <basket class="basket-component" 
+          [_invoice]="invoice" 
+          [refund]="doRefund" 
+          (paymentClicked)="paymentClicked($event)"
+          (notify)="notify($event)">
+        </basket>
       </ion-col>
     </ion-row>
   </ion-grid>

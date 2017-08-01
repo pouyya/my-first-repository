@@ -1,3 +1,4 @@
+import { PosService } from './../../services/posService';
 import _ from 'lodash';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { HelperService } from './../../services/helperService';
@@ -21,7 +22,7 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 export class BasketComponent {
 
   public invoice: Sale;
-  public tax: number;
+  public tax: number = 0;
   public oldValue: number = 1;
   public balance: number = 0;
   public disablePaymentBtn = false;
@@ -38,23 +39,20 @@ export class BasketComponent {
   get model(): Sale { return this.invoice; }
 
   @Output() paymentClicked = new EventEmitter<any>();
+  @Output() notify = new EventEmitter<any>();
 
   constructor(
     private salesService: SalesServices,
     private taxService: TaxService,
     private calcService: CalculatorService,
     private fountainService: FountainService,
+    private posService: PosService,
     private platform: Platform,
     private helper: HelperService,
     private alertController: AlertController,
     private modalCtrl: ModalController,
     private navCtrl: NavController
   ) {
-    this.taxService._init().then(() => {
-      this.tax = this.taxService.getTax();
-    }).catch(error => {
-      throw new Error(error);
-    });
   }
 
   private setBalance() {
@@ -138,7 +136,12 @@ export class BasketComponent {
             {
               'text': 'OK',
               handler: () => {
-                this.navCtrl.setRoot(this.navCtrl.getActive().component);
+                this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+                  this.invoice = invoice;
+                  this.calculateAndSync();
+                  this.notify.emit({ clearSale: true });
+                });                
+                // this.navCtrl.setRoot(this.navCtrl.getActive().component);
               }
             }
           ]
@@ -166,7 +169,12 @@ export class BasketComponent {
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
               localStorage.removeItem('invoice_id');
-              this.navCtrl.setRoot(this.navCtrl.getActive().component);
+              this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+                this.invoice = invoice;
+                this.calculateAndSync();
+                this.notify.emit({ clearSale: true });
+              });
+              // this.navCtrl.setRoot(this.navCtrl.getActive().component);
             }).catch((error) => console.log(new Error()));
           }
         },
@@ -183,7 +191,8 @@ export class BasketComponent {
 
   private calculateTotal(callback) {
     setTimeout(() => {
-      this.salesService.calculateSale(this.invoice);
+      let data = this.salesService.calculateSale(this.invoice);
+      this.tax = data.tax;
       callback();
     }, 0);
   }

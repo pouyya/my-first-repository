@@ -1,5 +1,4 @@
-import { SalesTax } from './salesTax';
-import { PriceBook } from './priceBook';
+import { PurchasableItemPriceInterface } from './purchasableItemPrice.interface';
 
 export class BucketItem {
   _id: string;
@@ -10,7 +9,7 @@ export class BucketItem {
   actualPrice: number;
   finalPrice: number;
   notes: string;
-  priceBook?: PriceBook;
+  priceBook?: PurchasableItemPriceInterface;
   tax: any;
   isTaxIncl: boolean;
 }

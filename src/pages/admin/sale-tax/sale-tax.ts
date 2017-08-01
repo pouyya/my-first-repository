@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { GroupSaleTaxPage } from './../group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../sale-tax-details/sale-tax-details';
 import { Platform, NavController, ToastController } from 'ionic-angular';
@@ -27,7 +28,8 @@ export class SaleTaxPage {
     this.platform.ready().then(() => {
       this.salesTaxService.getAll().then((taxes: Array<SalesTax>) => {
         this.zone.run(() => {
-          this.salesTaxes = taxes;
+          let noSalesTax: SalesTax = taxes.splice(_.findIndex(taxes, { _id: "no_sales_tax" }), 1)[0];
+          this.salesTaxes = [noSalesTax].concat(taxes);
         });
       }).catch((error) => {
         throw new Error(error);
@@ -36,8 +38,10 @@ export class SaleTaxPage {
   }
 
   public upsert(tax?: SalesTax) {
-    let args: Array<any> = [SaleTaxDetails, { tax } || false];
-    this.navCtrl.push.apply(this.navCtrl, args);
+    if(tax._id != "no_sales_tax") {
+      let args: Array<any> = [SaleTaxDetails, { tax } || false];
+      this.navCtrl.push.apply(this.navCtrl, args);
+    }
   }
 
   public gotoGroupSalesTax() {
