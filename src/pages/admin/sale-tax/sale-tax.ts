@@ -38,7 +38,7 @@ export class SaleTaxPage {
   }
 
   public upsert(tax?: SalesTax) {
-    if(tax._id != "no_sales_tax") {
+    if(!tax || tax._id != "no_sales_tax") {
       let args: Array<any> = [SaleTaxDetails, { tax } || false];
       this.navCtrl.push.apply(this.navCtrl, args);
     }

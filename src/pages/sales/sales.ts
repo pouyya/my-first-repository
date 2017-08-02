@@ -46,6 +46,7 @@ export class Sales {
   private priceBook: PriceBook;
   private salesTaxes: Array<SalesTax>;
   private user: any;
+  private defaultTax: any;
 
   constructor(
     private navCtrl: NavController,
@@ -127,11 +128,10 @@ export class Sales {
   public onSelect(item: PurchasableItem) {
     let interactableItem: any = { ...item, tax: null, priceBook: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
-    if(interactableItem.priceBook.salesTaxId != null) {
-      interactableItem.tax = _.pick(_.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }), [
-        'rate', 'name'
-      ]);
-    }    
+    interactableItem.tax = _.pick(
+      interactableItem.priceBook.salesTaxId != null ? 
+      _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax, 
+      [ 'rate', 'name' ]);
     this.basketComponent.addItemToBasket(interactableItem);
   }
 
@@ -171,6 +171,7 @@ export class Sales {
         this.invoice = data[0] as Sale;
         this.salesTaxes = data[1] as Array<any>;
         this.priceBook = data[2] as PriceBook;
+        this.defaultTax = data[3] as any;
         res();
       }, error => rej(error));
     });

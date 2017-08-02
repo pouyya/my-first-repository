@@ -1,3 +1,5 @@
+import { GroupSalesTaxService } from './groupSalesTaxService';
+import { SalesTaxService } from './salesTaxService';
 import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
 import { AppSettingsService } from './appSettingsService';
@@ -32,7 +34,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private zone: NgZone,
 		private cacheService: CacheService,
 		private appSettingsService: AppSettingsService,
-		private priceBookService: PriceBookService
+		private priceBookService: PriceBookService,
+		private salesTaxService: SalesTaxService,
+		private groupSalesTaxService: GroupSalesTaxService
 	) {
 		super(Sale, zone);
 		this._user = this.userService.getLoggedInUser();
@@ -100,6 +104,13 @@ export class SalesServices extends BaseEntityService<Sale> {
 			new Promise((resolve, reject) => {
 				this.priceBookService.getPriceBookByCriteria()
 					.then((priceBook: PriceBook) => resolve(priceBook))
+					.catch(error => reject(error));
+			}),
+
+			new Promise((resolve, reject) => {
+				let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
+				this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
+					.then((tax: any) => resolve(tax))
 					.catch(error => reject(error));
 			})
 		);
@@ -244,13 +255,17 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public calculateSale(sale: Sale): any {
 		var tax = 0;
 		if (sale.items.length > 0) {
-			sale.subTotal = sale.totalDiscount = 0;
-			sale.items.forEach(item => {
-				sale.subTotal += (item.priceBook.retailPrice * item.quantity);
-				sale.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
+			sale.subTotal = sale.totalDiscount = sale.taxTotal = 0;
+			sale.items.forEach((item: BucketItem) => {
+				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
+				sale.subTotal += discountedPrice * item.quantity;
+				tax += ((discountedPrice * (item.tax.rate / 100)) * item.quantity);
+				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
+				sale.taxTotal += discountedPrice * item.quantity;
 			});
-			tax = this.helperService.round2Dec(_.reduce(sale.items.map((selected) => Number(selected.tax.amount)), (sum, n) => sum + n, 0));
-			sale.taxTotal = this.helperService.round2Dec(sale.subTotal + tax);
+			// _.reduce(sale.items.map((selected) => Number(selected.tax.amount)), (sum, n) => sum + n, 0)
+			tax = this.helperService.round2Dec(tax);
+			sale.taxTotal = this.helperService.round2Dec(sale.taxTotal);
 			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
 			sale.round = roundedTotal - sale.taxTotal;
 			sale.taxTotal = roundedTotal;

@@ -19,11 +19,8 @@ export class PurchasableItemInfoComponent {
   ) { }
 
   public calculateDiscount(item: BucketItem) {
-    item.discount = this.helperService.round2Dec(item.discount);
-    let actualPrice = item.discount > 0 ?
-      this.calcService.calcItemDiscount(item.discount, item.actualPrice) :
-      item.actualPrice;
-    item.finalPrice = item.isTaxIncl ? this.taxService.calculate(actualPrice, item.tax.rate) : actualPrice;
+    item.discount = this.helperService.round2Dec(Number(item.discount));
+    item.finalPrice = this.calcService.calcItemDiscount(item.discount, item.actualPrice);
   }
 
   public updatePrice(item: BucketItem) {

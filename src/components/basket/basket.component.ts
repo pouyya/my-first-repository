@@ -190,10 +190,8 @@ export class BasketComponent {
   }
 
   private calculateTotal(callback) {
-    setTimeout(() => {
-      let data = this.salesService.calculateSale(this.invoice);
-      this.tax = data.tax;
-      callback();
-    }, 0);
+    let data = this.salesService.calculateSale(this.invoice);
+    this.tax = data.tax;
+    callback();
   }
 }
