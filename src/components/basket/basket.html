@@ -64,7 +64,7 @@
       <ng-template ngPluralCase="=1">Total <small>({{invoice.items[0].tax.name}})</small></ng-template>
       <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} taxes)</small></ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{tax | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.tax | number : '1.2-2'}}</ion-col>
 
     <ion-col col-md-12>
       <hr/>

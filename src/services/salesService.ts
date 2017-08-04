@@ -1,16 +1,16 @@
+import _ from 'lodash';
+import { Observable } from "rxjs/Rx";
+import { Injectable, NgZone } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
 import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
 import { AppSettingsService } from './appSettingsService';
-import _ from 'lodash';
-import { Observable } from "rxjs/Rx";
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
 import { BucketItem } from './../model/bucketItem';
-import { Injectable, NgZone } from '@angular/core';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
@@ -52,11 +52,104 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	/**
+	 * Instantiate a default Sale Object
+	 * @return {Promise<Sale>}
+	 */
+	public instantiateInvoice(posId: string): Promise<any> {
+		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
+		return new Promise((resolve, reject) => {
+			if (posId) {
+				this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
+					.then(
+					(invoices: Array<Sale>) => {
+						if (invoices && invoices.length > 0) {
+							var invoice = invoices[0];
+							resolve({
+								invoice,
+								doRecalculate: invoice.state == 'current'
+							});
+						} else {
+							resolve({
+								invoice: createDefaultObject(posId, id),
+								doRecalculate: false
+							});
+						}
+					},
+					error => {
+						if (error.name == 'not_found') {
+							resolve({
+								invoice: createDefaultObject(posId, id),
+								doRecalculate: false
+							});
+						} else {
+							reject(error);
+						}
+					});
+			} else {
+				resolve({
+					invoice: createDefaultObject(posId, id),
+					doRecalculate: false
+				});
+			}
+		});
+
+		function createDefaultObject(posID: string, invoiceId: string) {
+			let sale: Sale = new Sale();
+
+			// This is piece of code temporary and used for setting dummy customer names for search
+			let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
+			sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
+			sale._id = invoiceId;
+			sale.posID = posID;
+			sale.subTotal = 0;
+			sale.taxTotal = 0;
+
+			return sale;
+		}
+	}
+
+	/**
+	 * Calculate Existing Sale
+	 * @param invoice 
+	 * @param priceBook 
+	 * @param salesTaxes 
+	 * @param defaultTax 
+	 */
+	public reCalculateInMemoryInvoice(invoice: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+		// re-calculate sale
+		let taxInclusive = this._user.settings.taxType;
+		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
+		return new Promise((resolve, reject) => {
+			// get account level tax
+			this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
+				.then((defaultTax: any) => {
+					invoice.items.forEach((item: BucketItem) => {
+						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
+						item.tax = _.pick(
+							item.priceBook.salesTaxId != null ?
+								_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax,
+							['rate', 'name']);
+						item.tax.amount = item.priceBook.inclusivePrice - item.priceBook.retailPrice;
+						item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
+						item.finalPrice = item.discount != 0 ?
+							this.calcService.calcItemDiscount(
+								item.discount,
+								item.actualPrice
+							) : item.actualPrice;
+					});
+					this.calculateSale(invoice);
+					resolve(invoice);
+				})
+				.catch(error => reject(error));
+		});
+	}
+
+	/**
 	 * Returns a bucket compatible item
 	 * @param item {PurchasableItem}
 	 * @return {BucketItem}
 	 */
-	public prepareBucketItem(item: any, tax?: number): BucketItem {
+	public prepareBucketItem(item: any): BucketItem {
 		let taxInclusive = this._user.settings.taxType;
 
 		let bucketItem = new BucketItem();
@@ -82,15 +175,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return bucketItem;
 	}
 
-	public initializeSalesData(invoiceParam: any): Observable<Array<any>> {
+	/**
+	 * Initialize Sales Page Data
+	 * @param _invoice 
+	 * @return {Observable}
+	 */
+	public initializeSalesData(_invoice: Sale): Observable<Array<any>> {
 		return Observable.forkJoin(
 			new Promise((resolve, reject) => {
-				if (invoiceParam) {
-					resolve(invoiceParam);
+				if (_invoice) {
+					resolve(_invoice);
 				} else {
 					this.instantiateInvoice(this.posService.getCurrentPosID())
-						.then((invoice: Sale) => {
-							resolve(invoice);
+						.then((data: any) => {
+							resolve(data);
 						}).catch((error) => reject(error));
 				}
 			}),
@@ -114,57 +212,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 					.catch(error => reject(error));
 			})
 		);
-	}
-
-	/**
-	 * Instantiate a default Sale Object
-	 * @return {Sale}
-	 */
-	public instantiateInvoice(posId: string): Promise<any> {
-		var tax = this.taxService.getTax() || 0;
-		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
-		return new Promise((resolve, reject) => {
-			if (posId) {
-				this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
-					.then(
-					docs => {
-						if (docs && docs.length > 0) {
-							var doc = docs[0];
-							if (doc) {
-								resolve(doc);
-							}
-						}
-
-						return resolve(createDefaultObject(posId, id));
-					},
-					error => {
-						if (error.name == 'not_found') {
-							resolve(createDefaultObject(posId, id));
-						} else {
-							throw new Error(error);
-						}
-					}
-					);
-			} else {
-				resolve(createDefaultObject(posId, id));
-			}
-		});
-
-		function createDefaultObject(posID: string, invoiceId: string) {
-			let sale: Sale = new Sale();
-
-			// This is piece of code temporary and used for setting dummy customer names for search
-			let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
-			sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
-
-			sale._id = invoiceId;
-			sale.posID = posID;
-			sale.subTotal = 0;
-			sale.tax = tax;
-			sale.taxTotal = 0;
-
-			return sale;
-		}
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
@@ -226,8 +273,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public manageInvoiceId(invoice: Sale) {
+		let invoiceId = localStorage.getItem('invoice_id');
 		if (invoice.items.length > 0) {
-			let invoiceId = localStorage.getItem('invoice_id');
 			invoiceId != invoice._id && (localStorage.setItem('invoice_id', invoice._id));
 		} else {
 			localStorage.removeItem('invoice_id');
@@ -252,32 +299,26 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public calculateSale(sale: Sale): any {
-		var tax = 0;
+	public calculateSale(sale: Sale) {
+		sale.subTotal = 0;
+		sale.taxTotal = 0;
+		sale.round = 0;
+		sale.totalDiscount = 0;
+		sale.tax = 0;
 		if (sale.items.length > 0) {
 			sale.subTotal = sale.totalDiscount = sale.taxTotal = 0;
 			sale.items.forEach((item: BucketItem) => {
 				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
 				sale.subTotal += discountedPrice * item.quantity;
-				tax += ((discountedPrice * (item.tax.rate / 100)) * item.quantity);
+				sale.tax += ((discountedPrice * (item.tax.rate / 100)) * item.quantity);
 				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
 				sale.taxTotal += discountedPrice * item.quantity;
 			});
-			// _.reduce(sale.items.map((selected) => Number(selected.tax.amount)), (sum, n) => sum + n, 0)
-			tax = this.helperService.round2Dec(tax);
+			sale.tax = this.helperService.round2Dec(sale.tax);
 			sale.taxTotal = this.helperService.round2Dec(sale.taxTotal);
 			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
 			sale.round = roundedTotal - sale.taxTotal;
 			sale.taxTotal = roundedTotal;
-		} else {
-			sale.subTotal = 0;
-			sale.taxTotal = 0;
-			sale.round = 0;
-			sale.totalDiscount = 0;
-		}
-
-		return {
-			tax
 		}
 	}
 }

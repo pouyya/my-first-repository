@@ -33,6 +33,7 @@ export class ServiceDetails {
 	public action = 'Add';
 	public selectedIcon: string = "";
 	public icons: any;
+	public disableDropdown: boolean = false;
 	public defaultPriceBook: InteractableItemPriceInterface = {
 		id: "",
 		tax: {},
@@ -190,9 +191,31 @@ export class ServiceDetails {
 	}
 
 	public onSalesTaxChange(itemPrice: InteractableItemPriceInterface) {
+		let oldPrice = itemPrice.item.inclusivePrice;
 		itemPrice.item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
 			Number(itemPrice.item.retailPrice), Number(itemPrice.tax.rate)
 		);
+		if (oldPrice != itemPrice.item.inclusivePrice) {
+			// update the price
+			this.disableDropdown = true;
+			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
+			let dBuffer = {
+				id: this.serviceItem._id,
+				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
+				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
+				supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
+				markup: Number(this.defaultPriceBook.item.markup),
+				salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
+				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
+			};
+
+			index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
+				this._defaultPriceBook.purchasableItems.push(dBuffer);
+
+			this.priceBookService.update(this._defaultPriceBook)
+				.then(() => this.disableDropdown = false)
+				.catch(() => this.disableDropdown = false);
+		}		
 	}
 
 	public onRetailPriceTaxInclusiveChange(itemPrice: InteractableItemPriceInterface) {

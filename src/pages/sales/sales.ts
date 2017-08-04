@@ -83,6 +83,8 @@ export class Sales {
         this.register.openingNote = openingNote;
         this.posService.update(this.register);
         _init = true;
+      } else {
+        this.cdr.reattach();
       }
     } else {
       _init = true;
@@ -129,9 +131,9 @@ export class Sales {
     let interactableItem: any = { ...item, tax: null, priceBook: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
     interactableItem.tax = _.pick(
-      interactableItem.priceBook.salesTaxId != null ? 
-      _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax, 
-      [ 'rate', 'name' ]);
+      interactableItem.priceBook.salesTaxId != null ?
+        _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
+      ['rate', 'name']);
     this.basketComponent.addItemToBasket(interactableItem);
   }
 
@@ -159,20 +161,36 @@ export class Sales {
 
   // Event
   public notify($event) {
-    if($event.clearSale) {
+    if ($event.clearSale) {
       this.invoiceParam = null;
-      
+
     }
   }
 
   private initSalePageData(): Promise<any> {
     return new Promise((res, rej) => {
       this.salesService.initializeSalesData(this.invoiceParam).subscribe((data: any) => {
-        this.invoice = data[0] as Sale;
+        let invoiceData = data[0] as any;
         this.salesTaxes = data[1] as Array<any>;
         this.priceBook = data[2] as PriceBook;
         this.defaultTax = data[3] as any;
-        res();
+        if(invoiceData.doRecalculate) {
+          this.salesService.reCalculateInMemoryInvoice(
+            /* Pass By Reference */
+            invoiceData.invoice,
+            this.priceBook,
+            this.salesTaxes,
+            this.defaultTax
+          ).then((_invoice: Sale) => {
+            this.invoice = _invoice;
+            this.salesService.update(this.invoice);
+            res();
+          })
+          .catch(error => rej(error));
+        } else {
+          this.invoice = invoiceData.invoice;
+          res();
+        }
       }, error => rej(error));
     });
   }
@@ -202,13 +220,37 @@ export class Sales {
   }
 
   public onSubmit() {
-    this.initSalePageData().then((response) => {
-      this.register.openTime = new Date().toISOString();
-      this.register.status = true;
-      this.register.openingAmount = Number(this.register.openingAmount);
-      this.posService.update(this.register);
-    }).catch((error) => {
-      throw new Error(error);
+    let loader = this.loading.create({
+      content: 'Opening Register..',
+    });
+
+    loader.present().then(() => {
+      this.cdr.detach();
+      var promises: Array<Promise<any>> = [
+        new Promise((resolve, reject) => {
+          this.categoryService.getAll().then((categories) => {
+            this.categories = categories;
+            this.loadCategoriesAssociation(categories);
+            resolve();
+          }).catch(error => reject(error));
+        }),
+        new Promise((resolve, reject) => {
+          this.initSalePageData().then((response) => {
+            this.register.openTime = new Date().toISOString();
+            this.register.status = true;
+            this.register.openingAmount = Number(this.register.openingAmount);
+            this.posService.update(this.register);
+            resolve();
+          }).catch(error => reject(error));
+        })
+      ];
+
+      Promise.all(promises).then(() => {
+        this.cdr.reattach();
+        loader.dismiss();
+      }).catch(error => {
+        throw new Error(error);
+      })
     });
   }
 }

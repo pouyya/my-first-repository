@@ -53,8 +53,8 @@
       </ion-col>
       <ion-col col-4>
         <basket class="basket-component" 
-          [_invoice]="invoice" 
-          [refund]="doRefund" 
+          [(_invoice)]="invoice" 
+          [refund]="doRefund"
           (paymentClicked)="paymentClicked($event)"
           (notify)="notify($event)">
         </basket>

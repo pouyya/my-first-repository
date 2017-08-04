@@ -25,7 +25,6 @@ export class PurchasableItemInfoComponent {
 
   public updatePrice(item: BucketItem) {
     item.finalPrice = Number(item.finalPrice);
-    item.finalPrice = item.isTaxIncl ? this.taxService.calculate(item.finalPrice, item.tax.rate) : item.finalPrice;
     item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
   }
 

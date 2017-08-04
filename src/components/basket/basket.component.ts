@@ -21,17 +21,26 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 })
 export class BasketComponent {
 
-  public invoice: Sale;
+  public _invoice: Sale;
   public tax: number = 0;
   public oldValue: number = 1;
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
 
+  set invoice(obj: Sale) {
+    this._invoice = obj;
+    this.invoiceChange.emit(obj);
+  }
+
+  get invoice() {
+    return this._invoice;
+  }
+
   @Input() refund: boolean;
   @Input('_invoice')
   set model(obj: Sale) {
-    this.invoice = obj;
+    this._invoice = obj;
     this.setBalance();
     this.invoice.completed = false;
     this.generatePaymentBtnText();
@@ -40,6 +49,7 @@ export class BasketComponent {
 
   @Output() paymentClicked = new EventEmitter<any>();
   @Output() notify = new EventEmitter<any>();
+  @Output('_invoiceChange') invoiceChange = new EventEmitter<Sale>();
 
   constructor(
     private salesService: SalesServices,
@@ -52,10 +62,9 @@ export class BasketComponent {
     private alertController: AlertController,
     private modalCtrl: ModalController,
     private navCtrl: NavController
-  ) {
-  }
+  ) { }
 
-  private setBalance() {
+  public setBalance() {
     if(!this.refund) {
       this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
         this.invoice.taxTotal - this.invoice.payments
@@ -77,9 +86,11 @@ export class BasketComponent {
   }
 
   public addItemToBasket(item: any) {
-    var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.priceBook.retailPrice));
+    var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
+      return (_item._id == item._id && _item.priceBook.retailPrice == item.priceBook.retailPrice)
+    });
     if(index === -1) {
-      let bucketItem: BucketItem = this.salesService.prepareBucketItem(item, this.tax);
+      let bucketItem: BucketItem = this.salesService.prepareBucketItem(item);
       this.invoice.items.push(bucketItem);
     } else {
       this.invoice.items[index].quantity++;
@@ -190,8 +201,7 @@ export class BasketComponent {
   }
 
   private calculateTotal(callback) {
-    let data = this.salesService.calculateSale(this.invoice);
-    this.tax = data.tax;
+    this.salesService.calculateSale(this.invoice);
     callback();
   }
 }
