@@ -124,7 +124,7 @@ export class BasketComponent {
 
 	private generatePaymentBtnText() {
     this.payBtnText = GlobalConstants.PAY_BTN
-		if(this.invoice.items.length > 0) {
+		if(this.invoice.items && this.invoice.items.length > 0) {
       this.disablePaymentBtn = false;
       if(this.balance == 0) {
         this.payBtnText = GlobalConstants.DONE_BTN
@@ -147,8 +147,8 @@ export class BasketComponent {
             {
               'text': 'OK',
               handler: () => {
-                this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
-                  this.invoice = invoice;
+                this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+                  this.invoice = invoice.invoice;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
                 });                
@@ -180,8 +180,8 @@ export class BasketComponent {
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
               localStorage.removeItem('invoice_id');
-              this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
-                this.invoice = invoice;
+              this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+                this.invoice = invoice.invoice;
                 this.calculateAndSync();
                 this.notify.emit({ clearSale: true });
               });

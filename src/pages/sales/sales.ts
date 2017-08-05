@@ -142,9 +142,9 @@ export class Sales {
     var pushCallback = (_params) => {
       return new Promise((resolve, reject) => {
         if (_params) {
-          this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: Sale) => {
+          this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
             this.invoiceParam = null;
-            this.invoice = invoice;
+            this.invoice = invoice.invoice;
           });
         }
         resolve();
@@ -188,7 +188,7 @@ export class Sales {
           })
           .catch(error => rej(error));
         } else {
-          this.invoice = invoiceData.invoice;
+          this.invoice = invoiceData.invoice ? invoiceData.invoice : invoiceData;
           res();
         }
       }, error => rej(error));
