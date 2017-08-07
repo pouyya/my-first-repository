@@ -134,7 +134,7 @@ export class Sales {
       interactableItem.priceBook.salesTaxId != null ?
         _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
       ['rate', 'name']);
-    this.basketComponent.addItemToBasket(interactableItem);
+    this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
   }
 
   // Event
@@ -174,7 +174,7 @@ export class Sales {
         this.salesTaxes = data[1] as Array<any>;
         this.priceBook = data[2] as PriceBook;
         this.defaultTax = data[3] as any;
-        if(invoiceData.doRecalculate) {
+        if (invoiceData.doRecalculate) {
           this.salesService.reCalculateInMemoryInvoice(
             /* Pass By Reference */
             invoiceData.invoice,
@@ -186,7 +186,7 @@ export class Sales {
             this.salesService.update(this.invoice);
             res();
           })
-          .catch(error => rej(error));
+            .catch(error => rej(error));
         } else {
           this.invoice = invoiceData.invoice ? invoiceData.invoice : invoiceData;
           res();

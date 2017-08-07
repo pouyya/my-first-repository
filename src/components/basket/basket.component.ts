@@ -85,16 +85,11 @@ export class BasketComponent {
     });
   }
 
-  public addItemToBasket(item: any) {
+  public addItemToBasket(item: BucketItem) {
     var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
-      return (_item._id == item._id && _item.priceBook.retailPrice == item.priceBook.retailPrice)
+      return (_item._id == item._id && _item.finalPrice == item.finalPrice)
     });
-    if(index === -1) {
-      let bucketItem: BucketItem = this.salesService.prepareBucketItem(item);
-      this.invoice.items.push(bucketItem);
-    } else {
-      this.invoice.items[index].quantity++;
-    }
+    index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
     this.calculateAndSync();
   }
 
