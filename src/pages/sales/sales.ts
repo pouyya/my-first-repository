@@ -104,7 +104,7 @@ export class Sales {
       loader.present().then(() => {
         this.initSalePageData().then(() => {
           this.cdr.reattach();
-          loader.dismiss();
+          loader.dismiss();       
         })
       });
     }

@@ -41,16 +41,15 @@
       <ion-col col-md-2>
         <ion-item item-content>
           <ion-label color="primary" stacked>Supply price</ion-label>
-          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.supplyPrice" (change)="onSupplyPriceChange(defaultPriceBook)">
-          </ion-input><br/>
-          <small>Excluding Tax</small>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.supplyPrice" (change)="calculate('supplyPrice', defaultPriceBook)">
+          </ion-input>
         </ion-item>
       </ion-col>
 
       <ion-col col-md-2>
         <ion-item item-content>
           <ion-label color="primary" stacked>x Markup (%)</ion-label>
-          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.markup" (change)="onMarkupChange(defaultPriceBook)">
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.markup" (change)="calculate('markup', defaultPriceBook)">
           </ion-input>
         </ion-item>
       </ion-col>
@@ -58,30 +57,25 @@
       <ion-col col-md-2>
         <ion-item item-content>
           <ion-label color="primary" stacked>= Retail Price (Encl.)</ion-label>
-          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.retailPrice" (change)="onRetailPriceChange(defaultPriceBook)"
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.retailPrice" (change)="calculate('retailPrice', defaultPriceBook)"
             required></ion-input>
-          <br/>
-          <small>Excluding Tax</small>
         </ion-item>
       </ion-col>
 
       <ion-col col-md-3>
         <ion-item item-content>
           <ion-label color="primary" stacked>+ Sales Tax</ion-label>
-          <ion-select [(ngModel)]="defaultPriceBook.tax" [disabled]="disableDropdown" (ionChange)="onSalesTaxChange(defaultPriceBook)">
+          <ion-select [(ngModel)]="defaultPriceBook.tax" (change)="calculate('salesTax', defaultPriceBook)">
             <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
-          </ion-select><br/>
-          <small>Currently</small>
+          </ion-select>
         </ion-item>
       </ion-col>
 
       <ion-col col-md-2>
         <ion-item item-content>
           <ion-label color="primary" stacked>= Retail Price (Incl.)</ion-label>
-          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.inclusivePrice" (change)="onRetailPriceTaxInclusiveChange(defaultPriceBook)">
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.inclusivePrice" (change)="calculate('inclusivePrice', defaultPriceBook)">
           </ion-input>
-          <br/>
-          <small>Including Tax</small>
         </ion-item>
       </ion-col>
     </ion-row>

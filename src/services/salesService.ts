@@ -5,7 +5,6 @@ import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
 import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
-import { AppSettingsService } from './appSettingsService';
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
@@ -33,7 +32,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private userService: UserService,
 		private zone: NgZone,
 		private cacheService: CacheService,
-		private appSettingsService: AppSettingsService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
@@ -103,7 +101,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			sale.posID = posID;
 			sale.subTotal = 0;
 			sale.taxTotal = 0;
-
+			sale.tax = 0;
 			return sale;
 		}
 	}
@@ -129,7 +127,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 							item.priceBook.salesTaxId != null ?
 								_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax,
 							['rate', 'name']);
-						item.tax.amount = item.priceBook.inclusivePrice - item.priceBook.retailPrice;
+						item.priceBook.inclusivePrice = this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate);
 						item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
 						item.finalPrice = item.discount != 0 ?
 							this.calcService.calcItemDiscount(
@@ -157,10 +155,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 		item._rev && (bucketItem._rev = item._rev);
 		bucketItem.name = item.name;
 		bucketItem.tax = {
-			...item.tax,
-			amount: item.priceBook.inclusivePrice - item.priceBook.retailPrice
+			...item.tax
 		};
 		bucketItem.priceBook = item.priceBook;
+		bucketItem.priceBook.inclusivePrice = this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate);
 		bucketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;
@@ -184,7 +182,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Observable.forkJoin(
 			new Promise((resolve, reject) => {
 				if (_invoice) {
-					resolve(_invoice);
+					resolve({
+						invoice: _invoice,
+						doRecalculate: false
+					});
 				} else {
 					this.instantiateInvoice(this.posService.getCurrentPosID())
 						.then((data: any) => {
@@ -194,7 +195,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			}),
 
 			new Promise((resolve, reject) => {
-				this.appSettingsService.loadSalesAndGroupTaxes()
+				this.salesTaxService.loadSalesAndGroupTaxes()
 					.then((salesTaxes: Array<any>) => resolve(salesTaxes))
 					.catch(error => reject(error));
 			}),

@@ -34,7 +34,7 @@ export class SaleTaxPage {
       }).catch((error) => {
         throw new Error(error);
       });
-    }).catch(console.error.bind(console));;
+    }).catch(console.error.bind(console));
   }
 
   public upsert(tax?: SalesTax) {

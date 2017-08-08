@@ -68,8 +68,6 @@ export class ServiceDetails {
 	}
 
 	ionViewDidLoad() {
-
-
 		this.platform.ready().then(() => {
 
 			let loader = this.loading.create({
@@ -105,7 +103,7 @@ export class ServiceDetails {
 						}).catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.appSettingsService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
+						this.salesTaxService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
 							_resolve(salesTaxes);
 						}).catch(error => _reject(error));
 					}),
@@ -167,65 +165,42 @@ export class ServiceDetails {
 		modal.present();
 	}
 
-	public onRetailPriceChange(itemPrice: InteractableItemPriceInterface) {
-		itemPrice.item.supplyPrice = 0;
-		itemPrice.item.markup = 0;
-		this.onSalesTaxChange(itemPrice);
+	public calculate(type, itemPrice: InteractableItemPriceInterface) {
+		this.zone.runOutsideAngular(() => {
+			switch (type) {
+				case 'supplyPrice':
+					itemPrice.item.markup = this.priceBookService.calculateMarkup(itemPrice.item.supplyPrice, itemPrice.item.retailPrice);
+					break;
+				case 'markup':
+					if (itemPrice.item.supplyPrice !== 0) {
+						itemPrice.item.retailPrice = this.priceBookService.calculateRetailPriceTaxInclusive(
+							Number(itemPrice.item.supplyPrice), Number(itemPrice.item.markup)
+						);
+						itemPrice.item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
+							Number(itemPrice.item.retailPrice), Number(itemPrice.tax.rate)
+						);
+					}
+					break;
+				case 'retailPrice':
+					itemPrice.item.markup = this.priceBookService.calculateMarkup(itemPrice.item.supplyPrice, itemPrice.item.retailPrice);
+					itemPrice.item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
+						Number(itemPrice.item.retailPrice), Number(itemPrice.tax.rate)
+					);
+					break;
+				case 'salesTax':
+					itemPrice.item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
+						Number(itemPrice.item.retailPrice), Number(itemPrice.tax.rate)
+					);
+					break;
+				case 'inclusivePrice':
+					itemPrice.item.retailPrice = this.priceBookService.calculateRetailPriceTaxExclusive(
+						Number(itemPrice.item.inclusivePrice), Number(itemPrice.tax.rate)
+					);
+					itemPrice.item.markup = this.priceBookService.calculateMarkup(itemPrice.item.supplyPrice, itemPrice.item.retailPrice);
+					break;
+			}
+		});
 	}
-
-	public onSupplyPriceChange(itemPrice: InteractableItemPriceInterface) {
-		itemPrice.item.retailPrice = itemPrice.item.markup > 0 ?
-			this.priceBookService.calculateRetailPriceTaxInclusive(
-				Number(itemPrice.item.supplyPrice), Number(itemPrice.item.markup)
-			) : Number(itemPrice.item.supplyPrice);
-		this.onSalesTaxChange(itemPrice);
-	}
-
-	public onMarkupChange(itemPrice: InteractableItemPriceInterface) {
-		if (itemPrice.item.supplyPrice > 0) {
-			itemPrice.item.retailPrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-				Number(itemPrice.item.supplyPrice), Number(itemPrice.item.markup)
-			);
-			this.onSalesTaxChange(itemPrice);
-		}
-	}
-
-	public onSalesTaxChange(itemPrice: InteractableItemPriceInterface) {
-		let oldPrice = itemPrice.item.inclusivePrice;
-		itemPrice.item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-			Number(itemPrice.item.retailPrice), Number(itemPrice.tax.rate)
-		);
-		if (oldPrice != itemPrice.item.inclusivePrice) {
-			// update the price
-			this.disableDropdown = true;
-			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
-			let dBuffer = {
-				id: this.serviceItem._id,
-				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
-				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
-				supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
-				markup: Number(this.defaultPriceBook.item.markup),
-				salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
-				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
-			};
-
-			index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
-				this._defaultPriceBook.purchasableItems.push(dBuffer);
-
-			this.priceBookService.update(this._defaultPriceBook)
-				.then(() => this.disableDropdown = false)
-				.catch(() => this.disableDropdown = false);
-		}		
-	}
-
-	public onRetailPriceTaxInclusiveChange(itemPrice: InteractableItemPriceInterface) {
-		itemPrice.item.supplyPrice = 0;
-		itemPrice.item.markup = 0;
-		itemPrice.item.retailPrice = this.priceBookService.calculateRetailPriceTaxExclusive(
-			Number(itemPrice.item.inclusivePrice), Number(itemPrice.tax.rate)
-		);
-	}
-
 
 	saveService() {
 		if (this.isNew) {
