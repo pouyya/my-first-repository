@@ -11,14 +11,20 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
   }
 
   public calculateRetailPriceTaxInclusive(retailPrice: number, tax: number): number {
+    return tax != 0 ? this.helperService.round10(
+      this.helperService.round2Dec((tax / 100) * retailPrice) + retailPrice, -1
+    ) : retailPrice;
+  }
+
+  public calculateRetailPriceTaxExclusive(retailPriceTaxInclusive: number, tax: number): number {
     return this.helperService.round10(
-      this.helperService.round2Dec(tax > 0 ? ((tax / 100) * retailPrice) + retailPrice : retailPrice), -1
+      this.helperService.round2Dec(retailPriceTaxInclusive / ((tax / 100) + 1)), -1
     );
   }
 
-  public calculateRetailPriceTaxExclusive(retailPriceTaxInclusive: number, tax: number) {
+  public calculateMarkup(supplyPrice: number, price: number): number {
     return this.helperService.round10(
-      this.helperService.round2Dec(retailPriceTaxInclusive / ((tax / 100) + 1)), -1
+      this.helperService.round2Dec((100 * (price - supplyPrice)) / supplyPrice), -1
     );
   }
 
