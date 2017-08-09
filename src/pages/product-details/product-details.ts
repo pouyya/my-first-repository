@@ -11,6 +11,8 @@ import { NavController, NavParams, ViewController, Platform, ModalController, Lo
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
+import { HelperService } from "../../services/helperService";
+import { AppService } from "../../services/appService";
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -54,6 +56,8 @@ export class ProductDetails {
 		private userService: UserService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
+		private helperService: HelperService,
+		private appService: AppService,
 		private platform: Platform,
 		private navParams: NavParams,
 		private loading: LoadingController,
@@ -100,7 +104,7 @@ export class ProductDetails {
 						}).catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.salesTaxService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
+						this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
 							_resolve(salesTaxes);
 						}).catch(error => _reject(error));
 					}),

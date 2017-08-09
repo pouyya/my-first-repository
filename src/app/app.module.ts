@@ -75,6 +75,7 @@ import { FountainService } from './../services/fountainService';
 import { PriceBookService } from './../services/priceBookService';
 import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
+import { AppService } from "../services/appService";
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -194,7 +195,8 @@ const cloudSettings: CloudSettings = {
     PriceBookService,
     SalesTaxService,
     GroupSalesTaxService,
-    AppSettingsService
+    AppSettingsService,
+    AppService
   ]
 })
 export class AppModule {}

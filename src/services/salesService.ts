@@ -16,6 +16,7 @@ import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
 import { PosService } from "./posService";
+import { AppService } from "./appService";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -28,6 +29,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private taxService: TaxService,
 		private posService: PosService,
 		private helperService: HelperService,
+		private appService: AppService,
 		private fountainService: FountainService,
 		private userService: UserService,
 		private zone: NgZone,
@@ -195,7 +197,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			}),
 
 			new Promise((resolve, reject) => {
-				this.salesTaxService.loadSalesAndGroupTaxes()
+				this.appService.loadSalesAndGroupTaxes()
 					.then((salesTaxes: Array<any>) => resolve(salesTaxes))
 					.catch(error => reject(error));
 			}),

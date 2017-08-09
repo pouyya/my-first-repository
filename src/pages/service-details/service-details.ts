@@ -12,6 +12,8 @@ import { NavController, NavParams, ViewController, Platform, ModalController, Lo
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from './../../metadata/itemIcons';
+import { HelperService } from "../../services/helperService";
+import { AppService } from "../../services/appService";
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -57,6 +59,8 @@ export class ServiceDetails {
 		private salesTaxService: SalesTaxService,
 		private userService: UserService,
 		private appSettingsService: AppSettingsService,
+		private helperService: HelperService,
+		private appService: AppService,
 		private navParams: NavParams,
 		private zone: NgZone,
 		private platform: Platform,
@@ -103,7 +107,7 @@ export class ServiceDetails {
 						}).catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.salesTaxService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
+						this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
 							_resolve(salesTaxes);
 						}).catch(error => _reject(error));
 					}),

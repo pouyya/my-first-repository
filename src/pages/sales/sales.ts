@@ -1,10 +1,7 @@
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, AlertController, LoadingController, ModalController, NavParams } from 'ionic-angular';
+import { NavController, LoadingController, NavParams } from 'ionic-angular';
 
-import { AppSettingsService } from './../../services/appSettingsService';
-import { SalesTaxService } from './../../services/salesTaxService';
-import { PriceBookService } from './../../services/priceBookService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
@@ -50,18 +47,13 @@ export class Sales {
 
   constructor(
     private navCtrl: NavController,
-    private modalCtrl: ModalController,
     private salesService: SalesServices,
     private categoryService: CategoryService,
-    private priceBookService: PriceBookService,
-    private salesTaxService: SalesTaxService,
-    private alertController: AlertController,
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private userService: UserService,
-    private appSettingsService: AppSettingsService
+    private userService: UserService
   ) {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
@@ -139,7 +131,7 @@ export class Sales {
 
   // Event
   public paymentClicked($event) {
-    var pushCallback = (_params) => {
+    let pushCallback = (_params) => {
       return new Promise((resolve, reject) => {
         if (_params) {
           this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
@@ -149,7 +141,7 @@ export class Sales {
         }
         resolve();
       });
-    }
+    };
 
     this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
@@ -185,8 +177,7 @@ export class Sales {
             this.invoice = _invoice;
             this.salesService.update(this.invoice);
             res();
-          })
-            .catch(error => rej(error));
+          }).catch(error => rej(error));
         } else {
           this.invoice = invoiceData.invoice ? invoiceData.invoice : invoiceData;
           res();
@@ -197,8 +188,8 @@ export class Sales {
 
   private loadCategoriesAssociation(categories: Array<any>) {
     return new Promise((resolve, reject) => {
-      var promiseCategories = new Array<Promise<any>>();
-      for (var categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
+      let promiseCategories: Array<Promise<any>> = [];
+      for (let categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
         promiseCategories.push(new Promise((resolveB, rejectB) => {
           if (categoryIndex === 0) {
             this.activeCategory = categories[categoryIndex];
@@ -226,7 +217,7 @@ export class Sales {
 
     loader.present().then(() => {
       this.cdr.detach();
-      var promises: Array<Promise<any>> = [
+      let promises: Array<Promise<any>> = [
         new Promise((resolve, reject) => {
           this.categoryService.getAll().then((categories) => {
             this.categories = categories;

@@ -2,7 +2,7 @@ import { GroupSalesTaxService } from './../../../services/groupSalesTaxService';
 import _ from 'lodash';
 import { SalesTax } from './../../../model/salesTax';
 import { SalesTaxService } from './../../../services/salesTaxService';
-import { Platform, NavController, AlertController, ToastController } from 'ionic-angular';
+import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { NavParams } from 'ionic-angular';
 import { GroupSaleTax } from './../../../model/groupSalesTax';
@@ -19,15 +19,14 @@ export class GroupSaleTaxDetailsPage {
   public isNew = true;
   public action = 'Add';
 
-  constructor(
-    private navParams: NavParams,
-    private platform: Platform,
-    private salesTaxService: SalesTaxService,
-    private groupSalesTaxService: GroupSalesTaxService,
-    private navCtrl: NavController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController
-  ) {
+  constructor(private navParams: NavParams,
+              private platform: Platform,
+              private salesTaxService: SalesTaxService,
+              private groupSalesTaxService: GroupSalesTaxService,
+              private navCtrl: NavController,
+              private alertCtrl: AlertController,
+              private toastCtrl: ToastController,
+              private loading: LoadingController) {
   }
 
   ionViewDidEnter() {
@@ -60,10 +59,10 @@ export class GroupSaleTaxDetailsPage {
       ];
 
       Promise.all(promises).then(() => {
-        if(!this.isNew && this.groupSalesTax.salesTaxes.length > 0) {
+        if (!this.isNew && this.groupSalesTax.salesTaxes.length > 0) {
           this.salesTaxes = this.salesTaxes.map((tax) => {
-            let item = _.find(this.groupSalesTax.salesTaxes, { _id: tax._id  });
-            if(item) {
+            let item = _.find(this.groupSalesTax.salesTaxes, { _id: tax._id });
+            if (item) {
               tax.checked = true;
               this.selectedSalesTaxes.push(tax);
             }
@@ -80,19 +79,19 @@ export class GroupSaleTaxDetailsPage {
   }
 
   public onSelect(event: any, item: any) {
-    if(event.checked) {
+    if (event.checked) {
       this.selectedSalesTaxes.push(item);
     } else {
-      let index = _.findIndex(this.selectedSalesTaxes, { _id: item._id  });
+      let index = _.findIndex(this.selectedSalesTaxes, { _id: item._id });
       this.selectedSalesTaxes.splice(index, 1);
     }
   }
 
   public upsert() {
     this.groupSalesTax.salesTaxes = this.selectedSalesTaxes.map((selected) => {
-      return { _id: selected._id  };
+      return { _id: selected._id };
     });
-    if(this.groupSalesTax.name && this.groupSalesTax.salesTaxes.length > 0) {
+    if (this.groupSalesTax.name && this.groupSalesTax.salesTaxes.length > 0) {
       this.groupSalesTax.rate = _.reduce(this.selectedSalesTaxes.map((selected) => Number(selected.rate)), (sum, n) => sum + n, 0);
       this.groupSalesTaxService[this.isNew ? 'add' : 'update'](this.groupSalesTax).then(() => {
         this.navCtrl.pop();
@@ -104,33 +103,46 @@ export class GroupSaleTaxDetailsPage {
         message: `Some fields are empty!`,
         duration: 3000
       });
-      toast.present();      
+      toast.present();
     }
   }
 
   public remove() {
     let confirm = this.alertCtrl.create({
-      title: 'Are you sure you want to delete it ?',
+      title: 'Are you sure you want to delete this tax group ?',
+      message: 'Deleting it will reset all products that are using it, to default tax. If this is default tax, then default tax will be set to \'No Tax 0%\' and products will be set to \'No Tax 0% as well\'',
       buttons: [
         {
           text: 'Yes',
           handler: () => {
-            let group = this.groupSalesTax;
-            this.groupSalesTaxService.delete(group).then(() => {
-              let toast = this.toastCtrl.create({
-                message: `${group.name} has been deleted successfully`,
-                duration: 3000
+            let loader = this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
+
+            loader.present().then(() => {
+              let group = this.groupSalesTax;
+              this.groupSalesTaxService.processDeletion(group).then(() => {
+                // if all processing done, then finally delete this tax
+                this.groupSalesTaxService.delete(group).then(() => {
+                  let toast = this.toastCtrl.create({
+                    message: `${group.name} has been deleted successfully`,
+                    duration: 3000
+                  });
+                  loader.dismiss();
+                  toast.present();
+                  this.navCtrl.pop();
+                }).catch(error => {
+                  throw new Error(error);
+                });
+              }).catch(error => {
+                throw new Error(error);
               });
-              toast.present();
-              this.navCtrl.pop();
-            }).catch(error => {
-              throw new Error(error);
-            });            
+            });
           }
         }, 'No'
       ]
     });
-    confirm.present();    
+    confirm.present();
   }
 
 }

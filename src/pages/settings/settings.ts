@@ -8,6 +8,8 @@ import { AppSettings } from './../../model/appSettings';
 import { AppSettingsService } from './../../services/appSettingsService';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
+import { HelperService } from "../../services/helperService";
+import { AppService } from "../../services/appService";
 
 @PageModule(() => SettingsModule)
 @Component({
@@ -31,6 +33,8 @@ export class Settings {
     private appSettingsService: AppSettingsService,
     private salesTaxService: SalesTaxService,
     private userService: UserService,
+    private helperService: HelperService,
+    private appService: AppService,
     private zone: NgZone,
     private toast: ToastController,
     private loading: LoadingController
@@ -45,7 +49,7 @@ export class Settings {
     this.platform.ready().then(() => {
       var promises: Array<Promise<any>> = [
         new Promise((resolve, reject) => {
-          this.salesTaxService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
+          this.appService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
             this.salesTaxes = taxes;
             resolve()
           }).catch(error => reject(error));
@@ -93,7 +97,7 @@ export class Settings {
         this.appSettingsService.update(this.setting).then(() => {
           this.currentTax = this.newTax
           // a weird hack
-          this.salesTaxService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
+          this.appService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
             this.salesTaxes = taxes;
             let user = this.userService.getLoggedInUser();
             user.settings.defaultTax = this.newTax._id;

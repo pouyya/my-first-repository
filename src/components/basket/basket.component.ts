@@ -1,14 +1,12 @@
-import { PosService } from './../../services/posService';
 import _ from 'lodash';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AlertController, ModalController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
-import { HelperService } from './../../services/helperService';
-import { FountainService } from './../../services/fountainService';
-import { Platform, AlertController, ModalController, NavController } from 'ionic-angular';
+import { PosService } from './../../services/posService';
 import { SalesServices } from './../../services/salesService';
 import { CalculatorService } from './../../services/calculatorService';
 import { TaxService } from './../../services/taxService';
 import { Sale } from './../../model/sale';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
@@ -38,6 +36,7 @@ export class BasketComponent {
   }
 
   @Input() refund: boolean;
+
   @Input('_invoice')
   set model(obj: Sale) {
     this._invoice = obj;
@@ -45,7 +44,10 @@ export class BasketComponent {
     this.invoice.completed = false;
     this.generatePaymentBtnText();
   }
-  get model(): Sale { return this.invoice; }
+
+  get model(): Sale {
+    return this.invoice;
+  }
 
   @Output() paymentClicked = new EventEmitter<any>();
   @Output() notify = new EventEmitter<any>();
@@ -53,27 +55,20 @@ export class BasketComponent {
 
   constructor(
     private salesService: SalesServices,
-    private taxService: TaxService,
-    private calcService: CalculatorService,
-    private fountainService: FountainService,
     private posService: PosService,
-    private platform: Platform,
-    private helper: HelperService,
     private alertController: AlertController,
-    private modalCtrl: ModalController,
-    private navCtrl: NavController
-  ) { }
+    private modalCtrl: ModalController) {}
 
   public setBalance() {
-    if(!this.refund) {
+    if (!this.refund) {
       this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
         this.invoice.taxTotal - this.invoice.payments
           .map(payment => payment.amount)
-          .reduce((a, b) => a + b) : this.invoice.taxTotal;      
+          .reduce((a, b) => a + b) : this.invoice.taxTotal;
     } else {
       this.balance = this.invoice.taxTotal;
     }
-    this.invoice.state  = this.balance > 0 ? 'current' : 'refund';
+    this.invoice.state = this.balance > 0 ? 'current' : 'refund';
   }
 
   private calculateAndSync() {
@@ -93,7 +88,7 @@ export class BasketComponent {
     this.calculateAndSync();
   }
 
-  public removeItem(item: BucketItem, $index) {
+  public removeItem($index) {
     this.invoice.items.splice($index, 1);
     this.calculateAndSync();
   }
@@ -117,19 +112,19 @@ export class BasketComponent {
     this.paymentClicked.emit({ balance: this.balance, operation: this.payBtnText });
   }
 
-	private generatePaymentBtnText() {
+  private generatePaymentBtnText() {
     this.payBtnText = GlobalConstants.PAY_BTN
-		if(this.invoice.items && this.invoice.items.length > 0) {
+    if (this.invoice.items && this.invoice.items.length > 0) {
       this.disablePaymentBtn = false;
-      if(this.balance == 0) {
+      if (this.balance == 0) {
         this.payBtnText = GlobalConstants.DONE_BTN
-      } else if(this.balance < 0) {
+      } else if (this.balance < 0) {
         this.payBtnText = GlobalConstants.RETURN_BTN;
       }
-		} else {
+    } else {
       this.disablePaymentBtn = true;
     }
-	}
+  }
 
   public parkSale() {
     let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
@@ -146,8 +141,7 @@ export class BasketComponent {
                   this.invoice = invoice.invoice;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
-                });                
-                // this.navCtrl.setRoot(this.navCtrl.getActive().component);
+                });
               }
             }
           ]
@@ -180,7 +174,6 @@ export class BasketComponent {
                 this.calculateAndSync();
                 this.notify.emit({ clearSale: true });
               });
-              // this.navCtrl.setRoot(this.navCtrl.getActive().component);
             }).catch((error) => console.log(new Error()));
           }
         },

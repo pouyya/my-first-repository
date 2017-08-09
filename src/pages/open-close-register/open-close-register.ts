@@ -1,24 +1,26 @@
-import { UserService } from './../../services/userService';
-import { Sale } from './../../model/sale';
-import { SalesServices } from './../../services/salesService';
-import { ClosureService } from './../../services/closureService';
-import { Closure } from './../../model/closure';
-import { Store } from './../../model/store';
-import { POS } from './../../model/pos';
-import { StoreService } from './../../services/storeService';
-import { PosService } from './../../services/posService';
 import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
+
+import { UserService } from './../../services/userService';
+import { SalesServices } from './../../services/salesService';
+import { ClosureService } from './../../services/closureService';
+import { PosService } from './../../services/posService';
+
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from "../../metadata/pageModule";
 import { Sales } from "./../sales/sales.ts";
+
+import { Sale } from './../../model/sale';
+import { Closure } from './../../model/closure';
+import { Store } from './../../model/store';
+import { POS } from './../../model/pos';
 
 @PageModule(() => SalesModule)
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',
   styleUrls: ['/pages/open-close-register.scss'],
-  providers: [SalesServices, ClosureService, StoreService, PosService]
+  providers: [SalesServices, ClosureService, PosService]
 })
 export class OpenCloseRegister {
 
@@ -33,14 +35,13 @@ export class OpenCloseRegister {
     total: 0
   };
   public openingPos: any = {
-    amount: 0,
+    amount: null,
     notes: null
   };
 
   constructor(
     private loading: LoadingController,
     private posService: PosService,
-    private storeService: StoreService,
     private closureService: ClosureService,
     private cdr: ChangeDetectorRef,
     private salesService: SalesServices,
@@ -69,7 +70,7 @@ export class OpenCloseRegister {
         console.error(new Error(error));
       });
 
-      var salesPromise = this.salesService.findCompletedByPosId(this.register._id, this.register.openTime).then((invoices: Array<Sale>) => {
+      let salesPromise = this.salesService.findCompletedByPosId(this.register._id, this.register.openTime).then((invoices: Array<Sale>) => {
         invoices.forEach((invoice) => {
           invoice.payments.forEach((payment) => {
             if (payment.type === 'credit_card') {
@@ -98,9 +99,9 @@ export class OpenCloseRegister {
   }
 
   public calculateDiff(type) {
-    var counted = type + 'Counted';
-    var difference = type + 'Difference';
-    this.closure[counted] = Number(this.closure[counted])
+    let counted = type + 'Counted';
+    let difference = type + 'Difference';
+    this.closure[counted] = Number(this.closure[counted]);
     this.closure[difference] = this.expected[type] - this.closure[counted];
     this.closure.totalCounted = Number(this.closure.ccCounted) + Number(this.closure.cashCounted);
     this.closure.totalDifference = this.expected.total - this.closure.totalCounted;
@@ -119,7 +120,7 @@ export class OpenCloseRegister {
         this.closure.closeTime = new Date().toISOString();
         this.closureService.add(this.closure).then(() => {
           this.register.status = false;
-          this.register.openingAmount = 0;
+          this.register.openingAmount = null;
           this.register.openTime = null;
           this.register.openingNote = null;
           this.showReport = true;

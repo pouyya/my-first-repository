@@ -66,7 +66,6 @@ export class SaleTaxDetails {
             });
 
             loader.present().then(() => {
-              loader.dismiss();
               let tax = this.tax;
               this.salesTaxService.processDeletion(tax).then(() => {
                 // if all processing done, then finally delete this tax

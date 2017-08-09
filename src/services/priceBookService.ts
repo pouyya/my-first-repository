@@ -1,12 +1,16 @@
-import { HelperService } from './helperService';
 import { Injectable, NgZone } from '@angular/core';
+import { HelperService } from './helperService';
 import { PriceBook } from './../model/priceBook';
 import { BaseEntityService } from './baseEntityService';
+import { PurchasableItemPriceInterface } from "../model/purchasableItemPrice.interface";
 
 @Injectable()
 export class PriceBookService extends BaseEntityService<PriceBook> {
 
-  constructor(private zone: NgZone, private helperService: HelperService) {
+  constructor(
+    private zone: NgZone,
+    private helperService: HelperService
+  ) {
     super(PriceBook, zone);
   }
 
@@ -57,6 +61,41 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
           }
         }
       }).then(data => resolve(data[0])).catch(error => reject(error));
+    });
+  }
+
+  /**
+   * Remove sales tax from price book before deletion
+   * @param taxId
+   * @returns {Promise<T>}
+   */
+  public setPriceBookItemTaxToDefault(taxId: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // default price book for now
+      this.findBy({
+        selector: {
+          priority: 0,
+          purchasableItems: {
+            $elemMatch: {
+              salesTaxId: { $eq: taxId }
+            }
+          }
+        }
+      }).then((priceBooks: Array<PriceBook>) => {
+        if (priceBooks.length > 0) {
+          let priceBook: PriceBook = priceBooks[0];
+          priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
+            if (item.salesTaxId == taxId) {
+              item.salesTaxId = null; // reset to default
+            }
+          });
+          this.update(priceBook)
+            .then(() => resolve())
+            .catch(error => reject(error));
+        } else {
+          resolve();
+        }
+      }).catch(error => reject(error));
     });
   }
 
