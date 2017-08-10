@@ -218,8 +218,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
-		var selector: any = { selector: { posID: posId } };
-		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime })
+		let selector: any = { selector: { posID: posId } };
+		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime });
 		return this.findBy(selector);
 	}
 

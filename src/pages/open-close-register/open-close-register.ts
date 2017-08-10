@@ -14,13 +14,14 @@ import { Sale } from './../../model/sale';
 import { Closure } from './../../model/closure';
 import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
+import { StoreService } from "../../services/storeService";
 
 @PageModule(() => SalesModule)
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',
   styleUrls: ['/pages/open-close-register.scss'],
-  providers: [SalesServices, ClosureService, PosService]
+  providers: [SalesServices, ClosureService, PosService, StoreService]
 })
 export class OpenCloseRegister {
 
@@ -39,16 +40,15 @@ export class OpenCloseRegister {
     notes: null
   };
 
-  constructor(
-    private loading: LoadingController,
-    private posService: PosService,
-    private closureService: ClosureService,
-    private cdr: ChangeDetectorRef,
-    private salesService: SalesServices,
-    private alertCtrl: AlertController,
-    private navCtrl: NavController,
-    private userService: UserService
-  ) {
+  constructor(private loading: LoadingController,
+              private posService: PosService,
+              private storeService: StoreService,
+              private closureService: ClosureService,
+              private cdr: ChangeDetectorRef,
+              private salesService: SalesServices,
+              private alertCtrl: AlertController,
+              private navCtrl: NavController,
+              private userService: UserService) {
     this.cdr.detach();
     this.showReport = false;
   }
@@ -59,41 +59,56 @@ export class OpenCloseRegister {
     });
 
     loader.present().then(() => {
-      var user = this.userService.getLoggedInUser();
-      this.register = user.currentPos;
-      this.store = user.currentStore;
-      var closuresPromise = this.closureService.getAllByPOSId(this.register._id).then((closures: Array<Closure>) => {
-        if (closures.length > 0) {
-          this.posClosures = closures;
-        }
-      }).catch((error) => {
-        console.error(new Error(error));
-      });
+      let user = this.userService.getLoggedInUser();
+      let promises: Array<Promise<any>> = [
+        this.posService.get(user.settings.currentPos),
+        this.storeService.get(user.settings.currentStore)
+      ];
 
-      let salesPromise = this.salesService.findCompletedByPosId(this.register._id, this.register.openTime).then((invoices: Array<Sale>) => {
-        invoices.forEach((invoice) => {
-          invoice.payments.forEach((payment) => {
-            if (payment.type === 'credit_card') {
-              this.expected.cc += Number(payment.amount);
-            }
-            if (payment.type === 'cash') {
-              this.expected.cash += Number(payment.amount);
-            }
+      Promise.all(promises).then((response) => {
+        this.register = response[0] as POS;
+        this.store = response[1] as Store;
+
+        promises = [
+          this.closureService.getAllByPOSId(this.register._id),
+          this.salesService.findCompletedByPosId(this.register._id, this.register.openTime)
+        ];
+
+        Promise.all(promises).then((response) => {
+          let closures = response[0] as Array<Closure>;
+          let invoices = response[1] as Array<Sale>;
+
+          closures.length > 0 && (this.posClosures = closures);
+
+          invoices.forEach((invoice) => {
+            invoice.payments.forEach((payment) => {
+              if (payment.type === 'credit_card') {
+                this.expected.cc += Number(payment.amount);
+              }
+              if (payment.type === 'cash') {
+                this.expected.cash += Number(payment.amount);
+              }
+            });
           });
 
+          this.expected.cash += this.register.openingAmount;
           this.expected.total = this.expected.cc + this.expected.cash;
+          
+          this.closure = new Closure();
+          this.closure.posId = this.register._id;
+          this.closure.posName = this.register.name;
+          this.closure.storeName = this.store.name;
+          this.calculateDiff('cash');
+          this.calculateDiff('cc');
+        }).catch(error => {
+          throw new Error(error);
+        }).then(() => {
+          this.cdr.reattach();
+          loader.dismiss();
         });
-      });
 
-      Promise.all([closuresPromise, salesPromise]).then(() => {
-        this.closure = new Closure();
-        this.closure.posId = this.register._id;
-        this.closure.posName = this.register.name;
-        this.closure.storeName = this.store.name;
-        this.calculateDiff('cash');
-        this.calculateDiff('cc');
-        this.cdr.reattach();
-        loader.dismiss();
+      }).catch(error => {
+        throw new Error(error);
       });
     });
   }
