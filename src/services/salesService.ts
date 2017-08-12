@@ -1,3 +1,4 @@
+import { RoundToPipe } from './../pipes/round.pipe';
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
 import { Injectable, NgZone } from '@angular/core';
@@ -36,7 +37,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private groupSalesTaxService: GroupSalesTaxService
+		private groupSalesTaxService: GroupSalesTaxService,
+		private roundToPipe: RoundToPipe
 	) {
 		super(Sale, zone);
 		this._user = this.userService.getLoggedInUser();
@@ -115,7 +117,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param salesTaxes 
 	 * @param defaultTax 
 	 */
-	public reCalculateInMemoryInvoice(invoice: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+	public reCalculateInMemoryInvoice(invoice: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any, pricesPlaceholder?: any): Promise<any> {
 		// re-calculate sale
 		let taxInclusive = this._user.settings.taxType;
 		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
@@ -137,7 +139,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 								item.actualPrice
 							) : item.actualPrice;
 					});
-					this.calculateSale(invoice);
+					this.calculateSale(invoice, pricesPlaceholder || null);
 					resolve(invoice);
 				})
 				.catch(error => reject(error));
@@ -302,26 +304,29 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public calculateSale(sale: Sale) {
+	public calculateSale(sale: Sale, placeholder?: any) {
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
 		sale.round = 0;
 		sale.totalDiscount = 0;
 		sale.tax = 0;
+		if(placeholder) {
+			placeholder.subTotal = 0;
+			placeholder.taxTotal = 0;
+		}
 		if (sale.items.length > 0) {
 			sale.subTotal = sale.totalDiscount = sale.taxTotal = 0;
 			sale.items.forEach((item: BucketItem) => {
 				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
 				sale.subTotal += discountedPrice * item.quantity;
-				sale.tax += ((discountedPrice * (item.tax.rate / 100)) * item.quantity);
+				if(placeholder) placeholder.subTotal += this.roundToPipe.transform(discountedPrice, 2) * item.quantity;
+				sale.tax += (discountedPrice * (item.tax.rate / 100)) * item.quantity;
+				if(placeholder) placeholder.tax += (this.roundToPipe.transform(discountedPrice, 2) * (item.tax.rate / 100)) * item.quantity;
 				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
 				sale.taxTotal += discountedPrice * item.quantity;
+				if(placeholder) placeholder.taxTotal += this.roundToPipe.transform(discountedPrice, 2) * item.quantity;
 			});
-			sale.tax = this.helperService.round2Dec(sale.tax);
-			sale.taxTotal = this.helperService.round2Dec(sale.taxTotal);
-			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
-			sale.round = roundedTotal - sale.taxTotal;
-			sale.taxTotal = roundedTotal;
+			sale.round = placeholder - sale.taxTotal;
 		}
 	}
 }

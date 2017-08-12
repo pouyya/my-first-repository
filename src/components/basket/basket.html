@@ -26,10 +26,10 @@
                 {{item.name}}
               </ion-col>
               <ion-col col-md-3 offset-md-3 class="pull-right">
-                <span>${{item.finalPrice * item.quantity | number : '1.2-2'}}</span>
+                <span>${{item.finalPrice * item.quantity | roundTo:2}}</span>
                 <br/>
                 <span *ngIf="item.actualPrice != item.finalPrice">
-                  <small><s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s></small>
+                  <small><s>${{item.actualPrice * item.quantity | roundTo:2}}</s></small>
                 </span>
               </ion-col>
               <ion-col col-md-1 class="pull-right">
@@ -53,18 +53,18 @@
     </ion-col>
     <ion-col col-md-3>Discount</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">
-      ${{0.00 | number : '1.2-2'}}
+      ${{0.00 | roundTo:2}}
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{pricesPlaceholder.subTotal | roundTo:2}}</ion-col>
 
     <ion-col col-md-3 [ngPlural]="invoice.items.length">
       <ng-template ngPluralCase="=0">Tax</ng-template>
       <ng-template ngPluralCase="=1">Total <small>({{invoice.items[0].tax.name}})</small></ng-template>
       <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} taxes)</small></ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.tax | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{pricesPlaceholder.tax | roundTo:2}}</ion-col>
 
     <ion-col col-md-12>
       <hr/>
@@ -74,13 +74,13 @@
       <ng-template ngPluralCase="=1">Total <small>(1 item)</small></ng-template>
       <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} items)</small></ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right" *ngIf="pricesPlaceholder.taxTotal > 0" >${{pricesPlaceholder.taxTotal}}</ion-col>
     <ion-col col-md-12 no-padding>
       <button ion-button danger block padding (click)="gotoPayment()" class="pay-button"
         [disabled]="disablePaymentBtn"
         [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
         <span class="button-inner pull-right" style="text-align: left">
-            {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
+            {{ payBtnText }} &nbsp;&nbsp; ${{balance | roundTo:2}}
         </span>
       </button>
     </ion-col>
