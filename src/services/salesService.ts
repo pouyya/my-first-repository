@@ -129,7 +129,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 							item.priceBook.salesTaxId != null ?
 								_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax,
 							['rate', 'name']);
-						item.priceBook.inclusivePrice = this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate);
+						item.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
 						item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
 						item.finalPrice = item.discount != 0 ?
 							this.calcService.calcItemDiscount(
@@ -160,7 +160,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			...item.tax
 		};
 		bucketItem.priceBook = item.priceBook;
-		bucketItem.priceBook.inclusivePrice = this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate);
+		bucketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
 		bucketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
 		bucketItem.quantity = 1;
 		bucketItem.discount = item.discount || 0;

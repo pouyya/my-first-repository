@@ -42,4 +42,8 @@ export class HelperService {
     return Math.round(value * 100) / 100;
   }
 
+  public round2Cents(value: number): number {
+    return this.decimalAdjust('round', value, -2);
+  }
+
 }
