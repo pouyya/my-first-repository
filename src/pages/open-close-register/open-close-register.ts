@@ -93,7 +93,7 @@ export class OpenCloseRegister {
 
           this.expected.cash += this.register.openingAmount;
           this.expected.total = this.expected.cc + this.expected.cash;
-
+          
           this.closure = new Closure();
           this.closure.posId = this.register._id;
           this.closure.posName = this.register.name;

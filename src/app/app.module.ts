@@ -54,7 +54,6 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
-import { RoundToPipe } from "../pipes/round.pipe";
 
 // services
 import { ProductService } from '../services/productService';
@@ -77,7 +76,6 @@ import { PriceBookService } from './../services/priceBookService';
 import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
-import { SharedModule } from "../modules/sharedModule";
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -134,7 +132,6 @@ const cloudSettings: CloudSettings = {
     BrowserAnimationsModule,
 
     // custom
-    SharedModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -199,8 +196,7 @@ const cloudSettings: CloudSettings = {
     SalesTaxService,
     GroupSalesTaxService,
     AppSettingsService,
-    AppService,
-    RoundToPipe
+    AppService
   ]
 })
 export class AppModule {}

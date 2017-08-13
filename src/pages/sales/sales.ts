@@ -44,11 +44,6 @@ export class Sales {
   private salesTaxes: Array<SalesTax>;
   private user: any;
   private defaultTax: any;
-  public pricesPlaceholder: any = {
-    subTotal: 0,
-    taxTotal: 0,
-    tax: 0
-  }  
 
   constructor(
     private navCtrl: NavController,
@@ -177,8 +172,7 @@ export class Sales {
             invoiceData.invoice,
             this.priceBook,
             this.salesTaxes,
-            this.defaultTax,
-            this.pricesPlaceholder
+            this.defaultTax
           ).then((_invoice: Sale) => {
             this.invoice = _invoice;
             this.salesService.update(this.invoice);

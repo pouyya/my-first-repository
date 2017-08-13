@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar hideBackButton="true">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -53,8 +53,7 @@
       </ion-col>
       <ion-col col-4>
         <basket class="basket-component" 
-          [(_invoice)]="invoice"
-          [(pricesPlaceholder)]="pricesPlaceholder"
+          [(_invoice)]="invoice" 
           [refund]="doRefund"
           (paymentClicked)="paymentClicked($event)"
           (notify)="notify($event)">

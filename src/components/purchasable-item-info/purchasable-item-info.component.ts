@@ -19,13 +19,13 @@ export class PurchasableItemInfoComponent {
   ) { }
 
   public calculateDiscount(item: BucketItem) {
-    item.discount = Number(item.discount);
+    item.discount = this.helperService.round2Dec(Number(item.discount));
     item.finalPrice = this.calcService.calcItemDiscount(item.discount, item.actualPrice);
   }
 
   public updatePrice(item: BucketItem) {
     item.finalPrice = Number(item.finalPrice);
-    item.discount = this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice)
+    item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
   }
 
   public addQuantity(item: BucketItem) {

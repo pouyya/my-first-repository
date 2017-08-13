@@ -26,7 +26,6 @@ export class BasketComponent {
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
 
-
   set invoice(obj: Sale) {
     this._invoice = obj;
     this.invoiceChange.emit(obj);
@@ -37,7 +36,6 @@ export class BasketComponent {
   }
 
   @Input() refund: boolean;
-  @Input() pricesPlaceholder: any;
 
   @Input('_invoice')
   set model(obj: Sale) {
@@ -191,7 +189,7 @@ export class BasketComponent {
   }
 
   private calculateTotal(callback) {
-    this.salesService.calculateSale(this.invoice, this.pricesPlaceholder);
+    this.salesService.calculateSale(this.invoice);
     callback();
   }
 }

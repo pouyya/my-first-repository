@@ -1,4 +1,3 @@
-import { RoundToPipe } from './../pipes/round.pipe';
 import { Injectable, NgZone } from '@angular/core';
 import { HelperService } from './helperService';
 import { PriceBook } from './../model/priceBook';
@@ -10,22 +9,27 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
 
   constructor(
     private zone: NgZone,
-    private helperService: HelperService,
-    private roundToPipe: RoundToPipe
+    private helperService: HelperService
   ) {
     super(PriceBook, zone);
   }
 
   public calculateRetailPriceTaxInclusive(retailPrice: number, tax: number): number {
-    return this.helperService.round10(tax != 0 ? ((tax / 100) * retailPrice) + retailPrice : retailPrice, -5);
+    return tax != 0 ? this.helperService.round10(
+      this.helperService.round2Dec((tax / 100) * retailPrice) + retailPrice, -1
+    ) : retailPrice;
   }
 
   public calculateRetailPriceTaxExclusive(retailPriceTaxInclusive: number, tax: number): number {
-    return this.helperService.round10(retailPriceTaxInclusive / ((tax / 100) + 1), -5);
+    return this.helperService.round10(
+      this.helperService.round2Dec(retailPriceTaxInclusive / ((tax / 100) + 1)), -1
+    );
   }
 
   public calculateMarkup(supplyPrice: number, price: number): number {
-    return this.helperService.round10((100 * (price - supplyPrice)) / supplyPrice, -5);
+    return this.helperService.round10(
+      this.helperService.round2Dec((100 * (price - supplyPrice)) / supplyPrice), -1
+    );
   }
 
   public getDefaultPriceBook(): Promise<any> {
