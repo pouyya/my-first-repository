@@ -148,7 +148,7 @@ export class OpenCloseRegister {
   }
 
   public onSubmit() {
-    this.navCtrl.push(Sales, { openingAmount: this.openingPos.amount, openingNotes: this.openingPos.notes });
+    this.navCtrl.setRoot(Sales, { openingAmount: this.openingPos.amount, openingNotes: this.openingPos.notes });
   }
 
 }
