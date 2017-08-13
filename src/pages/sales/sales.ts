@@ -64,42 +64,32 @@ export class Sales {
 
   ionViewDidLoad() {
 
-    let _init: boolean = false;
     if (!this.register.status) {
       let openingAmount: number = Number(this.navParams.get('openingAmount'));
       let openingNote: string = this.navParams.get('openingNotes');
-      if (openingAmount && openingAmount > 0) {
-        this.register.openTime = new Date().toISOString();
-        this.register.status = true;
-        this.register.openingAmount = Number(openingAmount);
-        this.register.openingNote = openingNote;
-        this.posService.update(this.register);
-        _init = true;
-      } else {
+      this.register.openTime = new Date().toISOString();
+      this.register.status = true;
+      this.register.openingAmount = Number(openingAmount);
+      this.register.openingNote = openingNote;
+      this.posService.update(this.register);
+    }
+
+    // load in parallel
+    this.categoryService.getAll().then((categories) => {
+      this.categories = categories;
+      this.loadCategoriesAssociation(categories);
+    });
+
+    let loader = this.loading.create({
+      content: 'Loading Register...',
+    });
+
+    loader.present().then(() => {
+      this.initSalePageData().then(() => {
         this.cdr.reattach();
-      }
-    } else {
-      _init = true;
-    }
-
-    if (_init) {
-      // load in parallel
-      this.categoryService.getAll().then((categories) => {
-        this.categories = categories;
-        this.loadCategoriesAssociation(categories);
-      });
-
-      let loader = this.loading.create({
-        content: 'Loading Register...',
-      });
-
-      loader.present().then(() => {
-        this.initSalePageData().then(() => {
-          this.cdr.reattach();
-          loader.dismiss();       
-        })
-      });
-    }
+        loader.dismiss();       
+      })
+    });
   }
 
   /**
