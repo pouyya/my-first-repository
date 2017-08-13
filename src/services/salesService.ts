@@ -110,12 +110,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	/**
 	 * Calculate Existing Sale
-	 * @param invoice 
+	 * @param sale 
 	 * @param priceBook 
 	 * @param salesTaxes 
 	 * @param defaultTax 
 	 */
-	public reCalculateInMemoryInvoice(invoice: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+	public reCalculateInMemoryInvoice(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
 		// re-calculate sale
 		let taxInclusive = this._user.settings.taxType;
 		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
@@ -123,7 +123,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			// get account level tax
 			this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
 				.then((defaultTax: any) => {
-					invoice.items.forEach((item: BucketItem) => {
+					sale.items.forEach((item: BucketItem) => {
 						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
 						item.tax = _.pick(
 							item.priceBook.salesTaxId != null ?
@@ -137,8 +137,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 								item.actualPrice
 							) : item.actualPrice;
 					});
-					this.calculateSale(invoice);
-					resolve(invoice);
+					this.calculateSale(sale);
+					resolve(sale);
 				})
 				.catch(error => reject(error));
 		});
@@ -177,15 +177,15 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	/**
 	 * Initialize Sales Page Data
-	 * @param _invoice 
+	 * @param sale 
 	 * @return {Observable}
 	 */
-	public initializeSalesData(_invoice: Sale): Observable<Array<any>> {
+	public initializeSalesData(sale: Sale): Observable<Array<any>> {
 		return Observable.forkJoin(
 			new Promise((resolve, reject) => {
-				if (_invoice) {
+				if (sale) {
 					resolve({
-						invoice: _invoice,
+						invoice: sale,
 						doRecalculate: false
 					});
 				} else {
@@ -275,10 +275,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 		});
 	}
 
-	public manageInvoiceId(invoice: Sale) {
+	public manageInvoiceId(sale: Sale) {
 		let invoiceId = localStorage.getItem('invoice_id');
-		if (invoice.items.length > 0) {
-			invoiceId != invoice._id && (localStorage.setItem('invoice_id', invoice._id));
+		if (sale.items.length > 0) {
+			invoiceId != sale._id && (localStorage.setItem('invoice_id', sale._id));
 		} else {
 			localStorage.removeItem('invoice_id');
 		}
@@ -309,17 +309,15 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.totalDiscount = 0;
 		sale.tax = 0;
 		if (sale.items.length > 0) {
-			sale.subTotal = sale.totalDiscount = sale.taxTotal = 0;
 			sale.items.forEach((item: BucketItem) => {
 				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
 				sale.subTotal += discountedPrice * item.quantity;
-				sale.tax += ((discountedPrice * (item.tax.rate / 100)) * item.quantity);
 				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
 				sale.taxTotal += discountedPrice * item.quantity;
 			});
-			sale.tax = this.helperService.round2Dec(sale.tax);
-			sale.taxTotal = this.helperService.round2Dec(sale.taxTotal);
-			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
+			sale.tax = this.helperService.round10(sale.taxTotal - sale.subTotal, -2);
+			sale.taxTotal = this.helperService.round10(sale.taxTotal, -2);
+			let roundedTotal = this.helperService.round10(sale.taxTotal, -2);
 			sale.round = roundedTotal - sale.taxTotal;
 			sale.taxTotal = roundedTotal;
 		}
