@@ -53,11 +53,12 @@ export class DeployPage {
 	loadUserInfoAndNavigateToHome() {
 		this.appSettingsService.get().then((setting: AppSettings) => {
 			if(setting)
-				{
-					let user = this.userService.getLoggedInUser();
-					user.settings.defaultTax = setting.defaultTax;
-					user.settings.taxType = setting.taxType;
-				}
+			{
+				let user = this.userService.getLoggedInUser();
+				user.settings.defaultTax = setting.defaultTax;
+				user.settings.taxType = setting.taxType;
+				this.userService.persistUser(user);
+			}
 			this.navCtrl.setRoot(HomePage);
 		});
 	}
