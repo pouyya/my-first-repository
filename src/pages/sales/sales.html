@@ -17,13 +17,13 @@
           <h5 text-center>Set an opening float to open the register and make sale</h5>
 
           <ion-label stacked>Opening Float</ion-label>
-          <ion-input type="text" placeholder="$0.00" [(ngModel)]="register.openingAmount" name="openingAmount" required></ion-input>
+          <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="register.openingAmount" name="openingAmount" required></ion-input>
 
           <ion-label color="primary" stacked>Notes <small>optional</small></ion-label>
           <ion-textarea placeholder="Enter Note" [(ngModel)]="register.openingNote" name="openingNote">
           </ion-textarea>
 
-          <button ion-button color="primary" block type="submit">
+          <button ion-button color="primary" [disabled]="!salesForm.form.valid" block type="submit">
             Open Register
           </button>
         </form>
@@ -52,7 +52,12 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket [_invoice]="invoice" [refund]="doRefund" class="basket-component" (paymentClicked)="paymentClicked($event)"></basket>
+        <basket class="basket-component" 
+          [(_invoice)]="invoice" 
+          [refund]="doRefund"
+          (paymentClicked)="paymentClicked($event)"
+          (notify)="notify($event)">
+        </basket>
       </ion-col>
     </ion-row>
   </ion-grid>

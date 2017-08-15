@@ -1,3 +1,10 @@
+export interface PageSettingsInterface {
+	title: string,
+	icon: string,
+	component: any,
+	pushNavigation?: boolean
+}
+
 export interface ModuleBase {
-    pages: Array<{title: string, icon: string, component: any}>;
+	pages: Array<PageSettingsInterface>;
 }

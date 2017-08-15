@@ -33,7 +33,7 @@
                 </span>
               </ion-col>
               <ion-col col-md-1 class="pull-right">
-                <ion-icon name="trash" class="clickable" (click)="removeItem(item, $index)"></ion-icon>
+                <ion-icon name="trash" class="clickable" (click)="removeItem($index)"></ion-icon>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -53,19 +53,27 @@
     </ion-col>
     <ion-col col-md-3>Discount</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">
-      ${{invoice.totalDiscount | number : '1.2-2'}}
+      ${{0.00 | number : '1.2-2'}}
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-3>Tax (GST {{tax}}%)</ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal - invoice.subTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 [ngPlural]="invoice.items.length">
+      <ng-template ngPluralCase="=0">Tax</ng-template>
+      <ng-template ngPluralCase="=1">Total <small>({{invoice.items[0].tax.name}})</small></ng-template>
+      <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} taxes)</small></ng-template>
+    </ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.tax | number : '1.2-2'}}</ion-col>
 
     <ion-col col-md-12>
       <hr/>
     </ion-col>
-    <ion-col col-md-3>Total</ion-col>
+    <ion-col col-md-3 [ngPlural]="invoice.items.length">
+      <ng-template ngPluralCase="=0">Total <small>(no items)</small></ng-template>
+      <ng-template ngPluralCase="=1">Total <small>(1 item)</small></ng-template>
+      <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} items)</small></ng-template>
+    </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-12 no-padding>
       <button ion-button danger block padding (click)="gotoPayment()" class="pay-button"

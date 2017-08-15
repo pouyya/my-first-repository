@@ -1,8 +1,18 @@
-<ion-menu [content]="content" side="left">
+<ion-menu [content]="content" side="left" enable-menu-with-back-views="true">
 
   <ion-header *ngIf="moduleName == 'BackOfficeModule'">
     <ion-toolbar>
       <ion-title>Simple Cuts</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-header *ngIf="moduleName == 'SettingsModule'">
+    <ion-toolbar>
+      <ion-title>Settings</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-header *ngIf="moduleName == 'SalesTaxModule'">
+    <ion-toolbar>
+      <ion-title>Sales Tax</ion-title>
     </ion-toolbar>
   </ion-header>
 

@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">General Sales Tax</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="upsert()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list inset *ngFor="let tax of salesTaxes ; let idx = index">
+    <ion-item-sliding class="sliding" cancelable=false>
+      <ion-item (click)="upsert(tax)">
+        <h2 class="item-title">{{tax.name}} <small>(%{{tax.rate}})</small></h2>
+      </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

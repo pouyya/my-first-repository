@@ -1,30 +1,45 @@
+import _ from 'lodash';
+import { Observable } from "rxjs/Rx";
+import { Injectable, NgZone } from '@angular/core';
+import { GroupSalesTaxService } from './groupSalesTaxService';
+import { SalesTaxService } from './salesTaxService';
+import { PriceBook } from './../model/priceBook';
+import { PriceBookService } from './priceBookService';
+import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
-import _ from 'lodash';
 import { BucketItem } from './../model/bucketItem';
-import { PurchasableItem } from './../model/purchasableItem';
-import { Injectable, NgZone } from '@angular/core';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
 import { PosService } from "./posService";
+import { AppService } from "./appService";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
+
+	private _user: any;
+
 	constructor(
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private posService: PosService,
 		private helperService: HelperService,
+		private appService: AppService,
 		private fountainService: FountainService,
+		private userService: UserService,
 		private zone: NgZone,
-		private cacheService: CacheService 
+		private cacheService: CacheService,
+		private priceBookService: PriceBookService,
+		private salesTaxService: SalesTaxService,
+		private groupSalesTaxService: GroupSalesTaxService
 	) {
 		super(Sale, zone);
+		this._user = this.userService.getLoggedInUser();
 	}
 
 	/**
@@ -37,60 +52,44 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	/**
-	 * Returns a bucket compatible item
-	 * @param item {PurchasableItem}
-	 * @return {BucketItem}
-	 */
-	public prepareBucketItem(item: PurchasableItem): BucketItem {
-		let bucketItem = new BucketItem();
-		bucketItem._id = item._id;
-		item._rev && (bucketItem._rev = item._rev);
-		bucketItem.name = item.name;
-		bucketItem.actualPrice = typeof item.price != 'number' ?
-			parseInt(item.price) : item.price;
-		bucketItem.quantity = 1;
-		bucketItem.discount = item.discount || 0;
-		bucketItem.finalPrice = bucketItem.discount > 0 ?
-			this.calcService.calcItemDiscount(
-				bucketItem.discount,
-				bucketItem.actualPrice
-			) :
-			bucketItem.actualPrice;
-
-		return bucketItem;
-	}
-
-	/**
 	 * Instantiate a default Sale Object
-	 * @return {Sale}
+	 * @return {Promise<Sale>}
 	 */
 	public instantiateInvoice(posId: string): Promise<any> {
-		var tax = this.taxService.getTax() || 0;
 		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
 		return new Promise((resolve, reject) => {
 			if (posId) {
-				this.findBy({ selector: { _id: id, posID: posId, state: { $in: [ 'current', 'refund' ] } }, include_docs: true })
+				this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
 					.then(
-					docs => {
-						if (docs && docs.length > 0) {
-							var doc = docs[0];
-							if (doc) {
-								resolve(doc);
-							}
+					(invoices: Array<Sale>) => {
+						if (invoices && invoices.length > 0) {
+							var invoice = invoices[0];
+							resolve({
+								invoice,
+								doRecalculate: invoice.state == 'current'
+							});
+						} else {
+							resolve({
+								invoice: createDefaultObject(posId, id),
+								doRecalculate: false
+							});
 						}
-
-						return resolve(createDefaultObject(posId, id));
 					},
 					error => {
 						if (error.name == 'not_found') {
-							resolve(createDefaultObject(posId, id));
+							resolve({
+								invoice: createDefaultObject(posId, id),
+								doRecalculate: false
+							});
 						} else {
-							throw new Error(error);
+							reject(error);
 						}
-					}
-					);
+					});
 			} else {
-				resolve(createDefaultObject(posId, id));
+				resolve({
+					invoice: createDefaultObject(posId, id),
+					doRecalculate: false
+				});
 			}
 		});
 
@@ -100,20 +99,127 @@ export class SalesServices extends BaseEntityService<Sale> {
 			// This is piece of code temporary and used for setting dummy customer names for search
 			let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
 			sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
-
 			sale._id = invoiceId;
 			sale.posID = posID;
 			sale.subTotal = 0;
-			sale.tax = tax;
 			sale.taxTotal = 0;
-
+			sale.tax = 0;
 			return sale;
 		}
 	}
 
+	/**
+	 * Calculate Existing Sale
+	 * @param sale 
+	 * @param priceBook 
+	 * @param salesTaxes 
+	 * @param defaultTax 
+	 */
+	public reCalculateInMemoryInvoice(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+		// re-calculate sale
+		let taxInclusive = this._user.settings.taxType;
+		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
+		return new Promise((resolve, reject) => {
+			// get account level tax
+			this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
+				.then((defaultTax: any) => {
+					sale.items.forEach((item: BucketItem) => {
+						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
+						item.tax = _.pick(
+							item.priceBook.salesTaxId != null ?
+								_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax,
+							['rate', 'name']);
+						item.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
+						item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
+						item.finalPrice = item.discount != 0 ?
+							this.calcService.calcItemDiscount(
+								item.discount,
+								item.actualPrice
+							) : item.actualPrice;
+					});
+					this.calculateSale(sale);
+					resolve(sale);
+				})
+				.catch(error => reject(error));
+		});
+	}
+
+	/**
+	 * Returns a bucket compatible item
+	 * @param item {PurchasableItem}
+	 * @return {BucketItem}
+	 */
+	public prepareBucketItem(item: any): BucketItem {
+		let taxInclusive = this._user.settings.taxType;
+
+		let bucketItem = new BucketItem();
+		bucketItem._id = item._id;
+		item._rev && (bucketItem._rev = item._rev);
+		bucketItem.name = item.name;
+		bucketItem.tax = {
+			...item.tax
+		};
+		bucketItem.priceBook = item.priceBook;
+		bucketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
+		bucketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
+		bucketItem.quantity = 1;
+		bucketItem.discount = item.discount || 0;
+		bucketItem.finalPrice = bucketItem.discount > 0 ?
+			this.calcService.calcItemDiscount(
+				bucketItem.discount,
+				bucketItem.actualPrice
+			) :
+			bucketItem.actualPrice;
+		bucketItem.isTaxIncl = taxInclusive;
+
+		return bucketItem;
+	}
+
+	/**
+	 * Initialize Sales Page Data
+	 * @param sale 
+	 * @return {Observable}
+	 */
+	public initializeSalesData(sale: Sale): Observable<Array<any>> {
+		return Observable.forkJoin(
+			new Promise((resolve, reject) => {
+				if (sale) {
+					resolve({
+						invoice: sale,
+						doRecalculate: false
+					});
+				} else {
+					this.instantiateInvoice(this.posService.getCurrentPosID())
+						.then((data: any) => {
+							resolve(data);
+						}).catch((error) => reject(error));
+				}
+			}),
+
+			new Promise((resolve, reject) => {
+				this.appService.loadSalesAndGroupTaxes()
+					.then((salesTaxes: Array<any>) => resolve(salesTaxes))
+					.catch(error => reject(error));
+			}),
+
+			new Promise((resolve, reject) => {
+				this.priceBookService.getPriceBookByCriteria()
+					.then((priceBook: PriceBook) => resolve(priceBook))
+					.catch(error => reject(error));
+			}),
+
+			new Promise((resolve, reject) => {
+				let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
+				this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
+					.then((tax: any) => resolve(tax))
+					.catch(error => reject(error));
+			})
+		);
+	}
+
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
-		var selector: any = { selector: { posID: posId } };
-		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime })
+		let selector: any = { selector: { posID: posId } };
+		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime });
 		return this.findBy(selector);
 	}
 
@@ -143,7 +249,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				selector: { posID: posId }
 			};
 			_.each(options, (value, key) => {
-				if(value) {
+				if (value) {
 					query.selector[key] = _.isArray(value) ? { $in: value } : value;
 				}
 			});
@@ -152,8 +258,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 			var countQuery = { ...query };
 			query.limit = limit;
 			query.offset = offset;
-			query.sort = [{_id: 'desc'}];
-			
+			query.sort = [{ _id: 'desc' }];
+
 			var promises: Array<Promise<any>> = [
 				new Promise((_resolve, _reject) => {
 					this.findBy(countQuery).then((data) => _resolve(data.length));
@@ -169,13 +275,13 @@ export class SalesServices extends BaseEntityService<Sale> {
 		});
 	}
 
-	public manageInvoiceId(invoice: Sale) {
-    if(invoice.items.length > 0) {
-      let invoiceId = localStorage.getItem('invoice_id');
-      invoiceId != invoice._id && (localStorage.setItem('invoice_id', invoice._id));
-    } else {
-      localStorage.removeItem('invoice_id');
-    }
+	public manageInvoiceId(sale: Sale) {
+		let invoiceId = localStorage.getItem('invoice_id');
+		if (sale.items.length > 0) {
+			invoiceId != sale._id && (localStorage.setItem('invoice_id', sale._id));
+		} else {
+			localStorage.removeItem('invoice_id');
+		}
 	}
 
 	public instantiateRefundSale(originalSale: Sale): Sale {
@@ -184,9 +290,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.posID = originalSale.posID;
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {
-      item.quantity > 0 && (item.quantity *= -1);
-      return item;
-    });
+			item.quantity > 0 && (item.quantity *= -1);
+			return item;
+		});
 		sale.completed = false;
 		sale.customerName = originalSale.customerName;
 		sale.state = 'refund';
@@ -196,22 +302,24 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public calculateSale(sale: Sale): void {
+	public calculateSale(sale: Sale) {
+		sale.subTotal = 0;
+		sale.taxTotal = 0;
+		sale.round = 0;
+		sale.totalDiscount = 0;
+		sale.tax = 0;
 		if (sale.items.length > 0) {
-			sale.subTotal = sale.totalDiscount = 0;
-			sale.items.forEach(item => {
-				sale.subTotal += (item.finalPrice * item.quantity);
-				sale.totalDiscount += ((item.actualPrice - item.finalPrice) * item.quantity);
+			sale.items.forEach((item: BucketItem) => {
+				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
+				sale.subTotal += discountedPrice * item.quantity;
+				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
+				sale.taxTotal += discountedPrice * item.quantity;
 			});
-			sale.taxTotal = this.helperService.round2Dec(this.taxService.calculate(sale.subTotal));
-			let roundedTotal = this.helperService.round10(sale.taxTotal, -1);
+			sale.tax = this.helperService.round10(sale.taxTotal - sale.subTotal, -2);
+			sale.taxTotal = this.helperService.round10(sale.taxTotal, -2);
+			let roundedTotal = this.helperService.round10(sale.taxTotal, -2);
 			sale.round = roundedTotal - sale.taxTotal;
 			sale.taxTotal = roundedTotal;
-		} else {
-			sale.subTotal = 0;
-			sale.taxTotal = 0;
-			sale.round = 0;
-			sale.totalDiscount = 0;
-		}	
+		}
 	}
 }

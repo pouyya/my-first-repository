@@ -1,4 +1,4 @@
-import { SPIconModule } from './../components/sp-icon/sp-icon.module';
+import { AppSettingsService } from './../services/appSettingsService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -39,12 +39,18 @@ import { StoreDetailsPage } from './../pages/store-details/store-details';
 import { SalesHistoryPage } from './../pages/sales-history/sales-history';
 import { ItemInfoModal } from './../components/basket/item-info-modal/item-info';
 import { CategoryIconSelectModal } from './../pages/category-details/modals/category-icon-select/category-icon-select';
+import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details/group-sale-tax-details';
+import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
+import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
+import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
 import { IconSelectModule } from './../components/icon-select/icon-select.module';
+import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
+import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -66,6 +72,10 @@ import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
 import { CacheService } from "../services/cacheService";
 import { FountainService } from './../services/fountainService';
+import { PriceBookService } from './../services/priceBookService';
+import { GroupSalesTaxService } from './../services/groupSalesTaxService';
+import { SalesTaxService } from './../services/salesTaxService';
+import { AppService } from "../services/appService";
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -100,6 +110,10 @@ const cloudSettings: CloudSettings = {
     SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
+    SaleTaxPage,
+    SaleTaxDetails,
+    GroupSaleTaxPage,
+    GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     KeysPipe
   ],
@@ -122,7 +136,8 @@ const cloudSettings: CloudSettings = {
     BasketModule,
     PurchasableItemInfoModule,
     IconSelectModule,
-    SPIconModule
+    SPIconModule,
+    ItemPriceBookModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -151,6 +166,10 @@ const cloudSettings: CloudSettings = {
     SalesHistoryPage,
     SwitchPosModal,
     ItemInfoModal,
+    SaleTaxPage,
+    SaleTaxDetails,
+    GroupSaleTaxPage,
+    GroupSaleTaxDetailsPage,
     CategoryIconSelectModal
   ],
   providers: [
@@ -172,7 +191,12 @@ const cloudSettings: CloudSettings = {
     UserService,
     UserSettingsService,
     CacheService,
-    FountainService
+    FountainService,
+    PriceBookService,
+    SalesTaxService,
+    GroupSalesTaxService,
+    AppSettingsService,
+    AppService
   ]
 })
 export class AppModule {}

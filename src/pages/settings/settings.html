@@ -4,25 +4,27 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title style="text-Align:center">Settings</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="save()">
+        Save
+      </button>
+    </ion-buttons>    
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <div class="btn-container">
-    <div class="custom-btn" >
-      <button ion-button block large (click)="onProducts()">PRODUCTS</button>
-    </div>
-    <div class="custom-btn" >
-      <button ion-button block large (click)="onService()">SERVICES</button>
-    </div>
-    <div class="custom-btn" >
-      <button ion-button block large (click)="onInventory()">CATEGORIES</button>
-    </div>
-    <div class="custom-btn">
-      <button ion-button block large (click)="onStores()">STORES</button>
-    </div>
-    <div class="custom-btn">
-      <button ion-button block large (click)="onEmployees()">Employees</button>
-    </div>    
-  </div>
+  <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">Tax Default</ion-label>
+        <ion-select [(ngModel)]="selectedTax" name="salesTax">
+          <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{tax.name}} ({{ tax.noOfTaxes ? tax.noOfTaxes + ' taxes' : '%'+tax.rate  }})</ion-option>
+        </ion-select>      
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Tax Type</ion-label>
+        <ion-select [(ngModel)]="selectedType" name="taxType">
+          <ion-option [value]="type._id" *ngFor="let type of taxTypes">{{type.type}}</ion-option>
+        </ion-select>      
+    </ion-item>
+  </ion-list>
 </ion-content>

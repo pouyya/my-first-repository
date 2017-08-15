@@ -1,14 +1,12 @@
 import _ from 'lodash';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AlertController, ModalController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
-import { HelperService } from './../../services/helperService';
-import { FountainService } from './../../services/fountainService';
-import { Platform, AlertController, ModalController, NavController } from 'ionic-angular';
+import { PosService } from './../../services/posService';
 import { SalesServices } from './../../services/salesService';
 import { CalculatorService } from './../../services/calculatorService';
 import { TaxService } from './../../services/taxService';
 import { Sale } from './../../model/sale';
-import { PurchasableItem } from './../../model/purchasableItem';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
@@ -21,49 +19,56 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 })
 export class BasketComponent {
 
-  public invoice: Sale;
-  public tax: number;
+  public _invoice: Sale;
+  public tax: number = 0;
   public oldValue: number = 1;
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
 
+  set invoice(obj: Sale) {
+    this._invoice = obj;
+    this.invoiceChange.emit(obj);
+  }
+
+  get invoice() {
+    return this._invoice;
+  }
+
   @Input() refund: boolean;
+
   @Input('_invoice')
   set model(obj: Sale) {
-    this.invoice = obj;
+    this._invoice = obj;
     this.setBalance();
     this.invoice.completed = false;
     this.generatePaymentBtnText();
   }
-  get model(): Sale { return this.invoice; }
+
+  get model(): Sale {
+    return this.invoice;
+  }
 
   @Output() paymentClicked = new EventEmitter<any>();
+  @Output() notify = new EventEmitter<any>();
+  @Output('_invoiceChange') invoiceChange = new EventEmitter<Sale>();
 
   constructor(
     private salesService: SalesServices,
-    private taxService: TaxService,
-    private calcService: CalculatorService,
-    private fountainService: FountainService,
-    private platform: Platform,
-    private helper: HelperService,
+    private posService: PosService,
     private alertController: AlertController,
-    private modalCtrl: ModalController,
-    private navCtrl: NavController
-  ) {
-    this.tax = this.taxService.getTax();
-  }
+    private modalCtrl: ModalController) {}
 
-  private setBalance() {
-    if(!this.refund) {
+  public setBalance() {
+    if (!this.refund) {
       this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
         this.invoice.taxTotal - this.invoice.payments
           .map(payment => payment.amount)
-          .reduce((a, b) => a + b) : this.invoice.taxTotal;      
+          .reduce((a, b) => a + b) : this.invoice.taxTotal;
     } else {
       this.balance = this.invoice.taxTotal;
     }
-    this.invoice.state  = this.balance > 0 ? 'current' : 'refund';
+    this.invoice.state = this.balance > 0 ? 'current' : 'refund';
   }
 
   private calculateAndSync() {
@@ -75,18 +80,15 @@ export class BasketComponent {
     });
   }
 
-  public addItemToBasket(item: PurchasableItem) {
-    var index = _.findIndex(this.invoice.items, (_item) => (_item._id == item._id &&_item.finalPrice == item.price));
-    if(index === -1) {
-      let bucketItem = this.salesService.prepareBucketItem(item);
-      this.invoice.items.push(bucketItem);
-    } else {
-      this.invoice.items[index].quantity++;
-    }
+  public addItemToBasket(item: BucketItem) {
+    var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
+      return (_item._id == item._id && _item.finalPrice == item.finalPrice)
+    });
+    index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
     this.calculateAndSync();
   }
 
-  public removeItem(item: BucketItem, $index) {
+  public removeItem($index) {
     this.invoice.items.splice($index, 1);
     this.calculateAndSync();
   }
@@ -110,19 +112,19 @@ export class BasketComponent {
     this.paymentClicked.emit({ balance: this.balance, operation: this.payBtnText });
   }
 
-	private generatePaymentBtnText() {
+  private generatePaymentBtnText() {
     this.payBtnText = GlobalConstants.PAY_BTN
-		if(this.invoice.items.length > 0) {
+    if (this.invoice.items && this.invoice.items.length > 0) {
       this.disablePaymentBtn = false;
-      if(this.balance == 0) {
+      if (this.balance == 0) {
         this.payBtnText = GlobalConstants.DONE_BTN
-      } else if(this.balance < 0) {
+      } else if (this.balance < 0) {
         this.payBtnText = GlobalConstants.RETURN_BTN;
       }
-		} else {
+    } else {
       this.disablePaymentBtn = true;
     }
-	}
+  }
 
   public parkSale() {
     let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
@@ -135,7 +137,11 @@ export class BasketComponent {
             {
               'text': 'OK',
               handler: () => {
-                this.navCtrl.setRoot(this.navCtrl.getActive().component);
+                this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+                  this.invoice = invoice.invoice;
+                  this.calculateAndSync();
+                  this.notify.emit({ clearSale: true });
+                });
               }
             }
           ]
@@ -163,7 +169,11 @@ export class BasketComponent {
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
               localStorage.removeItem('invoice_id');
-              this.navCtrl.setRoot(this.navCtrl.getActive().component);
+              this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+                this.invoice = invoice.invoice;
+                this.calculateAndSync();
+                this.notify.emit({ clearSale: true });
+              });
             }).catch((error) => console.log(new Error()));
           }
         },
@@ -179,9 +189,7 @@ export class BasketComponent {
   }
 
   private calculateTotal(callback) {
-    setTimeout(() => {
-      this.salesService.calculateSale(this.invoice);
-      callback();
-    }, 0);
+    this.salesService.calculateSale(this.invoice);
+    callback();
   }
 }

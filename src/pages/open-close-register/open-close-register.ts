@@ -1,24 +1,27 @@
-import { UserService } from './../../services/userService';
-import { Sale } from './../../model/sale';
-import { SalesServices } from './../../services/salesService';
-import { ClosureService } from './../../services/closureService';
-import { Closure } from './../../model/closure';
-import { Store } from './../../model/store';
-import { POS } from './../../model/pos';
-import { StoreService } from './../../services/storeService';
-import { PosService } from './../../services/posService';
 import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
+
+import { UserService } from './../../services/userService';
+import { SalesServices } from './../../services/salesService';
+import { ClosureService } from './../../services/closureService';
+import { PosService } from './../../services/posService';
+
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from "../../metadata/pageModule";
 import { Sales } from "./../sales/sales.ts";
+
+import { Sale } from './../../model/sale';
+import { Closure } from './../../model/closure';
+import { Store } from './../../model/store';
+import { POS } from './../../model/pos';
+import { StoreService } from "../../services/storeService";
 
 @PageModule(() => SalesModule)
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',
   styleUrls: ['/pages/open-close-register.scss'],
-  providers: [SalesServices, ClosureService, StoreService, PosService]
+  providers: [SalesServices, ClosureService, PosService, StoreService]
 })
 export class OpenCloseRegister {
 
@@ -33,21 +36,19 @@ export class OpenCloseRegister {
     total: 0
   };
   public openingPos: any = {
-    amount: 0,
+    amount: null,
     notes: null
   };
 
-  constructor(
-    private loading: LoadingController,
-    private posService: PosService,
-    private storeService: StoreService,
-    private closureService: ClosureService,
-    private cdr: ChangeDetectorRef,
-    private salesService: SalesServices,
-    private alertCtrl: AlertController,
-    private navCtrl: NavController,
-    private userService: UserService
-  ) {
+  constructor(private loading: LoadingController,
+              private posService: PosService,
+              private storeService: StoreService,
+              private closureService: ClosureService,
+              private cdr: ChangeDetectorRef,
+              private salesService: SalesServices,
+              private alertCtrl: AlertController,
+              private navCtrl: NavController,
+              private userService: UserService) {
     this.cdr.detach();
     this.showReport = false;
   }
@@ -58,49 +59,64 @@ export class OpenCloseRegister {
     });
 
     loader.present().then(() => {
-      var user = this.userService.getLoggedInUser();
-      this.register = user.currentPos;
-      this.store = user.currentStore;
-      var closuresPromise = this.closureService.getAllByPOSId(this.register._id).then((closures: Array<Closure>) => {
-        if (closures.length > 0) {
-          this.posClosures = closures;
-        }
-      }).catch((error) => {
-        console.error(new Error(error));
-      });
+      let user = this.userService.getLoggedInUser();
+      let promises: Array<Promise<any>> = [
+        this.posService.get(user.settings.currentPos),
+        this.storeService.get(user.settings.currentStore)
+      ];
 
-      var salesPromise = this.salesService.findCompletedByPosId(this.register._id, this.register.openTime).then((invoices: Array<Sale>) => {
-        invoices.forEach((invoice) => {
-          invoice.payments.forEach((payment) => {
-            if (payment.type === 'credit_card') {
-              this.expected.cc += Number(payment.amount);
-            }
-            if (payment.type === 'cash') {
-              this.expected.cash += Number(payment.amount);
-            }
+      Promise.all(promises).then((response) => {
+        this.register = response[0] as POS;
+        this.store = response[1] as Store;
+
+        promises = [
+          this.closureService.getAllByPOSId(this.register._id),
+          this.salesService.findCompletedByPosId(this.register._id, this.register.openTime)
+        ];
+
+        Promise.all(promises).then((response) => {
+          let closures = response[0] as Array<Closure>;
+          let invoices = response[1] as Array<Sale>;
+
+          closures.length > 0 && (this.posClosures = closures);
+
+          invoices.forEach((invoice) => {
+            invoice.payments.forEach((payment) => {
+              if (payment.type === 'credit_card') {
+                this.expected.cc += Number(payment.amount);
+              }
+              if (payment.type === 'cash') {
+                this.expected.cash += Number(payment.amount);
+              }
+            });
           });
 
+          this.expected.cash += this.register.openingAmount;
           this.expected.total = this.expected.cc + this.expected.cash;
+          
+          this.closure = new Closure();
+          this.closure.posId = this.register._id;
+          this.closure.posName = this.register.name;
+          this.closure.storeName = this.store.name;
+          this.calculateDiff('cash');
+          this.calculateDiff('cc');
+        }).catch(error => {
+          throw new Error(error);
+        }).then(() => {
+          this.cdr.reattach();
+          loader.dismiss();
         });
-      });
 
-      Promise.all([closuresPromise, salesPromise]).then(() => {
-        this.closure = new Closure();
-        this.closure.posId = this.register._id;
-        this.closure.posName = this.register.name;
-        this.closure.storeName = this.store.name;
-        this.calculateDiff('cash');
-        this.calculateDiff('cc');
-        this.cdr.reattach();
-        loader.dismiss();
+      }).catch(error => {
+        throw new Error(error);
       });
     });
   }
 
   public calculateDiff(type) {
-    var counted = type + 'Counted';
-    var difference = type + 'Difference';
-    this.closure[counted] = Number(this.closure[counted])
+    let counted = type + 'Counted';
+    let difference = type + 'Difference';
+    this.closure[counted] = Number(this.closure[counted]);
     this.closure[difference] = this.expected[type] - this.closure[counted];
     this.closure.totalCounted = Number(this.closure.ccCounted) + Number(this.closure.cashCounted);
     this.closure.totalDifference = this.expected.total - this.closure.totalCounted;
@@ -119,7 +135,7 @@ export class OpenCloseRegister {
         this.closure.closeTime = new Date().toISOString();
         this.closureService.add(this.closure).then(() => {
           this.register.status = false;
-          this.register.openingAmount = 0;
+          this.register.openingAmount = null;
           this.register.openTime = null;
           this.register.openingNote = null;
           this.showReport = true;
@@ -132,7 +148,7 @@ export class OpenCloseRegister {
   }
 
   public onSubmit() {
-    this.navCtrl.push(Sales, { openingAmount: this.openingPos.amount, openingNotes: this.openingPos.notes });
+    this.navCtrl.setRoot(Sales, { openingAmount: this.openingPos.amount, openingNotes: this.openingPos.notes });
   }
 
 }
