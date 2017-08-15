@@ -1,4 +1,4 @@
-import {NavParams, NavController, ToastController} from 'ionic-angular';
+import { NavParams, NavController, ToastController, AlertController, LoadingController } from 'ionic-angular';
 import { PosService } from './../../services/posService';
 import { POS } from './../../model/pos';
 import { Component } from '@angular/core';
@@ -15,7 +15,9 @@ export class PosDetailsPage {
     private navParams: NavParams,
     private posService: PosService,
     private navCtrl: NavController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
+    private loading: LoadingController
   ) { }
 
   ionViewDidEnter() {
@@ -50,13 +52,40 @@ export class PosDetailsPage {
   }
 
   public remove() {
-    this.posService.delete(this.pos).then(() => {
-      let toast = this.toastCtrl.create({
-        message: 'Register has been deleted successfully',
-        duration: 3000
-      });
-      toast.present();
-      this.navCtrl.pop();
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this POS ?',
+      message: 'Deleting this POS, will delete all associated Sales and any Current Sale!',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            let loader = this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
+
+            loader.present().then(() => {
+              this.posService.delete(this.pos, true /* Delete all Associations */).then(() => {
+                let toast = this.toastCtrl.create({
+                  message: 'Pos has been deleted successfully',
+                  duration: 3000
+                });
+                toast.present();
+                this.navCtrl.pop();
+              }).catch(error => {
+                let errorMsg = error.hasOwnProperty('error_msg') ? error.error_msg : 'Error while deleting store. Please try again!';
+                let alert = this.alertCtrl.create({
+                  title: 'Error',
+                  subTitle: errorMsg,
+                  buttons: ['OK']
+                });
+                alert.present();
+              });
+            });
+          }
+        }, 'No'
+      ]
     });
+
+    confirm.present();
   }
 }
