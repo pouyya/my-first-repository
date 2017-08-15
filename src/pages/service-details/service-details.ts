@@ -99,7 +99,7 @@ export class ServiceDetails {
 					}),
 					new Promise((_resolve, _reject) => {
 						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
-							salesTax.name = "Account Sales Tax (Default)";
+							salesTax.name = ` ${salesTax.name} (Default)`;
 							_resolve({ 
 								...salesTax,
 								isDefault: true,
