@@ -1,11 +1,9 @@
+import { UserSettingsService } from './../../services/userSettingsService';
 import _ from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
-import { PosService } from './../../services/posService';
 import { SalesServices } from './../../services/salesService';
-import { CalculatorService } from './../../services/calculatorService';
-import { TaxService } from './../../services/taxService';
 import { Sale } from './../../model/sale';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
@@ -15,7 +13,7 @@ import { ItemInfoModal } from './item-info-modal/item-info';
   selector: 'basket',
   templateUrl: 'basket.html',
   styleUrls: ['/components/basket/basket.scss'],
-  providers: [SalesServices, TaxService, CalculatorService]
+  providers: [SalesServices, UserSettingsService]
 })
 export class BasketComponent {
 
@@ -55,8 +53,8 @@ export class BasketComponent {
 
   constructor(
     private salesService: SalesServices,
-    private posService: PosService,
     private alertController: AlertController,
+    private userSettingsService: UserSettingsService,
     private modalCtrl: ModalController) {}
 
   public setBalance() {
@@ -137,7 +135,7 @@ export class BasketComponent {
             {
               'text': 'OK',
               handler: () => {
-                this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+                this.salesService.instantiateInvoice().then((invoice: any) => {
                   this.invoice = invoice.invoice;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
@@ -169,7 +167,7 @@ export class BasketComponent {
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
               localStorage.removeItem('invoice_id');
-              this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+              this.salesService.instantiateInvoice().then((invoice: any) => {
                 this.invoice = invoice.invoice;
                 this.calculateAndSync();
                 this.notify.emit({ clearSale: true });

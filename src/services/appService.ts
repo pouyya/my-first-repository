@@ -1,4 +1,9 @@
-import { Injectable } from "@angular/core";
+import { Sale } from './../model/sale';
+import { SalesServices } from './salesService';
+import { POS } from './../model/pos';
+import { Store } from './../model/store';
+import { PosService } from './posService';
+import { Injectable, Inject, forwardRef } from "@angular/core";
 import { SalesTaxService } from "./salesTaxService";
 import { GroupSalesTaxService } from "./groupSalesTaxService";
 import { SalesTax } from "../model/salesTax";
@@ -7,7 +12,9 @@ import { GroupSaleTax } from "../model/groupSalesTax";
 @Injectable()
 export class AppService {
   constructor(private salesTaxService: SalesTaxService,
-              private groupSalesTaxService: GroupSalesTaxService) {
+              private groupSalesTaxService: GroupSalesTaxService,
+              private posService: PosService,
+              @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
   }
 
   /**
@@ -28,6 +35,38 @@ export class AppService {
           resolve(taxes);
         }).catch(error => reject(error));
       }).catch(error => reject(error));
+    });
+  }
+
+  public deleteStoreAssociations(store: Store) {
+    return new Promise((resolve, reject) => {
+        let invoiceId = localStorage.getItem('invoice_id');
+        this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
+          if(registers.length > 0) {
+            let posDeletions: Array<Promise<any>> = [];
+            registers.forEach((register) => {
+              this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Array<Sale>) => {
+                if(sales.length > 0) {
+                  let salesDeletion: Array<Promise<any>> = [];
+                  sales.forEach(sale => {
+                    if(invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
+                    salesDeletion.push(this.salesService.delete(sale));
+                  });
+                  Promise.all(salesDeletion).then(() => {
+                    // transfer control back to outer loop
+                    posDeletions.push(this.posService.delete(register));
+                  });
+                } else {
+                  posDeletions.push(this.posService.delete(register));
+                }
+              }).catch(error => posDeletions.push(Promise.resolve()));
+            });
+
+            Promise.all(posDeletions).then(() => resolve()).catch(error => reject(error));
+          } else {
+            resolve();
+          }
+        }).catch(error => reject(error));
     });
   }
 }

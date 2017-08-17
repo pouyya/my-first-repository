@@ -1,22 +1,16 @@
 import { UserService } from './userService';
-import { SalesServices } from './salesService';
-import { Injectable, NgZone, Injector } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BaseEntityService } from  './baseEntityService';
 import { POS } from './../model/pos';
-import { Sale } from './../model/sale';
 
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
 
-  private salesService: SalesServices;
-
   constructor(
-    private injector: Injector,
     private zone: NgZone,
     private userService: UserService
   ) {
     super(POS, zone);
-    setTimeout(() => this.salesService = injector.get(SalesServices));
   }
 
   public getCurrentPosID() {
@@ -61,22 +55,22 @@ export class PosService extends BaseEntityService<POS> {
       if (!associated) return super.delete(pos);
 
       return new Promise((resolve, reject) => {
-        let invoiceId = localStorage.getItem('invoice_id');
-        this.salesService.findBy({ selector: { posId: pos._id } }).then((sales: Array<Sale>) => {
-          if(sales.length > 0) {
-            let salesDeletion: Array<Promise<any>> = [];
-            sales.forEach(sale => {
-              if(invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
-              salesDeletion.push(this.salesService.delete(sale));
-            });
-            Promise.all(salesDeletion).then(() => {
-              // transfer control back to outer loop
-              super.delete(pos).then(() => resolve()).catch(error => reject());
-            });
-          } else {
-            super.delete(pos).then(() => resolve()).catch(error => reject());
-          }
-        });
+        // let invoiceId = localStorage.getItem('invoice_id');
+        // this.salesService.findBy({ selector: { posId: pos._id } }).then((sales: Array<Sale>) => {
+        //   if(sales.length > 0) {
+        //     let salesDeletion: Array<Promise<any>> = [];
+        //     sales.forEach(sale => {
+        //       if(invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
+        //       salesDeletion.push(this.salesService.delete(sale));
+        //     });
+        //     Promise.all(salesDeletion).then(() => {
+        //       // transfer control back to outer loop
+        //       super.delete(pos).then(() => resolve()).catch(error => reject());
+        //     });
+        //   } else {
+        //     super.delete(pos).then(() => resolve()).catch(error => reject());
+        //   }
+        // });
       });
     }
   }

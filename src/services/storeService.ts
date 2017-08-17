@@ -1,18 +1,15 @@
+import { AppService } from './appService';
 import { UserService } from './userService';
 import { Injectable, NgZone } from '@angular/core';
 import { Store } from '../model/store'
-import { BaseEntityService } from './baseEntityService';
-import { PosService } from "./posService";
-import { SalesServices } from "./salesService";
-import { POS } from "../model/pos";
-import { Sale } from "../model/sale";
+import { BaseEntityService } from './baseEntityService'
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
   constructor(private zone: NgZone,
               private userService: UserService,
-              private posService: PosService,
-              private salesService: SalesServices) {
+              private appService: AppService
+              ) {
     super(Store, zone);
   }
 
@@ -56,38 +53,10 @@ export class StoreService extends BaseEntityService<Store> {
       });
     } else {
       if (!associated) return super.delete(store);
-
-      // delete all associations
       return new Promise((resolve, reject) => {
-        let invoiceId = localStorage.getItem('invoice_id');
-        this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
-          if(registers.length > 0) {
-            let posDeletions: Array<Promise<any>> = [];
-            registers.forEach((register) => {
-              this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Array<Sale>) => {
-                if(sales.length > 0) {
-                  let salesDeletion: Array<Promise<any>> = [];
-                  sales.forEach(sale => {
-                    if(invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
-                    salesDeletion.push(this.salesService.delete(sale));
-                  });
-                  Promise.all(salesDeletion).then(() => {
-                    // transfer control back to outer loop
-                    posDeletions.push(this.posService.delete(register));
-                  });
-                } else {
-                  posDeletions.push(this.posService.delete(register));
-                }
-              }).catch(error => posDeletions.push(Promise.resolve()));
-            });
-
-            Promise.all(posDeletions).then(() => {
-              super.delete(store).then(() => resolve()).catch(error => reject(error));
-            }).catch(error => reject(error));
-          } else {
-            super.delete(store).then(() => resolve()).catch(error => reject(error));
-          }
-        }).catch(error => reject(error));
+        this.appService.deleteStoreAssociations(store)
+          .then(() => super.delete(store).then(() => resolve()).catch(error => reject(error)))
+          .catch(error => reject(error));
       });
     }
   }

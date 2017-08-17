@@ -126,7 +126,7 @@ export class StoreDetailsPage {
                   buttons: ['OK']
                 });
                 alert.present();
-              });
+              }).then(() => loader.dismiss());
             });
           }
         }, 'No'

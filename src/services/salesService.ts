@@ -1,3 +1,4 @@
+import { UserSettingsService } from './userSettingsService';
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
 import { Injectable, NgZone } from '@angular/core';
@@ -15,8 +16,6 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
-import { PosService } from "./posService";
-import { AppService } from "./appService";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -27,16 +26,15 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
-		private posService: PosService,
 		private helperService: HelperService,
-		private appService: AppService,
 		private fountainService: FountainService,
 		private userService: UserService,
 		private zone: NgZone,
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private groupSalesTaxService: GroupSalesTaxService
+		private groupSalesTaxService: GroupSalesTaxService,
+		private userSettingsService: UserSettingsService
 	) {
 		super(Sale, zone);
 		this._user = this.userService.getLoggedInUser();
@@ -55,42 +53,36 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * Instantiate a default Sale Object
 	 * @return {Promise<Sale>}
 	 */
-	public instantiateInvoice(posId: string): Promise<any> {
-		var id = localStorage.getItem('invoice_id') || new Date().toISOString();
+	public instantiateInvoice(posId?: string): Promise<any> {
+		let id = localStorage.getItem('invoice_id') || new Date().toISOString();
+		if (!posId) posId = this.userSettingsService.getCurrentPosID();
 		return new Promise((resolve, reject) => {
-			if (posId) {
-				this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
-					.then(
-					(invoices: Array<Sale>) => {
-						if (invoices && invoices.length > 0) {
-							var invoice = invoices[0];
-							resolve({
-								invoice,
-								doRecalculate: invoice.state == 'current'
-							});
-						} else {
-							resolve({
-								invoice: createDefaultObject(posId, id),
-								doRecalculate: false
-							});
-						}
-					},
-					error => {
-						if (error.name == 'not_found') {
-							resolve({
-								invoice: createDefaultObject(posId, id),
-								doRecalculate: false
-							});
-						} else {
-							reject(error);
-						}
-					});
-			} else {
-				resolve({
-					invoice: createDefaultObject(posId, id),
-					doRecalculate: false
+			this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
+				.then(
+				(invoices: Array<Sale>) => {
+					if (invoices && invoices.length > 0) {
+						var invoice = invoices[0];
+						resolve({
+							invoice,
+							doRecalculate: invoice.state == 'current'
+						});
+					} else {
+						resolve({
+							invoice: createDefaultObject(posId, id),
+							doRecalculate: false
+						});
+					}
+				},
+				error => {
+					if (error.name == 'not_found') {
+						resolve({
+							invoice: createDefaultObject(posId, id),
+							doRecalculate: false
+						});
+					} else {
+						reject(error);
+					}
 				});
-			}
 		});
 
 		function createDefaultObject(posID: string, invoiceId: string) {
@@ -189,7 +181,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 						doRecalculate: false
 					});
 				} else {
-					this.instantiateInvoice(this.posService.getCurrentPosID())
+					this.instantiateInvoice()
 						.then((data: any) => {
 							resolve(data);
 						}).catch((error) => reject(error));
@@ -197,9 +189,21 @@ export class SalesServices extends BaseEntityService<Sale> {
 			}),
 
 			new Promise((resolve, reject) => {
-				this.appService.loadSalesAndGroupTaxes()
-					.then((salesTaxes: Array<any>) => resolve(salesTaxes))
-					.catch(error => reject(error));
+				let taxes: Array<any> = [];
+				this.salesTaxService.getAll().then((_salesTaxes: Array<any>) => {
+					taxes = _salesTaxes.map((salesTax => {
+						return { ...salesTax, noOfTaxes: 0 };
+					}));
+					this.groupSalesTaxService.getAll().then((_groupSalesTaxes: Array<any>) => {
+						taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
+							return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
+						})));
+						resolve(taxes);
+					}).catch(error => reject(error));
+				}).catch(error => reject(error));				
+				// this.appService.loadSalesAndGroupTaxes()
+				// 	.then((salesTaxes: Array<any>) => resolve(salesTaxes))
+				// 	.catch(error => reject(error));
 			}),
 
 			new Promise((resolve, reject) => {
