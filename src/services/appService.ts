@@ -12,9 +12,9 @@ import { GroupSaleTax } from "../model/groupSalesTax";
 @Injectable()
 export class AppService {
   constructor(private salesTaxService: SalesTaxService,
-              private groupSalesTaxService: GroupSalesTaxService,
-              private posService: PosService,
-              @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
+    private groupSalesTaxService: GroupSalesTaxService,
+    private posService: PosService,
+    @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
   }
 
   /**
@@ -40,33 +40,57 @@ export class AppService {
 
   public deleteStoreAssociations(store: Store) {
     return new Promise((resolve, reject) => {
-        let invoiceId = localStorage.getItem('invoice_id');
-        this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
-          if(registers.length > 0) {
-            let posDeletions: Array<Promise<any>> = [];
-            registers.forEach((register) => {
-              this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Array<Sale>) => {
-                if(sales.length > 0) {
-                  let salesDeletion: Array<Promise<any>> = [];
-                  sales.forEach(sale => {
-                    if(invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
-                    salesDeletion.push(this.salesService.delete(sale));
-                  });
-                  Promise.all(salesDeletion).then(() => {
-                    // transfer control back to outer loop
-                    posDeletions.push(this.posService.delete(register));
-                  });
-                } else {
+      let invoiceId = localStorage.getItem('invoice_id');
+      this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
+        if (registers.length > 0) {
+          let posDeletions: Array<Promise<any>> = [];
+          registers.forEach((register) => {
+            this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Array<Sale>) => {
+              if (sales.length > 0) {
+                let salesDeletion: Array<Promise<any>> = [];
+                sales.forEach(sale => {
+                  if (invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
+                  salesDeletion.push(this.salesService.delete(sale));
+                });
+                Promise.all(salesDeletion).then(() => {
+                  // transfer control back to outer loop
                   posDeletions.push(this.posService.delete(register));
-                }
-              }).catch(error => posDeletions.push(Promise.resolve()));
-            });
+                });
+              } else {
+                posDeletions.push(this.posService.delete(register));
+              }
+            }).catch(error => posDeletions.push(Promise.resolve()));
+          });
 
-            Promise.all(posDeletions).then(() => resolve()).catch(error => reject(error));
-          } else {
-            resolve();
-          }
-        }).catch(error => reject(error));
+          Promise.all(posDeletions).then(() => resolve()).catch(error => reject(error));
+        } else {
+          resolve();
+        }
+      }).catch(error => reject(error));
+    });
+  }
+
+  /**
+   * Delete POS Associations -> [Sale]
+   * @param posId 
+   */
+  public deletePos(pos: POS): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.salesService.findBy({ selector: { posId: pos._id } }).then((sales: Array<Sale>) => {
+        if (sales.length > 0) {
+          let salesDeletion: Array<Promise<any>> = [];
+          sales.forEach(sale => {
+            salesDeletion.push(this.salesService.delete(sale));
+          });
+          Promise.all(salesDeletion).then(() => {
+            this.posService.delete(pos)
+              .then(() => resolve())
+              .catch(error => reject(error));
+          }).catch(error => reject(error));
+        } else this.posService.delete(pos)
+          .then(() => resolve())
+          .catch(error => reject(error));
+      }).catch(error => reject(error));
     });
   }
 }

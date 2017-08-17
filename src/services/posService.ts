@@ -37,41 +37,4 @@ export class PosService extends BaseEntityService<POS> {
       });
     });
   }
-
-  /**
-   *
-   * @param pos
-   * @param associated
-   * @returns {any}
-   */
-  public delete(pos: POS, associated: boolean = false): Promise<any> {
-    let user = this.userService.getLoggedInUser();
-    if (user.settings.currentPos == pos._id) {
-      return Promise.reject({
-        error: 'DEFAULT_POS_EXISTS',
-        error_msg: 'This is your current POS. Please switch to other one before deleting it.'
-      });
-    } else {
-      if (!associated) return super.delete(pos);
-
-      return new Promise((resolve, reject) => {
-        // let invoiceId = localStorage.getItem('invoice_id');
-        // this.salesService.findBy({ selector: { posId: pos._id } }).then((sales: Array<Sale>) => {
-        //   if(sales.length > 0) {
-        //     let salesDeletion: Array<Promise<any>> = [];
-        //     sales.forEach(sale => {
-        //       if(invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
-        //       salesDeletion.push(this.salesService.delete(sale));
-        //     });
-        //     Promise.all(salesDeletion).then(() => {
-        //       // transfer control back to outer loop
-        //       super.delete(pos).then(() => resolve()).catch(error => reject());
-        //     });
-        //   } else {
-        //     super.delete(pos).then(() => resolve()).catch(error => reject());
-        //   }
-        // });
-      });
-    }
-  }
 }
