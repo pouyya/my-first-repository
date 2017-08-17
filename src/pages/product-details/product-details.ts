@@ -101,7 +101,11 @@ export class ProductDetails {
 								isDefault: true,
 								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
 							});
-						}).catch(error => _reject(error));
+						}).catch(error => {
+							if(error.name == "not_found") {
+								_resolve(null);
+							} else _reject(error);
+						});
 					}),
 					new Promise((_resolve, _reject) => {
 						this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
@@ -118,7 +122,7 @@ export class ProductDetails {
 				Promise.all(promises).then((results: Array<any>) => {
 					this.zone.run(() => {
 						this.categories = results[0];
-						this.salesTaxes.push(results[1]);
+						results[1] != null && this.salesTaxes.push(results[1]);
 						this.salesTaxes = this.salesTaxes.concat(results[2]);
 						this._defaultPriceBook = results[3];
 
