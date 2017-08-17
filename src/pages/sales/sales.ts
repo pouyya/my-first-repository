@@ -1,3 +1,5 @@
+import { Service } from './../../model/service';
+import { Product } from './../../model/product';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, LoadingController, NavParams } from 'ionic-angular';
@@ -84,21 +86,25 @@ export class Sales {
     }
 
     if(_init) {
-      // load in parallel
-      this.categoryService.getAll().then((categories) => {
-        this.categories = categories;
-        this.loadCategoriesAssociation(categories);
-      });
-
       let loader = this.loading.create({
         content: 'Loading Register...',
       });
 
       loader.present().then(() => {
-        this.initSalePageData().then(() => {
+        let promises: Array<Promise<any>> = [
+          this.initSalePageData(),
+          new Promise((resolve, reject) => {
+            this.categoryService.getAll().then((categories) => {
+              this.categories = _.sortBy(categories, [category => category.order]);
+              this.loadCategoriesAssociation(this.categories).then(() => resolve());
+            });
+          })
+        ];
+
+        Promise.all(promises).then(() => {
           this.cdr.reattach();
           loader.dismiss();       
-        })
+        });
       });
     }
   }
@@ -112,7 +118,7 @@ export class Sales {
     this.activeCategory = category;
     this.salesService.loadPurchasableItems(category._id).then(
       items => {
-        this.activeTiles = items;
+        this.activeTiles = _.sortBy(items, [item => item.order]);
       },
       error => { console.error(error); }
     );
@@ -187,7 +193,7 @@ export class Sales {
     });
   }
 
-  private loadCategoriesAssociation(categories: Array<any>) {
+  private loadCategoriesAssociation(categories: Array<any>): Promise<any> {
     return new Promise((resolve, reject) => {
       let promiseCategories: Array<Promise<any>> = [];
       for (let categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
@@ -195,7 +201,7 @@ export class Sales {
           if (categoryIndex === 0) {
             this.activeCategory = categories[categoryIndex];
             this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
-              this.activeTiles = items;
+              this.activeTiles = _.sortBy(items, [item => item.order]);
               resolveB();
             });
           }
@@ -221,8 +227,8 @@ export class Sales {
       let promises: Array<Promise<any>> = [
         new Promise((resolve, reject) => {
           this.categoryService.getAll().then((categories) => {
-            this.categories = categories;
-            this.loadCategoriesAssociation(categories);
+            this.categories = _.sortBy(categories, [category => category.order]);
+            this.loadCategoriesAssociation(this.categories);
             resolve();
           }).catch(error => reject(error));
         }),

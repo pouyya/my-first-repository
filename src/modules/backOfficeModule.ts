@@ -1,3 +1,4 @@
+import { Category } from './../pages/category/category';
 import { Injectable } from '@angular/core';
 import { Settings } from './../pages/settings/settings';
 import { Stores } from './../pages/stores/stores';
@@ -13,6 +14,7 @@ export class BackOfficeModule implements ModuleBase {
   public pages: Array<any> = [
     { title: 'Home', icon: 'home', component: HomePage },
     { title: 'POS', icon: 'cash', component: Sales },
+    { title: 'Categories', icon: 'cash', component: Category },
     { title: 'Products', icon: 'pricetags', component: Products },
     { title: 'Service', icon: 'bowtie', component: Services },
     { title: 'Employees', icon: 'contacts', component: Employees },
