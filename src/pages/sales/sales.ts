@@ -1,5 +1,4 @@
-import { Service } from './../../model/service';
-import { Product } from './../../model/product';
+import { CacheService } from './../../services/cacheService';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, LoadingController, NavParams } from 'ionic-angular';
@@ -55,13 +54,18 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private userService: UserService
+    private userService: UserService,
+    private cacheService: CacheService
   ) {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
     this.user = this.userService.getLoggedInUser();
     this.register = this.user.currentPos;
     this.cdr.detach();
+  }
+
+  ionViewWillUnload() {
+    this.cacheService.removeAll();
   }
 
   ionViewDidLoad() {
@@ -95,7 +99,7 @@ export class Sales {
           this.initSalePageData(),
           new Promise((resolve, reject) => {
             this.categoryService.getAll().then((categories) => {
-              this.categories = _.sortBy(categories, [category => category.order]);
+              this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
               this.loadCategoriesAssociation(this.categories).then(() => resolve());
             });
           })
@@ -118,7 +122,7 @@ export class Sales {
     this.activeCategory = category;
     this.salesService.loadPurchasableItems(category._id).then(
       items => {
-        this.activeTiles = _.sortBy(items, [item => item.order]);
+        this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
       },
       error => { console.error(error); }
     );
@@ -201,7 +205,7 @@ export class Sales {
           if (categoryIndex === 0) {
             this.activeCategory = categories[categoryIndex];
             this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
-              this.activeTiles = _.sortBy(items, [item => item.order]);
+              this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
               resolveB();
             });
           }
@@ -227,7 +231,7 @@ export class Sales {
       let promises: Array<Promise<any>> = [
         new Promise((resolve, reject) => {
           this.categoryService.getAll().then((categories) => {
-            this.categories = _.sortBy(categories, [category => category.order]);
+            this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
             this.loadCategoriesAssociation(this.categories);
             resolve();
           }).catch(error => reject(error));
