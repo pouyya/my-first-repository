@@ -1,3 +1,4 @@
+import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
@@ -196,7 +197,8 @@ const cloudSettings: CloudSettings = {
     SalesTaxService,
     GroupSalesTaxService,
     AppSettingsService,
-    AppService
+    AppService,
+    SalesServices
   ]
 })
 export class AppModule {}

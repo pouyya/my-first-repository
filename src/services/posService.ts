@@ -1,13 +1,12 @@
 import { UserService } from './userService';
-import { HelperService } from './helperService';
 import { Injectable, NgZone } from '@angular/core';
 import { BaseEntityService } from  './baseEntityService';
 import { POS } from './../model/pos';
 
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
+
   constructor(
-    private helper: HelperService,
     private zone: NgZone,
     private userService: UserService
   ) {
@@ -25,7 +24,7 @@ export class PosService extends BaseEntityService<POS> {
   public update(register: POS): Promise<any> {
     return new Promise((resolve, reject) => {
       super.update(register).then(() => {
-        // presist user
+        // persist user
         let user = this.userService.getLoggedInUser();
         if(register._id == user.settings.currentPos) {
           user.currentPos = register;
