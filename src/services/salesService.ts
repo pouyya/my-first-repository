@@ -201,9 +201,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 						resolve(taxes);
 					}).catch(error => reject(error));
 				}).catch(error => reject(error));				
-				// this.appService.loadSalesAndGroupTaxes()
-				// 	.then((salesTaxes: Array<any>) => resolve(salesTaxes))
-				// 	.catch(error => reject(error));
 			}),
 
 			new Promise((resolve, reject) => {
