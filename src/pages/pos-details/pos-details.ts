@@ -1,4 +1,6 @@
-import {NavParams, NavController, ToastController} from 'ionic-angular';
+import { AppService } from './../../services/appService';
+import { UserService } from './../../services/userService';
+import { NavParams, NavController, ToastController, AlertController, LoadingController } from 'ionic-angular';
 import { PosService } from './../../services/posService';
 import { POS } from './../../model/pos';
 import { Component } from '@angular/core';
@@ -15,7 +17,11 @@ export class PosDetailsPage {
     private navParams: NavParams,
     private posService: PosService,
     private navCtrl: NavController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
+    private loading: LoadingController,
+    private userService: UserService,
+    private appService: AppService
   ) { }
 
   ionViewDidEnter() {
@@ -50,13 +56,43 @@ export class PosDetailsPage {
   }
 
   public remove() {
-    this.posService.delete(this.pos).then(() => {
-      let toast = this.toastCtrl.create({
-        message: 'Register has been deleted successfully',
-        duration: 3000
-      });
-      toast.present();
-      this.navCtrl.pop();
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this POS ?',
+      message: 'Deleting this POS, will delete all associated Sales and any Current Sale!',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            let user = this.userService.getLoggedInUser();
+            if (user.settings.currentPos == this.pos._id) {
+                let toast = this.toastCtrl.create({
+                  message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
+                  duration: 3000
+                });
+                toast.present();
+            }  else {
+              let loader = this.loading.create({
+                content: 'Deleting. Please Wait!',
+              });
+
+              loader.present().then(() => {
+                this.appService.deletePos(this.pos).then(() => {
+                  let toast = this.toastCtrl.create({
+                    message: 'Pos has been deleted successfully',
+                    duration: 3000
+                  });
+                  toast.present();
+                  this.navCtrl.pop();
+                }).catch(error => {
+                  throw new Error(error);
+                }).then(() => loader.dismiss());
+              });
+            }
+          }
+        }, 'No'
+      ]
     });
+
+    confirm.present();
   }
 }

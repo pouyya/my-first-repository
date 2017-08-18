@@ -1,13 +1,18 @@
 import { StoreService } from './storeService';
 import { UserService } from './userService';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 
 @Injectable()
 export class FountainService {
+
+  private storeService: StoreService;
+
   constructor(
-    private userService: UserService,
-    private storeService: StoreService
-  ) { }
+    private injector: Injector,
+    private userService: UserService
+  ) {
+    setTimeout(() => this.storeService = injector.get(StoreService));
+  }
 
   public getReceiptNumber() {
     let user = this.userService.getLoggedInUser();

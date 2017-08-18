@@ -141,7 +141,7 @@ export class Sales {
     let pushCallback = (_params) => {
       return new Promise((resolve, reject) => {
         if (_params) {
-          this.salesService.instantiateInvoice(this.posService.getCurrentPosID()).then((invoice: any) => {
+          this.salesService.instantiateInvoice().then((invoice: any) => {
             this.invoiceParam = null;
             this.invoice = invoice.invoice;
           });
