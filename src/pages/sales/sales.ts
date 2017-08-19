@@ -19,8 +19,6 @@ import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 
-
-
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',
