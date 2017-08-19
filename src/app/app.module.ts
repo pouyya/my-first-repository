@@ -13,6 +13,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
+import { DragulaModule } from 'ng2-dragula';
+import { DndModule } from 'ng2-dnd';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -131,6 +133,8 @@ const cloudSettings: CloudSettings = {
     MaterialModule,
     MdInputModule,
     BrowserAnimationsModule,
+    DragulaModule,
+    DndModule.forRoot(),
 
     // custom
     TileItemsModule,

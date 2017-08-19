@@ -12,17 +12,20 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content >
+<ion-content>
   <ion-list inset>
     <ion-item>
       <ion-label class="item-name">Name</ion-label>
       <ion-input type="text" [(ngModel)]="categoryItem.name"></ion-input>
     </ion-item>
-     <ion-item>
-       <button ion-button (click)="selectIcon()">Select Icon</button>
-       <sp-icon *ngIf="selectedIcon" [icon]="categoryItem.icon.name"></sp-icon>
-       <span *ngIf="selectedIcon">&nbsp;{{ categoryItem.icon.name }}</span>
-     </ion-item>
-  </ion-list>    
-</ion-content> 
- 
+    <ion-item>
+      <ion-label class="item-name">Display Order</ion-label>
+      <ion-input type="number" [(ngModel)]="categoryItem.order"></ion-input>
+    </ion-item>
+    <ion-item>
+      <button ion-button (click)="selectIcon()">Select Icon</button>
+      <sp-icon *ngIf="selectedIcon" [icon]="categoryItem.icon.name"></sp-icon>
+      <span *ngIf="selectedIcon">&nbsp;{{ categoryItem.icon.name }}</span>
+    </ion-item>
+  </ion-list>
+</ion-content>

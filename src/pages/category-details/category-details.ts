@@ -1,3 +1,4 @@
+import { Category } from './../../model/category';
 import { UserService } from './../../services/userService';
 import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
@@ -10,7 +11,7 @@ import { icons } from './../../metadata/itemIcons';
   templateUrl: 'category-details.html'
 })
 export class CategoryDetails {
-  public categoryItem: any = {};
+  public categoryItem: Category = new Category();
   public isNew = true;
   public action = 'Add';
   public icons: any;

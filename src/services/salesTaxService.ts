@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { Injectable, NgZone } from '@angular/core';
 import { BaseEntityService } from './baseEntityService';
 import { PriceBookService } from './priceBookService';

@@ -32,6 +32,10 @@
       <ion-input type="text" [(ngModel)]="productItem.count"></ion-input>
     </ion-item>
     <ion-item>
+      <ion-label class="item-name">Display Order</ion-label>
+      <ion-input type="number" [(ngModel)]="productItem.order"></ion-input>
+    </ion-item>    
+    <ion-item>
       <ion-label>Categories</ion-label>
       <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true">
         <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>

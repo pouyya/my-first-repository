@@ -7,8 +7,8 @@ let cache;
 export class CacheService {
     constructor(private cacheService: CacheFactory) {
         var cacheFactory = new CacheFactory();
-        if (!cacheFactory.exists('my-cache')) {
-            cache = cacheFactory.createCache('my-cache');
+        if (!cacheFactory.exists('SimplePOS-Cache')) {
+            cache = cacheFactory.createCache('SimplePOS-Cache');
         }
     }
 
@@ -34,5 +34,9 @@ export class CacheService {
                 resolve(cacheValue);
             }
         });
+    }
+
+    public removeAll(){
+        cache.removeAll();
     }
 }

@@ -1,6 +1,7 @@
+import { OrderableInterface } from './orderableInterface';
 import { DBBasedEntity } from './dbBasedEntity';
 
-export abstract class PurchasableItem extends DBBasedEntity 
+export abstract class PurchasableItem extends DBBasedEntity implements OrderableInterface
 {
     public name: string;
     public price: number;
@@ -9,4 +10,5 @@ export abstract class PurchasableItem extends DBBasedEntity
     public discount?: number;
     public inStock?: number | boolean;
     public icon: any;
+    public order: number;
 }
