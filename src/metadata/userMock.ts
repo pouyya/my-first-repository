@@ -30,7 +30,8 @@ export let userData = {
     defaultTax: "2017-07-25T10:22:51.163Z",
     taxType: true,
     taxEntity: "SalesTax",
-    includeItemTax: true
+    includeItemTax: true,
+    trackStaffSales: false
   },
   currentPos: {
     "_id": "2017-07-18T11:40:52.927Z",

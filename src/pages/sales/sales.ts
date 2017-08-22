@@ -38,10 +38,11 @@ export class Sales {
   public register: POS;
   public doRefund: boolean = false;
   public icons: any;
+  public staffs: Array<any> = [];
+  public user: any;
   private invoiceParam: any;
   private priceBook: PriceBook;
   private salesTaxes: Array<SalesTax>;
-  private user: any;
   private defaultTax: any;
 
   constructor(
@@ -104,6 +105,11 @@ export class Sales {
         ];
 
         Promise.all(promises).then(() => {
+          this.staffs = [
+            { id: 1, name: "Rick" },
+            { id: 2, name: "Morty" },
+            { id: 3, name: "Varys" }
+          ];
           this.cdr.reattach();
           loader.dismiss();       
         });

@@ -53,3 +53,12 @@
   justify-content: flex-start;
   background-color: $basket-background-color;
 }
+
+.staff-tile {
+  background: $tile-background-color;
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid $tile-background-color-border;
+  border-radius: 8px;
+  cursor: pointer;  
+}
