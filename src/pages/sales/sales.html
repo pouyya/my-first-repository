@@ -48,19 +48,29 @@
         </ion-scroll>
       </ion-col>
       <ion-col col-6>
-        <md-grid-list cols="4" rowHeight="1:1"
-          *ngIf="user.settings.trackStaffSales">
-          <md-grid-tile
-              class="staff-tile"
-              *ngFor="let staff of staffs; let i = index" tapabble>
-              {{ staff.name }}
-          </md-grid-tile>
-        </md-grid-list>
-        <tile-items [items]="activeTiles" (onSelect)="onSelect($event)">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-12>
+              <md-grid-list cols="4" rowHeight="1:1" *ngIf="user.settings.trackStaffSales">
+                <md-grid-tile [ngClass]="{ 'selected-staff-tile': staff.selected, 'staff-tile': !staff.selected }" (click)="toggleStaff(staff)"
+                  *ngFor="let staff of staffs; let i = index" tapabble>
+                  {{ staff.name }}
+                </md-grid-tile>
+              </md-grid-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <tile-items [items]="activeTiles" [activeStaff]="selectedStaff" (onSelect)="onSelect($event)">
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket class="basket-component" [(_invoice)]="invoice" [refund]="doRefund" (paymentClicked)="paymentClicked($event)" (notify)="notify($event)">
+        <basket
+          class="basket-component" 
+          [(_invoice)]="invoice" 
+          [refund]="doRefund"
+          [staffs]="staffs"
+          (paymentClicked)="paymentClicked($event)" 
+          (notify)="notify($event)">
         </basket>
       </ion-col>
     </ion-row>

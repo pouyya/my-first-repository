@@ -1,3 +1,5 @@
+import { Staff } from './../../model/staff';
+import { StaffService } from './../../services/staffService';
 import { CacheService } from './../../services/cacheService';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
@@ -39,6 +41,7 @@ export class Sales {
   public doRefund: boolean = false;
   public icons: any;
   public staffs: Array<any> = [];
+  public selectedStaff: any = null;
   public user: any;
   private invoiceParam: any;
   private priceBook: PriceBook;
@@ -47,6 +50,7 @@ export class Sales {
 
   constructor(
     private navCtrl: NavController,
+    private staffService: StaffService,
     private salesService: SalesServices,
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
@@ -68,7 +72,7 @@ export class Sales {
   }
 
   ionViewDidLoad() {
-    
+
     let _init: boolean = false;
     if (!this.register.status) {
       let openingAmount: number = Number(this.navParams.get('openingAmount'));
@@ -88,7 +92,7 @@ export class Sales {
       _init = true;
     }
 
-    if(_init) {
+    if (_init) {
       let loader = this.loading.create({
         content: 'Loading Register...',
       });
@@ -104,14 +108,22 @@ export class Sales {
           })
         ];
 
+        if (this.user.settings.trackStaffSales) {
+          promises.push(new Promise((resolve, reject) => {
+            this.staffService.getAll().then((staffs: Array<Staff>) => {
+              this.staffs = staffs;
+              resolve();
+            }).catch(error => reject(error));
+          }));
+        }
+
         Promise.all(promises).then(() => {
-          this.staffs = [
-            { id: 1, name: "Rick" },
-            { id: 2, name: "Morty" },
-            { id: 3, name: "Varys" }
-          ];
+          this.staffs = this.staffs.map(staff => {
+            staff.selected = false;
+            return staff;
+          });
           this.cdr.reattach();
-          loader.dismiss();       
+          loader.dismiss();
         });
       });
     }
@@ -133,14 +145,29 @@ export class Sales {
     return category._id == category._id;
   }
 
+  public toggleStaff(staff: any) {
+    if(staff.selected) {
+      staff.selected = false;
+      this.selectedStaff = null;
+    } else {
+      if(this.selectedStaff) {
+        let index = _.findIndex(this.staffs, _staff => _staff.selected);
+        this.staffs[index].selected = false;
+      }
+      staff.selected = true;
+      this.selectedStaff = staff;
+    }
+  }
+
   // Event
   public onSelect(item: PurchasableItem) {
-    let interactableItem: any = { ...item, tax: null, priceBook: null };
+    let interactableItem: any = { ...item, tax: null, priceBook: null, staffId: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
     interactableItem.tax = _.pick(
       interactableItem.priceBook.salesTaxId != null ?
         _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
       ['rate', 'name']);
+    this.selectedStaff != null && (interactableItem.staffId = this.selectedStaff._id);
     this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
   }
 
@@ -250,8 +277,19 @@ export class Sales {
           }).catch(error => reject(error));
         })
       ];
-
+      if (this.user.settings.trackStaffSales) {
+        promises.push(new Promise((resolve, reject) => {
+          this.staffService.getAll().then((staffs: Array<Staff>) => {
+            this.staffs = staffs;
+            resolve();
+          }).catch(error => reject(error));
+        }));
+      }
       Promise.all(promises).then(() => {
+        this.staffs = this.staffs.map(staff => {
+          staff.selected = false;
+          return staff;
+        });
         this.cdr.reattach();
         loader.dismiss();
       }).catch(error => {

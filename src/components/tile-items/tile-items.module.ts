@@ -1,3 +1,4 @@
+import { SharedModule } from './../../modules/shared.module';
 import { SPIconModule } from './../sp-icon/sp-icon.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -15,7 +16,8 @@ import { DndModule } from 'ng2-dnd';
     MdGridListModule,
     SPIconModule,
     DragulaModule,
-    DndModule
+    DndModule,
+    SharedModule
   ],
   exports: [ TileItemsComponent ]
 })

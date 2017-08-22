@@ -1,5 +1,4 @@
-import { SalesServices } from './../services/salesService';
-import { AppSettingsService } from './../services/appSettingsService';
+import { SharedModule } from './../modules/shared.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -58,6 +57,9 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
 
+// directives
+import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
+
 // services
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
@@ -79,6 +81,9 @@ import { PriceBookService } from './../services/priceBookService';
 import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
+import { StaffService } from './../services/staffService';
+import { SalesServices } from './../services/salesService';
+import { AppSettingsService } from './../services/appSettingsService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -137,6 +142,7 @@ const cloudSettings: CloudSettings = {
     DndModule.forRoot(),
 
     // custom
+    SharedModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -201,8 +207,10 @@ const cloudSettings: CloudSettings = {
     SalesTaxService,
     GroupSalesTaxService,
     AppSettingsService,
+    StaffService,
     AppService,
-    SalesServices
+    SalesServices,
+    ClickStopPropagation
   ]
 })
 export class AppModule {}

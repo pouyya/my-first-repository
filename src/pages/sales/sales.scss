@@ -1,5 +1,4 @@
 @import '../../theme/variables';
-
 .full-height {
   height: 100%
 }
@@ -10,25 +9,21 @@
 
 .sales-category {
   background-color: white;
-
   button {
     text-align: center;
     color: #585858;
     background-color: white;
-
     .category-icon {
       padding-bottom: 10px;
       display: block;
     }
   }
-
   .activeCategory {
     color: #000000;
     background-color: #F7F7F7;
-
     .category-icon {
       color: #000000;
-    }    
+    }
   }
 }
 
@@ -38,9 +33,11 @@
   padding-bottom: 0;
   transition: 0.09s all linear;
 }
+
 .list .item.item-accordion.ng-hide {
   line-height: 0px;
 }
+
 .list .item.item-accordion.ng-hide-add,
 .list .item.item-accordion.ng-hide-remove {
   display: block !important;
@@ -60,5 +57,16 @@
   vertical-align: top;
   border: 1px solid $tile-background-color-border;
   border-radius: 8px;
-  cursor: pointer;  
+  cursor: pointer;
+}
+
+.selected-staff-tile {
+  background: $tile-background-color;
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid $tile-background-color-border;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 3px solid $tile-hover-background-color;
+  border-radius: 8px;
 }

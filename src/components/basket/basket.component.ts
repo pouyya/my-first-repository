@@ -1,4 +1,3 @@
-import { UserSettingsService } from './../../services/userSettingsService';
 import _ from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
@@ -8,6 +7,7 @@ import { Sale } from './../../model/sale';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
+import { UserSettingsService } from './../../services/userSettingsService';
 
 @Component({
   selector: 'basket',
@@ -23,6 +23,7 @@ export class BasketComponent {
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
+  public staffsHash: any;
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -34,6 +35,10 @@ export class BasketComponent {
   }
 
   @Input() refund: boolean;
+  @Input('staffs')
+  set staff(arr: Array<any>) {
+    this.staffsHash = _.keyBy(arr, '_id');  
+  }
 
   @Input('_invoice')
   set model(obj: Sale) {
@@ -55,7 +60,8 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private userSettingsService: UserSettingsService,
-    private modalCtrl: ModalController) {}
+    private modalCtrl: ModalController) {
+  }
 
   public setBalance() {
     if (!this.refund) {
@@ -80,7 +86,7 @@ export class BasketComponent {
 
   public addItemToBasket(item: BucketItem) {
     var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
-      return (_item._id == item._id && _item.finalPrice == item.finalPrice)
+      return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.staffId == item.staffId)
     });
     index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
     this.calculateAndSync();
