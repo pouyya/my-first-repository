@@ -9,7 +9,7 @@ import { DragulaService } from 'ng2-dragula/ng2-dragula';
 })
 export class TileItemsComponent {
   @Input() items: Array<any>;
-  @Input() activeStaff: any | null;
+  @Input() activeEmployee: any | null;
   @Output() onSelect = new EventEmitter<Object>();
 
   constructor(
@@ -31,9 +31,9 @@ export class TileItemsComponent {
     this.onSelect.emit(item);
   }
 
-  public openStaffOptions(tile) {
+  public openEmployeeOptions(tile) {
     let actionSheet = this.actionSheetCtrl.create({
-      title: 'Staff Options',
+      title: 'Employee Options',
       buttons: [
         {
           text: 'Edit',

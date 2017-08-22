@@ -81,7 +81,6 @@ import { PriceBookService } from './../services/priceBookService';
 import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
-import { StaffService } from './../services/staffService';
 import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
 
@@ -207,7 +206,6 @@ const cloudSettings: CloudSettings = {
     SalesTaxService,
     GroupSalesTaxService,
     AppSettingsService,
-    StaffService,
     AppService,
     SalesServices,
     ClickStopPropagation

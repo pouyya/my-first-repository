@@ -23,7 +23,7 @@ export class BasketComponent {
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
-  public staffsHash: any;
+  public employeesHash: any;
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -35,9 +35,9 @@ export class BasketComponent {
   }
 
   @Input() refund: boolean;
-  @Input('staffs')
-  set staff(arr: Array<any>) {
-    this.staffsHash = _.keyBy(arr, '_id');  
+  @Input('employees')
+  set employee(arr: Array<any>) {
+    this.employeesHash = _.keyBy(arr, '_id');  
   }
 
   @Input('_invoice')
@@ -86,7 +86,7 @@ export class BasketComponent {
 
   public addItemToBasket(item: BucketItem) {
     var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
-      return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.staffId == item.staffId)
+      return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
     });
     index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
     this.calculateAndSync();

@@ -12,5 +12,5 @@ export class BucketItem {
   priceBook?: PurchasableItemPriceInterface;
   tax: any;
   isTaxIncl?: boolean;
-  staffId?: string | null;
+  employeeId?: string | null;
 }

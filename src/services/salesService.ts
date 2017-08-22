@@ -162,7 +162,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				bucketItem.actualPrice
 			) :
 			bucketItem.actualPrice;
-		item.staffId != null && (bucketItem.staffId = item.staffId);
+		item.employeeId != null && (bucketItem.employeeId = item.employeeId);
 		bucketItem.isTaxIncl = taxInclusive;
 
 		return bucketItem;

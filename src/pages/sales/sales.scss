@@ -51,7 +51,7 @@
   background-color: $basket-background-color;
 }
 
-.staff-tile {
+.employee-tile {
   background: $tile-background-color;
   display: inline-block;
   vertical-align: top;
@@ -60,7 +60,7 @@
   cursor: pointer;
 }
 
-.selected-staff-tile {
+.selected-employee-tile {
   background: $tile-background-color;
   display: inline-block;
   vertical-align: top;

@@ -88,7 +88,7 @@ export class Settings {
           user.settings.defaultTax = this.newTax._id;
           user.settings.taxEntity = this.newTax.entityTypeName;
           user.settings.taxType = this.selectedType;
-          user.settings.trackStaffSales = this.setting.trackStaffSales;
+          user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
           this.userService.persistUser(user);
           loader.dismiss();
           let toast = this.toast.create({

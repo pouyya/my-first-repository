@@ -31,7 +31,7 @@ export let userData = {
     taxType: true,
     taxEntity: "SalesTax",
     includeItemTax: true,
-    trackStaffSales: false
+    trackEmployeeSales: false
   },
   currentPos: {
     "_id": "2017-07-18T11:40:52.927Z",

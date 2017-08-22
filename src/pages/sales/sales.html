@@ -51,16 +51,16 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-12>
-              <md-grid-list cols="4" rowHeight="1:1" *ngIf="user.settings.trackStaffSales">
-                <md-grid-tile [ngClass]="{ 'selected-staff-tile': staff.selected, 'staff-tile': !staff.selected }" (click)="toggleStaff(staff)"
-                  *ngFor="let staff of staffs; let i = index" tapabble>
-                  {{ staff.name }}
+              <md-grid-list cols="4" rowHeight="1:1" *ngIf="user.settings.trackEmployeeSales">
+                <md-grid-tile [ngClass]="{ 'selected-employee-tile': employee.selected, 'employee-tile': !employee.selected }" (click)="toggleEmployee(employee)"
+                  *ngFor="let employee of employees; let i = index" tapabble>
+                  {{ employee.firstName }}
                 </md-grid-tile>
               </md-grid-list>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <tile-items [items]="activeTiles" [activeStaff]="selectedStaff" (onSelect)="onSelect($event)">
+        <tile-items [items]="activeTiles" [activeEmployee]="selectedEmployee" (onSelect)="onSelect($event)">
         </tile-items>
       </ion-col>
       <ion-col col-4>
@@ -68,7 +68,7 @@
           class="basket-component" 
           [(_invoice)]="invoice" 
           [refund]="doRefund"
-          [staffs]="staffs"
+          [employees]="employees"
           (paymentClicked)="paymentClicked($event)" 
           (notify)="notify($event)">
         </basket>

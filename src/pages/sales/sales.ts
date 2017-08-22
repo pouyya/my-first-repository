@@ -1,5 +1,5 @@
-import { Staff } from './../../model/staff';
-import { StaffService } from './../../services/staffService';
+import { EmployeeService } from './../../services/employeeService';
+import { Employee } from './../../model/Employee';
 import { CacheService } from './../../services/cacheService';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
@@ -40,8 +40,8 @@ export class Sales {
   public register: POS;
   public doRefund: boolean = false;
   public icons: any;
-  public staffs: Array<any> = [];
-  public selectedStaff: any = null;
+  public employees: Array<any> = [];
+  public selectedEmployee: any = null;
   public user: any;
   private invoiceParam: any;
   private priceBook: PriceBook;
@@ -50,7 +50,7 @@ export class Sales {
 
   constructor(
     private navCtrl: NavController,
-    private staffService: StaffService,
+    private employeeService: EmployeeService,
     private salesService: SalesServices,
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
@@ -108,19 +108,19 @@ export class Sales {
           })
         ];
 
-        if (this.user.settings.trackStaffSales) {
+        if (this.user.settings.trackEmployeeSales) {
           promises.push(new Promise((resolve, reject) => {
-            this.staffService.getAll().then((staffs: Array<Staff>) => {
-              this.staffs = staffs;
+            this.employeeService.getAll().then((employees: Array<Employee>) => {
+              this.employees = employees;
               resolve();
             }).catch(error => reject(error));
           }));
         }
 
         Promise.all(promises).then(() => {
-          this.staffs = this.staffs.map(staff => {
-            staff.selected = false;
-            return staff;
+          this.employees = this.employees.map(employee => {
+            employee.selected = false;
+            return employee;
           });
           this.cdr.reattach();
           loader.dismiss();
@@ -145,29 +145,29 @@ export class Sales {
     return category._id == category._id;
   }
 
-  public toggleStaff(staff: any) {
-    if(staff.selected) {
-      staff.selected = false;
-      this.selectedStaff = null;
+  public toggleEmployee(employee: any) {
+    if(employee.selected) {
+      employee.selected = false;
+      this.selectedEmployee = null;
     } else {
-      if(this.selectedStaff) {
-        let index = _.findIndex(this.staffs, _staff => _staff.selected);
-        this.staffs[index].selected = false;
+      if(this.selectedEmployee) {
+        let index = _.findIndex(this.employees, _employee => _employee.selected);
+        this.employees[index].selected = false;
       }
-      staff.selected = true;
-      this.selectedStaff = staff;
+      employee.selected = true;
+      this.selectedEmployee = employee;
     }
   }
 
   // Event
   public onSelect(item: PurchasableItem) {
-    let interactableItem: any = { ...item, tax: null, priceBook: null, staffId: null };
+    let interactableItem: any = { ...item, tax: null, priceBook: null, employeeId: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
     interactableItem.tax = _.pick(
       interactableItem.priceBook.salesTaxId != null ?
         _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
       ['rate', 'name']);
-    this.selectedStaff != null && (interactableItem.staffId = this.selectedStaff._id);
+    this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
     this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
   }
 
@@ -277,18 +277,18 @@ export class Sales {
           }).catch(error => reject(error));
         })
       ];
-      if (this.user.settings.trackStaffSales) {
+      if (this.user.settings.trackEmployeeSales) {
         promises.push(new Promise((resolve, reject) => {
-          this.staffService.getAll().then((staffs: Array<Staff>) => {
-            this.staffs = staffs;
+          this.employeeService.getAll().then((employees: Array<Employee>) => {
+            this.employees = employees;
             resolve();
           }).catch(error => reject(error));
         }));
       }
       Promise.all(promises).then(() => {
-        this.staffs = this.staffs.map(staff => {
-          staff.selected = false;
-          return staff;
+        this.employees = this.employees.map(employee => {
+          employee.selected = false;
+          return employee;
         });
         this.cdr.reattach();
         loader.dismiss();

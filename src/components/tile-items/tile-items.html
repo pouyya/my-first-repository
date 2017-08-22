@@ -8,7 +8,7 @@
       [rowspan]="1" tapabble>
       <sp-icon [icon]="tile.icon"></sp-icon>
       <md-grid-tile-footer [style.background]="'#3A4953'">
-        <h2 md-line>{{ tile.name }} <span *ngIf="activeStaff" click-stop-propagation (click)="openStaffOptions(tile)" class="clickable pull-right">Edit</span></h2>
+        <h2 md-line>{{ tile.name }} <span *ngIf="activeEmployee" click-stop-propagation (click)="openEmployeeOptions(tile)" class="clickable pull-right">Edit</span></h2>
       </md-grid-tile-footer>
   </md-grid-tile>
 </md-grid-list>
