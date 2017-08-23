@@ -14,6 +14,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DragulaModule } from 'ng2-dragula';
 import { DndModule } from 'ng2-dnd';
+import { DragScrollModule } from 'angular2-drag-scroll';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -139,6 +140,7 @@ const cloudSettings: CloudSettings = {
     BrowserAnimationsModule,
     DragulaModule,
     DndModule.forRoot(),
+    DragScrollModule,
 
     // custom
     SharedModule,

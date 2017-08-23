@@ -19,7 +19,7 @@
 
           <ion-grid>
             <ion-row (click)="viewInfo(item, $index)">
-              <ion-col col-md-11 offset-md-1 *ngIf="item.employeeId">{{employeesHash[item.employeeId].name}}</ion-col>
+              <ion-col col-md-11 offset-md-1 *ngIf="item.employeeId">{{employeesHash[item.employeeId].firstName}}</ion-col>
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>

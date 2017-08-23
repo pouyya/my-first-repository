@@ -26,6 +26,9 @@ import { PaymentsPage } from "../payment/payment";
   selector: 'page-variables',
   templateUrl: 'sales.html',
   styleUrls: ['/pages/sales/sales.scss'],
+  styles: [`
+
+  `],
   providers: [SalesServices],
 })
 export class Sales {
