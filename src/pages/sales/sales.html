@@ -51,7 +51,7 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-12>
-              <div drag-scroll [scrollbar-hidden]="false" [drag-scroll-y-disabled]="true">
+              <div drag-scroll [scrollbar-hidden]="false" [drag-scroll-y-disabled]="true" [drag-scroll-nav]="true">
                 <ion-card [ngClass]="{ 'selected-employee-tile': employee.selected, 'employee-tile': !employee.selected }"
                 (click)="toggleEmployee(employee)"
                 *ngFor="let employee of employees; let i = index" tapabble>
@@ -67,7 +67,12 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket class="basket-component" [(_invoice)]="invoice" [refund]="doRefund" [employees]="employees" (paymentClicked)="paymentClicked($event)"
+        <basket class="basket-component" 
+          [(_invoice)]="invoice"
+          [refund]="doRefund"
+          [employees]="employees"
+          [user]="user"
+          (paymentClicked)="paymentClicked($event)"
           (notify)="notify($event)">
         </basket>
       </ion-col>

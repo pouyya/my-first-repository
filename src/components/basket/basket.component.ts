@@ -7,13 +7,12 @@ import { Sale } from './../../model/sale';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
-import { UserSettingsService } from './../../services/userSettingsService';
 
 @Component({
   selector: 'basket',
   templateUrl: 'basket.html',
   styleUrls: ['/components/basket/basket.scss'],
-  providers: [SalesServices, UserSettingsService]
+  providers: [SalesServices]
 })
 export class BasketComponent {
 
@@ -34,6 +33,7 @@ export class BasketComponent {
     return this._invoice;
   }
 
+  @Input() user: any;
   @Input() refund: boolean;
   @Input('employees')
   set employee(arr: Array<any>) {
@@ -59,7 +59,6 @@ export class BasketComponent {
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
-    private userSettingsService: UserSettingsService,
     private modalCtrl: ModalController) {
   }
 
@@ -104,7 +103,13 @@ export class BasketComponent {
   }
 
   public viewInfo(item: BucketItem, $index) {
-    let modal = this.modalCtrl.create(ItemInfoModal, { purchaseableItem: item });
+    let modal = this.modalCtrl.create(ItemInfoModal, {
+      purchaseableItem: item, 
+      employeeHash: this.employeesHash,
+      settings: {
+        trackStaff: this.user.settings.trackEmployeeSales
+      }
+    });
     modal.onDidDismiss(data => {
       this.invoice.items[$index] = data.item;
       data.hasChanged && this.calculateAndSync();

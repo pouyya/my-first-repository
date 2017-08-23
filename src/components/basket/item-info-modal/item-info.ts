@@ -9,6 +9,8 @@ import { Component } from '@angular/core';
 export class ItemInfoModal {
 
   public purchaseableItem: BucketItem;
+  public employeeHash: any;
+  public settings: any;
   private bufferItem: BucketItem;
 
   constructor(
@@ -16,6 +18,8 @@ export class ItemInfoModal {
     private viewCtrl: ViewController
   ) {
     this.purchaseableItem = this.navParams.get("purchaseableItem");
+    this.employeeHash = this.navParams.get("employeeHash");
+    this.settings = this.navParams.get("settings");
     this.bufferItem = { ...this.purchaseableItem };
   }
 

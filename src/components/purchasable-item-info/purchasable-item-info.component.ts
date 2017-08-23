@@ -11,12 +11,14 @@ import { Component, Input } from '@angular/core';
 export class PurchasableItemInfoComponent {
 
   @Input() item: BucketItem;
+  @Input() employeeHash: any;
+  @Input() settings: any;
 
   constructor(
     private helperService: HelperService,
     private calcService: CalculatorService,
     private taxService: TaxService
-  ) { }
+  ) {}
 
   public calculateDiscount(item: BucketItem) {
     item.discount = this.helperService.round2Dec(Number(item.discount));

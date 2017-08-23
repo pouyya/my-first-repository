@@ -122,8 +122,7 @@ const cloudSettings: CloudSettings = {
     SaleTaxDetails,
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
-    CategoryIconSelectModal,
-    KeysPipe
+    CategoryIconSelectModal
   ],
   imports: [
     BrowserModule,
@@ -210,7 +209,8 @@ const cloudSettings: CloudSettings = {
     AppSettingsService,
     AppService,
     SalesServices,
-    ClickStopPropagation
+    ClickStopPropagation,
+    KeysPipe
   ]
 })
 export class AppModule {}

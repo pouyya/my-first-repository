@@ -30,25 +30,4 @@ export class TileItemsComponent {
   public selectItem(item) {
     this.onSelect.emit(item);
   }
-
-  public openEmployeeOptions(tile) {
-    let actionSheet = this.actionSheetCtrl.create({
-      title: 'Employee Options',
-      buttons: [
-        {
-          text: 'Edit',
-          handler: () => {
-            console.log('Edit clicked');
-          }
-        }, {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
-  }
 }

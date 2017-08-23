@@ -35,5 +35,14 @@
       </ion-item>
     </ion-col>
 
+    <ion-col col-md-12 *ngIf="settings.trackStaff">
+      <ion-item item-content>
+        <ion-label>Switch Staff</ion-label>
+        <ion-select [(ngModel)]="item.employeeId">
+          <ion-option *ngFor="let employee of employeeHash | keys" [value]="employee.key">{{employee.value.firstName}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>    
+
   </ion-row>
 </ion-grid>
