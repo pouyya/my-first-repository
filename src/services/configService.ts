@@ -15,7 +15,7 @@ export class ConfigService {
 
     static currentExternalDBName(): string
     {
-        return '/simplecuts_aria';
+        return '/test_aria';
     }
 
     static getCurrentFullExternalDBUrl() : string {

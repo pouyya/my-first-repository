@@ -179,6 +179,11 @@ export class Sales {
           this.salesService.instantiateInvoice().then((invoice: any) => {
             this.invoiceParam = null;
             this.invoice = invoice.invoice;
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+            this.selectedEmployee = null;
           });
         }
         resolve();
