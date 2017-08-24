@@ -1,3 +1,4 @@
+import { SharedModule } from './../../modules/shared.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BasketComponent } from './basket.component';
@@ -7,7 +8,8 @@ import { IonicPageModule } from 'ionic-angular';
   declarations: [ BasketComponent ],
   imports: [ 
     CommonModule, 
-    IonicPageModule.forChild(BasketComponent)
+    IonicPageModule.forChild(BasketComponent),
+    SharedModule
   ],
   exports: [ BasketComponent ]
 })

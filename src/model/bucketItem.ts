@@ -13,4 +13,5 @@ export class BucketItem {
   tax: any;
   isTaxIncl?: boolean;
   employeeId?: string | null;
+  cssClass: string | null;
 }

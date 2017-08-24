@@ -24,10 +24,10 @@ export class ItemInfoModal {
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss({ hasChanged: false, item: this.bufferItem });
+    this.viewCtrl.dismiss({ hasChanged: false, item: this.bufferItem, buffer: null });
   }
 
   public confirmChanges() {
-    this.viewCtrl.dismiss({ hasChanged: true, item: this.purchaseableItem });
+    this.viewCtrl.dismiss({ hasChanged: true, item: this.purchaseableItem, buffer: this.bufferItem });
   }
 }

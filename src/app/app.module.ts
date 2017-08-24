@@ -1,3 +1,4 @@
+import { GroupByPipe } from './../pipes/group-by.pipe';
 import { SharedModule } from './../modules/shared.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
@@ -210,7 +211,8 @@ const cloudSettings: CloudSettings = {
     AppService,
     SalesServices,
     ClickStopPropagation,
-    KeysPipe
+    KeysPipe,
+    GroupByPipe
   ]
 })
 export class AppModule {}
