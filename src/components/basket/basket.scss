@@ -46,25 +46,25 @@
 .group-item {
   border-width: 2px 2px 2px 2px;
   border-style: solid;
-  border-color: $toolbar-background;
+  border-color: $staff-group-border-color;
   margin-bottom: 3px;
 }
 
 .group-item-start {
   border-width: 2px 2px 0px 2px;
   border-style: solid;
-  border-color: $toolbar-background;
+  border-color: $staff-group-border-color;
 }
 
 .group-item-mid {
   border-width: 0px 2px 0px 2px;
   border-style: solid;
-  border-color: $toolbar-background;
+  border-color: $staff-group-border-color;
 }
 
 .group-item-end {
   border-width: 0px 2px 2px 2px;
   border-style: solid;
-  border-color: $toolbar-background;
+  border-color: $staff-group-border-color;
   margin-bottom: 3px;
 }
