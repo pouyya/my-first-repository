@@ -1,5 +1,3 @@
-import { GroupByPipe } from './../pipes/group-by.pipe';
-import { SharedModule } from './../modules/shared.module';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -16,6 +14,8 @@ import { CacheFactory } from 'cachefactory';
 import { DragulaModule } from 'ng2-dragula';
 import { DndModule } from 'ng2-dnd';
 import { DragScrollModule } from 'angular2-drag-scroll';
+import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
+import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -58,6 +58,7 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
+import { GroupByPipe } from './../pipes/group-by.pipe';
 
 // directives
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
@@ -149,7 +150,8 @@ const cloudSettings: CloudSettings = {
     PurchasableItemInfoModule,
     IconSelectModule,
     SPIconModule,
-    ItemPriceBookModule
+    ItemPriceBookModule,
+    TileScrollableModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

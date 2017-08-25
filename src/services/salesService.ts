@@ -1,4 +1,3 @@
-import { UserSettingsService } from './userSettingsService';
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
 import { Injectable, NgZone } from '@angular/core';
@@ -16,6 +15,7 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
+import { UserSettingsService } from './userSettingsService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -61,7 +61,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				.then(
 				(invoices: Array<Sale>) => {
 					if (invoices && invoices.length > 0) {
-						var invoice = invoices[0];
+						let invoice = invoices[0];
 						resolve({
 							invoice,
 							doRecalculate: invoice.state == 'current'

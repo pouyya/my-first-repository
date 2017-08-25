@@ -1,0 +1,27 @@
+@import "../../theme/variables";
+
+.scroll {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap
+}
+
+ion-card.element-tile {
+  width: 8em;
+  height: 8em;
+  display: inline-block;
+  box-shadow: none;
+  background: $tile-background-color;
+  border: 1px solid $tile-background-color-border;
+  cursor: pointer;
+}
+
+ion-card.selected-element-tile {
+  width: 8em;
+  height: 8em;
+  background: $tile-background-color;
+  display: inline-block;
+  cursor: pointer;
+  border: 3px solid $tile-hover-background-color;
+  box-shadow: none;
+}

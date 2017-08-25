@@ -1,6 +1,3 @@
-import { EmployeeService } from './../../services/employeeService';
-import { Employee } from './../../model/Employee';
-import { CacheService } from './../../services/cacheService';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, LoadingController, NavParams } from 'ionic-angular';
@@ -9,6 +6,9 @@ import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
 import { UserService } from './../../services/userService';
+import { EmployeeService } from './../../services/employeeService';
+import { Employee } from './../../model/Employee';
+import { CacheService } from './../../services/cacheService';
 
 import { POS } from './../../model/pos';
 import { Sale } from './../../model/sale';
@@ -145,18 +145,9 @@ export class Sales {
     return category._id == category._id;
   }
 
-  public toggleEmployee(employee: any) {
-    if(employee.selected) {
-      employee.selected = false;
-      this.selectedEmployee = null;
-    } else {
-      if(this.selectedEmployee) {
-        let index = _.findIndex(this.employees, _employee => _employee.selected);
-        this.employees[index].selected = false;
-      }
-      employee.selected = true;
-      this.selectedEmployee = employee;
-    }
+  // Event
+  public toggle(event) {
+    this.selectedEmployee = event.selected;
   }
 
   // Event
@@ -200,10 +191,7 @@ export class Sales {
 
   // Event
   public notify($event) {
-    if ($event.clearSale) {
-      this.invoiceParam = null;
-
-    }
+    if ($event.clearSale) this.invoiceParam = null;
   }
 
   private initSalePageData(): Promise<any> {
