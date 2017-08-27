@@ -1,4 +1,3 @@
-import { CacheService } from './../../services/cacheService';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, LoadingController, NavParams } from 'ionic-angular';
@@ -7,6 +6,9 @@ import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
 import { UserService } from './../../services/userService';
+import { EmployeeService } from './../../services/employeeService';
+import { Employee } from './../../model/Employee';
+import { CacheService } from './../../services/cacheService';
 
 import { POS } from './../../model/pos';
 import { Sale } from './../../model/sale';
@@ -38,14 +40,17 @@ export class Sales {
   public register: POS;
   public doRefund: boolean = false;
   public icons: any;
+  public employees: Array<any> = [];
+  public selectedEmployee: any = null;
+  public user: any;
   private invoiceParam: any;
   private priceBook: PriceBook;
   private salesTaxes: Array<SalesTax>;
-  private user: any;
   private defaultTax: any;
 
   constructor(
     private navCtrl: NavController,
+    private employeeService: EmployeeService,
     private salesService: SalesServices,
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
@@ -67,7 +72,7 @@ export class Sales {
   }
 
   ionViewDidLoad() {
-    
+
     let _init: boolean = false;
     if (!this.register.status) {
       let openingAmount: number = Number(this.navParams.get('openingAmount'));
@@ -87,7 +92,7 @@ export class Sales {
       _init = true;
     }
 
-    if(_init) {
+    if (_init) {
       let loader = this.loading.create({
         content: 'Loading Register...',
       });
@@ -103,9 +108,22 @@ export class Sales {
           })
         ];
 
+        if (this.user.settings.trackEmployeeSales) {
+          promises.push(new Promise((resolve, reject) => {
+            this.employeeService.getAll().then((employees: Array<Employee>) => {
+              this.employees = employees;
+              resolve();
+            }).catch(error => reject(error));
+          }));
+        }
+
         Promise.all(promises).then(() => {
+          this.employees = this.employees.map(employee => {
+            employee.selected = false;
+            return employee;
+          });
           this.cdr.reattach();
-          loader.dismiss();       
+          loader.dismiss();
         });
       });
     }
@@ -128,13 +146,19 @@ export class Sales {
   }
 
   // Event
+  public toggle(event) {
+    this.selectedEmployee = event.selected;
+  }
+
+  // Event
   public onSelect(item: PurchasableItem) {
-    let interactableItem: any = { ...item, tax: null, priceBook: null };
+    let interactableItem: any = { ...item, tax: null, priceBook: null, employeeId: null };
     interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
     interactableItem.tax = _.pick(
       interactableItem.priceBook.salesTaxId != null ?
         _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
       ['rate', 'name']);
+    this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
     this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
   }
 
@@ -146,6 +170,11 @@ export class Sales {
           this.salesService.instantiateInvoice().then((invoice: any) => {
             this.invoiceParam = null;
             this.invoice = invoice.invoice;
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+            this.selectedEmployee = null;
           });
         }
         resolve();
@@ -162,10 +191,7 @@ export class Sales {
 
   // Event
   public notify($event) {
-    if ($event.clearSale) {
-      this.invoiceParam = null;
-
-    }
+    if ($event.clearSale) this.invoiceParam = null;
   }
 
   private initSalePageData(): Promise<any> {
@@ -244,8 +270,19 @@ export class Sales {
           }).catch(error => reject(error));
         })
       ];
-
+      if (this.user.settings.trackEmployeeSales) {
+        promises.push(new Promise((resolve, reject) => {
+          this.employeeService.getAll().then((employees: Array<Employee>) => {
+            this.employees = employees;
+            resolve();
+          }).catch(error => reject(error));
+        }));
+      }
       Promise.all(promises).then(() => {
+        this.employees = this.employees.map(employee => {
+          employee.selected = false;
+          return employee;
+        });
         this.cdr.reattach();
         loader.dismiss();
       }).catch(error => {

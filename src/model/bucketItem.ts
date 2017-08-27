@@ -11,5 +11,7 @@ export class BucketItem {
   notes: string;
   priceBook?: PurchasableItemPriceInterface;
   tax: any;
-  isTaxIncl: boolean;
+  isTaxIncl?: boolean;
+  employeeId?: string | null;
+  cssClass: string | null;
 }

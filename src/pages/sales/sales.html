@@ -7,7 +7,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content >
+<ion-content>
 
   <ion-grid *ngIf="!register.status">
     <ion-row>
@@ -37,24 +37,38 @@
   <ion-grid *ngIf="register.status" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
-        <ion-scroll style="height:100%"  scrollY="true">
-        <ion-list no-lines class="full-height no-margin sales-category">
-          <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
-            (click)="itemSelected(category)">
+        <ion-scroll style="height:100%" scrollY="true">
+          <ion-list no-lines class="full-height no-margin sales-category">
+            <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
+              (click)="itemSelected(category)">
                 <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
               {{ category.name }}
           </button>
-        </ion-list>
+          </ion-list>
         </ion-scroll>
       </ion-col>
       <ion-col col-6>
-        <tile-items [items]="activeTiles" (onSelect)="onSelect($event)">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales">
+              <tiles-scrollable 
+                [(elements)]="employees" 
+                [(selectedElement)]="selectedEmployee"
+                [displayProperty]="'firstName'"
+                (notifyChange)="toggle($event)">
+              </tiles-scrollable>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <tile-items [items]="activeTiles" [activeEmployee]="selectedEmployee" (onSelect)="onSelect($event)">
         </tile-items>
       </ion-col>
       <ion-col col-4>
         <basket class="basket-component" 
-          [(_invoice)]="invoice" 
+          [(_invoice)]="invoice"
           [refund]="doRefund"
+          [employees]="employees"
+          [user]="user"
           (paymentClicked)="paymentClicked($event)"
           (notify)="notify($event)">
         </basket>

@@ -1,4 +1,4 @@
-import { UserSettingsService } from './../../services/userSettingsService';
+import { GroupByPipe } from './../../pipes/group-by.pipe';
 import _ from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
@@ -13,7 +13,7 @@ import { ItemInfoModal } from './item-info-modal/item-info';
   selector: 'basket',
   templateUrl: 'basket.html',
   styleUrls: ['/components/basket/basket.scss'],
-  providers: [SalesServices, UserSettingsService]
+  providers: [SalesServices]
 })
 export class BasketComponent {
 
@@ -23,6 +23,7 @@ export class BasketComponent {
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
+  public employeesHash: any;
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -33,7 +34,12 @@ export class BasketComponent {
     return this._invoice;
   }
 
+  @Input() user: any;
   @Input() refund: boolean;
+  @Input('employees')
+  set employee(arr: Array<any>) {
+    this.employeesHash = _.keyBy(arr, '_id');  
+  }
 
   @Input('_invoice')
   set model(obj: Sale) {
@@ -54,8 +60,9 @@ export class BasketComponent {
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
-    private userSettingsService: UserSettingsService,
-    private modalCtrl: ModalController) {}
+    private groupByPipe: GroupByPipe,
+    private modalCtrl: ModalController) {
+  }
 
   public setBalance() {
     if (!this.refund) {
@@ -80,14 +87,16 @@ export class BasketComponent {
 
   public addItemToBasket(item: BucketItem) {
     var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
-      return (_item._id == item._id && _item.finalPrice == item.finalPrice)
+      return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
     });
     index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
+    this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
     this.calculateAndSync();
   }
 
   public removeItem($index) {
     this.invoice.items.splice($index, 1);
+    this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
     this.calculateAndSync();
   }
 
@@ -98,9 +107,18 @@ export class BasketComponent {
   }
 
   public viewInfo(item: BucketItem, $index) {
-    let modal = this.modalCtrl.create(ItemInfoModal, { purchaseableItem: item });
+    let modal = this.modalCtrl.create(ItemInfoModal, {
+      purchaseableItem: item, 
+      employeeHash: this.employeesHash,
+      settings: {
+        trackStaff: this.user.settings.trackEmployeeSales
+      }
+    });
     modal.onDidDismiss(data => {
+      let reorder = false;
+      if(data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
       this.invoice.items[$index] = data.item;
+      if(reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
       data.hasChanged && this.calculateAndSync();
     });
     modal.present();

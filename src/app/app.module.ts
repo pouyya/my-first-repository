@@ -1,5 +1,3 @@
-import { SalesServices } from './../services/salesService';
-import { AppSettingsService } from './../services/appSettingsService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -15,6 +13,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DragulaModule } from 'ng2-dragula';
 import { DndModule } from 'ng2-dnd';
+import { DragScrollModule } from 'angular2-drag-scroll';
+import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
+import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -57,6 +58,10 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
+import { GroupByPipe } from './../pipes/group-by.pipe';
+
+// directives
+import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
 
 // services
 import { ProductService } from '../services/productService';
@@ -79,6 +84,8 @@ import { PriceBookService } from './../services/priceBookService';
 import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
+import { SalesServices } from './../services/salesService';
+import { AppSettingsService } from './../services/appSettingsService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -117,8 +124,7 @@ const cloudSettings: CloudSettings = {
     SaleTaxDetails,
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
-    CategoryIconSelectModal,
-    KeysPipe
+    CategoryIconSelectModal
   ],
   imports: [
     BrowserModule,
@@ -135,14 +141,17 @@ const cloudSettings: CloudSettings = {
     BrowserAnimationsModule,
     DragulaModule,
     DndModule.forRoot(),
+    DragScrollModule,
 
     // custom
+    SharedModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
     IconSelectModule,
     SPIconModule,
-    ItemPriceBookModule
+    ItemPriceBookModule,
+    TileScrollableModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -202,7 +211,10 @@ const cloudSettings: CloudSettings = {
     GroupSalesTaxService,
     AppSettingsService,
     AppService,
-    SalesServices
+    SalesServices,
+    ClickStopPropagation,
+    KeysPipe,
+    GroupByPipe
   ]
 })
 export class AppModule {}

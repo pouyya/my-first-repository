@@ -1,0 +1,8 @@
+<div class="scroll">
+  <ion-card (click)="toggle(element)" [ngClass]="{ 'selected-element-tile': element.selected, 'element-tile': !element.selected }"
+    *ngFor="let element of elements; let i = index" tapabble>
+    <ion-item>
+      {{ element[displayProperty] }}
+    </ion-item>
+  </ion-card>
+</div>

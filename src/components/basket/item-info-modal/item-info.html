@@ -12,7 +12,11 @@
 </ion-header>
 
 <ion-content>
-  <purchasable-item-info [item]="purchaseableItem"></purchasable-item-info>
+  <purchasable-item-info
+    [item]="purchaseableItem"
+    [employeeHash]="employeeHash"
+    [settings]="settings">
+  </purchasable-item-info>
 </ion-content>
 
 <ion-footer>

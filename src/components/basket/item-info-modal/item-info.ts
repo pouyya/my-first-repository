@@ -9,6 +9,8 @@ import { Component } from '@angular/core';
 export class ItemInfoModal {
 
   public purchaseableItem: BucketItem;
+  public employeeHash: any;
+  public settings: any;
   private bufferItem: BucketItem;
 
   constructor(
@@ -16,14 +18,16 @@ export class ItemInfoModal {
     private viewCtrl: ViewController
   ) {
     this.purchaseableItem = this.navParams.get("purchaseableItem");
+    this.employeeHash = this.navParams.get("employeeHash");
+    this.settings = this.navParams.get("settings");
     this.bufferItem = { ...this.purchaseableItem };
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss({ hasChanged: false, item: this.bufferItem });
+    this.viewCtrl.dismiss({ hasChanged: false, item: this.bufferItem, buffer: null });
   }
 
   public confirmChanges() {
-    this.viewCtrl.dismiss({ hasChanged: true, item: this.purchaseableItem });
+    this.viewCtrl.dismiss({ hasChanged: true, item: this.purchaseableItem, buffer: this.bufferItem });
   }
 }

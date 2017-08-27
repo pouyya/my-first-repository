@@ -1,11 +1,9 @@
 @import '../../theme/variables';
-
 .basket {
-    background-color: $basket-background-color;
-
-    .name {
-      font-weight: 500;
-    }
+  background-color: $basket-background-color;
+  .name {
+    font-weight: 500;
+  }
 }
 
 .action-buttons {
@@ -21,9 +19,8 @@
   width: 100%;
   height: 318px;
   position: relative;
-
   ion-row {
-    height:100%;
+    height: 100%;
   }
 }
 
@@ -44,4 +41,30 @@
 #park-sale {
   @extend .link;
   margin-right: 2em;
+}
+
+.group-item {
+  border-width: 2px 2px 2px 2px;
+  border-style: solid;
+  border-color: $staff-group-border-color;
+  margin-bottom: 3px;
+}
+
+.group-item-start {
+  border-width: 2px 2px 0px 2px;
+  border-style: solid;
+  border-color: $staff-group-border-color;
+}
+
+.group-item-mid {
+  border-width: 0px 2px 0px 2px;
+  border-style: solid;
+  border-color: $staff-group-border-color;
+}
+
+.group-item-end {
+  border-width: 0px 2px 2px 2px;
+  border-style: solid;
+  border-color: $staff-group-border-color;
+  margin-bottom: 3px;
 }

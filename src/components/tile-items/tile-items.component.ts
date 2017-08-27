@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { AlertController } from 'ionic-angular';
+import { AlertController, ActionSheetController } from 'ionic-angular';
 import { DragulaService } from 'ng2-dragula/ng2-dragula';
 
 @Component({
@@ -9,11 +9,14 @@ import { DragulaService } from 'ng2-dragula/ng2-dragula';
 })
 export class TileItemsComponent {
   @Input() items: Array<any>;
+  @Input() activeEmployee: any | null;
   @Output() onSelect = new EventEmitter<Object>();
 
   constructor(
     private alertController: AlertController,
-    private dragulaService: DragulaService) {
+    private dragulaService: DragulaService,
+    private actionSheetCtrl: ActionSheetController
+  ) {
     dragulaService.drop.subscribe((value) => {
       let alert = this.alertController.create({
         title: 'Item moved',
@@ -21,14 +24,10 @@ export class TileItemsComponent {
         buttons: ['OK']
       });
       alert.present();
-    });      
+    });
   }
 
   public selectItem(item) {
     this.onSelect.emit(item);
-  }
-
-  public onDrop($event) {
-    console.log($event)
   }
 }

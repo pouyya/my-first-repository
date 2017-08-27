@@ -8,23 +8,37 @@
       <button ion-button icon-only (click)="save()">
         Save
       </button>
-    </ion-buttons>    
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-list inset>
+    <ion-list-header>
+      Tax Settings
+    </ion-list-header>
     <ion-item>
       <ion-label class="item-name">Tax Default</ion-label>
-        <ion-select [(ngModel)]="selectedTax" name="salesTax">
-          <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
-        </ion-select>      
+      <ion-select [(ngModel)]="selectedTax" name="salesTax">
+        <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
+      </ion-select>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Tax Type</ion-label>
-        <ion-select [(ngModel)]="selectedType" name="taxType">
-          <ion-option [value]="type._id" *ngFor="let type of taxTypes">{{type.type}}</ion-option>
-        </ion-select>      
+      <ion-select [(ngModel)]="selectedType" name="taxType">
+        <ion-option [value]="type._id" *ngFor="let type of taxTypes">{{type.type}}</ion-option>
+      </ion-select>
     </ion-item>
   </ion-list>
+
+  <ion-list inset>
+    <ion-list-header>
+      Employee Settings
+    </ion-list-header>
+    <ion-item>
+      <ion-label class="item-name">Track Employee Sales</ion-label>
+      <ion-toggle [(ngModel)]="setting.trackEmployeeSales" name="trackEmployeeSales"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
 </ion-content>
