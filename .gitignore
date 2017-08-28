@@ -10,3 +10,4 @@ www/assets
 *.log
 *.swp
 .io-config.json
+package-lock.json
