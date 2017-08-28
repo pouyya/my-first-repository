@@ -16,6 +16,7 @@ import { DndModule } from 'ng2-dnd';
 import { DragScrollModule } from 'angular2-drag-scroll';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
+import { PinDialog } from '@ionic-native/pin-dialog';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -189,6 +190,7 @@ const cloudSettings: CloudSettings = {
   providers: [
     StatusBar,
     SplashScreen,
+    PinDialog,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CacheFactory,
     ProductService,

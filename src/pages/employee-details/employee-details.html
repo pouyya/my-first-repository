@@ -17,31 +17,34 @@
   <ion-list>
     <ion-item>
       <ion-label class="item-name">First Name:</ion-label>
-      <ion-input type="text" [(ngModel)]="item.firstName"></ion-input>
+      <ion-input type="text" [(ngModel)]="employee.firstName"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Last Name:</ion-label>
-      <ion-input type="text" [(ngModel)]="item.lastName"></ion-input>
+      <ion-input type="text" [(ngModel)]="employee.lastName"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Address:</ion-label>
-      <ion-input type="text" [(ngModel)]="item.address"></ion-input>
+      <ion-input type="text" [(ngModel)]="employee.address"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Phone:</ion-label>
-      <ion-input type="text" [(ngModel)]="item.phone"></ion-input>
+      <ion-input type="text" [(ngModel)]="employee.phone"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Is Admin</ion-label>
-      <ion-checkbox [(ngModel)]="item.isAdmin"></ion-checkbox>
+      <ion-checkbox [(ngModel)]="employee.isAdmin"></ion-checkbox>
     </ion-item>
+    <ion-item>
+      <button ion-button (click)="setPin()" color="{{ !employee.pin ? 'default' : 'primary' }}">{{ !employee.pin ? 'Set PIN' : 'Reset PIN' }}</button>
+    </ion-item>    
      <ion-item>
       <ion-list>
         <ion-item-sliding *ngFor="let store of stores">
           <ion-item>
             <h2>{{store.store.name}}</h2>
           </ion-item>
-          <ion-item-options side="right" *ngIf="!item.isAdmin">
+          <ion-item-options side="right" *ngIf="!employee.isAdmin">
             <button ion-button (click)="changeRole('staff', store.id)" [color]="store.role == 'staff' ? 'primary' : 'light'">
               <ion-icon name="person"></ion-icon>
               Staff
