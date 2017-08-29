@@ -47,6 +47,7 @@ import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details
 import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
+import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -124,7 +125,8 @@ const cloudSettings: CloudSettings = {
     SaleTaxDetails,
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
-    CategoryIconSelectModal
+    CategoryIconSelectModal,
+    ClockInOutPage
   ],
   imports: [
     BrowserModule,
@@ -184,7 +186,8 @@ const cloudSettings: CloudSettings = {
     SaleTaxDetails,
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
-    CategoryIconSelectModal
+    CategoryIconSelectModal,
+    ClockInOutPage
   ],
   providers: [
     StatusBar,

@@ -62,7 +62,12 @@ export class ShortCutsApp {
   openPage(page) {
     this.currentModule = this.moduleService.getCurrentModule(page);
     this.moduleName = this.currentModule.constructor.name;
-    this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
+    if(page.hasOwnProperty('modal') && page.modal) {
+      let modal = this.modalCtrl.create(page.component);
+      modal.present();
+    } else {
+      this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
+    }
   }
 
 }

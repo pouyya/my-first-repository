@@ -1,3 +1,4 @@
+import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { SalesHistoryPage } from './../pages/sales-history/sales-history';
 import { Sales } from './../pages/sales/sales';
 import { ModuleBase } from './moduelBase';
@@ -8,7 +9,8 @@ export class SalesModule  implements ModuleBase {
   public pages: Array<any> = [
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Open/Close', icon: 'bookmarks', component: OpenCloseRegister },
-    { title: 'Sales History', icon: 'cash', component: SalesHistoryPage },
+    { title: 'Sales History', icon: 'list', component: SalesHistoryPage },
+    { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Back Office', icon: 'build', component: HomePage }
   ];
 }
