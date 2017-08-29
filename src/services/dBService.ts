@@ -1,4 +1,4 @@
-import * as PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb';
 import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity";
 import { ConfigService } from "./configService"

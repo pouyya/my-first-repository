@@ -1,3 +1,5 @@
+import { reservedPins } from './../../metadata/reservedPins';
+import { PluginService } from './../../services/pluginService';
 import { AppSettingsService } from './../../services/appSettingsService';
 import { Employee } from './../../model/employee';
 import { Store } from './../../model/store';
@@ -25,7 +27,8 @@ export class EmployeeDetails {
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private appSettingsService: AppSettingsService,
-    public navCtrl: NavController) {
+    private pluginService: PluginService,
+    private navCtrl: NavController) {
   }
 
   ionViewDidLoad() {
@@ -88,61 +91,30 @@ export class EmployeeDetails {
   }
 
   public setPin() {
-    let pin1: number = 0;
-    let pin2: number = 0;
-    let config: any = {
-      input: [{
+    let config = {
+      inputs: [{
         name: 'pin',
         placeholder: 'xxxx',
         type: 'number'
-      }]
+      }],
+      buttons: { ok: 'OK', cancel: 'Cancel' }
     };
 
-    let enterPin = () => {
-      let prompt = this.alertCtrl.create({
-        title: 'Enter PIN',
-        inputs: config.input,
-        buttons: ['Cancel', {
-          text: 'OK',
-          handler: (data: any) => {
-            // check for validity
-            let checkers: Array<Promise<any>> = [
-              new Promise((resolve, reject) => {
-                let exp: RegExp = /([a-zA-Z0-9])\1{2,}/;
-                exp.test(data.pin) ? reject("PIN have duplicate entries") : resolve();
-              }),
-              new Promise((resolve, reject) => {
-                this.appSettingsService.matchFromReservedPins(data.pin).then((item: Array<any>) => {
-                  item.length > 0 ? reject("PIN already exists in the system. Choose another one.") : resolve();
-                }).catch(() => resolve());
-              })
-            ];
+    let setPin: Function = () => {
+      this.pluginService.openPinPrompt('Enter PIN', 'Enter Your PIN', config.inputs, config.buttons).then((pin1: number) => {
+        // check for validity
+        let validators: Array<Promise<any>> = [
+          new Promise((resolve, reject) => {
+            let exp: RegExp = /([a-zA-Z0-9])\1{2,}/;
+            exp.test(pin1.toString()) ? reject("PIN have duplicate entries") : resolve();
+          }),
+          new Promise((resolve, reject) => {
+            reservedPins.indexOf(pin1.toString()) > -1 ? reject("This PIN is reserved for the System, please choose another") : resolve();
+          })
+        ];
 
-            Promise.all(checkers).then(() => {
-              pin1 = Number(data.pin);
-              confirmPin();
-            }).catch((error) => {
-              let toast = this.toastCtrl.create({
-                message: error,
-                duration: 3000
-              });
-              toast.present();
-              return false;
-            });
-          }
-        }]
-      });
-      prompt.present();
-    }
-
-    let confirmPin = () => {
-      let prompt = this.alertCtrl.create({
-        title: 'Confirm PIN',
-        inputs: config.input,
-        buttons: ['Cancel', {
-          text: 'OK',
-          handler: (data: any) => {
-            pin2 = Number(data.pin);
+        Promise.all(validators).then(() => {
+          this.pluginService.openPinPrompt("Confirm PIN", "Re-enter Your PIN", config.inputs, config.buttons).then((pin2: number) => {
             if (pin1 === pin2) {
               this.employee.pin = pin2;
             } else {
@@ -151,46 +123,35 @@ export class EmployeeDetails {
                 duration: 3000
               });
               toast.present();
-              return false;
             }
-          }
-        }]
+          })
+        }).catch((error) => {
+          let toast = this.toastCtrl.create({
+            message: error,
+            duration: 3000
+          });
+          toast.present();
+        });
+
+      }).catch(() => {
+        console.error("There was en error");
       });
-      prompt.present();
     }
 
-    // if user has pin then verify that pin first
     if (this.employee.pin) {
-      let prompt = this.alertCtrl.create({
-        title: 'Verify PIN',
-        inputs: [
-          {
-            name: 'pin',
-            placeholder: 'xxxx',
-            type: 'number'
-          },
-        ],
-        buttons: [
-          'Cancel',
-          {
-            text: 'OK',
-            handler: (data: any) => {
-              if (Number(data.pin) === this.employee.pin) {
-                enterPin();
-              } else {
-                let toast = this.toastCtrl.create({
-                  message: "Incorrect PIN",
-                  duration: 3000
-                });
-                toast.present();
-              }
-            }
+      this.pluginService.openPinPrompt('Verify PIN', 'Enter Your Current PIN', config.inputs, config.buttons).then((pin) => {
+          if (pin == this.employee.pin) {
+            setPin();
+          } else {
+            let toast = this.toastCtrl.create({
+              message: "Incorrect PIN",
+              duration: 3000
+            });
+            toast.present();
           }
-        ]
-      });
-      prompt.present();
+      })
     } else {
-      enterPin();
+      setPin();
     }
   }
 }

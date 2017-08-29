@@ -1,3 +1,4 @@
+import { PluginService } from './../services/pluginService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -212,6 +213,7 @@ const cloudSettings: CloudSettings = {
     SalesTaxService,
     GroupSalesTaxService,
     AppSettingsService,
+    PluginService,
     AppService,
     SalesServices,
     ClickStopPropagation,

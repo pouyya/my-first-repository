@@ -6,7 +6,6 @@ export class AppSettings extends DBBasedEntity {
   public taxType: boolean;
   public taxEntity: string;
   public trackEmployeeSales: boolean;
-  public reservedPins: Array<string> = [];
 
   constructor() {
     super();

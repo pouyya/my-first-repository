@@ -45,8 +45,4 @@ export class AppSettingsService extends BaseEntityService<AppSettings> {
       }).catch(error => reject(error));
     });
   }
-
-  public matchFromReservedPins(pin: string) {
-    return this.findBy({ selector: { reservedPins: { $elemMatch: { $eq: pin } } } });
-  }
 }
