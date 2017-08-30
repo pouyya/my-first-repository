@@ -36,6 +36,7 @@ export class PluginService {
           reject(error);
         });
       } else {
+        inputs.length == 0 && (inputs = [{ name: 'pin', placeholder: 'xxxx', type: 'number' }]);
         let prompt = this.alertCtrl.create({
           title,
           message,

@@ -110,6 +110,10 @@ export class EmployeeDetails {
           }),
           new Promise((resolve, reject) => {
             reservedPins.indexOf(pin1.toString()) > -1 ? reject("This PIN is reserved for the System, please choose another") : resolve();
+          }),
+          new Promise((resolve, reject) => {
+            this.employeeService.verifyPin(pin1).then((status) => status ? resolve() : reject("This PIN has already been in use!"))
+            .catch(error => reject(error));
           })
         ];
 

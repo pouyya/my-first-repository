@@ -6,4 +6,6 @@ export class GlobalConstants {
 
   static readonly NO_TAX_ID: string = 'no_sales_tax';
   static readonly DEFAULT_TAX_ENTITY = 'SalesTax';
+
+  static readonly NOT_FOUND: string = 'not_found'
 }

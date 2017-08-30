@@ -1,4 +1,3 @@
-import { PluginService } from './../services/pluginService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -89,6 +88,8 @@ import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
 import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
+import { EmployeeTimestampService } from './../services/employeeTimestampService';
+import { PluginService } from './../services/pluginService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -217,6 +218,7 @@ const cloudSettings: CloudSettings = {
     GroupSalesTaxService,
     AppSettingsService,
     PluginService,
+    EmployeeTimestampService,
     AppService,
     SalesServices,
     ClickStopPropagation,

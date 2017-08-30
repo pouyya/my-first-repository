@@ -19,9 +19,22 @@
           <ion-avatar item-start>
             <img src="assets/img/avatar-han.png">
           </ion-avatar>
-          <h2>Hi! Colin</h2>
+          <h2>Hi! {{ employee.firstName + " " + employee.lastName }}</h2>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-grid>
+    <ion-row *ngFor="let button of activeButtons" [hidden]="!button.enabled">
+      <ion-col col-md-4 offset-md-4>
+        <button ion-button block color="primary" (click)="markTime(button.next)">{{ button.text }}</button>
+      </ion-col>
+      <ion-col col-md-4></ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <ion-item class="clock">{{clock | async | date:'mediumTime'}}</ion-item>
+</ion-footer>
