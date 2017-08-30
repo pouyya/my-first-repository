@@ -11,7 +11,7 @@ export class AppSettingsService extends BaseEntityService<AppSettings> {
     private zone: NgZone,
     private userService: UserService
   ) {
-      super(AppSettings, zone);
+    super(AppSettings, zone);
   }
 
   /**

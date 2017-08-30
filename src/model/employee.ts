@@ -7,4 +7,5 @@ export class Employee extends DBBasedEntity {
   public phone: string;
   public isAdmin?: boolean;
   public store?: Array<{ id: any, role: string }>;
+  public pin: number;
 }

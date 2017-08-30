@@ -2,6 +2,8 @@
 node_modules/
 temp/
 platforms/
+platforms/ios
+platforms/android
 plugins/
 www/build/
 www/index.html
