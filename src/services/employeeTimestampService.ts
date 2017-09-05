@@ -15,13 +15,29 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     super(EmployeeTimestamp, zone);
   }
 
-  public getEmployeeLatestTimestamp(employeeId: string, storeId: string) {
+  public getEmployeeLatestTimestamp(employeeId: string, storeId: string, type?: string) {
+    return new Promise((resolve, reject) => {
+      let selector: any = { employeeId, storeId }
+      if(type) selector.type = type;
+      this.findBy({
+        selector,
+        sort: [{_id: 'desc'}]
+      }).then((timestamps: Array<EmployeeTimestamp>) => {
+        timestamps.length > 0 ? resolve(timestamps[0]) : resolve(null);
+      }).catch(error => reject(error));
+    });
+  }
+
+  public getEmployeeLastTwoTimestamps(employeeId: string, storeId: string) {
     return new Promise((resolve, reject) => {
       this.findBy({
         selector: { employeeId, storeId },
         sort: [{_id: 'desc'}]
       }).then((timestamps: Array<EmployeeTimestamp>) => {
-        timestamps.length > 0 ? resolve(timestamps[0]) : resolve(null);
+        timestamps.length > 0 ? resolve({
+          latest: timestamps[0],
+          beforeLatest: timestamps[1] || null
+        }) : resolve(null);
       }).catch(error => reject(error));
     });
   }

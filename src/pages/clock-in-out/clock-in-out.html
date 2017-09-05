@@ -26,15 +26,25 @@
   </ion-grid>
 
   <ion-grid>
-    <ion-row *ngFor="let button of activeButtons" [hidden]="!button.enabled">
+    <ion-row>
+      <ion-col col-md-12>
+        <p id="welcome-text">Would you like to ?</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let button of activeButtons">
       <ion-col col-md-4 offset-md-4>
-        <button ion-button block color="primary" (click)="markTime(button.next)">{{ button.text }}</button>
+        <button ion-button block color="primary" [disabled]="!button.enabled" (click)="markTime(button)">{{ button.text }}</button>
       </ion-col>
       <ion-col col-md-4></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-md-12 id="text-placeholder">
+        {{messagePlaceholder}}
+      </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
 
 <ion-footer>
-  <ion-item class="clock">{{clock | async | date:'mediumTime'}}</ion-item>
+  <ion-item id="clock">{{clock | async | date:'mediumTime'}}</ion-item>
 </ion-footer>
