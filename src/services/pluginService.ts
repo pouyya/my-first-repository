@@ -23,7 +23,7 @@ export class PluginService {
    */
   public openPinPrompt(title: string, message: string, inputs: Array<any> = [], buttons?: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.platform.is('andriod') || this.platform.is('ios') || this.platform.is('mobile') || this.platform.is('tablet')) {
+      if (this.checkMobileDevices()) {
         this.pinDialog.prompt(message, title, [
           buttons.ok || 'OK', buttons.cancel || 'Cancel'
         ]).then((result: any) => {
@@ -59,6 +59,19 @@ export class PluginService {
         prompt.present();
       }
     });
+  }
+
+  /**
+   * check for all mobile devices supporting cordova platforms
+   */
+  private checkMobileDevices() {
+    return this.platform.is('andriod') || 
+    this.platform.is('ios') || 
+    this.platform.is('mobile') || 
+    this.platform.is('tablet') || 
+    this.platform.is('phablet') ||
+    this.platform.is('ipad') ||
+    this.platform.is('cordova');
   }
 
 }
