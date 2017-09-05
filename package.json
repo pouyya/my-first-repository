@@ -1,5 +1,5 @@
 {
-    "name": "com.simpleidea.simplecuts",
+    "name": "com.simplepos.simplepos",
     "version": "0.0.0",
     "author": "Ionic Framework",
     "homepage": "http://ionicframework.com/",
@@ -82,7 +82,7 @@
             "locator": "ios"
         }
     ],
-    "description": "SimpleCuts: An Ionic project",
+    "description": "Simpoe POS: Most simple and clever POS",
     "cordova": {
         "plugins": {
             "cordova-plugin-console": {},

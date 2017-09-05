@@ -5,7 +5,7 @@ export class ConfigService {
     //TODO: AZ - Need to move values in different file and based on different build type (dev, pre-prod, prod) need to transform config file
 
     static currentInternalDBName(): string {
-        return 'SimpleCuts.db';   
+        return 'simplepos.db';   
     }
 
     static externalDBBaseUrl() : string
