@@ -11,9 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
-import { DragulaModule } from 'ng2-dragula';
 import { DndModule } from 'ng2-dnd';
-import { DragScrollModule } from 'angular2-drag-scroll';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
@@ -144,9 +142,7 @@ const cloudSettings: CloudSettings = {
     MaterialModule,
     MdInputModule,
     BrowserAnimationsModule,
-    DragulaModule,
     DndModule.forRoot(),
-    DragScrollModule,
 
     // custom
     SharedModule,

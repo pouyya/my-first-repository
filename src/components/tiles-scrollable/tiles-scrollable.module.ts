@@ -1,4 +1,3 @@
-import { DragScrollModule } from 'angular2-drag-scroll';
 import { TileScrollableComponent } from './tiles-scrollable.component';
 import { SharedModule } from './../../modules/shared.module';
 import { NgModule } from '@angular/core';
@@ -10,7 +9,6 @@ import { IonicPageModule } from 'ionic-angular';
   imports: [ 
     CommonModule, 
     IonicPageModule.forChild(TileScrollableComponent),
-    DragScrollModule,
     SharedModule,
   ],
   exports: [ TileScrollableComponent ]
