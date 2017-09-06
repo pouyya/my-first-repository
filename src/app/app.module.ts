@@ -22,6 +22,7 @@ import { PinDialog } from '@ionic-native/pin-dialog';
 // pages
 import { ShortCutsApp } from './app.component';
 import { DeployPage } from './../pages/deploy/deploy';
+import { LoginPage } from './../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -88,6 +89,12 @@ import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
 import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
+import { AuthService } from './../services/authService';
+
+// used to create fake backend
+import { fakeBackendProvider } from './../services/_fakeBackend';
+import { MockBackend, MockConnection } from '@angular/http/testing';
+import { BaseRequestOptions } from '@angular/http';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -99,6 +106,7 @@ const cloudSettings: CloudSettings = {
   declarations: [
     ShortCutsApp,
     DeployPage,
+    LoginPage,
     HomePage,
     InventoryPage,
     Products,
@@ -159,6 +167,7 @@ const cloudSettings: CloudSettings = {
   entryComponents: [
     ShortCutsApp,
     DeployPage,
+    LoginPage,
     HomePage,
     InventoryPage,
     Products,
@@ -214,11 +223,15 @@ const cloudSettings: CloudSettings = {
     GroupSalesTaxService,
     AppSettingsService,
     PluginService,
+    AuthService,
     AppService,
     SalesServices,
     ClickStopPropagation,
     KeysPipe,
-    GroupByPipe
+    GroupByPipe,
+    fakeBackendProvider,
+    MockBackend,
+    BaseRequestOptions    
   ]
 })
 export class AppModule {}

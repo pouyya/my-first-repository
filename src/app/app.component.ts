@@ -1,3 +1,4 @@
+import { LoginPage } from './../pages/login/login';
 import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -14,7 +15,7 @@ import { DeployPage } from "../pages/deploy/deploy";
 })
 export class ShortCutsApp {
   @ViewChild(Nav) nav: Nav;
-  rootPage: any = DeployPage;
+  rootPage: any = LoginPage;
   currentModule: ModuleBase;
   moduleName: string;
   user: any;
