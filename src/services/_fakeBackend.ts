@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   Http,
   BaseRequestOptions,
@@ -83,6 +84,22 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
         }
 
         return;
+      }
+
+      // check for valid email
+      if(connection.request.url.endsWith('/api/checkForValidEmail') && connection.request.method === RequestMethod.Post) {
+        let params = JSON.parse(connection.request.getBody());
+        let found = _.find(users, { email: params.email });
+        if(found) {
+          connection.mockRespond(new Response(new ResponseOptions({
+            status: 200,
+            body: {
+              found: true
+            }
+          })));
+        } else {
+          connection.mockError(new Error('Can\'t find provided email in out system'));
+        }
       }
 
       // pass through any requests not handled above

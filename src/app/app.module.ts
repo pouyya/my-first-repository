@@ -18,6 +18,7 @@ import { DragScrollModule } from 'angular2-drag-scroll';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -50,6 +51,7 @@ import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details
 import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
+import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -134,7 +136,8 @@ const cloudSettings: CloudSettings = {
     SaleTaxDetails,
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
-    CategoryIconSelectModal
+    CategoryIconSelectModal,
+    ForgotPassword
   ],
   imports: [
     BrowserModule,
@@ -195,18 +198,20 @@ const cloudSettings: CloudSettings = {
     SaleTaxDetails,
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
-    CategoryIconSelectModal
+    CategoryIconSelectModal,
+    ForgotPassword
   ],
   providers: [
     StatusBar,
     SplashScreen,
     PinDialog,
+    InAppBrowser,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
-    StoreService,
+    
     EmployeeService,
     TaxService,
     CalculatorService,
@@ -225,6 +230,7 @@ const cloudSettings: CloudSettings = {
     PluginService,
     AuthService,
     AppService,
+    StoreService,
     SalesServices,
     ClickStopPropagation,
     KeysPipe,

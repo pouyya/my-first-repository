@@ -1,4 +1,7 @@
+import { ForgotPassword } from './modals/forgot-password/forgot-password';
+import { ModalController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Sales } from './../sales/sales';
 import { LoadingController, Nav } from 'ionic-angular';
 import { Component } from '@angular/core';
@@ -18,10 +21,12 @@ export class LoginPage {
     private loading: LoadingController,
     private authService: AuthService,
     private toastCtrl: ToastController,
+    private iab: InAppBrowser,
+    private modalCtrl: ModalController,
     private nav: Nav
   ) { }
 
-  public login() {
+  public login(): void {
     let loader = this.loading.create({
       content: 'Logging In...'
     });
@@ -41,5 +46,16 @@ export class LoginPage {
           loader.dismiss();
         });
     });
+  }
+
+  public register(): void {
+    const browser = this.iab.create('https://google.com/');
+  }
+
+  public forgotPassword(): void {
+    let modal = this.modalCtrl.create(ForgotPassword);
+    modal.onDidDismiss(data => {
+    });
+    modal.present();
   }
 }

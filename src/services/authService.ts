@@ -8,19 +8,25 @@ export class AuthService {
 
   constructor(private http: Http) { }
 
-  public login(username: string, password: string): Observable<any> {
-    return this.http.post('/api/authenticate', JSON.stringify({ email: username, password: password }))
+  public login(email: string, password: string): Observable<any> {
+    return this.http.post('/api/authenticate', JSON.stringify({ email, password }))
       .map((response: Response) => {
         let user = response.json();
         if (user && user.token) {
-          localStorage.setItem('_user', JSON.stringify(user));
+        let userSession: any = {
+          ...user,
+          settings: {},
+          currentPos: {},
+          currentStore: {}
+        };
+          localStorage.setItem('_user', JSON.stringify(userSession));
         }
 
         return user;
       });
   }
 
-  public forgotPassword() {
-
+  public checkForValidEmail(email: string): Observable<any> {
+    return this.http.post('/api/checkForValidEmail', JSON.stringify({ email }))
   }
 }
