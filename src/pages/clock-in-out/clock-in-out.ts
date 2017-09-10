@@ -29,8 +29,6 @@ export class ClockInOutPage {
     .interval(1000)
     .map(() => new Date());
   private user: any;
-  private dayEnd: any = moment('09:00:00 PM', 'h:mm:s A'); /* Will come from Admin Shop Settings later */
-  private dayStart: any = moment('09:00:00 AM', 'h:mm:s A')
   private previousTimestamp: EmployeeTimestamp;
 
   constructor(
@@ -109,7 +107,7 @@ export class ClockInOutPage {
       [EmployeeTimestampService.CLOCK_IN]: [breakStartBtn, clockOutBtn],
       [EmployeeTimestampService.CLOCK_OUT]: [clockInBtn],
       [EmployeeTimestampService.BREAK_START]: [breakEndBtn, clockOutBtn],
-      [EmployeeTimestampService.BREAK_END]: [clockOutBtn]
+      [EmployeeTimestampService.BREAK_END]: [breakStartBtn, clockOutBtn]
     };
 
     let promises: Array<Promise<any>> = [
@@ -126,9 +124,7 @@ export class ClockInOutPage {
           // check if shift is not ended yet
           let currentDate = new Date();
           let clockoutTime = new Date(this.timestamp.time);
-          let currentTime = moment(currentDate.toLocaleTimeString(), 'h:mm:s A');
-          if (currentTime.isSameOrBefore(this.dayEnd) &&
-            moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
+          if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
             this.employeeTimestampService.getEmployeeLatestTimestamp(
               this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
             ).then((model: EmployeeTimestamp) => {
@@ -194,9 +190,7 @@ export class ClockInOutPage {
         Promise.all(promises).then(() => {
           let currentDate = new Date();
           let clockoutTime = new Date(this.timestamp.time);
-          let currentTime = moment((new Date()).toLocaleTimeString(), 'h:mm:s A');
-          if (currentTime.isSameOrBefore(this.dayEnd) &&
-            moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
+          if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
             this.employeeTimestampService.getEmployeeLatestTimestamp(
               this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
             ).then((model: EmployeeTimestamp) => {
