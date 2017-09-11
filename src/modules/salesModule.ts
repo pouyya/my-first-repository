@@ -16,7 +16,6 @@ export class SalesModule implements ModuleBase {
   public modalCallbacks: any = {
     clockInOut: (data: any) => {
       if (data.hasOwnProperty('message') && data.message) {
-        alert(data.message);
         let toast = this.toastCtrl.create({
           message: data.message,
           duration: 3000
