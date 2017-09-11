@@ -1,3 +1,4 @@
+import { Injector } from '@angular/core';
 export interface PageSettingsInterface {
 	title: string,
 	icon: string,
@@ -12,4 +13,5 @@ export interface ModalPageInterface extends PageSettingsInterface {
 
 export interface ModuleBase {
 	pages: Array<PageSettingsInterface | ModalPageInterface>;
+	setInjector($injector: Injector): void;
 }

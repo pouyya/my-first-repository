@@ -1,4 +1,4 @@
-import { Injector, ReflectiveInjector } from '@angular/core';
+import { Injector } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { SalesHistoryPage } from './../pages/sales-history/sales-history';
@@ -8,26 +8,27 @@ import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 
 export class SalesModule implements ModuleBase {
+  private toastCtrl: ToastController;
 
-  // private toastCtrl: ToastController;
-
-  constructor(parentInjector:Injector) {
-    // let injector = ReflectiveInjector.resolveAndCreate([ToastController]);
-    // this.toastCtrl = injector.get(ToastController, parentInjector);
+  constructor() {
   }
 
   public modalCallbacks: any = {
     clockInOut: (data: any) => {
       if (data.hasOwnProperty('message') && data.message) {
         alert(data.message);
-        // let toast = this.toastCtrl.create({
-        //   message: data.message,
-        //   duration: 3000
-        // });
-        // toast.present();
+        let toast = this.toastCtrl.create({
+          message: data.message,
+          duration: 3000
+        });
+        toast.present();
       }
     }
   };
+
+  public setInjector(injector: Injector): void {
+    this.toastCtrl = injector.get(ToastController);
+  }
 
   public pages: Array<PageSettingsInterface | ModalPageInterface> = [
     { title: 'POS', icon: 'cash', component: Sales },
