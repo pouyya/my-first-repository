@@ -64,6 +64,11 @@ export class ShortCutsApp {
     this.moduleName = this.currentModule.constructor.name;
     if(page.hasOwnProperty('modal') && page.modal) {
       let modal = this.modalCtrl.create(page.component);
+       modal.onDidDismiss(data => {
+         if(page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
+          page.onDismiss(data);
+         }
+       });
       modal.present();
     } else {
       this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);

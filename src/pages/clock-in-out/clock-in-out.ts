@@ -24,7 +24,7 @@ export class ClockInOutPage {
   public timestamp: EmployeeTimestamp;
   public buttons: any;
   public activeButtons: Array<any> = [];
-  public messagePlaceholder: string;
+  public messagePlaceholder: string = "";
   public clock: Observable<Date> = Observable
     .interval(1000)
     .map(() => new Date());
@@ -170,7 +170,7 @@ export class ClockInOutPage {
           this.messagePlaceholder = `${button.message} ${time}`;
         }).catch(error => {
           throw new Error(error);
-        });
+        }).then(() => this.dismiss({message: this.messagePlaceholder}));
       }).catch(error => {
         throw new Error(error);
       });
@@ -205,19 +205,19 @@ export class ClockInOutPage {
           }
         }).catch(error => {
           throw new Error(error);
-        });
+        }).then(() => this.dismiss({message: this.messagePlaceholder}));
       } else {
         this.employeeTimestampService.add(this.timestamp).then(() => {
           this.messagePlaceholder = `${button.message} ${time}`;
           this.activeButtons = this.buttons[button.next];
         }).catch(error => {
           throw new Error(error);
-        })
+        }).then(() => this.dismiss({message: this.messagePlaceholder}));
       }
     }
   }
 
-  public dismiss() {
-    this.viewCtrl.dismiss();
+  public dismiss(data?: any) {
+    this.viewCtrl.dismiss(data || null);
   }
 }

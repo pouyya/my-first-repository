@@ -37,7 +37,7 @@
       </ion-col>
       <ion-col col-md-4></ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="messagePlaceholder">
       <ion-col col-md-12 id="text-placeholder">
         {{messagePlaceholder}}
       </ion-col>

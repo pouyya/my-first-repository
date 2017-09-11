@@ -5,6 +5,11 @@ export interface PageSettingsInterface {
 	pushNavigation?: boolean
 }
 
+export interface ModalPageInterface extends PageSettingsInterface {
+	modal: boolean;
+	onDismiss(data: any);
+}
+
 export interface ModuleBase {
-	pages: Array<PageSettingsInterface>;
+	pages: Array<PageSettingsInterface | ModalPageInterface>;
 }
