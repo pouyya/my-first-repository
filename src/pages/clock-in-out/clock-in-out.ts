@@ -128,7 +128,7 @@ export class ClockInOutPage {
             this.employeeTimestampService.getEmployeeLatestTimestamp(
               this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
             ).then((model: EmployeeTimestamp) => {
-              let clockInTime = ""; // (new Date(model.time)).toLocaleTimeString()
+              let clockInTime = "";
               clockInBtn.enabled = false;
               this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
               this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
@@ -194,7 +194,7 @@ export class ClockInOutPage {
             this.employeeTimestampService.getEmployeeLatestTimestamp(
               this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
             ).then((model: EmployeeTimestamp) => {
-              let clockInTime = ""; // (new Date(model.time)).toLocaleTimeString()
+              let clockInTime = "";
               this.buttons[EmployeeTimestampService.CLOCK_OUT][0].enabled = false;
               this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
             }).catch(error => {
