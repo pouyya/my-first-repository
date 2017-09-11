@@ -11,6 +11,10 @@ import { ModuleBase } from "./moduelBase";
 
 @Injectable()
 export class BackOfficeModule implements ModuleBase {
+  public setInjector() {
+    
+  }
+
   public pages: Array<any> = [
     { title: 'Home', icon: 'home', component: HomePage },
     { title: 'POS', icon: 'cash', component: Sales },

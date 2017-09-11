@@ -79,4 +79,31 @@ export class EmployeeService extends BaseEntityService<Employee> {
       )
     });
   }
+
+  /**
+   * Verify if pin is used or not
+   * @param pin 
+   * @returns {Promise<boolean>}
+   */
+  public verifyPin(pin: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.findBy({ selector: { pin } }).then((employees: Array<Employee>) => {
+        resolve(!(employees.length > 0));
+      }).catch(error => reject(error));
+    });
+  }
+
+  /**
+   * Find Employee By PIN
+   * @param pin 
+   * @returns {Promise<Employee>}
+   */
+  public findByPin(pin: number): Promise<Employee> {
+    return new Promise((resolve, reject) => {
+      this.findBy({ selector: { pin } }).then((employees: Array<Employee>) => {
+        employees.length > 0 ? resolve(employees[0]) : reject();
+      }).catch(error => reject(error));
+    });
+  }
+
 }

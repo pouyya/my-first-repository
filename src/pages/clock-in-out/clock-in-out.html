@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Clock In/Out
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-12 class="center">
+        <ion-item>
+          <ion-avatar item-start>
+            <img src="assets/img/avatar-han.png">
+          </ion-avatar>
+          <h2>Hi! {{ employee.firstName + " " + employee.lastName }}</h2>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-12>
+        <p id="welcome-text">Would you like to ?</p>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let button of activeButtons">
+      <ion-col col-md-4 offset-md-4>
+        <button ion-button block color="primary" [disabled]="!button.enabled" (click)="markTime(button)">{{ button.text }}</button>
+      </ion-col>
+      <ion-col col-md-4></ion-col>
+    </ion-row>
+    <ion-row *ngIf="messagePlaceholder">
+      <ion-col col-md-12 id="text-placeholder">
+        {{messagePlaceholder}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-item id="clock">{{clock | async | date:'mediumTime'}}</ion-item>
+</ion-footer>

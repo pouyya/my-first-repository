@@ -2,11 +2,11 @@ $flaticon-font-path: $font-path !default;
 
 @font-face {
   font-family: 'icon-barbc';
-  src:  url('#{$flaticon-font-path}//icon-barbc.eot?tc67r1');
-  src:  url('#{$flaticon-font-path}//icon-barbc.eot?tc67r1#iefix') format('embedded-opentype'),
-    url('#{$flaticon-font-path}//icon-barbc.ttf?tc67r1') format('truetype'),
-    url('#{$flaticon-font-path}//icon-barbc.woff?tc67r1') format('woff'),
-    url('#{$flaticon-font-path}//icon-barbc.svg?tc67r1#icon-barbc') format('svg');
+  src:  url('#{$flaticon-font-path}/icon-barbc.eot?tc67r1');
+  src:  url('#{$flaticon-font-path}/icon-barbc.eot?tc67r1#iefix') format('embedded-opentype'),
+    url('#{$flaticon-font-path}/icon-barbc.ttf?tc67r1') format('truetype'),
+    url('#{$flaticon-font-path}/icon-barbc.woff?tc67r1') format('woff'),
+    url('#{$flaticon-font-path}/icon-barbc.svg?tc67r1#icon-barbc') format('svg');
   font-weight: normal;
   font-style: normal;
 }
