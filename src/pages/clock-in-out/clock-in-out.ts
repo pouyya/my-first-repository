@@ -199,7 +199,10 @@ export class ClockInOutPage {
               this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
             }).catch(error => {
               throw new Error(error)
-            }).then(() => this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT]);
+            }).then(() => {
+              this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+              this.dismiss({message: this.messagePlaceholder})
+            });
           } else {
             this.messagePlaceholder = `${button.message} ${time}`;
           }
