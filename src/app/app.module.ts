@@ -92,10 +92,11 @@ import { AppService } from "../services/appService";
 import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
 import { AuthService } from './../services/authService';
+import { authProvider } from './../modules/auth.module';
 
 // used to create fake backend
 import { fakeBackendProvider } from './../services/_fakeBackend';
-import { MockBackend, MockConnection } from '@angular/http/testing';
+import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 
 const cloudSettings: CloudSettings = {
@@ -235,6 +236,7 @@ const cloudSettings: CloudSettings = {
     ClickStopPropagation,
     KeysPipe,
     GroupByPipe,
+    authProvider,
     fakeBackendProvider,
     MockBackend,
     BaseRequestOptions    

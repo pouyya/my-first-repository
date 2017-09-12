@@ -20,7 +20,8 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
       email: 'infernus.rk31@gmail.com',
       firstName: 'Rahil Khurshid',
       lastName: 'Ali',
-      role: 'staff'
+      role: 'staff',
+      jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Bvcy5zaW1wbGVjdXRzLmNvbS9hcGkvdjEvYXV0aCIsImF1ZCI6Imh0dHBzOi8vcG9zLnNpbXBsZWN1dHMuY29tL2FwaS92MS9hdXRoIiwiaWQiOjEsInVzZXJuYW1lIjoicmFoaWwwNTEiLCJlbWFpbCI6ImluZmVybnVzLnJrMzFAZ21haWwuY29tIiwiZmlyc3ROYW1lIjoiUmFoaWwgS2h1cnNoaWQiLCJsYXN0TmFtZSI6IkFsaSIsInJvbGUiOiJzdGFmZiJ9.a7i6WmKzRfrHG8U26Cva7ldSHQB2I1C3_KATZY22D2k"
     },
     {
       id: 2,
@@ -29,7 +30,8 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
       email: 'aria.zanganeh@simple.com',
       firstName: 'Aria',
       lastName: 'Zanganeh',
-      role: 'staff'
+      role: 'staff',
+      jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Bvcy5zaW1wbGVjdXRzLmNvbS9hcGkvdjEvYXV0aCIsImF1ZCI6Imh0dHBzOi8vcG9zLnNpbXBsZWN1dHMuY29tL2FwaS92MS9hdXRoIiwiaWQiOjIsInVzZXJuYW1lIjoiYXJpYTEwMSIsImVtYWlsIjoiYXJpYS56YW5nYW5laEBzaW1wbGUuY29tIiwiZmlyc3ROYW1lIjoiQXJpYSIsImxhc3ROYW1lIjoiWmFuZ2FuZWgiLCJyb2xlIjoic3RhZmYifQ.1IfkY0d7KrmzxzHfpH1cI08r6Dc6iakVN0akNkeEGlk"
     },
     {
       id: 3,
@@ -38,14 +40,15 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
       email: 'medi.vali@simple.com',
       firstName: 'Medi',
       lastName: 'Vali',
-      role: 'admin'
+      role: 'admin',
+      jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3Bvcy5zaW1wbGVjdXRzLmNvbS9hcGkvdjEvYXV0aCIsImF1ZCI6Imh0dHBzOi8vcG9zLnNpbXBsZWN1dHMuY29tL2FwaS92MS9hdXRoIiwiaWQiOjMsInVzZXJuYW1lIjoibWVkaV9oYWlyIiwiZW1haWwiOiJtZWRpLnZhbGlAc2ltcGxlLmNvbSIsImZpcnN0TmFtZSI6Ik1lZGkiLCJsYXN0TmFtZSI6IlZhbGkiLCJyb2xlIjoiYWRtaW4ifQ.0OTKIrTS1tOdRZ7P4nbcVKqboQpzWNo0vxQ-dTyxn_8"
     }
   ];
 
   backend.connections.subscribe((connection: MockConnection) => {
     setTimeout(() => {
       // authenticate
-      if (connection.request.url.endsWith('/api/authenticate') && connection.request.method === RequestMethod.Post) {
+      if (connection.request.url.endsWith('https://pos.simplecuts.com/api/v1/auth') && connection.request.method === RequestMethod.Post) {
         let params = JSON.parse(connection.request.getBody());
         let filteredUsers = users.filter(user => {
           return user.email === params.email && user.password === params.password;
@@ -61,7 +64,7 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
               email: user.email,
               firstName: user.firstName,
               lastName: user.lastName,
-              token: 'fake-jwt-token'
+              token: user.jwt
             }
           })));
         } else {
@@ -73,10 +76,10 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
 
       // get user by id
       if (connection.request.url.match(/\/api\/users\/\d+$/) && connection.request.method === RequestMethod.Get) {
-        if (connection.request.headers.get('Authorization') === 'Bearer fake-jwt-token') {
-          let urlParts = connection.request.url.split('/');
-          let id = parseInt(urlParts[urlParts.length - 1]);
-          let matchedUsers = users.filter(user => { return user.id === id; });
+        let urlParts = connection.request.url.split('/');
+        let id = parseInt(urlParts[urlParts.length - 1]);
+        let matchedUsers = users.filter(user => { return user.id === id; });
+        if (connection.request.headers.get('Authorization') === `Bearer ${matchedUsers[0].jwt}`) {
           let user = matchedUsers.length ? matchedUsers[0] : null;
           connection.mockRespond(new Response(new ResponseOptions({ status: 200, body: user })));
         } else {
@@ -87,10 +90,10 @@ export function fakeBackendFactory(backend: MockBackend, options: BaseRequestOpt
       }
 
       // check for valid email
-      if(connection.request.url.endsWith('/api/checkForValidEmail') && connection.request.method === RequestMethod.Post) {
+      if (connection.request.url.endsWith('/api/checkForValidEmail') && connection.request.method === RequestMethod.Post) {
         let params = JSON.parse(connection.request.getBody());
         let found = _.find(users, { email: params.email });
-        if(found) {
+        if (found) {
           connection.mockRespond(new Response(new ResponseOptions({
             status: 200,
             body: {

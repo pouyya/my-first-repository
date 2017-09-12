@@ -1,3 +1,6 @@
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { HttpHeaders } from '@angular/common/http';
+import { AuthHttp } from 'angular2-jwt';
 import { ForgotPassword } from './modals/forgot-password/forgot-password';
 import { ModalController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
@@ -23,8 +26,11 @@ export class LoginPage {
     private toastCtrl: ToastController,
     private iab: InAppBrowser,
     private modalCtrl: ModalController,
-    private nav: Nav
-  ) { }
+    private nav: Nav,
+    private authHttp: AuthHttp,
+    private http: Http
+  ) {
+  }
 
   public login(): void {
     let loader = this.loading.create({
@@ -49,7 +55,20 @@ export class LoginPage {
   }
 
   public register(): void {
-    const browser = this.iab.create('https://google.com/');
+    this.iab.create('https://google.com.pk/');
+  }
+
+  public testApi(): void {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+    let options = new RequestOptions({ headers: headers });
+    this.http.post('https://demo.justgreen.in/identity/connect/token',
+      { "client_id": "mvc_service", "grant_type": "client_credentials", "client_secret": "secret", "scope": "sampleApi" }
+      , options).subscribe(
+      data => console.warn(data),
+      err => console.error(err),
+      () => console.warn('Request Complete'));
   }
 
   public forgotPassword(): void {

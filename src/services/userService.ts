@@ -1,26 +1,32 @@
+import { AuthHttp } from 'angular2-jwt';
 import { Observable } from 'rxjs/Rx';
 import { NgZone, Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { User } from './../model/user';
 import { BaseEntityService } from './baseEntityService';
 import { userData } from './../metadata/userMock';
+import { tokenNotExpired } from 'angular2-jwt';
 
 @Injectable()
 export class UserService extends BaseEntityService<User> {
-  constructor(private zone: NgZone, private http: Http) {
+  constructor(private zone: NgZone, private http: Http, private authHttp: AuthHttp) {
     super(User, zone);
   }
 
   public getAll(): Observable<any> {
-    return this.http.get('/api/users', this.JWT()).map((response: Response) => response.json());
+    return this.authHttp.get('/api/users').map((response: Response) => response.json());
   }
 
   public getById(id: number): Observable<any> {
-    return this.http.get('/api/users/' + id, this.JWT()).map((response: Response) => response.json());
+    return this.authHttp.get('/api/users/' + id).map((response: Response) => response.json());
   }
 
   public create(user: User): Observable<any> {
-    return this.http.post('/api/users', user, this.JWT()).map((response: Response) => response.json());
+    return this.authHttp.post('/api/users', user).map((response: Response) => response.json());
+  }
+
+  public isLoggedIn() {
+    return tokenNotExpired();
   }
 
   public getLoggedInUser(): any {
@@ -46,15 +52,6 @@ export class UserService extends BaseEntityService<User> {
       localStorage.setItem('user', JSON.stringify(user));
     } catch (e) {
       throw new Error(e);
-    }
-  }
-
-  private JWT(): RequestOptions {
-    // create authorization header with jwt token
-    let _user = JSON.parse(localStorage.getItem('_user'));
-    if (_user && _user.token) {
-      let headers = new Headers({ 'Authorization': 'Bearer ' + _user.token });
-      return new RequestOptions({ headers: headers });
     }
   }
 }
