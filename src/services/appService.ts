@@ -1,3 +1,4 @@
+import { PluginService } from './pluginService';
 import { Sale } from './../model/sale';
 import { SalesServices } from './salesService';
 import { POS } from './../model/pos';
@@ -14,6 +15,7 @@ export class AppService {
   constructor(private salesTaxService: SalesTaxService,
     private groupSalesTaxService: GroupSalesTaxService,
     private posService: PosService,
+    private pluginService: PluginService,
     @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
   }
 
@@ -92,5 +94,11 @@ export class AppService {
           .catch(error => reject(error));
       }).catch(error => reject(error));
     });
+  }
+
+  public errorHandler(error) {
+    this.pluginService.openDialoge(error).catch(e => {
+      throw new Error(e);
+    })    
   }
 }

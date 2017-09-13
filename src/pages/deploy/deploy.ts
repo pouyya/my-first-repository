@@ -15,12 +15,13 @@ export class DeployPage {
 	public updateText: String = '';
 
 	constructor(
+		private userService: UserService,
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public platform: Platform,
 		public deploy: Deploy,
 		private appSettingsService: AppSettingsService,
-		private userService: UserService) {
+	) {
 
 		if (platform.is('core')) {
 			this.loadUserInfoAndNavigateToHome();
@@ -52,12 +53,11 @@ export class DeployPage {
 
 	loadUserInfoAndNavigateToHome() {
 		this.appSettingsService.get().then((setting: AppSettings) => {
-			if(setting)
-			{
-				let user = this.userService.getLoggedInUser();
+			if (setting) {
+				let user = this.userService.user;
 				user.settings.defaultTax = setting.defaultTax;
 				user.settings.taxType = setting.taxType;
-				this.userService.persistUser(user);
+				this.userService.save(user);
 			}
 			this.navCtrl.setRoot(HomePage);
 		});

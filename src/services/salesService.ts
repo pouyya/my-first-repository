@@ -23,12 +23,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 	private _user: any;
 
 	constructor(
+		private userService: UserService,
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private helperService: HelperService,
 		private fountainService: FountainService,
-		private userService: UserService,
 		private zone: NgZone,
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
@@ -37,7 +37,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private userSettingsService: UserSettingsService
 	) {
 		super(Sale, zone);
-		this._user = this.userService.getLoggedInUser();
+		this._user = this.userService.user;
 	}
 
 	/**

@@ -49,6 +49,7 @@ export class Sales {
   private defaultTax: any;
 
   constructor(
+    private userService: UserService,
     private navCtrl: NavController,
     private employeeService: EmployeeService,
     private salesService: SalesServices,
@@ -57,13 +58,10 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private userService: UserService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
   ) {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
-    this.user = this.userService.getLoggedInUser();
-    this.register = this.user.currentPos;
     this.cdr.detach();
   }
 
@@ -71,61 +69,65 @@ export class Sales {
     this.cacheService.removeAll();
   }
 
-  ionViewDidLoad() {
-
-    let _init: boolean = false;
-    if (!this.register.status) {
-      let openingAmount: number = Number(this.navParams.get('openingAmount'));
-      let openingNote: string = this.navParams.get('openingNotes');
-      if (openingAmount >= 0) {
-        this.register.openTime = new Date().toISOString();
-        this.register.status = true;
-        this.register.openingAmount = Number(openingAmount);
-        this.register.openingNote = openingNote;
-        this.posService.update(this.register);
+  async ionViewDidLoad() {
+    this.user = this.userService.user;
+    try {
+      this.register = await this.posService.get(this.user.settings.currentPos);
+      let _init: boolean = false;
+      if (!this.register.status) {
+        let openingAmount: number = Number(this.navParams.get('openingAmount'));
+        let openingNote: string = this.navParams.get('openingNotes');
+        if (openingAmount >= 0) {
+          this.register.openTime = new Date().toISOString();
+          this.register.status = true;
+          this.register.openingAmount = Number(openingAmount);
+          this.register.openingNote = openingNote;
+          this.posService.update(this.register);
+          _init = true;
+        } else {
+          this.cdr.reattach();
+        }
+      } else {
         _init = true;
       }
-      else {
-        this.cdr.reattach();
-      }
-    } else {
-      _init = true;
-    }
 
-    if (_init) {
-      let loader = this.loading.create({
-        content: 'Loading Register...',
-      });
-
-      loader.present().then(() => {
-        let promises: Array<Promise<any>> = [
-          this.initSalePageData(),
-          new Promise((resolve, reject) => {
-            this.categoryService.getAll().then((categories) => {
-              this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
-              this.loadCategoriesAssociation(this.categories).then(() => resolve());
-            });
-          })
-        ];
-
-        if (this.user.settings.trackEmployeeSales) {
-          promises.push(new Promise((resolve, reject) => {
-            this.employeeService.getAll().then((employees: Array<Employee>) => {
-              this.employees = employees;
-              resolve();
-            }).catch(error => reject(error));
-          }));
-        }
-
-        Promise.all(promises).then(() => {
-          this.employees = this.employees.map(employee => {
-            employee.selected = false;
-            return employee;
-          });
-          this.cdr.reattach();
-          loader.dismiss();
+      if (_init) {
+        let loader = this.loading.create({
+          content: 'Loading Register...',
         });
-      });
+
+        loader.present().then(() => {
+          let promises: Array<Promise<any>> = [
+            this.initSalePageData(),
+            new Promise((resolve, reject) => {
+              this.categoryService.getAll().then((categories) => {
+                this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
+                this.loadCategoriesAssociation(this.categories).then(() => resolve());
+              });
+            })
+          ];
+
+          if (this.user.settings.trackEmployeeSales) {
+            promises.push(new Promise((resolve, reject) => {
+              this.employeeService.getAll().then((employees: Array<Employee>) => {
+                this.employees = employees;
+                resolve();
+              }).catch(error => reject(error));
+            }));
+          }
+
+          Promise.all(promises).then(() => {
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+            this.cdr.reattach();
+            loader.dismiss();
+          });
+        });
+      }
+    } catch (error) {
+      throw new Error(error);
     }
   }
 

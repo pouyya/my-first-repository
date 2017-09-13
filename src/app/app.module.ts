@@ -18,6 +18,7 @@ import { DragScrollModule } from 'angular2-drag-scroll';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
+import { Dialogs } from '@ionic-native/dialogs';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 // pages
@@ -148,7 +149,7 @@ const cloudSettings: CloudSettings = {
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name:'__mydb',
-      driverOrder:['indexeddb', 'sqlite', 'websql']
+      driverOrder:['sqlite', 'indexeddb', 'websql']
     }),
     MaterialModule,
     MdInputModule,
@@ -206,6 +207,7 @@ const cloudSettings: CloudSettings = {
     StatusBar,
     SplashScreen,
     PinDialog,
+    Dialogs,
     InAppBrowser,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     CacheFactory,

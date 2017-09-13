@@ -1,3 +1,4 @@
+import { Storage } from '@ionic/storage';
 import { AuthHttp } from 'angular2-jwt';
 import { Observable } from 'rxjs/Rx';
 import { NgZone, Injectable } from '@angular/core';
@@ -9,8 +10,30 @@ import { tokenNotExpired } from 'angular2-jwt';
 
 @Injectable()
 export class UserService extends BaseEntityService<User> {
-  constructor(private zone: NgZone, private http: Http, private authHttp: AuthHttp) {
+
+  public user: any;
+  private readonly USER_KEY = 'user';
+
+  constructor(
+    private zone: NgZone, 
+    private http: Http, 
+    private authHttp: AuthHttp,
+    private storage: Storage
+  ) {
     super(User, zone);
+    this._init().catch((error) => {
+      throw new Error(error);
+    })
+  }
+
+  private async _init() {
+    try {
+      this.user = await this.getUser();
+    } catch(error) {
+      return Promise.reject(new Error(error));
+    }
+
+    return this.user;
   }
 
   public getAll(): Observable<any> {
@@ -31,7 +54,7 @@ export class UserService extends BaseEntityService<User> {
 
   public getLoggedInUser(): any {
     let user = {};
-    user = JSON.parse(localStorage.getItem('user'));
+    user = localStorage.getItem('user');
     if (!user) {
       user = { ...userData };
       localStorage.setItem('user', JSON.stringify(user));
@@ -39,17 +62,26 @@ export class UserService extends BaseEntityService<User> {
     return user;
   }
 
-  public getUser() {
+  public getUser(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.storage.get(this.USER_KEY)
+      .then(user => resolve(JSON.parse(user)))
+      .catch(error => reject(error));
+    });
+  }
+
+  public save(user): void {
     try {
-      return JSON.parse(localStorage.getItem('user'));
-    } catch (e) {
-      throw new Error(e);
+      this.storage.set(this.USER_KEY, JSON.stringify(user));
+    } catch(error) {
+      throw new Error(error);
     }
   }
 
   public persistUser(user) {
     try {
       localStorage.setItem('user', JSON.stringify(user));
+      this.storage.set('user', JSON.stringify(user));
     } catch (e) {
       throw new Error(e);
     }
