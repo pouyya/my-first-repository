@@ -1,3 +1,4 @@
+import { DeployPage } from './../deploy/deploy';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthHttp } from 'angular2-jwt';
@@ -5,7 +6,6 @@ import { ForgotPassword } from './modals/forgot-password/forgot-password';
 import { ModalController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { Sales } from './../sales/sales';
 import { LoadingController, Nav } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { AuthService } from './../../services/authService';
@@ -40,7 +40,7 @@ export class LoginPage {
     loader.present().then(() => {
       this.authService.login(this.email, this.password).subscribe(
         data => {
-          this.nav.setRoot(Sales);
+          this.nav.setRoot(DeployPage);
           loader.dismiss();
         },
         error => {

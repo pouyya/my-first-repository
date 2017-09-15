@@ -37,7 +37,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private userSettingsService: UserSettingsService
 	) {
 		super(Sale, zone);
-		this._user = this.userService.user;
+		this._user = this.userService.getLoggedInUser();
 	}
 
 	/**

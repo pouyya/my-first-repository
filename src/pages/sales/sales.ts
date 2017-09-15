@@ -70,7 +70,7 @@ export class Sales {
   }
 
   async ionViewDidLoad() {
-    this.user = this.userService.user;
+    this.user = this.userService.getLoggedInUser();
     try {
       this.register = await this.posService.get(this.user.settings.currentPos);
       let _init: boolean = false;

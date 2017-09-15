@@ -21,19 +21,6 @@ export class UserService extends BaseEntityService<User> {
     private storage: Storage
   ) {
     super(User, zone);
-    this._init().catch((error) => {
-      throw new Error(error);
-    })
-  }
-
-  private async _init() {
-    try {
-      this.user = await this.getUser();
-    } catch(error) {
-      return Promise.reject(new Error(error));
-    }
-
-    return this.user;
   }
 
   public getAll(): Observable<any> {
@@ -53,26 +40,28 @@ export class UserService extends BaseEntityService<User> {
   }
 
   public getLoggedInUser(): any {
-    let user = {};
-    user = localStorage.getItem('user');
-    if (!user) {
-      user = { ...userData };
-      localStorage.setItem('user', JSON.stringify(user));
-    }
-    return user;
+    return this.user;
   }
 
   public getUser(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.storage.get(this.USER_KEY)
-      .then(user => resolve(JSON.parse(user)))
+      .then(user => {
+        if(user) {
+          this.user = JSON.parse(user);
+          resolve(this.user)
+        } else {
+          resolve(null);
+        }
+      })
       .catch(error => reject(error));
     });
   }
 
-  public save(user): void {
+  public setSession(user: any): void {
     try {
-      this.storage.set(this.USER_KEY, JSON.stringify(user));
+      this.user = user;
+      this.storage.set(this.USER_KEY, JSON.stringify(this.user));
     } catch(error) {
       throw new Error(error);
     }

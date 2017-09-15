@@ -1,3 +1,5 @@
+import { PluginService } from './../../services/pluginService';
+import { Sales } from './../sales/sales';
 import { UserService } from './../../services/userService';
 import { AppSettings } from './../../model/appSettings';
 import { AppSettingsService } from './../../services/appSettingsService';
@@ -16,15 +18,19 @@ export class DeployPage {
 
 	constructor(
 		private userService: UserService,
+		private pluginService: PluginService,
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public platform: Platform,
 		public deploy: Deploy,
-		private appSettingsService: AppSettingsService,
 	) {
 
 		if (platform.is('core')) {
-			this.loadUserInfoAndNavigateToHome();
+			this.loadUserInfoAndNavigateToHome().catch(error => {
+				this.pluginService.openDialoge("An error has occurred.").catch(error => {
+					throw new Error(error);
+				})
+			});
 		}
 		else {
 			this.deploy.channel = 'dev';
@@ -51,15 +57,9 @@ export class DeployPage {
 		console.log('ionViewDidLoad DeployPage');
 	}
 
-	loadUserInfoAndNavigateToHome() {
-		this.appSettingsService.get().then((setting: AppSettings) => {
-			if (setting) {
-				let user = this.userService.user;
-				user.settings.defaultTax = setting.defaultTax;
-				user.settings.taxType = setting.taxType;
-				this.userService.save(user);
-			}
-			this.navCtrl.setRoot(HomePage);
-		});
+	async loadUserInfoAndNavigateToHome() {
+		var user = await this.userService.getUser();
+		this.navCtrl.setRoot(Sales);
+		return user;
 	}
 }
