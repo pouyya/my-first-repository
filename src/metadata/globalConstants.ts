@@ -6,4 +6,9 @@ export class GlobalConstants {
 
   static readonly NO_TAX_ID: string = 'no_sales_tax';
   static readonly DEFAULT_TAX_ENTITY = 'SalesTax';
+
+  static readonly POS_SESSION_PROPS: string[] = [ '_id', 'status', 'name' ];
+  static readonly STORE_SESSION_PROPS: string[] = [ '_id', 'name', 'country', 'saleNumberPrefix', 'saleLastNumber' ];
+
+  static readonly DEFAULT_ICON: any =  { name: "icon-barbc-barber-shop-1", type: "svg", noOfPaths: 17 };
 }

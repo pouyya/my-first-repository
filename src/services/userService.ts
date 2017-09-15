@@ -15,8 +15,8 @@ export class UserService extends BaseEntityService<User> {
   private readonly USER_KEY = 'user';
 
   constructor(
-    private zone: NgZone, 
-    private http: Http, 
+    private zone: NgZone,
+    private http: Http,
     private authHttp: AuthHttp,
     private storage: Storage
   ) {
@@ -35,44 +35,42 @@ export class UserService extends BaseEntityService<User> {
     return this.authHttp.post('/api/users', user).map((response: Response) => response.json());
   }
 
-  public isLoggedIn() {
-    return tokenNotExpired();
-  }
-
+  /**
+   * returns singleton instance of user
+   * @returns any
+   */
   public getLoggedInUser(): any {
     return this.user;
   }
 
+  /**
+   * get user from IonicStorage Async
+   * @returns {Promise<any>}
+   */
   public getUser(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.storage.get(this.USER_KEY)
-      .then(user => {
-        if(user) {
-          this.user = JSON.parse(user);
-          resolve(this.user)
-        } else {
-          resolve(null);
-        }
-      })
-      .catch(error => reject(error));
+        .then(user => {
+          if (user) {
+            this.user = JSON.parse(user);
+            resolve(this.user)
+          } else {
+            resolve(null);
+          }
+        })
+        .catch(error => reject(error));
     });
   }
 
-  public setSession(user: any): void {
-    try {
-      this.user = user;
-      this.storage.set(this.USER_KEY, JSON.stringify(this.user));
-    } catch(error) {
-      throw new Error(error);
-    }
-  }
-
-  public persistUser(user) {
-    try {
-      localStorage.setItem('user', JSON.stringify(user));
-      this.storage.set('user', JSON.stringify(user));
-    } catch (e) {
-      throw new Error(e);
-    }
+  public setSession(user: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.user = user;
+        this.storage.set(this.USER_KEY, JSON.stringify(this.user));
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 }

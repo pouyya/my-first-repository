@@ -89,7 +89,7 @@ export class Settings {
           user.settings.taxEntity = this.newTax.entityTypeName;
           user.settings.taxType = this.selectedType;
           user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
-          this.userService.persistUser(user);
+          this.userService.setSession(user);
           loader.dismiss();
           let toast = this.toast.create({
             message: "Settings have been saved",

@@ -10,6 +10,7 @@ import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+import { GlobalConstants } from './../metadata/globalConstants';
 import 'rxjs/add/operator/map'
 
 @Injectable()
@@ -24,6 +25,12 @@ export class AuthService {
     private userService: UserService
   ) { }
 
+  /**
+   * Logins the users and creates session
+   * @param email 
+   * @param password 
+   * @returns {Observable<any>}
+   */
   public login(email: string, password: string): Observable<any> {
     return this.http.post('https://pos.simplecuts.com/api/v1/auth', JSON.stringify({ email, password }))
       .flatMap((response: Response) => {
@@ -43,23 +50,10 @@ export class AuthService {
                 ...user,
                 settings: {
                   ..._.omit(settings, [ 'entityTypeName', 'entityTypeNames', '_rev' ]),
-                  defaultIcon: {
-                    name: "icon-barbc-barber-shop-1",
-                    type: "svg",
-                    noOfPaths: 17
-                  }
+                  defaultIcon: GlobalConstants.DEFAULT_ICON
                 },
-                currentPos: {
-                  _id: pos._id,
-                  status: pos.status,
-                  name: pos.name
-                },
-                currentStore: {
-                  _id: store._id,
-                  name: store.name,
-                  saleNumberPrefix: store.saleNumberPrefix,
-                  country: store.country
-                }
+                currentPos: { ..._.pick(pos, GlobalConstants.POS_SESSION_PROPS) },
+                currentStore: { ..._.pick(store, GlobalConstants.STORE_SESSION_PROPS) }
               };
               this.userService.setSession(userSession);
               return resolve(userSession);
@@ -71,6 +65,11 @@ export class AuthService {
       });
   }
 
+  /**
+   * Check if email exists in Server Database
+   * @param email 
+   * @returns {Observable<any>}
+   */
   public checkForValidEmail(email: string): Observable<any> {
     return this.http.post('/api/checkForValidEmail', JSON.stringify({ email }))
   }

@@ -79,7 +79,6 @@ import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
 import { PosService } from "../services/posService";
 import { PosDetailsPage } from './../pages/pos-details/pos-details';
-import { UserSettingsService } from './../services/userSettingsService';
 import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
@@ -223,7 +222,6 @@ const cloudSettings: CloudSettings = {
     ModuleService,
     ClosureService,
     UserService,
-    UserSettingsService,
     CacheService,
     FountainService,
     PriceBookService,
