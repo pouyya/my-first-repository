@@ -1,4 +1,3 @@
-import { UserService } from './userService';
 import { Injectable, NgZone } from '@angular/core';
 import { BaseEntityService } from  './baseEntityService';
 import { POS } from './../model/pos';

@@ -1,9 +1,6 @@
 import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { UserService } from './../../services/userService';
-import { AppSettings } from './../../model/appSettings';
-import { AppSettingsService } from './../../services/appSettingsService';
-import { HomePage } from './../home/home';
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 import { Deploy } from '@ionic/cloud-angular';

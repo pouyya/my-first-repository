@@ -1,6 +1,5 @@
 import { DeployPage } from './../deploy/deploy';
 import { Headers, Http, RequestOptions } from '@angular/http';
-import { HttpHeaders } from '@angular/common/http';
 import { AuthHttp } from 'angular2-jwt';
 import { ForgotPassword } from './modals/forgot-password/forgot-password';
 import { ModalController } from 'ionic-angular';
