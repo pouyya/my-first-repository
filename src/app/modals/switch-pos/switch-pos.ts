@@ -38,8 +38,8 @@ export class SwitchPosModal {
       content: 'Loading Stores...',
     });
 
-    loader.present().then(() => {
-      this.user = this.userService.getUser();
+    loader.present().then(async () => {
+      this.user = await this.userService.getUser();
       this.posId = this.user.settings.currentPos;
       this.storeId = this.user.settings.currentStore;
 
