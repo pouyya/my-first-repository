@@ -1,4 +1,3 @@
-import { PluginService } from './../services/pluginService';
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
@@ -12,9 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
-import { DragulaModule } from 'ng2-dragula';
 import { DndModule } from 'ng2-dnd';
-import { DragScrollModule } from 'angular2-drag-scroll';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
@@ -53,6 +50,7 @@ import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
+import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -91,6 +89,8 @@ import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
 import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
+import { EmployeeTimestampService } from './../services/employeeTimestampService';
+import { PluginService } from './../services/pluginService';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
 
@@ -138,6 +138,7 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
+    ClockInOutPage,
     ForgotPassword
   ],
   imports: [
@@ -153,9 +154,7 @@ const cloudSettings: CloudSettings = {
     MaterialModule,
     MdInputModule,
     BrowserAnimationsModule,
-    DragulaModule,
     DndModule.forRoot(),
-    DragScrollModule,
 
     // custom
     SharedModule,
@@ -200,7 +199,8 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
-    ForgotPassword
+    ForgotPassword,
+    ClockInOutPage
   ],
   providers: [
     StatusBar,
@@ -229,6 +229,7 @@ const cloudSettings: CloudSettings = {
     GroupSalesTaxService,
     AppSettingsService,
     PluginService,
+    EmployeeTimestampService,
     AuthService,
     AppService,
     StoreService,
