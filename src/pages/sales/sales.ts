@@ -65,15 +65,22 @@ export class Sales {
     this._sharedService.payload$.subscribe((data) => {
       if (data) {
         // data will receive here
-        this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
-          this.employees = employees.length > 0 ? employees : [];
-          if (this.employees.length > 0) {
-            this.employees = this.employees.map(employee => {
-              employee.selected = false;
-              return employee;
-            });
-          }
-        }).catch(error => console.error(error));
+        let loader = this.loading.create({
+          content: 'Refreshing Staff List...',
+        });
+
+        loader.present().then(() => {
+          this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
+            this.employees = employees.length > 0 ? employees : [];
+            if (this.employees.length > 0) {
+              this.employees = this.employees.map(employee => {
+                employee.selected = false;
+                return employee;
+              });
+            }
+          }).catch(error => console.error(error)).then(() => loader.dismiss());
+        });
+
       }
     });
     this.invoiceParam = this.navParams.get('invoice');
