@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, LoadingController, NavParams } from 'ionic-angular';
 
+import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
@@ -50,6 +51,7 @@ export class Sales {
 
   constructor(
     private navCtrl: NavController,
+    private _sharedService: SharedService,
     private employeeService: EmployeeService,
     private salesService: SalesServices,
     private categoryService: CategoryService,
@@ -60,6 +62,20 @@ export class Sales {
     private userService: UserService,
     private cacheService: CacheService
   ) {
+    this._sharedService.payload$.subscribe((data) => {
+      if (data) {
+        // data will receive here
+        this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
+          this.employees = employees.length > 0 ? employees : [];
+          if (this.employees.length > 0) {
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+          }
+        }).catch(error => console.error(error));
+      }
+    });
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
     this.user = this.userService.getLoggedInUser();
@@ -110,18 +126,20 @@ export class Sales {
 
         if (this.user.settings.trackEmployeeSales) {
           promises.push(new Promise((resolve, reject) => {
-            this.employeeService.getAll().then((employees: Array<Employee>) => {
-              this.employees = employees;
+            this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
+              this.employees = employees.length > 0 ? employees : [];
               resolve();
             }).catch(error => reject(error));
           }));
         }
 
         Promise.all(promises).then(() => {
-          this.employees = this.employees.map(employee => {
-            employee.selected = false;
-            return employee;
-          });
+          if (this.employees.length > 0) {
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+          }
           this.cdr.reattach();
           loader.dismiss();
         });
@@ -272,17 +290,19 @@ export class Sales {
       ];
       if (this.user.settings.trackEmployeeSales) {
         promises.push(new Promise((resolve, reject) => {
-          this.employeeService.getAll().then((employees: Array<Employee>) => {
+          this.employeeService.getListByCurrentStatus().then((employees: Array<Employee>) => {
             this.employees = employees;
             resolve();
           }).catch(error => reject(error));
         }));
       }
       Promise.all(promises).then(() => {
-        this.employees = this.employees.map(employee => {
-          employee.selected = false;
-          return employee;
-        });
+        if (this.employees.length > 0) {
+          this.employees = this.employees.map(employee => {
+            employee.selected = false;
+            return employee;
+          });
+        }
         this.cdr.reattach();
         loader.dismiss();
       }).catch(error => {
