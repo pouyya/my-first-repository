@@ -15,6 +15,7 @@ import { DndModule } from 'ng2-dnd';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
+import { Firebase } from '@ionic-native/firebase';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -88,6 +89,7 @@ import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
+import { AppErrorHandler } from './../services/AppErrorHandler';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -189,10 +191,11 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage
   ],
   providers: [
+    {provide: ErrorHandler, useClass: AppErrorHandler},
     StatusBar,
     SplashScreen,
+    Firebase,
     PinDialog,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
     CacheFactory,
     ProductService,
     ServiceService,
