@@ -171,7 +171,7 @@ export class ClockInOutPage {
           this.employeeTimestampService.get(response.id).then((timestamp) => {
             this.timestamp = timestamp;
             this.messagePlaceholder = `${button.message} ${time}`;
-          }).catch(error => reject(error)).then(() => resolve());
+          }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
         }).catch(error => reject(error));
       } else {
         // is existing
@@ -198,24 +198,27 @@ export class ClockInOutPage {
                 this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
               }).catch(error => reject(error)).then(() => {
                 this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
-                resolve();
+                resolve(this.timestamp.type);
               });
             } else {
               this.messagePlaceholder = `${button.message} ${time}`;
             }
-          }).catch(error =>reject(error)).then(() => resolve());
+          }).catch(error =>reject(error)).then(() => resolve(this.timestamp.type));
         } else {
           this.employeeTimestampService.add(this.timestamp).then(() => {
             this.messagePlaceholder = `${button.message} ${time}`;
             this.activeButtons = this.buttons[button.next];
-          }).catch(error => reject(error)).then(() => resolve());
+          }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
         }
       }
     });
 
-    completionPromise.then(() => {
+    completionPromise.then((type) => {
       this.dismiss({ message: this.messagePlaceholder });
-      this._sharedService.publish(true);
+      this._sharedService.publish({
+        employee: this.employee,
+        type
+      });
     }).catch(error => {
       throw new Error();
     })

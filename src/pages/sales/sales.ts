@@ -70,15 +70,28 @@ export class Sales {
         });
 
         loader.present().then(() => {
-          this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
-            this.employees = employees.length > 0 ? employees : [];
-            if (this.employees.length > 0) {
-              this.employees = this.employees.map(employee => {
-                employee.selected = false;
-                return employee;
-              });
-            }
-          }).catch(error => console.error(error)).then(() => loader.dismiss());
+          data.employee.selected = false;
+          data.employee.disabled = false;
+          let index = _.findIndex(this.employees, { _id: data.employee._id });
+          switch (data.type) {
+            case 'clock_in':
+              this.employees.push(data.employee);
+              break;
+            case 'clock_out':
+              if (index > -1) {
+                this.employees.splice(index, 1);
+              }
+              break;
+            case 'break_start':
+              if (index > -1) {
+                this.employees[index].disabled = true;
+              }
+              break;
+            case 'break_end':
+              this.employees[index].disabled = false;
+              break;
+          }
+          loader.dismiss();
         });
 
       }
