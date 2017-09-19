@@ -29,7 +29,7 @@ export class TileScrollableComponent {
       } else {
         if (this.selected) {
           let index = _.findIndex(this.elements, _employee => _employee.selected);
-          this.elements[index].selected = false;
+          index > -1 && (this.elements[index].selected = false);
         }
         element.selected = true;
         this.selected = element;

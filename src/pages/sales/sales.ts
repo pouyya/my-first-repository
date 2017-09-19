@@ -72,6 +72,9 @@ export class Sales {
         loader.present().then(() => {
           data.employee.selected = false;
           data.employee.disabled = false;
+          if(this.selectedEmployee && this.selectedEmployee._id == data.employee._id) {
+            this.selectedEmployee = null;
+          }
           let index = _.findIndex(this.employees, { _id: data.employee._id });
           switch (data.type) {
             case 'clock_in':
@@ -84,10 +87,12 @@ export class Sales {
               break;
             case 'break_start':
               if (index > -1) {
+                this.employees[index].selected = false;
                 this.employees[index].disabled = true;
               }
               break;
             case 'break_end':
+              this.employees[index].selected = false;
               this.employees[index].disabled = false;
               break;
           }
