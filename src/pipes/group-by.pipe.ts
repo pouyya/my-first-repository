@@ -8,7 +8,7 @@ export class GroupByPipe implements PipeTransform {
     let grouped: Array<any> = [];
     keys = _.groupBy(value, property);
     _.each(keys, (val: Array<any>, key) => {
-      if (key != "undefined") {
+      if (key != undefined) {
         for (let i = 0; i < val.length; i++) {
           if (i == 0 && val.length == 1) {
             val[i].cssClass = "group-item";
