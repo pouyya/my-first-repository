@@ -1,4 +1,5 @@
-import {DBBasedEntity} from './dbBasedEntity';
+import { CashMovement } from './pos';
+import { DBBasedEntity } from './dbBasedEntity';
 
 export class Closure extends DBBasedEntity {
   public posId: string;
@@ -7,7 +8,7 @@ export class Closure extends DBBasedEntity {
   public openTime: string;
   public closeTime: string;
   public closureNumber: number;
-  public cashMovements: Array<any>;
+  public cashMovements: Array<CashMovement>;
   public cashCounted: number;
   public cashDifference: number;
   public ccCounted: number;

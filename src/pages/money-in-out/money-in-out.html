@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Money In/Out</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <button ion-button color="primary" (click)="openMoveCashModal('add')">Add Cash</button>
+  <button ion-button color="danger" (click)="openMoveCashModal('remove')">Remove Cash</button>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-grid col-md-4>Time</ion-grid>
+          <ion-grid col-md-4>Reasons</ion-grid>
+          <ion-grid col-md-4>Transaction($)</ion-grid>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item *ngFor="let posCash of register.cashMovements">
+      <ion-grid>
+        <ion-row>
+          <ion-grid col-md-4>{{posCash.datetime}}</ion-grid>
+          <ion-grid col-md-4>{{posCash.type}}</ion-grid>
+          <ion-grid col-md-4>{{posCash.amount}}</ion-grid>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+</ion-content>
