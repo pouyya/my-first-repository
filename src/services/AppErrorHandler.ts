@@ -14,7 +14,7 @@ export class AppErrorHandler extends IonicErrorHandler implements ErrorHandler {
    * @param err 
    */
   handleError(err: any): void {
-    this.firebase.logError(err.message);
+    this.firebase.logError(err.stack);
     super.handleError(err);
   }
 }
