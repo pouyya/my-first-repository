@@ -85,13 +85,20 @@
                   <ion-col col-md-2><strong>Time</strong></ion-col>
                   <ion-col col-md-2><strong>User</strong></ion-col>
                   <ion-col col-md-2><strong>Amount($)</strong></ion-col>
-                  <ion-col col-md-2><strong>Reason</strong></ion-col>
-
+                  <ion-col col-md-2><strong>Reason</strong></ion-col>              
+                </ion-row>
+                <ion-row>
                   <ion-col col-md-2 offset-md-4>{{ register.openTime | date:'shortTime' }}</ion-col>
                   <ion-col col-md-2>-</ion-col>
-                  <ion-col col-md-2>${{ register.openingAmount }}</ion-col>
-                  <ion-col col-md-2>Opening Float</ion-col>                  
+                  <ion-col col-md-2>{{ register.openingAmount }}</ion-col>
+                  <ion-col col-md-2>Opening Float</ion-col>                      
                 </ion-row>
+                <ion-row *ngFor="let cash of register.cashMovements">
+                  <ion-col col-md-2 offset-md-4>{{ cash.datetime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2>-</ion-col>
+                  <ion-col col-md-2>{{ cash.amount }}</ion-col>
+                  <ion-col col-md-2>{{ reason[cash.type].text }}</ion-col>
+                </ion-row>                    
               </ion-grid>
             </ion-col>
           </ion-row>
@@ -187,9 +194,15 @@
 
                   <ion-col col-md-2 offset-md-4>{{ register.openTime | date:'shortTime' }}</ion-col>
                   <ion-col col-md-2>-</ion-col>
-                  <ion-col col-md-2>${{ register.openingAmount }}</ion-col>
+                  <ion-col col-md-2>{{ register.openingAmount }}</ion-col>
                   <ion-col col-md-2>Opening Float</ion-col>                  
                 </ion-row>
+                <ion-row *ngFor="let cash of register.cashMovements">
+                  <ion-col col-md-2 offset-md-4>{{ cash.datetime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2>-</ion-col>
+                  <ion-col col-md-2>{{ cash.amount }}</ion-col>
+                  <ion-col col-md-2>{{ reason[cash.type].text }}</ion-col>
+                </ion-row>                
               </ion-grid>
             </ion-col>
           </ion-row>

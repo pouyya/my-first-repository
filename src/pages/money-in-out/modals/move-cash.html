@@ -16,13 +16,15 @@
     <ion-list>
       <ion-item>
         <ion-label class="item-name">Amount*</ion-label>
-        <ion-input type="number" [(ngModel)]="cash.amount" name="amount" placeholder="e.g. 50.00" required></ion-input>
+        <ion-input min="1" type="number" [(ngModel)]="cash.amount" name="amount" placeholder="e.g. 50.00" required></ion-input>
       </ion-item>
       <ion-item>
         <ion-label class="item-name">Note</ion-label>
-        <ion-textarea [(ngModel)]="item.notes" placeholder="Type to add a notes"></ion-textarea>
+        <ion-textarea [(ngModel)]="cash.notes" name="notes" placeholder="Type to add a notes"></ion-textarea>
       </ion-item>
     </ion-list>
-    <button ion-button [color]="submitBtns[reason].text" [disabled]="!moveForm.form.valid" type="submit">{{submitBtns[reason].text}}</button>
+    <button ion-button [color]="submitBtns[reason].color" [disabled]="!moveForm.form.valid || cash.amount <= 0" type="submit">
+      {{submitBtns[reason].text}}
+    </button>
   </form>
 </ion-content>

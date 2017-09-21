@@ -20,11 +20,21 @@ export class MoveCashModal {
     private viewCtrl: ViewController
   ) {
     this.reason = this.navParams.get('reason');
-    this.cash = { amount: null, type: null, datetime: null, note: null };
+    this.cash = { amount: 0, type: this.reason, datetime: null, note: "" };
   }
 
   public dismiss() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(null);
+  }
+
+  public onSubmit() {
+    this.cash.amount = ((amount) => {
+      amount = Number(amount);
+      this.reason == 'remove' && (amount *=-1);
+      return amount;
+    })(this.cash.amount);
+    this.cash.datetime = new Date;
+    this.viewCtrl.dismiss(this.cash);
   }
 
 }

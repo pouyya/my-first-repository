@@ -8,8 +8,14 @@
 </ion-header>
 
 <ion-content>
-  <button ion-button color="primary" (click)="openMoveCashModal('add')">Add Cash</button>
-  <button ion-button color="danger" (click)="openMoveCashModal('remove')">Remove Cash</button>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-12>
+        <button ion-button color="primary" [disabled]="btnDisabled" (click)="openMoveCashModal('add')">Add Cash</button>
+        <button ion-button color="danger" [disabled]="btnDisabled" (click)="openMoveCashModal('remove')">Remove Cash</button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-list>
     <ion-item>
       <ion-grid>
@@ -23,7 +29,7 @@
     <ion-item *ngFor="let posCash of register.cashMovements">
       <ion-grid>
         <ion-row>
-          <ion-grid col-md-4>{{posCash.datetime}}</ion-grid>
+          <ion-grid col-md-4>{{posCash.datetime | date:'short'}}</ion-grid>
           <ion-grid col-md-4>{{posCash.type}}</ion-grid>
           <ion-grid col-md-4>{{posCash.amount}}</ion-grid>
         </ion-row>

@@ -2,7 +2,7 @@ import { ModalController } from 'ionic-angular';
 import { MoveCashModal } from './modals/move-cash';
 import { CashMovement, POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { UserService } from './../../services/userService';
@@ -14,35 +14,43 @@ import { UserService } from './../../services/userService';
 })
 export class MoneyInOut {
 
-  public cash: CashMovement;
   private register: POS;
   private user: any;
+  public btnDisabled: boolean = false;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
     private userService: UserService,
     private posService: PosService) {
-    this.cash = { amount: 0, type: null, note: null, datetime: null };
     this.user = this.userService.getLoggedInUser();
+    this.cdr.detach();
   }
 
   ionViewCanEnter(): boolean {
     return this.user.currentPos.status;
   }
 
-  async ionViewDidLoad() {
-    try {
-      this.register = await this.posService.get(this.user.settings.currentPos);
-      return this.register;
-    } catch (error) {
+  ionViewDidLoad() {
+    this.posService.get(this.user.settings.currentPos).then((register: POS) => {
+      this.register = register;
+    }).catch(error => {
       throw new Error(error);
-    }
+    }).then(() => this.cdr.reattach());
   }
 
   public openMoveCashModal(reason: string): void {
     let modal = this.modalCtrl.create(MoveCashModal, { reason });
-    modal.dismiss((data: any) => {
-      
+    modal.onDidDismiss((cash: CashMovement) => {
+      if(cash) {
+        this.btnDisabled = true;
+        this.register.cashMovements.push(cash);
+        this.user.currentPos.cashMovements = this.register.cashMovements;
+        this.userService.persistUser(this.user);
+        this.posService.update(this.register).catch(error => {
+          throw new Error(error);
+        }).then(() => this.btnDisabled = false);
+      }
     });
     modal.present();
   }

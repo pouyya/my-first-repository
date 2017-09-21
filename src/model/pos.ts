@@ -21,18 +21,14 @@ export class POS extends DBBasedEntity {
   public printNoteOnReceipt: boolean = true;
   public showDiscount: boolean = true;
   public selectUserForNextSale: boolean = false;
-  public _status: boolean = false;
+  public status: boolean = false;
   public openTime: string;
   public openingAmount: number = 0;
   public openingNote: string;
   public cashMovements: Array<CashMovement>;
 
-  set status(value: boolean) {
-    this._status = value;
-    if(!value) this.cashMovements = [];
-  }
-
-  get status () {
-    return this._status;
+  constructor() {
+    super();
+    this.cashMovements = [];
   }
 }
