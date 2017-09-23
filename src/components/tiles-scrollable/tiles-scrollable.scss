@@ -25,3 +25,17 @@ ion-card.selected-element-tile {
   border: 3px solid $tile-hover-background-color;
   box-shadow: none;
 }
+
+ion-card.disabled-element-tile {
+  width: 8em;
+  height: 8em;
+  display: inline-block;
+  box-shadow: none;
+  background: $list-background-color;
+  border: 1px solid $tile-background-color-border;
+  cursor: not-allowed;
+
+  ion-item {
+    color: lightgrey;
+  }
+}

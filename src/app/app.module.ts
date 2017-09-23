@@ -89,6 +89,7 @@ import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
+import { SharedService } from './../services/_sharedService';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 
 const cloudSettings: CloudSettings = {
@@ -196,6 +197,7 @@ const cloudSettings: CloudSettings = {
     SplashScreen,
     Firebase,
     PinDialog,
+    SharedService,
     CacheFactory,
     ProductService,
     ServiceService,

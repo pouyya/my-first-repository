@@ -22,19 +22,21 @@ export class TileScrollableComponent {
   @Output() notifyChange: EventEmitter<any> = new EventEmitter<any>();
 
   public toggle(element: any): void {
-    if(element.selected) {
-      element.selected = false;
-      this.selected = null;
-    } else {
-      if(this.selected) {
-        let index = _.findIndex(this.elements, _employee => _employee.selected);
-        this.elements[index].selected = false;
+    if (!element.disabled) {
+      if (element.selected) {
+        element.selected = false;
+        this.selected = null;
+      } else {
+        if (this.selected) {
+          let index = _.findIndex(this.elements, _employee => _employee.selected);
+          index > -1 && (this.elements[index].selected = false);
+        }
+        element.selected = true;
+        this.selected = element;
       }
-      element.selected = true;
-      this.selected = element;
-    }
 
-    this.notifyChange.emit({selected: this.selected});
+      this.notifyChange.emit({ selected: this.selected });
+    }
   }
 
 }
