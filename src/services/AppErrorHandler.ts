@@ -1,4 +1,4 @@
-import { Injectable, Injector, ErrorHandler } from '@angular/core';
+import { Injectable, ErrorHandler } from '@angular/core';
 import { IonicErrorHandler } from 'ionic-angular';
 import { Firebase } from '@ionic-native/firebase';
 
