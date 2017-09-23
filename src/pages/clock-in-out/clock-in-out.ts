@@ -10,6 +10,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { EmployeeTimestamp } from './../../model/employeeTimestamp';
+import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
 
 @PageModule(() => SalesModule)
@@ -32,6 +33,7 @@ export class ClockInOutPage {
   private previousTimestamp: EmployeeTimestamp;
 
   constructor(
+    private _sharedService: SharedService,
     private pluginService: PluginService,
     private employeeService: EmployeeService,
     private employeeTimestampService: EmployeeTimestampService,
@@ -156,68 +158,70 @@ export class ClockInOutPage {
    * @param time 
    */
   public markTime(button: any, time?: Date): void {
-    time = time || new Date();
+    let completionPromise = new Promise((resolve, reject) => {
+      time = time || new Date();
 
-    this.timestamp.type = button.next;
-    this.timestamp.time = time;
-    this.activeButtons = this.buttons[button.next];
+      this.timestamp.type = button.next;
+      this.timestamp.time = time;
+      this.activeButtons = this.buttons[button.next];
 
-    if (!this.timestamp.hasOwnProperty('_rev')) {
-      // is new
-      this.employeeTimestampService.add(this.timestamp).then((response: any) => {
-        this.employeeTimestampService.get(response.id).then((timestamp) => {
-          this.timestamp = timestamp;
-          this.messagePlaceholder = `${button.message} ${time}`;
-        }).catch(error => {
-          throw new Error(error);
-        }).then(() => this.dismiss({message: this.messagePlaceholder}));
-      }).catch(error => {
-        throw new Error(error);
-      });
-    } else {
-      // is existing
-      if (button.next == EmployeeTimestampService.CLOCK_OUT) {
-        let promises: Array<Promise<any>> = [];
-        if (this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
-          let breakEnd = new EmployeeTimestamp();
-          breakEnd.employeeId = this.employee._id;
-          breakEnd.storeId = this.user.settings.currentStore;
-          breakEnd.time = time;
-          breakEnd.type = EmployeeTimestampService.BREAK_END;
-          promises.push(this.employeeTimestampService.add(breakEnd));
-        }
-        promises.push(this.employeeTimestampService.add(this.timestamp));
-        Promise.all(promises).then(() => {
-          let currentDate = new Date();
-          let clockoutTime = new Date(this.timestamp.time);
-          if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
-            this.employeeTimestampService.getEmployeeLatestTimestamp(
-              this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
-            ).then((model: EmployeeTimestamp) => {
-              let clockInTime = "";
-              this.buttons[EmployeeTimestampService.CLOCK_OUT][0].enabled = false;
-              this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
-            }).catch(error => {
-              throw new Error(error)
-            }).then(() => {
-              this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
-              this.dismiss({message: this.messagePlaceholder})
-            });
-          } else {
+      if (!this.timestamp.hasOwnProperty('_rev')) {
+        // is new
+        this.employeeTimestampService.add(this.timestamp).then((response: any) => {
+          this.employeeTimestampService.get(response.id).then((timestamp) => {
+            this.timestamp = timestamp;
             this.messagePlaceholder = `${button.message} ${time}`;
-          }
-        }).catch(error => {
-          throw new Error(error);
-        }).then(() => this.dismiss({message: this.messagePlaceholder}));
+          }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
+        }).catch(error => reject(error));
       } else {
-        this.employeeTimestampService.add(this.timestamp).then(() => {
-          this.messagePlaceholder = `${button.message} ${time}`;
-          this.activeButtons = this.buttons[button.next];
-        }).catch(error => {
-          throw new Error(error);
-        }).then(() => this.dismiss({message: this.messagePlaceholder}));
+        // is existing
+        if (button.next == EmployeeTimestampService.CLOCK_OUT) {
+          let promises: Array<Promise<any>> = [];
+          if (this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
+            let breakEnd = new EmployeeTimestamp();
+            breakEnd.employeeId = this.employee._id;
+            breakEnd.storeId = this.user.settings.currentStore;
+            breakEnd.time = time;
+            breakEnd.type = EmployeeTimestampService.BREAK_END;
+            promises.push(this.employeeTimestampService.add(breakEnd));
+          }
+          promises.push(this.employeeTimestampService.add(this.timestamp));
+          Promise.all(promises).then(() => {
+            let currentDate = new Date();
+            let clockoutTime = new Date(this.timestamp.time);
+            if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
+              this.employeeTimestampService.getEmployeeLatestTimestamp(
+                this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
+              ).then((model: EmployeeTimestamp) => {
+                let clockInTime = "";
+                this.buttons[EmployeeTimestampService.CLOCK_OUT][0].enabled = false;
+                this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
+              }).catch(error => reject(error)).then(() => {
+                this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+                resolve(this.timestamp.type);
+              });
+            } else {
+              this.messagePlaceholder = `${button.message} ${time}`;
+            }
+          }).catch(error =>reject(error)).then(() => resolve(this.timestamp.type));
+        } else {
+          this.employeeTimestampService.add(this.timestamp).then(() => {
+            this.messagePlaceholder = `${button.message} ${time}`;
+            this.activeButtons = this.buttons[button.next];
+          }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
+        }
       }
-    }
+    });
+
+    completionPromise.then((type) => {
+      this.dismiss({ message: this.messagePlaceholder });
+      this._sharedService.publish({
+        employee: this.employee,
+        type
+      });
+    }).catch(error => {
+      throw new Error();
+    })
   }
 
   public dismiss(data?: any) {

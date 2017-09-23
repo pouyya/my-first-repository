@@ -91,6 +91,7 @@ import { SalesServices } from './../services/salesService';
 import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
+import { SharedService } from './../services/_sharedService';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
 
@@ -209,6 +210,7 @@ const cloudSettings: CloudSettings = {
     Dialogs,
     InAppBrowser,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    SharedService,
     CacheFactory,
     ProductService,
     ServiceService,
