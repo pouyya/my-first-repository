@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
@@ -15,6 +15,7 @@ import { DndModule } from 'ng2-dnd';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
+import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
@@ -92,6 +93,7 @@ import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
+import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
 
@@ -204,12 +206,13 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage
   ],
   providers: [
+    {provide: ErrorHandler, useClass: AppErrorHandler},
     StatusBar,
     SplashScreen,
+    Firebase,
     PinDialog,
     Dialogs,
     InAppBrowser,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
     SharedService,
     CacheFactory,
     ProductService,
