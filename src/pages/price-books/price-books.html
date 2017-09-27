@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Price Books</ion-title>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="add()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-searchbar (ionInput)="search($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3><strong>Name</strong></ion-col>
+          <ion-col col-md-3><strong>Store</strong></ion-col>
+          <ion-col col-md-2><strong>Valid From</strong></ion-col>
+          <ion-col col-md-2><strong>Valid To</strong></ion-col>
+          <ion-col col-md-2><strong>Created At</strong></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>  
+  <ion-list inset>
+    <ion-item-sliding class="sliding" *ngFor="let priceBook of priceBooks ; let i=index">
+      <ion-item (click)="showDetail(priceBook)">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-3><strong>{{priceBook.name}}</strong></ion-col>
+            <ion-col col-md-3><strong>Store Name</strong></ion-col>
+            <ion-col col-md-2><strong>{{ date | date:'short' }}</strong></ion-col>
+            <ion-col col-md-2><strong>{{ date | date:'short' }}</strong></ion-col>
+            <ion-col col-md-2><strong>{{ date | date:'short' }}</strong></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item-options>
+        <button ion-button color='danger' (click)="delete(priceBook, i)" icon=left>
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
