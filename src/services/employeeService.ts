@@ -114,10 +114,11 @@ export class EmployeeService extends BaseEntityService<Employee> {
     });
   }
 
-  public getListByCurrentStatus(): Promise<any[]> {
+  public async getListByCurrentStatus(): Promise<any> {
     let currentDay = new Date(moment(new Date()).format("YYYY-MM-DD"));
+    let currentUser = await this.userService.getUser();
     return new Promise((resolve, reject) => {
-      let storeId = this.userService.getUser().settings.storeId;
+      let storeId = currentUser.settings.storeId;
       this.findBy({
         selector: {
           store: {

@@ -15,7 +15,6 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
-import { UserSettingsService } from './userSettingsService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -23,18 +22,17 @@ export class SalesServices extends BaseEntityService<Sale> {
 	private _user: any;
 
 	constructor(
+		private userService: UserService,
 		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private helperService: HelperService,
 		private fountainService: FountainService,
-		private userService: UserService,
 		private zone: NgZone,
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private groupSalesTaxService: GroupSalesTaxService,
-		private userSettingsService: UserSettingsService
+		private groupSalesTaxService: GroupSalesTaxService
 	) {
 		super(Sale, zone);
 		this._user = this.userService.getLoggedInUser();
@@ -55,7 +53,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public instantiateInvoice(posId?: string): Promise<any> {
 		let id = localStorage.getItem('invoice_id') || new Date().toISOString();
-		if (!posId) posId = this.userSettingsService.getCurrentPosID();
+		if (!posId) posId = this._user.settings.currentPos;
 		return new Promise((resolve, reject) => {
 			this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
 				.then(

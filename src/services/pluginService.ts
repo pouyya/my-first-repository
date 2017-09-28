@@ -1,14 +1,16 @@
-import { AlertController } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { PinDialog } from '@ionic-native/pin-dialog';
+import { Dialogs } from '@ionic-native/dialogs';
+import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class PluginService {
 
   constructor(
-    private platform: Platform, 
+    private platform: Platform,
     private pinDialog: PinDialog,
+    private dialog: Dialogs,
     private alertCtrl: AlertController) {
 
   }
@@ -74,4 +76,19 @@ export class PluginService {
     this.platform.is('cordova');
   }
 
+  public openDialoge(title: string, subTitle?: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.platform.is('andriod') || this.platform.is('ios') || this.platform.is('mobile') || this.platform.is('tablet')) {
+        this.dialog.alert(title)
+        .then(() => resolve())
+          .catch(e => reject(e));
+      } else {
+        let options: any = { title, buttons: ['OK'] }
+        subTitle && (options.subTitle = subTitle)
+        let alert = this.alertCtrl.create(options);
+        alert.present();
+        resolve();
+      }
+    });
+  }
 }

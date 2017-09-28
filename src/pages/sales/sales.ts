@@ -50,6 +50,7 @@ export class Sales {
   private defaultTax: any;
 
   constructor(
+    private userService: UserService,
     private navCtrl: NavController,
     private _sharedService: SharedService,
     private employeeService: EmployeeService,
@@ -59,8 +60,7 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private userService: UserService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
   ) {
     this._sharedService.payload$.subscribe((data) => {
       if (data) {
@@ -72,7 +72,7 @@ export class Sales {
         loader.present().then(() => {
           data.employee.selected = false;
           data.employee.disabled = false;
-          if(this.selectedEmployee && this.selectedEmployee._id == data.employee._id) {
+          if (this.selectedEmployee && this.selectedEmployee._id == data.employee._id) {
             this.selectedEmployee = null;
           }
           let index = _.findIndex(this.employees, { _id: data.employee._id });
@@ -103,8 +103,6 @@ export class Sales {
     });
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
-    this.user = this.userService.getLoggedInUser();
-    this.register = this.user.currentPos;
     this.cdr.detach();
   }
 
@@ -112,63 +110,68 @@ export class Sales {
     this.cacheService.removeAll();
   }
 
-  ionViewDidLoad() {
-
-    let _init: boolean = false;
-    if (!this.register.status) {
-      let openingAmount: number = Number(this.navParams.get('openingAmount'));
-      let openingNote: string = this.navParams.get('openingNotes');
-      if (openingAmount >= 0) {
-        this.register.openTime = new Date().toISOString();
-        this.register.status = true;
-        this.register.openingAmount = Number(openingAmount);
-        this.register.openingNote = openingNote;
-        this.posService.update(this.register);
+  async ionViewDidLoad() {
+    this.user = this.userService.getLoggedInUser();
+    try {
+      this.register = await this.posService.get(this.user.settings.currentPos);
+      let _init: boolean = false;
+      if (!this.register.status) {
+        let openingAmount: number = Number(this.navParams.get('openingAmount'));
+        let openingNote: string = this.navParams.get('openingNotes');
+        if (openingAmount >= 0) {
+          this.register.openTime = new Date().toISOString();
+          this.register.status = true;
+          this.register.openingAmount = Number(openingAmount);
+          this.register.openingNote = openingNote;
+          this.posService.update(this.register);
+          _init = true;
+        } else {
+          this.cdr.reattach();
+        }
+      } else {
         _init = true;
       }
-      else {
-        this.cdr.reattach();
-      }
-    } else {
-      _init = true;
-    }
 
-    if (_init) {
-      let loader = this.loading.create({
-        content: 'Loading Register...',
-      });
-
-      loader.present().then(() => {
-        let promises: Array<Promise<any>> = [
-          this.initSalePageData(),
-          new Promise((resolve, reject) => {
-            this.categoryService.getAll().then((categories) => {
-              this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
-              this.loadCategoriesAssociation(this.categories).then(() => resolve());
-            });
-          })
-        ];
-
-        if (this.user.settings.trackEmployeeSales) {
-          promises.push(new Promise((resolve, reject) => {
-            this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
-              this.employees = employees.length > 0 ? employees : [];
-              resolve();
-            }).catch(error => reject(error));
-          }));
-        }
-
-        Promise.all(promises).then(() => {
-          if (this.employees.length > 0) {
-            this.employees = this.employees.map(employee => {
-              employee.selected = false;
-              return employee;
-            });
-          }
-          this.cdr.reattach();
-          loader.dismiss();
+      if (_init) {
+        let loader = this.loading.create({
+          content: 'Loading Register...',
         });
-      });
+
+        loader.present().then(() => {
+          let promises: Array<Promise<any>> = [
+            this.initSalePageData(),
+            new Promise((resolve, reject) => {
+              this.categoryService.getAll().then((categories) => {
+                this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
+                this.loadCategoriesAssociation(this.categories).then(() => resolve());
+              });
+            })
+          ];
+
+          if (this.user.settings.trackEmployeeSales) {
+            promises.push(new Promise((resolve, reject) => {
+              this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
+                this.employees = employees.length > 0 ? employees : [];
+                resolve();
+              }).catch(error => reject(error));
+            }));
+          }
+
+          Promise.all(promises).then(() => {
+            if (this.employees.length > 0) {
+              this.employees = this.employees.map(employee => {
+                employee.selected = false;
+                return employee;
+              });
+            }
+            this.cdr.reattach();
+            loader.dismiss();
+          });
+        });
+      }
+    }
+    catch (error) {
+      throw new Error(error);
     }
   }
 

@@ -8,4 +8,9 @@ export class GlobalConstants {
   static readonly DEFAULT_TAX_ENTITY = 'SalesTax';
 
   static readonly NOT_FOUND: string = 'not_found'
+
+  static readonly POS_SESSION_PROPS: string[] = [ '_id', 'status', 'name' ];
+  static readonly STORE_SESSION_PROPS: string[] = [ '_id', 'name', 'country', 'saleNumberPrefix', 'saleLastNumber' ];
+
+  static readonly DEFAULT_ICON: any =  { name: "icon-barbc-barber-shop-1", type: "svg", noOfPaths: 17 };
 }
