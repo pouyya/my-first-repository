@@ -1,7 +1,7 @@
 import { PriceBookCriteria } from './PriceBookCriteria';
 
 export class StoreCriteria extends PriceBookCriteria {
-  
-  public storeId: string;
 
+  public storeIds: Array<string> = [];
+  
 }

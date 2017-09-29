@@ -1,21 +1,20 @@
 // core
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { FormsModule }   from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
-import { HttpModule } from '@angular/http';
 import { MaterialModule, MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DndModule } from 'ng2-dnd';
-import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
-import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
 import { Firebase } from '@ionic-native/firebase';
+import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { ShortCutsApp } from './app.component';
@@ -49,6 +48,7 @@ import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-detai
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { PriceBooksPage } from './../pages/price-books/price-books';
+import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -57,6 +57,7 @@ import { PurchasableItemInfoModule } from './../components/purchasable-Item-info
 import { IconSelectModule } from './../components/icon-select/icon-select.module';
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
+import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -91,6 +92,7 @@ import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
+import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 
 const cloudSettings: CloudSettings = {
@@ -132,7 +134,8 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     ClockInOutPage,
-    PriceBooksPage
+    PriceBooksPage,
+    PriceBookDetails
   ],
   imports: [
     BrowserModule,
@@ -192,7 +195,8 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     ClockInOutPage,
-    PriceBooksPage
+    PriceBooksPage,
+    PriceBookDetails
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},
@@ -223,6 +227,7 @@ const cloudSettings: CloudSettings = {
     AppSettingsService,
     PluginService,
     EmployeeTimestampService,
+    StoreEvaluationProvider,
     AppService,
     SalesServices,
     ClickStopPropagation,

@@ -13,6 +13,9 @@ export class PriceBook extends DBBasedEntity {
   public criteria: Array<PriceBookCriteriaInterface>;
   public purchasableItems: Array<PurchasableItemPriceInterface>;
   public priority: number;
+  public validFrom: Date;
+  public validTo: Date;
+  public createdAt: Date;
 
   constructor() {
     super();

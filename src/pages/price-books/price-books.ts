@@ -1,3 +1,5 @@
+import { PriceBookDetails } from './../price-book-details/price-book-details';
+import { NavController } from 'ionic-angular';
 import { PriceBook } from './../../model/priceBook';
 import { Component } from '@angular/core';
 
@@ -11,7 +13,10 @@ const MOCK_PRICE_BOOKS: Array<PriceBook> = [
     name: "Default Book",
     priority: 0,
     purchasableItems: [],
-    criteria: []
+    criteria: [],
+    validFrom: new Date(),
+    validTo: new Date(),
+    createdAt: new Date()
   },
   {
     _id: "2",
@@ -22,7 +27,10 @@ const MOCK_PRICE_BOOKS: Array<PriceBook> = [
     name: "JaneDoe Book",
     priority: 1,
     purchasableItems: [],
-    criteria: []
+    criteria: [],
+    validFrom: new Date(),
+    validTo: new Date(),
+    createdAt: new Date()    
   }
 ];
 
@@ -37,17 +45,15 @@ export class PriceBooksPage {
 
   private _backup: Array<PriceBook>;
 
-  constructor() {
+  constructor(
+    private navCtrl: NavController
+  ) {
     this.priceBooks = MOCK_PRICE_BOOKS;
     this.date = new Date();
   }
 
-  public add() {
-
-  }
-
-  public showDetails() {
-    
+  public showDetail(priceBook?: PriceBook): void {
+    this.navCtrl.push(PriceBookDetails, priceBook ? { priceBook } : null);
   }
 
   public search($event: any) {
