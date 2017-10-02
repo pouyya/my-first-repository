@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
@@ -15,10 +15,14 @@ import { DndModule } from 'ng2-dnd';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
+import { Firebase } from '@ionic-native/firebase';
+import { Dialogs } from '@ionic-native/dialogs';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 // pages
 import { ShortCutsApp } from './app.component';
 import { DeployPage } from './../pages/deploy/deploy';
+import { LoginPage } from './../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -46,6 +50,7 @@ import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details
 import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
+import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
@@ -75,7 +80,6 @@ import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
 import { PosService } from "../services/posService";
 import { PosDetailsPage } from './../pages/pos-details/pos-details';
-import { UserSettingsService } from './../services/userSettingsService';
 import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
@@ -91,6 +95,14 @@ import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
+import { AppErrorHandler } from './../services/AppErrorHandler';
+import { AuthService } from './../services/authService';
+import { authProvider } from './../modules/auth.module';
+
+// used to create fake backend
+import { fakeBackendProvider } from './../services/_fakeBackend';
+import { MockBackend } from '@angular/http/testing';
+import { BaseRequestOptions } from '@angular/http';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -102,6 +114,7 @@ const cloudSettings: CloudSettings = {
   declarations: [
     ShortCutsApp,
     DeployPage,
+    LoginPage,
     HomePage,
     InventoryPage,
     Products,
@@ -132,7 +145,8 @@ const cloudSettings: CloudSettings = {
     CategoryIconSelectModal,
     ClockInOutPage,
     MoneyInOut,
-    MoveCashModal
+    MoveCashModal,
+    ForgotPassword
   ],
   imports: [
     BrowserModule,
@@ -142,7 +156,7 @@ const cloudSettings: CloudSettings = {
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name:'__mydb',
-      driverOrder:['indexeddb', 'sqlite', 'websql']
+      driverOrder:['sqlite', 'indexeddb', 'websql']
     }),
     MaterialModule,
     MdInputModule,
@@ -163,6 +177,7 @@ const cloudSettings: CloudSettings = {
   entryComponents: [
     ShortCutsApp,
     DeployPage,
+    LoginPage,
     HomePage,
     InventoryPage,
     Products,
@@ -193,19 +208,24 @@ const cloudSettings: CloudSettings = {
     CategoryIconSelectModal,
     ClockInOutPage,
     MoneyInOut,
-    MoveCashModal
+    MoveCashModal,
+    ForgotPassword,
+    ClockInOutPage
   ],
   providers: [
+    {provide: ErrorHandler, useClass: AppErrorHandler},
     StatusBar,
     SplashScreen,
+    Firebase,
     PinDialog,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Dialogs,
+    InAppBrowser,
     SharedService,
     CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
-    StoreService,
+    
     EmployeeService,
     TaxService,
     CalculatorService,
@@ -214,7 +234,6 @@ const cloudSettings: CloudSettings = {
     ModuleService,
     ClosureService,
     UserService,
-    UserSettingsService,
     CacheService,
     FountainService,
     PriceBookService,
@@ -223,11 +242,17 @@ const cloudSettings: CloudSettings = {
     AppSettingsService,
     PluginService,
     EmployeeTimestampService,
+    AuthService,
     AppService,
+    StoreService,
     SalesServices,
     ClickStopPropagation,
     KeysPipe,
-    GroupByPipe
+    GroupByPipe,
+    authProvider,
+    fakeBackendProvider,
+    MockBackend,
+    BaseRequestOptions    
   ]
 })
 export class AppModule {}
