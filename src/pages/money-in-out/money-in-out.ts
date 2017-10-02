@@ -46,7 +46,7 @@ export class MoneyInOut {
         this.btnDisabled = true;
         this.register.cashMovements.push(cash);
         this.user.currentPos.cashMovements = this.register.cashMovements;
-        this.userService.persistUser(this.user);
+        this.userService.setSession(this.user);
         this.posService.update(this.register).catch(error => {
           throw new Error(error);
         }).then(() => this.btnDisabled = false);
