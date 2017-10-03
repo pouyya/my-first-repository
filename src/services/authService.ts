@@ -39,8 +39,8 @@ export class AuthService {
         let promise = new Promise((resolve, reject) => {
           this.appSettingsService.get().then((settings: AppSettings) => {
             let promises: Promise<any>[] = [
-              this.posService.get(settings.currentPos),
-              this.storeService.get(settings.currentStore)
+              settings.currentPos ? this.posService.get(settings.currentPos) : this.posService.getFirst(),
+              settings.currentStore ? this.storeService.get(settings.currentStore) : this.storeService.getFirst()
             ];
 
             Promise.all(promises).then((data) => {
@@ -50,7 +50,9 @@ export class AuthService {
                 ...user,
                 settings: {
                   ..._.omit(settings, [ 'entityTypeName', 'entityTypeNames', '_rev' ]),
-                  defaultIcon: GlobalConstants.DEFAULT_ICON
+                  defaultIcon: GlobalConstants.DEFAULT_ICON,
+                  currentPos: pos._id,
+                  currentStore: store._id
                 },
                 currentPos: { ..._.pick(pos, GlobalConstants.POS_SESSION_PROPS) },
                 currentStore: { ..._.pick(store, GlobalConstants.STORE_SESSION_PROPS) }
