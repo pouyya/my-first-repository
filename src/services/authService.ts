@@ -38,6 +38,10 @@ export class AuthService {
         this.storage.set('jwt-token', user.token);
         let promise = new Promise((resolve, reject) => {
           this.appSettingsService.get().then((settings: AppSettings) => {
+            if(!settings)
+            {
+              settings = new AppSettings();
+            }
             let promises: Promise<any>[] = [
               settings.currentPos ? this.posService.get(settings.currentPos) : this.posService.getFirst(),
               settings.currentStore ? this.storeService.get(settings.currentStore) : this.storeService.getFirst()
