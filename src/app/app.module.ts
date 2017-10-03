@@ -6,7 +6,8 @@ import { HttpModule } from '@angular/http';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
-import { MaterialModule, MdInputModule } from '@angular/material';
+import { HttpModule } from '@angular/http';
+import { MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -14,11 +15,14 @@ import { CacheFactory } from 'cachefactory';
 import { DndModule } from 'ng2-dnd';
 import { PinDialog } from '@ionic-native/pin-dialog';
 import { Firebase } from '@ionic-native/firebase';
+import { Dialogs } from '@ionic-native/dialogs';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { ShortCutsApp } from './app.component';
 import { DeployPage } from './../pages/deploy/deploy';
+import { LoginPage } from './../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -46,6 +50,7 @@ import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details
 import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
+import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
@@ -76,7 +81,6 @@ import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
 import { PosService } from "../services/posService";
 import { PosDetailsPage } from './../pages/pos-details/pos-details';
-import { UserSettingsService } from './../services/userSettingsService';
 import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
@@ -94,6 +98,13 @@ import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
 import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
+import { AuthService } from './../services/authService';
+import { authProvider } from './../modules/auth.module';
+
+// used to create fake backend
+import { fakeBackendProvider } from './../services/_fakeBackend';
+import { MockBackend } from '@angular/http/testing';
+import { BaseRequestOptions } from '@angular/http';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -105,6 +116,7 @@ const cloudSettings: CloudSettings = {
   declarations: [
     ShortCutsApp,
     DeployPage,
+    LoginPage,
     HomePage,
     InventoryPage,
     Products,
@@ -135,7 +147,8 @@ const cloudSettings: CloudSettings = {
     CategoryIconSelectModal,
     ClockInOutPage,
     PriceBooksPage,
-    PriceBookDetails
+    PriceBookDetails,
+    ForgotPassword
   ],
   imports: [
     BrowserModule,
@@ -145,9 +158,8 @@ const cloudSettings: CloudSettings = {
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name:'__mydb',
-      driverOrder:['indexeddb', 'sqlite', 'websql']
+      driverOrder:['sqlite', 'indexeddb', 'websql']
     }),
-    MaterialModule,
     MdInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
@@ -166,6 +178,7 @@ const cloudSettings: CloudSettings = {
   entryComponents: [
     ShortCutsApp,
     DeployPage,
+    LoginPage,
     HomePage,
     InventoryPage,
     Products,
@@ -196,7 +209,8 @@ const cloudSettings: CloudSettings = {
     CategoryIconSelectModal,
     ClockInOutPage,
     PriceBooksPage,
-    PriceBookDetails
+    PriceBookDetails,
+    ForgotPassword
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},
@@ -204,12 +218,14 @@ const cloudSettings: CloudSettings = {
     SplashScreen,
     Firebase,
     PinDialog,
+    Dialogs,
+    InAppBrowser,
     SharedService,
     CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
-    StoreService,
+    
     EmployeeService,
     TaxService,
     CalculatorService,
@@ -218,7 +234,6 @@ const cloudSettings: CloudSettings = {
     ModuleService,
     ClosureService,
     UserService,
-    UserSettingsService,
     CacheService,
     FountainService,
     PriceBookService,
@@ -227,12 +242,18 @@ const cloudSettings: CloudSettings = {
     AppSettingsService,
     PluginService,
     EmployeeTimestampService,
+    AuthService,
     StoreEvaluationProvider,
     AppService,
+    StoreService,
     SalesServices,
     ClickStopPropagation,
     KeysPipe,
-    GroupByPipe
+    GroupByPipe,
+    authProvider,
+    fakeBackendProvider,
+    MockBackend,
+    BaseRequestOptions    
   ]
 })
 export class AppModule {}

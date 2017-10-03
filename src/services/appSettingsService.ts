@@ -39,7 +39,7 @@ export class AppSettingsService extends BaseEntityService<AppSettings> {
         this.update(appSettings).then(() => {
           user.settings.defaultTax = GlobalConstants.NO_TAX_ID;
           user.settings.taxEntity = GlobalConstants.DEFAULT_TAX_ENTITY;
-          this.userService.persistUser(user);
+          this.userService.setSession(user);
           resolve();
         }).catch(error => reject(error));
       }).catch(error => reject(error));

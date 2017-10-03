@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import { AppService } from './appService';
 import { UserService } from './userService';
 import { Injectable, NgZone } from '@angular/core';
 import { Store } from '../model/store'
 import { BaseEntityService } from './baseEntityService'
+import { GlobalConstants } from './../metadata/globalConstants';
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
@@ -27,9 +29,9 @@ export class StoreService extends BaseEntityService<Store> {
         // persist user
         let user = this.userService.getLoggedInUser();
         if (store._id == user.settings.currentStore) {
-          user.currentStore = store;
+          user.currentStore = _.pick(store, GlobalConstants.STORE_SESSION_PROPS);
           user.settings.currentStore = store._id;
-          this.userService.persistUser(user);
+          this.userService.setSession(user);
         }
         resolve();
       }).catch((error) => {
