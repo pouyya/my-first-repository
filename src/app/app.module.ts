@@ -6,7 +6,7 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-import { MaterialModule, MdInputModule } from '@angular/material';
+import { MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -158,7 +158,6 @@ const cloudSettings: CloudSettings = {
       name:'__mydb',
       driverOrder:['sqlite', 'indexeddb', 'websql']
     }),
-    MaterialModule,
     MdInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
