@@ -21,13 +21,13 @@
         <ion-col col-md-4>
           <ion-item>
             <ion-label>Start Date</ion-label>
-            <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="priceBook.validFrom" required></ion-datetime>
+            <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="priceBook.validFrom" required name="priceBook.validFrom"></ion-datetime>
           </ion-item>
         </ion-col>
         <ion-col col-md-4>
           <ion-item>
             <ion-label>End Date</ion-label>
-            <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="priceBook.validTo" required></ion-datetime>
+            <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="priceBook.validTo" required name="priceBook.validTo"></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -36,13 +36,13 @@
           <ion-list>
             <ion-item>
               <ion-label>List of Stores</ion-label>
-              <ion-checkbox color="black" (click)="criteria.store.disabled = !criteria.store.disabled"></ion-checkbox>
+              <ion-checkbox color="black" (click)="criteria.store.disabled = !criteria.store.disabled" name="storeCriteriaDisabled"></ion-checkbox>
             </ion-item>
           </ion-list>
           <ion-list class="scrollable-component">
             <ion-item *ngFor="let store of stores">
               <ion-label>{{store.name}}</ion-label>
-              <ion-checkbox color="primary" [(ngModel)]="store.selected" [disabled]="!criteria.store.disabled"></ion-checkbox>
+              <ion-checkbox color="primary" [(ngModel)]="store.selected" [disabled]="!criteria.store.disabled" name="store.selected"></ion-checkbox>
             </ion-item>
           </ion-list>
         </ion-col>
@@ -50,13 +50,13 @@
           <ion-list>
             <ion-item>
               <ion-label>Customer Types</ion-label>
-              <ion-checkbox color="black" (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled"></ion-checkbox>
+              <ion-checkbox color="black" (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled" name="customerTypes"></ion-checkbox>
             </ion-item>
           </ion-list>
           <ion-list class="scrollable-component">
             <ion-item *ngFor="let type of customerTypes | keys">
               <ion-label>{{type.value}}</ion-label>
-              <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="!criteria.customerTypes.disabled"></ion-checkbox>
+              <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="!criteria.customerTypes.disabled" name="type.key"></ion-checkbox>
             </ion-item>
           </ion-list>
         </ion-col>
