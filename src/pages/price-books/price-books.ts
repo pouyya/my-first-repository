@@ -1,3 +1,4 @@
+import { PriceBookService } from './../../services/priceBookService';
 import { PriceBookDetails } from './../price-book-details/price-book-details';
 import { NavController } from 'ionic-angular';
 import { PriceBook } from './../../model/priceBook';
@@ -46,10 +47,15 @@ export class PriceBooksPage {
   private _backup: Array<PriceBook>;
 
   constructor(
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private priceBookService: PriceBookService
   ) {
-    this.priceBooks = MOCK_PRICE_BOOKS;
     this.date = new Date();
+  }
+
+  async ionViewDidLoad() {
+    this.priceBooks = await this.priceBookService.getAll();
+    return this.priceBooks;
   }
 
   public showDetail(priceBook?: PriceBook): void {

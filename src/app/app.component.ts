@@ -1,3 +1,4 @@
+import { HomePage } from './../pages/home/home';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -44,7 +45,7 @@ export class ShortCutsApp implements OnInit {
   async ngOnInit() {
     try {
       this.user = await this.userService.getUser();
-      this.rootPage = this.user ? DeployPage : LoginPage;
+      this.rootPage = this.user ? DeployPage : HomePage;  //LoginPage;
     } catch (error) {
       console.error(error);
       this._errorHandler("An error has occurred.")

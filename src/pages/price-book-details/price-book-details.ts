@@ -3,7 +3,6 @@ import { StoreCriteria } from './../../model/StoreCriteria';
 import { NgZone } from '@angular/core';
 import { PriceBook } from './../../model/priceBook';
 import { Platform, LoadingController, NavParams, NavController } from 'ionic-angular';
-import { Store } from './../../model/store';
 import { StoreService } from './../../services/storeService';
 import { Component } from '@angular/core';
 

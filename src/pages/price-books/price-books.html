@@ -35,9 +35,9 @@
           <ion-row>
             <ion-col col-md-3><strong>{{priceBook.name}}</strong></ion-col>
             <ion-col col-md-3><strong>Store Name</strong></ion-col>
-            <ion-col col-md-2><strong>{{ date | date:'short' }}</strong></ion-col>
-            <ion-col col-md-2><strong>{{ date | date:'short' }}</strong></ion-col>
-            <ion-col col-md-2><strong>{{ date | date:'short' }}</strong></ion-col>
+            <ion-col col-md-2><strong>{{ priceBook.validFrom | date:'short' }}</strong></ion-col>
+            <ion-col col-md-2><strong>{{ priceBook.validTo | date:'short' }}</strong></ion-col>
+            <ion-col col-md-2><strong>{{ priceBook.createdAt | date:'short' }}</strong></ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>

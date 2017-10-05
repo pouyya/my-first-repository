@@ -58,6 +58,7 @@ import { PriceBookDetails } from './../pages/price-book-details/price-book-detai
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
+import { PurchasableItemPriceModule } from './../components/purchasable-item-price/purchasable-item-price.module';
 import { IconSelectModule } from './../components/icon-select/icon-select.module';
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
@@ -168,6 +169,7 @@ const cloudSettings: CloudSettings = {
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
+    PurchasableItemPriceModule,
     IconSelectModule,
     SPIconModule,
     ItemPriceBookModule,
