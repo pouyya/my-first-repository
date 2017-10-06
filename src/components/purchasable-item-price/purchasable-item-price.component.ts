@@ -1,3 +1,5 @@
+import { SelectPurchasableItemsModel } from './modals/select-items';
+import { ModalController } from 'ionic-angular';
 import { SalesTax } from './../../model/salesTax';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PriceBookService } from './../../services/priceBookService';
@@ -25,7 +27,8 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
   constructor(
     private priceBookService: PriceBookService,
-    private salesTaxService: SalesTaxService
+    private salesTaxService: SalesTaxService,
+    private modalCtrl: ModalController
   ) {
 
   }
@@ -43,7 +46,8 @@ export class PurchasableItemPriceComponent implements OnChanges {
                 items.push({
                   name: model.name,
                   entityTypeName: model.entityTypeName,
-                  ...item
+                  ...item,
+                  deleted: false
                 });
                 res();
               }).catch(error => res());
@@ -73,6 +77,21 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
   public calculate() {
 
+  }
+
+  public addItemsModal() {
+    let exclude: string[] = this.items.map((item: any) => item._id);
+    let modal = this.modalCtrl.create(SelectPurchasableItemsModel, { exclude });
+    modal.onDidDismiss(data => {
+      if(data && data.hasOwnProperty('items') && data.items.length > 0) {
+        this.items = this.items.concat(data.items);
+      }
+    });
+    modal.present();    
+  }
+
+  public deleteItem(item, index) {
+    item.deleted = true;
   }
 
 }

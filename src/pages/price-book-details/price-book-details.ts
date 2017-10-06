@@ -68,13 +68,13 @@ export class PriceBookDetails {
   ionViewDidLoad() {
     this.platform.ready().then(() => {
       let loader = this.loading.create({
-        content: 'Opening...',
+        content: 'Loading...',
       });
 
       loader.present().then(() => {
-        let priceBook = this.navParams.get('priceBook');
+        let priceBook: PriceBook = this.navParams.get('priceBook') as PriceBook;
         if (priceBook) {
-          this.priceBook = priceBook as PriceBook;
+          this.priceBook = priceBook;
           this.isNew = false;
           this.action = 'Edit';
         }
@@ -98,7 +98,7 @@ export class PriceBookDetails {
     });
   }
 
-  public save(): void {
+  public onSubmit(): void {
     if(this.isNew) {
       if(!this.criteria.store.disabled) {
         this.priceBook.criteria.push({

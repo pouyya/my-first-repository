@@ -63,6 +63,7 @@ import { IconSelectModule } from './../components/icon-select/icon-select.module
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
+import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items'
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -148,7 +149,8 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     PriceBooksPage,
     PriceBookDetails,
-    ForgotPassword
+    ForgotPassword,
+    SelectPurchasableItemsModel
   ],
   imports: [
     BrowserModule,
@@ -211,7 +213,8 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     PriceBooksPage,
     PriceBookDetails,
-    ForgotPassword
+    ForgotPassword,
+    SelectPurchasableItemsModel
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},

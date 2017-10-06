@@ -26,7 +26,7 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     return this.helperService.round10((100 * (price - supplyPrice)) / supplyPrice, -5);
   }
 
-  public getDefaultPriceBook(): Promise<any> {
+  public getDefaultPriceBook(): Promise<PriceBook> {
     return new Promise((resolve, reject) => {
       this.findBy({
         selector: { priority: 0 }
