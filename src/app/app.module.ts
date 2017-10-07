@@ -20,7 +20,7 @@ import { Dialogs } from '@ionic-native/dialogs';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 // pages
-import { ShortCutsApp } from './app.component';
+import { SimplePOSApp } from './app.component';
 import { DeployPage } from './../pages/deploy/deploy';
 import { LoginPage } from './../pages/login/login';
 import { HomePage } from '../pages/home/home';
@@ -110,7 +110,7 @@ const cloudSettings: CloudSettings = {
 
 @NgModule({
   declarations: [
-    ShortCutsApp,
+    SimplePOSApp,
     DeployPage,
     LoginPage,
     HomePage,
@@ -148,7 +148,15 @@ const cloudSettings: CloudSettings = {
     BrowserModule,
     FormsModule,
     HttpModule,
-    IonicModule.forRoot(ShortCutsApp,{backButtonText:'',}),
+    IonicModule.forRoot(SimplePOSApp,
+      {
+        backButtonText:'',
+        platforms: { 
+          android: { 
+            activator: 'none' 
+          }
+        }         
+      }),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name:'__mydb',
@@ -170,7 +178,7 @@ const cloudSettings: CloudSettings = {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    ShortCutsApp,
+    SimplePOSApp,
     DeployPage,
     LoginPage,
     HomePage,

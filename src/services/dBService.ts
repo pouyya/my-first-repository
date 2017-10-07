@@ -37,6 +37,9 @@ export class DBService<T extends DBBasedEntity> {
                 PouchDB.debug.enable('*');
                 window["PouchDB"] = PouchDB;
             }
+            else {
+                PouchDB.debug.disable()
+            }
 
             DBService._db.createIndex({
                 index: { fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs'] }

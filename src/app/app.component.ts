@@ -15,7 +15,7 @@ import { LoginPage } from './../pages/login/login';
   selector: 'app',
   templateUrl: 'app.html'
 })
-export class ShortCutsApp implements OnInit {
+export class SimplePOSApp implements OnInit {
   @ViewChild(Nav) nav: Nav;
   public rootPage: any;
   public currentModule: ModuleBase;
