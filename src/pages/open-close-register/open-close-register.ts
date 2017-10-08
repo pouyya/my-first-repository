@@ -146,7 +146,6 @@ export class OpenCloseRegister {
       alert.present();
     } else {
       this.closure.closeTime = new Date().toISOString();
-      this.closure.cashMovements = this.register.cashMovements;
       await this.closureService.add(this.closure);
       this.register.status = false;
       this.register.cashMovements = [];

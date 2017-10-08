@@ -233,13 +233,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		})
 	}
 
-	public recordsCount() {
-		return new Promise((resolve, reject) => {
-			this.getAll(true).then(docs => {
-				resolve(docs.docs.length);
-			}).catch(error => reject(error));
-		});
-	}
 
 	public searchSales(posId, limit, offset, options): Promise<any> {
 		// TODO: Unless count query is not cleared, I have to retrieve all record and count them
