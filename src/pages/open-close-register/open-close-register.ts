@@ -98,7 +98,7 @@ export class OpenCloseRegister {
           });
 
           this.expected.cash += this.register.openingAmount;
-          if (this.register.cashMovements.length > 0) {
+          if (this.register.cashMovements && this.register.cashMovements.length > 0) {
             this.expected.cash = ((expected) => {
               let sum = 0;
               this.register.cashMovements.forEach(cash => sum += cash.amount);
@@ -135,39 +135,32 @@ export class OpenCloseRegister {
     this.closure.totalDifference = this.expected.total - this.closure.totalCounted;
   }
 
-  public closeRegister() {
-    this.salesService.findInCompletedByPosId(this.register._id).then((sales) => {
-      if (sales.length > 0) {
-        let alert = this.alertCtrl.create({
-          title: 'Warning!',
-          subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
-          buttons: ['OK']
+  public async closeRegister() {
+    var sales = await this.salesService.findInCompletedByPosId(this.register._id)
+    if (sales.length > 0) {
+      let alert = this.alertCtrl.create({
+        title: 'Warning!',
+        subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
+        buttons: ['OK']
+      });
+      alert.present();
+    } else {
+      this.closure.closeTime = new Date().toISOString();
+      this.closure.cashMovements = this.register.cashMovements;
+      await this.closureService.add(this.closure);
+      this.register.status = false;
+      this.register.cashMovements = [];
+      this.register.openingAmount = null;
+      this.register.openTime = null;
+      this.register.openingNote = null;
+      this.showReport = true;
+      await this.posService.update(this.register)
+      let toast = this.toastCtrl.create({
+        message: 'Register Closed',
+        duration: 3000
         });
-        alert.present();
-      } else {
-        this.closure.closeTime = new Date().toISOString();
-        this.closure.cashMovements = this.register.cashMovements;
-        this.closureService.add(this.closure).then((response) => {
-          this.register.status = false;
-          this.register.cashMovements = [];
-          this.register.openingAmount = null;
-          this.register.openTime = null;
-          this.register.openingNote = null;
-          this.showReport = true;
-          this.posService.update(this.register).then(() => {
-            let toast = this.toastCtrl.create({
-              message: 'Register Closed',
-              duration: 3000
-            });
-            toast.present();
-          }).catch((error) => {
-            throw new Error(error);
-          });
-        }).catch((error) => {
-          throw new Error(error);
-        });
-      }
-    });
+          toast.present();
+    }
   }
 
   public onSubmit() {

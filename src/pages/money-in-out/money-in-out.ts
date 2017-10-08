@@ -27,8 +27,8 @@ export class MoneyInOut {
     this.cdr.detach();
   }
 
-  ionViewCanEnter(): boolean {
-    return this.user.currentPos.status;
+  ionViewCanEnter(): Promise<boolean> {
+    return this.posService.getCurrentPosStatus();
   }
 
   ionViewDidLoad() {
@@ -44,9 +44,12 @@ export class MoneyInOut {
     modal.onDidDismiss((cash: CashMovement) => {
       if(cash) {
         this.btnDisabled = true;
+        
+        if(!this.register.cashMovements) {
+          this.register.cashMovements = new Array<CashMovement>();
+        }
+
         this.register.cashMovements.push(cash);
-        this.user.currentPos.cashMovements = this.register.cashMovements;
-        this.userService.setSession(this.user);
         this.posService.update(this.register).catch(error => {
           throw new Error(error);
         }).then(() => this.btnDisabled = false);
