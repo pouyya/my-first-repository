@@ -51,8 +51,7 @@ export let userData = {
     "storeId": "2017-07-18T11:40:07.245Z",
     "name": "Main Point-of-Sale",
     "openingNote": "Opening with a thousand dollars",
-    "openTime": "2017-07-18T11:56:51.593Z",
-    "cashMovements": []
+    "openTime": "2017-07-18T11:56:51.593Z"
   },
   currentStore: {
     "_id": "2017-07-18T11:40:07.245Z",
