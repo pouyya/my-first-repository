@@ -1,15 +1,15 @@
-import { BackOfficeModule } from './../modules/backOfficeModule';
+import { SalesModule } from './../modules/salesModule';
 import { Injectable, Injector } from "@angular/core";
 import { ModuleBase } from "../modules/moduelBase";
 
 @Injectable()
 export class ModuleService {
     
-    defaultModule: BackOfficeModule;
+    defaultModule: SalesModule;
 
   constructor(private injector: Injector) {
 
-      this.defaultModule = new BackOfficeModule();
+      this.defaultModule = new SalesModule();
   }
 
     public getCurrentModule(currentPage: any = null) : ModuleBase {

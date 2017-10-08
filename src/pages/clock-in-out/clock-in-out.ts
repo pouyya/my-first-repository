@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as moment from 'moment';
 import { UserService } from './../../services/userService';
 import { Employee } from './../../model/employee';

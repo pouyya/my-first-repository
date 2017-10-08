@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Pay With Cash
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #moveForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Amount*</ion-label>
+        <ion-input min="1" type="number" [(ngModel)]="cash.amount" name="amount" placeholder="e.g. 50.00" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Note</ion-label>
+        <ion-textarea [(ngModel)]="cash.notes" name="notes" placeholder="Type to add a notes"></ion-textarea>
+      </ion-item>
+    </ion-list>
+    <button ion-button [color]="submitBtns[reason].color" [disabled]="!moveForm.form.valid || cash.amount <= 0" type="submit">
+      {{submitBtns[reason].text}}
+    </button>
+  </form>
+</ion-content>

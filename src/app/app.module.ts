@@ -52,6 +52,8 @@ import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-detai
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
+import { MoneyInOut } from './../pages/money-in-out/money-in-out';
+import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -142,6 +144,8 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     ClockInOutPage,
+    MoneyInOut,
+    MoveCashModal,
     ForgotPassword
   ],
   imports: [
@@ -209,6 +213,9 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxPage,
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
+    ClockInOutPage,
+    MoneyInOut,
+    MoveCashModal,
     ForgotPassword,
     ClockInOutPage
   ],
