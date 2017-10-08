@@ -1,3 +1,4 @@
+import { ToastController } from 'ionic-angular';
 import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
 
@@ -39,16 +40,21 @@ export class OpenCloseRegister {
     amount: null,
     notes: null
   };
+  public reason: any = {
+    add: { text: 'Cash In' },
+    remove: { text: 'Cash Out' }
+  };
 
   constructor(private loading: LoadingController,
-              private posService: PosService,
-              private storeService: StoreService,
-              private closureService: ClosureService,
-              private cdr: ChangeDetectorRef,
-              private salesService: SalesServices,
-              private alertCtrl: AlertController,
-              private navCtrl: NavController,
-              private userService: UserService) {
+    private posService: PosService,
+    private storeService: StoreService,
+    private closureService: ClosureService,
+    private toastCtrl: ToastController,
+    private cdr: ChangeDetectorRef,
+    private salesService: SalesServices,
+    private alertCtrl: AlertController,
+    private navCtrl: NavController,
+    private userService: UserService) {
     this.cdr.detach();
     this.showReport = false;
   }
@@ -92,8 +98,15 @@ export class OpenCloseRegister {
           });
 
           this.expected.cash += this.register.openingAmount;
+          if (this.register.cashMovements && this.register.cashMovements.length > 0) {
+            this.expected.cash = ((expected) => {
+              let sum = 0;
+              this.register.cashMovements.forEach(cash => sum += cash.amount);
+              return this.expected.cash + sum;
+            })(this.expected.cash);
+          }
           this.expected.total = this.expected.cc + this.expected.cash;
-          
+
           this.closure = new Closure();
           this.closure.posId = this.register._id;
           this.closure.posName = this.register.name;
@@ -122,29 +135,31 @@ export class OpenCloseRegister {
     this.closure.totalDifference = this.expected.total - this.closure.totalCounted;
   }
 
-  public closeRegister() {
-    this.salesService.findInCompletedByPosId(this.register._id).then((sales) => {
-      if (sales.length > 0) {
-        let alert = this.alertCtrl.create({
-          title: 'Warning!',
-          subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
-          buttons: ['OK']
+  public async closeRegister() {
+    var sales = await this.salesService.findInCompletedByPosId(this.register._id)
+    if (sales.length > 0) {
+      let alert = this.alertCtrl.create({
+        title: 'Warning!',
+        subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
+        buttons: ['OK']
+      });
+      alert.present();
+    } else {
+      this.closure.closeTime = new Date().toISOString();
+      await this.closureService.add(this.closure);
+      this.register.status = false;
+      this.register.cashMovements = [];
+      this.register.openingAmount = null;
+      this.register.openTime = null;
+      this.register.openingNote = null;
+      this.showReport = true;
+      await this.posService.update(this.register)
+      let toast = this.toastCtrl.create({
+        message: 'Register Closed',
+        duration: 3000
         });
-        alert.present();
-      } else {
-        this.closure.closeTime = new Date().toISOString();
-        this.closureService.add(this.closure).then(() => {
-          this.register.status = false;
-          this.register.openingAmount = null;
-          this.register.openTime = null;
-          this.register.openingNote = null;
-          this.showReport = true;
-          this.posService.update(this.register);
-        }).catch((error) => {
-          throw new Error(error);
-        });
-      }
-    });
+          toast.present();
+    }
   }
 
   public onSubmit() {

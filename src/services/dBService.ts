@@ -86,16 +86,9 @@ export class DBService<T extends DBBasedEntity> {
         return this.update(entity);
     }
 
-    getAll(raw: boolean = false) {
+    getAll() : Promise<Array<T>> {
         var entityTypeName = (new this.entityType()).entityTypeName;
-        return DBService._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true })
-            .then(docs => {
-                if (raw) {
-                    return docs;
-                } else {
-                    return docs.docs;
-                }
-            });
+        return DBService._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true });
     }
 
     findBy(selector: any) {

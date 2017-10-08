@@ -1,9 +1,11 @@
 import { Injector } from '@angular/core';
 export interface PageSettingsInterface {
-	title: string,
-	icon: string,
-	component: any,
-	pushNavigation?: boolean
+	title: string;
+	icon: string;
+	component: any;
+	pushNavigation?: boolean;
+	disabled?: boolean;
+	disableFunc?(data: any): Promise<boolean>;
 }
 
 export interface ModalPageInterface extends PageSettingsInterface {

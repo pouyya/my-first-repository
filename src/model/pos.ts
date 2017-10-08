@@ -1,4 +1,11 @@
-import {DBBasedEntity} from './dbBasedEntity';
+import { DBBasedEntity } from './dbBasedEntity';
+
+export interface CashMovement {
+  amount: number,
+  type: string,
+  note?: string,
+  datetime: Date
+}
 
 export class POS extends DBBasedEntity {
 
@@ -18,4 +25,10 @@ export class POS extends DBBasedEntity {
   public openTime: string;
   public openingAmount: number = 0;
   public openingNote: string;
+  public cashMovements: Array<CashMovement>;
+
+  constructor() {
+    super();
+    this.cashMovements = [];
+  }
 }
