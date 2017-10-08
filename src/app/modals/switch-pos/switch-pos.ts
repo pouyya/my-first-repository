@@ -43,33 +43,25 @@ export class SwitchPosModal {
       this.posId = this.user.settings.currentPos;
       this.storeId = this.user.settings.currentStore;
 
-      this.storeService.getAll().then((stores: Array<Store>) => {
-        var storePromises: Array<Promise<any>> = [];
-        stores.forEach((store: Store, index) => {
-          storePromises.push(new Promise((resolve, reject) => {
-            this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
-              if (registers.length > 0) {
-                this.stores.push({ ...store, registers });
-                if (store._id === this.user.settings.currentStore) {
-                  this.currentStore = { ...store, registers };
-                }
-              }
-              resolve();
-            }).catch((error) => {
-              reject(error);
-            });
-          }));
-        });
+      let  stores = await this.storeService.getAll();
+      var storePromises: Array<Promise<any>> = [];
+      stores.forEach((store: Store, index) => {
+        storePromises.push(new Promise(async () => {
+          var registers = await this.posService.findBy({ selector: { storeId: store._id } });
+          if (registers.length > 0) {
+            this.stores.push({ ...store, registers });
+            if (store._id === this.user.settings.currentStore) {
+              this.currentStore = { ...store, registers };
+            }
+          }
+        }));
+      });
 
-        Promise.all(storePromises).then(() => {
-          loader.dismiss();
-        }).catch((error) => {
-          throw new Error(error);
-        })
-
+      Promise.all(storePromises).then(() => {
+        loader.dismiss();
       }).catch((error) => {
         throw new Error(error);
-      });
+      })
     });
   }
 
