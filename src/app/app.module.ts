@@ -1,11 +1,11 @@
 // core
-import { ErrorHandler, NgModule } from '@angular/core';
-import { FormsModule }   from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
+import { FormsModule }   from '@angular/forms';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
+import { HttpModule } from '@angular/http';
 import { MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -151,9 +151,9 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
+    ForgotPassword,
     PriceBooksPage,
     PriceBookDetails,    
-    ForgotPassword,
     SelectPurchasableItemsModel    
   ],
   imports: [
