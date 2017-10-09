@@ -1,10 +1,11 @@
+import { StoreCriteria } from './StoreCriteria';
 import { PurchasableItemPriceInterface } from './purchasableItemPrice.interface';
 import { PriceBookCriteria } from './PriceBookCriteria';
 import { DBBasedEntity } from './dbBasedEntity';
 
 export interface PriceBookCriteriaInterface {
   provider: string;
-  criteria: PriceBookCriteria;
+  criteria: any
 }
 
 export class PriceBook extends DBBasedEntity {
@@ -19,7 +20,7 @@ export class PriceBook extends DBBasedEntity {
 
   constructor() {
     super();
-    this.priority = 0;
+    this.priority = 1;
     this.criteria = [];
     this.purchasableItems = [];
   }

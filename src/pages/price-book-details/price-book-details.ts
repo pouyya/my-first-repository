@@ -1,6 +1,8 @@
+import _ from 'lodash';
+import { PurchasableItemPriceComponent } from './../../components/purchasable-item-price/purchasable-item-price.component';
 import { PriceBookService } from './../../services/priceBookService';
 import { StoreCriteria } from './../../model/StoreCriteria';
-import { NgZone } from '@angular/core';
+import { NgZone, ViewChild } from '@angular/core';
 import { PriceBook } from './../../model/priceBook';
 import { Platform, LoadingController, NavParams, NavController } from 'ionic-angular';
 import { StoreService } from './../../services/storeService';
@@ -32,7 +34,7 @@ export class PriceBookDetails {
   public action: string = 'Add';
   public criteria: CritieriaView = {
     store: {
-      disabled: false,
+      disabled: true,
       provider: 'StoreEvaluationProvider',
       construct(storeIds: string[]) {
         let criteria = new StoreCriteria();
@@ -41,7 +43,7 @@ export class PriceBookDetails {
       }
     },
     customerTypes: {
-      disabled: false,
+      disabled: true,
       provider: 'CustomerTypeEvaluationProvider',
       construct() { }
     }
@@ -53,6 +55,11 @@ export class PriceBookDetails {
     bronze: 'Bronze'
   };
 
+  private criteriaHash: any = {};
+
+  @ViewChild(PurchasableItemPriceComponent)
+  private purchasableItemPriceComponent: PurchasableItemPriceComponent;
+
   constructor(
     private storeService: StoreService,
     private priceBookService: PriceBookService,
@@ -62,7 +69,9 @@ export class PriceBookDetails {
     private navCtrl: NavController,
     private zone: NgZone
   ) {
- 
+    Object.keys(this.criteria).forEach(key => {
+      this.criteriaHash[this.criteria[key].provider] = key;
+    });
   }
 
   ionViewDidLoad() {
@@ -89,6 +98,21 @@ export class PriceBookDetails {
               store.selected = false;
               return store;
             })
+            if (!this.isNew) {
+              this.priceBook.criteria.forEach(criteria => {
+                if (this.criteriaHash.hasOwnProperty(criteria.provider)) {
+                  this.criteria[this.criteriaHash[criteria.provider]].disabled = false;
+
+                  if (criteria.provider == "StoreEvaluationProvider") {
+                    this.stores.forEach((store, index, stores) => {
+                      if (criteria.criteria.storeIds.indexOf(store._id) > -1) {
+                        stores[index].selected = true;
+                      }
+                    });
+                  }
+                }
+              });
+            }
             loader.dismiss();
           });
         }).catch(error => {
@@ -98,9 +122,13 @@ export class PriceBookDetails {
     });
   }
 
+  public updateStore(store, event) {
+    store = event;
+  }
+
   public onSubmit(): void {
-    if(this.isNew) {
-      if(!this.criteria.store.disabled) {
+    if (this.isNew) {
+      if (!this.criteria.store.disabled) {
         this.priceBook.criteria.push({
           provider: this.criteria.store.provider,
           criteria: this.criteria.store.construct((() => {
@@ -108,12 +136,36 @@ export class PriceBookDetails {
           })())
         })
       }
+
+      this.purchasableItemPriceComponent.confirmChanges();
+
       this.priceBookService.add(this.priceBook).then(() => {
         this.navCtrl.pop();
       });
     } else {
-
+      this.purchasableItemPriceComponent.confirmChanges();
+      let index = _.findIndex(this.priceBook.criteria, { provider: 'StoreEvaluationProvider' });
+      if (index > -1) {
+        if (this.criteria.store.disabled) {
+          this.priceBook.criteria.splice(index, 1);
+        } else {
+          this.priceBook.criteria[index].criteria = this.criteria.store.construct((() => {
+            return this.stores.filter(store => store.selected).map(store => store._id);
+          })());
+        }
+      } else {
+        if (!this.criteria.store.disabled) {
+          this.priceBook.criteria.push({
+            provider: this.criteria.store.provider,
+            criteria: this.criteria.store.construct((() => {
+              return this.stores.filter(store => store.selected).map(store => store._id);
+            })())
+          })
+        }
+      }
+      this.priceBookService.update(this.priceBook).then(() => {
+        this.navCtrl.pop();
+      });
     }
   }
-
 }

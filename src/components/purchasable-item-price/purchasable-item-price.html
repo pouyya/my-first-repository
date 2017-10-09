@@ -1,7 +1,7 @@
 <ion-grid>
   <ion-row>
     <ion-col col-md-2>
-      <button type="button" ion-button color="primary" (click)="addItemsModal()">Add</button>
+      <button type="button" ion-button color="primary" (click)="addItemsModal()">Add Price Book</button>
     </ion-col>
   </ion-row>
   <ion-row *ngFor="let item of items; let i=index" [hidden]="item.deleted">
