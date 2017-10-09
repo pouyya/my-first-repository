@@ -3,7 +3,10 @@ import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import {Employee} from "../../model/employee";
 import { NavController, AlertController, Platform } from 'ionic-angular';
+import { BackOfficeModule } from '../../modules/backOfficeModule';
+import { PageModule } from '../../metadata/pageModule';
 
+@PageModule(() => BackOfficeModule)
 @Component({
   selector: 'page-employees',
   templateUrl: 'employees.html',

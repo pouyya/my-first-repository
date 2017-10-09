@@ -2,7 +2,10 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetails } from '../category-details/category-details';
+import { BackOfficeModule } from '../../modules/backOfficeModule';
+import { PageModule } from '../../metadata/pageModule';
 
+@PageModule(() => BackOfficeModule)
 @Component({
   selector: 'page-variables',
   templateUrl: 'category.html'
