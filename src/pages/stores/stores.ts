@@ -2,7 +2,10 @@ import { StoreService } from './../../services/storeService';
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, Platform } from 'ionic-angular';
 import { StoreDetailsPage } from "../store-details/store-details";
+import { BackOfficeModule } from '../../modules/backOfficeModule';
+import { PageModule } from '../../metadata/pageModule';
 
+@PageModule(() => BackOfficeModule)
 @Component({
   templateUrl: 'stores.html'
 })
