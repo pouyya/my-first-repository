@@ -3,6 +3,8 @@ import { PriceBookDetails } from './../price-book-details/price-book-details';
 import { NavController } from 'ionic-angular';
 import { PriceBook } from './../../model/priceBook';
 import { Component } from '@angular/core';
+import { PageModule } from '../../metadata/pageModule';
+import { BackOfficeModule } from '../../modules/backOfficeModule';
 
 const MOCK_PRICE_BOOKS: Array<PriceBook> = [
   {
@@ -35,6 +37,7 @@ const MOCK_PRICE_BOOKS: Array<PriceBook> = [
   }
 ];
 
+@PageModule(() => BackOfficeModule)
 @Component({
   selector: 'price-books',
   templateUrl: 'price-books.html'
