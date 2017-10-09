@@ -21,10 +21,6 @@ export class UserService extends BaseEntityService<User> {
     super(User, zone);
   }
 
-  public getAll(): Observable<any> {
-    return this.authHttp.get('/api/users').map((response: Response) => response.json());
-  }
-
   public getById(id: number): Observable<any> {
     return this.authHttp.get('/api/users/' + id).map((response: Response) => response.json());
   }

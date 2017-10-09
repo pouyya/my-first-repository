@@ -19,7 +19,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SharedModule } from './../modules/shared.module';
 
 // pages
-import { ShortCutsApp } from './app.component';
+import { SimplePOSApp } from './app.component';
 import { DeployPage } from './../pages/deploy/deploy';
 import { LoginPage } from './../pages/login/login';
 import { HomePage } from '../pages/home/home';
@@ -51,6 +51,8 @@ import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-detai
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
+import { MoneyInOut } from './../pages/money-in-out/money-in-out';
+import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 
@@ -115,7 +117,7 @@ const cloudSettings: CloudSettings = {
 
 @NgModule({
   declarations: [
-    ShortCutsApp,
+    SimplePOSApp,
     DeployPage,
     LoginPage,
     HomePage,
@@ -147,16 +149,26 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     ClockInOutPage,
+    MoneyInOut,
+    MoveCashModal,
     PriceBooksPage,
-    PriceBookDetails,
+    PriceBookDetails,    
     ForgotPassword,
-    SelectPurchasableItemsModel
+    SelectPurchasableItemsModel    
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    IonicModule.forRoot(ShortCutsApp,{backButtonText:'',}),
+    IonicModule.forRoot(SimplePOSApp,
+      {
+        backButtonText:'',
+        platforms: { 
+          android: { 
+            activator: 'none' 
+          }
+        }         
+      }),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name:'__mydb',
@@ -179,7 +191,7 @@ const cloudSettings: CloudSettings = {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    ShortCutsApp,
+    SimplePOSApp,
     DeployPage,
     LoginPage,
     HomePage,
@@ -211,8 +223,10 @@ const cloudSettings: CloudSettings = {
     GroupSaleTaxDetailsPage,
     CategoryIconSelectModal,
     ClockInOutPage,
+    MoneyInOut,
+    MoveCashModal,
     PriceBooksPage,
-    PriceBookDetails,
+    PriceBookDetails,    
     ForgotPassword,
     SelectPurchasableItemsModel
   ],

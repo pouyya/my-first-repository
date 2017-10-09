@@ -37,6 +37,9 @@ export class DBService<T extends DBBasedEntity> {
                 PouchDB.debug.enable('*');
                 window["PouchDB"] = PouchDB;
             }
+            else {
+                PouchDB.debug.disable()
+            }
 
             DBService._db.createIndex({
                 index: { fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs'] }
@@ -83,16 +86,13 @@ export class DBService<T extends DBBasedEntity> {
         return this.update(entity);
     }
 
-    getAll(raw: boolean = false) {
+    async getAll() : Promise<Array<T>> {
         var entityTypeName = (new this.entityType()).entityTypeName;
-        return DBService._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true })
-            .then(docs => {
-                if (raw) {
-                    return docs;
-                } else {
-                    return docs.docs;
-                }
-            });
+        var result = await DBService._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true });
+        if(result && result.docs){
+            return result.docs;
+        }
+        return result;
     }
 
     findBy(selector: any) {

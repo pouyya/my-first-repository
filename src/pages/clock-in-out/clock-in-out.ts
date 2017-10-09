@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as moment from 'moment';
 import { UserService } from './../../services/userService';
 import { Employee } from './../../model/employee';
@@ -57,13 +56,13 @@ export class ClockInOutPage {
         .then((pin) => {
           this.employeeService.findByPin(pin).then((employee: Employee) => {
             this.user = this.userService.getLoggedInUser();
-            let index = _.findIndex(employee.store, { id: this.user.settings.currentStore });
-            if (index > -1) {
+            // let index = _.findIndex(employee.store, { id: this.user.settings.currentStore });
+            // if (index > -1) {
               this.employee = employee;
               resolve();
-            } else {
-              toast.present(); reject();
-            }
+            // } else {
+            //   toast.present(); reject();
+            // }
           }).catch(() => { toast.present(); reject(); });
         }).catch(() => { toast.present(); reject(); });
     })

@@ -2,7 +2,7 @@
   dnd-sortable-container [sortableData]="items">
   <md-grid-tile
       class="tile"
-      *ngFor="let tile of items; let i = index" (click)="selectItem(tile)"
+      *ngFor="let tile of items; let i = index" (tap)="selectItem(tile)"
       dnd-sortable [sortableIndex]="i"
       [colspan]="1"
       [rowspan]="1" tapabble>

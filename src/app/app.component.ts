@@ -11,12 +11,15 @@ import { PluginService } from './../services/pluginService';
 import { ModuleBase } from "../modules/moduelBase";
 import { DeployPage } from "../pages/deploy/deploy";
 import { LoginPage } from './../pages/login/login';
+import { BackOfficeModule } from "./../modules/backOfficeModule";
+import { PageModule } from './../metadata/pageModule';
 
+@PageModule(() => BackOfficeModule)
 @Component({
   selector: 'app',
   templateUrl: 'app.html'
 })
-export class ShortCutsApp implements OnInit {
+export class SimplePOSApp implements OnInit {
   @ViewChild(Nav) nav: Nav;
   public rootPage: any;
   public currentModule: ModuleBase;
