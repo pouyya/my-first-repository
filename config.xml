@@ -127,4 +127,5 @@
     <plugin name="cordova-sqlite-storage" spec="~2.0.4" />
     <plugin name="ionic-plugin-deploy" spec="~0.6.7" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <plugin name="cordova-plugin-chrome-apps-sockets-tcp" spec="^1.3.7" />
 </widget>

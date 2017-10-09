@@ -103,6 +103,7 @@ import { authProvider } from './../modules/auth.module';
 import { fakeBackendProvider } from './../services/_fakeBackend';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
+import { PrintService } from '../services/printService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -251,6 +252,7 @@ const cloudSettings: CloudSettings = {
     EmployeeTimestampService,
     AuthService,
     AppService,
+    PrintService,
     StoreService,
     SalesServices,
     ClickStopPropagation,
