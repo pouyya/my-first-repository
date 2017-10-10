@@ -94,7 +94,9 @@ export class PurchasableItemPriceComponent implements OnChanges {
           this.defaultTax = results[0]
           this.salesTaxes.push(this.defaultTax);
         }
-        this.salesTaxes = this.salesTaxes.concat(results[1]);
+        if(results[1] != null && results[1].length > 0) {
+          this.salesTaxes = this.salesTaxes.concat(results[1]);
+        }
       }
 
       if (this._priceBook && this._priceBook._id && this._priceBook.purchasableItems.length > 0) {
@@ -194,7 +196,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
     this.items.forEach(item => {
       if (!item.deleted) {
         this._priceBook.purchasableItems.push({
-          ..._.omit(item, ['name', 'entityTypeName', 'tax', 'deleted'])
+          ..._.omit<PurchasableItemPriceInterface,InteractableItemPriceInterface>(item, ['name', 'entityTypeName', 'tax', 'deleted'])
         })
       }
     });
