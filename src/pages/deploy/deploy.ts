@@ -31,22 +31,22 @@ export class DeployPage {
 		}
 		else {
 			this.deploy.channel = 'dev';
-			this.deploy.check().then((snapshotAvailable: boolean) => {
-				if (snapshotAvailable) {
-					this.updateText = 'Grabbing the best experience for you';
-					console.log('There\'s an update!');
-					this.deploy.download().then(() => {
-						this.updateText = 'Updating...';
+			// this.deploy.check().then((snapshotAvailable: boolean) => {
+			// 	if (snapshotAvailable) {
+			// 		this.updateText = 'Grabbing the best experience for you';
+			// 		console.log('There\'s an update!');
+			// 		this.deploy.download().then(() => {
+			// 			this.updateText = 'Updating...';
 
-						return this.deploy.extract();
-					}).then(() => {
-						this.deploy.load();
-					});
-				} else {
-					console.log('No new code :(');
+			// 			return this.deploy.extract();
+			// 		}).then(() => {
+			// 			this.deploy.load();
+			// 		});
+			// 	} else {
+			// 		console.log('No new code :(');
 					this.loadUserInfoAndNavigateToHome();
-				}
-			});
+				// }
+			// });
 		}
 	}
 
