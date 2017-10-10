@@ -52,7 +52,9 @@
       <ion-textarea [(ngModel)]="invoice.notes" (change)="syncInvoice()" placeholder="Add Sale Notes...">
       </ion-textarea>
     </ion-col>
-    <ion-col col-md-3>Discount</ion-col>
+    <ion-col col-md-3>
+      <button ion-button small color="primary" (click)="openDiscountSurchargeModal()">Discount</button>
+    </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">
       ${{0.00 | number : '1.2-2'}}
     </ion-col>

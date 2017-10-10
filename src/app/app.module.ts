@@ -54,6 +54,7 @@ import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-p
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
+import { DiscountSurchargeModal } from './../components/basket/modals/discount-surcharge/discount-surcharge';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -146,7 +147,8 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
-    ForgotPassword
+    ForgotPassword,
+    DiscountSurchargeModal
   ],
   imports: [
     BrowserModule,
@@ -217,7 +219,8 @@ const cloudSettings: CloudSettings = {
     MoneyInOut,
     MoveCashModal,
     ForgotPassword,
-    ClockInOutPage
+    ClockInOutPage,
+    DiscountSurchargeModal
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},

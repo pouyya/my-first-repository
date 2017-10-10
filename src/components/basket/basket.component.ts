@@ -1,3 +1,4 @@
+import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import _ from 'lodash';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
@@ -120,6 +121,14 @@ export class BasketComponent {
       this.invoice.items[$index] = data.item;
       if(reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
       data.hasChanged && this.calculateAndSync();
+    });
+    modal.present();
+  }
+
+  public openDiscountSurchargeModal() {
+    let modal = this.modalCtrl.create(DiscountSurchargeModal, {});
+    modal.onDidDismiss(data => {
+
     });
     modal.present();
   }
