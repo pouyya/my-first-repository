@@ -2,8 +2,12 @@
   <ion-navbar>
     <ion-title>{{action}} Price Book</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="priceBookForm.ngSubmit.emit()" [disabled]="!priceBookForm.form.valid">
+      <button type="submit" ion-button icon-only 
+        (click)="priceBookForm.ngSubmit.emit()">
         Save
+      </button>
+      <button *ngIf="action == 'Edit' && !isDefault" ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -15,19 +19,21 @@
       <ion-row>
         <ion-col col-md-4>
           <ion-item>
-            <ion-input type="text" placeholder="Name" [(ngModel)]="priceBook.name" required name="priceBookName"></ion-input>
+            <ion-input type="text" placeholder="Name" [disabled]="isDefault" [(ngModel)]="priceBook.name" name="priceBookName"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col col-md-4>
           <ion-item>
             <ion-label>Start Date</ion-label>
-            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom" required name="priceBookValidFrom"></ion-datetime>
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom"
+              name="priceBookValidFrom"></ion-datetime>
           </ion-item>
         </ion-col>
         <ion-col col-md-4>
           <ion-item>
             <ion-label>End Date</ion-label>
-            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo" required name="priceBookValidTo"></ion-datetime>
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo"
+              name="priceBookValidTo"></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -36,13 +42,15 @@
           <ion-list>
             <ion-item>
               <ion-label>List of Stores</ion-label>
-              <ion-checkbox color="black" [checked]="!criteria.store.disabled" (click)="criteria.store.disabled = !criteria.store.disabled" name="storeCriteriaDisabled"></ion-checkbox>
+              <ion-checkbox color="black" [disabled]="isDefault" [checked]="!criteria.store.disabled" (click)="criteria.store.disabled = !criteria.store.disabled"
+                name="storeCriteriaDisabled"></ion-checkbox>
             </ion-item>
           </ion-list>
           <ion-list class="scrollable-component">
             <ion-item *ngFor="let store of stores">
               <ion-label>{{store.name}}</ion-label>
-              <ion-checkbox color="primary" [ngModel]="store.selected" (ngModelChange)="store.selected = !store.selected" [checked]="store.selected" [disabled]="criteria.store.disabled" name="storeSelected"></ion-checkbox>
+              <ion-checkbox color="primary" (ionChange)="onCheck($event, store)" [checked]="store.selected"
+                [disabled]="criteria.store.disabled" name="storeSelected"></ion-checkbox>
             </ion-item>
           </ion-list>
         </ion-col>
@@ -50,13 +58,13 @@
           <ion-list>
             <ion-item>
               <ion-label>Customer Types</ion-label>
-              <ion-checkbox color="black" (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled" name="customerTypes"></ion-checkbox>
+              <ion-checkbox color="black" [disabled]="isDefault" (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled" name="customerTypes"></ion-checkbox>
             </ion-item>
           </ion-list>
           <ion-list class="scrollable-component">
             <ion-item *ngFor="let type of customerTypes | keys">
               <ion-label>{{type.value}}</ion-label>
-              <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="!criteria.customerTypes.disabled" name="typeKey"></ion-checkbox>
+              <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="criteria.customerTypes.disabled" name="typeKey"></ion-checkbox>
             </ion-item>
           </ion-list>
         </ion-col>
@@ -64,7 +72,7 @@
           <ion-list>
             <ion-item>
               <ion-label>Staff</ion-label>
-              <ion-checkbox color="black"></ion-checkbox>
+              <ion-checkbox color="black" [disabled]="isDefault"></ion-checkbox>
             </ion-item>
           </ion-list>
           <ion-list class="scrollable-component">
@@ -73,5 +81,5 @@
       </ion-row>
     </ion-grid>
   </form>
-  <purchasable-item-price [(priceBook)]="priceBook"></purchasable-item-price>
+  <purchasable-item-price [(priceBook)]="priceBook" [options]="isDefault ? defaultOptions : generalOptions"></purchasable-item-price>
 </ion-content>

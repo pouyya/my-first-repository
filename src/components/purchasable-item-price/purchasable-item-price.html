@@ -1,5 +1,5 @@
 <ion-grid>
-  <ion-row>
+  <ion-row *ngIf="options.enableAddition">
     <ion-col col-md-2>
       <button type="button" ion-button color="primary" (click)="addItemsModal()">Add Price Book</button>
     </ion-col>
@@ -51,7 +51,7 @@
       </ion-item>
     </ion-col>
 
-    <ion-col col-md-1>
+    <ion-col col-md-1 *ngIf="options.enableDeletion">
       <ion-item item-content>
         <ion-icon name="close" (click)="deleteItem(item)"></ion-icon>
       </ion-item>

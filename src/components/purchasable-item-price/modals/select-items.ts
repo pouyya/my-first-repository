@@ -1,3 +1,4 @@
+import { SalesTax } from './../../../model/salesTax';
 import { PriceBookService } from './../../../services/priceBookService';
 import _ from 'lodash';
 import { ViewController, NavParams } from 'ionic-angular';
@@ -12,6 +13,7 @@ import { Component, NgZone } from '@angular/core';
 export class SelectPurchasableItemsModel {
 
   public items: any[] = [];
+  private defaultTax: any;
 
   constructor(
     private navParms: NavParams,
@@ -28,6 +30,7 @@ export class SelectPurchasableItemsModel {
     });
     loader.present().then(() => {
       let exclude: string[] = this.navParms.get('exclude') as string[];
+      this.defaultTax = this.navParms.get('defaultTax');
       this.appService.getAllPurchasableItems().then((items: any[]) => {
         this.zone.run(() => {
           this.items = _.filter(items, value => !(exclude.indexOf(value._id) > -1)).map(item => {
@@ -67,7 +70,8 @@ export class SelectPurchasableItemsModel {
               confirmed.push({
                 name: value.name,
                 entityTypeName: value.entityTypeName,
-                ...prices[i]
+                ...prices[i],
+                tax: this.defaultTax || new SalesTax()
               });
             }
           });

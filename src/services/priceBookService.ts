@@ -36,6 +36,16 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     });
   }
 
+  public getAll(): Promise<Array<PriceBook>> {
+    return this.findBy({
+      "selector": {
+        "entityTypeNames": {
+          "$elemMatch": { "$eq": "PriceBook" }
+        }
+      }
+    });
+  }
+
   public getPriceBooks(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.findBy({

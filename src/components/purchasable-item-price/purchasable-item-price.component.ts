@@ -1,3 +1,5 @@
+import { AppService } from './../../services/appService';
+import { UserService } from './../../services/userService';
 import { GroupSaleTax } from './../../model/groupSalesTax';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import _ from 'lodash';
@@ -16,6 +18,11 @@ interface InteractableItemPriceInterface extends PurchasableItemPriceInterface {
   deleted: boolean;
 }
 
+interface ComponentOptions {
+  enableAddidtion: boolean;
+  enableDeletion: boolean;
+}
+
 @Component({
   selector: 'purchasable-item-price',
   templateUrl: 'purchasable-item-price.html',
@@ -25,6 +32,8 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
   public _priceBook: PriceBook;
   public items: InteractableItemPriceInterface[] = [];
+  private user: any;
+  private defaultTax: any;
 
   @Input("priceBook")
   set priceBook(value: PriceBook) {
@@ -36,30 +45,59 @@ export class PurchasableItemPriceComponent implements OnChanges {
   }
   @Input() salesTaxes?: any[];
   @Input() showConfirmBtn?: boolean = false;
+  @Input() options: ComponentOptions = { enableAddidtion: true, enableDeletion: true };
   @Output() priceBookChange: EventEmitter<PriceBook> = new EventEmitter<PriceBook>();
 
   constructor(
     private priceBookService: PriceBookService,
     private salesTaxService: SalesTaxService,
     private modalCtrl: ModalController,
+    private userService: UserService,
+    private appService: AppService,
     private zone: NgZone
   ) {
-
+    this.user = this.userService.getLoggedInUser();
   }
 
   ngOnChanges(): void {
-    if (this._priceBook && this._priceBook._id && this._priceBook.purchasableItems.length > 0) {
+    let salesPromises: Promise<any>[] = [];
+    if (!this.salesTaxes || this.salesTaxes.length == 0) {
+      salesPromises = [
+        new Promise((_resolve, _reject) => {
+          this.salesTaxService.get(this.user.settings.defaultTax).then((salesTax: any) => {
+            salesTax.name = ` ${salesTax.name} (Default)`;
+            _resolve({
+              ...salesTax,
+              isDefault: true,
+              noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
+            });
+          }).catch(error => {
+            if (error.name == "not_found") {
+              _resolve(null);
+            } else _reject(error);
+          });
+        }),
+        new Promise((_resolve, _reject) => {
+          this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
+            _resolve(salesTaxes);
+          }).catch(error => _reject(error));
+        }),
+      ];
+    } else {
+      salesPromises.push(Promise.resolve(null));
+    }
 
-      let setSalesTaxes: Promise<any[]> = new Promise((resolve, reject) => {
-        if (!this.salesTaxes || this.salesTaxes.length == 0) {
-          this.salesTaxService.getAll().then((taxes: SalesTax[]) => {
-            this.salesTaxes = taxes;
-            resolve();
-          }).catch(error => reject(error));
-        } else resolve();
-      });
+    Promise.all(salesPromises).then(results => {
+      this.salesTaxes = [];
+      if (results != null && results.length > 0) {
+        if (results[0] != null) {
+          this.defaultTax = results[0]
+          this.salesTaxes.push(this.defaultTax);
+        }
+        this.salesTaxes = this.salesTaxes.concat(results[1]);
+      }
 
-      setSalesTaxes.then(() => {
+      if (this._priceBook && this._priceBook._id && this._priceBook.purchasableItems.length > 0) {
         let fetchItems: Promise<any>[] = [];
         let items: InteractableItemPriceInterface[] = [];
         this._priceBook.purchasableItems.forEach(item => {
@@ -69,7 +107,15 @@ export class PurchasableItemPriceComponent implements OnChanges {
                 name: model.name,
                 entityTypeName: model.entityTypeName,
                 ...item,
-                tax: _.find(this.salesTaxes, { _id: item.salesTaxId }) || new SalesTax(),
+                tax: ((_id) => {
+                  if (_id == null) {
+                    return this.defaultTax;
+                  } else {
+                    let tax = _.find(this.salesTaxes, { _id });
+                    return tax || this.defaultTax;
+                  }
+
+                })(item.salesTaxId),
                 deleted: false
               });
               res();
@@ -82,10 +128,11 @@ export class PurchasableItemPriceComponent implements OnChanges {
         }).catch(error => {
           throw new Error(error);
         });
-      }).catch(error => {
-        throw new Error(error);
-      });
-    }
+      }
+
+    }).catch(error => {
+      throw new Error(error);
+    });
   }
 
   public calculate(type, item): void {
@@ -127,7 +174,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
   public addItemsModal(): void {
     let exclude: string[] = this.items.map((item: any) => item._id);
-    let modal = this.modalCtrl.create(SelectPurchasableItemsModel, { exclude });
+    let modal = this.modalCtrl.create(SelectPurchasableItemsModel, { exclude, defaultTax: this.defaultTax });
     modal.onDidDismiss(data => {
       if (data && data.hasOwnProperty('items') && data.items.length > 0) {
         this.items = this.items.concat(data.items);
@@ -145,9 +192,9 @@ export class PurchasableItemPriceComponent implements OnChanges {
     // if there is no Confirm button used in this component
     this._priceBook.purchasableItems = [];
     this.items.forEach(item => {
-      if(!item.deleted) {
+      if (!item.deleted) {
         this._priceBook.purchasableItems.push({
-          ..._.omit(item, [ 'name', 'entityTypeName', 'tax', 'deleted' ])
+          ..._.omit(item, ['name', 'entityTypeName', 'tax', 'deleted'])
         })
       }
     });

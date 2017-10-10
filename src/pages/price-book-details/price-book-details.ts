@@ -29,6 +29,7 @@ interface CritieriaView {
 export class PriceBookDetails {
 
   public priceBook: PriceBook = new PriceBook();
+  public isDefault: boolean = false;
   public stores: Array<any> = [];
   public isNew: boolean = true;
   public action: string = 'Add';
@@ -54,6 +55,8 @@ export class PriceBookDetails {
     silver: 'Silver',
     bronze: 'Bronze'
   };
+  public generalOptions: any = { enableAddition: true, enableDeletion: true };
+  public defaultOptions: any = { enableAddition: false, enableDeletion: false };
 
   private criteriaHash: any = {};
 
@@ -86,6 +89,12 @@ export class PriceBookDetails {
           this.priceBook = priceBook;
           this.isNew = false;
           this.action = 'Edit';
+          this.priceBook.priority == 0 && ( this.isDefault = true );
+          if(this.isDefault) {
+            Object.keys(this.criteria).forEach((key, index, array) => {
+              this.criteria[key].disabled = true;
+            });
+          }
         }
         let promises: Promise<any>[] = [
           this.storeService.getAll()
@@ -122,8 +131,8 @@ export class PriceBookDetails {
     });
   }
 
-  public updateStore(store, event) {
-    store = event;
+  public onCheck(event, store) {
+    store.selected = !store.selected;
   }
 
   public onSubmit(): void {
@@ -138,6 +147,7 @@ export class PriceBookDetails {
       }
 
       this.purchasableItemPriceComponent.confirmChanges();
+      this.priceBook.createdAt = new Date();
 
       this.priceBookService.add(this.priceBook).then(() => {
         this.navCtrl.pop();
@@ -167,5 +177,9 @@ export class PriceBookDetails {
         this.navCtrl.pop();
       });
     }
+  }
+
+  public remove() {
+
   }
 }
