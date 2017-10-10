@@ -12,11 +12,9 @@ import { PageModule } from '../../metadata/pageModule';
 export class HomePage {
 
   constructor(public navCtrl: NavController, private printService: PrintService) {
-
   }
 
-  public callMe(){
-    this.printService.print('asd');
+  public print(){
+    this.printService.print();
   }
-
 }
