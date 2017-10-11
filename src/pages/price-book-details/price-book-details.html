@@ -2,7 +2,8 @@
   <ion-navbar>
     <ion-title>{{action}} Price Book</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only 
+      <button type="submit" ion-button icon-only
+        [disabled]="!priceBookForm.form.valid"
         (click)="priceBookForm.ngSubmit.emit()">
         Save
       </button>
@@ -19,23 +20,40 @@
       <ion-row>
         <ion-col col-md-4>
           <ion-item>
-            <ion-input type="text" placeholder="Name" [disabled]="isDefault" [(ngModel)]="priceBook.name" name="priceBookName"></ion-input>
+            <ion-input type="text" *ngIf="isDefault" [value]="priceBook.name"></ion-input>
+            <ion-input type="text" placeholder="Name" *ngIf="!isDefault" [(ngModel)]="priceBook.name" name="priceBookName" required></ion-input>
           </ion-item>
         </ion-col>
-        <ion-col col-md-4>
+        <ion-col col-md-3>
           <ion-item>
             <ion-label>Start Date</ion-label>
             <ion-datetime displayFormat="MM-DD-YYYY h:mm A" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom"
-              name="priceBookValidFrom"></ion-datetime>
+              name="priceBookValidFrom" #priceBookValidFrom="ngModel">
+            </ion-datetime>
           </ion-item>
         </ion-col>
-        <ion-col col-md-4>
+        <ion-col col-md-1>
+          <button ion-button type="button"
+            (click)="clearField('validFrom')"
+            [disabled]="!priceBook.validFrom">
+            <ion-icon name="refresh"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-md-3>
           <ion-item>
             <ion-label>End Date</ion-label>
             <ion-datetime displayFormat="MM-DD-YYYY h:mm A" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo"
-              name="priceBookValidTo"></ion-datetime>
+              name="priceBookValidTo" #priceBookValidTo="ngModel">
+            </ion-datetime>
           </ion-item>
         </ion-col>
+        <ion-col col-md-1>
+          <button ion-button type="button"
+            (click)="clearField('validTo')"
+            [disabled]="!priceBook.validTo">
+            <ion-icon name="refresh"></ion-icon>
+          </button>
+        </ion-col>        
       </ion-row>
       <ion-row>
         <ion-col col-md-4>

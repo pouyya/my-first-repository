@@ -1,41 +1,10 @@
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBookDetails } from './../price-book-details/price-book-details';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 import { PriceBook } from './../../model/priceBook';
 import { Component } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
-
-const MOCK_PRICE_BOOKS: Array<PriceBook> = [
-  {
-    _id: "1",
-    _rev: "1",
-    _deleted: false,
-    entityTypeName: "PriceBook",
-    entityTypeNames: ["DBBasedEntity", "PriceBook"],
-    name: "Default Book",
-    priority: 0,
-    purchasableItems: [],
-    criteria: [],
-    validFrom: new Date(),
-    validTo: new Date(),
-    createdAt: new Date()
-  },
-  {
-    _id: "2",
-    _rev: "2",
-    _deleted: false,
-    entityTypeName: "PriceBook",
-    entityTypeNames: ["DBBasedEntity", "PriceBook"],
-    name: "JaneDoe Book",
-    priority: 1,
-    purchasableItems: [],
-    criteria: [],
-    validFrom: new Date(),
-    validTo: new Date(),
-    createdAt: new Date()    
-  }
-];
 
 @PageModule(() => BackOfficeModule)
 @Component({
@@ -51,12 +20,13 @@ export class PriceBooksPage {
 
   constructor(
     private navCtrl: NavController,
-    private priceBookService: PriceBookService
+    private priceBookService: PriceBookService,
+    private alertCtrl: AlertController
   ) {
     this.date = new Date();
   }
 
-  async ionViewDidLoad() {
+  async ionViewDidEnter() {
     this.priceBooks = await this.priceBookService.getAll();
     return this.priceBooks;
   }
@@ -74,6 +44,28 @@ export class PriceBooksPage {
         return ((item.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
       })
     }
+  }
+
+  public delete(priceBook: PriceBook, index) {
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this Price Book ?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.priceBookService.delete(priceBook)
+              .then(() => {
+                this.priceBooks.splice(index, 1);
+              })
+              .catch(error => {
+                throw new Error(error);
+              })
+          }
+        }, 'No'
+      ]
+    });
+
+    confirm.present();
   }
 
 }

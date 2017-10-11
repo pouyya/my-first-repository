@@ -1,3 +1,4 @@
+import { AlertController } from 'ionic-angular';
 import _ from 'lodash';
 import { PurchasableItemPriceComponent } from './../../components/purchasable-item-price/purchasable-item-price.component';
 import { PriceBookService } from './../../services/priceBookService';
@@ -70,6 +71,7 @@ export class PriceBookDetails {
     private loading: LoadingController,
     private navParams: NavParams,
     private navCtrl: NavController,
+    private alertCtrl: AlertController,
     private zone: NgZone
   ) {
     Object.keys(this.criteria).forEach(key => {
@@ -89,8 +91,8 @@ export class PriceBookDetails {
           this.priceBook = priceBook;
           this.isNew = false;
           this.action = 'Edit';
-          this.priceBook.priority == 0 && ( this.isDefault = true );
-          if(this.isDefault) {
+          this.priceBook.priority == 0 && (this.isDefault = true);
+          if (this.isDefault) {
             Object.keys(this.criteria).forEach((key, index, array) => {
               this.criteria[key].disabled = true;
             });
@@ -133,6 +135,12 @@ export class PriceBookDetails {
 
   public onCheck(event, store) {
     store.selected = !store.selected;
+  }
+
+  public clearField(property) {
+    if (this.priceBook.hasOwnProperty(property) && this.priceBook[property]) {
+      this.priceBook[property] = null;
+    }
   }
 
   public onSubmit(): void {
@@ -180,6 +188,22 @@ export class PriceBookDetails {
   }
 
   public remove() {
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this Price Book ?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            this.priceBookService.delete(this.priceBook)
+              .then(() => this.navCtrl.pop())
+              .catch(error => {
+                throw new Error(error);
+              })
+          }
+        }, 'No'
+      ]
+    });
 
+    confirm.present();
   }
 }

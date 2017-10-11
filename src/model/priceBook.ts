@@ -1,6 +1,4 @@
-import { StoreCriteria } from './StoreCriteria';
 import { PurchasableItemPriceInterface } from './purchasableItemPrice.interface';
-import { PriceBookCriteria } from './PriceBookCriteria';
 import { DBBasedEntity } from './dbBasedEntity';
 
 export interface PriceBookCriteriaInterface {
@@ -23,6 +21,8 @@ export class PriceBook extends DBBasedEntity {
     this.priority = 1;
     this.criteria = [];
     this.purchasableItems = [];
+    this.validFrom = new Date();
+    this.validTo= new Date();
   }
 
 }
