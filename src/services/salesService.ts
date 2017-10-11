@@ -199,7 +199,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 						})));
 						resolve(taxes);
 					}).catch(error => reject(error));
-				}).catch(error => reject(error));				
+				}).catch(error => reject(error));
 			}),
 
 			new Promise((resolve, reject) => {
@@ -274,6 +274,50 @@ export class SalesServices extends BaseEntityService<Sale> {
 			invoiceId != sale._id && (localStorage.setItem('invoice_id', sale._id));
 		} else {
 			localStorage.removeItem('invoice_id');
+		}
+	}
+
+	public applyDiscountOnSale(value: number, amount: number, tax: number) {
+		return {
+			asCash: () => {
+				let taxAfterDiscount = tax * (1 - (value / amount));
+				return {
+					tax: taxAfterDiscount,
+					subTotal: amount - value - taxAfterDiscount,
+					taxTotal: amount - value
+				}
+			},
+			asPercent: () => {
+				let discount = this.calcService.calcItemDiscount(value, amount);
+				let taxAfterDiscount = tax * (1 - (discount / amount));
+				return {
+					tax: taxAfterDiscount,
+					subTotal: amount - discount - taxAfterDiscount,
+					taxTotal: amount - discount
+				}				
+			}
+		};
+	}
+
+	public applySurchargeOnSale(value: number, amount: number, tax: number) {
+		return {
+			asCash: () => {
+				let taxAfterDiscount = tax * (1 + (value / amount));
+				return<{tax: number, subTotal: number, taxTotal: number}> {
+					tax: taxAfterDiscount,
+					subTotal: amount + value - taxAfterDiscount,
+					taxTotal: amount + value
+				}
+			},
+			asPercent: () => {
+				let discount = this.calcService.calcItemDiscount(value, amount);
+				let taxAfterDiscount = tax * (1 + (discount / amount));
+				return<{tax: number, subTotal: number, taxTotal: number}> {
+					tax: taxAfterDiscount,
+					subTotal: amount + discount - taxAfterDiscount,
+					taxTotal: amount + discount
+				}	
+			}
 		}
 	}
 

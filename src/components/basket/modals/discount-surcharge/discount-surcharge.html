@@ -25,22 +25,24 @@
 
   <div [ngSwitch]="action">
     <ion-grid *ngSwitchCase="'discount'">
-      <ion-row>
+      <ion-row radio-group [(ngModel)]="inputType">
         <ion-col col-md-6>
           <ion-item item-content>
             <ion-label>Amount in Cash ($)</ion-label>
-            <ion-radio checked="true" value="dollar"></ion-radio>
+            <ion-radio value="cash"></ion-radio>
           </ion-item>
         </ion-col>
         <ion-col col-md-6>
           <ion-item item-content>
             <ion-label>Amount in Percent (%)</ion-label>
-            <ion-radio checked="false" value="percentage"></ion-radio>
+            <ion-radio value="percentage"></ion-radio>
           </ion-item>
         </ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col col-md-12>
           <ion-item item-content>
-            <ion-input type="number" [placeholder]="action">
+            <ion-input type="number" [(ngModel)]="value" [placeholder]="action">
             </ion-input>
           </ion-item>
         </ion-col>
@@ -48,25 +50,27 @@
     </ion-grid>
 
     <ion-grid *ngSwitchCase="'surcharge'">
-      <ion-row>
+      <ion-row radio-group [(ngModel)]="inputType">
         <ion-col col-md-6>
-          <ion-item>
+          <ion-item item-content>
             <ion-label>Amount in Cash ($)</ion-label>
-            <ion-radio checked="true" value="dollar"></ion-radio>
+            <ion-radio value="cash"></ion-radio>
           </ion-item>
         </ion-col>
         <ion-col col-md-6>
-          <ion-item>
+          <ion-item item-content>
             <ion-label>Amount in Percent (%)</ion-label>
-            <ion-radio checked="false" value="percentage"></ion-radio>
+            <ion-radio value="percentage"></ion-radio>
           </ion-item>
         </ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col col-md-12>
           <ion-item item-content>
-            <ion-input type="number" [placeholder]="action">
+            <ion-input type="number" [(ngModel)]="value" [placeholder]="action">
             </ion-input>
           </ion-item>
-        </ion-col>        
+        </ion-col>
       </ion-row>
     </ion-grid>
   </div>

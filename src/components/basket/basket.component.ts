@@ -25,6 +25,8 @@ export class BasketComponent {
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
   public employeesHash: any;
+  public appliedValue: number = 0;
+  public appliedValueDetails: any;
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -126,9 +128,22 @@ export class BasketComponent {
   }
 
   public openDiscountSurchargeModal() {
-    let modal = this.modalCtrl.create(DiscountSurchargeModal, {});
+    let modal = this.modalCtrl.create(DiscountSurchargeModal, {
+      tax: this.invoice.tax,
+      total: this.invoice.taxTotal,
+      subTotal: this.invoice.subTotal
+    });
     modal.onDidDismiss(data => {
-
+      if(data) {
+        this.invoice.tax = data.tax;
+        this.invoice.taxTotal = data.taxTotal;
+        this.invoice.subTotal = data.subTotal;
+        this.appliedValue = data.value;
+        this.appliedValueDetails = {
+          type: data.type == 'discount' ? '(-)' : '(+)',
+          format: data.format == 'cash' ? '$' : '%'
+        };
+      }
     });
     modal.present();
   }
