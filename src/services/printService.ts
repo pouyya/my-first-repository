@@ -17,17 +17,26 @@ export class PrintService {
 
   public async print() {
     if (!PrintService.socketId) {
-      await this.connect(ConfigService.printerIP, ConfigService.printerPort);
+      await this.connect(ConfigService.printerIP(), ConfigService.printerPort());
     }
     var escCommand = this.Esc.InitializePrinter +
-      this.Esc.TextAlignRight + "HelloWorld!\n" +
-      this.Esc.TextAlignCenter + "HelloWorld!\n" +
-      this.Esc.TextAlignLeft + "HelloWorld!\n" +
-      this.Esc.BoldOn + "HelloWorld!\n" + this.Esc.BoldOff +
-      this.Esc.DoubleHeight + "HelloWorld!\n" + this.Esc.DoubleOff +
-      this.Esc.DoubleWidth + "HelloWorld!\n" + this.Esc.DoubleOff +
-      this.Esc.DoubleOn + "HelloWorld!\n" + this.Esc.DoubleOff +
-      this.Esc.CutAndFeedLine(0);
+    this.Esc.PrintAndFeedMaxLine +
+    this.Esc.PrintAndFeedMaxLine +
+    this.Esc.TextAlignCenter +
+    this.Esc.DoubleOn + "Medi Hair\n" + this.Esc.DoubleOff +
+    this.Esc.TextAlignCenter + "Barber shop in Balgowlah\n" +
+    this.Esc.TextAlignCenter + "Ph: (02) 8034 8891\n" +
+    this.Esc.TextAlignCenter + "ABN: 49 864 355 835\n" +
+    this.Esc.TextAlignCenter + "TAX INVOICE\n" +
+
+    this.Esc.TextAlignLeft + "29/09/2017 08:32am" +
+    this.Esc.TextAlignRight + "Friday\n" +
+    this.Esc.TextAlignCenter + "\n" +
+    this.Esc.TextAlignCenter + "\n" +
+    this.Esc.TextAlignCenter + "\n" +
+    this.Esc.TextAlignCenter + "\n" +
+    
+    this.Esc.CutAndFeedLine(0);
     this.printOnSocket(escCommand);
   }
 
