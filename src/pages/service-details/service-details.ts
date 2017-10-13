@@ -116,7 +116,7 @@ export class ServiceDetails {
 						}).catch(error => _reject(error));
 					}),
 					new Promise((_resolve, _reject) => {
-						this.priceBookService.getDefaultPriceBook().then((priceBook: PriceBook) => {
+						this.priceBookService.getDefault().then((priceBook: PriceBook) => {
 							_resolve(priceBook);
 						}).catch(error => _reject(error));
 					})

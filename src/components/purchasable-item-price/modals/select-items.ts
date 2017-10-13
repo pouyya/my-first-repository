@@ -62,7 +62,7 @@ export class SelectPurchasableItemsModel {
       loader.present().then(() => {
         let confirmed: any[] = [];
 
-        this.priceBookService.getDefaultPriceBook().then(priceBook => {
+        this.priceBookService.getDefault().then(priceBook => {
           let prices: any[] = priceBook.purchasableItems;
           filtered.forEach((value, index, array) => {
             let i = _.findIndex(prices, { id: value._id });

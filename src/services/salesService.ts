@@ -1,3 +1,4 @@
+import { EvaluationContext } from './EvaluationContext';
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
 import { Injectable, NgZone } from '@angular/core';
@@ -14,6 +15,7 @@ import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale } from './../model/sale';
+import { PurchasableItem } from './../model/purchasableItem';
 import { BaseEntityService } from './baseEntityService';
 
 @Injectable()
@@ -199,7 +201,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 						})));
 						resolve(taxes);
 					}).catch(error => reject(error));
-				}).catch(error => reject(error));				
+				}).catch(error => reject(error));
 			}),
 
 			new Promise((resolve, reject) => {
@@ -213,7 +215,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 				this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
 					.then((tax: any) => resolve(tax))
 					.catch(error => reject(error));
-			})
+			}),
+
+			this.priceBookService.getExceptDefault()
 		);
 	}
 
@@ -266,6 +270,27 @@ export class SalesServices extends BaseEntityService<Sale> {
 				resolve({ totalCount: result[0], docs: result[1] });
 			})
 		});
+	}
+
+	/**
+	 * Retrives price of item from pricebook
+	 * @param context 
+	 * @param priceBooks 
+	 * @param defaultBook 
+	 * @param item 
+	 * @returns {any}
+	 */
+	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: PurchasableItem): any {
+		let container: any = null;
+		for(let index in priceBooks) {
+			let itemPrice = _.find(priceBooks[index].purchasableItems, { id: item._id });
+			let isEligible = this.priceBookService.isEligible(context, priceBooks[index]);
+			if(itemPrice && isEligible) {
+				container = itemPrice;
+				break;
+			}
+		}
+		return container || _.find(defaultBook.purchasableItems, { id: item._id });
 	}
 
 	public manageInvoiceId(sale: Sale) {

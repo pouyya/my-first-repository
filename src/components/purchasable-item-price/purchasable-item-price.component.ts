@@ -61,6 +61,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
   ngOnChanges(): void {
     let salesPromises: Promise<any>[] = [];
+    
     if (!this.salesTaxes || this.salesTaxes.length == 0) {
       salesPromises = [
         new Promise((_resolve, _reject) => {
@@ -84,12 +85,12 @@ export class PurchasableItemPriceComponent implements OnChanges {
         }),
       ];
     } else {
-      salesPromises.push(Promise.resolve(null));
+      salesPromises.push(Promise.resolve());
     }
 
     Promise.all(salesPromises).then(results => {
-      this.salesTaxes = [];
-      if (results != null && results.length > 0) {
+      if (results.length > 0 && !this.salesTaxes) {
+        this.salesTaxes = [];
         if (results[0] != null) {
           this.defaultTax = results[0]
           this.salesTaxes.push(this.defaultTax);
