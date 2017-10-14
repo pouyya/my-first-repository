@@ -93,7 +93,7 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
    * @param taxId
    * @returns {Promise<void>}
    */
-  public setPriceBookItemTaxToDefault(taxId: string): Promise<void> {
+  public setPriceBookItemTaxToDefault(taxId: string): Promise<{}> {
     return new Promise((resolve, reject) => {
       // default price book for now
       this.findBy({

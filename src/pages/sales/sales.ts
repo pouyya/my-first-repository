@@ -57,7 +57,6 @@ export class Sales {
   private priceBooks: PriceBook[];
   private salesTaxes: Array<SalesTax>;
   private defaultTax: any;
-  private context: EvaluationContext;
 
   constructor(
     private userService: UserService,
@@ -150,9 +149,6 @@ export class Sales {
 
         loader.present().then(() => {
 
-          this.context = new EvaluationContext();
-          this.context.currentStore = this.user.settings.currentStore;
-
           let promises: Array<Promise<any>> = [
             this.initSalePageData(),
             new Promise((resolve, reject) => {
@@ -213,7 +209,10 @@ export class Sales {
 
   // Event
   public onSelect(item: PurchasableItem) {
-    let price: PurchasableItemPriceInterface = this.salesService.getItemPrice(this.context, this.priceBooks, this.priceBook, item);
+    var context = new EvaluationContext();
+    context.currentStore = this.user.settings.currentStore;
+
+    let price: PurchasableItemPriceInterface = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
     if (price) {
       let interactableItem: InteractableItem = { ...item, tax: null, priceBook: price, employeeId: null };
       interactableItem.tax = _.pick(
