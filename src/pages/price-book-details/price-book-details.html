@@ -24,7 +24,7 @@
         <ion-col col-md-3>
           <ion-item>
             <ion-label>Start Date</ion-label>
-            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom"
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom"
               name="priceBookValidFrom" #priceBookValidFrom="ngModel">
             </ion-datetime>
           </ion-item>
@@ -37,7 +37,7 @@
         <ion-col col-md-3>
           <ion-item>
             <ion-label>End Date</ion-label>
-            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo"
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo"
               name="priceBookValidTo" #priceBookValidTo="ngModel">
             </ion-datetime>
           </ion-item>

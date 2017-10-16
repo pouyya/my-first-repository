@@ -1,11 +1,9 @@
+import _ from 'lodash';
 import { AppService } from './../../services/appService';
 import { UserService } from './../../services/userService';
-import { GroupSaleTax } from './../../model/groupSalesTax';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
-import _ from 'lodash';
 import { SelectPurchasableItemsModel } from './modals/select-items';
 import { ModalController } from 'ionic-angular';
-import { SalesTax } from './../../model/salesTax';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
@@ -14,7 +12,7 @@ import { Component, Input, OnChanges, NgZone, Output, EventEmitter } from '@angu
 interface InteractableItemPriceInterface extends PurchasableItemPriceInterface {
   name: string,
   entityTypeName: string;
-  tax: SalesTax | GroupSaleTax;
+  tax: any;
   deleted: boolean;
 }
 
@@ -196,6 +194,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
     this._priceBook.purchasableItems = [];
     this.items.forEach(item => {
       if (!item.deleted) {
+        item.salesTaxId = item.tax.isDefault ? null : item.tax._id;
         this._priceBook.purchasableItems.push({
           ..._.omit<PurchasableItemPriceInterface,InteractableItemPriceInterface>(item, ['name', 'entityTypeName', 'tax', 'deleted'])
         })
