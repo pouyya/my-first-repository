@@ -57,7 +57,8 @@
       (click)="openDiscountSurchargeModal()">Discount/Surcharge</button>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">
-      {{appliedValue | number : '1.2-2'}}
+      <button ion-button small color="primary" [disabled]="disablePaymentBtn"
+      (click)="viewAppliedValues()">View All</button>
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>

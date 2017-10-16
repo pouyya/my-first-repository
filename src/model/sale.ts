@@ -6,6 +6,13 @@ interface PaymentsInterface {
   amount: number
 }
 
+export interface DiscountSurchargeInterface {
+  value: number;
+  type: string;
+  format: string;
+  createdAt: string;
+}
+
 export class Sale extends DBBasedEntity {
 
   public posID: string;
@@ -25,6 +32,9 @@ export class Sale extends DBBasedEntity {
   public receiptNo: string;
   public customerName: string;
   public originalSalesId: string;
+  public saleAppliedValue?: number;
+  public saleAppliedType?: string;
+  public appliedValues: DiscountSurchargeInterface[];
 
   constructor() {
     super();
@@ -39,5 +49,8 @@ export class Sale extends DBBasedEntity {
     this.customerName = "";
     this.receiptNo = "";
     this.originalSalesId = "";
+    this.saleAppliedValue = 0;
+    this.saleAppliedType = null;
+    this.appliedValues = [];
   }
 }

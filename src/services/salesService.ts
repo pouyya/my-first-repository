@@ -13,13 +13,15 @@ import { BucketItem } from './../model/bucketItem';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
-import { Sale } from './../model/sale';
+import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { BaseEntityService } from './baseEntityService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
 
 	private _user: any;
+	public static readonly SALE_DISCOUNT = 'discount';
+	public static readonly SALE_SURCHARGE = 'surcharge';
 
 	constructor(
 		private userService: UserService,
@@ -278,6 +280,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public applyDiscountOnSale(value: number, amount: number, tax: number) {
+		value = Number(value);
 		return {
 			asCash: () => {
 				let taxAfterDiscount = tax * (1 - (value / amount));
@@ -294,16 +297,17 @@ export class SalesServices extends BaseEntityService<Sale> {
 					tax: taxAfterDiscount,
 					subTotal: amount - discount - taxAfterDiscount,
 					taxTotal: amount - discount
-				}				
+				}
 			}
 		};
 	}
 
 	public applySurchargeOnSale(value: number, amount: number, tax: number) {
+		value = Number(value);
 		return {
 			asCash: () => {
 				let taxAfterDiscount = tax * (1 + (value / amount));
-				return<{tax: number, subTotal: number, taxTotal: number}> {
+				return {
 					tax: taxAfterDiscount,
 					subTotal: amount + value - taxAfterDiscount,
 					taxTotal: amount + value
@@ -312,11 +316,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 			asPercent: () => {
 				let discount = this.calcService.calcItemDiscount(value, amount);
 				let taxAfterDiscount = tax * (1 + (discount / amount));
-				return<{tax: number, subTotal: number, taxTotal: number}> {
+				return {
 					tax: taxAfterDiscount,
 					subTotal: amount + discount - taxAfterDiscount,
 					taxTotal: amount + discount
-				}	
+				}
 			}
 		}
 	}
@@ -352,11 +356,48 @@ export class SalesServices extends BaseEntityService<Sale> {
 				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
 				sale.taxTotal += discountedPrice * item.quantity;
 			});
-			sale.tax = this.helperService.round10(sale.taxTotal - sale.subTotal, -2);
+			sale.tax = sale.taxTotal - sale.subTotal;
+
+			/** Apply externalValues if any */
+			if (sale.appliedValues && sale.appliedValues.length > 0) {
+				let result: any = {};
+				sale.appliedValues.forEach(value => {
+					result = this.applyExternalValues(value, sale);
+					sale.taxTotal = result.taxTotal;
+					sale.subTotal = result.subTotal;
+					sale.tax = result.tax;
+				});
+			}
+
+			/** Rounding Starts */
+			sale.tax = this.helperService.round10(sale.tax, -2);
 			sale.taxTotal = this.helperService.round10(sale.taxTotal, -2);
 			let roundedTotal = this.helperService.round10(sale.taxTotal, -2);
 			sale.round = roundedTotal - sale.taxTotal;
 			sale.taxTotal = roundedTotal;
+			/** Rounding Ends */
+
 		}
+	}
+
+	public applyExternalValues(value: DiscountSurchargeInterface, sale: Sale): any {
+		let fn: any;
+		let typeHash = {
+			'cash': 'asCash',
+			'percentage': 'asPercent'
+		};
+
+		let exec: any = typeHash[value.format];
+		if (value.type == SalesServices.SALE_DISCOUNT) {
+			fn = this.applyDiscountOnSale(
+				value.value, sale.taxTotal, sale.tax
+			);
+		} else if (value.type == SalesServices.SALE_SURCHARGE) {
+			fn = this.applySurchargeOnSale(
+				value.value, sale.taxTotal, sale.tax
+			);
+		}
+
+		return fn[exec]();
 	}
 }

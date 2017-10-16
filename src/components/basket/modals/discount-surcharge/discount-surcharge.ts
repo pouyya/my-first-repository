@@ -1,3 +1,4 @@
+import { DiscountSurchargeInterface } from './../../../../model/sale';
 import { SalesServices } from './../../../../services/salesService';
 import { ViewController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
@@ -18,9 +19,6 @@ export class DiscountSurchargeModal {
   public action: string;
   public inputType: string;
 
-  private totalAmount: number;
-  private tax: number;
-
   constructor(
     private navParams: NavParams,
     private viewCtrl: ViewController,
@@ -28,35 +26,15 @@ export class DiscountSurchargeModal {
   ) {
     this.action = DiscountSurchargeModal.DISCOUNT;
     this.inputType = DiscountSurchargeModal.CASH;
-    
-    this.totalAmount = navParams.get('total') as number;
-    this.tax = navParams.get('tax') as number;
-
   }
 
   public confirmChanges() {
-    let fn: any;
-    let typeHash = {
-      [DiscountSurchargeModal.CASH]: 'asCash',
-      [DiscountSurchargeModal.PRECENTAGE]: 'asPercent'
-    };
-    this.value = Number(this.value);
-    let exec: any = typeHash[this.inputType];
-    if (this.action == DiscountSurchargeModal.DISCOUNT) {
-      fn = this.salesService.applyDiscountOnSale(
-        this.value, this.totalAmount, this.tax
-      );
-    } else if (this.action == DiscountSurchargeModal.SURCHARGE) {
-      fn = this.salesService.applySurchargeOnSale(
-        this.value, this.totalAmount, this.tax
-      );
-    }
-    this.viewCtrl.dismiss({
-      ...fn[exec](),
+    this.viewCtrl.dismiss(<DiscountSurchargeInterface> {
       value: this.value,
       type: this.action,
-      format: this.inputType
-    } || null);
+      format: this.inputType,
+      createdAt: new Date().toISOString()
+    });
   }
 
   public dismiss() {
