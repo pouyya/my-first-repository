@@ -13,6 +13,7 @@ import { Component, NgZone } from '@angular/core';
 export class SelectPurchasableItemsModel {
 
   public items: any[] = [];
+  public itemsBackup: any[] = [];
   private defaultTax: any;
 
   constructor(
@@ -37,6 +38,7 @@ export class SelectPurchasableItemsModel {
             item.selected = false;
             return item;
           });
+          this.itemsBackup = this.items;
         });
       }).catch(error => {
         throw new Error(error);
@@ -44,8 +46,16 @@ export class SelectPurchasableItemsModel {
     });
   }
 
-  public searchItems() {
+  public searchItems(event) {
     // search for items
+    this.items = this.itemsBackup;
+    var val = event.target.value;
+
+    if (val && val.trim() != '') {
+      this.items = this.items.filter((item) => {
+        return ((item.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
+      })
+    }    
   }
 
 
