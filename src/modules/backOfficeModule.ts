@@ -1,3 +1,4 @@
+import { PriceBooksPage } from './../pages/price-books/price-books';
 import { Category } from './../pages/category/category';
 import { Injectable } from '@angular/core';
 import { Settings } from './../pages/settings/settings';
@@ -23,6 +24,7 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Service', icon: 'bowtie', component: Services },
     { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Stores', icon: 'basket', component: Stores },
+    { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Settings', icon: 'cog', component: Settings }
   ];    
 }

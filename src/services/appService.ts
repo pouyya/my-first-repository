@@ -1,3 +1,5 @@
+import { ServiceService } from './serviceService';
+import { ProductService } from './productService';
 import { PluginService } from './pluginService';
 import { Sale } from './../model/sale';
 import { SalesServices } from './salesService';
@@ -16,6 +18,8 @@ export class AppService {
     private groupSalesTaxService: GroupSalesTaxService,
     private posService: PosService,
     private pluginService: PluginService,
+    private productService: ProductService,
+    private serviceService: ServiceService,
     @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
   }
 
@@ -94,6 +98,21 @@ export class AppService {
           .catch(error => reject(error));
       }).catch(error => reject(error));
     });
+  }
+
+  async getAllPurchasableItems() {
+    var collect: Promise<any>[] = [
+      this.serviceService.getAll(),
+      this.productService.getAll()
+    ];
+
+    try {
+      let [services, products] = await Promise.all(collect);
+      let items = services;
+      return items.concat(products);
+    } catch(error) {
+      throw new Error(error);
+    }
   }
 
   public errorHandler(error) {

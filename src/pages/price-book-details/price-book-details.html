@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Price Book</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="priceBookForm.ngSubmit.emit()">
+        Save
+      </button>
+      <button *ngIf="action == 'Edit' && !isDefault" ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #priceBookForm="ngForm">
+    <ion-grid>
+      <ion-row>
+        <ion-col col-md-4>
+          <ion-item>
+            <ion-input type="text" [disabled]="isDefault" placeholder="Name" [(ngModel)]="priceBook.name" name="priceBookName" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-3>
+          <ion-item>
+            <ion-label>Start Date</ion-label>
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom"
+              name="priceBookValidFrom" #priceBookValidFrom="ngModel">
+            </ion-datetime>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-1>
+          <button ion-button type="button" (click)="clearField('validFrom')" [disabled]="!priceBook.validFrom">
+            <ion-icon name="refresh"></ion-icon>
+          </button>
+        </ion-col>
+        <ion-col col-md-3>
+          <ion-item>
+            <ion-label>End Date</ion-label>
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo"
+              name="priceBookValidTo" #priceBookValidTo="ngModel">
+            </ion-datetime>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-1>
+          <button ion-button type="button" (click)="clearField('validTo')" [disabled]="!priceBook.validTo">
+            <ion-icon name="refresh"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-4>
+        <ion-list>
+          <ion-item>
+            <ion-label>List of Stores</ion-label>
+            <ion-checkbox color="black" [disabled]="isDefault" [checked]="!criteria.store.disabled" (click)="criteria.store.disabled = !criteria.store.disabled"
+              name="storeCriteriaDisabled"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+        <ion-list class="scrollable-component">
+          <ion-item *ngFor="let store of stores">
+            <ion-label>{{store.name}}</ion-label>
+            <ion-checkbox color="primary" (ionChange)="onCheck($event, store)" [checked]="store.selected" [disabled]="criteria.store.disabled"
+              name="storeSelected"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col col-md-4>
+        <ion-list>
+          <ion-item>
+            <ion-label>Customer Types</ion-label>
+            <ion-checkbox color="black" [disabled]="isDefault" (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled"
+              name="customerTypes"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+        <ion-list class="scrollable-component">
+          <ion-item *ngFor="let type of customerTypes | keys">
+            <ion-label>{{type.value}}</ion-label>
+            <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="criteria.customerTypes.disabled" name="typeKey"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col col-md-4>
+        <ion-list>
+          <ion-item>
+            <ion-label>Staff</ion-label>
+            <ion-checkbox color="black" [disabled]="isDefault"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+        <ion-list class="scrollable-component">
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <purchasable-item-price [(priceBook)]="priceBook" [options]="isDefault ? defaultOptions : generalOptions"></purchasable-item-price>
+</ion-content>
