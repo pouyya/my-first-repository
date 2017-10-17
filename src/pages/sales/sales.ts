@@ -1,6 +1,8 @@
+import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
+import { EvaluationContext } from './../../services/EvaluationContext';
 import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, LoadingController, NavParams } from 'ionic-angular';
+import { NavController, LoadingController, NavParams, ToastController } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -21,6 +23,12 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
+
+interface InteractableItem extends PurchasableItem {
+  tax: any;
+  priceBook: PurchasableItemPriceInterface;
+  employeeId: string;
+}
 
 @PageModule(() => SalesModule)
 @Component({
@@ -46,6 +54,7 @@ export class Sales {
   public user: any;
   private invoiceParam: any;
   private priceBook: PriceBook;
+  private priceBooks: PriceBook[];
   private salesTaxes: Array<SalesTax>;
   private defaultTax: any;
 
@@ -61,6 +70,7 @@ export class Sales {
     private posService: PosService,
     private navParams: NavParams,
     private cacheService: CacheService,
+    private toastCtrl: ToastController
   ) {
     this._sharedService.payload$.subscribe((data) => {
       if (data) {
@@ -138,6 +148,7 @@ export class Sales {
         });
 
         loader.present().then(() => {
+
           let promises: Array<Promise<any>> = [
             this.initSalePageData(),
             new Promise((resolve, reject) => {
@@ -198,14 +209,25 @@ export class Sales {
 
   // Event
   public onSelect(item: PurchasableItem) {
-    let interactableItem: any = { ...item, tax: null, priceBook: null, employeeId: null };
-    interactableItem.priceBook = _.find(this.priceBook.purchasableItems, { id: item._id }) as any;
-    interactableItem.tax = _.pick(
-      interactableItem.priceBook.salesTaxId != null ?
-        _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
-      ['rate', 'name']);
-    this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
-    this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
+    var context = new EvaluationContext();
+    context.currentStore = this.user.settings.currentStore;
+
+    let price: PurchasableItemPriceInterface = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
+    if (price) {
+      let interactableItem: InteractableItem = { ...item, tax: null, priceBook: price, employeeId: null };
+      interactableItem.tax = _.pick(
+        interactableItem.priceBook.salesTaxId != null ?
+          _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
+        ['rate', 'name']);
+      this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
+      this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
+    } else {
+      let toast = this.toastCtrl.create({
+        message: `${item.name} does not have any price`,
+        duration: 3000
+      });
+      toast.present();
+    }
   }
 
   // Event
@@ -242,11 +264,12 @@ export class Sales {
 
   private initSalePageData(): Promise<any> {
     return new Promise((res, rej) => {
-      this.salesService.initializeSalesData(this.invoiceParam).subscribe((data: any) => {
-        let invoiceData = data[0] as any;
-        this.salesTaxes = data[1] as Array<any>;
-        this.priceBook = data[2] as PriceBook;
-        this.defaultTax = data[3] as any;
+      this.salesService.initializeSalesData(this.invoiceParam).subscribe((data: any[]) => {
+        let invoiceData = data.shift();
+        this.salesTaxes = data[0] as Array<any>;
+        this.priceBook = data[1] as PriceBook;
+        this.defaultTax = data[2] as any;
+        this.priceBooks = data[3] as PriceBook[];
         if (invoiceData.doRecalculate) {
           this.salesService.reCalculateInMemoryInvoice(
             /* Pass By Reference */

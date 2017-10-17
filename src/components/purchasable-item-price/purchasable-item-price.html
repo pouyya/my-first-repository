@@ -1,0 +1,60 @@
+<ion-grid>
+  <ion-row *ngIf="options.enableAddition">
+    <ion-col col-md-2>
+      <button type="button" ion-button color="primary" (click)="addItemsModal()">Add Price Book</button>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngFor="let item of items; let i=index" [hidden]="item.deleted">
+    <ion-col col-md-3>
+      <ion-item item-content>
+        {{item.name}}
+      </ion-item>
+    </ion-col>
+    <ion-col col-md-1>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>Supply price</ion-label>
+        <ion-input type="number" [(ngModel)]="item.supplyPrice" (change)="calculate('supplyPrice', item)">
+        </ion-input>
+      </ion-item>
+    </ion-col>
+
+    <ion-col col-md-1>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>x Markup (%)</ion-label>
+        <ion-input type="number" [(ngModel)]="item.markup" (change)="calculate('markup', item)">
+        </ion-input>
+      </ion-item>
+    </ion-col>
+
+    <ion-col col-md-1>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>= Retail Price (Excl.)</ion-label>
+        <ion-input type="number" [(ngModel)]="item.retailPrice" required (change)="calculate('retailPrice', item)">
+        </ion-input>
+      </ion-item>
+    </ion-col>
+
+    <ion-col col-md-2>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>+ Sales Tax</ion-label>
+        <ion-select [(ngModel)]="item.tax" (ionChange)="calculate('salesTax', item)">
+          <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+
+    <ion-col col-md-1>
+      <ion-item item-content>
+        <ion-label color="primary" stacked>= Retail Price (Incl.)</ion-label>
+        <ion-input type="number" [(ngModel)]="item.inclusivePrice" (change)="calculate('inclusivePrice', item)">
+        </ion-input>
+      </ion-item>
+    </ion-col>
+
+    <ion-col col-md-1 *ngIf="options.enableDeletion">
+      <ion-item item-content>
+        <ion-icon name="close" (click)="deleteItem(item)"></ion-icon>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-grid>

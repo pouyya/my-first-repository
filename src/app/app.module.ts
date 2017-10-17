@@ -12,12 +12,11 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DndModule } from 'ng2-dnd';
-import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
-import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
 import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -54,14 +53,19 @@ import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-p
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
+import { PriceBooksPage } from './../pages/price-books/price-books';
+import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
+import { PurchasableItemPriceModule } from './../components/purchasable-item-price/purchasable-item-price.module';
 import { IconSelectModule } from './../components/icon-select/icon-select.module';
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
+import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
+import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items'
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -95,6 +99,7 @@ import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
+import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
@@ -146,7 +151,10 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
-    ForgotPassword
+    ForgotPassword,
+    PriceBooksPage,
+    PriceBookDetails,    
+    SelectPurchasableItemsModel    
   ],
   imports: [
     BrowserModule,
@@ -175,6 +183,7 @@ const cloudSettings: CloudSettings = {
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
+    PurchasableItemPriceModule,
     IconSelectModule,
     SPIconModule,
     ItemPriceBookModule,
@@ -216,8 +225,10 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
+    PriceBooksPage,
+    PriceBookDetails,    
     ForgotPassword,
-    ClockInOutPage
+    SelectPurchasableItemsModel
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},
@@ -250,6 +261,7 @@ const cloudSettings: CloudSettings = {
     PluginService,
     EmployeeTimestampService,
     AuthService,
+    StoreEvaluationProvider,
     AppService,
     StoreService,
     SalesServices,

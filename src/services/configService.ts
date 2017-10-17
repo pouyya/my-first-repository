@@ -15,7 +15,7 @@ export class ConfigService {
 
     static currentExternalDBName(): string
     {
-        return '/test_aria';
+        return '/sc_66';
     }
 
     static getCurrentFullExternalDBUrl() : string {
