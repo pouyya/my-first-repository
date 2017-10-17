@@ -143,6 +143,12 @@ export class BasketComponent {
 
   public viewAppliedValues() {
     let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.invoice.appliedValues });
+    modal.onDidDismiss(data => {
+      if(data) {
+        this.invoice.appliedValues = <DiscountSurchargeInterface[]> data;
+        this.calculateAndSync();
+      }
+    });    
     modal.present();
   }
 

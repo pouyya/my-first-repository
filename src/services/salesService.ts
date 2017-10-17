@@ -279,47 +279,47 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public applyDiscountOnSale(value: number, amount: number, tax: number) {
+	public applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number) {
 		value = Number(value);
 		return {
 			asCash: () => {
-				let taxAfterDiscount = tax * (1 - (value / amount));
+				let taxAfterDiscount = tax * (1 - (value / total));
 				return {
 					tax: taxAfterDiscount,
-					subTotal: amount - value - taxAfterDiscount,
-					taxTotal: amount - value
+					subTotal: total - value - taxAfterDiscount,
+					taxTotal: total - value
 				}
 			},
 			asPercent: () => {
-				let discount = this.calcService.calcItemDiscount(value, amount);
-				let taxAfterDiscount = tax * (1 - (discount / amount));
+				let totalDiscount = total - ((value / 100) * total);
+				let subTotalDiscount = total - ((value / 100) * total);
 				return {
-					tax: taxAfterDiscount,
-					subTotal: amount - discount - taxAfterDiscount,
-					taxTotal: amount - discount
+					tax: totalDiscount - subTotalDiscount,
+					subTotal: subTotalDiscount,
+					taxTotal: totalDiscount
 				}
 			}
 		};
 	}
 
-	public applySurchargeOnSale(value: number, amount: number, tax: number) {
+	public applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number) {
 		value = Number(value);
 		return {
 			asCash: () => {
-				let taxAfterDiscount = tax * (1 + (value / amount));
+				let taxAfterDiscount = tax * (1 + (value / total));
 				return {
 					tax: taxAfterDiscount,
-					subTotal: amount + value - taxAfterDiscount,
-					taxTotal: amount + value
+					subTotal: total + value - taxAfterDiscount,
+					taxTotal: total + value
 				}
 			},
 			asPercent: () => {
-				let discount = this.calcService.calcItemDiscount(value, amount);
-				let taxAfterDiscount = tax * (1 + (discount / amount));
+				let totalDiscount = total + ((value / 100) * total);
+				let subTotalDiscount = total + ((value / 100) * total);
 				return {
-					tax: taxAfterDiscount,
-					subTotal: amount + discount - taxAfterDiscount,
-					taxTotal: amount + discount
+					tax: totalDiscount - subTotalDiscount,
+					subTotal: subTotalDiscount,
+					taxTotal: totalDiscount
 				}
 			}
 		}
@@ -363,9 +363,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 				let result: any = {};
 				sale.appliedValues.forEach(value => {
 					result = this.applyExternalValues(value, sale);
-					sale.taxTotal = result.taxTotal;
-					sale.subTotal = result.subTotal;
-					sale.tax = result.tax;
+					result.hasOwnProperty('taxTotal') && (sale.taxTotal = result.taxTotal);
+					result.hasOwnProperty('subTotal') && (sale.subTotal = result.subTotal);
+					result.hasOwnProperty('tax') && (sale.tax = result.tax);
 				});
 			}
 
@@ -390,11 +390,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 		let exec: any = typeHash[value.format];
 		if (value.type == SalesServices.SALE_DISCOUNT) {
 			fn = this.applyDiscountOnSale(
-				value.value, sale.taxTotal, sale.tax
+				value.value, sale.taxTotal, sale.subTotal, sale.tax
 			);
 		} else if (value.type == SalesServices.SALE_SURCHARGE) {
 			fn = this.applySurchargeOnSale(
-				value.value, sale.taxTotal, sale.tax
+				value.value, sale.taxTotal, sale.subTotal, sale.tax
 			);
 		}
 
