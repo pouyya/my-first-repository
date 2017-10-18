@@ -53,6 +53,8 @@ import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-p
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
+import { DiscountSurchargeModal } from './../components/basket/modals/discount-surcharge/discount-surcharge';
+import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 
@@ -152,9 +154,11 @@ const cloudSettings: CloudSettings = {
     MoneyInOut,
     MoveCashModal,
     ForgotPassword,
+    DiscountSurchargeModal,
+    ViewDiscountSurchargesModal,
     PriceBooksPage,
     PriceBookDetails,    
-    SelectPurchasableItemsModel    
+    SelectPurchasableItemsModel
   ],
   imports: [
     BrowserModule,
@@ -228,6 +232,9 @@ const cloudSettings: CloudSettings = {
     PriceBooksPage,
     PriceBookDetails,    
     ForgotPassword,
+    ClockInOutPage,
+    DiscountSurchargeModal,
+    ViewDiscountSurchargesModal,
     SelectPurchasableItemsModel
   ],
   providers: [

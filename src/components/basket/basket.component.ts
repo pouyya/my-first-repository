@@ -1,10 +1,13 @@
-import { GroupByPipe } from './../../pipes/group-by.pipe';
 import _ from 'lodash';
+import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
+import { HelperService } from './../../services/helperService';
+import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
+import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
-import { Sale } from './../../model/sale';
+import { Sale, DiscountSurchargeInterface } from './../../model/sale';
 import { BucketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
@@ -24,6 +27,8 @@ export class BasketComponent {
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
   public employeesHash: any;
+  public saleAppliedValue: number;
+  public appliedValueDetails: any;
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -61,6 +66,7 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
+    private helperService: HelperService,
     private modalCtrl: ModalController) {
   }
 
@@ -121,6 +127,28 @@ export class BasketComponent {
       if(reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
       data.hasChanged && this.calculateAndSync();
     });
+    modal.present();
+  }
+
+  public openDiscountSurchargeModal() {
+    let modal = this.modalCtrl.create(DiscountSurchargeModal);
+    modal.onDidDismiss(data => {
+      if(data) {
+        this.invoice.appliedValues.push(<DiscountSurchargeInterface> data);
+        this.calculateAndSync();
+      }
+    });
+    modal.present();
+  }
+
+  public viewAppliedValues() {
+    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.invoice.appliedValues });
+    modal.onDidDismiss(data => {
+      if(data) {
+        this.invoice.appliedValues = <DiscountSurchargeInterface[]> data;
+        this.calculateAndSync();
+      }
+    });    
     modal.present();
   }
 

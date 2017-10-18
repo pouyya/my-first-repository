@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Apply Discount or Surcharge
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div padding>
+    <ion-segment [(ngModel)]="action">
+      <ion-segment-button value="discount">
+        Discount
+      </ion-segment-button>
+      <ion-segment-button value="surcharge">
+        Surcharge
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div [ngSwitch]="action">
+    <ion-grid *ngSwitchCase="'discount'">
+      <ion-row radio-group [(ngModel)]="inputType">
+        <ion-col col-md-6>
+          <ion-item item-content>
+            <ion-label>Amount in Cash ($)</ion-label>
+            <ion-radio value="cash"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-6>
+          <ion-item item-content>
+            <ion-label>Amount in Percent (%)</ion-label>
+            <ion-radio value="percentage"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-md-12>
+          <ion-item item-content>
+            <ion-input type="number" [(ngModel)]="value" [placeholder]="action">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid *ngSwitchCase="'surcharge'">
+      <ion-row radio-group [(ngModel)]="inputType">
+        <ion-col col-md-6>
+          <ion-item item-content>
+            <ion-label>Amount in Cash ($)</ion-label>
+            <ion-radio value="cash"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-6>
+          <ion-item item-content>
+            <ion-label>Amount in Percent (%)</ion-label>
+            <ion-radio value="percentage"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-md-12>
+          <ion-item item-content>
+            <ion-input type="number" [(ngModel)]="value" [placeholder]="action">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <button ion-button class="pull-right" (click)="confirmChanges()">Confirm</button>
+</ion-footer>
