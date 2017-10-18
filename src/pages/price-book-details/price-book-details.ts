@@ -1,5 +1,6 @@
-import { AlertController } from 'ionic-angular';
 import _ from 'lodash';
+import { DaysOfWeekCriteria } from './../../model/DaysOfWeekCriteria';
+import { AlertController } from 'ionic-angular';
 import { PurchasableItemPriceComponent } from './../../components/purchasable-item-price/purchasable-item-price.component';
 import { PriceBookService } from './../../services/priceBookService';
 import { StoreCriteria } from './../../model/StoreCriteria';
@@ -14,7 +15,12 @@ interface CritieriaView {
     disabled: boolean,
     provider: string,
     construct(storeIds: string[]): StoreCriteria
-  },
+  };
+  daysOfWeek?: {
+    disabled: boolean,
+    provider: string,
+    construct(days: object): DaysOfWeekCriteria
+  };
   customerTypes?: {
     disabled: boolean,
     provider: string,
@@ -38,9 +44,21 @@ export class PriceBookDetails {
     store: {
       disabled: true,
       provider: 'StoreEvaluationProvider',
-      construct(storeIds: string[]) {
+      construct(storeIds: string[]): StoreCriteria {
         let criteria = new StoreCriteria();
         criteria.storeIds = storeIds;
+        return criteria;
+      }
+    },
+    daysOfWeek: {
+      disabled: true,
+      provider: 'DaysOfWeekEvaluationProvider',
+      construct(days: any[]): DaysOfWeekCriteria {
+        let criteria = new DaysOfWeekCriteria();
+        days.filter(day => day.selected).forEach(day => {
+          criteria.days[day.value] = day.selected;
+        });
+
         return criteria;
       }
     },
@@ -50,6 +68,8 @@ export class PriceBookDetails {
       construct() { }
     }
   };
+
+  public days: any[] = [];
   public customerTypes: any = {
     any: 'Any',
     gold: 'Gold',
@@ -74,6 +94,15 @@ export class PriceBookDetails {
     private alertCtrl: AlertController,
     private zone: NgZone
   ) {
+    this.days = [
+      { value: 'mon', label: 'Monday', selected: false },
+      { value: 'tue', label: 'Tuesday', selected: false },
+      { value: 'wed', label: 'Wednesday', selected: false },
+      { value: 'thu', label: 'Thursday', selected: false },
+      { value: 'fri', label: 'Friday', selected: false },
+      { value: 'sat', label: 'Saturday', selected: false },
+      { value: 'sun', label: 'Sunday', selected: false }
+    ];
     Object.keys(this.criteria).forEach(key => {
       this.criteriaHash[this.criteria[key].provider] = key;
     });
@@ -114,12 +143,22 @@ export class PriceBookDetails {
                 if (this.criteriaHash.hasOwnProperty(criteria.provider)) {
                   this.criteria[this.criteriaHash[criteria.provider]].disabled = false;
 
-                  if (criteria.provider == "StoreEvaluationProvider") {
-                    this.stores.forEach((store, index, stores) => {
-                      if (criteria.criteria.storeIds.indexOf(store._id) > -1) {
-                        stores[index].selected = true;
-                      }
-                    });
+                  switch (criteria.provider) {
+                    case this.criteria.store.provider:
+                      this.stores.forEach((store, index, stores) => {
+                        if (criteria.criteria.storeIds.indexOf(store._id) > -1) {
+                          stores[index].selected = true;
+                        }
+                      });
+                      break;
+
+                    case this.criteria.daysOfWeek.provider:
+                      this.days.forEach((day, index, arr) => {
+                        if(criteria.criteria.days[day.value]) {
+                          arr[index].selected = true;
+                        }
+                      });
+                      break;
                   }
                 }
               });
@@ -133,8 +172,8 @@ export class PriceBookDetails {
     });
   }
 
-  public onCheck(event, store) {
-    store.selected = !store.selected;
+  public onCheck(event, entity) {
+    entity.selected = !entity.selected;
   }
 
   public clearField(property) {
@@ -154,6 +193,13 @@ export class PriceBookDetails {
         })
       }
 
+      if (!this.criteria.daysOfWeek.disabled) {
+        this.priceBook.criteria.push({
+          provider: this.criteria.daysOfWeek.provider,
+          criteria: this.criteria.daysOfWeek.construct(this.days)
+        });
+      }
+
       this.purchasableItemPriceComponent.confirmChanges();
       this.priceBook.createdAt = new Date();
 
@@ -162,7 +208,7 @@ export class PriceBookDetails {
       });
     } else {
       this.purchasableItemPriceComponent.confirmChanges();
-      let index = _.findIndex(this.priceBook.criteria, { provider: 'StoreEvaluationProvider' });
+      let index = _.findIndex(this.priceBook.criteria, { provider: this.criteria.store.provider });
       if (index > -1) {
         if (this.criteria.store.disabled) {
           this.priceBook.criteria.splice(index, 1);
@@ -181,6 +227,23 @@ export class PriceBookDetails {
           })
         }
       }
+
+      index = _.findIndex(this.priceBook.criteria, { provider: this.criteria.daysOfWeek.provider });
+      if (index > -1) {
+        if (this.criteria.daysOfWeek.disabled) {
+          this.priceBook.criteria.splice(index, 1);
+        } else {
+          this.priceBook.criteria[index].criteria = this.criteria.daysOfWeek.construct(this.days);
+        }
+      } else {
+        if (!this.criteria.daysOfWeek.disabled) {
+          this.priceBook.criteria.push({
+            provider: this.criteria.daysOfWeek.provider,
+            criteria: this.criteria.daysOfWeek.construct(this.days)
+          });
+        }
+      }
+
       this.priceBookService.update(this.priceBook).then(() => {
         this.navCtrl.pop();
       });

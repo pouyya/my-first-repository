@@ -102,6 +102,7 @@ import { EmployeeTimestampService } from './../services/employeeTimestampService
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
 import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
+import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
@@ -269,6 +270,7 @@ const cloudSettings: CloudSettings = {
     EmployeeTimestampService,
     AuthService,
     StoreEvaluationProvider,
+    DaysOfWeekEvaluationProvider,
     AppService,
     StoreService,
     SalesServices,

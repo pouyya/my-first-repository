@@ -94,6 +94,24 @@
         </ion-list>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col col-md-4 col-offset-md-8>
+        <ion-list>
+          <ion-item>
+            <ion-label>Days of Week</ion-label>
+            <ion-checkbox color="black" [disabled]="isDefault" [checked]="!criteria.daysOfWeek.disabled" (click)="criteria.daysOfWeek.disabled = !criteria.daysOfWeek.disabled"
+              name="daysOfWeekCriteriaDisabled"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+        <ion-list class="scrollable-component">
+          <ion-item *ngFor="let day of days">
+            <ion-label>{{day.label}}</ion-label>
+            <ion-checkbox color="primary" (ionChange)="onCheck($event, day)" [disabled]="criteria.daysOfWeek.disabled"
+              name="daySelected"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>      
+    </ion-row>
   </ion-grid>
   <purchasable-item-price [(priceBook)]="priceBook" [options]="isDefault ? defaultOptions : generalOptions"></purchasable-item-price>
 </ion-content>
