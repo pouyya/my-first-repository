@@ -6,6 +6,8 @@ import { PriceBook } from './../model/priceBook';
 import { BaseEntityService } from './baseEntityService';
 import { PurchasableItemPriceInterface } from "../model/purchasableItemPrice.interface";
 import { StoreEvaluationProvider } from './StoreEvaluationProvider';
+import { DaysOfWeekEvaluationProvider } from './DaysOfWeekEvaluationProvider';
+
 @Injectable()
 export class PriceBookService extends BaseEntityService<PriceBook> {
 
@@ -18,7 +20,8 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
   ) {
     super(PriceBook, zone);
     PriceBookService.providerHash = {
-      StoreEvaluationProvider
+      StoreEvaluationProvider,
+      DaysOfWeekEvaluationProvider
     };
   }
 
@@ -58,6 +61,14 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
         "entityTypeNames": {
           "$elemMatch": { "$eq": "PriceBook" }
         }
+      }
+    });
+  }
+
+  public getEvery(): Promise<PriceBook[]> {
+    return this.findBy({
+      selector: {
+
       }
     });
   }

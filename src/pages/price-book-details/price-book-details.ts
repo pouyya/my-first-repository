@@ -172,10 +172,6 @@ export class PriceBookDetails {
     });
   }
 
-  public onCheck(event, entity) {
-    entity.selected = !entity.selected;
-  }
-
   public clearField(property) {
     if (this.priceBook.hasOwnProperty(property) && this.priceBook[property]) {
       this.priceBook[property] = null;

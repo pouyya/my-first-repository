@@ -209,8 +209,9 @@ export class Sales {
 
   // Event
   public onSelect(item: PurchasableItem) {
-    var context = new EvaluationContext();
+    let context = new EvaluationContext();
     context.currentStore = this.user.settings.currentStore;
+    context.currentDateTime = new Date();
 
     let price: PurchasableItemPriceInterface = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
     if (price) {
