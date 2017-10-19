@@ -63,7 +63,7 @@
         <ion-list class="scrollable-component">
           <ion-item *ngFor="let store of stores">
             <ion-label>{{store.name}}</ion-label>
-            <ion-checkbox color="primary" (ionChange)="onCheck($event, store)" [checked]="store.selected" [disabled]="criteria.store.disabled"
+            <ion-checkbox color="primary" [(ngModel)]="store.selected" [disabled]="criteria.store.disabled"
               name="storeSelected"></ion-checkbox>
           </ion-item>
         </ion-list>
@@ -71,8 +71,24 @@
       <ion-col col-md-4>
         <ion-list>
           <ion-item>
+            <ion-label>Days of Week</ion-label>
+            <ion-checkbox color="black" [disabled]="isDefault" [checked]="!criteria.daysOfWeek.disabled" (click)="criteria.daysOfWeek.disabled = !criteria.daysOfWeek.disabled"
+              name="daysOfWeekCriteriaDisabled"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+        <ion-list class="scrollable-component">
+          <ion-item *ngFor="let day of days">
+            <ion-label>{{day.label}}</ion-label>
+            <ion-checkbox color="primary" [(ngModel)]="day.selected" [disabled]="criteria.daysOfWeek.disabled"
+              name="daySelected"></ion-checkbox>
+          </ion-item>
+        </ion-list>
+      </ion-col>         
+      <ion-col col-md-4>
+        <ion-list>
+          <ion-item>
             <ion-label>Customer Types</ion-label>
-            <ion-checkbox color="black" [disabled]="isDefault" (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled"
+            <ion-checkbox color="black" disabled (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled"
               name="customerTypes"></ion-checkbox>
           </ion-item>
         </ion-list>
@@ -81,16 +97,6 @@
             <ion-label>{{type.value}}</ion-label>
             <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="criteria.customerTypes.disabled" name="typeKey"></ion-checkbox>
           </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col col-md-4>
-        <ion-list>
-          <ion-item>
-            <ion-label>Staff</ion-label>
-            <ion-checkbox color="black" [disabled]="isDefault"></ion-checkbox>
-          </ion-item>
-        </ion-list>
-        <ion-list class="scrollable-component">
         </ion-list>
       </ion-col>
     </ion-row>

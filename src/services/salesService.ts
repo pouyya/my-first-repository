@@ -1,4 +1,3 @@
-import { EvaluationContext } from './EvaluationContext';
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
 import { Injectable, NgZone } from '@angular/core';
@@ -17,6 +16,7 @@ import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItem } from './../model/purchasableItem';
 import { BaseEntityService } from './baseEntityService';
+import { EvaluationContext } from './EvaluationContext';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {

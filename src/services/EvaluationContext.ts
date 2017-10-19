@@ -4,5 +4,6 @@ export class EvaluationContext {
   public currentPos?: string;
   public currentCustomer?: string;
   public currentStaff?: string;
-  
+  public currentDateTime?: Date;
+
 }
