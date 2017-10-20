@@ -28,12 +28,14 @@ export class PriceBooksPage {
   }
 
   async ionViewDidEnter() {
-    this.priceBooks = await this.priceBookService.getAll();
+    let defaultPriceBook = await this.priceBookService.getDefault();
+    this.priceBooks = await this.priceBookService.getExceptDefault();
     this.priceBooks.sort(
       firstBy("priority").thenBy((book1, book2) => {
         return new Date(book2._id).getTime() - new Date(book1._id).getTime();
       })
-    );    
+    );
+    this.priceBooks.push(defaultPriceBook);
     return this.priceBooks;
   }
 
