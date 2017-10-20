@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import { AppService } from './appService';
 import { UserService } from './userService';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Store } from '../model/store'
 import { BaseEntityService } from './baseEntityService'
 import { GlobalConstants } from './../metadata/globalConstants';
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
-  constructor(private zone: NgZone,
+  constructor(
               private userService: UserService,
               private appService: AppService
               ) {
-    super(Store, zone);
+    super(Store);
   }
 
   public getDefaultTax(): Promise<any> {

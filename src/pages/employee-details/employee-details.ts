@@ -1,6 +1,5 @@
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
-import { AppSettingsService } from './../../services/appSettingsService';
 import { Employee } from './../../model/employee';
 import { Store } from './../../model/store';
 import { StoreService } from './../../services/storeService';
@@ -26,7 +25,6 @@ export class EmployeeDetails {
     private platform: Platform,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
-    private appSettingsService: AppSettingsService,
     private pluginService: PluginService,
     private navCtrl: NavController) {
   }

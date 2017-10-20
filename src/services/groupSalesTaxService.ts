@@ -1,22 +1,19 @@
 import _ from 'lodash';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BaseEntityService } from './baseEntityService';
 import { GroupSaleTax } from './../model/groupSalesTax';
 import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
 import { SalesTax } from './../model/salesTax';
-import { AppSettingsService } from './appSettingsService';
 
 @Injectable()
 export class GroupSalesTaxService extends BaseEntityService<GroupSaleTax> {
 
   constructor(
-    private zone: NgZone,
     private priceBookService: PriceBookService,
-    private userService: UserService,
-    private appSettingsService: AppSettingsService
+    private userService: UserService
   ) {
-    super(GroupSaleTax, zone);
+    super(GroupSaleTax);
   }
 
   /**
@@ -61,7 +58,7 @@ export class GroupSalesTaxService extends BaseEntityService<GroupSaleTax> {
     return new Promise((resolve, reject) => {
       let user = this.userService.getLoggedInUser();
       let promises: Array<Promise<any>> = [];
-      if (tax._id === user.settings.defaultTax) promises.push(this.appSettingsService.setDefaultTaxToNoTax());
+      //if (tax._id === user.settings.defaultTax) promises.push(this.appSettingsService.setDefaultTaxToNoTax());
       promises.push(this.priceBookService.setPriceBookItemTaxToDefault(tax._id));
       Promise.all(promises)
         .then(() => resolve()).catch(error => reject(error));

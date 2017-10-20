@@ -3,8 +3,6 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
 import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
-import { AppSettings } from './../../model/appSettings';
-import { AppSettingsService } from './../../services/appSettingsService';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { HelperService } from "../../services/helperService";
@@ -20,17 +18,16 @@ export class Settings {
 
   public salesTaxes: Array<any> = [];
   public defaultTax: string;
-  public setting: AppSettings;
   public taxTypes: Array<any> = [];
   public selectedType: number;
   public selectedTax: string;
   private currentTax: any;
   private newTax: any;
+  private setting: any;
 
   constructor(
     private navCtrl: NavController,
     private platform: Platform,
-    private appSettingsService: AppSettingsService,
     private salesTaxService: SalesTaxService,
     private userService: UserService,
     private helperService: HelperService,
@@ -50,7 +47,7 @@ export class Settings {
   ionViewDidLoad() {
     var promises: Array<Promise<any>> = [
       this.appService.loadSalesAndGroupTaxes(),
-      this.appSettingsService.get()
+      this.userService.getUser()
     ];
 
     Promise.all(promises).then((results) => {
@@ -79,26 +76,21 @@ export class Settings {
       });
       this.setting.defaultTax = this.newTax._id;
       this.setting.taxEntity = this.newTax.entityTypeName;
-      this.appSettingsService.update(this.setting).then(() => {
-        this.currentTax = this.newTax
-        // a weird hack
-        this.appService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
-          this.salesTaxes = taxes;
-          let user = this.userService.getLoggedInUser();
-          user.settings.defaultTax = this.newTax._id;
-          user.settings.taxEntity = this.newTax.entityTypeName;
-          user.settings.taxType = this.selectedType;
-          user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
-          this.userService.setSession(user);
-          loader.dismiss();
-          let toast = this.toast.create({
-            message: "Settings have been saved",
-            duration: 2000
-          });
-          toast.present();
+      this.currentTax = this.newTax
+      this.appService.loadSalesAndGroupTaxes().then((taxes: Array<any>) => {
+        this.salesTaxes = taxes;
+        let user = this.userService.getLoggedInUser();
+        user.settings.defaultTax = this.newTax._id;
+        user.settings.taxEntity = this.newTax.entityTypeName;
+        user.settings.taxType = this.selectedType;
+        user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
+        this.userService.setSession(user);
+        loader.dismiss();
+        let toast = this.toast.create({
+          message: "Settings have been saved",
+          duration: 2000
         });
-      }).catch(error => {
-        throw new Error(error);
+        toast.present();
       });
     });
   }

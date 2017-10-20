@@ -2,7 +2,7 @@ import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import * as moment from "moment";
 import { UserService } from './userService';
 import { EmployeeTimestampService } from './employeeTimestampService';
-import { Injectable, NgZone } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Employee } from "../model/employee";
 import { BaseEntityService } from "./baseEntityService";
 import { StoreService } from "./storeService";
@@ -12,9 +12,8 @@ export class EmployeeService extends BaseEntityService<Employee> {
   constructor(
     private storeService: StoreService,
     private userService: UserService,
-    private employeeTimestampService: EmployeeTimestampService,
-    private zone: NgZone) {
-    super(Employee, zone);
+    private employeeTimestampService: EmployeeTimestampService) {
+    super(Employee);
   }
 
   /**

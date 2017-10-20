@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
 import { EvaluationContext } from './EvaluationContext';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HelperService } from './helperService';
 import { PriceBook } from './../model/priceBook';
 import { BaseEntityService } from './baseEntityService';
@@ -14,11 +14,10 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
   public static providerHash: any;
 
   constructor(
-    private zone: NgZone,
     private helperService: HelperService,
     private injector: Injector
   ) {
-    super(PriceBook, zone);
+    super(PriceBook);
     PriceBookService.providerHash = {
       StoreEvaluationProvider,
       DaysOfWeekEvaluationProvider

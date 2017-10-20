@@ -2,7 +2,6 @@ import PouchDB from 'pouchdb';
 import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity";
 import { ConfigService } from "./configService"
-import { NgZone } from '@angular/core';
 
 export class DBService<T extends DBBasedEntity> {
     private static _db;
@@ -48,7 +47,7 @@ export class DBService<T extends DBBasedEntity> {
         }
     }
 
-    constructor(private entityType, private zone: NgZone) {
+    constructor(private entityType) {
 
         DBService.initialize();
     }

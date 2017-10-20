@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
 import { PriceBook } from './../model/priceBook';
@@ -32,13 +32,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private taxService: TaxService,
 		private helperService: HelperService,
 		private fountainService: FountainService,
-		private zone: NgZone,
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
 	) {
-		super(Sale, zone);
+		super(Sale);
 		this._user = this.userService.getLoggedInUser();
 	}
 

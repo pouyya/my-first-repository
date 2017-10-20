@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { AppSettingsService } from './../../services/appSettingsService';
 import { Service } from './../../model/service';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
@@ -58,7 +57,6 @@ export class ServiceDetails {
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private userService: UserService,
-		private appSettingsService: AppSettingsService,
 		private helperService: HelperService,
 		private appService: AppService,
 		private navParams: NavParams,

@@ -1,5 +1,4 @@
 import { DeployPage } from './../deploy/deploy';
-import { Headers, Http, RequestOptions } from '@angular/http';
 import { AuthHttp } from 'angular2-jwt';
 import { ForgotPassword } from './modals/forgot-password/forgot-password';
 import { ModalController } from 'ionic-angular';
@@ -26,8 +25,7 @@ export class LoginPage {
     private iab: InAppBrowser,
     private modalCtrl: ModalController,
     private nav: Nav,
-    private authHttp: AuthHttp,
-    private http: Http
+    private authHttp: AuthHttp
   ) {
   }
 
@@ -55,19 +53,6 @@ export class LoginPage {
 
   public register(): void {
     this.iab.create('https://google.com.pk/');
-  }
-
-  public testApi(): void {
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
-
-    let options = new RequestOptions({ headers: headers });
-    this.http.post('https://demo.justgreen.in/identity/connect/token',
-      { "client_id": "mvc_service", "grant_type": "client_credentials", "client_secret": "secret", "scope": "sampleApi" }
-      , options).subscribe(
-      data => console.warn(data),
-      err => console.error(err),
-      () => console.warn('Request Complete'));
   }
 
   public forgotPassword(): void {

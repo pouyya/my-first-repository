@@ -1,7 +1,7 @@
 import { Storage } from '@ionic/storage';
 import { AuthHttp } from 'angular2-jwt';
 import { Observable } from 'rxjs/Rx';
-import { NgZone, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { User } from './../model/user';
 import { BaseEntityService } from './baseEntityService';
@@ -13,12 +13,11 @@ export class UserService extends BaseEntityService<User> {
   private readonly USER_KEY = 'user';
 
   constructor(
-    private zone: NgZone,
     private http: Http,
     private authHttp: AuthHttp,
     private storage: Storage
   ) {
-    super(User, zone);
+    super(User);
   }
 
   public getById(id: number): Observable<any> {
@@ -67,4 +66,10 @@ export class UserService extends BaseEntityService<User> {
       }
     });
   }
+
+  public async getUserToken(): Promise<string> {
+    var currentUser = await this.getUser();
+    return currentUser.token;
+  }
+
 }

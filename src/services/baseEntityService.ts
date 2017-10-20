@@ -1,4 +1,3 @@
-import { NgZone } from '@angular/core';
 import { DBBasedEntity } from "../model/dbBasedEntity";
 import { DBService } from "./DBService";
 
@@ -7,8 +6,8 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     private _dbService;
     private _type;
 
-    constructor(type: { new (): T; }, zone: NgZone) {
-        this._dbService = new DBService<T>(type, zone);
+    constructor(type: { new (): T; }) {
+        this._dbService = new DBService<T>(type);
         this._type = type;
     }
 

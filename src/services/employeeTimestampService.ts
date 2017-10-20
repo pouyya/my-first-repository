@@ -1,4 +1,3 @@
-import { NgZone } from '@angular/core';
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { BaseEntityService } from "./baseEntityService";
 import { Injectable } from '@angular/core';
@@ -11,8 +10,8 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
   public static readonly BREAK_START: string = "break_start";
   public static readonly BREAK_END: string = "break_end";
 
-  constructor(private zone: NgZone) {
-    super(EmployeeTimestamp, zone);
+  constructor() {
+    super(EmployeeTimestamp);
   }
 
   public getEmployeeLatestTimestamp(employeeId: string, storeId: string, type?: string) {

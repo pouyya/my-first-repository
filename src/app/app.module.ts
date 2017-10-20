@@ -97,7 +97,6 @@ import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
 import { SalesServices } from './../services/salesService';
-import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
@@ -265,7 +264,6 @@ const cloudSettings: CloudSettings = {
     PriceBookService,
     SalesTaxService,
     GroupSalesTaxService,
-    AppSettingsService,
     PluginService,
     EmployeeTimestampService,
     AuthService,
