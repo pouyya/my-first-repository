@@ -1,3 +1,4 @@
+import firstBy from 'thenby';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBookDetails } from './../price-book-details/price-book-details';
 import { NavController, AlertController } from 'ionic-angular';
@@ -28,6 +29,11 @@ export class PriceBooksPage {
 
   async ionViewDidEnter() {
     this.priceBooks = await this.priceBookService.getAll();
+    this.priceBooks.sort(
+      firstBy("priority").thenBy((book1, book2) => {
+        return new Date(book2._id).getTime() - new Date(book1._id).getTime();
+      })
+    );    
     return this.priceBooks;
   }
 
