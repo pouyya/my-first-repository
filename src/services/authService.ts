@@ -13,7 +13,9 @@ const MOCK_SETTINGS = {
   defaultTax: "2017-07-25T10:22:51.163Z",
   taxType: true,
   taxEntity: "SalesTax",
-  trackEmployeeSales: true
+  trackEmployeeSales: true,
+  currentPos: "2017-07-18T11:40:52.927Z",
+  currentStore: "2017-07-18T11:40:07.245Z"
 };
 
 @Injectable()
