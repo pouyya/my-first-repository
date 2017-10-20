@@ -4,8 +4,17 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { GlobalConstants } from './../metadata/globalConstants';
-import 'rxjs/add/operator/map'
 import { JwtHelper } from 'angular2-jwt';
+import 'rxjs/add/operator/map'
+
+// TODO: Remove in future
+const MOCK_SETTINGS = {
+  defaultIcon: GlobalConstants.DEFAULT_ICON,
+  defaultTax: "2017-07-25T10:22:51.163Z",
+  taxType: true,
+  taxEntity: "SalesTax",
+  trackEmployeeSales: true
+};
 
 @Injectable()
 export class AuthService {
@@ -38,15 +47,15 @@ export class AuthService {
         let jwtHelper: JwtHelper = new JwtHelper();
 
         let user = response.json();
+        let token = jwtHelper.decodeToken(user.access_token);
         let promise = new Promise((resolve, reject) => {
-            let userSession: any = {
-              ...user,
-              settings: {
-                defaultIcon: GlobalConstants.DEFAULT_ICON,
-              },
-            };
-            this.userService.setSession(userSession);
-            return resolve(userSession);
+          let userSession: any = {
+            ...user,
+            ...token,
+            settings: MOCK_SETTINGS
+          };
+          this.userService.setSession(userSession);
+          return resolve(userSession);
         });
 
         return Observable.fromPromise(promise);
