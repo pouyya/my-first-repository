@@ -23,7 +23,6 @@ export class SalesTaxService extends BaseEntityService<SalesTax> {
    */
   public processDeletion(tax: SalesTax): Promise<any> {
     return new Promise((resolve, reject) => {
-      let user = this.userService.getLoggedInUser();
       let promises: Array<Promise<any>> = [];
       promises.push(this.groupSalesTaxService.removeSalesTaxFromGroups(tax));
       //if (tax._id === user.settings.defaultTax) promises.push(this.appSettingsService.setDefaultTaxToNoTax());

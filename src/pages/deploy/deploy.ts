@@ -1,3 +1,4 @@
+import { ConfigService } from './../../services/configService';
 import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { UserService } from './../../services/userService';
@@ -56,6 +57,8 @@ export class DeployPage {
 
 	async loadUserInfoAndNavigateToHome() {
 		var user = await this.userService.getUser();
+		ConfigService.externalDBUrl = user.settings.dbServerUrl;
+		ConfigService.externalDBName = user.settings.dbName;
 		this.navCtrl.setRoot(Sales);
 		return user;
 	}

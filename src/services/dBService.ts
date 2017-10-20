@@ -15,7 +15,7 @@ export class DBService<T extends DBBasedEntity> {
 
             //TODO AZ - To change below functions to have proper action (e.g. on going offline show popover that you are offline or such) and log the value 
             // in proper logger!
-            PouchDB.sync(currentInternalDBName, ConfigService.getCurrentFullExternalDBUrl(), {
+            PouchDB.sync(currentInternalDBName, ConfigService.currentFullExternalDBUrl, {
                 live: true,
                 retry: true
             }).on('change', function (info) {

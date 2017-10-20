@@ -1,28 +1,55 @@
-import { Injectable } from '@angular/core';
-
-@Injectable()
-export class ConfigService {  
+export class ConfigService {
     //TODO: AZ - Need to move values in different file and based on different build type (dev, pre-prod, prod) need to transform config file
 
     static currentInternalDBName(): string {
-        return 'simplepos.db';   
+        return 'simplepos.db';
     }
 
-    static externalDBBaseUrl() : string
-    {
-        return "http://bitnami-couchdb-d399.cloudapp.net:5984";
+    static _externalDBUrl: string = "";
+    static get externalDBUrl(): string {
+        return ConfigService._externalDBUrl;;
+    }
+    static set externalDBUrl(externalDBBaseUrl: string) {
+        ConfigService._externalDBUrl = externalDBBaseUrl;
     }
 
-    static currentExternalDBName(): string
-    {
-        return '/sc_66';
+    static _externalDBName: string = "";
+    static get externalDBName(): string {
+        return ConfigService._externalDBName;
     }
 
-    static getCurrentFullExternalDBUrl() : string {
-        return ConfigService.externalDBBaseUrl() + ConfigService.currentExternalDBName();
+    static set externalDBName(currentExternalDBName: string) {
+        ConfigService._externalDBName = currentExternalDBName;
     }
 
-    static isDevelopment() :  boolean {
+    static get currentFullExternalDBUrl(): string {
+        return ConfigService.externalDBUrl + ConfigService.externalDBName;
+    }
+
+    static isDevelopment(): boolean {
         return true;
+    }
+
+    static securityTokenEndPoint(): string {
+        return 'https://simpleposapp-dev-ids.azurewebsites.net/identity/connect/token';
+    }
+
+    static securityClientId(): string {
+        return 'simplepos';
+    }
+    static securityClientSecret(): string {
+        return 'secret';
+    }
+
+    static securityGrantType(): string {
+        return 'password';
+    }
+
+    static securityScope(): string {
+        return 'simplepos';
+    }
+
+    static securitySessionStorageKey(): string {
+        return 'jwt-token';
     }
 }
