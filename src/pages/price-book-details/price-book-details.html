@@ -16,16 +16,21 @@
   <form (ngSubmit)="onSubmit()" #priceBookForm="ngForm">
     <ion-grid>
       <ion-row>
-        <ion-col col-md-4>
+        <ion-col col-md-3>
           <ion-item>
             <ion-input type="text" [disabled]="isDefault" placeholder="Name" [(ngModel)]="priceBook.name" name="priceBookName" required></ion-input>
           </ion-item>
         </ion-col>
         <ion-col col-md-3>
           <ion-item>
+            <ion-input type="number" min="0" [disabled]="isDefault" placeholder="Priority" [(ngModel)]="priceBook.priority" name="priceBookPriority" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-2>
+          <ion-item>
             <ion-label>Start Date</ion-label>
-            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validFrom"
-              name="priceBookValidFrom" #priceBookValidFrom="ngModel">
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A"
+              [(ngModel)]="priceBook.validFrom" name="priceBookValidFrom" #priceBookValidFrom="ngModel">
             </ion-datetime>
           </ion-item>
         </ion-col>
@@ -34,11 +39,11 @@
             <ion-icon name="refresh"></ion-icon>
           </button>
         </ion-col>
-        <ion-col col-md-3>
+        <ion-col col-md-2>
           <ion-item>
             <ion-label>End Date</ion-label>
-            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A" [(ngModel)]="priceBook.validTo"
-              name="priceBookValidTo" #priceBookValidTo="ngModel">
+            <ion-datetime displayFormat="MM-DD-YYYY h:mm A" min="2000" max="2030" [disabled]="isDefault" pickerFormat="MM-DD-YYYY h mm A"
+              [(ngModel)]="priceBook.validTo" name="priceBookValidTo" #priceBookValidTo="ngModel">
             </ion-datetime>
           </ion-item>
         </ion-col>
@@ -63,8 +68,7 @@
         <ion-list class="scrollable-component">
           <ion-item *ngFor="let store of stores">
             <ion-label>{{store.name}}</ion-label>
-            <ion-checkbox color="primary" [(ngModel)]="store.selected" [disabled]="criteria.store.disabled"
-              name="storeSelected"></ion-checkbox>
+            <ion-checkbox color="primary" [(ngModel)]="store.selected" [disabled]="criteria.store.disabled" name="storeSelected"></ion-checkbox>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -79,17 +83,15 @@
         <ion-list class="scrollable-component">
           <ion-item *ngFor="let day of days">
             <ion-label>{{day.label}}</ion-label>
-            <ion-checkbox color="primary" [(ngModel)]="day.selected" [disabled]="criteria.daysOfWeek.disabled"
-              name="daySelected"></ion-checkbox>
+            <ion-checkbox color="primary" [(ngModel)]="day.selected" [disabled]="criteria.daysOfWeek.disabled" name="daySelected"></ion-checkbox>
           </ion-item>
         </ion-list>
-      </ion-col>         
+      </ion-col>
       <ion-col col-md-4>
         <ion-list>
           <ion-item>
             <ion-label>Customer Types</ion-label>
-            <ion-checkbox color="black" disabled (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled"
-              name="customerTypes"></ion-checkbox>
+            <ion-checkbox color="black" disabled (click)="criteria.customerTypes.disabled = !criteria.customerTypes.disabled" name="customerTypes"></ion-checkbox>
           </ion-item>
         </ion-list>
         <ion-list class="scrollable-component">
