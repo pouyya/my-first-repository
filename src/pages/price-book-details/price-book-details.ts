@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { ToastController } from 'ionic-angular';
 import { DaysOfWeekCriteria } from './../../model/DaysOfWeekCriteria';
 import { AlertController } from 'ionic-angular';
 import { PurchasableItemPriceComponent } from './../../components/purchasable-item-price/purchasable-item-price.component';
@@ -92,6 +93,7 @@ export class PriceBookDetails {
     private navParams: NavParams,
     private navCtrl: NavController,
     private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
     private zone: NgZone
   ) {
     this.days = [
@@ -179,6 +181,11 @@ export class PriceBookDetails {
   }
 
   public onSubmit(): void {
+    if(this.priceBook.priority == 0 && !this.isDefault) {
+      this.showFormError("Priority must be greater than 0");
+      return;
+    }
+
     if (this.isNew) {
       if (!this.criteria.store.disabled) {
         this.priceBook.criteria.push({
@@ -198,6 +205,7 @@ export class PriceBookDetails {
 
       this.purchasableItemPriceComponent.confirmChanges();
       this.priceBook.createdAt = new Date();
+      this.priceBook.priority = Number(this.priceBook.priority);
 
       this.priceBookService.add(this.priceBook).then(() => {
         this.navCtrl.pop();
@@ -240,10 +248,18 @@ export class PriceBookDetails {
         }
       }
 
+      this.priceBook.priority = Number(this.priceBook.priority);
       this.priceBookService.update(this.priceBook).then(() => {
         this.navCtrl.pop();
       });
     }
+  }
+
+  public showFormError(message, duration?: number) {
+    let toast = this.toastCtrl.create({
+      message, duration: duration || 3000
+    });
+    toast.present();
   }
 
   public remove() {
