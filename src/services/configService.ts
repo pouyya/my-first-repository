@@ -1,8 +1,13 @@
 export class ConfigService {
     //TODO: AZ - Need to move values in different file and based on different build type (dev, pre-prod, prod) need to transform config file
 
-    static currentInternalDBName(): string {
-        return 'simplepos.db';
+    static _internalDBName: string = "";
+    static get internalDBName(): string {
+        return ConfigService._internalDBName;
+    }
+
+    static set internalDBName(internalDBName: string) {
+        ConfigService._internalDBName = internalDBName;
     }
 
     static _externalDBUrl: string = "";
@@ -23,7 +28,7 @@ export class ConfigService {
     }
 
     static get currentFullExternalDBUrl(): string {
-        return ConfigService.externalDBUrl + ConfigService.externalDBName;
+        return ConfigService.externalDBUrl + "/" + ConfigService.externalDBName;
     }
 
     static isDevelopment(): boolean {
@@ -31,7 +36,15 @@ export class ConfigService {
     }
 
     static securityTokenEndPoint(): string {
-        return 'https://simpleposapp-dev-ids.azurewebsites.net/identity/connect/token';
+        return ConfigService.securityServerBaseUrl() + "/connect/token";
+    }
+
+    static securityUserInfoEndPoint(): string {
+        return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
+    }
+
+    static securityServerBaseUrl(): string {
+        return 'https://simpleposapp-dev-ids.azurewebsites.net/identity';
     }
 
     static securityClientId(): string {
@@ -46,10 +59,14 @@ export class ConfigService {
     }
 
     static securityScope(): string {
-        return 'simplepos';
+        return 'openid';
     }
 
     static securitySessionStorageKey(): string {
         return 'jwt-token';
+    }
+
+    static userSessionStorageKey(): string {
+        return 'user' + ConfigService.internalDBName;
     }
 }

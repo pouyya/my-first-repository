@@ -7,12 +7,15 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
     private _type;
 
     constructor(type: { new (): T; }) {
-        this._dbService = new DBService<T>(type);
         this._type = type;
     }
 
-    getDB() {
-        return this._dbService.getDB();
+    get dbService() {
+        if(!this._dbService){
+            this._dbService = new DBService<T>(this._type);
+        }
+
+        return this._dbService;
     }
 
     add(entity: T) {
@@ -23,31 +26,31 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
 
         this.clearAllMethods(entityCopy);
 
-        return this._dbService.add(entityCopy);
+        return this.dbService.add(entityCopy);
     }
 
     update(entity: T) {
-        return this._dbService.update(entity);
+        return this.dbService.update(entity);
     }
 
     delete(entity: T) {
-        return this._dbService.delete(entity);
+        return this.dbService.delete(entity);
     }
 
     getAll() : Promise<Array<T>> {
-        return this._dbService.getAll();
+        return this.dbService.getAll();
     }
 
     findBy(selector: any) {
-        return this._dbService.findBy(selector);
+        return this.dbService.findBy(selector);
     }
 
     get(id: any) {
-        return this._dbService.get(id);
+        return this.dbService.get(id);
     }
 
     async getFirst() {
-        var result = await this._dbService.getAll();
+        var result = await this.dbService.getAll();
 
         if(result != null && Array.isArray(result))
         {

@@ -5,6 +5,7 @@ import { UserService } from './../../services/userService';
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 import { Deploy } from '@ionic/cloud-angular';
+import { DBService } from '../../services/DBService';
 
 @Component({
 	selector: 'page-deploy',
@@ -13,6 +14,7 @@ import { Deploy } from '@ionic/cloud-angular';
 export class DeployPage {
 
 	public updateText: String = '';
+	private isNavigated = false;
 
 	constructor(
 		private userService: UserService,
@@ -52,14 +54,26 @@ export class DeployPage {
 	}
 
 	ionViewDidLoad() {
-		console.log('ionViewDidLoad DeployPage');
 	}
 
 	async loadUserInfoAndNavigateToHome() {
 		var user = await this.userService.getUser();
-		ConfigService.externalDBUrl = user.settings.dbServerUrl;
-		ConfigService.externalDBName = user.settings.dbName;
-		this.navCtrl.setRoot(Sales);
+		ConfigService.externalDBUrl = user.settings.db_url;
+		ConfigService.externalDBName = user.settings.db_name;
+		ConfigService.internalDBName = user.settings.db_local_name;
+		this.updateText = "Loading your company data 0%";
+		DBService.dbSyncProgress.subscribe(
+			data => {
+				if (data === 1 && !this.isNavigated) {
+					this.isNavigated = true;
+					this.navCtrl.setRoot(Sales);
+				}
+				else {
+					this.updateText = "Loading your company data " + Math.round(data * 100) + "%";
+				}
+			}
+		)
+		DBService.initialize();
 		return user;
 	}
 }

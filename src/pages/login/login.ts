@@ -29,26 +29,27 @@ export class LoginPage {
   ) {
   }
 
-  public login(): void {
+  public async login(): Promise<any> {
+
     let loader = this.loading.create({
       content: 'Logging In...'
     });
 
-    loader.present().then(() => {
-      this.authService.login(this.email, this.password).subscribe(
-        data => {
-          this.nav.setRoot(DeployPage);
-          loader.dismiss();
-        },
-        error => {
-          let toast = this.toastCtrl.create({
-            message: 'Invalid Email/Password!',
-            duration: 3000
-          });
-          toast.present();
-          loader.dismiss();
+    await loader.present();
+    
+    this.authService.login(this.email, this.password).subscribe(
+      data => {
+        this.nav.setRoot(DeployPage);
+        loader.dismiss();
+      },
+      error => {
+        let toast = this.toastCtrl.create({
+          message: 'Invalid Email/Password!',
+          duration: 3000
         });
-    });
+        toast.present();
+        loader.dismiss();
+      });
   }
 
   public register(): void {

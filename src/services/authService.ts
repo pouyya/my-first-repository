@@ -3,27 +3,16 @@ import { UserService } from './userService';
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { GlobalConstants } from './../metadata/globalConstants';
-import { JwtHelper } from 'angular2-jwt';
+import { AuthHttp } from 'angular2-jwt';
 import 'rxjs/add/operator/map'
-
-// TODO: Remove in future
-const MOCK_SETTINGS = {
-  defaultIcon: GlobalConstants.DEFAULT_ICON,
-  defaultTax: "2017-07-25T10:22:51.163Z",
-  taxType: true,
-  taxEntity: "SalesTax",
-  trackEmployeeSales: true,
-  currentPos: "2017-07-18T11:40:52.927Z",
-  currentStore: "2017-07-18T11:40:07.245Z"
-};
 
 @Injectable()
 export class AuthService {
 
   constructor(
     private http: Http,
-    private userService: UserService
+    private userService: UserService,
+    private authHttp: AuthHttp
   ) { }
 
   /**
@@ -45,22 +34,22 @@ export class AuthService {
     var headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
     return this.http.post(ConfigService.securityTokenEndPoint(), payLoad.toString(), { headers: headers })
-      .flatMap((response: Response) => {
-        let jwtHelper: JwtHelper = new JwtHelper();
-
+      .flatMap(async (response: Response) => {
         let user = response.json();
-        let token = jwtHelper.decodeToken(user.access_token);
-        let promise = new Promise((resolve, reject) => {
-          let userSession: any = {
-            ...user,
-            ...token,
-            settings: MOCK_SETTINGS
-          };
-          this.userService.setSession(userSession);
-          return resolve(userSession);
-        });
+        await this.userService.setAccessToken(user.access_token)
 
-        return Observable.fromPromise(promise);
+        return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
+          .flatMap(async (userProfile: Response) => {
+            
+            let userSession: any = {
+              acess_token: user.access_token,
+              ...user,
+              settings: userProfile.json()
+            };
+            await this.userService.setSession(userSession);
+    
+          })
+          .toPromise();
       });
   }
 
