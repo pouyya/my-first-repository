@@ -1,6 +1,7 @@
+import _ from 'lodash';
+import firstBy from 'thenby';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { EvaluationContext } from './../../services/EvaluationContext';
-import _ from 'lodash';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { NavController, LoadingController, NavParams, ToastController } from 'ionic-angular';
 
@@ -271,6 +272,11 @@ export class Sales {
         this.priceBook = data[1] as PriceBook;
         this.defaultTax = data[2] as any;
         this.priceBooks = data[3] as PriceBook[];
+        this.priceBooks.sort(
+          firstBy("priority").thenBy((book1, book2) => {
+            return new Date(book2._id).getTime() - new Date(book1._id).getTime();
+          })
+        );
         if (invoiceData.doRecalculate) {
           this.salesService.reCalculateInMemoryInvoice(
             /* Pass By Reference */
