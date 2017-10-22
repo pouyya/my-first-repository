@@ -20,8 +20,9 @@ export class UserService {
   }
 
   public async getUser(): Promise<any> {
-    var user = await this.storage.get(ConfigService.userSessionStorageKey())
-    this.user = user ? JSON.parse(user) : null;
+    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey())
+    this.user = userRawJson ? JSON.parse(userRawJson) : null;
+    return this.user;
   }
 
   public setAccessToken(access_token: string): Promise<any> {
