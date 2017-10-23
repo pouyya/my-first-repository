@@ -46,6 +46,11 @@ export class AuthService {
               ...user,
               settings: userProfile.json()
             };
+
+            ConfigService.externalDBUrl = userSession.settings.db_url;
+            ConfigService.externalDBName = userSession.settings.db_name;
+            ConfigService.internalDBName = userSession.settings.db_local_name;
+
             await this.userService.setSession(userSession);
     
           })
