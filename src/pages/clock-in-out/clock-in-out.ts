@@ -56,7 +56,7 @@ export class ClockInOutPage {
         .then((pin) => {
           this.employeeService.findByPin(pin).then((employee: Employee) => {
             this.user = this.userService.getLoggedInUser();
-            // let index = _.findIndex(employee.store, { id: this.user.settings.currentStore });
+            // let index = _.findIndex(employee.store, { id: this.user.currentStore });
             // if (index > -1) {
               this.employee = employee;
               resolve();
@@ -113,7 +113,7 @@ export class ClockInOutPage {
 
     let promises: Array<Promise<any>> = [
       this.employeeTimestampService.getEmployeeLastTwoTimestamps(
-        this.employee._id, this.user.settings.currentStore
+        this.employee._id, this.user.currentStore
       )
     ];
 
@@ -127,7 +127,7 @@ export class ClockInOutPage {
           let clockoutTime = new Date(this.timestamp.time);
           if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
             this.employeeTimestampService.getEmployeeLatestTimestamp(
-              this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
+              this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
             ).then((model: EmployeeTimestamp) => {
               let clockInTime = "";
               clockInBtn.enabled = false;
@@ -145,7 +145,7 @@ export class ClockInOutPage {
       } else {
         this.timestamp = new EmployeeTimestamp();
         this.timestamp.employeeId = this.employee._id;
-        this.timestamp.storeId = this.user.settings.currentStore;
+        this.timestamp.storeId = this.user.currentStore;
         this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
       }
     }).catch(error => console.log(error)).then(() => loader.dismiss());
@@ -179,7 +179,7 @@ export class ClockInOutPage {
           if (this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
             let breakEnd = new EmployeeTimestamp();
             breakEnd.employeeId = this.employee._id;
-            breakEnd.storeId = this.user.settings.currentStore;
+            breakEnd.storeId = this.user.currentStore;
             breakEnd.time = time;
             breakEnd.type = EmployeeTimestampService.BREAK_END;
             promises.push(this.employeeTimestampService.add(breakEnd));
@@ -190,7 +190,7 @@ export class ClockInOutPage {
             let clockoutTime = new Date(this.timestamp.time);
             if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
               this.employeeTimestampService.getEmployeeLatestTimestamp(
-                this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
+                this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
               ).then((model: EmployeeTimestamp) => {
                 let clockInTime = "";
                 this.buttons[EmployeeTimestampService.CLOCK_OUT][0].enabled = false;

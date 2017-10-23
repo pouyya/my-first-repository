@@ -117,7 +117,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
     let currentDay = new Date(moment(new Date()).format("YYYY-MM-DD"));
     let currentUser = await this.userService.getUser();
     return new Promise((resolve, reject) => {
-      let storeId = currentUser.settings.storeId;
+      let storeId = currentUser.currentStore;
       this.findBy({
         selector: {
           store: {

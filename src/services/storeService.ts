@@ -18,7 +18,7 @@ export class StoreService extends BaseEntityService<Store> {
   public getDefaultTax(): Promise<any> {
     let user = this.userService.getLoggedInUser();
     return this.findBy({
-      selector: { _id: user.settings.currentStore },
+      selector: { _id: user.currentStore },
       fields: ["defaultSaleTaxId"]
     });
   }
@@ -28,9 +28,8 @@ export class StoreService extends BaseEntityService<Store> {
       super.update(store).then(() => {
         // persist user
         let user = this.userService.getLoggedInUser();
-        if (store._id == user.settings.currentStore) {
-          user.currentStore = _.pick(store, GlobalConstants.STORE_SESSION_PROPS);
-          user.settings.currentStore = store._id;
+        if (store._id == user.currentStore) {
+          user.currentStore = store._id;
           this.userService.setSession(user);
         }
         resolve();
@@ -48,7 +47,7 @@ export class StoreService extends BaseEntityService<Store> {
    */
   public delete(store: Store, associated: boolean = false): Promise<any> {
     let user = this.userService.getLoggedInUser();
-    if (user.settings.currentStore == store._id) {
+    if (user.currentStore == store._id) {
       return Promise.reject({
         error: 'DEFAULT_STORE_EXISTS',
         error_msg: 'This is your current store. Please switch to other one before deleting it.'

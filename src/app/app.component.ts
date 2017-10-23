@@ -5,11 +5,14 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { UserService } from './../services/userService';
 import { PosService } from './../services/posService';
+import { StoreService } from './../services/storeService';
 import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
 import { ModuleBase } from "../modules/moduelBase";
 import { DeployPage } from "../pages/deploy/deploy";
 import { LoginPage } from './../pages/login/login';
+import { POS } from './../model/pos';
+import { Store } from './../model/store';
 
 @Component({
   selector: 'app',
@@ -21,6 +24,8 @@ export class SimplePOSApp implements OnInit {
   public currentModule: ModuleBase;
   public moduleName: string;
   public user: any;
+  public currentStore: Store;
+  public currentPos: POS;
 
   constructor(
     public platform: Platform,
@@ -29,6 +34,7 @@ export class SimplePOSApp implements OnInit {
     private userService: UserService,
     private moduleService: ModuleService,
     private posService: PosService,
+    private storeService: StoreService,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private loading: LoadingController,
@@ -44,7 +50,14 @@ export class SimplePOSApp implements OnInit {
   async ngOnInit() {
     try {
       this.user = await this.userService.getUser();
-      this.rootPage = this.user ? DeployPage : LoginPage;
+      if(this.user) {
+        this.currentStore = await this.storeService.get(this.user.currentStore);
+        this.currentPos = await this.posService.get(this.user.currentPos);
+        this.rootPage = DeployPage;
+      } else {
+        this.rootPage = LoginPage;
+      }
+      return;
     } catch (error) {
       console.error(error);
       this._errorHandler("An error has occurred.")
@@ -67,13 +80,17 @@ export class SimplePOSApp implements OnInit {
   switchRegister() {
     let modal = this.modalCtrl.create(SwitchPosModal);
     modal.onDidDismiss(data => {
-      let loader = this.loading.create();
+      if (data) {
+        let loader = this.loading.create();
 
-      loader.present().then(() => {
-        this.user = this.userService.user;
-        this.nav.setRoot(this.nav.getActive().component);
-        loader.dismiss();
-      });
+        loader.present().then(() => {
+          data.hasOwnProperty('currentStore') && (this.currentStore = data.currentStore);
+          data.hasOwnProperty('currentPos') && (this.currentPos = data.currentPos);
+          this.user = this.userService.getLoggedInUser();
+          this.nav.setRoot(this.nav.getActive().component);
+          loader.dismiss();
+        });
+      }
     });
     modal.present();
   }
@@ -81,13 +98,13 @@ export class SimplePOSApp implements OnInit {
   openPage(page) {
     this.currentModule = this.moduleService.getCurrentModule(page);
     this.moduleName = this.currentModule.constructor.name;
-    if(page.hasOwnProperty('modal') && page.modal) {
+    if (page.hasOwnProperty('modal') && page.modal) {
       let modal = this.modalCtrl.create(page.component);
-       modal.onDidDismiss(data => {
-         if(page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
+      modal.onDidDismiss(data => {
+        if (page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
           page.onDismiss(data);
-         }
-       });
+        }
+      });
       modal.present();
     } else {
       this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);

@@ -56,7 +56,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public instantiateInvoice(posId?: string): Promise<any> {
 		let id = localStorage.getItem('invoice_id') || new Date().toISOString();
-		if (!posId) posId = this._user.settings.currentPos;
+		if (!posId) posId = this._user.currentPos;
 		return new Promise((resolve, reject) => {
 			this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
 				.then(

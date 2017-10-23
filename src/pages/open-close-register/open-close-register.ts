@@ -67,8 +67,8 @@ export class OpenCloseRegister {
     loader.present().then(() => {
       let user = this.userService.getLoggedInUser();
       let promises: Array<Promise<any>> = [
-        this.posService.get(user.settings.currentPos),
-        this.storeService.get(user.settings.currentStore)
+        this.posService.get(user.currentPos),
+        this.storeService.get(user.currentStore)
       ];
 
       Promise.all(promises).then((response) => {

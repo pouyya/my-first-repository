@@ -124,7 +124,7 @@ export class Sales {
   async ionViewDidLoad() {
     this.user = this.userService.getLoggedInUser();
     try {
-      this.register = await this.posService.get(this.user.settings.currentPos);
+      this.register = await this.posService.get(this.user.currentPos);
       let _init: boolean = false;
       if (!this.register.status) {
         let openingAmount: number = Number(this.navParams.get('openingAmount'));
@@ -211,7 +211,7 @@ export class Sales {
   // Event
   public onSelect(item: PurchasableItem) {
     let context = new EvaluationContext();
-    context.currentStore = this.user.settings.currentStore;
+    context.currentStore = this.user.currentStore;
     context.currentDateTime = new Date();
 
     let price: PurchasableItemPriceInterface = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);

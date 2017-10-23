@@ -60,7 +60,7 @@ export class SalesHistoryPage {
   ionViewDidEnter() {
     this.platform.ready().then(() => {
       this.user = this.userService.getLoggedInUser();
-      this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters)
+      this.salesService.searchSales(this.user.currentPos, this.limit, this.offset, this.filters)
       .then((result: any) => {
         this.total = result.totalCount;
         this.offset += this.limit;
@@ -177,7 +177,7 @@ export class SalesHistoryPage {
     return new Promise((resolve, reject) => {
       if (this.total > this.invoices.length) {
         this.salesService.searchSales(
-          this.user.settings.currentPos,
+          this.user.currentPos,
           limit | this.limit, offset | this.offset,
           this.filters).then((result: any) => {
             this.total = result.totalCount;

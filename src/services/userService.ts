@@ -1,3 +1,4 @@
+import { UserSession } from './../model/UserSession';
 import { ConfigService } from './configService';
 import { Storage } from '@ionic/storage';
 import { AuthHttp } from 'angular2-jwt';
@@ -15,11 +16,11 @@ export class UserService {
     private storage: Storage
   ) { }
 
-  public getLoggedInUser(): any {
+  public getLoggedInUser(): UserSession {
     return this.user;
   }
 
-  public async getUser(): Promise<any> {
+  public async getUser(): Promise<UserSession> {
     var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey())
     this.user = userRawJson ? JSON.parse(userRawJson) : null;
     return this.user;
@@ -36,7 +37,7 @@ export class UserService {
 
   public async getUserToken(): Promise<string> {
     var currentUser = await this.getUser();
-    return currentUser.token;
+    return currentUser.access_token;
   }
 
 }

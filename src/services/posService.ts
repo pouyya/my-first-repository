@@ -13,7 +13,13 @@ export class PosService extends BaseEntityService<POS> {
 
   public async getCurrentPosStatus(): Promise<boolean> {
     var currentUser = this.userService.getLoggedInUser();
-    let currentPos = await this.get(currentUser.settings.currentPos);
+    let currentPos = await this.get(currentUser.currentPos);
     return currentPos.status;
+  }
+
+  public async getFirst(): Promise<POS> {
+    // Main point-of-sale
+    // Hard coded for now
+    return await this.get("2017-07-18T11:40:52.927Z");
   }
 }

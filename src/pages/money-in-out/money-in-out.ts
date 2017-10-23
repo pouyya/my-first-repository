@@ -32,7 +32,7 @@ export class MoneyInOut {
   }
 
   ionViewDidLoad() {
-    this.posService.get(this.user.settings.currentPos).then((register: POS) => {
+    this.posService.get(this.user.currentPos).then((register: POS) => {
       this.register = register;
     }).catch(error => {
       throw new Error(error);

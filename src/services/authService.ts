@@ -1,9 +1,12 @@
+import { UserSession } from './../model/UserSession';
+import { PosService } from './posService';
 import { ConfigService } from './configService';
 import { UserService } from './userService';
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { AuthHttp } from 'angular2-jwt';
+
 import 'rxjs/add/operator/map'
 
 @Injectable()
@@ -12,6 +15,7 @@ export class AuthService {
   constructor(
     private http: Http,
     private userService: UserService,
+    private posService: PosService,
     private authHttp: AuthHttp
   ) { }
 
@@ -40,8 +44,13 @@ export class AuthService {
 
         return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
           .flatMap(async (userProfile: Response) => {
-            
-            let userSession: any = {
+
+            let currentPos = await this.posService.getFirst();
+            user.currentPos = currentPos._id;
+            user.currentStore = currentPos.storeId
+
+            let userSession: UserSession = new UserSession();
+            userSession = {
               acess_token: user.access_token,
               ...user,
               settings: userProfile.json()
