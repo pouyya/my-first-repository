@@ -113,7 +113,7 @@ export class DBService<T extends DBBasedEntity> {
     async findBy(selector: any) {
         var entityTypeName = (new this.entityType()).entityTypeName;
         selector.entityTypeName = entityTypeName;
-        var docs = DBService._db.find(selector);
+        var docs = await DBService._db.find(selector);
         return docs.docs;
     }
 

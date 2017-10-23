@@ -78,16 +78,12 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     });
   }
 
-  public getPriceBookByCriteria() {
-    return new Promise((resolve, reject) => {
-      this.findBy({
-        selector: {
-          "priority": {
-            "$gte": 0
-          }
-        }
-      }).then(data => resolve(data[0])).catch(error => reject(error));
+  public async getPriceBookByCriteria() {
+    var data = await this.findBy({
+      selector: { priority: { $gte: 0 } }
     });
+
+    return data[0];
   }
 
   /**
