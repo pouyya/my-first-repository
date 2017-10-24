@@ -8,7 +8,7 @@ import { Http } from '@angular/http';
 @Injectable()
 export class UserService {
 
-  public user: any;
+  public user: UserSession;
 
   constructor(
     private http: Http,

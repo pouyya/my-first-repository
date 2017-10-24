@@ -65,6 +65,7 @@ export class DBService<T extends DBBasedEntity> {
             DBService._db.createIndex({
                 index: { fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs'] }
             });
+            return
         }
     }
 

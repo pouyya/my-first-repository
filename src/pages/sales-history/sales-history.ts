@@ -1,4 +1,6 @@
-import { Platform, NavController, AlertController, ToastController } from 'ionic-angular';
+import { UserSession } from './../../model/UserSession';
+import { StoreService } from './../../services/storeService';
+import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { UserService } from './../../services/userService';
 import { Sale } from './../../model/sale';
@@ -21,7 +23,7 @@ export class SalesHistoryPage {
   public selectedStatus: string = '';
   public states: any;
   public filtersEnabled: boolean = false;
-  private user: any;
+  private user: UserSession;
   private limit: number;
   private readonly defaultLimit = 5;
   private readonly defaultOffset = 0;
@@ -40,8 +42,10 @@ export class SalesHistoryPage {
     private salesService: SalesServices,
     private navCtrl: NavController,
     private userService: UserService,
+    private storeService: StoreService,
     private alertController: AlertController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private loading: LoadingController
   ) {
     this.invoices = [];
     this.invoicesBackup = [];
@@ -61,14 +65,14 @@ export class SalesHistoryPage {
     this.platform.ready().then(() => {
       this.user = this.userService.getLoggedInUser();
       this.salesService.searchSales(this.user.currentPos, this.limit, this.offset, this.filters)
-      .then((result: any) => {
-        this.total = result.totalCount;
-        this.offset += this.limit;
-        this.invoices = result.docs;
-        this.invoicesBackup = this.invoices;
-      }).catch(error => {
-        throw new Error(error);
-      });
+        .then((result: any) => {
+          this.total = result.totalCount;
+          this.offset += this.limit;
+          this.invoices = result.docs;
+          this.invoicesBackup = this.invoices;
+        }).catch(error => {
+          throw new Error(error);
+        });
     });
   }
 
@@ -82,14 +86,14 @@ export class SalesHistoryPage {
 
   public getState(invoice: Sale) {
     var state = "";
-    if(invoice.completed) {
-      if(invoice.state == 'completed') {
+    if (invoice.completed) {
+      if (invoice.state == 'completed') {
         state = 'Completed';
-      } else if(invoice.state == 'refund') {
+      } else if (invoice.state == 'refund') {
         state = 'Refund Completed';
       }
     } else {
-      if(invoice.state == 'parked') {
+      if (invoice.state == 'parked') {
         state = 'Parked';
       } else {
         state = 'Voided';
@@ -99,6 +103,7 @@ export class SalesHistoryPage {
   }
 
   public gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
+
     let invoiceId = localStorage.getItem('invoice_id');
     if (invoiceId) {
       let confirm = this.alertController.create({
@@ -109,11 +114,16 @@ export class SalesHistoryPage {
             text: 'Discard It!',
             handler: () => {
               let toast = this.toastCtrl.create({
-                message: 'Sale has been discarded! Your selected sale is now loaded.',
+                message: 'Sale has been discarded! Your selected sale is now being loaded.',
                 duration: 5000
               });
               toast.present();
-              this.loadSelected(invoice, doRefund);
+              this.loadSale(invoice, doRefund).then(_invoice => {
+                localStorage.setItem('invoice_id', _invoice._id);
+                this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
+              }).catch(error => {
+                throw new Error(error);
+              });
             }
           },
           {
@@ -126,7 +136,12 @@ export class SalesHistoryPage {
       });
       confirm.present();
     } else {
-      this.loadSelected(invoice, doRefund);
+      this.loadSale(invoice, doRefund).then(_invoice => {
+        localStorage.setItem('invoice_id', _invoice._id);
+        this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
+      }).catch(error => {
+        throw new Error(error);
+      });
     }
   }
 
@@ -143,7 +158,7 @@ export class SalesHistoryPage {
 
   public searchByState() {
     this.invoices = this.invoicesBackup;
-    switch(this.selectedStatus) {
+    switch (this.selectedStatus) {
       case 'parked':
         this.filters.state = 'parked';
         this.filters.completed = false;
@@ -157,7 +172,7 @@ export class SalesHistoryPage {
         this.filters.completed = true;
         break;
       case 'voided':
-        this.filters.state = [ 'current', 'refund' ];
+        this.filters.state = ['current', 'refund'];
         this.filters.completed = false;
         break;
       default:
@@ -170,7 +185,7 @@ export class SalesHistoryPage {
     this.invoices = [];
     this.getSales().catch((error) => {
       console.error(error);
-    });    
+    });
   }
 
   private getSales(limit?: number, offset?: number): Promise<any> {
@@ -189,12 +204,16 @@ export class SalesHistoryPage {
     });
   }
 
-  private loadSelected(invoice: Sale, doRefund: boolean) {
-    var newInvoice: Sale;
-    newInvoice = (doRefund && invoice.completed && invoice.state == 'completed') ?
-      this.salesService.instantiateRefundSale(invoice) : { ...invoice };
-    localStorage.setItem('invoice_id', newInvoice._id);
-    this.navCtrl.setRoot(Sales, { invoice: newInvoice, doRefund });    
+  private async loadSale(invoice: Sale, doRefund: boolean) {
+    let newInvoice: Sale;
+    if (doRefund && invoice.completed && invoice.state == 'completed') {
+      let store = await this.storeService.get(this.user.currentStore);
+      newInvoice = this.salesService.instantiateRefundSale(invoice, store);
+      return newInvoice;
+    } else {
+      newInvoice = await Promise.resolve({ ...invoice });
+      return newInvoice;
+    }
   }
 
   public loadMoreSale(infiniteScroll) {

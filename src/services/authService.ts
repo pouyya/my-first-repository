@@ -45,10 +45,6 @@ export class AuthService {
         return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
           .flatMap(async (userProfile: Response) => {
 
-            let currentPos = await this.posService.getFirst();
-            user.currentPos = currentPos._id;
-            user.currentStore = currentPos.storeId
-
             let userSession: UserSession = new UserSession();
             userSession = {
               acess_token: user.access_token,

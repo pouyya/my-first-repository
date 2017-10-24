@@ -13,8 +13,11 @@ import { UserService } from './../../services/userService';
 import { EmployeeService } from './../../services/employeeService';
 import { Employee } from './../../model/Employee';
 import { CacheService } from './../../services/cacheService';
+import { UserSession } from './../../model/UserSession';
+import { StoreService } from './../../services/storeService';
 
 import { POS } from './../../model/pos';
+import { Store } from './../../model/store';
 import { Sale } from './../../model/sale';
 import { SalesTax } from './../../model/salesTax';
 import { PriceBook } from './../../model/priceBook';
@@ -48,11 +51,12 @@ export class Sales {
   public activeTiles: Array<any>;
   public invoice: Sale;
   public register: POS;
+  public store: Store;
   public doRefund: boolean = false;
   public icons: any;
   public employees: Array<any> = [];
   public selectedEmployee: any = null;
-  public user: any;
+  public user: UserSession;
   private invoiceParam: any;
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
@@ -69,10 +73,13 @@ export class Sales {
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private posService: PosService,
+    private storeService: StoreService,
     private navParams: NavParams,
     private cacheService: CacheService,
     private toastCtrl: ToastController
   ) {
+    this.invoiceParam = this.navParams.get('invoice');
+    this.doRefund = this.navParams.get('doRefund');    
     this._sharedService.payload$.subscribe((data) => {
       if (data) {
         // data will receive here
@@ -81,39 +88,13 @@ export class Sales {
         });
 
         loader.present().then(() => {
-          data.employee.selected = false;
-          data.employee.disabled = false;
-          if (this.selectedEmployee && this.selectedEmployee._id == data.employee._id) {
-            this.selectedEmployee = null;
-          }
-          let index = _.findIndex(this.employees, { _id: data.employee._id });
-          switch (data.type) {
-            case 'clock_in':
-              this.employees.push(data.employee);
-              break;
-            case 'clock_out':
-              if (index > -1) {
-                this.employees.splice(index, 1);
-              }
-              break;
-            case 'break_start':
-              if (index > -1) {
-                this.employees[index].selected = false;
-                this.employees[index].disabled = true;
-              }
-              break;
-            case 'break_end':
-              this.employees[index].selected = false;
-              this.employees[index].disabled = false;
-              break;
-          }
+          this.salesService.updateEmployeeTiles(
+            this.employees, this.selectedEmployee, data.employee, data.type);
           loader.dismiss();
         });
 
       }
     });
-    this.invoiceParam = this.navParams.get('invoice');
-    this.doRefund = this.navParams.get('doRefund');
     this.cdr.detach();
   }
 
@@ -125,6 +106,7 @@ export class Sales {
     this.user = this.userService.getLoggedInUser();
     try {
       this.register = await this.posService.get(this.user.currentPos);
+      this.store = await this.storeService.get(this.user.currentStore);
       let _init: boolean = false;
       if (!this.register.status) {
         let openingAmount: number = Number(this.navParams.get('openingAmount'));
@@ -192,12 +174,10 @@ export class Sales {
    * @param category
    * @returns {boolean}
    */
-  public itemSelected(category) {
+  public selectCategory(category) {
     this.activeCategory = category;
     this.salesService.loadPurchasableItems(category._id).then(
-      items => {
-        this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
-      },
+      items => this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]),
       error => { console.error(error); }
     );
     return category._id == category._id;
@@ -214,7 +194,7 @@ export class Sales {
     context.currentStore = this.user.currentStore;
     context.currentDateTime = new Date();
 
-    let price: PurchasableItemPriceInterface = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
+    let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
     if (price) {
       let interactableItem: InteractableItem = { ...item, tax: null, priceBook: price, employeeId: null };
       interactableItem.tax = _.pick(
@@ -255,7 +235,8 @@ export class Sales {
     this.navCtrl.push(PaymentsPage, {
       invoice: this.invoice,
       doRefund: this.doRefund,
-      callback: pushCallback
+      callback: pushCallback,
+      store: this.store
     });
   }
 
@@ -272,11 +253,13 @@ export class Sales {
         this.priceBook = data[1] as PriceBook;
         this.defaultTax = data[2] as any;
         this.priceBooks = data[3] as PriceBook[];
+
         this.priceBooks.sort(
           firstBy("priority").thenBy((book1, book2) => {
             return new Date(book2._id).getTime() - new Date(book1._id).getTime();
           })
         );
+
         if (invoiceData.doRecalculate) {
           this.salesService.reCalculateInMemoryInvoice(
             /* Pass By Reference */
@@ -297,28 +280,23 @@ export class Sales {
     });
   }
 
-  private loadCategoriesAssociation(categories: Array<any>): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let promiseCategories: Array<Promise<any>> = [];
-      for (let categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
-        promiseCategories.push(new Promise((resolveB, rejectB) => {
-          if (categoryIndex === 0) {
-            this.activeCategory = categories[categoryIndex];
-            this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
-              this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
-              resolveB();
-            });
-          }
-          else {
-            this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then(() => {
-              resolveB();
-            });
-          }
-        }));
-      }
+  private async loadCategoriesAssociation(categories: any[]): Promise<any> {
+    let promises: Promise<any>[] = [];
+    for (let categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
+      promises.push(new Promise((resolve, reject) => {
+        if (categoryIndex === 0) {
+          this.activeCategory = categories[categoryIndex];
+          this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
+            this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
+            resolve();
+          });
+        } else {
+          this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then(() => resolve());
+        }
+      }));
+    }
 
-      Promise.all(promiseCategories).then(() => resolve());
-    });
+    return await Promise.all(promises);
   }
 
   public onSubmit() {

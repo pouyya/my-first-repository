@@ -1,3 +1,8 @@
+import { Store } from './../../model/store';
+import { POS } from './../../model/pos';
+import { SharedService } from './../../services/_sharedService';
+import { StoreService } from './../../services/storeService';
+import { PosService } from './../../services/posService';
 import { ConfigService } from './../../services/configService';
 import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
@@ -19,10 +24,13 @@ export class DeployPage {
 	constructor(
 		private userService: UserService,
 		private pluginService: PluginService,
+		private posService: PosService,
+		private storeService: StoreService,
+		private _sharedService: SharedService,
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public platform: Platform,
-		public deploy: Deploy,
+		public deploy: Deploy
 	) {
 
 		if (platform.is('core')) {
@@ -57,7 +65,7 @@ export class DeployPage {
 	}
 
 	async loadUserInfoAndNavigateToHome() {
-		var user = await this.userService.getUser();
+		let user = await this.userService.getUser();
 		ConfigService.externalDBUrl = user.settings.db_url;
 		ConfigService.externalDBName = user.settings.db_name;
 		ConfigService.internalDBName = user.settings.db_local_name;
@@ -73,7 +81,13 @@ export class DeployPage {
 				}
 			}
 		)
-		DBService.initialize();
+		await DBService.initialize();
+		let currentPos: POS = await this.posService.getFirst();
+		let currentStore: Store = await this.storeService.get(currentPos.storeId);
+		user.currentPos = currentPos._id;
+		user.currentStore = currentStore._id;
+		this._sharedService.publish({ currentStore, currentPos });
+		this.userService.setSession(user);
 		return user;
 	}
 }

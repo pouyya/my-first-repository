@@ -1,3 +1,5 @@
+import { SharedService } from './../services/_sharedService';
+import { UserSession } from './../model/UserSession';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -23,9 +25,9 @@ export class SimplePOSApp implements OnInit {
   public rootPage: any;
   public currentModule: ModuleBase;
   public moduleName: string;
-  public user: any;
-  public currentStore: Store;
-  public currentPos: POS;
+  public user: UserSession;
+  public currentStore: Store = null;
+  public currentPos: POS = null;
 
   constructor(
     public platform: Platform,
@@ -33,14 +35,19 @@ export class SimplePOSApp implements OnInit {
     public splashScreen: SplashScreen,
     private userService: UserService,
     private moduleService: ModuleService,
-    private posService: PosService,
-    private storeService: StoreService,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private loading: LoadingController,
     private pluginService: PluginService,
+    private _sharedService: SharedService,
     private cdr: ChangeDetectorRef
   ) {
+    this._sharedService.payload$.subscribe((data) => {
+      if(data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
+        this.currentStore = data.currentStore;
+        this.currentPos = data.currentPos;
+      }
+    });
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
@@ -50,13 +57,7 @@ export class SimplePOSApp implements OnInit {
   async ngOnInit() {
     try {
       this.user = await this.userService.getUser();
-      if(this.user) {
-        this.currentStore = await this.storeService.get(this.user.currentStore);
-        this.currentPos = await this.posService.get(this.user.currentPos);
-        this.rootPage = DeployPage;
-      } else {
-        this.rootPage = LoginPage;
-      }
+      this.rootPage = this.user ? DeployPage : LoginPage;
       return;
     } catch (error) {
       console.error(error);

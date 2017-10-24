@@ -17,9 +17,9 @@ export class PosService extends BaseEntityService<POS> {
     return currentPos.status;
   }
 
-  public async getFirst(): Promise<POS> {
+  public getFirst(): Promise<any> {
     // Main point-of-sale
     // Hard coded for now
-    return await this.get("2017-07-18T11:40:52.927Z");
+    return this.get("2017-07-18T11:40:52.927Z");
   }
 }
