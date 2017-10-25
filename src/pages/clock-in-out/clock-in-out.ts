@@ -54,16 +54,15 @@ export class ClockInOutPage {
     return new Promise((resolve, reject) => {
       this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [], { ok: 'OK', cancel: 'Cancel' })
         .then((pin) => {
-          this.employeeService.findByPin(pin).then((employee: Employee) => {
-            this.user = this.userService.getLoggedInUser();
-            // let index = _.findIndex(employee.store, { id: this.user.currentStore });
-            // if (index > -1) {
-              this.employee = employee;
-              resolve();
-            // } else {
-            //   toast.present(); reject();
-            // }
-          }).catch(() => { toast.present(); reject(); });
+          if(pin) {
+            this.employeeService.findByPin(pin).then((employee: Employee) => {
+              this.user = this.userService.getLoggedInUser();
+                this.employee = employee;
+                resolve();
+            }).catch(() => { toast.present(); reject(); });
+          } else {
+            reject();
+          }
         }).catch(() => { toast.present(); reject(); });
     })
   }

@@ -53,7 +53,7 @@ export class PluginService {
             {
               text: buttons.cancel || 'Cancel',
               handler() {
-                reject();
+                resolve();
               }
             }
           ],

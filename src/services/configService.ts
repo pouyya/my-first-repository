@@ -67,6 +67,7 @@ export class ConfigService {
     }
 
     static userSessionStorageKey(): string {
-        return 'user' + ConfigService.internalDBName;
+        return 'usermedihair_aria';
+        // return 'user' + ConfigService.internalDBName;
     }
 }

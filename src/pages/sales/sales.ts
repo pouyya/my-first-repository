@@ -46,21 +46,21 @@ export class Sales {
   @ViewChild(BasketComponent)
   private basketComponent: BasketComponent;
 
-  public categories: Array<any>;
+  public categories: any[];
   public activeCategory: any;
-  public activeTiles: Array<any>;
+  public activeTiles: any[];
   public invoice: Sale;
   public register: POS;
   public store: Store;
   public doRefund: boolean = false;
   public icons: any;
-  public employees: Array<any> = [];
+  public employees: any[] = [];
   public selectedEmployee: any = null;
   public user: UserSession;
   private invoiceParam: any;
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
-  private salesTaxes: Array<SalesTax>;
+  private salesTaxes: SalesTax[];
   private defaultTax: any;
 
   constructor(
@@ -79,20 +79,18 @@ export class Sales {
     private toastCtrl: ToastController
   ) {
     this.invoiceParam = this.navParams.get('invoice');
-    this.doRefund = this.navParams.get('doRefund');    
+    this.doRefund = this.navParams.get('doRefund');
+    let loader = this.loading.create({
+      content: 'Refreshing Staff List...',
+    });
     this._sharedService.payload$.subscribe((data) => {
-      if (data) {
-        // data will receive here
-        let loader = this.loading.create({
-          content: 'Refreshing Staff List...',
-        });
-
+      if (data.hasOwnProperty('employee') && data.hasOwnProperty('type')) {
         loader.present().then(() => {
           this.salesService.updateEmployeeTiles(
             this.employees, this.selectedEmployee, data.employee, data.type);
+          this.employees = [...this.employees];
           loader.dismiss();
         });
-
       }
     });
     this.cdr.detach();
@@ -126,42 +124,10 @@ export class Sales {
       }
 
       if (_init) {
-        let loader = this.loading.create({
-          content: 'Loading Register...',
-        });
-
-        loader.present().then(() => {
-
-          let promises: Array<Promise<any>> = [
-            this.initSalePageData(),
-            new Promise((resolve, reject) => {
-              this.categoryService.getAll().then((categories) => {
-                this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
-                this.loadCategoriesAssociation(this.categories).then(() => resolve());
-              });
-            })
-          ];
-
-          if (this.user.settings.trackEmployeeSales) {
-            promises.push(new Promise((resolve, reject) => {
-              this.employeeService.getListByCurrentStatus().then((employees: Array<any>) => {
-                this.employees = employees.length > 0 ? employees : [];
-                resolve();
-              }).catch(error => reject(error));
-            }));
-          }
-
-          Promise.all(promises).then(() => {
-            if (this.employees.length > 0) {
-              this.employees = this.employees.map(employee => {
-                employee.selected = false;
-                return employee;
-              });
-            }
-            this.cdr.reattach();
-            loader.dismiss();
-          });
-        });
+        let loader = this.loading.create({ content: 'Loading Register...', });
+        await loader.present();
+        await this.initiate();
+        loader.dismiss();
       }
     }
     catch (error) {
@@ -214,22 +180,21 @@ export class Sales {
 
   // Event
   public paymentClicked($event) {
-    let pushCallback = (_params) => {
-      return new Promise((resolve, reject) => {
-        if (_params) {
-          this.salesService.instantiateInvoice().then((invoice: any) => {
-            this.invoiceParam = null;
-            this.invoice = invoice.invoice;
-            this.employees = this.employees.map(employee => {
-              employee.selected = false;
-              return employee;
-            });
-            this.selectedEmployee = null;
-          });
-        }
-        resolve();
-      });
-    };
+    let pushCallback = async _params => {
+      if(_params) {
+        let response = await this.salesService.instantiateInvoice();
+        this.invoiceParam = null;
+        this.invoice = response.invoice;
+        this.employees = this.employees.map(employee => {
+          employee.selected = false;
+          return employee;
+        });
+        this.selectedEmployee = null;
+        return;
+      }
+
+      return await Promise.resolve();
+    }
 
     this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
@@ -250,9 +215,9 @@ export class Sales {
       this.salesService.initializeSalesData(this.invoiceParam).subscribe((data: any[]) => {
         let invoiceData = data.shift();
         this.salesTaxes = data[0] as Array<any>;
-        this.priceBook = data[1] as PriceBook;
         this.defaultTax = data[2] as any;
         this.priceBooks = data[3] as PriceBook[];
+        this.priceBook  = data[1] as PriceBook;
 
         this.priceBooks.sort(
           firstBy("priority").thenBy((book1, book2) => {
@@ -299,51 +264,49 @@ export class Sales {
     return await Promise.all(promises);
   }
 
-  public onSubmit() {
-    let loader = this.loading.create({
-      content: 'Opening Register..',
-    });
-
-    loader.present().then(() => {
-      this.cdr.detach();
-      let promises: Array<Promise<any>> = [
-        new Promise((resolve, reject) => {
-          this.categoryService.getAll().then((categories) => {
-            this.categories = _.sortBy(categories, [category => parseInt(category.order) || 0]);
-            this.loadCategoriesAssociation(this.categories);
-            resolve();
-          }).catch(error => reject(error));
-        }),
-        new Promise((resolve, reject) => {
-          this.initSalePageData().then((response) => {
-            this.register.openTime = new Date().toISOString();
-            this.register.status = true;
-            this.register.openingAmount = Number(this.register.openingAmount);
-            this.posService.update(this.register);
-            resolve();
-          }).catch(error => reject(error));
-        })
-      ];
-      if (this.user.settings.trackEmployeeSales) {
-        promises.push(new Promise((resolve, reject) => {
-          this.employeeService.getListByCurrentStatus().then((employees: Array<Employee>) => {
-            this.employees = employees;
-            resolve();
-          }).catch(error => reject(error));
-        }));
-      }
-      Promise.all(promises).then(() => {
-        if (this.employees.length > 0) {
+  public async initiate(): Promise<any> {
+    this.cdr.detach();
+    let promises: any[] = [
+      async () => {
+        this.categories = await this.categoryService.getAll();
+        this.categories = _.sortBy(this.categories, [category => parseInt(category.order) || 0]);
+        this.loadCategoriesAssociation(this.categories);
+      },
+      async () => await this.initSalePageData()
+    ];
+    
+    if (this.user.settings.trackEmployeeSales) {
+      promises.push(async () => {
+        this.employees = await this.employeeService.getListByCurrentStatus();
+        if(this.employees && this.employees.length > 0) {
           this.employees = this.employees.map(employee => {
             employee.selected = false;
             return employee;
           });
-        }
-        this.cdr.reattach();
-        loader.dismiss();
-      }).catch(error => {
-        throw new Error(error);
-      })
-    });
+        }        
+      });
+    }
+    try {
+      await Promise.all(promises.map(func => func()));
+      this.cdr.reattach();
+      return;
+    } catch(err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async onSubmit(): Promise<any> {
+    let loader = this.loading.create({ content: 'Opening Register...' });
+    try {
+      await loader.present();
+      await this.initiate();
+      this.register.openTime = new Date().toISOString();
+      this.register.status = true;
+      this.register.openingAmount = Number(this.register.openingAmount);
+      this.posService.update(this.register);
+      loader.dismiss();
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 }
