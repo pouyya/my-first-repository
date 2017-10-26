@@ -37,7 +37,6 @@
   <ion-grid *ngIf="register.status" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
-        <button ion-button (click)="initiate()">INIT!</button>
         <ion-scroll style="height:100%" scrollY="true">
           <ion-list no-lines class="full-height no-margin sales-category">
             <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
