@@ -8,8 +8,6 @@ export class FountainService {
 
   private storeService: StoreService;
 
-  public sale
-
   constructor(
     private injector: Injector,
     private userService: UserService

@@ -14,7 +14,8 @@ import { GroupSaleTax } from "../model/groupSalesTax";
 
 @Injectable()
 export class AppService {
-  constructor(private salesTaxService: SalesTaxService,
+  constructor(
+    private salesTaxService: SalesTaxService,
     private groupSalesTaxService: GroupSalesTaxService,
     private posService: PosService,
     private pluginService: PluginService,
@@ -27,21 +28,72 @@ export class AppService {
    * Get list of all salesTax and GroupSalesTaxes combined
    * @returns {Promise<T>}
    */
-  public loadSalesAndGroupTaxes(): Promise<any> {
-    return new Promise((resolve, reject) => {
+  public async loadSalesAndGroupTaxes(): Promise<any> {
+    try {
       let taxes: Array<any> = [];
-      this.salesTaxService.getAll().then((_salesTaxes: Array<SalesTax>) => {
-        taxes = _salesTaxes.map((salesTax => {
-          return { ...salesTax, noOfTaxes: 0 };
-        }));
-        this.groupSalesTaxService.getAll().then((_groupSalesTaxes: Array<GroupSaleTax>) => {
-          taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
-            return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
-          })));
-          resolve(taxes);
-        }).catch(error => reject(error));
-      }).catch(error => reject(error));
-    });
+      let _salesTaxes: SalesTax[] = await this.salesTaxService.getAll();
+      taxes = _salesTaxes.map((salesTax => {
+        return { ...salesTax, noOfTaxes: 0 };
+      }));
+      let _groupSalesTaxes: GroupSaleTax[] = await this.groupSalesTaxService.getAll();
+      taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
+        return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
+      })));
+      return taxes;
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+  
+  public async deleteStoreAssoc(store: Store) {
+    try {
+      let assocDeletions: any[] = [
+        async () => {
+          let invoiceId = localStorage.getItem('invoice_id');
+          let registers: POS[] = await this.posService.findBy({ selector: { storeId: store._id } });
+          if (registers.length > 0) {
+            let posDeletions: Promise<any>[] = [];
+            registers.forEach((register) => {
+              this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Sale[]) => {
+                if (sales.length > 0) {
+                  let salesDeletion: Promise<any>[] = [];
+                  sales.forEach(sale => {
+                    if (invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
+                    salesDeletion.push(this.salesService.delete(sale));
+                  });
+                  Promise.all(salesDeletion).then(() => {
+                    posDeletions.push(this.posService.delete(register));
+                  });
+                } else {
+                  posDeletions.push(this.posService.delete(register));
+                }
+              }).catch(error => posDeletions.push(Promise.resolve()));
+            });
+
+            return await Promise.all(posDeletions);
+          }
+          return;
+        },
+
+        // async () => {
+        //   let employees: Employee[] = await this.employeeService.findByStore(store._id);
+        //   if(employees.length > 0) {
+        //     employees.forEach((employee, index, arr) => {
+        //       let storeIndex: number = _.findIndex(employee.store, { id: store._id });
+        //       arr[index].store.splice(storeIndex, 1);
+        //     });
+
+        //     return await this.employeeService.updateBulk(employees);
+        //   }
+        //   return;
+        // }
+      ];
+
+      return await Promise.all(assocDeletions.map(promise => promise()));
+
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   public deleteStoreAssociations(store: Store) {
@@ -110,7 +162,7 @@ export class AppService {
       let [services, products] = await Promise.all(collect);
       let items = services;
       return items.concat(products);
-    } catch(error) {
+    } catch (error) {
       throw new Error(error);
     }
   }
@@ -118,6 +170,6 @@ export class AppService {
   public errorHandler(error) {
     this.pluginService.openDialoge(error).catch(e => {
       throw new Error(e);
-    })    
+    })
   }
 }

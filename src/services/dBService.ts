@@ -39,8 +39,8 @@ export class DBService<T extends DBBasedEntity> {
                 retry: true
             }).on('change', function (info) {
                 if (info.direction == "pull") {
-                    var currentUpdateSeq = Number(info.change.last_seq.toString().substring(0, info.change.last_seq.toString().indexOf('-')));
-                    var progress = DBService.getProgress(currentUpdateSeq)
+                    let currentUpdateSeq = Number(info.change.last_seq.toString().substring(0, info.change.last_seq.toString().indexOf('-')));
+                    let progress = DBService.getProgress(currentUpdateSeq)
                     DBService.dbSyncProgress.emit(progress);
                 }
             }).on('paused', function (err) {

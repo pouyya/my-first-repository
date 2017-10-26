@@ -14,31 +14,43 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     super(EmployeeTimestamp);
   }
 
-  public getEmployeeLatestTimestamp(employeeId: string, storeId: string, type?: string) {
-    return new Promise((resolve, reject) => {
-      let selector: any = { employeeId, storeId }
-      if(type) selector.type = type;
-      this.findBy({
+  /**
+   * @param employeeId 
+   * @param storeId 
+   * @param type 
+   * @returns {Promise<any>}
+   */
+  public async getEmployeeLatestTimestamp(employeeId: string, storeId: string, type?: string): Promise<any> {
+    let selector: any = { employeeId, storeId }
+    if (type) selector.type = type;
+    try {
+      let timestamps: EmployeeTimestamp[] = await this.findBy({
         selector,
-        sort: [{_id: 'desc'}]
-      }).then((timestamps: Array<EmployeeTimestamp>) => {
-        timestamps.length > 0 ? resolve(timestamps[0]) : resolve(null);
-      }).catch(error => reject(error));
-    });
+        sort: [{ _id: 'desc' }]
+      })
+      return timestamps.length > 0 ? timestamps[0] : null;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
-
-  public getEmployeeLastTwoTimestamps(employeeId: string, storeId: string) {
-    return new Promise((resolve, reject) => {
-      this.findBy({
+  
+  /**
+   * @param employeeId 
+   * @param storeId 
+   * @returns {Promise<any>}
+   */
+  public async getEmployeeLastTwoTimestamps(employeeId: string, storeId: string): Promise<any> {
+    try {
+      let timestamps: EmployeeTimestamp[] = await this.findBy({
         selector: { employeeId, storeId },
-        sort: [{_id: 'desc'}]
-      }).then((timestamps: Array<EmployeeTimestamp>) => {
-        timestamps.length > 0 ? resolve({
-          latest: timestamps[0],
-          beforeLatest: timestamps[1] || null
-        }) : resolve(null);
-      }).catch(error => reject(error));
-    });
+        sort: [{ _id: 'desc' }]
+      });
+      return timestamps.length > 0 ? {
+        latest: timestamps[0],
+        beforeLatest: timestamps[1] || null
+      } : null;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
-
 }

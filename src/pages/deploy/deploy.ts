@@ -61,11 +61,19 @@ export class DeployPage {
 		}
 	}
 
-	ionViewDidLoad() {
-	}
-
 	async loadUserInfoAndNavigateToHome() {
 		let user = await this.userService.getUser();
+
+		let loadStoreData = async () => {
+			let currentPos: POS = await this.posService.getFirst();
+			let currentStore: Store = await this.storeService.get(currentPos.storeId);
+			user.currentPos = currentPos._id;
+			user.currentStore = currentStore._id;
+			this._sharedService.publish({ currentStore, currentPos });
+			this.userService.setSession(user);
+			return;
+		}
+
 		ConfigService.externalDBUrl = user.settings.db_url;
 		ConfigService.externalDBName = user.settings.db_name;
 		ConfigService.internalDBName = user.settings.db_local_name;
@@ -73,8 +81,11 @@ export class DeployPage {
 		DBService.dbSyncProgress.subscribe(
 			data => {
 				if (data === 1 && !this.isNavigated) {
-					this.isNavigated = true;
-					this.navCtrl.setRoot(Sales);
+					this.updateText = "Loading your company data 100%";
+					loadStoreData().then(() => {
+						this.isNavigated = true;
+						this.navCtrl.setRoot(Sales);
+					});
 				}
 				else {
 					this.updateText = "Loading your company data " + Math.round(data * 100) + "%";
@@ -82,12 +93,5 @@ export class DeployPage {
 			}
 		)
 		await DBService.initialize();
-		let currentPos: POS = await this.posService.getFirst();
-		let currentStore: Store = await this.storeService.get(currentPos.storeId);
-		user.currentPos = currentPos._id;
-		user.currentStore = currentStore._id;
-		this._sharedService.publish({ currentStore, currentPos });
-		this.userService.setSession(user);
-		return user;
 	}
 }

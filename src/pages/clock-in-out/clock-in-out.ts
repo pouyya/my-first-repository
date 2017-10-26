@@ -45,26 +45,26 @@ export class ClockInOutPage {
   /**
    * @AuthGuard
    */
-  ionViewCanEnter(): Promise<any> {
+  async ionViewCanEnter(): Promise<any> {
     let toast = this.toastCtrl.create({
       message: "Invalid PIN!",
       duration: 3000
     });
 
-    return new Promise((resolve, reject) => {
-      this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [], { ok: 'OK', cancel: 'Cancel' })
-        .then((pin) => {
-          if(pin) {
-            this.employeeService.findByPin(pin).then((employee: Employee) => {
-              this.user = this.userService.getLoggedInUser();
-                this.employee = employee;
-                resolve();
-            }).catch(() => { toast.present(); reject(); });
-          } else {
-            reject();
-          }
-        }).catch(() => { toast.present(); reject(); });
-    })
+    try {
+      let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+        { ok: 'OK', cancel: 'Cancel' });
+      if (pin) {
+        let employee: Employee = await this.employeeService.findByPin(pin);
+        this.user = this.userService.getLoggedInUser();
+        this.employee = employee;
+        return;
+      }
+      return Promise.reject(null);
+    } catch (err) {
+      toast.present();
+      return Promise.reject(null);
+    }
   }
 
   /**
@@ -201,7 +201,7 @@ export class ClockInOutPage {
             } else {
               this.messagePlaceholder = `${button.message} ${time}`;
             }
-          }).catch(error =>reject(error)).then(() => resolve(this.timestamp.type));
+          }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
         } else {
           this.employeeTimestampService.add(this.timestamp).then(() => {
             this.messagePlaceholder = `${button.message} ${time}`;

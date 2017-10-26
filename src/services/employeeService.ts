@@ -168,4 +168,28 @@ export class EmployeeService extends BaseEntityService<Employee> {
     });
   }
 
+  public async findByStore(storeId: string) {
+    try {
+      return await this.findBy({
+        selector: {
+          store: {
+            $elemMatch: {
+              id: { $eq: storeId }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async updateBulk(employees: Employee[]): Promise<any> {
+    try {
+      return await Promise.all(employees.map(employee => this.update(employee)));
+    } catch(err) {
+      return Promise.reject(err);
+    }
+  }
+
 }

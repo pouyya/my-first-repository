@@ -1,15 +1,13 @@
-import { SharedService } from './../services/_sharedService';
-import { UserSession } from './../model/UserSession';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { UserService } from './../services/userService';
-import { PosService } from './../services/posService';
-import { StoreService } from './../services/storeService';
 import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
+import { SharedService } from './../services/_sharedService';
+import { UserSession } from './../model/UserSession';
 import { ModuleBase } from "../modules/moduelBase";
 import { DeployPage } from "../pages/deploy/deploy";
 import { LoginPage } from './../pages/login/login';
