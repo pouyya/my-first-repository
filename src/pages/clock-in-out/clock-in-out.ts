@@ -212,7 +212,12 @@ export class ClockInOutPage {
     });
 
     completionPromise.then((type) => {
-      this.dismiss({ message: this.messagePlaceholder });
+      this.dismiss();
+      let toast = this.toastCtrl.create({
+        message: this.messagePlaceholder,
+        duration: 3000
+      });
+      toast.present();
       this._sharedService.publish({
         employee: this.employee,
         type

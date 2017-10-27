@@ -80,11 +80,12 @@ export class Sales {
   ) {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
-    let loader = this.loading.create({
-      content: 'Refreshing Staff List...',
-    });
+
     this._sharedService.payload$.subscribe((data) => {
       if (data.hasOwnProperty('employee') && data.hasOwnProperty('type')) {
+        let loader = this.loading.create({
+          content: 'Refreshing Staff List...',
+        });        
         loader.present().then(() => {
           this.salesService.updateEmployeeTiles(
             this.employees, this.selectedEmployee, data.employee, data.type);
