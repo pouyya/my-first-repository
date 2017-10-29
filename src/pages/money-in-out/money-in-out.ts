@@ -5,7 +5,6 @@ import { PosService } from './../../services/posService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
-import { UserService } from './../../services/userService';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -15,15 +14,12 @@ import { UserService } from './../../services/userService';
 export class MoneyInOut {
 
   private register: POS;
-  private user: any;
   public btnDisabled: boolean = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
-    private userService: UserService,
     private posService: PosService) {
-    this.user = this.userService.getLoggedInUser();
     this.cdr.detach();
   }
 
@@ -31,12 +27,9 @@ export class MoneyInOut {
     return this.posService.getCurrentPosStatus();
   }
 
-  ionViewDidLoad() {
-    this.posService.get(this.user.currentPos).then((register: POS) => {
-      this.register = register;
-    }).catch(error => {
-      throw new Error(error);
-    }).then(() => this.cdr.reattach());
+  async ionViewDidLoad() {
+    this.register = await this.posService.getCurrentPos();
+    this.cdr.reattach();
   }
 
   public openMoveCashModal(reason: string): void {

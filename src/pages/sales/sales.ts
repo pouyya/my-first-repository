@@ -84,7 +84,7 @@ export class Sales {
       if (data.hasOwnProperty('employee') && data.hasOwnProperty('type')) {
         let loader = this.loading.create({
           content: 'Refreshing Staff List...',
-        });        
+        });
         loader.present().then(() => {
           this.salesService.updateEmployeeTiles(
             this.employees, this.selectedEmployee, data.employee, data.type);
@@ -103,8 +103,8 @@ export class Sales {
   async ionViewDidLoad() {
     this.user = this.userService.getLoggedInUser();
     try {
-      this.register = await this.posService.get(this.user.currentPos);
-      this.store = await this.storeService.get(this.user.currentStore);
+      this.register = await this.posService.getCurrentPos();
+      this.store = await this.storeService.getCurrentStore();
       let _init: boolean = false;
       if (!this.register.status) {
         let openingAmount: number = Number(this.navParams.get('openingAmount'));
@@ -181,7 +181,7 @@ export class Sales {
   // Event
   public paymentClicked($event) {
     let pushCallback = async _params => {
-      if(_params) {
+      if (_params) {
         let response = await this.salesService.instantiateInvoice();
         this.invoiceParam = null;
         this.invoice = response.invoice;
@@ -217,7 +217,7 @@ export class Sales {
         this.salesTaxes = data[0] as Array<any>;
         this.defaultTax = data[2] as any;
         this.priceBooks = data[3] as PriceBook[];
-        this.priceBook  = data[1] as PriceBook;
+        this.priceBook = data[1] as PriceBook;
 
         this.priceBooks.sort(
           firstBy("priority").thenBy((book1, book2) => {
@@ -274,23 +274,23 @@ export class Sales {
       },
       async () => await this.initSalePageData()
     ];
-    
+
     if (this.user.settings.trackEmployeeSales) {
       promises.push(async () => {
         this.employees = await this.employeeService.getListByCurrentStatus();
-        if(this.employees && this.employees.length > 0) {
+        if (this.employees && this.employees.length > 0) {
           this.employees = this.employees.map(employee => {
             employee.selected = false;
             return employee;
           });
-        }        
+        }
       });
     }
     try {
       await Promise.all(promises.map(func => func()));
       this.cdr.reattach();
       return;
-    } catch(err) {
+    } catch (err) {
       return Promise.reject(err);
     }
   }

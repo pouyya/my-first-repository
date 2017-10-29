@@ -2,7 +2,6 @@ import { ToastController } from 'ionic-angular';
 import { LoadingController, AlertController, NavController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
 
-import { UserService } from './../../services/userService';
 import { SalesServices } from './../../services/salesService';
 import { ClosureService } from './../../services/closureService';
 import { PosService } from './../../services/posService';
@@ -53,8 +52,7 @@ export class OpenCloseRegister {
     private cdr: ChangeDetectorRef,
     private salesService: SalesServices,
     private alertCtrl: AlertController,
-    private navCtrl: NavController,
-    private userService: UserService) {
+    private navCtrl: NavController) {
     this.cdr.detach();
     this.showReport = false;
   }
@@ -65,10 +63,9 @@ export class OpenCloseRegister {
     });
 
     loader.present().then(() => {
-      let user = this.userService.getLoggedInUser();
       let promises: Array<Promise<any>> = [
-        this.posService.get(user.currentPos),
-        this.storeService.get(user.currentStore)
+        this.posService.getCurrentPos(),
+        this.storeService.getCurrentStore()
       ];
 
       Promise.all(promises).then((response) => {

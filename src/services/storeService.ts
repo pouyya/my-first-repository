@@ -20,6 +20,11 @@ export class StoreService extends BaseEntityService<Store> {
     });
   }
 
+  public getCurrentStore(): Promise<Store> {
+    let user = this.userService.getLoggedInUser();
+    return this.get(user.currentStore);
+  }
+
   public async update(store: Store): Promise<any> {
     try {
       await super.update(store);
