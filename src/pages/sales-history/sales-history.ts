@@ -102,7 +102,7 @@ export class SalesHistoryPage {
     return state;
   }
 
-  public gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
+  public async gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
 
     let invoiceId = localStorage.getItem('invoice_id');
     if (invoiceId) {
@@ -112,18 +112,15 @@ export class SalesHistoryPage {
         buttons: [
           {
             text: 'Discard It!',
-            handler: () => {
+            handler: async () => {
               let toast = this.toastCtrl.create({
                 message: 'Sale has been discarded! Your selected sale is now being loaded.',
                 duration: 5000
               });
               toast.present();
-              this.loadSale(invoice, doRefund).then(_invoice => {
-                localStorage.setItem('invoice_id', _invoice._id);
-                this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
-              }).catch(error => {
-                throw new Error(error);
-              });
+              var _invoice = await this.loadSale(invoice, doRefund);
+              localStorage.setItem('invoice_id', _invoice._id);
+              this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
             }
           },
           {
@@ -136,12 +133,9 @@ export class SalesHistoryPage {
       });
       confirm.present();
     } else {
-      this.loadSale(invoice, doRefund).then(_invoice => {
-        localStorage.setItem('invoice_id', _invoice._id);
-        this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
-      }).catch(error => {
-        throw new Error(error);
-      });
+      var _invoice = await this.loadSale(invoice, doRefund)
+      localStorage.setItem('invoice_id', _invoice._id);
+      this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
     }
   }
 
@@ -188,20 +182,16 @@ export class SalesHistoryPage {
     });
   }
 
-  private getSales(limit?: number, offset?: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (this.total > this.invoices.length) {
-        this.salesService.searchSales(
-          this.user.currentPos,
-          limit | this.limit, offset | this.offset,
-          this.filters).then((result: any) => {
-            this.total = result.totalCount;
-            this.invoices = this.invoices.concat(result.docs);
-            this.invoicesBackup = this.invoices;
-            resolve();
-          }).catch(error => reject(error));
-      } else resolve();
-    });
+  private async getSales(limit?: number, offset?: number): Promise<any> {
+    if (this.total > this.invoices.length) {
+      var result: any = this.salesService.searchSales(
+        this.user.currentPos,
+        limit | this.limit, offset | this.offset,
+        this.filters);
+      this.total = result.totalCount;
+      this.invoices = await this.invoices.concat(result.docs);
+      this.invoicesBackup = this.invoices;
+    }
   }
 
   private async loadSale(invoice: Sale, doRefund: boolean) {
@@ -216,10 +206,9 @@ export class SalesHistoryPage {
     }
   }
 
-  public loadMoreSale(infiniteScroll) {
-    this.getSales().then(() => {
-      this.offset += this.limit;
-      infiniteScroll.complete();
-    }).catch((error) => console.error(error));
+  public async loadMoreSale(infiniteScroll) {
+    await this.getSales()
+    this.offset += this.limit;
+    infiniteScroll.complete();
   }
 }
