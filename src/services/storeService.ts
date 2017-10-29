@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { AppService } from './appService';
 import { UserService } from './userService';
 import { Injectable } from '@angular/core';

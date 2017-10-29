@@ -77,7 +77,7 @@ export class DeployPage {
 		ConfigService.externalDBUrl = user.settings.db_url;
 		ConfigService.externalDBName = user.settings.db_name;
 		ConfigService.internalDBName = user.settings.db_local_name;
-		this.updateText = "Loading your company data 0%";
+		this.updateText = "Check for data update!";
 		DBService.dbSyncProgress.subscribe(
 			data => {
 				if (data === 1 && !this.isNavigated) {

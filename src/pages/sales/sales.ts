@@ -11,7 +11,6 @@ import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
 import { UserService } from './../../services/userService';
 import { EmployeeService } from './../../services/employeeService';
-import { Employee } from './../../model/Employee';
 import { CacheService } from './../../services/cacheService';
 import { UserSession } from './../../model/UserSession';
 import { StoreService } from './../../services/storeService';
