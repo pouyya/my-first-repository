@@ -6,7 +6,11 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'purchasable-item-info',
-  templateUrl: 'purchasable-item-info.html'
+  templateUrl: 'purchasable-item-info.html',
+  styles: [`.scrollable-component {
+    overflow-y: auto;
+    height: 200px;
+  }`]
 })
 export class PurchasableItemInfoComponent {
 
