@@ -121,4 +121,8 @@ export class DBService<T extends DBBasedEntity> {
     get(id) {
         return DBService._db.get(id);
     }
+
+    getDB() {
+        return DBService._db;
+    }    
 }

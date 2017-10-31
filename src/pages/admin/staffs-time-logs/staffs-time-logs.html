@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Staffs Time Logs Management</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>
+            <strong>Employee</strong>
+          </ion-col>
+          <ion-col col-md-3>
+            <strong>Store</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Checked In</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Checked Out</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>More...</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong></strong>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item-group *ngFor="let day of logs | keys">
+      <ion-item-divider color="light">{{ day.key }}</ion-item-divider>
+      <ion-item *ngFor="let employee of day.value | keys">
+        <ion-item *ngFor="let timestamp of employee.value">
+          <ion-grid>
+            <ion-row>
+              <ion-col col-md-3>
+                <span *ngIf="timestamp.employee">{{ timestamp.employee.firstName }} {{ timestamp.employee.lastName }}</span>
+              </ion-col>
+              <ion-col col-md-3>
+                <span>{{ timestamp.store.name }}</span>
+              </ion-col>
+              <ion-col col-md-2>
+                <span>{{ timestamp.type }}</span>
+              </ion-col>
+              <ion-col col-md-2>
+                <span>Time</span>
+              </ion-col>
+              <ion-col col-md-1 tappable>
+                <ion-icon name="eye"></ion-icon>
+              </ion-col>
+              <ion-col col-md-1 tappable>
+                <ion-icon name="trash"></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>  
+
+</ion-content>

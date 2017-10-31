@@ -57,6 +57,7 @@ import { DiscountSurchargeModal } from './../components/basket/modals/discount-s
 import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
+import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -158,7 +159,8 @@ const cloudSettings: CloudSettings = {
     ViewDiscountSurchargesModal,
     PriceBooksPage,
     PriceBookDetails,    
-    SelectPurchasableItemsModel
+    SelectPurchasableItemsModel,
+    StaffsTimeLogs
   ],
   imports: [
     BrowserModule,
@@ -235,7 +237,8 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
-    SelectPurchasableItemsModel
+    SelectPurchasableItemsModel,
+    StaffsTimeLogs
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},
@@ -250,7 +253,6 @@ const cloudSettings: CloudSettings = {
     ProductService,
     ServiceService,
     CategoryService,
-    
     EmployeeService,
     TaxService,
     CalculatorService,

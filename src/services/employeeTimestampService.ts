@@ -53,4 +53,18 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
       return Promise.reject(err);
     }
   }
+
+  public async getTimestampsfromTo(from?: Date, to?: Date, raw: boolean = true): Promise<any> {
+    try {
+      let view = "employee_timelog/by_time"
+      let record = await this.getDB().query(view);
+      if(raw) {
+        return record;
+      }
+
+      return record.rows.map(row => row.value);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
 }
