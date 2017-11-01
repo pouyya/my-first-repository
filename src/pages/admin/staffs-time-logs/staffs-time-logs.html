@@ -35,39 +35,20 @@
     </ion-item>
   </ion-list>
   <ion-list>
-    <ion-item-group *ngFor="let day of logs | keys">
+    <ion-item-group *ngFor="let day of timeLogs | keys">
       <ion-item-divider color="light">{{ day.key }}</ion-item-divider>
       <ion-item *ngFor="let employee of day.value | keys">
-        <ion-item *ngFor="let timestamp of employee.value">
-          <ion-grid>
-            <ion-row>
-              <ion-col col-md-3>
-                <span *ngIf="timestamp.employee">{{ timestamp.employee.firstName }} {{ timestamp.employee.lastName }}</span>
-              </ion-col>
-              <ion-col col-md-3>
-                <span>{{ timestamp.store.name }}</span>
-              </ion-col>
-              <ion-col col-md-2>
-                <span>{{ timestamp.type }}</span>
-              </ion-col>
-              <ion-col col-md-2>
-                <span>Time</span>
-              </ion-col>
-              <ion-col col-md-1 tappable>
-                <ion-icon name="eye"></ion-icon>
-              </ion-col>
-              <ion-col col-md-1 tappable>
-                <ion-icon name="trash"></ion-icon>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-        </ion-item>
+        <group-employee-timelog 
+          [data]="{ timeLogs: employee.value, dateKey: day.key, employeeKey: employee.key }"
+          (viewLogs)="viewLogs($event)"
+          (removeAll)="removeAll($event)">
+        </group-employee-timelog>
       </ion-item>
     </ion-item-group>
   </ion-list>
 
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+  <!-- <ion-infinite-scroll (ionInfinite)="loadMore($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>  
+  </ion-infinite-scroll>   -->
 
 </ion-content>

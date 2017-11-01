@@ -58,6 +58,7 @@ import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
+import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -68,7 +69,8 @@ import { IconSelectModule } from './../components/icon-select/icon-select.module
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
-import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items'
+import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
+import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -160,7 +162,8 @@ const cloudSettings: CloudSettings = {
     PriceBooksPage,
     PriceBookDetails,    
     SelectPurchasableItemsModel,
-    StaffsTimeLogs
+    StaffsTimeLogs,
+    TimeLogDetailsModal
   ],
   imports: [
     BrowserModule,
@@ -193,7 +196,8 @@ const cloudSettings: CloudSettings = {
     IconSelectModule,
     SPIconModule,
     ItemPriceBookModule,
-    TileScrollableModule
+    TileScrollableModule,
+    GroupEmployeeTimeLogModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -238,7 +242,8 @@ const cloudSettings: CloudSettings = {
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     SelectPurchasableItemsModel,
-    StaffsTimeLogs
+    StaffsTimeLogs,
+    TimeLogDetailsModal
   ],
   providers: [
     {provide: ErrorHandler, useClass: AppErrorHandler},

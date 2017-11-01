@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -26,6 +27,7 @@ export class SimplePOSApp implements OnInit {
   public user: UserSession;
   public currentStore: Store = null;
   public currentPos: POS = null;
+  private checkTime: Observable<any> = Observable.interval(1000);
 
   constructor(
     public platform: Platform,
@@ -39,7 +41,15 @@ export class SimplePOSApp implements OnInit {
     private pluginService: PluginService,
     private _sharedService: SharedService,
     private cdr: ChangeDetectorRef
-  ) {
+  ) {   
+    // this.checkTime.subscribe(() => {
+    //   let date = new Date().toISOString();
+    //   if(date == "2017-11-01T12:24:27.286Z") {
+    //
+    //     this.logOutAllStaffs();
+    //   }
+    // })
+
     this._sharedService.payload$.subscribe((data) => {
       if(data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
         this.currentStore = data.currentStore;
@@ -108,6 +118,11 @@ export class SimplePOSApp implements OnInit {
     } else {
       this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
     }
+  }
+
+  // imitating a service worker
+  private logOutAllStaffs() {
+    alert("All Employees have been logged out");
   }
 
 }

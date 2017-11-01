@@ -13,4 +13,11 @@ export class GlobalConstants {
   static readonly STORE_SESSION_PROPS: string[] = [ '_id', 'name', 'country', 'saleNumberPrefix', 'saleLastNumber' ];
 
   static readonly DEFAULT_ICON: any =  { name: "icon-barbc-barber-shop-1", type: "svg", noOfPaths: 17 };
+
+  static readonly TIME_LOG_ACTION: any = {
+    'clock_in': 'CLOCK IN',
+    'clock_out': 'CLOCK_OUT',
+    'break_start': 'BREAK START',
+    'break_end': 'BREAK END'
+  }
 }

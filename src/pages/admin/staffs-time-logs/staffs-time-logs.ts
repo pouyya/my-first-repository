@@ -1,8 +1,11 @@
+import _ from 'lodash';
+import * as moment from 'moment';
+import { TimeLogDetailsModal } from './modals/time-log-details/time-log-details';
+import { AlertController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
 import { EmployeeTimestamp } from './../../../model/employeeTimestamp';
 import { Employee } from './../../../model/employee';
 import { Store } from './../../../model/store';
-import _ from 'lodash';
-import * as moment from 'moment';
 import { StoreService } from './../../../services/storeService';
 import { LoadingController } from 'ionic-angular';
 import { EmployeeTimestampService } from './../../../services/employeeTimestampService';
@@ -30,7 +33,9 @@ export class StaffsTimeLogs {
     private employeeService: EmployeeService,
     private employeeTimestampService: EmployeeTimestampService,
     private storeService: StoreService,
-    private loading: LoadingController
+    private loading: LoadingController,
+    private modalCtrl: ModalController,
+    private alertCtrl: AlertController
   ) {
     this.setNextTimeFrame(moment());
   }
@@ -91,12 +96,44 @@ export class StaffsTimeLogs {
 
   }
 
+  public viewLogs($event) {
+    let modal = this.modalCtrl.create(TimeLogDetailsModal, { 
+      timestamps: $event.timestamps,
+      employee: $event.employee.firstName,
+      date: $event.dateKey
+    })
+    modal.onDidDismiss(data => {
+      if(data) {
+        this.timeLogs[$event.dateKey][$event.employee._id] = data;
+      }
+    });
+    modal.present();
+  }
+
+  public removeAll(index, employeeName, date) {
+    let confirm = this.alertCtrl.create({
+      title: 'Delete timelogs ?',
+      message: `Do you wish to delete all ${employeeName}'s timelogs for ${date} ?`,
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+
+          }
+        },
+        'No'
+      ]
+    });
+
+    confirm.present();
+  }
+
   public async loadMore(infiniteScroll) {
-    this.setNextTimeFrame();
+    this.setNextTimeFrame(moment());
     let timestamps = await this.employeeTimestampService.getTimestampsfromTo(
       this.timeQuery.start.toISOString(),
       this.timeQuery.end.toISOString(),
-      false      
+      false
     );
     this.groupTimeLogs(timestamps);
     infiniteScroll.complete();

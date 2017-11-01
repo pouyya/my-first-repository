@@ -14,6 +14,14 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     super(EmployeeTimestamp);
   }
 
+  public async getEmployeeTimestamps(employeeId: string) {
+    try {
+      return await this.findBy({ selector: { employeeId } });
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
   /**
    * @param employeeId 
    * @param storeId 

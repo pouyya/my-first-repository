@@ -1,3 +1,5 @@
+import { EmployeeTimestampService } from './../../services/employeeTimestampService';
+import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee } from './../../model/employee';
@@ -18,7 +20,9 @@ export class EmployeeDetails {
   public action = 'Add';
   public stores: Array<{ id: string, store: Store, role: string }> = [];
 
-  constructor(private employeeService: EmployeeService,
+  constructor(
+    private employeeService: EmployeeService,
+    private timestampService: EmployeeTimestampService,
     private zone: NgZone,
     private storeService: StoreService,
     private navParams: NavParams,
@@ -74,10 +78,15 @@ export class EmployeeDetails {
     }
   }
 
-  public remove(): void {
-    this.employeeService.delete(this.employee)
-      .then(this.navCtrl.pop())
-      .catch(console.error.bind(console));
+  public async remove() {
+    try {
+      // delete employee associations
+      await this.timestampService.getEmployeeTimestamps(this.employee._id);
+      await this.employeeService.delete(this.employee);
+      this.navCtrl.pop();
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   public changeRole(role: string, id: string) {
@@ -111,7 +120,7 @@ export class EmployeeDetails {
           }),
           new Promise((resolve, reject) => {
             this.employeeService.verifyPin(pin1).then((status) => status ? resolve() : reject("This PIN has already been in use!"))
-            .catch(error => reject(error));
+              .catch(error => reject(error));
           })
         ];
 
@@ -142,15 +151,15 @@ export class EmployeeDetails {
 
     if (this.employee.pin) {
       this.pluginService.openPinPrompt('Verify PIN', 'Enter Your Current PIN', config.inputs, config.buttons).then((pin) => {
-          if (pin == this.employee.pin) {
-            setPin();
-          } else {
-            let toast = this.toastCtrl.create({
-              message: "Incorrect PIN",
-              duration: 3000
-            });
-            toast.present();
-          }
+        if (pin == this.employee.pin) {
+          setPin();
+        } else {
+          let toast = this.toastCtrl.create({
+            message: "Incorrect PIN",
+            duration: 3000
+          });
+          toast.present();
+        }
       })
     } else {
       setPin();

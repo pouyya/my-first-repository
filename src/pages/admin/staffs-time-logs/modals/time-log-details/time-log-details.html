@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <small>{{ employeeName }}'s Time Log Details for {{ date }}</small>
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngFor="let timestamp of timestamps">
+      <ion-col col-md-6>
+        <ion-item >
+          <ion-label>{{ actionHash[timestamp.type] }}</ion-label>
+          <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="timestamp.time"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col col-md-2 offset-md-4>
+        <ion-item tappable (click)="deleteEntry()">
+          <ion-icon name="trash"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <button ion-button class="pull-right" (click)="saveChanges()">Save Changes</button>
+</ion-footer>
