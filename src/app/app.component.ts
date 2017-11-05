@@ -1,6 +1,8 @@
+import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { EmployeeService } from './../services/employeeService';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
@@ -40,18 +42,18 @@ export class SimplePOSApp implements OnInit {
     private loading: LoadingController,
     private pluginService: PluginService,
     private _sharedService: SharedService,
+    private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef
-  ) {   
-    // this.checkTime.subscribe(() => {
-    //   let date = new Date().toISOString();
-    //   if(date == "2017-11-01T12:24:27.286Z") {
-    //
-    //     this.logOutAllStaffs();
-    //   }
-    // })
-
+  ) {
+    this.checkTime.subscribe(() => {
+      let date = moment().format("h:mm:ss a");
+      if(date === "12:00:00 am") {
+        // uncomment this line to enable log out
+        // this.logOutAllStaffs();
+      }
+    });
     this._sharedService.payload$.subscribe((data) => {
-      if(data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
+      if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
         this.currentStore = data.currentStore;
         this.currentPos = data.currentPos;
       }
@@ -120,9 +122,13 @@ export class SimplePOSApp implements OnInit {
     }
   }
 
-  // imitating a service worker
-  private logOutAllStaffs() {
-    alert("All Employees have been logged out");
+  private async logOutAllStaffs() {
+    let loader = this.loading.create({
+      content: "Logging out all staffs, Please Wait"
+    });
+    await loader.present();
+    await this.employeeService.logOutAllStaffs();
+    loader.dismiss();
   }
 
 }

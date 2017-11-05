@@ -35,13 +35,13 @@
     </ion-item>
   </ion-list>
   <ion-list>
-    <ion-item-group *ngFor="let day of timeLogs | keys">
+    <ion-item-group *ngFor="let day of timeLogs | keys; let dateIndex=index">
       <ion-item-divider color="light">{{ day.key }}</ion-item-divider>
-      <ion-item *ngFor="let employee of day.value | keys">
-        <group-employee-timelog 
-          [data]="{ timeLogs: employee.value, dateKey: day.key, employeeKey: employee.key }"
-          (viewLogs)="viewLogs($event)"
-          (removeAll)="removeAll($event)">
+      <ion-item *ngFor="let employee of day.value | keys; let employeeIndex=index">
+        <group-employee-timelog
+          [(timeLog)]="employee.value"
+          [dateKey]="day.key" [employeeKey]="employee.key" [index]="{ dateIndex: dateIndex, employeeIndex: employeeIndex }"
+          (viewLogs)="viewLogs($event)" (removeAll)="removeAll($event)">
         </group-employee-timelog>
       </ion-item>
     </ion-item-group>

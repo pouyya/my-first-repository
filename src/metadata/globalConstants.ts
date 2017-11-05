@@ -16,7 +16,7 @@ export class GlobalConstants {
 
   static readonly TIME_LOG_ACTION: any = {
     'clock_in': 'CLOCK IN',
-    'clock_out': 'CLOCK_OUT',
+    'clock_out': 'CLOCK OUT',
     'break_start': 'BREAK START',
     'break_end': 'BREAK END'
   }

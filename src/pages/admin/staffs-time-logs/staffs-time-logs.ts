@@ -21,7 +21,7 @@ export class StaffsTimeLogs {
 
   public timeLogs: any;
   private timeQuery: any;
-  private timeDifference: number = 30;
+  private timeDifference: number = 7;
   private timeKey: string = 'days';
   private timeFrames: any[] = [];
   private employees: any;
@@ -87,6 +87,7 @@ export class StaffsTimeLogs {
       }
     ];
     let [employees, stores, timestamps] = await Promise.all(promises.map(promise => promise()));
+    await this.employeeService.logOutAllStaffs();
     this.employees = employees;
     this.stores = stores;
     this.groupTimeLogs(timestamps);
@@ -96,29 +97,41 @@ export class StaffsTimeLogs {
 
   }
 
-  public viewLogs($event) {
-    let modal = this.modalCtrl.create(TimeLogDetailsModal, { 
+  public viewLogs($event: any) {
+    let modal = this.modalCtrl.create(TimeLogDetailsModal, {
       timestamps: $event.timestamps,
       employee: $event.employee.firstName,
       date: $event.dateKey
     })
     modal.onDidDismiss(data => {
-      if(data) {
+      if (data) {
         this.timeLogs[$event.dateKey][$event.employee._id] = data;
       }
     });
     modal.present();
   }
 
-  public removeAll(index, employeeName, date) {
+  public removeAll($event: any) {
     let confirm = this.alertCtrl.create({
       title: 'Delete timelogs ?',
-      message: `Do you wish to delete all ${employeeName}'s timelogs for ${date} ?`,
+      message: `Do you wish to delete all ${$event.employeeName}'s timelogs for ${$event.date} ${$event.dateIndex} ${$event.employeeIndex} ?`,
       buttons: [
         {
           text: 'Yes',
           handler: () => {
+            let momentDate = moment($event.date, "Do MMM YYYY");
+            let day = {
+              start: ((date) => {
+                date.hours(9).minutes(0).seconds(0);
+                return date;
+              })(momentDate.clone()),
+              end: ((date) => {
+                date.hours(23).minutes(59).seconds(59);
+                return date;
+              })(momentDate.clone()),
+            };
 
+            
           }
         },
         'No'

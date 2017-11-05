@@ -28,8 +28,9 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
    * @param type 
    * @returns {Promise<any>}
    */
-  public async getEmployeeLatestTimestamp(employeeId: string, storeId: string, type?: string): Promise<any> {
-    let selector: any = { employeeId, storeId }
+  public async getEmployeeLatestTimestamp(employeeId: string, storeId?: string, type?: string): Promise<any> {
+    let selector: any = { employeeId }
+    if (storeId) selector.storeId = storeId;
     if (type) selector.type = type;
     try {
       let timestamps: EmployeeTimestamp[] = await this.findBy({
@@ -41,7 +42,7 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
       return Promise.reject(err);
     }
   }
-  
+
   /**
    * @param employeeId 
    * @param storeId 
@@ -62,11 +63,25 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     }
   }
 
+  public async getNonCheckOuts(raw: boolean = true) {
+    try {
+      let view = "non_logged_out_employees/for_yesterday";
+      let record = await this.getDB().query(view);
+      if (raw) {
+        return record;
+      }
+
+      return record.rows.map(row => row.value);
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   public async getTimestampsfromTo(from?: Date, to?: Date, raw: boolean = true): Promise<any> {
     try {
-      let view = "employee_timelog/by_time"
+      let view = "employee_timelog/by_time";
       let record = await this.getDB().query(view);
-      if(raw) {
+      if (raw) {
         return record;
       }
 
