@@ -13,7 +13,7 @@
 
 <ion-content>
   <ion-grid>
-    <ion-row *ngFor="let timestamp of timestamps">
+    <ion-row *ngFor="let timestamp of timestamps; let i=index;">
       <ion-col col-md-6>
         <ion-item >
           <ion-label>{{ actionHash[timestamp.type] }}</ion-label>
@@ -21,7 +21,7 @@
         </ion-item>
       </ion-col>
       <ion-col col-md-2 offset-md-4>
-        <ion-item tappable (click)="deleteEntry()">
+        <ion-item tappable (click)="deleteEntry(timestamp, i)">
           <ion-icon name="trash"></ion-icon>
         </ion-item>
       </ion-col>

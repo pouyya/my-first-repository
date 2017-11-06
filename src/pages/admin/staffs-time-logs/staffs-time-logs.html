@@ -4,6 +4,11 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title style="text-Align:center">Staffs Time Logs Management</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="addManualTime()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>    
   </ion-navbar>
 </ion-header>
 
@@ -47,8 +52,8 @@
     </ion-item-group>
   </ion-list>
 
-  <!-- <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMore())">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>   -->
+  </ion-infinite-scroll>  
 
 </ion-content>

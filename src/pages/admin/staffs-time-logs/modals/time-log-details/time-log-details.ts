@@ -16,6 +16,7 @@ export class TimeLogDetailsModal {
   public employeeName: string;
   public date: string;
   public actionHash: any = GlobalConstants.TIME_LOG_ACTION;
+  private deleted: any[] = [];
 
   constructor(
     private navParams: NavParams,
@@ -28,30 +29,41 @@ export class TimeLogDetailsModal {
     this.date = this.navParams.get('date');
   }
 
-  public deleteEntry() {
-
+  public deleteEntry(timestamp: any, index) {
+    this.deleted.push(timestamp);
+    this.timestamps.splice(index, 1);
   }
 
-  public async saveChanges() {
+  public saveChanges() {
     let loader = this.loading.create({
       content: 'Saving changes...'
     });
 
-    try {
-      await loader.present();
+    loader.present().then(() => {
+      let deletions: Promise<any>[] = [];
       let updates: Promise<any>[] = [];
       let updatedModels: any[] = [];
-      this.timestamps.forEach(timestamp => {
-        updatedModels.push(timestamp);
-        let model = <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store']);
-        updates.push(this.timestampService.update(model));
+      if (this.timestamps.length > 0) {
+        this.timestamps.forEach(timestamp => {
+          updatedModels.push(timestamp);
+          updates.push(this.timestampService.update(
+            <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store'])
+          ));
+        });
+      }
+      if (this.deleted.length > 0) {
+        this.deleted.forEach(timestamp => {
+          deletions.push(this.timestampService.delete(
+            <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store'])
+          ))
+        });
+      }
+
+      Promise.all(updates.concat(deletions)).catch().then(() => {
+        loader.dismiss();
+        this.viewCtrl.dismiss(updatedModels);
       });
-      await Promise.all(updates);
-      loader.dismiss();
-      this.viewCtrl.dismiss(updatedModels);
-    } catch (err) {
-      throw new Error(err);
-    }
+    });
   }
 
   public dismiss() {

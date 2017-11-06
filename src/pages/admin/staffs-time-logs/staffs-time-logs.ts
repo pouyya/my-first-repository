@@ -19,14 +19,13 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 })
 export class StaffsTimeLogs {
 
-  public timeLogs: any;
-  private timeQuery: any;
+  public timeLogs: any = {};
   private timeDifference: number = 7;
   private timeKey: string = 'days';
-  private timeFrames: any[] = [];
+  private timeFrame: any[] = [];
   private employees: any;
   private stores: any;
-  private nextTime: any;
+  private stopLoading: boolean = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -37,7 +36,7 @@ export class StaffsTimeLogs {
     private modalCtrl: ModalController,
     private alertCtrl: AlertController
   ) {
-    this.setNextTimeFrame(moment());
+    this.setNextTimeFrame();
   }
 
   async ionViewDidEnter() {
@@ -76,10 +75,9 @@ export class StaffsTimeLogs {
       },
       async () => {
         try {
-          return await this.employeeTimestampService.getTimestampsfromTo(
-            this.timeQuery.start.toISOString(),
-            this.timeQuery.end.toISOString(),
-            false
+          return await this.employeeTimestampService.getTimestampsByFrame(
+            this.timeFrame.map(day => day.format('YYYY-M-D')),
+            this.timeDifference
           );
         } catch (err) {
           return Promise.reject(err);
@@ -105,7 +103,14 @@ export class StaffsTimeLogs {
     })
     modal.onDidDismiss(data => {
       if (data) {
-        this.timeLogs[$event.dateKey][$event.employee._id] = data;
+        if(data.length > 0) {
+          this.timeLogs[$event.dateKey][$event.employee._id] = data;
+        } else {
+          delete this.timeLogs[$event.dateKey][$event.employee._id];
+          if (Object.keys(this.timeLogs[$event.dateKey]).length == 0) {
+            delete this.timeLogs[$event.dateKey];
+          }          
+        }
       }
     });
     modal.present();
@@ -114,24 +119,29 @@ export class StaffsTimeLogs {
   public removeAll($event: any) {
     let confirm = this.alertCtrl.create({
       title: 'Delete timelogs ?',
-      message: `Do you wish to delete all ${$event.employeeName}'s timelogs for ${$event.date} ${$event.dateIndex} ${$event.employeeIndex} ?`,
+      message: `Do you wish to delete all ${$event.employeeName}'s timelogs for ${$event.date} ?`,
       buttons: [
         {
           text: 'Yes',
           handler: () => {
-            let momentDate = moment($event.date, "Do MMM YYYY");
-            let day = {
-              start: ((date) => {
-                date.hours(9).minutes(0).seconds(0);
-                return date;
-              })(momentDate.clone()),
-              end: ((date) => {
-                date.hours(23).minutes(59).seconds(59);
-                return date;
-              })(momentDate.clone()),
-            };
+            let loader = this.loading.create({ content: "Deleting..." });
+            loader.present().then(() => {
+              let logsToDelete = this.timeLogs[$event.date][$event.employee._id];
+              let promises: Promise<any>[] = [];
+              logsToDelete.forEach(log => promises.push(
+                this.employeeTimestampService.delete(_.omit(log, ['employee', 'store']))
+              ));
 
-            
+              Promise.all(promises).then(() => {
+                delete this.timeLogs[$event.date][$event.employee._id];
+                if (Object.keys(this.timeLogs[$event.date]).length == 0) {
+                  delete this.timeLogs[$event.date];
+                }
+
+              }).catch(err => {
+                throw new Error(err);
+              }).then(() => loader.dismiss());
+            });
           }
         },
         'No'
@@ -142,21 +152,29 @@ export class StaffsTimeLogs {
   }
 
   public async loadMore(infiniteScroll) {
-    this.setNextTimeFrame(moment());
-    let timestamps = await this.employeeTimestampService.getTimestampsfromTo(
-      this.timeQuery.start.toISOString(),
-      this.timeQuery.end.toISOString(),
-      false
+    if (this.stopLoading) {
+      infiniteScroll.complete();
+      return;
+    }
+    this.setNextTimeFrame();
+    let timestamps = await this.employeeTimestampService.getTimestampsByFrame(
+      this.timeFrame.map(day => day.format('YYYY-M-D')),
+      this.timeDifference
     );
-    this.groupTimeLogs(timestamps);
+    if (timestamps.length > 0) {
+      this.groupTimeLogs(timestamps);
+    } else {
+      this.stopLoading = true;
+    }
     infiniteScroll.complete();
+    return;
   }
 
   private groupTimeLogs(timestamps: EmployeeTimestamp[]): void {
     let groupedByDate: any = {};
     let days: any[] = [];
 
-    this.timeFrames.forEach(frame => {
+    this.timeFrame.forEach(frame => {
       days.push({
         start: frame.clone().startOf('day'),
         end: frame.clone().endOf('day')
@@ -182,17 +200,24 @@ export class StaffsTimeLogs {
       }
     });
 
-    console.warn(groupedByDate);
-    this.timeLogs = groupedByDate;
+    // this.timeLogs = _.cloneDeep(groupedByDate);
+
+    Object.keys(groupedByDate).forEach(day => {
+      this.timeLogs[day] = _.cloneDeep(groupedByDate[day]);
+    });
+    return;
   }
 
-  private setNextTimeFrame(startDate) {
-    this.timeFrames = [startDate];
-    for (let i = 1; i < this.timeDifference; i++) {
-      this.timeFrames.push(startDate.clone().subtract(i, this.timeKey));
-    }
+  private setNextTimeFrame() {
+    let startDate: any;
+    startDate = this.timeFrame.length === 0 ?
+      moment() :
+      this.timeFrame[this.timeFrame.length - 1].clone().subtract(1, this.timeKey);
+    this.timeFrame.push(startDate);
 
-    this.timeQuery = { start: this.timeFrames[0], end: this.timeFrames[this.timeFrames.length - 1] }
+    for (let i = 1; i < this.timeDifference; i++) {
+      this.timeFrame.push(startDate.clone().subtract(i, this.timeKey));
+    }
   }
 
 }

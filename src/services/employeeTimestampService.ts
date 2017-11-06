@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { BaseEntityService } from "./baseEntityService";
 import { Injectable } from '@angular/core';
@@ -77,17 +78,28 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     }
   }
 
-  public async getTimestampsfromTo(from?: Date, to?: Date, raw: boolean = true): Promise<any> {
-    try {
-      let view = "employee_timelog/by_time";
-      let record = await this.getDB().query(view);
-      if (raw) {
-        return record;
-      }
-
-      return record.rows.map(row => row.value);
-    } catch (err) {
-      return Promise.reject(err);
+  /**
+   * Retrieve time logs by time frame
+   * @param frame {Array<String>}
+   * @param processSize {Number}
+   */
+  public async getTimestampsByFrame(frame: string[], processSize: number, getAll: boolean = false): Promise<any> {
+    if(processSize > frame.length) {
+      return Promise.reject("processSize exceeded!");
     }
+    let view = "employee_timelog/by_time";
+    let promises: any[] = [];
+
+    let proccessedFrame: string[] = !getAll ? _.slice(frame, frame.length - processSize, frame.length - 1) : frame;
+
+    proccessedFrame.forEach(day => {
+      promises.push(async () => {
+        let record = await this.getDB().query(view, { key: day });
+        return record.rows.map(row => row.value);
+      });
+    });
+
+    let records: any[] = await Promise.all(promises.map(promise => promise()));
+    return _.flatten(records);
   }
 }

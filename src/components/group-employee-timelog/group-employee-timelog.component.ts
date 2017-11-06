@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'group-employee-timelog',
@@ -96,6 +96,7 @@ export class GroupEmployeeTimeLog implements OnInit {
       dateIndex: this._dateIndex,
       employeeIndex: this._employeeIndex,
       employeeName: this.renderable.name,
+      employee: this.renderable.employee,
       date: this._dateKey
     });
   }
