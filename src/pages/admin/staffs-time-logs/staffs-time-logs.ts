@@ -85,7 +85,6 @@ export class StaffsTimeLogs {
       }
     ];
     let [employees, stores, timestamps] = await Promise.all(promises.map(promise => promise()));
-    await this.employeeService.logOutAllStaffs();
     this.employees = employees;
     this.stores = stores;
     this.groupTimeLogs(timestamps);
@@ -200,7 +199,14 @@ export class StaffsTimeLogs {
       }
     });
 
-    // this.timeLogs = _.cloneDeep(groupedByDate);
+    // let test = _.cloneDeep(groupedByDate);
+    // Object.keys(test).forEach(date => {
+    //   Object.keys(test[date]).forEach(employee => {
+    //     test[date][employee] = _.groupBy(test[date][employee], "storeId");
+    //   });
+    // })
+
+    // console.warn(test);
 
     Object.keys(groupedByDate).forEach(day => {
       this.timeLogs[day] = _.cloneDeep(groupedByDate[day]);

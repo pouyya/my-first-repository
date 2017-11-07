@@ -3,28 +3,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'group-employee-timelog',
-  template: `<ion-grid>
-    <ion-row>
-      <ion-col col-md-3>
-        <span>{{ renderable.name }}</span>
-      </ion-col>
-      <ion-col col-md-3>
-        <span>{{ renderable.store }}</span>
-      </ion-col>
-      <ion-col col-md-2>
-        <span>{{ renderable.clockIn }}</span>
-      </ion-col>
-      <ion-col col-md-2>
-        <span>{{ renderable.clockOut }}</span>
-      </ion-col>
-      <ion-col col-md-1 tappable>
-        <ion-icon name="eye" (click)="viewDetails()"></ion-icon>
-      </ion-col>
-      <ion-col col-md-1 tappable>
-        <ion-icon name="trash" (click)="remove()"></ion-icon>
-      </ion-col>
-    </ion-row>
-  </ion-grid>`
+  templateUrl: 'group-employee-timelog.html'
 })
 export class GroupEmployeeTimeLog implements OnInit {
 
