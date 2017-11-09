@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
 import { EvaluationContext } from './EvaluationContext';
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HelperService } from './helperService';
 import { PriceBook } from './../model/priceBook';
 import { BaseEntityService } from './baseEntityService';
@@ -14,11 +14,10 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
   public static providerHash: any;
 
   constructor(
-    private zone: NgZone,
     private helperService: HelperService,
     private injector: Injector
   ) {
-    super(PriceBook, zone);
+    super(PriceBook);
     PriceBookService.providerHash = {
       StoreEvaluationProvider,
       DaysOfWeekEvaluationProvider
@@ -41,13 +40,14 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
    * get pricebook of priority 0
    * @returns {Promise<PriceBook>}
    */
-  public getDefault(): Promise<PriceBook> {
-    return new Promise((resolve, reject) => {
-      this.findBy({
+  public async getDefault(): Promise<PriceBook> {
+    try {
+      return await this.findBy({
         selector: { priority: 0 }
-      }).then((priceBooks: Array<PriceBook>) => resolve(priceBooks[0]))
-        .catch(error => reject(error));
-    });
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**
@@ -55,40 +55,43 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
    * overrides the BaseEntityService getAll()
    * @returns {Promise<PriceBook[]>}
    */
-  public getAll(): Promise<PriceBook[]> {
-    return this.findBy({
-      selector: {
-        entityTypeNames: {
-          $elemMatch: { $eq: "PriceBook" }
+  public async getAll(): Promise<PriceBook[]> {
+    try {
+      return await this.findBy({
+        selector: {
+          entityTypeNames: {
+            $elemMatch: { $eq: "PriceBook" }
+          }
         }
-      }
-    })
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**
    * get pricebooks above priority 0
    * @returns {Promise<PriceBook[]>}
    */
-  public getExceptDefault(): Promise<PriceBook[]> {
-    return new Promise((resolve, reject) => {
-      this.findBy({
+  public async getExceptDefault(): Promise<PriceBook[]> {
+    try {
+      return await this.findBy({
         selector: { priority: { $gt: 0 } }
-      }).then((priceBooks: Array<PriceBook>) => {
-        resolve(priceBooks);
-      }).catch(error => reject(error));
-    });
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
-  public getPriceBookByCriteria() {
-    return new Promise((resolve, reject) => {
-      this.findBy({
-        selector: {
-          "priority": {
-            "$gte": 0
-          }
-        }
-      }).then(data => resolve(data[0])).catch(error => reject(error));
-    });
+  public async getPriceBookByCriteria() {
+    try {
+      let data = await this.findBy({
+        selector: { priority: { $gte: 0 } }
+      });
+      return data[0];
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**
@@ -96,10 +99,9 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
    * @param taxId
    * @returns {Promise<void>}
    */
-  public setPriceBookItemTaxToDefault(taxId: string): Promise<{}> {
-    return new Promise((resolve, reject) => {
-      // default price book for now
-      this.findBy({
+  public async setPriceBookItemTaxToDefault(taxId: string): Promise<PriceBook> {
+    try {
+      let priceBooks: PriceBook[] = await this.findBy({
         selector: {
           priority: 0,
           purchasableItems: {
@@ -108,22 +110,21 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
             }
           }
         }
-      }).then((priceBooks: Array<PriceBook>) => {
-        if (priceBooks.length > 0) {
-          let priceBook: PriceBook = priceBooks[0];
-          priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
-            if (item.salesTaxId == taxId) {
-              item.salesTaxId = null; // reset to default
-            }
-          });
-          this.update(priceBook)
-            .then(() => resolve())
-            .catch(error => reject(error));
-        } else {
-          resolve();
-        }
-      }).catch(error => reject(error));
-    });
+      });
+      if(priceBooks.length > 0) {
+        let priceBook: PriceBook = priceBooks[0];
+        priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
+          if (item.salesTaxId == taxId) {
+            item.salesTaxId = null; // reset to default
+          }
+        });
+
+        await this.update(priceBook);
+        return priceBook;
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**

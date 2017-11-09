@@ -2,7 +2,7 @@ import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import * as moment from "moment";
 import { UserService } from './userService';
 import { EmployeeTimestampService } from './employeeTimestampService';
-import { Injectable, NgZone } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Employee } from "../model/employee";
 import { BaseEntityService } from "./baseEntityService";
 import { StoreService } from "./storeService";
@@ -12,9 +12,8 @@ export class EmployeeService extends BaseEntityService<Employee> {
   constructor(
     private storeService: StoreService,
     private userService: UserService,
-    private employeeTimestampService: EmployeeTimestampService,
-    private zone: NgZone) {
-    super(Employee, zone);
+    private employeeTimestampService: EmployeeTimestampService) {
+    super(Employee);
   }
 
   /**
@@ -118,7 +117,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
     let currentDay = new Date(moment(new Date()).format("YYYY-MM-DD"));
     let currentUser = await this.userService.getUser();
     return new Promise((resolve, reject) => {
-      let storeId = currentUser.settings.storeId;
+      let storeId = currentUser.currentStore;
       this.findBy({
         selector: {
           store: {
@@ -167,6 +166,30 @@ export class EmployeeService extends BaseEntityService<Employee> {
         }).catch(error => reject(error));
       }).catch(error => reject(error));
     });
+  }
+
+  public async findByStore(storeId: string) {
+    try {
+      return await this.findBy({
+        selector: {
+          store: {
+            $elemMatch: {
+              id: { $eq: storeId }
+            }
+          }
+        }
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async updateBulk(employees: Employee[]): Promise<any> {
+    try {
+      return await Promise.all(employees.map(employee => this.update(employee)));
+    } catch(err) {
+      return Promise.reject(err);
+    }
   }
 
 }

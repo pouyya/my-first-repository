@@ -1,12 +1,14 @@
 import _ from 'lodash';
 import { Observable } from "rxjs/Rx";
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
 import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
+import { GlobalConstants } from './../metadata/globalConstants';
+import { Store } from './../model/store';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
 import { BucketItem } from './../model/bucketItem';
@@ -15,6 +17,7 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItem } from './../model/purchasableItem';
+import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
 import { EvaluationContext } from './EvaluationContext';
 
@@ -32,13 +35,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private taxService: TaxService,
 		private helperService: HelperService,
 		private fountainService: FountainService,
-		private zone: NgZone,
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
 	) {
-		super(Sale, zone);
+		super(Sale);
 		this._user = this.userService.getLoggedInUser();
 	}
 
@@ -53,53 +55,39 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	/**
 	 * Instantiate a default Sale Object
+	 * @param posId (Optional)
 	 * @return {Promise<Sale>}
 	 */
-	public instantiateInvoice(posId?: string): Promise<any> {
+	public async instantiateInvoice(posId?: string): Promise<any> {
 		let id = localStorage.getItem('invoice_id') || new Date().toISOString();
-		if (!posId) posId = this._user.settings.currentPos;
-		return new Promise((resolve, reject) => {
-			this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true })
-				.then(
-				(invoices: Array<Sale>) => {
-					if (invoices && invoices.length > 0) {
-						let invoice = invoices[0];
-						resolve({
-							invoice,
-							doRecalculate: invoice.state == 'current'
-						});
-					} else {
-						resolve({
-							invoice: createDefaultObject(posId, id),
-							doRecalculate: false
-						});
-					}
-				},
-				error => {
-					if (error.name == 'not_found') {
-						resolve({
-							invoice: createDefaultObject(posId, id),
-							doRecalculate: false
-						});
-					} else {
-						reject(error);
-					}
-				});
-		});
-
-		function createDefaultObject(posID: string, invoiceId: string) {
-			let sale: Sale = new Sale();
-
-			// This is piece of code temporary and used for setting dummy customer names for search
-			let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
-			sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
-			sale._id = invoiceId;
-			sale.posID = posID;
-			sale.subTotal = 0;
-			sale.taxTotal = 0;
-			sale.tax = 0;
-			return sale;
+		if (!posId) posId = this._user.currentPos;
+		try {
+			let invoices: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
+			if (invoices && invoices.length > 0) {
+				let invoice = invoices[0];
+				return { invoice, doRecalculate: invoice.state == 'current' };
+			}
+			return { invoice: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+		} catch (error) {
+			if (error.name === GlobalConstants.NOT_FOUND) {
+				return { invoice: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+			}
+			return Promise.reject(error);
 		}
+	}
+
+	public static _createDefaultObject(posID: string, invoiceId: string) {
+		let sale: Sale = new Sale();
+
+		// This is piece of code temporary and used for setting dummy customer names for search
+		let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
+		sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
+		sale._id = invoiceId;
+		sale.posID = posID;
+		sale.subTotal = 0;
+		sale.taxTotal = 0;
+		sale.tax = 0;
+		return sale;
 	}
 
 	/**
@@ -282,12 +270,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param item 
 	 * @returns {any}
 	 */
-	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: PurchasableItem): any {
+	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: PurchasableItem): PurchasableItemPriceInterface {
 		let container: any = null;
-		for(let index in priceBooks) {
+		for (let index in priceBooks) {
 			let itemPrice = _.find(priceBooks[index].purchasableItems, { id: item._id });
 			let isEligible = this.priceBookService.isEligible(context, priceBooks[index]);
-			if(itemPrice && isEligible) {
+			if (itemPrice && isEligible) {
 				container = itemPrice;
 				break;
 			}
@@ -350,7 +338,37 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public instantiateRefundSale(originalSale: Sale): Sale {
+	public updateEmployeeTiles(employeesList: any[], selectedEmployee: any, updatedEmployee: any, status: string) {
+		updatedEmployee.selected = false;
+		updatedEmployee.disabled = false;
+		if (selectedEmployee && selectedEmployee._id == updatedEmployee._id) {
+			selectedEmployee = null;
+		}
+		let index = _.findIndex(employeesList, { _id: updatedEmployee._id });
+		switch (status) {
+			case 'clock_in':
+				employeesList.push(updatedEmployee);
+				break;
+			case 'clock_out':
+				if (index > -1) {
+					employeesList.splice(index, 1);
+				}
+				break;
+			case 'break_start':
+				if (index > -1) {
+					employeesList[index].selected = false;
+					employeesList[index].disabled = true;
+				}
+				break;
+			case 'break_end':
+				employeesList[index].selected = false;
+				employeesList[index].disabled = false;
+				break;
+		}
+		return;
+	}
+
+	public instantiateRefundSale(originalSale: Sale, store: Store): Sale {
 		let sale = new Sale();
 		sale._id = new Date().toISOString();
 		sale.posID = originalSale.posID;
@@ -362,7 +380,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.completed = false;
 		sale.customerName = originalSale.customerName;
 		sale.state = 'refund';
-		sale.receiptNo = this.fountainService.getReceiptNumber();
+		sale.receiptNo = this.fountainService.getReceiptNumber(store);
 		sale.payments = [];
 		this.calculateSale(sale);
 		return sale;

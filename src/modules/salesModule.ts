@@ -16,18 +16,6 @@ export class SalesModule implements ModuleBase {
   constructor() {
   }
 
-  public modalCallbacks: any = {
-    clockInOut: (data: any) => {
-      if (data && data.hasOwnProperty('message') && data.message) {
-        let toast = this.toastCtrl.create({
-          message: data.message,
-          duration: 3000
-        });
-        toast.present();
-      }
-    }
-  };
-
   public moneyInOut_disableFunc(data: any): Promise<boolean> {
     return this.posService.getCurrentPosStatus();
   }
@@ -41,7 +29,7 @@ export class SalesModule implements ModuleBase {
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Open/Close', icon: 'bookmarks', component: OpenCloseRegister },
     { title: 'Sales History', icon: 'list', component: SalesHistoryPage },
-    { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true, onDismiss: this.modalCallbacks.clockInOut },
+    { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, disableFunc: this.moneyInOut_disableFunc },
     { title: 'Back Office', icon: 'build', component: HomePage }
   ];

@@ -1,9 +1,16 @@
+import { Store } from './../../model/store';
+import { POS } from './../../model/pos';
+import { SharedService } from './../../services/_sharedService';
+import { StoreService } from './../../services/storeService';
+import { PosService } from './../../services/posService';
+import { ConfigService } from './../../services/configService';
 import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { UserService } from './../../services/userService';
 import { Component } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 import { Deploy } from '@ionic/cloud-angular';
+import { DBService } from '../../services/DBService';
 
 @Component({
 	selector: 'page-deploy',
@@ -12,14 +19,18 @@ import { Deploy } from '@ionic/cloud-angular';
 export class DeployPage {
 
 	public updateText: String = '';
+	private isNavigated = false;
 
 	constructor(
 		private userService: UserService,
 		private pluginService: PluginService,
+		private posService: PosService,
+		private storeService: StoreService,
+		private _sharedService: SharedService,
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public platform: Platform,
-		public deploy: Deploy,
+		public deploy: Deploy
 	) {
 
 		if (platform.is('core')) {
@@ -50,13 +61,37 @@ export class DeployPage {
 		}
 	}
 
-	ionViewDidLoad() {
-		console.log('ionViewDidLoad DeployPage');
-	}
-
 	async loadUserInfoAndNavigateToHome() {
-		var user = await this.userService.getUser();
-		this.navCtrl.setRoot(Sales);
-		return user;
+		let user = await this.userService.getUser();
+
+		let loadStoreData = async () => {
+			let currentPos: POS = await this.posService.getFirst();
+			let currentStore: Store = await this.storeService.get(currentPos.storeId);
+			user.currentPos = currentPos._id;
+			user.currentStore = currentStore._id;
+			this._sharedService.publish({ currentStore, currentPos });
+			this.userService.setSession(user);
+			return;
+		}
+
+		ConfigService.externalDBUrl = user.settings.db_url;
+		ConfigService.externalDBName = user.settings.db_name;
+		ConfigService.internalDBName = user.settings.db_local_name;
+		this.updateText = "Check for data update!";
+		DBService.dbSyncProgress.subscribe(
+			data => {
+				if (data === 1 && !this.isNavigated) {
+					this.updateText = "Loading your company data 100%";
+					loadStoreData().then(() => {
+						this.isNavigated = true;
+						this.navCtrl.setRoot(Sales);
+					});
+				}
+				else {
+					this.updateText = "Loading your company data " + Math.round(data * 100) + "%";
+				}
+			}
+		)
+		await DBService.initialize();
 	}
 }

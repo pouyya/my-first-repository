@@ -1,3 +1,6 @@
+import { Store } from './../../../model/store';
+import { StoreService } from './../../../services/storeService';
+import { UserService } from './../../../services/userService';
 import { FountainService } from './../../../services/fountainService';
 import { SalesServices } from './../../../services/salesService';
 import { Sale } from './../../../model/sale';
@@ -14,11 +17,13 @@ export class ParkSale {
   public invoice: Sale;
 
   constructor(
-    public viewCtrl: ViewController,
-    public alertController: AlertController,
+    private viewCtrl: ViewController,
+    private alertController: AlertController,
     private navParams: NavParams,
     private salesService: SalesServices,
-    private fountainService: FountainService
+    private fountainService: FountainService,
+    private userService: UserService,
+    private storeService: StoreService
   ) {
     this.invoice = navParams.get('invoice');
   }
@@ -31,11 +36,17 @@ export class ParkSale {
 
     var doPark = () => {
       localStorage.removeItem('invoice_id');
-      this.invoice.state = 'parked';
-      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
-      this.salesService.update(this.invoice).then(() => {
-        this.viewCtrl.dismiss({ status: true, error: false });
-      }).catch((error) => {
+      let user = this.userService.getLoggedInUser();
+      this.storeService.get(user.currentStore).then((store: Store) => {
+        this.invoice.state = 'parked';
+        !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(store));
+        this.salesService.update(this.invoice).then(() => {
+          this.viewCtrl.dismiss({ status: true, error: false });
+        }).catch(error => {
+          console.log(new Error(error));
+          this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
+        });
+      }).catch(error => {
         console.log(new Error(error));
         this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
       });

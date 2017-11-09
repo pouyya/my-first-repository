@@ -40,7 +40,7 @@
         <ion-scroll style="height:100%" scrollY="true">
           <ion-list no-lines class="full-height no-margin sales-category">
             <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
-              (click)="itemSelected(category)">
+              (click)="selectCategory(category)">
                 <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
               {{ category.name }}
           </button>
@@ -50,7 +50,7 @@
       <ion-col col-6>
         <ion-grid>
           <ion-row>
-            <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales || employees.length > 0">
+            <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales && employees.length > 0">
               <tiles-scrollable 
                 [(elements)]="employees" 
                 [(selectedElement)]="selectedEmployee"

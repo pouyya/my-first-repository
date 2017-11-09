@@ -1,34 +1,55 @@
+import { EventEmitter } from '@angular/core';
 import PouchDB from 'pouchdb';
 import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity";
 import { ConfigService } from "./configService"
-import { NgZone } from '@angular/core';
 
 export class DBService<T extends DBBasedEntity> {
     private static _db;
+    public static dbSyncProgress: EventEmitter<any> = new EventEmitter();
+    private static pendingMax = 0;
 
-    static initialize() {
+    static getProgress(pending) {
+        var progress;
+        if (DBService.pendingMax > 0) {
+            progress = pending / DBService.pendingMax;
+            if (pending === 0) {
+                DBService.pendingMax = 0;    // reset for live/next replication
+            }
+        } else {
+            progress = 1;  // 100%
+        }
+        return progress;
+    }
+
+    public static async initialize() {
 
         if (DBService._db == null) {
             PouchDB.plugin(pouchDBFind);
-            var currentInternalDBName = ConfigService.currentInternalDBName();
+            var currentInternalDBName = ConfigService.internalDBName;
             DBService._db = new PouchDB(currentInternalDBName);
 
-            //TODO AZ - To change below functions to have proper action (e.g. on going offline show popover that you are offline or such) and log the value 
-            // in proper logger!
-            PouchDB.sync(currentInternalDBName, ConfigService.getCurrentFullExternalDBUrl(), {
+            var currentFullExternalDBUrl = ConfigService.currentFullExternalDBUrl;
+
+            var externalDBInfo = await new PouchDB(currentFullExternalDBUrl).info();
+            DBService.pendingMax = Number(externalDBInfo.update_seq.toString().substring(0, externalDBInfo.update_seq.toString().indexOf('-')));
+
+            PouchDB.sync(currentInternalDBName, currentFullExternalDBUrl, {
                 live: true,
                 retry: true
             }).on('change', function (info) {
-                //changed
+                if (info.direction == "pull") {
+                    let currentUpdateSeq = Number(info.change.last_seq.toString().substring(0, info.change.last_seq.toString().indexOf('-')));
+                    let progress = DBService.getProgress(currentUpdateSeq)
+                    DBService.dbSyncProgress.emit(progress);
+                }
             }).on('paused', function (err) {
                 // replication paused (e.g. replication up to date, user went offline)
+                DBService.dbSyncProgress.emit(1);
             }).on('active', function () {
                 // replicate resumed (e.g. new changes replicating, user went back online)
             }).on('denied', function (err) {
                 // a document failed to replicate (e.g. due to permissions)
-            }).on('complete', function (info) {
-                // handle complete
             }).on('error', function (err) {
                 // handle error
             });
@@ -44,17 +65,12 @@ export class DBService<T extends DBBasedEntity> {
             DBService._db.createIndex({
                 index: { fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs'] }
             });
-
+            return
         }
     }
 
-    constructor(private entityType, private zone: NgZone) {
-
+    constructor(private entityType) {
         DBService.initialize();
-    }
-
-    getDB() {
-        return DBService._db;
     }
 
     add(entity: T) {
@@ -86,20 +102,20 @@ export class DBService<T extends DBBasedEntity> {
         return this.update(entity);
     }
 
-    async getAll() : Promise<Array<T>> {
+    async getAll(): Promise<Array<T>> {
         var entityTypeName = (new this.entityType()).entityTypeName;
         var result = await DBService._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true });
-        if(result && result.docs){
+        if (result && result.docs) {
             return result.docs;
         }
         return result;
     }
 
-    findBy(selector: any) {
+    async findBy(selector: any) {
         var entityTypeName = (new this.entityType()).entityTypeName;
         selector.entityTypeName = entityTypeName;
-        return DBService._db.find(selector)
-            .then(docs => { return docs.docs; });
+        var docs = await DBService._db.find(selector);
+        return docs.docs;
     }
 
     get(id) {

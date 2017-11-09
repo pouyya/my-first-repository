@@ -4,6 +4,7 @@ import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController } from "ionic-angular";
+import { Store } from './../../model/store';
 import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
@@ -21,6 +22,7 @@ export class PaymentsPage {
   public balance: number;
   public change: number;
   public doRefund: boolean;
+  public store: Store;
   public paymentsBuffer: Array<any> = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
@@ -37,8 +39,9 @@ export class PaymentsPage {
     public helper: HelperService) {
 
     let operation = navParams.get('operation');
-    this.invoice = navParams.get('invoice');
+    this.invoice = <Sale> navParams.get('invoice');
     this.doRefund = navParams.get('doRefund');
+    this.store = <Store> navParams.get('store');
     this.navPopCallback = this.navParams.get("callback")
 
     this.amount = this.balance = 0;
@@ -116,7 +119,7 @@ export class PaymentsPage {
       this.invoice.state = 'refund';
       this.invoice.completed = true;
       this.balance = 0;
-      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
+      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
     }
   }
 
@@ -124,7 +127,7 @@ export class PaymentsPage {
     this.invoice.completed = true;
     this.invoice.completedAt = new Date().toISOString();
     this.invoice.state = 'completed';
-    !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber());
+    !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
   }
 
