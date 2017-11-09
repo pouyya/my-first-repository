@@ -74,19 +74,6 @@ export class AppService {
           }
           return;
         },
-
-        // async () => {
-        //   let employees: Employee[] = await this.employeeService.findByStore(store._id);
-        //   if(employees.length > 0) {
-        //     employees.forEach((employee, index, arr) => {
-        //       let storeIndex: number = _.findIndex(employee.store, { id: store._id });
-        //       arr[index].store.splice(storeIndex, 1);
-        //     });
-
-        //     return await this.employeeService.updateBulk(employees);
-        //   }
-        //   return;
-        // }
       ];
 
       return await Promise.all(assocDeletions.map(promise => promise()));
