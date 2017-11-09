@@ -25,7 +25,6 @@ export class SalesTaxService extends BaseEntityService<SalesTax> {
     return new Promise((resolve, reject) => {
       let promises: Array<Promise<any>> = [];
       promises.push(this.groupSalesTaxService.removeSalesTaxFromGroups(tax));
-      //if (tax._id === user.settings.defaultTax) promises.push(this.appSettingsService.setDefaultTaxToNoTax());
       promises.push(this.priceBookService.setPriceBookItemTaxToDefault(tax._id));
 
       Promise.all(promises)
