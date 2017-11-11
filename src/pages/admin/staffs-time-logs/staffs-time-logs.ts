@@ -128,7 +128,7 @@ export class StaffsTimeLogs {
               let logsToDelete = this.timeLogs[$event.date][$event.employee._id];
               let promises: Promise<any>[] = [];
               logsToDelete.forEach(log => promises.push(
-                this.employeeTimestampService.delete(_.omit(log, ['employee', 'store']))
+                this.employeeTimestampService.delete(<EmployeeTimestamp>_.omit(log, ['employee', 'store']))
               ));
 
               Promise.all(promises).then(() => {
