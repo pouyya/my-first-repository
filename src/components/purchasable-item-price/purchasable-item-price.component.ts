@@ -195,9 +195,8 @@ export class PurchasableItemPriceComponent implements OnChanges {
     this.items.forEach(item => {
       if (!item.deleted) {
         item.salesTaxId = item.tax.isDefault ? null : item.tax._id;
-        this._priceBook.purchasableItems.push({
-          ..._.omit<PurchasableItemPriceInterface,InteractableItemPriceInterface>(item, ['name', 'entityTypeName', 'tax', 'deleted'])
-        })
+        this._priceBook.purchasableItems.push(
+          <PurchasableItemPriceInterface> _.omit<InteractableItemPriceInterface>(item, ['name', 'entityTypeName', 'tax', 'deleted']));
       }
     });
     return;

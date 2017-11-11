@@ -4,13 +4,16 @@
   font-size: 1.4rem;
   background: $tile-background-color;
   display: inline-block;
-  vertical-align: top;
   border: 1px solid $tile-background-color-border;
   border-radius: 8px;
   cursor: pointer;
+  text-align: center;
+  height: 150px;
+
+  .footer {
+    color: white;
+    background: #3A4953;
+    vertical-align: bottom;
+  }
 } 
 
-.tile-icon {
-  font-size:90px;
-  color:#F0F0F0;
-}
