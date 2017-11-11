@@ -1,12 +1,10 @@
 // core
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-import { MdInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -166,7 +164,6 @@ const cloudSettings: CloudSettings = {
     TimeLogDetailsModal
   ],
   imports: [
-    BrowserModule,
     FormsModule,
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
@@ -183,7 +180,6 @@ const cloudSettings: CloudSettings = {
       name:'__mydb',
       driverOrder:['sqlite', 'indexeddb', 'websql']
     }),
-    MdInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
 
