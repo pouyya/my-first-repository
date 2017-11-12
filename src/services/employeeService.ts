@@ -9,6 +9,17 @@ import { StoreService } from "./storeService";
 
 @Injectable()
 export class EmployeeService extends BaseEntityService<Employee> {
+
+  private _employee: Employee = null;
+
+  public getEmployee(): Employee {
+    return this._employee;
+  }
+
+  public setEmployee(employee: Employee) {
+    this._employee = employee;
+  }
+
   constructor(
     private storeService: StoreService,
     private userService: UserService,
@@ -21,7 +32,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
    * @param id
    * @returns {Promise<T>}
    */
-  public getEmployee(id: string): Promise<any> {
+  public getById(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.findBy({
         selector: {
@@ -61,7 +72,21 @@ export class EmployeeService extends BaseEntityService<Employee> {
     });
   }
 
-  public getAssociatedStores(stores: Array<any>): Promise<any> {
+  public async populateStores(stores: any[]): Promise<any> {
+    let getStores: any[] = stores.map(async store => {
+      try {
+        store.store = await this.storeService.get(store.id);
+        return store;
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    });
+
+    return await Promise.all(getStores);
+  }
+
+  /*
+  public getAssociatedStoresS(stores: Array<any>): Promise<any> {
     return new Promise((resolve, reject) => {
       var promises: Array<any> = [];
       stores.forEach((item, index, array) => {
@@ -86,6 +111,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
       )
     });
   }
+  */
 
   /**
    * Verify if pin is used or not
@@ -187,7 +213,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
   public async updateBulk(employees: Employee[]): Promise<any> {
     try {
       return await Promise.all(employees.map(employee => this.update(employee)));
-    } catch(err) {
+    } catch (err) {
       return Promise.reject(err);
     }
   }

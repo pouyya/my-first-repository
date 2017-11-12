@@ -1,6 +1,7 @@
+import { Injector } from '@angular/core';
 // core
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
@@ -157,7 +158,7 @@ const cloudSettings: CloudSettings = {
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
-    PriceBookDetails,    
+    PriceBookDetails,
     SelectPurchasableItemsModel
   ],
   imports: [
@@ -166,17 +167,17 @@ const cloudSettings: CloudSettings = {
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
       {
-        backButtonText:'',
-        platforms: { 
-          android: { 
-            activator: 'none' 
+        backButtonText: '',
+        platforms: {
+          android: {
+            activator: 'none'
           }
-        }         
+        }
       }),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
-      name:'__mydb',
-      driverOrder:['sqlite', 'indexeddb', 'websql']
+      name: '__mydb',
+      driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
     MdInputModule,
     BrowserAnimationsModule,
@@ -230,7 +231,7 @@ const cloudSettings: CloudSettings = {
     MoneyInOut,
     MoveCashModal,
     PriceBooksPage,
-    PriceBookDetails,    
+    PriceBookDetails,
     ForgotPassword,
     ClockInOutPage,
     DiscountSurchargeModal,
@@ -238,7 +239,7 @@ const cloudSettings: CloudSettings = {
     SelectPurchasableItemsModel
   ],
   providers: [
-    {provide: ErrorHandler, useClass: AppErrorHandler},
+    { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
     Firebase,
@@ -250,7 +251,7 @@ const cloudSettings: CloudSettings = {
     ProductService,
     ServiceService,
     CategoryService,
-    
+
     EmployeeService,
     TaxService,
     CalculatorService,
@@ -278,7 +279,14 @@ const cloudSettings: CloudSettings = {
     authProvider,
     fakeBackendProvider,
     MockBackend,
-    BaseRequestOptions    
+    BaseRequestOptions
   ]
 })
-export class AppModule {}
+export class AppModule {
+  static injector: Injector;
+
+  constructor(injector: Injector) {
+    AppModule.injector = injector;
+  }
+
+}

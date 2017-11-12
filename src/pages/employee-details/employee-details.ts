@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee } from './../../model/employee';
 import { Store } from './../../model/store';
 import { StoreService } from './../../services/storeService';
-import { Component, NgZone } from "@angular/core";
+import { Component, NgZone, ChangeDetectorRef } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
 import { NavParams, Platform, NavController, AlertController, ToastController } from "ionic-angular";
 
@@ -16,11 +17,25 @@ export class EmployeeDetails {
   public employee: Employee = new Employee();
   public isNew = true;
   public action = 'Add';
-  public stores: Array<{ id: string, store: Store, role: string }> = [];
+  public stores: any[] = [];
+  public renderableRoles: any[] = [];
+  public roles: string[] = [
+    'BackOffice',
+    'Products',
+    'ProductDetails',
+    'Services',
+    'ServiceDetails',
+    'Employees',
+    'EmployeeDetails',
+    'Stores',
+    'StoreDetails',
+    'Settings'
+  ];
 
   constructor(private employeeService: EmployeeService,
     private zone: NgZone,
     private storeService: StoreService,
+    private cdr: ChangeDetectorRef,
     private navParams: NavParams,
     private platform: Platform,
     private alertCtrl: AlertController,
@@ -29,17 +44,51 @@ export class EmployeeDetails {
     private navCtrl: NavController) {
   }
 
-  ionViewDidLoad() {
+  async ionViewDidLoad() {
+    this.cdr.detach();
+    let stores = await this.storeService.getAll();
+    this.stores = stores.map(store => {
+      return {
+        ...store,
+        selected: false,
+        roles: this.roles.map(role => {
+          return {
+            name: role,
+            selected: false
+          }
+        })
+      };
+    });
+
     let currentItem = this.navParams.get('item');
     if (currentItem) {
       this.employee = currentItem;
       this.isNew = false;
       this.action = 'Edit';
+      this.stores = this.stores.map(store => {
+        let index = _.findIndex(this.employee.store, { id: store._id });
+        if(index > -1) {
+          store.selected = true;
+          let roles = this.employee.store[index].roles;
+          if(roles && roles.length > 0) {
+            store.roles = store.roles.map(role => {
+              if(roles.indexOf(role.name) > -1) {
+                role.selected = true;
+              }
+              return role;
+            });
+          }
+        }
+
+        return store;
+      });      
     }
 
+    this.cdr.reattach();
+    /*
     this.platform.ready().then(() => {
       if (currentItem) {
-        this.employeeService.getAssociatedStores(this.employee.store)
+        this.employeeService.populateStores(this.employee.store)
           .then(stores => {
             this.stores = stores;
           })
@@ -55,6 +104,7 @@ export class EmployeeDetails {
           .catch(console.error.bind(console));
       }
     });
+    */
   }
 
   public save(): void {
@@ -78,14 +128,6 @@ export class EmployeeDetails {
     this.employeeService.delete(this.employee)
       .then(this.navCtrl.pop())
       .catch(console.error.bind(console));
-  }
-
-  public changeRole(role: string, id: string) {
-    this.stores.forEach((store, index) => {
-      if (store.id === id) {
-        this.stores[index].role = role;
-      }
-    });
   }
 
   public setPin() {

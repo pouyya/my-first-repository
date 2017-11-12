@@ -37,28 +37,31 @@
     </ion-item>
     <ion-item>
       <button ion-button (click)="setPin()" color="{{ !employee.pin ? 'default' : 'primary' }}">{{ !employee.pin ? 'Set PIN' : 'Reset PIN' }}</button>
-    </ion-item>    
-     <ion-item>
-      <ion-list>
-        <ion-item-sliding *ngFor="let store of stores">
-          <ion-item>
-            <h2>{{store.store.name}}</h2>
-          </ion-item>
-          <ion-item-options side="right" *ngIf="!employee.isAdmin">
-            <button ion-button (click)="changeRole('staff', store.id)" [color]="store.role == 'staff' ? 'primary' : 'light'">
-              <ion-icon name="person"></ion-icon>
-              Staff
-            </button>
-            <button ion-button (click)="changeRole('manager', store.id)" [color]="store.role == 'manager' ? 'primary' : 'light'">
-              <ion-icon name="person"></ion-icon>
-              Manager
-            </button>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ion-item>    
+    </ion-item>
   </ion-list>
-    
+  
+  <!-- Roles Selectables [start] -->
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-4>
+        <ion-list class="scrollable-component">
+          <ion-item *ngFor="let store of stores">
+            <ion-label>{{store.name}}</ion-label>
+            <ion-checkbox color="primary" [(ngModel)]="store.selected" name="storeSelected"></ion-checkbox>
+            <ion-radio [value]="store._id"></ion-radio>
+          </ion-item>
+        </ion-list>      
+      </ion-col>
+      <ion-col col-md-8>
+        <!-- <ion-list class="scrollable-component">
+          <ion-item *ngFor="let role of roles">
+            <ion-label>{{role}}</ion-label>
+            <ion-checkbox color="primary" name="role"></ion-checkbox>
+          </ion-item>
+        </ion-list> -->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Roles Selectables [end] -->
 
-</ion-content> 
- 
+</ion-content>
