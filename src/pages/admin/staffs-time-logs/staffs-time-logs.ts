@@ -199,15 +199,6 @@ export class StaffsTimeLogs {
       }
     });
 
-    // let test = _.cloneDeep(groupedByDate);
-    // Object.keys(test).forEach(date => {
-    //   Object.keys(test[date]).forEach(employee => {
-    //     test[date][employee] = _.groupBy(test[date][employee], "storeId");
-    //   });
-    // })
-
-    // console.warn(test);
-
     Object.keys(groupedByDate).forEach(day => {
       this.timeLogs[day] = _.cloneDeep(groupedByDate[day]);
     });
@@ -225,5 +216,4 @@ export class StaffsTimeLogs {
       this.timeFrame.push(startDate.clone().subtract(i, this.timeKey));
     }
   }
-
 }
