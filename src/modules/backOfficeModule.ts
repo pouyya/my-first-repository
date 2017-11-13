@@ -1,3 +1,4 @@
+import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { Category } from './../pages/category/category';
 import { Injectable } from '@angular/core';
@@ -16,7 +17,7 @@ export class BackOfficeModule implements ModuleBase {
     
   }
 
-  public pages: Array<any> = [
+  public pages = [
     { title: 'Home', icon: 'home', component: HomePage },
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Categories', icon: 'cash', component: Category },
@@ -25,6 +26,7 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
+    { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
     { title: 'Settings', icon: 'cog', component: Settings }
   ];    
 }

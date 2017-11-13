@@ -119,24 +119,20 @@ export class AppService {
    * Delete POS Associations -> [Sale]
    * @param posId 
    */
-  public deletePos(pos: POS): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.salesService.findBy({ selector: { posId: pos._id } }).then((sales: Array<Sale>) => {
-        if (sales.length > 0) {
-          let salesDeletion: Array<Promise<any>> = [];
-          sales.forEach(sale => {
-            salesDeletion.push(this.salesService.delete(sale));
-          });
-          Promise.all(salesDeletion).then(() => {
-            this.posService.delete(pos)
-              .then(() => resolve())
-              .catch(error => reject(error));
-          }).catch(error => reject(error));
-        } else this.posService.delete(pos)
-          .then(() => resolve())
-          .catch(error => reject(error));
-      }).catch(error => reject(error));
-    });
+  public async deletePos(pos: POS): Promise<any> {
+    try {
+      let sales = await this.salesService.findBy({ selector: { posId: pos._id } });
+      if(sales.length > 0) {
+        let salesDeletion: Promise<any>[] = [];
+        sales.forEach(sale => salesDeletion.push(this.salesService.delete(sale)));
+        await Promise.all(salesDeletion);
+        await this.posService.delete(pos);
+      } else {
+        await this.posService.delete(pos);
+      }
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   async getAllPurchasableItems() {

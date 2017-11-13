@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-Align:center">Staffs Time Logs Management</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="addManualTime()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>    
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>
+            <strong>Employee</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Store</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Checked In</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Checked Out</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>Details</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>Delete</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>Add</strong>
+          </ion-col>          
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item-group *ngFor="let day of timeLogs | keys; let dateIndex=index">
+      <ion-item-divider color="light">{{ day.key }}</ion-item-divider>
+      <ion-item *ngFor="let employee of day.value | keys; let employeeIndex=index">
+        <group-employee-timelog
+          [(timeLog)]="employee.value"
+          [dateKey]="day.key" [employeeKey]="employee.key" [index]="{ dateIndex: dateIndex, employeeIndex: employeeIndex }"
+          (viewLogs)="viewLogs($event)" (removeAll)="removeAll($event)">
+        </group-employee-timelog>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMore())">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>  
+
+</ion-content>

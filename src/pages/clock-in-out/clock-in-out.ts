@@ -1,4 +1,5 @@
-import * as moment from 'moment';
+import * as moment from 'moment'
+import _ from 'lodash';
 import { UserService } from './../../services/userService';
 import { Employee } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
@@ -173,8 +174,9 @@ export class ClockInOutPage {
         }).catch(error => reject(error));
       } else {
         // is existing
+        let newTimestamp: EmployeeTimestamp;
         if (button.next == EmployeeTimestampService.CLOCK_OUT) {
-          let promises: Array<Promise<any>> = [];
+          let promises: Promise<any>[] = [];
           if (this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
             let breakEnd = new EmployeeTimestamp();
             breakEnd.employeeId = this.employee._id;
@@ -183,7 +185,10 @@ export class ClockInOutPage {
             breakEnd.type = EmployeeTimestampService.BREAK_END;
             promises.push(this.employeeTimestampService.add(breakEnd));
           }
-          promises.push(this.employeeTimestampService.add(this.timestamp));
+          newTimestamp = _.cloneDeep(this.timestamp);
+          newTimestamp._id = "";
+          newTimestamp._rev = "";          
+          promises.push(this.employeeTimestampService.add(newTimestamp));
           Promise.all(promises).then(() => {
             let currentDate = new Date();
             let clockoutTime = new Date(this.timestamp.time);
@@ -203,7 +208,10 @@ export class ClockInOutPage {
             }
           }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
         } else {
-          this.employeeTimestampService.add(this.timestamp).then(() => {
+          newTimestamp = _.cloneDeep(this.timestamp);
+          newTimestamp._id = "";
+          newTimestamp._rev = "";
+          this.employeeTimestampService.add(newTimestamp).then(() => {
             this.messagePlaceholder = `${button.message} ${time}`;
             this.activeButtons = this.buttons[button.next];
           }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));

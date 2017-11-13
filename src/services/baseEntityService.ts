@@ -18,6 +18,10 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
         return this._dbService;
     }
 
+    getDB() {
+        return this.dbService.getDB()
+    }
+
     add(entity: T) {
         
         var entityCopy = new this._type();
