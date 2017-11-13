@@ -1,61 +1,76 @@
+import { UserService } from './../services/userService';
 import { Employee } from './../model/employee';
 import { EmployeeService } from './../services/employeeService';
-import { AlertController } from 'ionic-angular';
-import { Dialogs } from '@ionic-native/dialogs';
-import { PinDialog } from '@ionic-native/pin-dialog';
-import { Platform } from 'ionic-angular';
 import { PluginService } from './../services/pluginService';
-import { AppModule } from './../app/app.module';
 import { BaseRoleModule } from './../modules/roles/baseRoleModule';
-import { ReflectiveInjector, Injector, Injectable } from '@angular/core';
-
-/*
-var pluginService: any = {};
-var injectServices = (injector: Injector) => {
-  pluginService = injector.get(PluginService);
-}
-*/
+import { Injector } from '@angular/core';
 
 export function SecurityGuard(roleModuleFunc: Function): Function {
-  return function (constructor: any) {
+	return function (constructor: any) {
 
-    // const injector = ReflectiveInjector.resolveAndCreate([PluginService, Platform, PinDialog, Dialogs, AlertController]);
-    // var pluginService = injector.get(PluginService);
-    // console.warn(pluginService);
+		let pluginService: PluginService;
+		let employeeService: EmployeeService;
+		let userService: UserService;
 
-    const pluginService = AppModule.injector.get(PluginService);
-    const employeeService = AppModule.injector.get(EmployeeService);
-    const roleModule = <BaseRoleModule>new (roleModuleFunc())();
+		window.globalInjector.onInit().then((injector: Injector) => {
+			pluginService = injector.get(PluginService);
+			employeeService = injector.get(EmployeeService);
+			userService = injector.get(UserService);
+		});
+		const roleModule = <BaseRoleModule>new (roleModuleFunc())();
 
-    const ionViewCanEnter = async (): Promise<any> => {
-      if (constructor.prototype.name == roleModule.associatedPage) {
-        console.error(new Error(`Incorrect ${roleModule.constructor.name} for page ${roleModule.associatedPage}`));
-        return Promise.reject("Invalid Page Module!");
-      } else {
-        try {
-          let openPinDialoge = pluginService.openPinPrompt.bind(null,
-            'Enter PIN',
-            'User Authorization', [],
-            { ok: 'OK', cancel: 'Cancel' });
-          let employee: Employee = employeeService.getEmployee();
-          
-          // TODO: Below will be code for checking against roles and give access or not
-          const pin = await pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
-            { ok: 'OK', cancel: 'Cancel' });
-          if (pin) {
-            return;
-          } else {
-            return Promise.reject(new Error("Invalid Pin"))
-          }
-        } catch (err) {
-          return Promise.reject(err);
-        }
-      }
-    }
+		const ionViewCanEnter = async () => {
+			if (constructor.name !== roleModule.associatedPage) {
+				console.error(new Error(`Incorrect ${roleModule.constructor.name} for page ${roleModule.associatedPage}`));
+				return Promise.reject("Invalid Page Module!");
+			} else {
+				try {
+					if (roleModule.roles.length == 0) {
+						employeeService.setEmployee(null);
+						return;
+					} else {
+						let employee: Employee
+						const pinDialogeFunc = pluginService.openPinPrompt.bind(null,
+							'Enter PIN',
+							'User Authorization', [],
+							{ ok: 'OK', cancel: 'Cancel' });
+						employee = employeeService.getEmployee();
+						if (employee) {
+							return verifyEmployeeRoles(employee);
+						} else {
+							let pin = await pinDialogeFunc();
+							employee = await this.employeeService.findByPin(pin);
+							if (employee) {
+								return verifyEmployeeRoles(employee);
 
-    Object.defineProperty(constructor.prototype, "ionViewCanEnter", {
-      value: ionViewCanEnter
-    });
+							} else {
+								return Promise.reject("Employee not found");
+							}
+						}
+					}
+				} catch (err) {
+					return Promise.reject(err);
+				}
+			}
 
-  }
+			function verifyEmployeeRoles(employee: Employee) {
+				let doorLocks: boolean[] = [];
+				let store = employee.store[0]; // TODO: this should be from current store
+				store.roles.forEach(role => {
+					doorLocks.push(roleModule.roles.indexOf(role) > 0);
+				});
+
+				if (doorLocks.every(lock => lock)) {
+					return;
+				} else {
+					return Promise.reject({});
+				}
+			}
+		}
+
+		Object.defineProperty(constructor.prototype, "ionViewCanEnter", {
+			value: ionViewCanEnter
+		});
+
+	}
 }

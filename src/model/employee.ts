@@ -15,7 +15,8 @@ const Roles: any = {
 };
 
 interface RolesInterface {
-
+  id: string;
+  roles: string[];
 }
 
 export class Employee extends DBBasedEntity {
@@ -24,6 +25,6 @@ export class Employee extends DBBasedEntity {
   public address: string;
   public phone: string;
   public isAdmin?: boolean;
-  public store?: Array<{ id: any, roles: any[] }>;
+  public store?: RolesInterface[];
   public pin: number;
 }

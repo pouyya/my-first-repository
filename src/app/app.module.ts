@@ -1,4 +1,6 @@
+import { GlobalConstants } from './../metadata/globalConstants';
 import { Injector } from '@angular/core';
+
 // core
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -283,10 +285,7 @@ const cloudSettings: CloudSettings = {
   ]
 })
 export class AppModule {
-  static injector: Injector;
-
   constructor(injector: Injector) {
-    AppModule.injector = injector;
+    window.globalInjector.emit(injector);
   }
-
 }

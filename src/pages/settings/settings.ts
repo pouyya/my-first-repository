@@ -8,7 +8,10 @@ import { PageModule } from './../../metadata/pageModule';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { SalesTaxService } from './../../services/salesTaxService';
+import { SecurityGuard } from './../../metadata/securityGuardModule';
+import { SettingsPageRoleModule } from './../../modules/roles/settingsPageRoleModule';
 
+@SecurityGuard(() => SettingsPageRoleModule)
 @PageModule(() => SettingsModule)
 @Component({
   selector: 'app-settings',
