@@ -65,13 +65,20 @@ export class DeployPage {
 		let user = await this.userService.getUser();
 
 		let loadStoreData = async () => {
-			let currentPos: POS = await this.posService.getFirst();
-			let currentStore: Store = await this.storeService.get(currentPos.storeId);
-			user.currentPos = currentPos._id;
-			user.currentStore = currentStore._id;
-			this._sharedService.publish({ currentStore, currentPos });
-			this.userService.setSession(user);
-			return;
+			if (!user.currentPos || !user.currentStore) {
+				var allPos = await this.posService.getAll();
+				for (let currentPos of allPos) {
+					try {
+						let currentStore: Store = await this.storeService.get(currentPos.storeId);
+						user.currentPos = currentPos._id;
+						user.currentStore = currentStore._id;
+						this._sharedService.publish({ currentStore, currentPos });
+						this.userService.setSession(user);
+						break;
+					}
+					catch{ }
+				}
+			}
 		}
 
 		ConfigService.externalDBUrl = user.settings.db_url;

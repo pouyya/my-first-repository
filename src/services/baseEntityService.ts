@@ -53,17 +53,6 @@ export abstract class BaseEntityService<T extends DBBasedEntity>
         return this.dbService.get(id);
     }
 
-    async getFirst() {
-        var result = await this.dbService.getAll();
-
-        if(result != null && Array.isArray(result))
-        {
-            return result[0]
-        }
-
-        return null;
-    }
-
     private clearAllMethods(entity: T) {
         if (entity) {
             for (var m in entity) {

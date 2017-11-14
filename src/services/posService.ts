@@ -21,10 +21,4 @@ export class PosService extends BaseEntityService<POS> {
     let user = this.userService.getLoggedInUser();
     return this.get(user.currentPos);
   }
-
-  public getFirst(): Promise<any> {
-    // Main point-of-sale
-    // Hard coded for now
-    return this.get("2017-07-18T11:40:52.927Z");
-  }
 }
