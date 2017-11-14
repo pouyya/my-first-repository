@@ -36,18 +36,12 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     return this.helperService.round10((100 * (price - supplyPrice)) / supplyPrice, -5);
   }
 
-  /**
-   * get pricebook of priority 0
-   * @returns {Promise<PriceBook>}
-   */
   public async getDefault(): Promise<PriceBook> {
-    try {
-      return await this.findBy({
-        selector: { priority: 0 }
-      });
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    var result = await this.findBy({
+      selector: { priority: 0 }
+    });
+
+    return (result && result.length > 0) ? result[0] : null;
   }
 
   /**
@@ -56,17 +50,13 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
    * @returns {Promise<PriceBook[]>}
    */
   public async getAll(): Promise<PriceBook[]> {
-    try {
-      return await this.findBy({
-        selector: {
-          entityTypeNames: {
-            $elemMatch: { $eq: "PriceBook" }
-          }
+    return this.findBy({
+      selector: {
+        entityTypeNames: {
+          $elemMatch: { $eq: "PriceBook" }
         }
-      });
-    } catch (error) {
-      return Promise.reject(error);
-    }
+      }
+    });
   }
 
   /**
@@ -111,7 +101,7 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
           }
         }
       });
-      if(priceBooks.length > 0) {
+      if (priceBooks.length > 0) {
         let priceBook: PriceBook = priceBooks[0];
         priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
           if (item.salesTaxId == taxId) {

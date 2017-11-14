@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { AuthHttp } from 'angular2-jwt';
 
 import 'rxjs/add/operator/map'
+import { icons } from '../metadata/itemIcons';
 
 @Injectable()
 export class AuthService {
@@ -55,6 +56,10 @@ export class AuthService {
             ConfigService.externalDBUrl = userSession.settings.db_url;
             ConfigService.externalDBName = userSession.settings.db_name;
             ConfigService.internalDBName = userSession.settings.db_local_name;
+
+            userSession.settings.defaultIcon = {};
+            var firstIconKey = Object.keys(icons)[0];
+            userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey]; 
 
             await this.userService.setSession(userSession);
     

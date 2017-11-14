@@ -89,12 +89,9 @@ export class ServiceDetails {
 					this.serviceItem.icon = this._user.settings.defaultIcon;
 					this.selectedIcon = this.serviceItem.icon.name;
 				}
+				
 				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						this.categoryService.getAll()
-							.then(data => _resolve(data))
-							.catch(error => _reject(error));
-					}),
+					this.categoryService.getAll(),
 					new Promise((_resolve, _reject) => {
 						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
 							salesTax.name = ` ${salesTax.name} (Default)`;
@@ -108,16 +105,8 @@ export class ServiceDetails {
 							} else _reject(error);							
 						});
 					}),
-					new Promise((_resolve, _reject) => {
-						this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
-							_resolve(salesTaxes);
-						}).catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						this.priceBookService.getDefault().then((priceBook: PriceBook) => {
-							_resolve(priceBook);
-						}).catch(error => _reject(error));
-					})
+					this.appService.loadSalesAndGroupTaxes(),
+					this.priceBookService.getDefault()
 				];
 
 				Promise.all(promises).then((results: Array<any>) => {
