@@ -22,7 +22,7 @@ export class PosService extends BaseEntityService<POS> {
     return this.get(user.currentPos);
   }
 
-  public getFirst(): Promise<any> {
+  public getFirst(): Promise<POS> {
     // Main point-of-sale
     // Hard coded for now
     return this.get("2017-07-18T11:40:52.927Z");

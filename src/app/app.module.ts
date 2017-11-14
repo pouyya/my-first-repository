@@ -9,7 +9,7 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-import { MdInputModule } from '@angular/material';
+import { MdInputModule, MdGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -60,6 +60,7 @@ import { DiscountSurchargeModal } from './../components/basket/modals/discount-s
 import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
+import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -161,7 +162,8 @@ const cloudSettings: CloudSettings = {
     ViewDiscountSurchargesModal,
     PriceBooksPage,
     PriceBookDetails,
-    SelectPurchasableItemsModel
+    SelectPurchasableItemsModel,
+    SelectRolesModal
   ],
   imports: [
     BrowserModule,
@@ -181,6 +183,7 @@ const cloudSettings: CloudSettings = {
       name: '__mydb',
       driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
+    MdGridListModule,
     MdInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
@@ -238,7 +241,8 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
-    SelectPurchasableItemsModel
+    SelectPurchasableItemsModel,
+    SelectRolesModal
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },

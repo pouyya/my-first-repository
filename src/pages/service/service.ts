@@ -4,7 +4,10 @@ import { ServiceService } from '../../services/serviceService';
 import { ServiceDetails } from '../service-details/service-details';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
+import { SecurityGuard } from '../../metadata/securityGuardModule';
+import { ServicesPageRoleModule } from '../../modules/roles/servicesPageRoleModule';
 
+@SecurityGuard(() => ServicesPageRoleModule)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'page-variables',

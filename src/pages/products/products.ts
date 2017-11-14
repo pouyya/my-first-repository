@@ -4,7 +4,10 @@ import { ProductService } from '../../services/productService';
 import { ProductDetails } from '../product-details/product-details';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
+import { SecurityGuard } from '../../metadata/securityGuardModule';
+import { ProductsPageRoleModule } from '../../modules/roles/productsPageRoleModule';
 
+@SecurityGuard(() => ProductsPageRoleModule)
 @PageModule(() => BackOfficeModule)
 @Component({
   templateUrl: 'products.html'

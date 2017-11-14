@@ -1,16 +1,28 @@
 import _ from 'lodash';
+import { SelectRolesModal } from './modals/select-roles/select-roles';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
-import { Employee } from './../../model/employee';
-import { Store } from './../../model/store';
+import { Employee, RolesInterface } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
 import { Component, NgZone, ChangeDetectorRef } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
-import { NavParams, Platform, NavController, AlertController, ToastController } from "ionic-angular";
+import { SecurityGuard } from '../../metadata/securityGuardModule';
+import { EmployeeDetailsPageRoleModule } from './../../modules/roles/employeeDetailsPageRoleModule';
+import {
+  NavParams,
+  Platform,
+  NavController,
+  AlertController,
+  ToastController,
+  ModalController,
+  LoadingController
+} from "ionic-angular";
 
+@SecurityGuard(() => EmployeeDetailsPageRoleModule)
 @Component({
   selector: 'employee-detail',
-  templateUrl: 'employee-details.html'
+  templateUrl: 'employee-details.html',
+  styleUrls: ['/pages/employee-details/employee-details.scss']
 })
 export class EmployeeDetails {
 
@@ -41,10 +53,15 @@ export class EmployeeDetails {
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private pluginService: PluginService,
+    private modalCtrl: ModalController,
+    private loading: LoadingController,
     private navCtrl: NavController) {
   }
 
   async ionViewDidLoad() {
+    let loader = this.loading.create({content: 'Loading Details...'});
+
+    await loader.present();
     this.cdr.detach();
     let stores = await this.storeService.getAll();
     this.stores = stores.map(store => {
@@ -67,12 +84,12 @@ export class EmployeeDetails {
       this.action = 'Edit';
       this.stores = this.stores.map(store => {
         let index = _.findIndex(this.employee.store, { id: store._id });
-        if(index > -1) {
+        if (index > -1) {
           store.selected = true;
           let roles = this.employee.store[index].roles;
-          if(roles && roles.length > 0) {
+          if (roles && roles.length > 0) {
             store.roles = store.roles.map(role => {
-              if(roles.indexOf(role.name) > -1) {
+              if (roles.indexOf(role.name) > -1) {
                 role.selected = true;
               }
               return role;
@@ -81,47 +98,38 @@ export class EmployeeDetails {
         }
 
         return store;
-      });      
+      });
     }
 
     this.cdr.reattach();
-    /*
-    this.platform.ready().then(() => {
-      if (currentItem) {
-        this.employeeService.populateStores(this.employee.store)
-          .then(stores => {
-            this.stores = stores;
-          })
-      } else {
-        this.storeService.getAll()
-          .then(data => {
-            this.zone.run(() => {
-              data.forEach((store, index) => {
-                this.stores.push({ id: store._id, store: store, role: 'staff' });
-              });
-            });
-          })
-          .catch(console.error.bind(console));
-      }
-    });
-    */
+    loader.dismiss();
   }
 
-  public save(): void {
-    let storeToSave: Array<any> = [];
-    this.stores.forEach((store, index) => {
-      storeToSave.push({ id: store.id, role: store.role });
-    });
-    this.employee.store = storeToSave;
-    if (this.isNew) {
-      this.employeeService.add(this.employee)
-        .then(this.navCtrl.pop())
-        .catch(console.error.bind(console));
-    } else {
-      this.employeeService.update(this.employee)
-        .then(this.navCtrl.pop())
-        .catch(console.error.bind(console));
+  public async save(): Promise<any> {
+    try {
+      this.employee.store = _.filter(this.stores, { selected: true }).map(store => {
+        let roles = _.filter(store.roles, { selected: true }).map((role: any) => role.name);
+        store.roles = roles;
+        return <RolesInterface> {
+          id: store._id,
+          roles: store.roles
+        };
+      });
+
+      await this.employeeService[this.isNew ? 'add' : 'update'](this.employee);
+      this.navCtrl.pop();
+      return;
+    } catch (err) {
+      throw new Error(err);
     }
+  }
+
+  public selectRoles(store, index: number) {
+    let modal = this.modalCtrl.create(SelectRolesModal, { store, index });
+    modal.onDidDismiss((data) => {
+
+    });
+    modal.present();
   }
 
   public remove(): void {
@@ -153,7 +161,7 @@ export class EmployeeDetails {
           }),
           new Promise((resolve, reject) => {
             this.employeeService.verifyPin(pin1).then((status) => status ? resolve() : reject("This PIN has already been in use!"))
-            .catch(error => reject(error));
+              .catch(error => reject(error));
           })
         ];
 
@@ -184,15 +192,15 @@ export class EmployeeDetails {
 
     if (this.employee.pin) {
       this.pluginService.openPinPrompt('Verify PIN', 'Enter Your Current PIN', config.inputs, config.buttons).then((pin) => {
-          if (pin == this.employee.pin) {
-            setPin();
-          } else {
-            let toast = this.toastCtrl.create({
-              message: "Incorrect PIN",
-              duration: 3000
-            });
-            toast.present();
-          }
+        if (pin == this.employee.pin) {
+          setPin();
+        } else {
+          let toast = this.toastCtrl.create({
+            message: "Incorrect PIN",
+            duration: 3000
+          });
+          toast.present();
+        }
       })
     } else {
       setPin();

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import { PosService } from './../services/posService';
 import { UserService } from './../services/userService';
 import { Employee } from './../model/employee';
 import { EmployeeService } from './../services/employeeService';
@@ -10,63 +12,85 @@ export function SecurityGuard(roleModuleFunc: Function): Function {
 
 		let pluginService: PluginService;
 		let employeeService: EmployeeService;
-		let userService: UserService;
+		let posService: PosService;
 
 		window.globalInjector.onInit().then((injector: Injector) => {
 			pluginService = injector.get(PluginService);
 			employeeService = injector.get(EmployeeService);
-			userService = injector.get(UserService);
+			posService = injector.get(PosService);
 		});
 		const roleModule = <BaseRoleModule>new (roleModuleFunc())();
 
-		const ionViewCanEnter = async () => {
-			if (constructor.name !== roleModule.associatedPage) {
-				console.error(new Error(`Incorrect ${roleModule.constructor.name} for page ${roleModule.associatedPage}`));
-				return Promise.reject("Invalid Page Module!");
-			} else {
-				try {
-					if (roleModule.roles.length == 0) {
-						employeeService.setEmployee(null);
-						return;
-					} else {
-						let employee: Employee
-						const pinDialogeFunc = pluginService.openPinPrompt.bind(null,
-							'Enter PIN',
-							'User Authorization', [],
-							{ ok: 'OK', cancel: 'Cancel' });
-						employee = employeeService.getEmployee();
-						if (employee) {
-							return verifyEmployeeRoles(employee);
-						} else {
-							let pin = await pinDialogeFunc();
-							employee = await this.employeeService.findByPin(pin);
-							if (employee) {
-								return verifyEmployeeRoles(employee);
-
-							} else {
-								return Promise.reject("Employee not found");
-							}
+		const verifyEmployeeRoles = (employee: Employee, currentStoreId: string): boolean => {
+			let authorized: boolean = false;
+			if (employee.store.length > 0) {
+				let store = _.find(employee.store, { id: currentStoreId });
+				if (store) {
+					if (store.roles.length > 0) {
+						let roles = _.intersection(roleModule.roles, store.roles);
+						if (roles.length === roleModule.roles.length) {
+							authorized = true;
 						}
 					}
-				} catch (err) {
-					return Promise.reject(err);
 				}
 			}
-
-			function verifyEmployeeRoles(employee: Employee) {
-				let doorLocks: boolean[] = [];
-				let store = employee.store[0]; // TODO: this should be from current store
-				store.roles.forEach(role => {
-					doorLocks.push(roleModule.roles.indexOf(role) > 0);
-				});
-
-				if (doorLocks.every(lock => lock)) {
-					return;
-				} else {
-					return Promise.reject({});
-				}
-			}
+			return authorized;
 		}
+
+		const giveAccessByPin = (currentStoreId): Promise<Employee> => {
+			return new Promise((resolve, reject) => {
+				pluginService.openPinPrompt(
+					'Enter PIN',
+					'User Authorization', [],
+					{ ok: 'OK', cancel: 'Cancel' }).then(pin => {
+						if (pin) {
+							employeeService.findByPin(pin).then((model: Employee) => {
+								verifyEmployeeRoles(model, currentStoreId) ? resolve(model) : reject("Unauthorized!");
+							}).catch(err => reject(err));
+						} else {
+							reject("Cancelled");
+						}
+					}).catch(err => reject(err));
+			});
+		};
+
+		const ionViewCanEnter = (): Promise<any> => {
+			return new Promise((resolve, reject) => {
+				/*
+				if (constructor.name !== roleModule.associatedPage) {
+					console.error(new Error(`Incorrect ${roleModule.constructor.name} for page ${roleModule.associatedPage}`));
+					return Promise.reject("Invalid Page Module!");
+				} else {
+	
+				}*/
+
+				if (roleModule.roles.length == 0) {
+					// that's an insecure module!
+					employeeService.setEmployee(null); // clear employee from memory
+					resolve();
+				} else {
+					let employee: Employee;
+					posService.getFirst().then(currentPos => {
+						employee = employeeService.getEmployee();
+						if (employee) {
+							if (verifyEmployeeRoles(employee, currentPos.storeId)) {
+								resolve();
+							} else {
+								giveAccessByPin(currentPos.storeId).then((model: Employee) => {
+									employeeService.setEmployee(model);
+									resolve();
+								}).catch(err => reject(err));
+							}
+						} else {
+							giveAccessByPin(currentPos.storeId).then((model: Employee) => {
+								employeeService.setEmployee(model);
+								resolve();
+							}).catch(err => reject(err));
+						}
+					});
+				}
+			});
+		};
 
 		Object.defineProperty(constructor.prototype, "ionViewCanEnter", {
 			value: ionViewCanEnter

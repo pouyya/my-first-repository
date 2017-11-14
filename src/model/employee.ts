@@ -1,20 +1,6 @@
 import {DBBasedEntity} from './dbBasedEntity';
 
-// TODO: Temporary Roles, will be removed later
-const Roles: any = {
-  'backoffice': 'BackOffice',
-  'products': 'Products',
-  'productDetails': 'ProductDetails',
-  'services': 'Services',
-  'serviceDetails': 'ServiceDetails',
-  'settings': 'Settings',
-  'stores': 'Stores',
-  'storeDetails': 'StoreDetails',
-  'employees': 'Employees',
-  'employeeDetails': 'EmployeeDetails'
-};
-
-interface RolesInterface {
+export interface RolesInterface {
   id: string;
   roles: string[];
 }

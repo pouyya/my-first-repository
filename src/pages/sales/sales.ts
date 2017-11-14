@@ -26,6 +26,8 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
+import { SecurityGuard } from '../../metadata/securityGuardModule';
+import { SalesPageRoleModule } from '../../modules/roles/salesPageRoleModule';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -33,6 +35,7 @@ interface InteractableItem extends PurchasableItem {
   employeeId: string;
 }
 
+@SecurityGuard(() => SalesPageRoleModule)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',

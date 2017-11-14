@@ -39,26 +39,20 @@
       <button ion-button (click)="setPin()" color="{{ !employee.pin ? 'default' : 'primary' }}">{{ !employee.pin ? 'Set PIN' : 'Reset PIN' }}</button>
     </ion-item>
   </ion-list>
-  
+
   <!-- Roles Selectables [start] -->
   <ion-grid>
     <ion-row>
-      <ion-col col-md-4>
-        <ion-list class="scrollable-component">
-          <ion-item *ngFor="let store of stores">
-            <ion-label>{{store.name}}</ion-label>
-            <ion-checkbox color="primary" [(ngModel)]="store.selected" name="storeSelected"></ion-checkbox>
-            <ion-radio [value]="store._id"></ion-radio>
-          </ion-item>
-        </ion-list>      
-      </ion-col>
-      <ion-col col-md-8>
-        <!-- <ion-list class="scrollable-component">
-          <ion-item *ngFor="let role of roles">
-            <ion-label>{{role}}</ion-label>
-            <ion-checkbox color="primary" name="role"></ion-checkbox>
-          </ion-item>
-        </ion-list> -->
+      <ion-col col-md-12>
+        <md-grid-list cols="12" rowHeight="1:1" gutterSize="10px">
+          <md-grid-tile
+            [ngClass]="{ 'store-tile': !store.selected, 'store-tile-selected': store.selected }"
+            *ngFor="let store of stores; let i = index" (tap)="selectRoles(store, i)"
+            [colspan]="1"
+            [rowspan]="1" tapabble>
+            {{store.name}}
+          </md-grid-tile>
+        </md-grid-list>
       </ion-col>
     </ion-row>
   </ion-grid>
