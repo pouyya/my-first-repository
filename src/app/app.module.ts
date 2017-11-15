@@ -2,8 +2,7 @@ import { GlobalConstants } from './../metadata/globalConstants';
 import { Injector } from '@angular/core';
 
 // core
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
@@ -60,6 +59,8 @@ import { DiscountSurchargeModal } from './../components/basket/modals/discount-s
 import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
+import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
+import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
 
 // components
@@ -71,7 +72,8 @@ import { IconSelectModule } from './../components/icon-select/icon-select.module
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
-import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items'
+import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
+import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -161,12 +163,13 @@ const cloudSettings: CloudSettings = {
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
-    PriceBookDetails,
+    PriceBookDetails,    
     SelectPurchasableItemsModel,
+    StaffsTimeLogs,
+    TimeLogDetailsModal,
     SelectRolesModal
   ],
   imports: [
-    BrowserModule,
     FormsModule,
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
@@ -197,7 +200,8 @@ const cloudSettings: CloudSettings = {
     IconSelectModule,
     SPIconModule,
     ItemPriceBookModule,
-    TileScrollableModule
+    TileScrollableModule,
+    GroupEmployeeTimeLogModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -242,6 +246,8 @@ const cloudSettings: CloudSettings = {
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     SelectPurchasableItemsModel,
+    StaffsTimeLogs,
+    TimeLogDetailsModal,
     SelectRolesModal
   ],
   providers: [
@@ -257,7 +263,6 @@ const cloudSettings: CloudSettings = {
     ProductService,
     ServiceService,
     CategoryService,
-
     EmployeeService,
     TaxService,
     CalculatorService,

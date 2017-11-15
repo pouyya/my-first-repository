@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { SelectRolesModal } from './modals/select-roles/select-roles';
+import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee, RolesInterface } from './../../model/employee';
@@ -41,7 +42,10 @@ export class EmployeeDetails {
     'Settings'
   ];
 
-  constructor(private employeeService: EmployeeService,
+  constructor(
+    private employeeService: EmployeeService,
+    private timestampService: EmployeeTimestampService,
+    private zone: NgZone,
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,
@@ -119,15 +123,21 @@ export class EmployeeDetails {
     }
   }
 
+  public async remove(): Promise<any> {
+    try {
+      // delete employee associations
+      await this.timestampService.getEmployeeTimestamps(this.employee._id);
+      await this.employeeService.delete(this.employee);
+      this.navCtrl.pop();
+      return;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
   public selectRoles(store, index: number) {
     let modal = this.modalCtrl.create(SelectRolesModal, { store, index });
     modal.present();
-  }
-
-  public remove(): void {
-    this.employeeService.delete(this.employee)
-      .then(this.navCtrl.pop())
-      .catch(console.error.bind(console));
   }
 
   public setPin() {
@@ -180,7 +190,7 @@ export class EmployeeDetails {
       }).catch(() => {
         console.error("There was en error");
       });
-    }
+    };
 
     if (this.employee.pin) {
       this.pluginService.openPinPrompt('Verify PIN', 'Enter Your Current PIN', config.inputs, config.buttons).then((pin) => {

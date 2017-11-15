@@ -35,7 +35,7 @@ export function SecurityGuard(roleModuleFunc: Function): Function {
 				}
 			}
 			return authorized;
-		}
+		};
 
 		const giveAccessByPin = (currentStoreId): Promise<Employee> => {
 			return new Promise((resolve, reject) => {
@@ -56,39 +56,35 @@ export function SecurityGuard(roleModuleFunc: Function): Function {
 
 		const ionViewCanEnter = (): Promise<any> => {
 			return new Promise((resolve, reject) => {
-				/*
 				if (constructor.name !== roleModule.associatedPage) {
 					console.error(new Error(`Incorrect ${roleModule.constructor.name} for page ${roleModule.associatedPage}`));
-					return Promise.reject("Invalid Page Module!");
+					reject("Invalid Page Module!");
 				} else {
-	
-				}*/
-
-				if (roleModule.roles.length == 0) {
-					// that's an insecure module!
-					employeeService.setEmployee(null); // clear employee from memory
-					resolve();
-				} else {
-					let employee: Employee;
-					posService.getFirst().then(currentPos => {
-						employee = employeeService.getEmployee();
-						if (employee) {
-							if (verifyEmployeeRoles(employee, currentPos.storeId)) {
-								resolve();
-							} else {
-								giveAccessByPin(currentPos.storeId).then((model: Employee) => {
-									employeeService.setEmployee(model);
-									resolve();
-								}).catch(err => reject(err));
-							}
-						} else {
-							giveAccessByPin(currentPos.storeId).then((model: Employee) => {
-								employeeService.setEmployee(model);
-								resolve();
-							}).catch(err => reject(err));
-						}
-					});
-				}
+          if (roleModule.roles.length == 0) {
+            // that's an insecure module!
+            employeeService.setEmployee(null); // clear employee from memory
+            resolve();
+          } else {
+            let employee: Employee;
+            let currentPos = posService.getPos();
+            employee = employeeService.getEmployee();
+            if (employee) {
+              if (verifyEmployeeRoles(employee, currentPos.storeId)) {
+                resolve();
+              } else {
+                giveAccessByPin(currentPos.storeId).then((model: Employee) => {
+                  employeeService.setEmployee(model);
+                  resolve();
+                }).catch(err => reject(err));
+              }
+            } else {
+              giveAccessByPin(currentPos.storeId).then((model: Employee) => {
+                employeeService.setEmployee(model);
+                resolve();
+              }).catch(err => reject(err));
+            }
+          }
+        }
 			});
 		};
 

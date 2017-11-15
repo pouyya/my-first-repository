@@ -89,35 +89,25 @@ export class ServiceDetails {
 					this.serviceItem.icon = this._user.settings.defaultIcon;
 					this.selectedIcon = this.serviceItem.icon.name;
 				}
+
 				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						this.categoryService.getAll()
-							.then(data => _resolve(data))
-							.catch(error => _reject(error));
-					}),
+					this.categoryService.getAll(),
 					new Promise((_resolve, _reject) => {
 						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
 							salesTax.name = ` ${salesTax.name} (Default)`;
-							_resolve({ 
+							_resolve({
 								...salesTax,
 								isDefault: true,
-								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0  });
+								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
+							});
 						}).catch(error => {
-							if(error.name == "not_found") {
+							if (error.name == "not_found") {
 								_resolve(null);
-							} else _reject(error);							
+							} else _reject(error);
 						});
 					}),
-					new Promise((_resolve, _reject) => {
-						this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
-							_resolve(salesTaxes);
-						}).catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						this.priceBookService.getDefault().then((priceBook: PriceBook) => {
-							_resolve(priceBook);
-						}).catch(error => _reject(error));
-					})
+					this.appService.loadSalesAndGroupTaxes(),
+					this.priceBookService.getDefault()
 				];
 
 				Promise.all(promises).then((results: Array<any>) => {
@@ -208,56 +198,35 @@ export class ServiceDetails {
 		});
 	}
 
-	saveService() {
-		if (this.isNew) {
-			this.serviceService.add(this.serviceItem).then((res) => {
-				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						this._defaultPriceBook.purchasableItems.push({
-							id: res.id,
-							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
-							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
-							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
-							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
-							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
-						});
-						this.priceBookService.update(this._defaultPriceBook)
-							.then(() => _resolve()).catch(error => _reject(error));
-					})
-				];
+	async saveService() {
 
-				Promise.all(promises).catch(console.error.bind(console));
+		let createPurchsableItem = (piId: string) => {
+			let puchasableItem: PurchasableItemPriceInterface = {
+				id: piId,
+				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
+				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
+				supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
+				markup: Number(this.defaultPriceBook.item.markup),
+				salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
+				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
+			};
 
-			}).catch(console.error.bind(console));
-		} else {
-			this.serviceService.update(this.serviceItem).then((res) => {
-				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
-						let dBuffer = {
-							id: this.serviceItem._id,
-							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
-							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
-							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
-							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
-							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
-						};
-
-						index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
-							this._defaultPriceBook.purchasableItems.push(dBuffer);
-
-						this.priceBookService.update(this._defaultPriceBook)
-							.then(() => _resolve()).catch(error => _reject(error));
-					})
-				];
-
-				Promise.all(promises).catch(console.error.bind(console));
-			}).catch(console.error.bind(console));
+			return puchasableItem;
 		}
 
-		this.navCtrl.pop();
+		if (this.isNew) {
+			var res = await this.serviceService.add(this.serviceItem)
+			this._defaultPriceBook.purchasableItems.push(createPurchsableItem(res.id));
 
+		} else {
+			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
+			let dBuffer = createPurchsableItem(this.serviceItem._id);
+
+			index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
+				this._defaultPriceBook.purchasableItems.push(dBuffer);
+		}
+		
+		await this.priceBookService.update(this._defaultPriceBook);
+		this.navCtrl.pop();
 	}
 }

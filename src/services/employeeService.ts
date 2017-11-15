@@ -1,5 +1,6 @@
-import { EmployeeTimestamp } from './../model/employeeTimestamp';
+import _ from 'lodash';
 import * as moment from "moment";
+import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { UserService } from './userService';
 import { EmployeeTimestampService } from './employeeTimestampService';
 import { Injectable } from "@angular/core";
@@ -213,6 +214,38 @@ export class EmployeeService extends BaseEntityService<Employee> {
   public async updateBulk(employees: Employee[]): Promise<any> {
     try {
       return await Promise.all(employees.map(employee => this.update(employee)));
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async logOutAllStaffs() {
+    try {
+      let timeLogs: any[] = await this.employeeTimestampService.getNonCheckOuts(false);
+      if (timeLogs.length > 0) {
+        let logOutPromises: any[] = [];
+        let clockOutTime: any = new Date();
+        clockOutTime.setDate(clockOutTime.start.getDate() - 1);
+        clockOutTime.setHours(23);
+        clockOutTime.setMinutes(59);
+        clockOutTime.setSeconds(59);
+        let employees: any = _.groupBy(timeLogs, 'employeeId');
+        _.forEach(employees, (value, key) => {
+          employees[key] = _.groupBy(value, 'storeId');
+          var stores = Object.keys(employees[key]);
+          for (var i = 0; i < stores.length; i++) {
+            let clockOutTimeStamp = new EmployeeTimestamp();
+            clockOutTimeStamp.type = 'clock_out';
+            clockOutTimeStamp.employeeId = key;
+            clockOutTimeStamp.storeId = stores[i];
+            clockOutTimeStamp.time = clockOutTime;
+            logOutPromises.push(this.employeeTimestampService.add(clockOutTimeStamp));
+          }
+        });
+        
+        return await Promise.all(logOutPromises);
+      }
+      return [];
     } catch (err) {
       return Promise.reject(err);
     }

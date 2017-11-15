@@ -6,6 +6,15 @@ import { POS } from './../model/pos';
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
 
+  private _currentPos: POS;
+
+  getPos(): POS {
+    return this._currentPos;
+  }
+
+  setPos(pos: POS) {
+    this._currentPos = pos;
+  }
 
   constructor(private userService: UserService) {
     super(POS);
@@ -20,11 +29,5 @@ export class PosService extends BaseEntityService<POS> {
   public async getCurrentPos() : Promise<POS> {
     let user = this.userService.getLoggedInUser();
     return this.get(user.currentPos);
-  }
-
-  public getFirst(): Promise<POS> {
-    // Main point-of-sale
-    // Hard coded for now
-    return this.get("2017-07-18T11:40:52.927Z");
   }
 }
