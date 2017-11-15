@@ -9,7 +9,7 @@ import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { Component, Input, OnChanges, NgZone, Output, EventEmitter } from '@angular/core';
 
-interface InteractableItemPriceInterface extends PurchasableItemPriceInterface {
+interface IntractableItemPriceInterface extends PurchasableItemPriceInterface {
   name: string,
   entityTypeName: string;
   tax: any;
@@ -29,7 +29,7 @@ interface ComponentOptions {
 export class PurchasableItemPriceComponent implements OnChanges {
 
   public _priceBook: PriceBook;
-  public items: InteractableItemPriceInterface[] = [];
+  public items: any[] = []; /* IntractableItemPriceInterface[] = []; */
   private user: any;
   private defaultTax: any;
 
@@ -100,7 +100,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
       if (this._priceBook && this._priceBook._id && this._priceBook.purchasableItems.length > 0) {
         let fetchItems: Promise<any>[] = [];
-        let items: InteractableItemPriceInterface[] = [];
+        let items: any[] = [];
         this._priceBook.purchasableItems.forEach(item => {
           fetchItems.push(new Promise((res, rej) => {
             this.priceBookService.get(item.id).then(model => {
@@ -195,9 +195,9 @@ export class PurchasableItemPriceComponent implements OnChanges {
     this.items.forEach(item => {
       if (!item.deleted) {
         item.salesTaxId = item.tax.isDefault ? null : item.tax._id;
-        this._priceBook.purchasableItems.push({
-          ..._.omit<PurchasableItemPriceInterface,InteractableItemPriceInterface>(item, ['name', 'entityTypeName', 'tax', 'deleted'])
-        })
+        // ..._.omit<PurchasableItemPriceInterface>(item, ['name', 'entityTypeName', 'tax', 'deleted'])
+        let purchasableItem: PurchasableItemPriceInterface = <PurchasableItemPriceInterface> _.omit(item, ['name', 'entityTypeName', 'tax', 'deleted'])
+        this._priceBook.purchasableItems.push(purchasableItem)
       }
     });
     return;

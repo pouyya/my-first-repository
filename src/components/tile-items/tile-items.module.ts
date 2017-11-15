@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TileItemsComponent } from './tile-items.component';
 import { IonicPageModule } from 'ionic-angular';
-import { MdGridListModule } from '@angular/material';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { DndModule } from 'ng2-dnd';
 
 @NgModule({
@@ -12,7 +12,7 @@ import { DndModule } from 'ng2-dnd';
   imports: [ 
     CommonModule, 
     IonicPageModule.forChild(TileItemsComponent),
-    MdGridListModule,
+    MatGridListModule,
     SPIconModule,
     DndModule,
     SharedModule

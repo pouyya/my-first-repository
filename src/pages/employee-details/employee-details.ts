@@ -10,9 +10,7 @@ import { SecurityGuard } from '../../metadata/securityGuardModule';
 import { EmployeeDetailsPageRoleModule } from './../../modules/roles/employeeDetailsPageRoleModule';
 import {
   NavParams,
-  Platform,
   NavController,
-  AlertController,
   ToastController,
   ModalController,
   LoadingController
@@ -30,7 +28,6 @@ export class EmployeeDetails {
   public isNew = true;
   public action = 'Add';
   public stores: any[] = [];
-  public renderableRoles: any[] = [];
   public roles: string[] = [
     'BackOffice',
     'Products',
@@ -45,12 +42,9 @@ export class EmployeeDetails {
   ];
 
   constructor(private employeeService: EmployeeService,
-    private zone: NgZone,
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,
-    private platform: Platform,
-    private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private pluginService: PluginService,
     private modalCtrl: ModalController,
@@ -107,14 +101,15 @@ export class EmployeeDetails {
 
   public async save(): Promise<any> {
     try {
-      this.employee.store = _.filter(this.stores, { selected: true }).map(store => {
-        let roles = _.filter(store.roles, { selected: true }).map((role: any) => role.name);
-        store.roles = roles;
-        return <RolesInterface> {
-          id: store._id,
-          roles: store.roles
-        };
-      });
+      this.employee.store = _.filter(this.stores, { selected: true })
+        .map((store: any) => {
+          store.roles = _.filter(store.roles, { selected: true })
+            .map((role: any) => role.name);
+          return <RolesInterface> {
+            id: store._id,
+            roles: store.roles
+          };
+        });
 
       await this.employeeService[this.isNew ? 'add' : 'update'](this.employee);
       this.navCtrl.pop();
@@ -126,9 +121,6 @@ export class EmployeeDetails {
 
   public selectRoles(store, index: number) {
     let modal = this.modalCtrl.create(SelectRolesModal, { store, index });
-    modal.onDidDismiss((data) => {
-
-    });
     modal.present();
   }
 
