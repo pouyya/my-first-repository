@@ -120,7 +120,7 @@ export class StoreDetailsPage {
                 this.employeeService.findByStore(this.item._id).then((employees: Employee[]) => {
                   if(employees.length > 0) {
                     employees.forEach((employee, index, arr) => {
-                      let storeIndex: number = _.findIndex(employee.store, (currentStore) => { currentStore.id == this.item._id });
+                      let storeIndex: number = _.findIndex(employee.store, (currentStore) => currentStore.id == this.item._id);
                       arr[index].store.splice(storeIndex, 1);
                     });
                     this.employeeService.updateBulk(employees).then(() => {
