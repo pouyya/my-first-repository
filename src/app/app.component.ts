@@ -69,7 +69,9 @@ export class SimplePOSApp implements OnInit {
   async ngOnInit() {
     try {
       // TODO: Insomnia should be moved to App Settings where it can be awake or asleep
-      await this.insomnia.keepAwake();
+      if (!this.platform.is('core')) {
+        await this.insomnia.keepAwake();
+      }
       this.user = await this.userService.getUser();
       this.rootPage = this.user ? DeployPage : LoginPage;
       return;
