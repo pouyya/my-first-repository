@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { EmployeeService } from './../services/employeeService';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -38,7 +38,6 @@ export class SimplePOSApp implements OnInit {
     private userService: UserService,
     private moduleService: ModuleService,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
     private loading: LoadingController,
     private pluginService: PluginService,
     private _sharedService: SharedService,

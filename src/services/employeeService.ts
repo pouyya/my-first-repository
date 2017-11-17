@@ -86,34 +86,6 @@ export class EmployeeService extends BaseEntityService<Employee> {
     return await Promise.all(getStores);
   }
 
-  /*
-  public getAssociatedStoresS(stores: Array<any>): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var promises: Array<any> = [];
-      stores.forEach((item, index, array) => {
-        promises.push(new Promise((resolve2, reject2) => {
-          this.storeService.findBy({ selector: { _id: item.id } })
-            .then(
-            store => {
-              array[index].store = store[0];
-              resolve2();
-            },
-            error => {
-              console.log(error);
-              resolve2();
-            }
-            );
-        }))
-      });
-
-      Promise.all(promises).then(
-        result => resolve(stores),
-        error => reject(error)
-      )
-    });
-  }
-  */
-
   /**
    * Verify if pin is used or not
    * @param pin 

@@ -4,8 +4,8 @@ import { POS } from './../../../model/pos';
 import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
 import { Store } from './../../../model/store';
-import { ViewController, Platform, LoadingController, NavParams } from 'ionic-angular';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { ViewController, LoadingController } from 'ionic-angular';
+import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
 
 @Component({
@@ -23,12 +23,9 @@ export class SwitchPosModal {
 
   constructor(
     private viewCtrl: ViewController,
-    private platform: Platform,
     private storeService: StoreService,
     private posService: PosService,
     private loading: LoadingController,
-    private navParams: NavParams,
-    private cdr: ChangeDetectorRef,
     private userService: UserService,
   ) {
   }
@@ -45,7 +42,7 @@ export class SwitchPosModal {
 
       let stores = await this.storeService.getAll();
       var allPos = await this.posService.getAll();
-      stores.forEach((store: Store, index) => {
+      stores.forEach((store: Store) => {
         var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
         if (registers.length > 0) {
           this.stores.push({ ...store, registers });

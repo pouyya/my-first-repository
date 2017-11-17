@@ -8,11 +8,11 @@ export class PosService extends BaseEntityService<POS> {
 
   private _currentPos: POS;
 
-  getPos(): POS {
+  get currentPos(): POS {
     return this._currentPos;
   }
 
-  setPos(pos: POS) {
+  set currentPos(pos: POS) {
     this._currentPos = pos;
   }
 

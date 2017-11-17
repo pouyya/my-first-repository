@@ -1,3 +1,7 @@
+import _ from 'lodash';
+import { Component } from '@angular/core';
+import { NavController, NavParams, Platform } from 'ionic-angular';
+import { Deploy } from '@ionic/cloud-angular';
 import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
 import { SharedService } from './../../services/_sharedService';
@@ -7,9 +11,6 @@ import { ConfigService } from './../../services/configService';
 import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { UserService } from './../../services/userService';
-import { Component } from '@angular/core';
-import { NavController, NavParams, Platform } from 'ionic-angular';
-import { Deploy } from '@ionic/cloud-angular';
 import { DBService } from '../../services/DBService';
 
 @Component({
@@ -63,23 +64,29 @@ export class DeployPage {
     let user = await this.userService.getUser();
 
     let loadStoreData = async () => {
-      if (!user.currentPos || !user.currentStore) {
-        let allPos: POS[] = await this.posService.getAll();
-        for (let currentPos of allPos) {
-          try {
-            let currentStore: Store = await this.storeService.get(currentPos.storeId);
-            user.currentPos = currentPos._id;
-            user.currentStore = currentStore._id;
-            this.posService.setPos(currentPos);
-            this._sharedService.publish({ currentStore, currentPos });
-            this.userService.setSession(user);
-            break;
-          } catch (err) {
-
-          }
+      try {
+        let currentPos: POS;
+        let currentStore: Store;
+        if (!user.currentPos || !user.currentStore) {
+          let allPos: POS[] = await this.posService.getAll();
+          currentPos = _.head(allPos);
+          currentStore = await this.storeService.get(currentPos.storeId);
+          user.currentPos = currentPos._id;
+          user.currentStore = currentStore._id;
+          this._sharedService.publish({ currentStore, currentPos });
+          this.userService.setSession(user);
+          return;
+        } else {
+          let user = this.userService.getLoggedInUser();
+          currentPos = await this.posService.get(user.currentPos);
+          currentStore = await this.storeService.get(user.currentStore);
+          this._sharedService.publish({ currentStore, currentPos });
+          return await Promise.resolve();
         }
+      } catch (err) {
+        throw new Error(err);
       }
-    }
+    };
 
     ConfigService.externalDBUrl = user.settings.db_url;
     ConfigService.externalDBName = user.settings.db_name;
@@ -98,7 +105,7 @@ export class DeployPage {
           this.updateText = "Loading your company data " + Math.round(data * 100) + "%";
         }
       }
-    )
+    );
     await DBService.initialize();
   }
 }
