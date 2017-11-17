@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Insomnia } from '@ionic-native/insomnia';
 import { EmployeeService } from './../services/employeeService';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -40,6 +41,7 @@ export class SimplePOSApp implements OnInit {
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private loading: LoadingController,
+    private insomnia: Insomnia,
     private pluginService: PluginService,
     private _sharedService: SharedService,
     private employeeService: EmployeeService,
@@ -66,6 +68,8 @@ export class SimplePOSApp implements OnInit {
   // This code will persist user session in device
   async ngOnInit() {
     try {
+      // TODO: Insomnia should be moved to App Settings where it can be awake or asleep
+      await this.insomnia.keepAwake();
       this.user = await this.userService.getUser();
       this.rootPage = this.user ? DeployPage : LoginPage;
       return;
