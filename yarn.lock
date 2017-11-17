@@ -8,9 +8,9 @@
   dependencies:
     tslib "^1.7.1"
 
-"@angular/cdk@^5.0.0-rc0":
-  version "5.0.0-rc0"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-5.0.0-rc0.tgz#b7225af1d8d23c13ac14bbd3fe1c6b427eb71368"
+"@angular/cdk@^2.0.0-beta.8":
+  version "2.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-2.0.0-beta.12.tgz#3a243cb62b93f4e039120ba70f900dc9e235622e"
   dependencies:
     tslib "^1.7.1"
 
@@ -76,31 +76,35 @@
   dependencies:
     tsickle "^0.21.0"
 
-"@ionic-native/core@^3.4.2":
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-3.14.0.tgz#796ea9fb1ad1188eb30205c7bca982c8271747be"
-
-"@ionic-native/dialogs@^4.2.1":
+"@ionic-native/core@^4.2.0":
   version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/dialogs/-/dialogs-4.4.0.tgz#945e4f030c8d67107c4789f8ee03b7bae2afb2c2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.4.0.tgz#fb0f071543bd2725d858f5a0f5c20adbece20df4"
 
-"@ionic-native/firebase@^4.2.1":
+"@ionic-native/dialogs@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/dialogs/-/dialogs-4.2.1.tgz#fb9d3013ce2c428030b6a38bbbf94ff1553bab0a"
+
+"@ionic-native/firebase@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.2.1.tgz#561bd0728b6f984b351391e43d2de288ede442ff"
+
+"@ionic-native/in-app-browser@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.2.1.tgz#a1fed3ea095b75733563250ac48edbfec4830b99"
+
+"@ionic-native/insomnia@^4.4.0":
   version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.4.0.tgz#ed4567f2ab4a3cbd41a8e8aa2573daccbe38f589"
+  resolved "https://registry.yarnpkg.com/@ionic-native/insomnia/-/insomnia-4.4.0.tgz#8b502fc07b98ca82b1cc23e6efc9ca2c4c17f580"
 
-"@ionic-native/in-app-browser@^4.2.1":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.4.0.tgz#d828f6ccc57a43540660ebe8b18a9486f57cbbf7"
+"@ionic-native/pin-dialog@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.2.1.tgz#613093c2ec7e45b89518ae0ed0e0fef8c06ead46"
 
-"@ionic-native/pin-dialog@^4.2.1":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.4.0.tgz#8f60a38ae4ee3d539caf3620bfba2e17387a74e0"
+"@ionic-native/splash-screen@3.4.2":
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-3.4.2.tgz#3ce378a3413bab8a0cd4cfd5029c3fadd9a6774c"
 
-"@ionic-native/splash-screen@^3.4.2":
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-3.14.0.tgz#f864bfbd7f8577743a0301e7bec781316febc309"
-
-"@ionic-native/status-bar@^3.14.0":
+"@ionic-native/status-bar@3.14.0":
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-3.14.0.tgz#30ee1bc8a34895fb261b1e3d58fa30fb188857df"
 
@@ -138,9 +142,9 @@
     ws "1.1.1"
     xml2js "^0.4.17"
 
-"@ionic/cli-framework@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@ionic/cli-framework/-/cli-framework-0.1.0.tgz#4eaae70d74a35959d919fe25865173fc3d5e33ce"
+"@ionic/cli-framework@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@ionic/cli-framework/-/cli-framework-0.1.1.tgz#083c079cc664233edf596331e64a703c04336ffb"
   dependencies:
     chalk "^2.3.0"
     ncp "^2.0.0"
@@ -149,11 +153,11 @@
     superagent "^3.8.0"
     tslib "^1.8.0"
 
-"@ionic/cli-utils@1.17.0":
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/@ionic/cli-utils/-/cli-utils-1.17.0.tgz#922fca7452eb31d141ddb8307aec4d56a39a815c"
+"@ionic/cli-utils@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@ionic/cli-utils/-/cli-utils-1.18.0.tgz#c3ca87b55a4a48d7d287b2df9bb9e3297f5db985"
   dependencies:
-    "@ionic/cli-framework" "0.1.0"
+    "@ionic/cli-framework" "0.1.1"
     "@ionic/discover" "0.4.0"
     archiver "^2.1.0"
     basic-auth "^1.1.0"
@@ -236,12 +240,6 @@
 "@types/lodash@^4.14.66":
   version "4.14.85"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.85.tgz#a16fbf942422f6eca5622b6910492c496c35069b"
-
-"@types/moment@^2.13.0":
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/@types/moment/-/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
-  dependencies:
-    moment "*"
 
 "@types/node@^8.0.24":
   version "8.0.52"
@@ -2703,12 +2701,12 @@ ionic-plugin-keyboard@~2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ionic-plugin-keyboard/-/ionic-plugin-keyboard-2.2.1.tgz#f2a9e169bbe9b5522400347c9fd6d3467ee3fa12"
 
-ionic@3.17.0:
-  version "3.17.0"
-  resolved "https://registry.yarnpkg.com/ionic/-/ionic-3.17.0.tgz#edc4f1d2e9d63e7cd93700f49d532e0da6837237"
+ionic@3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/ionic/-/ionic-3.18.0.tgz#62a71f892ecc4f06d97a892ac9945c524c75c852"
   dependencies:
-    "@ionic/cli-framework" "0.1.0"
-    "@ionic/cli-utils" "1.17.0"
+    "@ionic/cli-framework" "0.1.1"
+    "@ionic/cli-utils" "1.18.0"
     chalk "^2.3.0"
     opn "^5.1.0"
     os-name "^2.0.1"
@@ -3501,7 +3499,7 @@ mkdirp@0.5.0:
   dependencies:
     minimist "0.0.8"
 
-moment@*, moment@^2.18.1:
+moment@^2.19.1:
   version "2.19.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
@@ -3530,8 +3528,8 @@ nan-x@^1.0.0:
   resolved "https://registry.yarnpkg.com/nan-x/-/nan-x-1.0.0.tgz#0ee78e8d1cd0592d5b4260a5940154545c61c121"
 
 nan@^2.3.0, nan@^2.3.2:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/nan/-/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
 
 nan@~2.4.0:
   version "2.4.0"
@@ -4742,7 +4740,7 @@ rxjs@5.0.1:
   dependencies:
     symbol-observable "^1.0.1"
 
-rxjs@^5.0.1, rxjs@^5.4.0:
+rxjs@^5.0.1, rxjs@^5.4.2:
   version "5.5.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.2.tgz#28d403f0071121967f18ad665563255d54236ac3"
   dependencies:

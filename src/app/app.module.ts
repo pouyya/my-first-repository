@@ -17,6 +17,7 @@ import { DndModule } from 'ng2-dnd';
 import { PinDialog } from '@ionic-native/pin-dialog';
 import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
+import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { SharedModule } from './../modules/shared.module';
 
@@ -257,6 +258,7 @@ const cloudSettings: CloudSettings = {
     Firebase,
     PinDialog,
     Dialogs,
+    Insomnia,
     InAppBrowser,
     SharedService,
     CacheFactory,

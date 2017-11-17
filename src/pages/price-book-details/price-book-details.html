@@ -97,7 +97,7 @@
         <ion-list class="scrollable-component">
           <ion-item *ngFor="let type of customerTypes | keys">
             <ion-label>{{type.value}}</ion-label>
-            <ion-checkbox color="primary" [(ngModel)]="type.key" [disabled]="criteria.customerTypes.disabled" name="typeKey"></ion-checkbox>
+            <ion-checkbox color="primary" [disabled]="criteria.customerTypes.disabled" name="typeKey"></ion-checkbox>
           </ion-item>
         </ion-list>
       </ion-col>
