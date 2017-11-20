@@ -5,8 +5,10 @@ import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
+import { SharedService } from './../../services/_sharedService';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
+import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
 
 @PageModule(() => SettingsModule)
@@ -23,7 +25,7 @@ export class Settings {
   public selectedTax: string;
   private currentTax: any;
   private newTax: any;
-  private setting: any;
+  private setting: AppSettingsInterface;
 
   constructor(
     private navCtrl: NavController,
@@ -32,6 +34,7 @@ export class Settings {
     private userService: UserService,
     private helperService: HelperService,
     private appService: AppService,
+    private _sharedService: SharedService,
     private zone: NgZone,
     private toast: ToastController,
     private loading: LoadingController,
@@ -84,6 +87,8 @@ export class Settings {
         user.settings.taxEntity = this.newTax.entityTypeName;
         user.settings.taxType = this.selectedType;
         user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
+        user.settings.screenAwake = this.setting.screenAwake;
+        this._sharedService.publish({ screenAwake: user.settings.screenAwake });
         this.userService.setSession(user);
         loader.dismiss();
         let toast = this.toast.create({

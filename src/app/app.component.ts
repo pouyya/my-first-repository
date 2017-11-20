@@ -49,7 +49,7 @@ export class SimplePOSApp implements OnInit {
   ) {
     this.checkTime.subscribe(() => {
       let date = moment().format("h:mm:ss a");
-      if(date === "12:00:00 am") {
+      if (date === "12:00:00 am") {
         // uncomment this line to enable log out
         // this.logOutAllStaffs();
       }
@@ -58,6 +58,10 @@ export class SimplePOSApp implements OnInit {
       if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
         this.currentStore = data.currentStore;
         this.currentPos = data.currentPos;
+      }
+
+      if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
+        data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
       }
     });
     this.currentModule = this.moduleService.getCurrentModule();
@@ -69,11 +73,11 @@ export class SimplePOSApp implements OnInit {
   async ngOnInit() {
     try {
       // TODO: Insomnia should be moved to App Settings where it can be awake or asleep
-      if (!this.platform.is('core')) {
-        await this.insomnia.keepAwake();
-      }
       this.user = await this.userService.getUser();
       this.rootPage = this.user ? DeployPage : LoginPage;
+      if (!this.platform.is('core')) {
+        this.user.settings.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
+      }      
       return;
     } catch (error) {
       console.error(error);
