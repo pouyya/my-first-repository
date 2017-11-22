@@ -1,5 +1,5 @@
 import {DBBasedEntity} from './dbBasedEntity';
-import {BucketItem} from './bucketItem';
+import {BasketItem} from './bucketItem';
 
 interface PaymentsInterface {
   type: string,
@@ -16,7 +16,7 @@ export interface DiscountSurchargeInterface {
 export class Sale extends DBBasedEntity {
 
   public posID: string;
-  public items: Array<BucketItem>;
+  public items: Array<BasketItem>;
   public subTotal: number;
   public tax: number;
   public taxTotal: number;

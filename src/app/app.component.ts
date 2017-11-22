@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { EmployeeService } from './../services/employeeService';
 import { StatusBar } from '@ionic-native/status-bar';

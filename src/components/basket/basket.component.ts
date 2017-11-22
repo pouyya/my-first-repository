@@ -8,7 +8,7 @@ import { AlertController, ModalController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
-import { BucketItem } from './../../model/bucketItem';
+import { BasketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
 
@@ -91,8 +91,8 @@ export class BasketComponent {
     });
   }
 
-  public addItemToBasket(item: BucketItem) {
-    var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
+  public addItemToBasket(item: BasketItem) {
+    var index = _.findIndex(this.invoice.items, (_item: BasketItem) => {
       return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
     });
     index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
@@ -112,7 +112,7 @@ export class BasketComponent {
     ).catch(error => console.error(error));
   }
 
-  public viewInfo(item: BucketItem, $index) {
+  public viewInfo(item: BasketItem, $index) {
     let modal = this.modalCtrl.create(ItemInfoModal, {
       purchaseableItem: item, 
       employeeHash: this.employeesHash,
