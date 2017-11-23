@@ -212,7 +212,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
-		let selector: any = { selector: { posID: posId } };
+		let selector: any = { 
+			selector: { posID: posId },
+			completed: true
+		};
 		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime });
 		return this.findBy(selector);
 	}
@@ -227,6 +230,13 @@ export class SalesServices extends BaseEntityService<Sale> {
 		})
 	}
 
+	public async getCurrentSaleIfAny() {
+		let invoiceId = localStorage.getItem('invoice_id');
+		if(invoiceId) {
+			return await this.get(invoiceId);
+		}
+		return Promise.resolve(null);
+	}
 
 	public async searchSales(posId, limit, offset, options): Promise<any> {
 		var query: any = {
@@ -305,7 +315,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			},
 			asPercent: () => {
 				let totalDiscount = total - ((value / 100) * total);
-				let subTotalDiscount = total - ((value / 100) * total);
+				let subTotalDiscount = subtotal - ((value / 100) * subtotal);
 				return {
 					tax: totalDiscount - subTotalDiscount,
 					subTotal: subTotalDiscount,
@@ -328,7 +338,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			},
 			asPercent: () => {
 				let totalDiscount = total + ((value / 100) * total);
-				let subTotalDiscount = total + ((value / 100) * total);
+				let subTotalDiscount = subtotal + ((value / 100) * subtotal);
 				return {
 					tax: totalDiscount - subTotalDiscount,
 					subTotal: subTotalDiscount,

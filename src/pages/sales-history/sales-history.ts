@@ -153,7 +153,7 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.loadMoreSale().catch((error) => {
+    this.fetchMoreSales().catch((error) => {
       console.error(error);
     });
   }
@@ -185,7 +185,7 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.loadMoreSale().catch((error) => {
+    this.fetchMoreSales().catch((error) => {
       console.error(error);
     });
   }
@@ -225,7 +225,7 @@ export class SalesHistoryPage {
     }
   }
 
-  public async loadMoreSale(infiniteScroll?: any) {
+  public async fetchMoreSales(infiniteScroll?: any) {
     try {
       await this.getSales()
       this.offset += this.limit;
