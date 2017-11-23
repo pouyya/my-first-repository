@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, AlertController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { EmployeeService } from './../services/employeeService';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -17,6 +17,7 @@ import { DeployPage } from "../pages/deploy/deploy";
 import { LoginPage } from './../pages/login/login';
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
+import { SecurityService } from '../services/securityService';
 
 @Component({
   selector: 'app',
@@ -39,17 +40,18 @@ export class SimplePOSApp implements OnInit {
     private userService: UserService,
     private moduleService: ModuleService,
     private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
     private loading: LoadingController,
     private insomnia: Insomnia,
     private pluginService: PluginService,
     private _sharedService: SharedService,
     private employeeService: EmployeeService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private securityService: SecurityService,
+    private toastController: ToastController
   ) {
     this.checkTime.subscribe(() => {
       let date = moment().format("h:mm:ss a");
-      if(date === "12:00:00 am") {
+      if (date === "12:00:00 am") {
         // uncomment this line to enable log out
         // this.logOutAllStaffs();
       }
@@ -112,20 +114,31 @@ export class SimplePOSApp implements OnInit {
     modal.present();
   }
 
-  openPage(page) {
-    this.currentModule = this.moduleService.getCurrentModule(page);
-    this.moduleName = this.currentModule.constructor.name;
-    if (page.hasOwnProperty('modal') && page.modal) {
-      let modal = this.modalCtrl.create(page.component);
-      modal.onDidDismiss(data => {
-        if (page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
-          page.onDismiss(data);
-        }
-      });
-      modal.present();
-    } else {
-      this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
+  async openPage(page) {
+    var modules = this.moduleService.getCurrentModule(page);
+    if (await this.securityService.userHasAccess((modules as any).Roles)) {
+      this.currentModule = modules;
+      this.moduleName = this.currentModule.constructor.name;
+      if (page.hasOwnProperty('modal') && page.modal) {
+        let modal = this.modalCtrl.create(page.component);
+        modal.onDidDismiss(data => {
+          if (page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
+            page.onDismiss(data);
+          }
+        });
+        modal.present();
+      } else {
+        this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
+      }
     }
+    else {
+      let toast = this.toastController.create({
+        message: 'You do not have enough permission',
+        duration: 3000
+      });
+      toast.present();
+    }
+
   }
 
   private async logOutAllStaffs() {

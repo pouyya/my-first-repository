@@ -6,6 +6,17 @@ import { BaseEntityService } from './baseEntityService'
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
+
+  private _currentStore: Store;
+
+  get currentStore(): Store {
+    return this._currentStore;
+  }
+
+  set currentStore(store: Store) {
+    this._currentStore = store;
+  }
+
   constructor(
     private userService: UserService,
     private appService: AppService) {

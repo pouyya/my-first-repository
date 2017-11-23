@@ -1,7 +1,7 @@
 import { TaxService } from './../../services/taxService';
 import { CalculatorService } from './../../services/calculatorService';
 import { HelperService } from './../../services/helperService';
-import { BucketItem } from './../../model/bucketItem';
+import { BasketItem } from './../../model/bucketItem';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
 })
 export class PurchasableItemInfoComponent {
 
-  @Input() item: BucketItem;
+  @Input() item: BasketItem;
   @Input() employeeHash: any;
   @Input() settings: any;
 
@@ -24,17 +24,17 @@ export class PurchasableItemInfoComponent {
     private taxService: TaxService
   ) {}
 
-  public calculateDiscount(item: BucketItem) {
+  public calculateDiscount(item: BasketItem) {
     item.discount = this.helperService.round2Dec(Number(item.discount));
     item.finalPrice = this.calcService.calcItemDiscount(item.discount, item.actualPrice);
   }
 
-  public updatePrice(item: BucketItem) {
+  public updatePrice(item: BasketItem) {
     item.finalPrice = Number(item.finalPrice);
     item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.actualPrice, item.finalPrice));
   }
 
-  public addQuantity(item: BucketItem) {
+  public addQuantity(item: BasketItem) {
     item.quantity = Number(item.quantity);
   }
 }

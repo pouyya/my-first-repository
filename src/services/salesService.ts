@@ -11,7 +11,7 @@ import { GlobalConstants } from './../metadata/globalConstants';
 import { Store } from './../model/store';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
-import { BucketItem } from './../model/bucketItem';
+import { BasketItem } from './../model/bucketItem';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
@@ -105,7 +105,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			// get account level tax
 			this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
 				.then((defaultTax: any) => {
-					sale.items.forEach((item: BucketItem) => {
+					sale.items.forEach((item: BasketItem) => {
 						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
 						item.tax = _.pick(
 							item.priceBook.salesTaxId != null ?
@@ -127,35 +127,35 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	/**
-	 * Returns a bucket compatible item
+	 * Returns a basket compatible item
 	 * @param item {PurchasableItem}
-	 * @return {BucketItem}
+	 * @return {BasketItem}
 	 */
-	public prepareBucketItem(item: any): BucketItem {
+	public prepareBasketItem(item: any): BasketItem {
 		let taxInclusive = this._user.settings.taxType;
 
-		let bucketItem = new BucketItem();
-		bucketItem._id = item._id;
-		item._rev && (bucketItem._rev = item._rev);
-		bucketItem.name = item.name;
-		bucketItem.tax = {
+		let basketItem = new BasketItem();
+		basketItem._id = item._id;
+		item._rev && (basketItem._rev = item._rev);
+		basketItem.name = item.name;
+		basketItem.tax = {
 			...item.tax
 		};
-		bucketItem.priceBook = item.priceBook;
-		bucketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
-		bucketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
-		bucketItem.quantity = 1;
-		bucketItem.discount = item.discount || 0;
-		bucketItem.finalPrice = bucketItem.discount > 0 ?
+		basketItem.priceBook = item.priceBook;
+		basketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
+		basketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
+		basketItem.quantity = 1;
+		basketItem.discount = item.discount || 0;
+		basketItem.finalPrice = basketItem.discount > 0 ?
 			this.calcService.calcItemDiscount(
-				bucketItem.discount,
-				bucketItem.actualPrice
+				basketItem.discount,
+				basketItem.actualPrice
 			) :
-			bucketItem.actualPrice;
-		item.employeeId != null && (bucketItem.employeeId = item.employeeId);
-		bucketItem.isTaxIncl = taxInclusive;
+			basketItem.actualPrice;
+		item.employeeId != null && (basketItem.employeeId = item.employeeId);
+		basketItem.isTaxIncl = taxInclusive;
 
-		return bucketItem;
+		return basketItem;
 	}
 
 	/**
@@ -228,38 +228,38 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 
-	public searchSales(posId, limit, offset, options): Promise<any> {
-		// TODO: Unless count query is not cleared, I have to retrieve all record and count them
-		// Of course this is a bad approach, but to do it with pouchdb is weird
-		return new Promise((resolve, reject) => {
-			var query: any = {
-				selector: { posID: posId }
-			};
-			_.each(options, (value, key) => {
-				if (value) {
-					query.selector[key] = _.isArray(value) ? { $in: value } : value;
-				}
-			});
-			options.hasOwnProperty('completed') && (query.selector.completed = options.completed);
-
-			var countQuery = { ...query };
-			query.limit = limit;
-			query.offset = offset;
-			query.sort = [{ _id: 'desc' }];
-
-			var promises: Array<Promise<any>> = [
-				new Promise((_resolve, _reject) => {
-					this.findBy(countQuery).then((data) => _resolve(data.length));
-				}),
-				new Promise((_resolve, _reject) => {
-					this.findBy(query).then((data) => _resolve(data));
-				})
-			];
-
-			Promise.all(promises).then((result) => {
-				resolve({ totalCount: result[0], docs: result[1] });
-			})
+	public async searchSales(posId, limit, offset, options): Promise<any> {
+		var query: any = {
+			selector: { posID: posId }
+		};
+		_.each(options, (value, key) => {
+			if (value) {
+				query.selector[key] = _.isArray(value) ? { $in: value } : value;
+			}
 		});
+		if(options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
+			query.selector.completed = options.completed
+		}
+
+		query.sort = [{ _id: 'desc' }];
+		var countQuery = _.cloneDeep(query);
+		query.limit = limit;
+		query.offset = offset;
+
+		var promises: any[] = [
+			async () => {
+				let data = await this.findBy(countQuery);
+				return data.length;
+			},
+			async () => await this.findBy(query)
+		];
+
+		try {
+			let [totalCount, docs] = await Promise.all(promises.map(p => p()));
+			return { totalCount, docs };
+		} catch (err) {
+			return Promise.reject(err);
+		}
 	}
 
 	/**
@@ -393,7 +393,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.totalDiscount = 0;
 		sale.tax = 0;
 		if (sale.items.length > 0) {
-			sale.items.forEach((item: BucketItem) => {
+			sale.items.forEach((item: BasketItem) => {
 				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
 				sale.subTotal += discountedPrice * item.quantity;
 				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
