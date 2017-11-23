@@ -168,7 +168,7 @@ export class Sales {
           _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
         ['rate', 'name']);
       this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
-      this.basketComponent.addItemToBasket(this.salesService.prepareBucketItem(interactableItem));
+      this.basketComponent.addItemToBasket(this.salesService.prepareBasketItem(interactableItem));
     } else {
       let toast = this.toastCtrl.create({
         message: `${item.name} does not have any price`,

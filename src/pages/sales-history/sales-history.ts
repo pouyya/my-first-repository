@@ -18,7 +18,7 @@ import { SalesServices } from './../../services/salesService';
 })
 export class SalesHistoryPage {
 
-  public invoices: Array<Sale>;
+  public invoices: Sale[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
   public states: any;
@@ -30,7 +30,7 @@ export class SalesHistoryPage {
   private offset: number;
   private total: number;
   private shownItem: any = null;
-  private invoicesBackup: Array<Sale>;
+  private invoicesBackup: Sale[];
   private filters: any = {
     customerName: false,
     receiptNo: false,
@@ -61,19 +61,27 @@ export class SalesHistoryPage {
     ];
   }
 
-  ionViewDidEnter() {
-    this.platform.ready().then(() => {
+  async ionViewDidLoad() {
+    try {
+      let loader = this.loading.create({
+        content: 'Fetching Sales...'
+      });
+      await loader.present();
       this.user = this.userService.getLoggedInUser();
-      this.salesService.searchSales(this.user.currentPos, this.limit, this.offset, this.filters)
-        .then((result: any) => {
-          this.total = result.totalCount;
-          this.offset += this.limit;
-          this.invoices = result.docs;
-          this.invoicesBackup = this.invoices;
-        }).catch(error => {
-          throw new Error(error);
-        });
-    });
+      let result: any = await this.salesService.searchSales(
+        this.user.currentPos,
+        this.limit, this.offset,
+        this.filters
+      );
+      await this.platform.ready();
+      this.total = result.totalCount;
+      this.offset += this.limit;
+      this.invoices = result.docs;
+      this.invoicesBackup = this.invoices;
+      loader.dismiss();
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   public toggleItem(invoice: Sale): void {
@@ -145,12 +153,12 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.getSales().catch((error) => {
+    this.loadMoreSale().catch((error) => {
       console.error(error);
     });
   }
 
-  public searchByState() {
+  public searchByStatus() {
     this.invoices = this.invoicesBackup;
     switch (this.selectedStatus) {
       case 'parked':
@@ -171,26 +179,37 @@ export class SalesHistoryPage {
         break;
       default:
         this.filters.state = false;
-        delete this.filters.completed;
+        this.filters.completed = null;
         break;
     }
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.getSales().catch((error) => {
+    this.loadMoreSale().catch((error) => {
       console.error(error);
     });
   }
 
   private async getSales(limit?: number, offset?: number): Promise<any> {
-    if (this.total > this.invoices.length) {
-      var result: any = this.salesService.searchSales(
+    if (this.invoices.length <= 0) {
+      let result = await this.salesService.searchSales(
         this.user.currentPos,
         limit | this.limit, offset | this.offset,
         this.filters);
-      this.total = result.totalCount;
-      this.invoices = await this.invoices.concat(result.docs);
-      this.invoicesBackup = this.invoices;
+      if (result.totalCount > 0) {
+        this.total = result.totalCount;
+        this.invoices = result.docs;
+        this.invoicesBackup = this.invoices;
+      }
+    } else {
+      if (this.total > this.invoices.length) {
+        let result: any = await this.salesService.searchSales(
+          this.user.currentPos,
+          limit | this.limit, offset | this.offset,
+          this.filters);
+        this.invoices = this.invoices.concat(result.docs);
+        this.invoicesBackup = this.invoices;
+      }
     }
   }
 
@@ -206,9 +225,14 @@ export class SalesHistoryPage {
     }
   }
 
-  public async loadMoreSale(infiniteScroll) {
-    await this.getSales()
-    this.offset += this.limit;
-    infiniteScroll.complete();
+  public async loadMoreSale(infiniteScroll?: any) {
+    try {
+      await this.getSales()
+      this.offset += this.limit;
+      infiniteScroll && infiniteScroll.complete();
+      return;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 }

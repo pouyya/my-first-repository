@@ -1,6 +1,6 @@
 import { PurchasableItemPriceInterface } from './purchasableItemPrice.interface';
 
-export class BucketItem {
+export class BasketItem {
   _id: string;
   _rev?: string;
   name: string;

@@ -1,4 +1,4 @@
-import { BucketItem } from './../../../model/bucketItem';
+import { BasketItem } from './../../../model/bucketItem';
 import { NavParams, ViewController } from 'ionic-angular';
 import { Component } from '@angular/core';
 
@@ -8,10 +8,10 @@ import { Component } from '@angular/core';
 })
 export class ItemInfoModal {
 
-  public purchaseableItem: BucketItem;
+  public purchaseableItem: BasketItem;
   public employeeHash: any;
   public settings: any;
-  private bufferItem: BucketItem;
+  private bufferItem: BasketItem;
 
   constructor(
     private navParams: NavParams,

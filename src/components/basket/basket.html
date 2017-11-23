@@ -81,7 +81,7 @@
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-12 no-padding>
-      <button ion-button danger block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
+      <button ion-button danger small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
         <span class="button-inner pull-right" style="text-align: left">
             {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
         </span>
