@@ -1,8 +1,8 @@
 <ion-grid>
   <ion-row>
-    <ion-col col-4 col-lg-4 col-md-6 col-sm-12 *ngFor="let tile of items; let i = index" (tap)="selectItem(tile)">
+    <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let tile of items; let i = index" (tap)="selectItem(tile)">
       <ion-card class="tile">
-          <ion-card-content>
+          <ion-card-content class="tile-content">
             <sp-icon [icon]="tile.icon"></sp-icon>
           </ion-card-content>
 
