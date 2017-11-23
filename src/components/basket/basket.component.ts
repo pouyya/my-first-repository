@@ -43,7 +43,7 @@ export class BasketComponent {
   @Input() refund: boolean;
   @Input('employees')
   set employee(arr: Array<any>) {
-    this.employeesHash = _.keyBy(arr, '_id');  
+    this.employeesHash = _.keyBy(arr, '_id');
   }
 
   @Input('_invoice')
@@ -82,15 +82,6 @@ export class BasketComponent {
     this.invoice.state = this.balance > 0 ? 'current' : 'refund';
   }
 
-  private calculateAndSync() {
-    this.salesService.manageInvoiceId(this.invoice);
-    this.calculateTotal(() => {
-      this.setBalance();
-      this.generatePaymentBtnText();
-      this.salesService.update(this.invoice);
-    });
-  }
-
   public addItemToBasket(item: BasketItem) {
     var index = _.findIndex(this.invoice.items, (_item: BasketItem) => {
       return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
@@ -114,7 +105,7 @@ export class BasketComponent {
 
   public viewInfo(item: BasketItem, $index) {
     let modal = this.modalCtrl.create(ItemInfoModal, {
-      purchaseableItem: item, 
+      purchaseableItem: item,
       employeeHash: this.employeesHash,
       settings: {
         trackStaff: this.user.settings.trackEmployeeSales
@@ -122,9 +113,9 @@ export class BasketComponent {
     });
     modal.onDidDismiss(data => {
       let reorder = false;
-      if(data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
+      if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
       this.invoice.items[$index] = data.item;
-      if(reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+      if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
       data.hasChanged && this.calculateAndSync();
     });
     modal.present();
@@ -133,8 +124,8 @@ export class BasketComponent {
   public openDiscountSurchargeModal() {
     let modal = this.modalCtrl.create(DiscountSurchargeModal);
     modal.onDidDismiss(data => {
-      if(data) {
-        this.invoice.appliedValues.push(<DiscountSurchargeInterface> data);
+      if (data) {
+        this.invoice.appliedValues.push(<DiscountSurchargeInterface>data);
         this.calculateAndSync();
       }
     });
@@ -144,11 +135,11 @@ export class BasketComponent {
   public viewAppliedValues() {
     let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.invoice.appliedValues });
     modal.onDidDismiss(data => {
-      if(data) {
-        this.invoice.appliedValues = <DiscountSurchargeInterface[]> data;
+      if (data) {
+        this.invoice.appliedValues = <DiscountSurchargeInterface[]>data;
         this.calculateAndSync();
       }
-    });    
+    });
     modal.present();
   }
 
@@ -230,6 +221,17 @@ export class BasketComponent {
       ]
     });
     confirm.present();
+  }
+
+  private calculateAndSync() {
+    this.salesService.manageInvoiceId(this.invoice);
+    this.calculateTotal(() => {
+      this.setBalance();
+      this.generatePaymentBtnText();
+      this.invoice.items.length > 0 ?
+        this.salesService.update(this.invoice) :
+        this.salesService.delete(this.invoice)
+    });
   }
 
   private calculateTotal(callback) {

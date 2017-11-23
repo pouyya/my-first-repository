@@ -1,6 +1,5 @@
-import { ToastController } from 'ionic-angular';
-import { LoadingController, AlertController, NavController } from 'ionic-angular';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { LoadingController, AlertController, NavController, ToastController } from 'ionic-angular';
+import { Component, ChangeDetectorRef, ElementRef } from '@angular/core';
 
 import { SalesServices } from './../../services/salesService';
 import { ClosureService } from './../../services/closureService';
@@ -52,6 +51,7 @@ export class OpenCloseRegister {
     private cdr: ChangeDetectorRef,
     private salesService: SalesServices,
     private alertCtrl: AlertController,
+    private el: ElementRef,
     private navCtrl: NavController) {
     this.cdr.detach();
     this.showReport = false;
@@ -114,6 +114,7 @@ export class OpenCloseRegister {
           throw new Error(error);
         }).then(() => {
           this.cdr.reattach();
+          console.warn(this.el.nativeElement);
           loader.dismiss();
         });
 
@@ -133,14 +134,32 @@ export class OpenCloseRegister {
   }
 
   public async closeRegister() {
-    var sales = await this.salesService.findInCompletedByPosId(this.register._id)
-    if (sales.length > 0) {
-      let alert = this.alertCtrl.create({
-        title: 'Warning!',
-        subTitle: 'You have some incomplete sale left. You can\'t close register until you either discard those sale or complete them.',
-        buttons: ['OK']
+    let sale = await this.salesService.getCurrentSaleIfAny();
+    if (sale) {
+      let confirm = this.alertCtrl.create({
+        title: 'Alert!',
+        message: 'There is a sale already exists in your memory. What do you want with it ?',
+        buttons: [
+          {
+            text: 'Discard It!',
+            handler: () => {
+              let toast = this.toastCtrl.create({
+                message: 'Sale has been discarded! You can now close the register.',
+                duration: 3000
+              });
+              toast.present();
+              localStorage.removeItem('invoice_id');
+            }
+          },
+          {
+            text: 'Take me to that Sale',
+            handler: () => {
+              this.navCtrl.setRoot(Sales);
+            }
+          }
+        ]
       });
-      alert.present();
+      confirm.present();
     } else {
       this.closure.closeTime = new Date().toISOString();
       await this.closureService.add(this.closure);
@@ -154,8 +173,8 @@ export class OpenCloseRegister {
       let toast = this.toastCtrl.create({
         message: 'Register Closed',
         duration: 3000
-        });
-          toast.present();
+      });
+      toast.present();
     }
   }
 
