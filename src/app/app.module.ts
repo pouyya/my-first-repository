@@ -1,23 +1,22 @@
 // core
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule }   from '@angular/forms';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-import { MdInputModule } from '@angular/material';
+import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DndModule } from 'ng2-dnd';
-import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
-import { SharedModule } from './../modules/shared.module';
 import { PinDialog } from '@ionic-native/pin-dialog';
 import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
+import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -54,14 +53,25 @@ import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-p
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
+import { DiscountSurchargeModal } from './../components/basket/modals/discount-surcharge/discount-surcharge';
+import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
+import { PriceBooksPage } from './../pages/price-books/price-books';
+import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
+import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
+import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
+import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
+import { PurchasableItemPriceModule } from './../components/purchasable-item-price/purchasable-item-price.module';
 import { IconSelectModule } from './../components/icon-select/icon-select.module';
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
 import { SPIconModule } from './../components/sp-icon/sp-icon.module';
+import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
+import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
+import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -91,10 +101,11 @@ import { GroupSalesTaxService } from './../services/groupSalesTaxService';
 import { SalesTaxService } from './../services/salesTaxService';
 import { AppService } from "../services/appService";
 import { SalesServices } from './../services/salesService';
-import { AppSettingsService } from './../services/appSettingsService';
 import { EmployeeTimestampService } from './../services/employeeTimestampService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
+import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
+import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
@@ -104,6 +115,7 @@ import { fakeBackendProvider } from './../services/_fakeBackend';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { PrintService } from '../services/printService';
+import { SecurityService } from '../services/securityService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -147,27 +159,35 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
-    ForgotPassword
+    ForgotPassword,
+    DiscountSurchargeModal,
+    ViewDiscountSurchargesModal,
+    PriceBooksPage,
+    PriceBookDetails,    
+    SelectPurchasableItemsModel,
+    StaffsTimeLogs,
+    TimeLogDetailsModal,
+    SelectRolesModal
   ],
   imports: [
-    BrowserModule,
     FormsModule,
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
       {
-        backButtonText:'',
-        platforms: { 
-          android: { 
-            activator: 'none' 
+        backButtonText: '',
+        platforms: {
+          android: {
+            activator: 'none'
           }
-        }         
+        }
       }),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
-      name:'__mydb',
-      driverOrder:['sqlite', 'indexeddb', 'websql']
+      name: '__mydb',
+      driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
-    MdInputModule,
+    MatGridListModule,
+    MatInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
 
@@ -176,10 +196,12 @@ const cloudSettings: CloudSettings = {
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
+    PurchasableItemPriceModule,
     IconSelectModule,
     SPIconModule,
     ItemPriceBookModule,
-    TileScrollableModule
+    TileScrollableModule,
+    GroupEmployeeTimeLogModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -217,23 +239,31 @@ const cloudSettings: CloudSettings = {
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
+    PriceBooksPage,
+    PriceBookDetails,
     ForgotPassword,
-    ClockInOutPage
+    ClockInOutPage,
+    DiscountSurchargeModal,
+    ViewDiscountSurchargesModal,
+    SelectPurchasableItemsModel,
+    StaffsTimeLogs,
+    TimeLogDetailsModal,
+    SelectRolesModal
   ],
   providers: [
-    {provide: ErrorHandler, useClass: AppErrorHandler},
+    { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
     Firebase,
     PinDialog,
     Dialogs,
+    Insomnia,
     InAppBrowser,
     SharedService,
     CacheFactory,
     ProductService,
     ServiceService,
     CategoryService,
-    
     EmployeeService,
     TaxService,
     CalculatorService,
@@ -247,10 +277,12 @@ const cloudSettings: CloudSettings = {
     PriceBookService,
     SalesTaxService,
     GroupSalesTaxService,
-    AppSettingsService,
+    SecurityService,
     PluginService,
     EmployeeTimestampService,
     AuthService,
+    StoreEvaluationProvider,
+    DaysOfWeekEvaluationProvider,
     AppService,
     PrintService,
     StoreService,
@@ -261,7 +293,11 @@ const cloudSettings: CloudSettings = {
     authProvider,
     fakeBackendProvider,
     MockBackend,
-    BaseRequestOptions    
+    BaseRequestOptions
   ]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(injector: Injector) {
+    window.globalInjector.emit(injector);
+  }
+}

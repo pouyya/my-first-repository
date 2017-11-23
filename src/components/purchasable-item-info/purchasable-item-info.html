@@ -13,7 +13,9 @@
     <!-- Price -->
     <ion-col col-md-4>
       <ion-item item-content>
-        <ion-label color="primary" stacked>Price <small *ngIf="item.priceBook && item.priceBook.isTaxIncl">({{item.tax.rate}}% Tax Incl.)</small></ion-label>
+        <ion-label color="primary" stacked>Price
+          <small *ngIf="item.priceBook && item.priceBook.isTaxIncl">({{item.tax.rate}}% Tax Incl.)</small>
+        </ion-label>
         <ion-input type="text" [disabled]="item.quantity < 0" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
         </ion-input>
       </ion-item>
@@ -23,7 +25,8 @@
     <ion-col col-md-4>
       <ion-item item-content>
         <ion-label color="primary" stacked>Discount(%)</ion-label>
-        <ion-input type="number" [disabled]="item.quantity < 0" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
+        <ion-input type="number" [disabled]="item.quantity < 0" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event"
+          (change)="calculateDiscount(item)"></ion-input>
       </ion-item>
     </ion-col>
 
@@ -36,13 +39,19 @@
     </ion-col>
 
     <ion-col col-md-12 *ngIf="settings.trackStaff">
-      <ion-item item-content>
-        <ion-label>Switch Staff</ion-label>
-        <ion-select [(ngModel)]="item.employeeId">
-          <ion-option *ngFor="let employee of employeeHash | keys" [value]="employee.key">{{employee.value.firstName}}</ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-col>    
+      <ion-list>
+        <ion-item>
+          <ion-label>Switch Staff</ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-list radio-group [(ngModel)]="item.employeeId" class="scrollable-component">
+        <ion-item *ngFor="let employee of employeeHash | keys">
+          <ion-label>{{employee.value.firstName}}</ion-label>
+          <ion-radio [disabled]="employee.value.disabled" [value]="employee.value._id"></ion-radio>
+        </ion-item>
+      
+      </ion-list>
+    </ion-col>
 
   </ion-row>
 </ion-grid>

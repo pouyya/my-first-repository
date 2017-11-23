@@ -1,28 +1,37 @@
-import { Injectable } from '@angular/core';
-
-@Injectable()
-export class ConfigService {  
+export class ConfigService {
     //TODO: AZ - Need to move values in different file and based on different build type (dev, pre-prod, prod) need to transform config file
 
-    static currentInternalDBName(): string {
-        return 'simplepos.db';   
+    static _internalDBName: string = "";
+    static get internalDBName(): string {
+        return ConfigService._internalDBName;
     }
 
-    static externalDBBaseUrl() : string
-    {
-        return "http://bitnami-couchdb-d399.cloudapp.net:5984";
+    static set internalDBName(internalDBName: string) {
+        ConfigService._internalDBName = internalDBName;
     }
 
-    static currentExternalDBName(): string
-    {
-        return '/sc_67';
+    static _externalDBUrl: string = "";
+    static get externalDBUrl(): string {
+        return ConfigService._externalDBUrl;;
+    }
+    static set externalDBUrl(externalDBBaseUrl: string) {
+        ConfigService._externalDBUrl = externalDBBaseUrl;
     }
 
-    static getCurrentFullExternalDBUrl() : string {
-        return ConfigService.externalDBBaseUrl() + ConfigService.currentExternalDBName();
+    static _externalDBName: string = "";
+    static get externalDBName(): string {
+        return ConfigService._externalDBName;
     }
 
-    static isDevelopment() :  boolean {
+    static set externalDBName(currentExternalDBName: string) {
+        ConfigService._externalDBName = currentExternalDBName;
+    }
+
+    static get currentFullExternalDBUrl(): string {
+        return ConfigService.externalDBUrl + "/" + ConfigService.externalDBName;
+    }
+
+    static isDevelopment(): boolean {
         return true;
     }
 
@@ -32,5 +41,41 @@ export class ConfigService {
 
     static printerPort() : number {
         return 9100;
+    }
+    
+    static securityTokenEndPoint(): string {
+        return ConfigService.securityServerBaseUrl() + "/connect/token";
+    }
+
+    static securityUserInfoEndPoint(): string {
+        return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
+    }
+
+    static securityServerBaseUrl(): string {
+        return 'https://simpleposapp-dev-ids.azurewebsites.net/identity';
+    }
+
+    static securityClientId(): string {
+        return 'simplepos';
+    }
+    static securityClientSecret(): string {
+        return 'secret';
+    }
+
+    static securityGrantType(): string {
+        return 'password';
+    }
+
+    static securityScope(): string {
+        return 'openid';
+    }
+
+    static securitySessionStorageKey(): string {
+        return 'jwt-token';
+    }
+
+    static userSessionStorageKey(): string {
+        return 'usermedihair_aria';
+        // return 'user' + ConfigService.internalDBName;
     }
 }

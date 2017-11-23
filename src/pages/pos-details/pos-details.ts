@@ -64,7 +64,7 @@ export class PosDetailsPage {
           text: 'Yes',
           handler: () => {
             let user = this.userService.getLoggedInUser();
-            if (user.settings.currentPos == this.pos._id) {
+            if (user.currentPos == this.pos._id) {
                 let toast = this.toastCtrl.create({
                   message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
                   duration: 3000

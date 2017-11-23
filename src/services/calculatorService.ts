@@ -6,27 +6,7 @@ export class CalculatorService {
   constructor(private taxService: TaxService) {
 
   }
-  /**
-   * Calculate Total and Taxed Total
-   * @param total
-   * @param amount 
-   * @param action 
-   */
-  public calcTotalWithTax(total: number, amount: number, action: string) {
-    switch (action) {
-      case 'add': total += amount; break;
-      case 'subtract': total -= amount; break;
-      default:
-        throw new Error('Invalid Operator!');
-    }
-
-    return {
-      total,
-      totalWithTax: this.taxService.getTax() > 0 ?
-        this.taxService.calculate(total) : total
-    };
-  }
-
+  
   /**
    * Calculate price reduction by a discount(%)
    * @param discount {Number}

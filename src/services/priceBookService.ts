@@ -1,17 +1,27 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injector } from '@angular/core';
+import { EvaluationContext } from './EvaluationContext';
+import { Injectable } from '@angular/core';
 import { HelperService } from './helperService';
 import { PriceBook } from './../model/priceBook';
 import { BaseEntityService } from './baseEntityService';
 import { PurchasableItemPriceInterface } from "../model/purchasableItemPrice.interface";
+import { StoreEvaluationProvider } from './StoreEvaluationProvider';
+import { DaysOfWeekEvaluationProvider } from './DaysOfWeekEvaluationProvider';
 
 @Injectable()
 export class PriceBookService extends BaseEntityService<PriceBook> {
 
+  public static providerHash: any;
+
   constructor(
-    private zone: NgZone,
-    private helperService: HelperService
+    private helperService: HelperService,
+    private injector: Injector
   ) {
-    super(PriceBook, zone);
+    super(PriceBook);
+    PriceBookService.providerHash = {
+      StoreEvaluationProvider,
+      DaysOfWeekEvaluationProvider
+    };
   }
 
   public calculateRetailPriceTaxInclusive(retailPrice: number, tax: number): number {
@@ -26,47 +36,62 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     return this.helperService.round10((100 * (price - supplyPrice)) / supplyPrice, -5);
   }
 
-  public getDefaultPriceBook(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.findBy({
-        selector: { priority: 0 }
-      }).then((priceBooks: Array<PriceBook>) => {
-        resolve(priceBooks[0]);
-      }).catch(error => reject(error));
+  public async getDefault(): Promise<PriceBook> {
+    var result = await this.findBy({
+      selector: { priority: 0 }
     });
+
+    return (result && result.length > 0) ? result[0] : null;
   }
 
-  public getPriceBooks(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.findBy({
-        selector: { priority: { $gt: 0 } }
-      }).then((priceBooks: Array<PriceBook>) => {
-        resolve(priceBooks);
-      }).catch(error => reject(error));
-    });
-  }
-
-  public getPriceBookByCriteria() {
-    return new Promise((resolve, reject) => {
-      this.findBy({
-        selector: {
-          "priority": {
-            "$gte": 0
-          }
+  /**
+   * @Override
+   * overrides the BaseEntityService getAll()
+   * @returns {Promise<PriceBook[]>}
+   */
+  public async getAll(): Promise<PriceBook[]> {
+    return this.findBy({
+      selector: {
+        entityTypeNames: {
+          $elemMatch: { $eq: "PriceBook" }
         }
-      }).then(data => resolve(data[0])).catch(error => reject(error));
+      }
     });
+  }
+
+  /**
+   * get pricebooks above priority 0
+   * @returns {Promise<PriceBook[]>}
+   */
+  public async getExceptDefault(): Promise<PriceBook[]> {
+    try {
+      return await this.findBy({
+        selector: { priority: { $gt: 0 } }
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  public async getPriceBookByCriteria() {
+    try {
+      let data = await this.findBy({
+        selector: { priority: { $gte: 0 } }
+      });
+      return data[0];
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**
    * Remove sales tax from price book before deletion
    * @param taxId
-   * @returns {Promise<T>}
+   * @returns {Promise<void>}
    */
-  public setPriceBookItemTaxToDefault(taxId: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      // default price book for now
-      this.findBy({
+  public async setPriceBookItemTaxToDefault(taxId: string): Promise<PriceBook> {
+    try {
+      let priceBooks: PriceBook[] = await this.findBy({
         selector: {
           priority: 0,
           purchasableItems: {
@@ -75,22 +100,38 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
             }
           }
         }
-      }).then((priceBooks: Array<PriceBook>) => {
-        if (priceBooks.length > 0) {
-          let priceBook: PriceBook = priceBooks[0];
-          priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
-            if (item.salesTaxId == taxId) {
-              item.salesTaxId = null; // reset to default
-            }
-          });
-          this.update(priceBook)
-            .then(() => resolve())
-            .catch(error => reject(error));
-        } else {
-          resolve();
-        }
-      }).catch(error => reject(error));
+      });
+      if (priceBooks.length > 0) {
+        let priceBook: PriceBook = priceBooks[0];
+        priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
+          if (item.salesTaxId == taxId) {
+            item.salesTaxId = null; // reset to default
+          }
+        });
+
+        await this.update(priceBook);
+        return priceBook;
+      }
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  /**
+   * Evaluate a price book on the basis of criteria it holds
+   * @param context 
+   * @param priceBook
+   * @returns {boolean}
+   */
+  public isEligible(context: EvaluationContext, priceBook: PriceBook): boolean {
+    if (priceBook.criteria.length < 1) { return false; }
+    let status: boolean[] = [];
+    priceBook.criteria.forEach(criteria => {
+      let provider: any = this.injector.get(PriceBookService.providerHash[criteria.provider]);
+      provider && status.push(provider.execute(context, criteria.criteria));
     });
+
+    return status.every((condition => condition));
   }
 
 }

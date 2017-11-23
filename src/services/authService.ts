@@ -1,28 +1,23 @@
-import _ from 'lodash';
-import { Store } from './../model/store';
-import { POS } from './../model/pos';
-import { AppSettings } from './../model/appSettings';
-import { StoreService } from './storeService';
+import { UserSession } from './../model/UserSession';
 import { PosService } from './posService';
+import { ConfigService } from './configService';
 import { UserService } from './userService';
-import { AppSettingsService } from './appSettingsService';
-import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { GlobalConstants } from './../metadata/globalConstants';
+import { AuthHttp } from 'angular2-jwt';
+
 import 'rxjs/add/operator/map'
+import { icons } from '../metadata/itemIcons';
 
 @Injectable()
 export class AuthService {
 
   constructor(
     private http: Http,
-    private storage: Storage,
-    private appSettingsService: AppSettingsService,
+    private userService: UserService,
     private posService: PosService,
-    private storeService: StoreService,
-    private userService: UserService
+    private authHttp: AuthHttp
   ) { }
 
   /**
@@ -32,42 +27,44 @@ export class AuthService {
    * @returns {Observable<any>}
    */
   public login(email: string, password: string): Observable<any> {
-    return this.http.post('https://pos.simplecuts.com/api/v1/auth', JSON.stringify({ email, password }))
-      .flatMap((response: Response) => {
+
+    let payLoad = new URLSearchParams();
+    payLoad.append("client_id", ConfigService.securityClientId());
+    payLoad.append("client_secret", ConfigService.securityClientSecret());
+    payLoad.append("grant_type", ConfigService.securityGrantType());
+    payLoad.append("username", email);
+    payLoad.append("password", password);
+    payLoad.append("scope", ConfigService.securityScope());
+
+    var headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+    return this.http.post(ConfigService.securityTokenEndPoint(), payLoad.toString(), { headers: headers })
+      .flatMap(async (response: Response) => {
         let user = response.json();
-        this.storage.set('jwt-token', user.token);
-        let promise = new Promise((resolve, reject) => {
-          this.appSettingsService.get().then((settings: AppSettings) => {
-            if(!settings)
-            {
-              settings = new AppSettings();
-            }
-            let promises: Promise<any>[] = [
-              settings.currentPos ? this.posService.get(settings.currentPos) : this.posService.getFirst(),
-              settings.currentStore ? this.storeService.get(settings.currentStore) : this.storeService.getFirst()
-            ];
+        await this.userService.setAccessToken(user.access_token)
 
-            Promise.all(promises).then((data) => {
-              let pos = data[0] as POS;
-              let store = data[1] as Store;
-              let userSession: any = {
-                ...user,
-                settings: {
-                  ..._.omit(settings, [ 'entityTypeName', 'entityTypeNames', '_rev' ]),
-                  defaultIcon: GlobalConstants.DEFAULT_ICON,
-                  currentPos: pos._id,
-                  currentStore: store._id
-                },
-                currentPos: { ..._.pick(pos, GlobalConstants.POS_SESSION_PROPS) },
-                currentStore: { ..._.pick(store, GlobalConstants.STORE_SESSION_PROPS) }
-              };
-              this.userService.setSession(userSession);
-              return resolve(userSession);
-            })
+        return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
+          .flatMap(async (userProfile: Response) => {
+
+            let userSession: UserSession = new UserSession();
+            userSession = {
+              acess_token: user.access_token,
+              ...user,
+              settings: userProfile.json()
+            };
+
+            ConfigService.externalDBUrl = userSession.settings.db_url;
+            ConfigService.externalDBName = userSession.settings.db_name;
+            ConfigService.internalDBName = userSession.settings.db_local_name;
+
+            userSession.settings.defaultIcon = {};
+            var firstIconKey = Object.keys(icons)[0];
+            userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey]; 
+
+            await this.userService.setSession(userSession);
+    
           })
-        });
-
-        return Observable.fromPromise(promise);
+          .toPromise();
       });
   }
 

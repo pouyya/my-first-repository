@@ -1,14 +1,17 @@
-<md-grid-list cols="4" rowHeight="2:2" gutterSize="10px"
-  dnd-sortable-container [sortableData]="items">
-  <md-grid-tile
-      class="tile"
-      *ngFor="let tile of items; let i = index" (tap)="selectItem(tile)"
-      dnd-sortable [sortableIndex]="i"
-      [colspan]="1"
-      [rowspan]="1" tapabble>
-      <sp-icon [icon]="tile.icon"></sp-icon>
-      <md-grid-tile-footer [style.background]="'#3A4953'">
-        <h2 md-line>{{ tile.name }}</h2>
-      </md-grid-tile-footer>
-  </md-grid-tile>
-</md-grid-list>
+<ion-grid>
+  <ion-row>
+    <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let tile of items; let i = index" (tap)="selectItem(tile)">
+      <ion-card class="tile">
+          <ion-card-content class="tile-content">
+            <sp-icon [icon]="tile.icon"></sp-icon>
+          </ion-card-content>
+
+          <ion-row>
+              <ion-col center text-center>
+                    <h2>{{ tile.name }}</h2>
+                </ion-col>            
+            </ion-row>          
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>

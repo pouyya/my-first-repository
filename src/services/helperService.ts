@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -44,6 +45,12 @@ export class HelperService {
 
   public round2Cents(value: number): number {
     return this.decimalAdjust('round', value, -2);
+  }
+
+  public sumReduce(arrayOfNumbers: number[]) {
+    return _.reduce(arrayOfNumbers, function (sum, n) {
+      return sum + n;
+    }, 0);
   }
 
 }

@@ -1,11 +1,14 @@
-import { GroupByPipe } from './../../pipes/group-by.pipe';
 import _ from 'lodash';
+import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
+import { HelperService } from './../../services/helperService';
+import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
+import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlertController, ModalController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
-import { Sale } from './../../model/sale';
-import { BucketItem } from './../../model/bucketItem';
+import { Sale, DiscountSurchargeInterface } from './../../model/sale';
+import { BasketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
 
@@ -24,6 +27,8 @@ export class BasketComponent {
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
   public employeesHash: any;
+  public saleAppliedValue: number;
+  public appliedValueDetails: any;
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -38,7 +43,7 @@ export class BasketComponent {
   @Input() refund: boolean;
   @Input('employees')
   set employee(arr: Array<any>) {
-    this.employeesHash = _.keyBy(arr, '_id');  
+    this.employeesHash = _.keyBy(arr, '_id');
   }
 
   @Input('_invoice')
@@ -61,6 +66,7 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
+    private helperService: HelperService,
     private modalCtrl: ModalController) {
   }
 
@@ -76,17 +82,8 @@ export class BasketComponent {
     this.invoice.state = this.balance > 0 ? 'current' : 'refund';
   }
 
-  private calculateAndSync() {
-    this.salesService.manageInvoiceId(this.invoice);
-    this.calculateTotal(() => {
-      this.setBalance();
-      this.generatePaymentBtnText();
-      this.salesService.update(this.invoice);
-    });
-  }
-
-  public addItemToBasket(item: BucketItem) {
-    var index = _.findIndex(this.invoice.items, (_item: BucketItem) => {
+  public addItemToBasket(item: BasketItem) {
+    var index = _.findIndex(this.invoice.items, (_item: BasketItem) => {
       return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
     });
     index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
@@ -106,9 +103,9 @@ export class BasketComponent {
     ).catch(error => console.error(error));
   }
 
-  public viewInfo(item: BucketItem, $index) {
+  public viewInfo(item: BasketItem, $index) {
     let modal = this.modalCtrl.create(ItemInfoModal, {
-      purchaseableItem: item, 
+      purchaseableItem: item,
       employeeHash: this.employeesHash,
       settings: {
         trackStaff: this.user.settings.trackEmployeeSales
@@ -116,10 +113,32 @@ export class BasketComponent {
     });
     modal.onDidDismiss(data => {
       let reorder = false;
-      if(data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
+      if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
       this.invoice.items[$index] = data.item;
-      if(reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+      if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
       data.hasChanged && this.calculateAndSync();
+    });
+    modal.present();
+  }
+
+  public openDiscountSurchargeModal() {
+    let modal = this.modalCtrl.create(DiscountSurchargeModal);
+    modal.onDidDismiss(data => {
+      if (data) {
+        this.invoice.appliedValues.push(<DiscountSurchargeInterface>data);
+        this.calculateAndSync();
+      }
+    });
+    modal.present();
+  }
+
+  public viewAppliedValues() {
+    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.invoice.appliedValues });
+    modal.onDidDismiss(data => {
+      if (data) {
+        this.invoice.appliedValues = <DiscountSurchargeInterface[]>data;
+        this.calculateAndSync();
+      }
     });
     modal.present();
   }
@@ -202,6 +221,17 @@ export class BasketComponent {
       ]
     });
     confirm.present();
+  }
+
+  private calculateAndSync() {
+    this.salesService.manageInvoiceId(this.invoice);
+    this.calculateTotal(() => {
+      this.setBalance();
+      this.generatePaymentBtnText();
+      this.invoice.items.length > 0 ?
+        this.salesService.update(this.invoice) :
+        this.salesService.delete(this.invoice)
+    });
   }
 
   private calculateTotal(callback) {

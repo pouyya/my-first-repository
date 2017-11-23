@@ -1,4 +1,5 @@
-import * as moment from 'moment';
+import * as moment from 'moment'
+import _ from 'lodash';
 import { UserService } from './../../services/userService';
 import { Employee } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
@@ -45,27 +46,27 @@ export class ClockInOutPage {
   /**
    * @AuthGuard
    */
-  ionViewCanEnter(): Promise<any> {
-    let toast = this.toastCtrl.create({
-      message: "Invalid PIN!",
-      duration: 3000
-    });
+  async ionViewCanEnter(): Promise<boolean> {
+    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+      { ok: 'OK', cancel: 'Cancel' });
+    if (pin) {
+      let employee: Employee = await this.employeeService.findByPin(pin);
+      if (employee) {
+        this.user = this.userService.getLoggedInUser();
+        this.employee = employee;
+        return true;
+      }
+      else {
+        let toast = this.toastCtrl.create({
+          message: "Invalid PIN!",
+          duration: 3000
+        });
+            
+        toast.present();
 
-    return new Promise((resolve, reject) => {
-      this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [], { ok: 'OK', cancel: 'Cancel' })
-        .then((pin) => {
-          this.employeeService.findByPin(pin).then((employee: Employee) => {
-            this.user = this.userService.getLoggedInUser();
-            // let index = _.findIndex(employee.store, { id: this.user.settings.currentStore });
-            // if (index > -1) {
-              this.employee = employee;
-              resolve();
-            // } else {
-            //   toast.present(); reject();
-            // }
-          }).catch(() => { toast.present(); reject(); });
-        }).catch(() => { toast.present(); reject(); });
-    })
+        return false;
+      }
+    }
   }
 
   /**
@@ -113,7 +114,7 @@ export class ClockInOutPage {
 
     let promises: Array<Promise<any>> = [
       this.employeeTimestampService.getEmployeeLastTwoTimestamps(
-        this.employee._id, this.user.settings.currentStore
+        this.employee._id, this.user.currentStore
       )
     ];
 
@@ -127,7 +128,7 @@ export class ClockInOutPage {
           let clockoutTime = new Date(this.timestamp.time);
           if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
             this.employeeTimestampService.getEmployeeLatestTimestamp(
-              this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
+              this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
             ).then((model: EmployeeTimestamp) => {
               let clockInTime = "";
               clockInBtn.enabled = false;
@@ -145,7 +146,7 @@ export class ClockInOutPage {
       } else {
         this.timestamp = new EmployeeTimestamp();
         this.timestamp.employeeId = this.employee._id;
-        this.timestamp.storeId = this.user.settings.currentStore;
+        this.timestamp.storeId = this.user.currentStore;
         this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
       }
     }).catch(error => console.log(error)).then(() => loader.dismiss());
@@ -174,23 +175,27 @@ export class ClockInOutPage {
         }).catch(error => reject(error));
       } else {
         // is existing
+        let newTimestamp: EmployeeTimestamp;
         if (button.next == EmployeeTimestampService.CLOCK_OUT) {
-          let promises: Array<Promise<any>> = [];
+          let promises: Promise<any>[] = [];
           if (this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
             let breakEnd = new EmployeeTimestamp();
             breakEnd.employeeId = this.employee._id;
-            breakEnd.storeId = this.user.settings.currentStore;
+            breakEnd.storeId = this.user.currentStore;
             breakEnd.time = time;
             breakEnd.type = EmployeeTimestampService.BREAK_END;
             promises.push(this.employeeTimestampService.add(breakEnd));
           }
-          promises.push(this.employeeTimestampService.add(this.timestamp));
+          newTimestamp = _.cloneDeep(this.timestamp);
+          newTimestamp._id = "";
+          newTimestamp._rev = "";
+          promises.push(this.employeeTimestampService.add(newTimestamp));
           Promise.all(promises).then(() => {
             let currentDate = new Date();
             let clockoutTime = new Date(this.timestamp.time);
             if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
               this.employeeTimestampService.getEmployeeLatestTimestamp(
-                this.employee._id, this.user.settings.currentStore, EmployeeTimestampService.CLOCK_IN
+                this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
               ).then((model: EmployeeTimestamp) => {
                 let clockInTime = "";
                 this.buttons[EmployeeTimestampService.CLOCK_OUT][0].enabled = false;
@@ -202,9 +207,12 @@ export class ClockInOutPage {
             } else {
               this.messagePlaceholder = `${button.message} ${time}`;
             }
-          }).catch(error =>reject(error)).then(() => resolve(this.timestamp.type));
+          }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
         } else {
-          this.employeeTimestampService.add(this.timestamp).then(() => {
+          newTimestamp = _.cloneDeep(this.timestamp);
+          newTimestamp._id = "";
+          newTimestamp._rev = "";
+          this.employeeTimestampService.add(newTimestamp).then(() => {
             this.messagePlaceholder = `${button.message} ${time}`;
             this.activeButtons = this.buttons[button.next];
           }).catch(error => reject(error)).then(() => resolve(this.timestamp.type));
@@ -213,7 +221,12 @@ export class ClockInOutPage {
     });
 
     completionPromise.then((type) => {
-      this.dismiss({ message: this.messagePlaceholder });
+      this.dismiss();
+      let toast = this.toastCtrl.create({
+        message: this.messagePlaceholder,
+        duration: 3000
+      });
+      toast.present();
       this._sharedService.publish({
         employee: this.employee,
         type

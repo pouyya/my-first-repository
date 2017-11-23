@@ -55,3 +55,8 @@
 .return {
   background-color: color($colors, danger);
 }
+
+.scrollable-component {
+  overflow-y: auto;
+  height: 200px;
+}

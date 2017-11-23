@@ -53,7 +53,7 @@ export class PluginService {
             {
               text: buttons.cancel || 'Cancel',
               handler() {
-                reject();
+                resolve();
               }
             }
           ],
@@ -67,20 +67,20 @@ export class PluginService {
    * check for all mobile devices supporting cordova platforms
    */
   private checkMobileDevices() {
-    return this.platform.is('andriod') || 
-    this.platform.is('ios') || 
-    this.platform.is('mobile') || 
-    this.platform.is('tablet') || 
-    this.platform.is('phablet') ||
-    this.platform.is('ipad') ||
-    this.platform.is('cordova');
+    return this.platform.is('andriod') ||
+      this.platform.is('ios') ||
+      this.platform.is('mobile') ||
+      this.platform.is('tablet') ||
+      this.platform.is('phablet') ||
+      this.platform.is('ipad') ||
+      this.platform.is('cordova');
   }
 
   public openDialoge(title: string, subTitle?: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.platform.is('andriod') || this.platform.is('ios') || this.platform.is('mobile') || this.platform.is('tablet')) {
+      if (this.checkMobileDevices()) {
         this.dialog.alert(title)
-        .then(() => resolve())
+          .then(() => resolve())
           .catch(e => reject(e));
       } else {
         let options: any = { title, buttons: ['OK'] }

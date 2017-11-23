@@ -1,4 +1,6 @@
-import { Platform, NavController, AlertController, ToastController } from 'ionic-angular';
+import { UserSession } from './../../model/UserSession';
+import { StoreService } from './../../services/storeService';
+import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { UserService } from './../../services/userService';
 import { Sale } from './../../model/sale';
@@ -16,19 +18,19 @@ import { SalesServices } from './../../services/salesService';
 })
 export class SalesHistoryPage {
 
-  public invoices: Array<Sale>;
+  public invoices: Sale[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
   public states: any;
   public filtersEnabled: boolean = false;
-  private user: any;
+  private user: UserSession;
   private limit: number;
   private readonly defaultLimit = 5;
   private readonly defaultOffset = 0;
   private offset: number;
   private total: number;
   private shownItem: any = null;
-  private invoicesBackup: Array<Sale>;
+  private invoicesBackup: Sale[];
   private filters: any = {
     customerName: false,
     receiptNo: false,
@@ -40,8 +42,10 @@ export class SalesHistoryPage {
     private salesService: SalesServices,
     private navCtrl: NavController,
     private userService: UserService,
+    private storeService: StoreService,
     private alertController: AlertController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private loading: LoadingController
   ) {
     this.invoices = [];
     this.invoicesBackup = [];
@@ -57,19 +61,27 @@ export class SalesHistoryPage {
     ];
   }
 
-  ionViewDidEnter() {
-    this.platform.ready().then(() => {
-      this.user = this.userService.getLoggedInUser();
-      this.salesService.searchSales(this.user.settings.currentPos, this.limit, this.offset, this.filters)
-      .then((result: any) => {
-        this.total = result.totalCount;
-        this.offset += this.limit;
-        this.invoices = result.docs;
-        this.invoicesBackup = this.invoices;
-      }).catch(error => {
-        throw new Error(error);
+  async ionViewDidLoad() {
+    try {
+      let loader = this.loading.create({
+        content: 'Fetching Sales...'
       });
-    });
+      await loader.present();
+      this.user = this.userService.getLoggedInUser();
+      let result: any = await this.salesService.searchSales(
+        this.user.currentPos,
+        this.limit, this.offset,
+        this.filters
+      );
+      await this.platform.ready();
+      this.total = result.totalCount;
+      this.offset += this.limit;
+      this.invoices = result.docs;
+      this.invoicesBackup = this.invoices;
+      loader.dismiss();
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   public toggleItem(invoice: Sale): void {
@@ -82,14 +94,14 @@ export class SalesHistoryPage {
 
   public getState(invoice: Sale) {
     var state = "";
-    if(invoice.completed) {
-      if(invoice.state == 'completed') {
+    if (invoice.completed) {
+      if (invoice.state == 'completed') {
         state = 'Completed';
-      } else if(invoice.state == 'refund') {
+      } else if (invoice.state == 'refund') {
         state = 'Refund Completed';
       }
     } else {
-      if(invoice.state == 'parked') {
+      if (invoice.state == 'parked') {
         state = 'Parked';
       } else {
         state = 'Voided';
@@ -98,7 +110,8 @@ export class SalesHistoryPage {
     return state;
   }
 
-  public gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
+  public async gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
+
     let invoiceId = localStorage.getItem('invoice_id');
     if (invoiceId) {
       let confirm = this.alertController.create({
@@ -107,13 +120,15 @@ export class SalesHistoryPage {
         buttons: [
           {
             text: 'Discard It!',
-            handler: () => {
+            handler: async () => {
               let toast = this.toastCtrl.create({
-                message: 'Sale has been discarded! Your selected sale is now loaded.',
+                message: 'Sale has been discarded! Your selected sale is now being loaded.',
                 duration: 5000
               });
               toast.present();
-              this.loadSelected(invoice, doRefund);
+              var _invoice = await this.loadSale(invoice, doRefund);
+              localStorage.setItem('invoice_id', _invoice._id);
+              this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
             }
           },
           {
@@ -126,7 +141,9 @@ export class SalesHistoryPage {
       });
       confirm.present();
     } else {
-      this.loadSelected(invoice, doRefund);
+      var _invoice = await this.loadSale(invoice, doRefund)
+      localStorage.setItem('invoice_id', _invoice._id);
+      this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
     }
   }
 
@@ -136,14 +153,14 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.getSales().catch((error) => {
+    this.fetchMoreSales().catch((error) => {
       console.error(error);
     });
   }
 
-  public searchByState() {
+  public searchByStatus() {
     this.invoices = this.invoicesBackup;
-    switch(this.selectedStatus) {
+    switch (this.selectedStatus) {
       case 'parked':
         this.filters.state = 'parked';
         this.filters.completed = false;
@@ -157,50 +174,65 @@ export class SalesHistoryPage {
         this.filters.completed = true;
         break;
       case 'voided':
-        this.filters.state = [ 'current', 'refund' ];
+        this.filters.state = ['current', 'refund'];
         this.filters.completed = false;
         break;
       default:
         this.filters.state = false;
-        delete this.filters.completed;
+        this.filters.completed = null;
         break;
     }
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.getSales().catch((error) => {
+    this.fetchMoreSales().catch((error) => {
       console.error(error);
-    });    
-  }
-
-  private getSales(limit?: number, offset?: number): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (this.total > this.invoices.length) {
-        this.salesService.searchSales(
-          this.user.settings.currentPos,
-          limit | this.limit, offset | this.offset,
-          this.filters).then((result: any) => {
-            this.total = result.totalCount;
-            this.invoices = this.invoices.concat(result.docs);
-            this.invoicesBackup = this.invoices;
-            resolve();
-          }).catch(error => reject(error));
-      } else resolve();
     });
   }
 
-  private loadSelected(invoice: Sale, doRefund: boolean) {
-    var newInvoice: Sale;
-    newInvoice = (doRefund && invoice.completed && invoice.state == 'completed') ?
-      this.salesService.instantiateRefundSale(invoice) : { ...invoice };
-    localStorage.setItem('invoice_id', newInvoice._id);
-    this.navCtrl.setRoot(Sales, { invoice: newInvoice, doRefund });    
+  private async getSales(limit?: number, offset?: number): Promise<any> {
+    if (this.invoices.length <= 0) {
+      let result = await this.salesService.searchSales(
+        this.user.currentPos,
+        limit | this.limit, offset | this.offset,
+        this.filters);
+      if (result.totalCount > 0) {
+        this.total = result.totalCount;
+        this.invoices = result.docs;
+        this.invoicesBackup = this.invoices;
+      }
+    } else {
+      if (this.total > this.invoices.length) {
+        let result: any = await this.salesService.searchSales(
+          this.user.currentPos,
+          limit | this.limit, offset | this.offset,
+          this.filters);
+        this.invoices = this.invoices.concat(result.docs);
+        this.invoicesBackup = this.invoices;
+      }
+    }
   }
 
-  public loadMoreSale(infiniteScroll) {
-    this.getSales().then(() => {
+  private async loadSale(invoice: Sale, doRefund: boolean) {
+    let newInvoice: Sale;
+    if (doRefund && invoice.completed && invoice.state == 'completed') {
+      let store = await this.storeService.get(this.user.currentStore);
+      newInvoice = this.salesService.instantiateRefundSale(invoice, store);
+      return newInvoice;
+    } else {
+      newInvoice = await Promise.resolve({ ...invoice });
+      return newInvoice;
+    }
+  }
+
+  public async fetchMoreSales(infiniteScroll?: any) {
+    try {
+      await this.getSales()
       this.offset += this.limit;
-      infiniteScroll.complete();
-    }).catch((error) => console.error(error));
+      infiniteScroll && infiniteScroll.complete();
+      return;
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 }

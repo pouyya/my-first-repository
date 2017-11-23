@@ -1,15 +1,22 @@
 import {DBBasedEntity} from './dbBasedEntity';
-import {BucketItem} from './bucketItem';
+import {BasketItem} from './bucketItem';
 
 interface PaymentsInterface {
   type: string,
   amount: number
 }
 
+export interface DiscountSurchargeInterface {
+  value: number;
+  type: string;
+  format: string;
+  createdAt: string;
+}
+
 export class Sale extends DBBasedEntity {
 
   public posID: string;
-  public items: Array<BucketItem>;
+  public items: Array<BasketItem>;
   public subTotal: number;
   public tax: number;
   public taxTotal: number;
@@ -25,6 +32,9 @@ export class Sale extends DBBasedEntity {
   public receiptNo: string;
   public customerName: string;
   public originalSalesId: string;
+  public saleAppliedValue?: number;
+  public saleAppliedType?: string;
+  public appliedValues: DiscountSurchargeInterface[];
 
   constructor() {
     super();
@@ -39,5 +49,8 @@ export class Sale extends DBBasedEntity {
     this.customerName = "";
     this.receiptNo = "";
     this.originalSalesId = "";
+    this.saleAppliedValue = 0;
+    this.saleAppliedType = null;
+    this.appliedValues = [];
   }
 }

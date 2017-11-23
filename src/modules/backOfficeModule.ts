@@ -1,3 +1,5 @@
+import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
+import { PriceBooksPage } from './../pages/price-books/price-books';
 import { Category } from './../pages/category/category';
 import { Injectable } from '@angular/core';
 import { Settings } from './../pages/settings/settings';
@@ -8,14 +10,15 @@ import { Products } from './../pages/products/products';
 import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
+import { SecurityGuard } from '../metadata/securityGuardModule';
 
 @Injectable()
+@SecurityGuard(['BackOffice'])
 export class BackOfficeModule implements ModuleBase {
   public setInjector() {
-    
   }
 
-  public pages: Array<any> = [
+  public pages = [
     { title: 'Home', icon: 'home', component: HomePage },
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Categories', icon: 'cash', component: Category },
@@ -23,6 +26,8 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Service', icon: 'bowtie', component: Services },
     { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Stores', icon: 'basket', component: Stores },
+    { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
+    { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
     { title: 'Settings', icon: 'cog', component: Settings }
   ];    
 }

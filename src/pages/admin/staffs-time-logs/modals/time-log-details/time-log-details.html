@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <small>{{ employee.name }}'s Time Log Details for {{ date }}</small>
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngFor="let timestamp of timestamps; let i=index;">
+      <ion-col col-md-6>
+        <ion-item>
+          <ion-label>{{ actionHash[timestamp.type] }}</ion-label>
+          <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="timestamp.time"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col col-md-2 offset-md-4>
+        <ion-item tappable (click)="deleteEntry(timestamp, i)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-card>
+    <ion-card-header>
+      Add Manual Time
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-6>
+            <ion-item>
+              <ion-label>Insert Time</ion-label>
+              <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="currentDate"></ion-datetime>
+            </ion-item>
+            <ion-item id="clock">{{clock | async | date:'mediumTime'}}</ion-item>
+          </ion-col>
+          <ion-col col-md-6>
+            <button ion-button full *ngFor="let btn of actionBtns | keys" [disabled]="!btn.value.enabled" (click)="addTimeLog(btn.key)">{{ btn.value.text }}</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ion-footer>
+  <button ion-button class="pull-right" (click)="saveChanges()">Save Changes</button>
+</ion-footer>

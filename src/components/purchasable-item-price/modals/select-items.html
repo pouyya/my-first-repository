@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Select Items</ion-title>
+    <ion-buttons end>
+      <button type="button" ion-button (click)="confirm()">
+        <ion-icon name="checkmark"></ion-icon>
+      </button>      
+      <button type="button" ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-searchbar (ionInput)="searchItems($event)"></ion-searchbar>
+  <ion-list inset *ngFor="let item of items ; let idx=index">
+    <ion-item>
+      <ion-label>{{item.name}}</ion-label>
+      <ion-checkbox [(ngModel)]="item.selected" color="primary"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>

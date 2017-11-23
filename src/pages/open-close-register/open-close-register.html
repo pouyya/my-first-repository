@@ -75,9 +75,9 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-6>Cash <small>View Cash Payments, Floats and Movements</small></ion-col>
-            <ion-col col-md-2>{{ expected.cash }}</ion-col>
+            <ion-col col-md-2>{{ expected.cash | number : '1.2-2' }}</ion-col>
             <ion-col col-md-2>{{closure.cashCounted}}</ion-col>
-            <ion-col col-md-2 [ngClass]="closure.cashDifference > 0 ? 'error-text' : ''">{{closure.cashDifference * -1}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.cashDifference > 0 ? 'error-text' : ''">{{closure.cashDifference * -1 | number : '1.2-2' }}</ion-col>
             <ion-col col-md-12 class="sub-drawer">
               <ion-grid>
                 <ion-row>
@@ -112,9 +112,9 @@
             <ion-col col-md-2>0.00</ion-col>
 
             <ion-col col-md-6>Credit Card</ion-col>
-            <ion-col col-md-2>{{expected.cc}}</ion-col>
-            <ion-col col-md-2>{{closure.ccCounted}}</ion-col>
-            <ion-col col-md-2 [ngClass]="closure.ccDifference > 0 ? 'error-text' : ''">{{closure.ccDifference * -1}}</ion-col>
+            <ion-col col-md-2>{{expected.cc | number : '1.2-2' }}</ion-col>
+            <ion-col col-md-2>{{closure.ccCounted | number : '1.2-2' }}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.ccDifference > 0 ? 'error-text' : ''">{{closure.ccDifference * -1 | number : '1.2-2' }}</ion-col>
 
             <ion-col col-md-6>Store Credit</ion-col>
             <ion-col col-md-2>0.00</ion-col>
@@ -124,9 +124,9 @@
             <ion-col col-md-12><hr/></ion-col>
 
             <ion-col col-md-6>Totals</ion-col>
-            <ion-col col-md-2>{{expected.total}}</ion-col>
-            <ion-col col-md-2>{{closure.totalCounted}}</ion-col>
-            <ion-col col-md-2 [ngClass]="closure.totalDifference > 0 ? 'error-text' : ''">{{closure.totalDifference * -1}}</ion-col>
+            <ion-col col-md-2>{{expected.total | number : '1.2-2' }}</ion-col>
+            <ion-col col-md-2>{{closure.totalCounted | number : '1.2-2' }}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.totalDifference > 0 ? 'error-text' : ''">{{closure.totalDifference * -1 | number : '1.2-2' }}</ion-col>
 
             <ion-col col-md-12>
               <p>{{closure.note}}</p>
@@ -141,14 +141,6 @@
 
   <ion-grid *ngIf="register.status"> <!-- If Register is Opened -->
     <ion-row>
-      <ion-col col-md-12>
-        <h1>Close Register</h1>
-      </ion-col>
-      <ion-col col-md-12>
-        <h3>Register Details</h3>
-      </ion-col>
-      <ion-col col-md-12><hr/></ion-col>      
-      
       <ion-col col-md-3>
         <p><small>Outlet</small></p>
         <p><strong>{{ store.name }}</strong></p>   
@@ -180,9 +172,9 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-6>Cash <small>View Cash Payments, Floats and Movements</small></ion-col>
-            <ion-col col-md-2>{{ expected.cash }}</ion-col>
-            <ion-col col-md-2><ion-input type="number" (change)="calculateDiff('cash')" [(ngModel)]="closure.cashCounted" name="cashCounted"></ion-input></ion-col>
-            <ion-col col-md-2 [ngClass]="closure.cashDifference > 0 ? 'error-text' : ''">{{closure.cashDifference * -1}}</ion-col>
+            <ion-col col-md-2>{{ expected.cash | number : '1.2-2' }}</ion-col>
+            <ion-col col-md-2><ion-input type="number" autofocus (change)="calculateDiff('cash')" [(ngModel)]="closure.cashCounted" name="cashCounted"></ion-input></ion-col>
+            <ion-col col-md-2 [ngClass]="closure.cashDifference > 0 ? 'error-text' : ''">{{closure.cashDifference * -1 | number : '1.2-2'}}</ion-col>
             <ion-col col-md-12 class="sub-drawer">
               <ion-grid>
                 <ion-row>
@@ -216,9 +208,9 @@
             <ion-col col-md-2>0.00</ion-col>
 
             <ion-col col-md-6>Credit Card</ion-col>
-            <ion-col col-md-2>{{expected.cc}}</ion-col>
+            <ion-col col-md-2>{{expected.cc | number : '1.2-2'}}</ion-col>
             <ion-col col-md-2><ion-input type="number" (change)="calculateDiff('cc')" [(ngModel)]="closure.ccCounted" name="ccCounted"></ion-input></ion-col>
-            <ion-col col-md-2 [ngClass]="closure.ccDifference > 0 ? 'error-text' : ''">{{closure.ccDifference * -1}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.ccDifference > 0 ? 'error-text' : ''">{{closure.ccDifference * -1 | number : '1.2-2'}}</ion-col>
 
             <ion-col col-md-6>Store Credit</ion-col>
             <ion-col col-md-2>0.00</ion-col>
@@ -228,9 +220,9 @@
             <ion-col col-md-12><hr/></ion-col>
 
             <ion-col col-md-6>Totals</ion-col>
-            <ion-col col-md-2>{{expected.total}}</ion-col>
+            <ion-col col-md-2>{{expected.total  | number : '1.2-2'}}</ion-col>
             <ion-col col-md-2>{{closure.totalCounted}}</ion-col>
-            <ion-col col-md-2 [ngClass]="closure.totalDifference > 0 ? 'error-text' : ''">{{closure.totalDifference * -1}}</ion-col>
+            <ion-col col-md-2 [ngClass]="closure.totalDifference > 0 ? 'error-text' : ''">{{closure.totalDifference * -1  | number : '1.2-2'}}</ion-col>
 
             <ion-col col-md-12>
               <ion-textarea placeholder="Type to add a register closure note" [(ngModel)]="closure.note"></ion-textarea>

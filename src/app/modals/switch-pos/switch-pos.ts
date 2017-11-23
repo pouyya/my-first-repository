@@ -4,8 +4,8 @@ import { POS } from './../../../model/pos';
 import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
 import { Store } from './../../../model/store';
-import { ViewController, Platform, LoadingController, NavParams } from 'ionic-angular';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { ViewController, LoadingController } from 'ionic-angular';
+import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
 
 @Component({
@@ -23,12 +23,9 @@ export class SwitchPosModal {
 
   constructor(
     private viewCtrl: ViewController,
-    private platform: Platform,
     private storeService: StoreService,
     private posService: PosService,
     private loading: LoadingController,
-    private navParams: NavParams,
-    private cdr: ChangeDetectorRef,
     private userService: UserService,
   ) {
   }
@@ -40,21 +37,21 @@ export class SwitchPosModal {
 
     loader.present().then(async () => {
       this.user = await this.userService.getUser();
-      this.posId = this.user.settings.currentPos;
-      this.storeId = this.user.settings.currentStore;
+      this.posId = this.user.currentPos;
+      this.storeId = this.user.currentStore;
 
       let stores = await this.storeService.getAll();
       var allPos = await this.posService.getAll();
-      stores.forEach((store: Store, index) => {
-      var registers = _.filter(allPos,(pos) =>  pos.storeId === store._id);
+      stores.forEach((store: Store) => {
+        var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
         if (registers.length > 0) {
           this.stores.push({ ...store, registers });
-          if (store._id === this.user.settings.currentStore) {
+          if (store._id === this.user.currentStore) {
             this.currentStore = { ...store, registers };
           }
         }
-    });
-        loader.dismiss();
+      });
+      loader.dismiss();
     });
   }
 
@@ -64,12 +61,12 @@ export class SwitchPosModal {
   }
 
   public switchRegister(register: POS) {
-    this.user.settings.currentStore = register.storeId;
-    this.user.settings.currentPos = register._id;
-    this.user.currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
-    this.user.currentStore = _.pick(this.stores.find((store) => store._id == register.storeId), GlobalConstants.STORE_SESSION_PROPS);
+    this.user.currentStore = register.storeId;
+    this.user.currentPos = register._id;
+    let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
+    let currentStore = _.pick(this.stores.find((store) => store._id == register.storeId), GlobalConstants.STORE_SESSION_PROPS);
     this.userService.setSession(this.user);
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({ currentStore, currentPos });
   }
 
   public dismiss() {

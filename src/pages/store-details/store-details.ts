@@ -1,3 +1,6 @@
+import _ from 'lodash';
+import { Employee } from './../../model/employee';
+import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
@@ -20,6 +23,7 @@ export class StoreDetailsPage {
   constructor(private navCtrl: NavController,
               private navParams: NavParams,
               private storeService: StoreService,
+              private employeeService: EmployeeService,
               private posService: PosService,
               private loading: LoadingController,
               private toastCtrl: ToastController,
@@ -112,12 +116,34 @@ export class StoreDetailsPage {
 
             loader.present().then(() => {
               this.storeService.delete(this.item, true /* Delete all Associations */).then(() => {
-                let toast = this.toastCtrl.create({
-                  message: 'Store has been deleted successfully',
-                  duration: 3000
+                // delete employee associations
+                this.employeeService.findByStore(this.item._id).then((employees: Employee[]) => {
+                  if(employees.length > 0) {
+                    employees.forEach((employee, index, arr) => {
+                      let storeIndex: number = _.findIndex(employee.store, (currentStore) => currentStore.id == this.item._id);
+                      arr[index].store.splice(storeIndex, 1);
+                    });
+                    this.employeeService.updateBulk(employees).then(() => {
+                      let toast = this.toastCtrl.create({
+                        message: 'Store has been deleted successfully',
+                        duration: 3000
+                      });
+                      toast.present();
+                      this.navCtrl.pop();
+                    }).catch(error => {
+                      throw new Error(error);
+                    })
+                  } else {
+                    let toast = this.toastCtrl.create({
+                      message: 'Store has been deleted successfully',
+                      duration: 3000
+                    });
+                    toast.present();
+                    this.navCtrl.pop();
+                  }
+                }).catch(error => {
+                  throw new Error(error);
                 });
-                toast.present();
-                this.navCtrl.pop();
               }).catch(error => {
                 let errorMsg = error.hasOwnProperty('error_msg') ? error.error_msg : 'Error while deleting store. Please try again!';
                 let alert = this.alertCtrl.create({

@@ -1,3 +1,4 @@
+import { Store } from './../model/store';
 import { StoreService } from './storeService';
 import { UserService } from './userService';
 import { Injectable, Injector } from '@angular/core';
@@ -14,16 +15,10 @@ export class FountainService {
     setTimeout(() => this.storeService = injector.get(StoreService));
   }
 
-  public getReceiptNumber() {
-    let user = this.userService.getLoggedInUser();
-    user.currentStore.saleLastNumber++;
-    this.userService.setSession(user);
-    this.storeService.get(user.currentStore._id).then((store) => {
-      store.saleLastNumber = user.currentStore.saleLastNumber
-      this.storeService.update(store)
-    });
-    
-    return `${user.currentStore.saleNumberPrefix}${user.currentStore.saleLastNumber}`;
+  public getReceiptNumber(store: Store) {
+    store.saleLastNumber++;
+    this.storeService.update(store); // parallel background update
+    return `${store.saleNumberPrefix}${store.saleLastNumber}`;
   }
 
 }
