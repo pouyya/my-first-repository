@@ -3,7 +3,7 @@
     <ion-title>{{action}} Employee</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="save()">
-        {{action}}
+        save
       </button>
       &nbsp;
       <button ion-button icon-only (click)="remove()">
@@ -41,7 +41,7 @@
   </ion-list>
 
   <!-- Roles Selectables [start] -->
-  <ion-grid>
+  <ion-grid *ngIf="!employee.isAdmin">
     <ion-row>
       <ion-col col-md-12>
         <mat-grid-list cols="12" rowHeight="1:1" gutterSize="10px">

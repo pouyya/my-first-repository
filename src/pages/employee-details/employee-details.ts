@@ -7,8 +7,6 @@ import { Employee, RolesInterface } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
 import { Component, NgZone, ChangeDetectorRef } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
-import { SecurityGuard } from '../../metadata/securityGuardModule';
-import { EmployeeDetailsPageRoleModule } from './../../modules/roles/employeeDetailsPageRoleModule';
 import {
   NavParams,
   NavController,
@@ -17,7 +15,6 @@ import {
   LoadingController
 } from "ionic-angular";
 
-@SecurityGuard(() => EmployeeDetailsPageRoleModule)
 @Component({
   selector: 'employee-detail',
   templateUrl: 'employee-details.html',
@@ -31,14 +28,6 @@ export class EmployeeDetails {
   public stores: any[] = [];
   public roles: string[] = [
     'BackOffice',
-    'Products',
-    'ProductDetails',
-    'Services',
-    'ServiceDetails',
-    'Employees',
-    'EmployeeDetails',
-    'Stores',
-    'StoreDetails',
     'Settings'
   ];
 
@@ -57,7 +46,7 @@ export class EmployeeDetails {
   }
 
   async ionViewDidLoad() {
-    let loader = this.loading.create({content: 'Loading Details...'});
+    let loader = this.loading.create({ content: 'Loading Details...' });
 
     await loader.present();
     this.cdr.detach();
@@ -109,7 +98,7 @@ export class EmployeeDetails {
         .map((store: any) => {
           store.roles = _.filter(store.roles, { selected: true })
             .map((role: any) => role.name);
-          return <RolesInterface> {
+          return <RolesInterface>{
             id: store._id,
             roles: store.roles
           };
@@ -150,62 +139,44 @@ export class EmployeeDetails {
       buttons: { ok: 'OK', cancel: 'Cancel' }
     };
 
-    let setPin: Function = () => {
-      this.pluginService.openPinPrompt('Enter PIN', 'Enter Your PIN', config.inputs, config.buttons).then((pin1: number) => {
-        // check for validity
-        let validators: Array<Promise<any>> = [
-          new Promise((resolve, reject) => {
-            let exp: RegExp = /([a-zA-Z0-9])\1{2,}/;
-            exp.test(pin1.toString()) ? reject("PIN have duplicate entries") : resolve();
-          }),
-          new Promise((resolve, reject) => {
-            reservedPins.indexOf(pin1.toString()) > -1 ? reject("This PIN is reserved for the System, please choose another") : resolve();
-          }),
-          new Promise((resolve, reject) => {
-            this.employeeService.verifyPin(pin1).then((status) => status ? resolve() : reject("This PIN has already been in use!"))
-              .catch(error => reject(error));
-          })
-        ];
+    this.pluginService.openPinPrompt('Enter PIN', 'Enter Your PIN', config.inputs, config.buttons).then((pin1: number) => {
+      // check for validity
+      let validators: Array<Promise<any>> = [
+        new Promise((resolve, reject) => {
+          let exp: RegExp = /([a-zA-Z0-9])\1{2,}/;
+          exp.test(pin1.toString()) ? reject("PIN have duplicate entries") : resolve();
+        }),
+        new Promise((resolve, reject) => {
+          reservedPins.indexOf(pin1.toString()) > -1 ? reject("This PIN is reserved for the System, please choose another") : resolve();
+        }),
+        new Promise((resolve, reject) => {
+          this.employeeService.verifyPin(pin1).then((status) => status ? resolve() : reject("This PIN has already been in use!"))
+            .catch(error => reject(error));
+        })
+      ];
 
-        Promise.all(validators).then(() => {
-          this.pluginService.openPinPrompt("Confirm PIN", "Re-enter Your PIN", config.inputs, config.buttons).then((pin2: number) => {
-            if (pin1 === pin2) {
-              this.employee.pin = pin2;
-            } else {
-              let toast = this.toastCtrl.create({
-                message: "PIN doesn't match",
-                duration: 3000
-              });
-              toast.present();
-            }
-          })
-        }).catch((error) => {
-          let toast = this.toastCtrl.create({
-            message: error,
-            duration: 3000
-          });
-          toast.present();
+      Promise.all(validators).then(() => {
+        this.pluginService.openPinPrompt("Confirm PIN", "Re-enter Your PIN", config.inputs, config.buttons).then((pin2: number) => {
+          if (pin1 === pin2) {
+            this.employee.pin = pin2;
+          } else {
+            let toast = this.toastCtrl.create({
+              message: "PIN doesn't match",
+              duration: 3000
+            });
+            toast.present();
+          }
+        })
+      }).catch((error) => {
+        let toast = this.toastCtrl.create({
+          message: error,
+          duration: 3000
         });
-
-      }).catch(() => {
-        console.error("There was en error");
+        toast.present();
       });
-    };
 
-    if (this.employee.pin) {
-      this.pluginService.openPinPrompt('Verify PIN', 'Enter Your Current PIN', config.inputs, config.buttons).then((pin) => {
-        if (pin == this.employee.pin) {
-          setPin();
-        } else {
-          let toast = this.toastCtrl.create({
-            message: "Incorrect PIN",
-            duration: 3000
-          });
-          toast.present();
-        }
-      })
-    } else {
-      setPin();
-    }
+    }).catch(() => {
+      console.error("There was en error");
+    });
   }
 }

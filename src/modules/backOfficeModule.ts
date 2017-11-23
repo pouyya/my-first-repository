@@ -10,11 +10,12 @@ import { Products } from './../pages/products/products';
 import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
+import { SecurityGuard } from '../metadata/securityGuardModule';
 
 @Injectable()
+@SecurityGuard(['BackOffice'])
 export class BackOfficeModule implements ModuleBase {
   public setInjector() {
-    
   }
 
   public pages = [

@@ -1,4 +1,3 @@
-import { GlobalConstants } from './../metadata/globalConstants';
 import { Injector } from '@angular/core';
 
 // core
@@ -117,6 +116,7 @@ import { authProvider } from './../modules/auth.module';
 import { fakeBackendProvider } from './../services/_fakeBackend';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
+import { SecurityService } from '../services/securityService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -278,6 +278,7 @@ const cloudSettings: CloudSettings = {
     PriceBookService,
     SalesTaxService,
     GroupSalesTaxService,
+    SecurityService,
     PluginService,
     EmployeeTimestampService,
     AuthService,

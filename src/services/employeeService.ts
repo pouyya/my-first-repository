@@ -104,12 +104,9 @@ export class EmployeeService extends BaseEntityService<Employee> {
    * @param pin 
    * @returns {Promise<Employee>}
    */
-  public findByPin(pin: number): Promise<Employee> {
-    return new Promise((resolve, reject) => {
-      this.findBy({ selector: { pin } }).then((employees: Array<Employee>) => {
-        employees.length > 0 ? resolve(employees[0]) : reject();
-      }).catch(error => reject(error));
-    });
+  public async findByPin(pin: number): Promise<Employee> {
+    var employees: Array<Employee> = await this.findBy({ selector: { pin } });
+    return employees && employees.length > 0 ? employees[0] : null;
   }
 
   public async getListByCurrentStatus(): Promise<any> {
@@ -214,7 +211,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
             logOutPromises.push(this.employeeTimestampService.add(clockOutTimeStamp));
           }
         });
-        
+
         return await Promise.all(logOutPromises);
       }
       return [];

@@ -5,10 +5,7 @@ import { Employee } from "../../model/employee";
 import { NavController, AlertController, Platform } from 'ionic-angular';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
-import { SecurityGuard } from '../../metadata/securityGuardModule';
-import { EmployeesPageRoleModule } from './../../modules/roles/employeesPageRoleModule';
 
-@SecurityGuard(() => EmployeesPageRoleModule)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'page-employees',
