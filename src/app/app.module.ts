@@ -1,5 +1,7 @@
+import { CustomerService } from './../services/customerService';
+import { Customers } from './../pages/customers/customers';
 // core
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
@@ -115,6 +117,7 @@ import { fakeBackendProvider } from './../services/_fakeBackend';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { SecurityService } from '../services/securityService';
+import { CustomerDetails } from '../pages/customer-details/customer-details';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -166,7 +169,9 @@ const cloudSettings: CloudSettings = {
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
     TimeLogDetailsModal,
-    SelectRolesModal
+    SelectRolesModal,
+    Customers,
+    CustomerDetails
   ],
   imports: [
     FormsModule,
@@ -189,6 +194,7 @@ const cloudSettings: CloudSettings = {
     MatInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
+    ReactiveFormsModule,
 
     // custom
     SharedModule,
@@ -247,7 +253,9 @@ const cloudSettings: CloudSettings = {
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
     TimeLogDetailsModal,
-    SelectRolesModal
+    SelectRolesModal,
+    Customers,
+    CustomerDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -279,6 +287,7 @@ const cloudSettings: CloudSettings = {
     SecurityService,
     PluginService,
     EmployeeTimestampService,
+    CustomerService,
     AuthService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,

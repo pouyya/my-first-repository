@@ -11,6 +11,7 @@ import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
 import { SecurityGuard } from '../metadata/securityGuardModule';
+import { Customers } from '../pages/customers/customers';
 
 @Injectable()
 @SecurityGuard(['BackOffice'])
@@ -25,6 +26,7 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Products', icon: 'pricetags', component: Products },
     { title: 'Service', icon: 'bowtie', component: Services },
     { title: 'Employees', icon: 'contacts', component: Employees },
+    { title: 'Customers', icon: 'contacts', component: Customers },
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
