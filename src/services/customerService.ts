@@ -9,4 +9,25 @@ export class CustomerService extends BaseEntityService<Customer> {
     super(Customer);
   }
 
+  public async getResults(limit: number, offset: number) {
+    var query: any = { selector: {entityTypeName: 'Customer'} };
+    query.limit = limit;
+    query.offset = offset;
+
+    var promises: any[] = [
+      async () => {
+        let data = await this.getAll();
+        return data.length;
+      },
+      async () => await this.findBy(query)
+    ];
+
+    try {
+      let [totalCount, docs] = await Promise.all(promises.map(p => p()));
+      return { totalCount, docs };
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
 }

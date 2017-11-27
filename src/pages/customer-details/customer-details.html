@@ -23,8 +23,8 @@
       <ion-item>
         <ion-label class="item-name">Last Name</ion-label>
         <ion-input type="text" [formControl]="lastName"></ion-input>
-      </ion-item>
-      <ion-item>
+      </ion-item>    
+      <ion-item>        
         <ion-label class="item-name">Date of Birth</ion-label>
         <ion-datetime displayFormat="MM-DD-YYYY" min="1900" pickerFormat="MM-DD-YYYY" [formControl]="dob">
         </ion-datetime>
@@ -33,10 +33,16 @@
         <ion-label class="item-name">Phone</ion-label>
         <ion-input type="text" [formControl]="phone"></ion-input>
       </ion-item>
+      <ion-item *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="alert alert-danger">
+        Invalid phone number. It should only contain numbers, hiphens and a single + sign
+      </ion-item>
       <ion-item>
         <ion-label class="item-name">Email</ion-label>
         <ion-input type="text" [formControl]="email"></ion-input>
       </ion-item>
+      <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+        Invalid email address
+      </ion-item>      
       <ion-item>
         <ion-label class="item-name">Suburb</ion-label>
         <ion-input type="text" [formControl]="suburb"></ion-input>
@@ -48,7 +54,7 @@
       <ion-item>
         <ion-label class="item-name">Country</ion-label>
         <ion-select [formControl]="country">
-          <ion-option [value]="c.code" *ngFor="let c of countries">{{c.name}}</ion-option>
+          <ion-option [value]="c.c" *ngFor="let c of countries">{{c.name}}</ion-option>
         </ion-select>
       </ion-item>
     </ion-list>
