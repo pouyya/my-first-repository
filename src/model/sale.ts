@@ -30,7 +30,7 @@ export class Sale extends DBBasedEntity {
   public completedAt: string;
   public status: string;
   public receiptNo: string;
-  public customerName: string;
+  public customerKey: string;
   public originalSalesId: string;
   public saleAppliedValue?: number;
   public saleAppliedType?: string;
@@ -46,7 +46,7 @@ export class Sale extends DBBasedEntity {
     this.notes = "";
     this.round = 0;
     this.created = new Date().toISOString();
-    this.customerName = "";
+    this.customerKey = null;
     this.receiptNo = "";
     this.originalSalesId = "";
     this.saleAppliedValue = 0;

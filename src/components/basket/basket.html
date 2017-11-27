@@ -10,6 +10,32 @@
     </ion-col>
   </ion-row>
 </ion-grid>
+<ion-grid>
+  <ion-row>
+    <ion-col *ngIf="customer">
+      {{ customer.firstName }} {{ customer.lastName }}
+    </ion-col>
+    <ion-col *ngIf="!customer && !searchBarEnabled">
+      <button ion-button full (click)="createCustomer()">Create Customer</button>
+      <button ion-button full (click)="searchBarEnabled = true">Add Customer</button>
+    </ion-col>
+    <ion-col *ngIf="!customer && searchBarEnabled">
+      <ion-searchbar autofocus debounce="1000" [showCancelButton]="showSearchCancel"
+      (ionInput)="searchCustomers($event)"
+      (ionCancel)="cancelSearch($event)">
+      </ion-searchbar>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngIf="searchBarEnabled && searchedCustomers.length > 0">
+    <ion-col>
+      <ion-list>
+        <ion-item *ngFor="let item of searchedCustomers">
+          {{ item.firstName }} {{ item.lastName }}
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-grid>
 <ion-grid class="top-component basket">
   <ion-row>
     <ion-col col-12>

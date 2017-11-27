@@ -11,6 +11,8 @@ import { Sale, DiscountSurchargeInterface } from './../../model/sale';
 import { BasketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
+import { Customer } from '../../model/customer';
+import { CreateCustomerModal } from './modals/create-customer/create-customer';
 
 @Component({
   selector: 'basket',
@@ -29,6 +31,9 @@ export class BasketComponent {
   public employeesHash: any;
   public saleAppliedValue: number;
   public appliedValueDetails: any;
+  public searchBarEnabled: boolean = false;
+  public showSearchCancel: boolean = true;
+  public searchedCustomers: any[] = [];
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -41,6 +46,7 @@ export class BasketComponent {
 
   @Input() user: any;
   @Input() refund: boolean;
+  @Input() customer: Customer;
   @Input('employees')
   set employee(arr: Array<any>) {
     this.employeesHash = _.keyBy(arr, '_id');
@@ -221,6 +227,28 @@ export class BasketComponent {
       ]
     });
     confirm.present();
+  }
+
+  public cancelSearch($event) {
+    this.searchBarEnabled = false;
+  }
+
+  public async searchCustomers($event: any) {
+    let val = $event.target.value;
+    if (val && val.trim() != '') {
+
+    }
+  }
+
+  public createCustomer() {
+    let modal = this.modalCtrl.create(CreateCustomerModal, {});
+    modal.onDidDismiss(customer => {
+      if(customer) {
+        this.customer = customer;
+        this.invoice.customerKey = this.customer._id;
+      }
+    });
+    modal.present();
   }
 
   private calculateAndSync() {

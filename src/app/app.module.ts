@@ -1,5 +1,3 @@
-import { CustomerService } from './../services/customerService';
-import { Customers } from './../pages/customers/customers';
 // core
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
@@ -61,7 +59,9 @@ import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
-import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
+import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
+import { Customers } from './../pages/customers/customers';;
+import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -111,6 +111,7 @@ import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluation
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
+import { CustomerService } from './../services/customerService';
 
 // used to create fake backend
 import { fakeBackendProvider } from './../services/_fakeBackend';
@@ -171,7 +172,8 @@ const cloudSettings: CloudSettings = {
     TimeLogDetailsModal,
     SelectRolesModal,
     Customers,
-    CustomerDetails
+    CustomerDetails,
+    CreateCustomerModal
   ],
   imports: [
     FormsModule,
@@ -255,7 +257,8 @@ const cloudSettings: CloudSettings = {
     TimeLogDetailsModal,
     SelectRolesModal,
     Customers,
-    CustomerDetails
+    CustomerDetails,
+    CreateCustomerModal
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },

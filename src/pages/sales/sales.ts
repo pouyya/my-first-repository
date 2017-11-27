@@ -20,6 +20,7 @@ import { Store } from './../../model/store';
 import { Sale } from './../../model/sale';
 import { SalesTax } from './../../model/salesTax';
 import { PriceBook } from './../../model/priceBook';
+import { Customer } from './../../model/customer';
 import { PurchasableItem } from './../../model/purchasableItem';
 
 import { SalesModule } from "../../modules/salesModule";
@@ -56,6 +57,7 @@ export class Sales {
   public employees: any[] = [];
   public selectedEmployee: any = null;
   public user: UserSession;
+  public customer: Customer = null;
   private invoiceParam: any;
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
@@ -213,6 +215,7 @@ export class Sales {
         this.defaultTax = data[2] as any;
         this.priceBooks = data[3] as PriceBook[];
         this.priceBook = data[1] as PriceBook;
+        data[4] && (this.customer = data[4] as Customer);
 
         this.priceBooks.sort(
           firstBy("priority").thenBy((book1, book2) => {
