@@ -102,36 +102,31 @@ export class Sales {
 
   async ionViewDidLoad() {
     this.user = this.userService.getLoggedInUser();
-    try {
-      this.register = await this.posService.getCurrentPos();
-      this.store = await this.storeService.getCurrentStore();
-      let _init: boolean = false;
-      if (!this.register.status) {
-        let openingAmount: number = Number(this.navParams.get('openingAmount'));
-        let openingNote: string = this.navParams.get('openingNotes');
-        if (openingAmount >= 0) {
-          this.register.openTime = new Date().toISOString();
-          this.register.status = true;
-          this.register.openingAmount = Number(openingAmount);
-          this.register.openingNote = openingNote;
-          this.posService.update(this.register);
-          _init = true;
-        } else {
-          this.cdr.reattach();
-        }
-      } else {
+    this.register = await this.posService.getCurrentPos();
+    this.store = await this.storeService.getCurrentStore();
+    let _init: boolean = false;
+    if (!this.register.status) {
+      let openingAmount: number = Number(this.navParams.get('openingAmount'));
+      let openingNote: string = this.navParams.get('openingNotes');
+      if (openingAmount >= 0) {
+        this.register.openTime = new Date().toISOString();
+        this.register.status = true;
+        this.register.openingAmount = Number(openingAmount);
+        this.register.openingNote = openingNote;
+        this.posService.update(this.register);
         _init = true;
+      } else {
+        this.cdr.reattach();
       }
-
-      if (_init) {
-        let loader = this.loading.create({ content: 'Loading Register...', });
-        await loader.present();
-        await this.initiate();
-        loader.dismiss();
-      }
+    } else {
+      _init = true;
     }
-    catch (error) {
-      throw new Error(error);
+
+    if (_init) {
+      let loader = this.loading.create({ content: 'Loading Register...', });
+      await loader.present();
+      await this.initiate();
+      loader.dismiss();
     }
   }
 
@@ -248,15 +243,13 @@ export class Sales {
   private async loadCategoriesAssociation(categories: any[]): Promise<any> {
     let promises: Promise<any>[] = [];
     for (let categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
-      promises.push(new Promise((resolve, reject) => {
+      promises.push(new Promise(async (resolve, reject) => {
         if (categoryIndex === 0) {
           this.activeCategory = categories[categoryIndex];
-          this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then((items: Array<any>) => {
-            this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
-            resolve();
-          });
+          var items: Array<any> = await this.salesService.loadPurchasableItems(categories[categoryIndex]._id)
+          this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
         } else {
-          this.salesService.loadPurchasableItems(categories[categoryIndex]._id).then(() => resolve());
+          await this.salesService.loadPurchasableItems(categories[categoryIndex]._id);
         }
       }));
     }

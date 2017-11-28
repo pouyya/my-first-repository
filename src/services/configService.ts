@@ -52,14 +52,14 @@ export class ConfigService {
     }
 
     static securityServerBaseUrl(): string {
-        return 'https://simpleposapp-dev-ids.azurewebsites.net/identity';
+        return 'https://simpleposapp-dev.azurewebsites.net/identity';
     }
 
     static securityClientId(): string {
         return 'simplepos';
     }
     static securityClientSecret(): string {
-        return 'secret';
+        return '21B5F798-BE55-42BC-8AA8-0025B903DC3B';
     }
 
     static securityGrantType(): string {
