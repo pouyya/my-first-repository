@@ -35,6 +35,10 @@ export class ConfigService {
         return true;
     }
 
+    static turnOffDeployment(): boolean {
+        return true;
+    }
+
     static printerIP() : string {
         return "192.168.1.99";
     }

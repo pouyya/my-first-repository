@@ -11,7 +11,6 @@ export class EscPrinterConnectorProvider {
         }
     }
 
-
     public async write(content) {
 
         if (EscPrinterConnectorProvider.socketId) {

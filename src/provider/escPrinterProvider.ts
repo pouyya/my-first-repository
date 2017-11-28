@@ -1,3 +1,5 @@
+import { PrintTable } from "./printTable";
+
 export class EscPrinterProvider {
     /**
      * ASCII null control character
@@ -249,6 +251,7 @@ export class EscPrinterProvider {
 
     constructor() {
         this.buffer = "";
+        this.initialize();
     }
 
     /**
@@ -389,6 +392,12 @@ export class EscPrinterProvider {
      */
     public text($str = "") {
         this.buffer += $str;
+    }
+
+    public printTable(table: PrintTable) {
+        if (table) {
+            this.text(table.toString())
+        }
     }
 
     /**
