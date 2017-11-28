@@ -116,6 +116,7 @@ import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
+import { PlatformService } from '../services/platformService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -293,6 +294,7 @@ const cloudSettings: CloudSettings = {
     authProvider,
     fakeBackendProvider,
     MockBackend,
+    PlatformService,
     BaseRequestOptions
   ]
 })

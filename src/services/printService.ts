@@ -1,115 +1,105 @@
 import { ConfigService } from './configService';
 import { Injectable } from '@angular/core';
-import * as encoding from "text-encoding";
+import { PlatformService } from './platformService';
+import { EscPrinterProvider } from '../provider/escPrinterProvider';
+import { EscPrinterConnectorProvider } from '../provider/escPrinterConnectorProvider';
 
 @Injectable()
 export class PrintService {
   static tcp: any;
   static socketId: string;
-  Esc: _EscCommand;
 
-  constructor() {
-    if (PrintService.tcp == null) {
-      PrintService.tcp = (<any>window).chrome.sockets.tcp
-    }
-    this.Esc = new _EscCommand();
+  constructor(private platformService: PlatformService) {
   }
 
   public async print() {
-    if (!PrintService.socketId) {
-      await this.connect(ConfigService.printerIP(), ConfigService.printerPort());
-    }
-    var escCommand = this.Esc.InitializePrinter +
-    this.Esc.PrintAndFeedMaxLine +
-    this.Esc.PrintAndFeedMaxLine +
-    this.Esc.TextAlignCenter +
-    this.Esc.DoubleOn + "Medi Hair\n" + this.Esc.DoubleOff +
-    this.Esc.TextAlignCenter + "Barber shop in Balgowlah\n" +
-    this.Esc.TextAlignCenter + "Ph: (02) 8034 8891\n" +
-    this.Esc.TextAlignCenter + "ABN: 49 864 355 835\n" +
-    this.Esc.TextAlignCenter + "TAX INVOICE\n" +
-
-    this.Esc.TextAlignLeft + "29/09/2017 08:32am" +
-    this.Esc.TextAlignRight + "Friday\n" +
-    this.Esc.TextAlignCenter + "\n" +
-    this.Esc.TextAlignCenter + "\n" +
-    this.Esc.TextAlignCenter + "\n" +
-    this.Esc.TextAlignCenter + "\n" +
-    
-    this.Esc.CutAndFeedLine(0);
-    this.printOnSocket(escCommand);
-  }
-
-  async connect(ip, port) {
-    return new Promise((resolve, reject) => {
-      console.log(ip + " " + port);
-      PrintService.tcp.create(function (createInfo) {
-        PrintService.tcp.connect(createInfo.socketId, ip, port ? port : 9100, function (result) {
-          if (!result) {
-            console.log("connect success!");
-            PrintService.socketId = createInfo.socketId;
-            resolve();
-          } else {
-            PrintService.socketId = null;
-            reject();
-          }
-        });
-      });
-    });
-  }
-
-  private printOnSocket(content) {
-    if (PrintService.socketId == null) {
+    if (!this.platformService.isMobileDevice()) {
+      console.warn("can't print on dekstop");
       return;
     }
-    var uint8array = new encoding.TextEncoder('gb18030', { NONSTANDARD_allowLegacyEncoding: true }).encode(content);
-    PrintService.tcp.send(PrintService.socketId,
-      uint8array.buffer,
-      function (result) {
-        console.log(result);
-      });
+    var printer = new EscPrinterProvider();
+    printer.initialize();
+    
+    this.setHeader(printer);
+    this.setBody(printer);
+    this.setFooter(printer);
+
+    printer.cut();
+
+    new EscPrinterConnectorProvider(ConfigService.printerIP(), ConfigService.printerPort()).write(printer.getBuffer());
+  }
+
+  setHeader(printer: EscPrinterProvider) {
+    printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
+    printer.setEmphasis(true);
+    printer.setTextSize(1, 2);
+    printer.text("Medi Hair\n");
+    printer.setEmphasis(false);
+    printer.setTextSize(1, 1);
+    printer.feed();
+    printer.text("Barber shop in Balgowlah\n");
+    printer.text("Ph: (02) 8034 8891\n");
+    printer.text("ABN: 49 864 355 835\n");
+    printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+    printer.text("TAX INVOICE");
+    printer.text("    23/11/2017");
+    printer.feed(2);
+  }
+
+  setBody(printer: EscPrinterProvider) {
+    var items = [
+      new PurchasedItem("Example item #1", "20.00", "$"),
+      new PurchasedItem("Example item #2", "21.31", "$"),
+      new PurchasedItem("Example item #1", "22.34", "$"),
+      new PurchasedItem("Example item #1", "3.00", "$"),
+      new PurchasedItem("Example item #1", "41.3", "$"),
+      new PurchasedItem("Example item #1", "124.53", "$"),
+      new PurchasedItem("Example item #1", "400.11", "$"),
+      new PurchasedItem("Example item #1", "504.23", "$"),
+    ];
+
+    printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+    for (let item of items) {
+      printer.text(item.toString() + "\n");
+    }
+
+    printer.feed(2);
+    printer.setTextSize(2, 1);
+    printer.text("TOTAL            $113.05\n");
+    printer.setTextSize(1, 1);
+    printer.feed(2);
+  }
+
+  setFooter(printer: EscPrinterProvider) {
+    printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
+    printer.barcode("ABC", EscPrinterProvider.BARCODE_CODE39);
+    printer.text("23/11/2017 5:38 PM  PM82341234123\n");
+    printer.setEmphasis(true);
+    printer.text("Tell us what you think\n");
+    printer.setEmphasis(false);
+    printer.text("To provide feedback call us or goto medihair.com.au\n");
+    printer.feed(4);
   }
 }
 
-export class _EscCommand {
-  ESC: string;
-  GS: string;
-  InitializePrinter: string;
-  BoldOn: string;
-  BoldOff: string;
-  DoubleHeight: string;
-  DoubleWidth: string;
-  DoubleOn: string;
-  DoubleOff: string;
-  PrintAndFeedMaxLine: string;
-  TextAlignLeft: string;
-  TextAlignCenter: string;
-  TextAlignRight: string;
+class PurchasedItem {
+  static leftColumn = 38;
+  static righcolumn = 10;
 
-  constructor() {
-    this.ESC = "\u001B";
-    this.GS = "\u001D";
-    this.InitializePrinter = this.ESC + "@";
-    this.BoldOn = this.ESC + "E" + "\u0001";
-    this.BoldOff = this.ESC + "E" + "\0";
-    this.DoubleHeight = this.GS + "!" + "\u0001";
-    this.DoubleWidth = this.GS + "!" + "\u0010";
-    this.DoubleOn = this.GS + "!" + "\u0011"; // 2x sized text (double-high + double-wide)
-    this.DoubleOff = this.GS + "!" + "\0";
-    this.PrintAndFeedMaxLine = this.ESC + "J" + "\u00FF"; // 打印并走纸 最大255
-    this.TextAlignLeft = this.ESC + "a" + "0";
-    this.TextAlignCenter = this.ESC + "a" + "1";
-    this.TextAlignRight = this.ESC + "a" + "2";
+  constructor(private name: string, private price: string, private currencySign: string) {
   }
 
-  public CutAndFeedLine(verticalUnit) {
-    if (verticalUnit === void 0) {
-      return this.GS + "v" + 1;
-    }
-    if (verticalUnit > 255)
-      verticalUnit = 255;
-    if (verticalUnit < 0)
-      verticalUnit = 0;
-    return this.GS + "V" + String.fromCharCode(verticalUnit);
+  public toString(): string {
+    return PurchasedItem.padRight(this.name, PurchasedItem.leftColumn) + PurchasedItem.padLeft(this.currencySign + this.price, PurchasedItem.righcolumn);
+  }
+
+  static padRight(value: string, size: number): string {
+    while (value && value.length < size) value = value + " ";
+    return value;
+  }
+
+  static padLeft(value: string, size: number): string {
+    while (value && value.length < size) value = " " + value;
+    return value;
   }
 }
