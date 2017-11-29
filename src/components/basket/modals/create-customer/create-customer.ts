@@ -1,6 +1,6 @@
 import { Customer } from './../../../../model/customer';
 import { NavParams, NavController, ViewController } from 'ionic-angular';
-import { FormGroup, FormBuilder, FormControl, Validators, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Component } from '@angular/core';
 import { CustomerService } from '../../../../services/customerService';
 
@@ -30,6 +30,19 @@ export class CreateCustomerModal {
     private customerService: CustomerService
   ) {
     this.customer = new Customer();
+
+    var searchInput = this.navParams.get("searchInput") as string;
+    if (searchInput) {
+      var fullName = searchInput.trim().replace("  ", " ").split(" ");
+
+      if (fullName.length > 0) {
+        this.customer.firstName = fullName[0].trim();
+      }
+      if (fullName.length > 1) {
+        this.customer.lastName = fullName[1].trim();
+      }
+    }
+
     this.createForm();
   }
 
@@ -47,35 +60,30 @@ export class CreateCustomerModal {
     }
   }
 
-  private checkNameCombination(checkWith: string): ValidatorFn {
-    return (input: FormControl): any => {
-      if(this.customerForm) {
-        if(!input.value && !this.customerForm.value[checkWith]) {
-          return {oneRequired: true };
-        } else {
-          return null;
-        }
-      } else {
-        return null;
-      }
-    };
+  private checkNameCombination(control: AbstractControl) {
+    if (control && control.value && !control.value.firstName && !control.value.lastName) {
+      return { oneRequired: true };
+    }
+    return null;
+  }
+
+  private emptyOrEmail(input: AbstractControl) {
+    return (!input.value || input.value === '') ? null : Validators.email(input);
   }
 
   private createForm() {
     this.customerForm = this.formBuilder.group({
-      firstName: new FormControl(this.customer.firstName, [this.checkNameCombination('lastName')]),
-      lastName: new FormControl(this.customer.lastName, [this.checkNameCombination('firstName')]),
+      firstName: new FormControl(this.customer.firstName),
+      lastName: new FormControl(this.customer.lastName),
       phone: new FormControl(this.customer.phone, [
         Validators.pattern(/^[\+\d]?(?:[\d-.\s()]*)$/) // +999-999-9999
       ]),
-      email: new FormControl(this.customer.email, [
-        Validators.email
-      ]),
+      email: new FormControl(this.customer.email, [this.emptyOrEmail]),
       address: new FormControl(this.customer.address, []),
       suburb: new FormControl(this.customer.suburb, []),
       postcode: new FormControl(this.customer.postcode, []),
       country: new FormControl(this.customer.country, [])
-    });
+    }, { validator: this.checkNameCombination });
   }
 
   public dismiss() {

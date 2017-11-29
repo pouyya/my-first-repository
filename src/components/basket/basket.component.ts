@@ -292,7 +292,9 @@ export class BasketComponent {
   }
 
   public createCustomer() {
-    let modal = this.modalCtrl.create(CreateCustomerModal, {});
+    let modal = this.modalCtrl.create(CreateCustomerModal, {
+      searchInput : this.searchInput
+    });
     modal.onDidDismiss(customer => {
       if(customer) {
         this.customer = customer;
