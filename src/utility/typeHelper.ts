@@ -25,4 +25,40 @@ export class TypeHelper {
 
         return input.replace(/\s/g, '').length < 1;
     }
+
+    static toCurrency(price: number): string {
+        return `$${price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    }
+
+    private static htmlEncodeEntityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
+    private static htmlDecodeEntityMap = {
+        "&amp;": "&",
+        "&lt;": "<",
+        "&gt;": ">",
+        '&quot;': '"',
+        '&#39;': "'",
+        '&#x2F;': "/"
+    };
+
+    static encodeHtml(source: string) {
+        return String(source).replace(/[&<>"'\/]/g, s => TypeHelper.htmlEncodeEntityMap[s]);
+    }
+
+    static decodeHtml(source: string) {
+        if (source) {
+            for (let token in TypeHelper.htmlDecodeEntityMap) {
+                source = source.replace(token ,TypeHelper.htmlDecodeEntityMap[token]);
+            }
+
+            return source;
+        }
+    }
 }

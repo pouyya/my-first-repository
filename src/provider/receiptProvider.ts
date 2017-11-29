@@ -1,30 +1,30 @@
 import { EscPrinterProvider } from "./escPrinterProvider";
-import { PrintTable, PrintColumn, ColumnAlign } from "./printTable";
-import { Parser } from "htmlparser2";
 import { TypeHelper } from "../utility/typeHelper";
 import { HtmlPrinterProvider } from "./htmlPrinterProvider";
+import { Sale } from "../model/sale";
+import { ReceiptProviderContext } from "./ReceiptProviderContext";
 
 export class ReceiptProvider {
 
+    printer: EscPrinterProvider;
     htmlPrinterProvider: HtmlPrinterProvider;
 
-    constructor(printer: EscPrinterProvider) {
-        this.htmlPrinterProvider = new HtmlPrinterProvider(printer);
+    constructor(public receiptProviderContext: ReceiptProviderContext) {
+        this.printer = new EscPrinterProvider();
+        this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
-
     setHeader(): ReceiptProvider {
-
         var headerHtml = `
         <center>
-            <h2><b>Medi Hair</b></h2>Barber shop in balgowlah
-Ph: (02) 8034 8891
-ABN: 49 864 355 835
+            <h2><b>${this.receiptProviderContext.invoiceTitle}</b></h2>${this.receiptProviderContext.shopName}
+Ph: ${this.receiptProviderContext.phoneNumber}
+ABN: ${this.receiptProviderContext.taxFileNumber}
         </center>
         <table cols="left-24,right-24">
             <tr>
                 <td>TAX INVOICE</td>
-                <td>23/11/2017</td>
+                <td>${new Date(this.receiptProviderContext.sale.completedAt).toLocaleString()}</td>
             </tr>
         </table>
         <br>
@@ -36,52 +36,43 @@ ABN: 49 864 355 835
     }
 
     setBody(): ReceiptProvider {
+        var basketItems = "";
+        if (this.receiptProviderContext.sale.items) {
+            basketItems += '<table cols="left-4,left-34,right-10">';
 
-        var bodyHtml = `
-        <table cols="left-38,right-10">
-            <tr>
-                <td>Example item #1</td>
-                <td>$20.00</td>
-            </tr>
-            <tr>
-                <td>Example item #2</td>
-                <td>$20.00</td>
+            for (let basketItem of this.receiptProviderContext.sale.items) {
+                basketItems += `<tr>
+                            <td>${basketItem.quantity}</td>
+                            <td>${TypeHelper.encodeHtml(basketItem.name)}</td>
+                            <td>${TypeHelper.toCurrency(basketItem.finalPrice)}</td>
+                        </tr>`;
+            }
+
+            basketItems += `</table>
+            <hr>
+            <br>
+            <br>`;
+        }
+
+        var bodyHtml = `${basketItems}
+            <table cols="left-10,right-38">
+                <tr>
+                    <td>Tax</td>
+                    <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.taxTotal)}</td>
                 </tr>
-            <tr>
-                <td>Example item #3</td>
-                <td>$20.00</td>
-            </tr>
-            <tr>
-                <td>Example item #4</td>
-                <td>$20.00</td>
-            </tr>
-            <tr>
-                <td>Example item #5</td>
-                <td>$34.34</td>
-            </tr>    
-            <tr>
-                <td>Example item #6</td>
-                <td>$41.35</td>
-            </tr>    
-            <tr>
-                <td>Example item 7#</td>
-                <td>$51.31</td>
-            </tr>                            
-            <tr>
-                <td>Example item #8</td>
-                <td>$100.1</td>
-            </tr>
-        </table>
-        <br>
-        <br>
-        <h3>
+                <tr>
+                <td>Sub total</td>
+                <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.subTotal)}</td>
+            </tr>                
+            </table>                    
+            <h3>
             <table cols="left-5,right-19">
                 <tr>
                     <td>TOTAL</td>
-                    <td>$1,405.00</td>
+                    <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.taxTotal)}</td>
                 </tr>
             </table>            
-        </h3>
+        </h3>            
         <br>
         <br>`;
 
@@ -94,18 +85,22 @@ ABN: 49 864 355 835
 
         var footerHtml = `
         <center>
-            <barcode>ABC</barcode>
-23/11/2017 5:38 PM  PM82341234123
-<b>Tell us what you think</b>
-To provide feedback call us or goto medihair.com.au
+            <barcode>${this.receiptProviderContext.sale.receiptNo}</barcode>
+${new Date(this.receiptProviderContext.sale.completedAt).toLocaleString()}  ${this.receiptProviderContext.sale.receiptNo}
+${this.receiptProviderContext.footerMessage}
         </center>
         <br>
         <br>
         <br>
-        <br>`;
-            
+        <br>
+        <cut>`;
+
         this.htmlPrinterProvider.parse(footerHtml);
-        
+
         return this;
+    }
+
+    getResult(): string {
+        return this.printer.getBuffer();
     }
 }

@@ -47,20 +47,22 @@ export class HtmlPrinterProvider {
                     onTd = true
                 } else if (tagName == "barcode") {
                     isBarcode = true;
-                } else if (tagName == "margin") {
-                    self.printer.setPrintLeftMargin(+attribs.value)
+                } else if (tagName == "hr") {
+                    self.printer.text("=".repeat(48));
+                } else if (tagName == "cut") {
+                    self.printer.cut();
                 }
             },
             ontext: function (text) {
                 if (!TypeHelper.isNullOrWhitespace(text)) {
                     if (onTd) {
-                        currentRow.push(text)
+                        currentRow.push(TypeHelper.decodeHtml(text))
                     }
                     else if (isBarcode) {
-                        self.printer.barcode(text);
+                        self.printer.barcode(TypeHelper.decodeHtml(text));
                     }
                     else {
-                        self.printer.text(text + "\n");
+                        self.printer.text(TypeHelper.decodeHtml(text) + "\n");
                     }
                 }
             },
@@ -85,11 +87,9 @@ export class HtmlPrinterProvider {
                     self.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
                 } else if (tagName == "barcode") {
                     isBarcode = false;
-                } else if(tagName == "margin") {
-                    self.printer.setPrintLeftMargin();
                 }
             }
-        }, { decodeEntities: true, lowerCaseTags: true });
+        }, { decodeEntities: false, lowerCaseTags: true });
 
         parser.write(html);
 
