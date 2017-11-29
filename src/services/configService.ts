@@ -38,14 +38,6 @@ export class ConfigService {
     static turnOffDeployment(): boolean {
         return true;
     }
-
-    static printerIP() : string {
-        return "192.168.1.99";
-    }
-
-    static printerPort() : number {
-        return 9100;
-    }
     
     static securityTokenEndPoint(): string {
         return ConfigService.securityServerBaseUrl() + "/connect/token";

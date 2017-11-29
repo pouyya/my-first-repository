@@ -48,7 +48,7 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "barcode") {
                     isBarcode = true;
                 } else if (tagName == "hr") {
-                    self.printer.text("=".repeat(48));
+                    self.printer.text("-".repeat(48));
                 } else if (tagName == "cut") {
                     self.printer.cut();
                 }

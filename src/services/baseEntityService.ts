@@ -44,7 +44,7 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
     return this.dbService.findBy(selector);
   }
 
-  get(id: any) {
+  get(id: any): Promise<T> {
     return this.dbService.get(id);
   }
 

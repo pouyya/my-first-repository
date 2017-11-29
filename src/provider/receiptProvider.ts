@@ -1,7 +1,6 @@
 import { EscPrinterProvider } from "./escPrinterProvider";
 import { TypeHelper } from "../utility/typeHelper";
 import { HtmlPrinterProvider } from "./htmlPrinterProvider";
-import { Sale } from "../model/sale";
 import { ReceiptProviderContext } from "./ReceiptProviderContext";
 
 export class ReceiptProvider {

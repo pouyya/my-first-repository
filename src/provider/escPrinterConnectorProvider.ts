@@ -1,11 +1,10 @@
-import { PlatformService } from "../services/platformService";
 import * as encoding from "text-encoding";
 
 export class EscPrinterConnectorProvider {
     static tcp: any;
     static socketId: string;
 
-    constructor(private ip: string, private port: number ) {
+    constructor(private ip: string, private port: number) {
         if (EscPrinterConnectorProvider.tcp == null) {
             EscPrinterConnectorProvider.tcp = (<any>window).chrome.sockets.tcp
         }
@@ -22,7 +21,12 @@ export class EscPrinterConnectorProvider {
         }
 
         if (!EscPrinterConnectorProvider.socketId) {
-            await this.connect(this.ip, this.port);
+            try {
+                await this.connect(this.ip, this.port);
+            }
+            catch (error) {
+                alert(error);
+            }
         }
 
         if (EscPrinterConnectorProvider.socketId == null) {
