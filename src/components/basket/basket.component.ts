@@ -4,7 +4,7 @@ import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -49,9 +49,13 @@ export class BasketComponent {
 
   @Input() user: any;
   @Input() refund: boolean;
-  @Input('customer')
-  set customerModel(obj: any) {
-    this._customer = obj
+  @Input()
+  set customer(model: Customer) {
+    this._customer = model;
+    this.customerChange.emit(model);
+  }
+  get customer(): Customer {
+    return this._customer;
   }
 
   @Input('employees')
@@ -73,7 +77,9 @@ export class BasketComponent {
 
   @Output() paymentClicked = new EventEmitter<any>();
   @Output() notify = new EventEmitter<any>();
+  @Output() customerChange = new EventEmitter<Customer>();
   @Output('_invoiceChange') invoiceChange = new EventEmitter<Sale>();
+
 
   constructor(
     private salesService: SalesServices,
@@ -81,6 +87,7 @@ export class BasketComponent {
     private groupByPipe: GroupByPipe,
     private helperService: HelperService,
     private customerService: CustomerService,
+    private toastCtrl: ToastController,
     private modalCtrl: ModalController) {
   }
 
@@ -187,7 +194,7 @@ export class BasketComponent {
               'text': 'OK',
               handler: () => {
                 this.salesService.instantiateInvoice().then((invoice: any) => {
-                  this._customer = null;
+                  this.customer = null;
                   this.invoice = invoice.invoice;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
@@ -255,15 +262,24 @@ export class BasketComponent {
     }
   }
 
+  public openSearchbar() {
+    if(this.invoice.items.length > 0) {
+      this.searchBarEnabled = true;
+    } else {
+      let toast = this.toastCtrl.create({ message: 'Please add items first', duration: 3000 });
+      toast.present();
+    }
+  }
+
   public assignCustomer(customer: Customer) {
-    this._customer = customer;
-    this.invoice.customerKey = this._customer._id;
+    this.customer = customer;
+    this.invoice.customerKey = this.customer._id;
     this.searchBarEnabled = false;
     this.salesService.update(this.invoice);
   }
 
   public unassignCustomer() {
-    this._customer = null;
+    this.customer = null;
     this.searchBarEnabled = true;
     this.invoice.customerKey = null;
     this.salesService.update(this.invoice);
@@ -274,8 +290,8 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(CreateCustomerModal, {});
     modal.onDidDismiss(customer => {
       if(customer) {
-        this._customer = customer;
-        this.invoice.customerKey = this._customer._id;
+        this.customer = customer;
+        this.invoice.customerKey = this.customer._id;
         this.salesService.update(this.invoice);
       }
     });
@@ -287,9 +303,13 @@ export class BasketComponent {
     this.calculateTotal(() => {
       this.setBalance();
       this.generatePaymentBtnText();
-      this.invoice.items.length > 0 ?
-        this.salesService.update(this.invoice) :
-        this.salesService.delete(this.invoice)
+      if(this.invoice.items.length > 0) {
+        this.salesService.update(this.invoice);
+      } else {
+        this.salesService.delete(this.invoice);
+        this.searchBarEnabled = false;
+        this.customer = null;
+      }
     });
   }
 

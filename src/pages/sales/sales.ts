@@ -179,20 +179,26 @@ export class Sales {
 
   // Event
   public paymentClicked($event) {
-    let pushCallback = async _params => {
-      if (_params) {
-        let response = await this.salesService.instantiateInvoice();
-        this.invoiceParam = null;
-        this.invoice = response.invoice;
-        this.employees = this.employees.map(employee => {
-          employee.selected = false;
-          return employee;
-        });
-        this.selectedEmployee = null;
-        return;
-      }
-
-      return await Promise.resolve();
+    let pushCallback = params => {
+      return new Promise((resolve, reject) => {
+        if(params) {
+          this.salesService.instantiateInvoice().then(response => {
+            this.invoiceParam = null;
+            this.invoice = response.invoice;
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+            this.selectedEmployee = null;
+            this.customer = null;
+            resolve();
+          }).catch(err => {
+            throw new Error(err);
+          })
+        } else {
+          resolve();
+        }
+      });
     }
 
     this.doRefund = $event.balance < 0;
