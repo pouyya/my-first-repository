@@ -1,6 +1,6 @@
 import { Customer } from './../../../../model/customer';
 import { NavParams, NavController, ViewController } from 'ionic-angular';
-import { FormGroup, FormBuilder, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { Component } from '@angular/core';
 import { CustomerService } from '../../../../services/customerService';
 
