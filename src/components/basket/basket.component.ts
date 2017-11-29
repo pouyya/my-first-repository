@@ -33,8 +33,8 @@ export class BasketComponent {
   public employeesHash: any;
   public saleAppliedValue: number;
   public appliedValueDetails: any;
-  public searchBarEnabled: boolean = false;
-  public showSearchCancel: boolean = true;
+  public searchBarEnabled: boolean = true;
+  public showSearchCancel: boolean = false;
   public searchInput: string = "";
   public searchedCustomers: any[] = [];
 
@@ -53,6 +53,12 @@ export class BasketComponent {
   set customer(model: Customer) {
     this._customer = model;
     this.customerChange.emit(model);
+    this.searchInput = "";
+    if(!this._customer) {
+      this.searchBarEnabled = true;
+    } else if (this._customer) {
+      this.searchBarEnabled = false;
+    }
   }
   get customer(): Customer {
     return this._customer;
@@ -226,6 +232,7 @@ export class BasketComponent {
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
               localStorage.removeItem('invoice_id');
+              this.customer = null;
               this.salesService.instantiateInvoice().then((invoice: any) => {
                 this.invoice = invoice.invoice;
                 this.calculateAndSync();
@@ -246,6 +253,7 @@ export class BasketComponent {
   }
 
   public cancelSearch($event) {
+    this.searchInput = "";
     this.searchBarEnabled = false;
   }
 
@@ -274,19 +282,16 @@ export class BasketComponent {
   public assignCustomer(customer: Customer) {
     this.customer = customer;
     this.invoice.customerKey = this.customer._id;
-    this.searchBarEnabled = false;
     this.salesService.update(this.invoice);
   }
 
   public unassignCustomer() {
     this.customer = null;
-    this.searchBarEnabled = true;
     this.invoice.customerKey = null;
     this.salesService.update(this.invoice);
   }
 
   public createCustomer() {
-    this.searchBarEnabled = false;
     let modal = this.modalCtrl.create(CreateCustomerModal, {});
     modal.onDidDismiss(customer => {
       if(customer) {
@@ -307,7 +312,6 @@ export class BasketComponent {
         this.salesService.update(this.invoice);
       } else {
         this.salesService.delete(this.invoice);
-        this.searchBarEnabled = false;
         this.customer = null;
       }
     });

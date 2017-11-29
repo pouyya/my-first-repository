@@ -1,6 +1,30 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
-    <ion-col class="pull-right">
+    <ion-col col-md-9 class="customer-container pull-left">
+      <ion-item item-content *ngIf="customer && !searchBarEnabled">
+        <ion-label color="primary">
+          {{ customer.firstName }} {{ customer.lastName }}
+          <ion-icon class="pull-right" name="close" tappable (click)="unassignCustomer()"></ion-icon>
+        </ion-label>
+      </ion-item>
+      <ion-searchbar *ngIf="!customer && searchBarEnabled" autofocus debounce="500" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel"
+        (ionInput)="searchCustomers($event)" (ionCancel)="cancelSearch($event)"
+        placeholder="Search Customer">
+      </ion-searchbar>
+
+      <ion-list class="search-list" *ngIf="!customer && searchBarEnabled && searchInput && searchedCustomers.length > 0">
+        <ion-item *ngFor="let item of searchedCustomers" (click)="assignCustomer(item)">
+          {{ item.firstName }} {{ item.lastName }}
+        </ion-item>
+      </ion-list>
+
+      <ion-list class="search-list" *ngIf="!customer && searchBarEnabled && searchInput && searchedCustomers.length == 0">
+        <ion-item (click)="createCustomer()">
+          <ion-icon name="person-add"></ion-icon>&nbsp;&nbsp;Add a Customer
+        </ion-item>
+      </ion-list>
+    </ion-col>
+    <ion-col col-md-3 class="pull-right">
       <button ion-button clear (click)="parkSale()" [disabled]="invoice.items.length == 0">
         <ion-icon name="pause"></ion-icon>
       </button>
@@ -10,42 +34,7 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-grid class="customer-container">
-  <ion-row *ngIf="customer && !searchBarEnabled">
-    <ion-col col-md-11 class="pull-left">
-      <h5><ion-icon name="person"></ion-icon>&nbsp;{{ customer.firstName }} {{ customer.lastName }}</h5>
-    </ion-col>
-    <ion-col col-md-1 class="pull-right">
-      <button ion-button icon-right clear small (click)="unassignCustomer()">
-        <ion-icon name="trash"></ion-icon>
-      </button>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col col-md-12 *ngIf="!customer && !searchBarEnabled">
-      <button ion-button full (click)="openSearchbar()">Add Customer</button>
-    </ion-col>
-    <ion-col col-md-12 *ngIf="!customer && searchBarEnabled">
-      <ion-searchbar autofocus debounce="500" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel" (ionInput)="searchCustomers($event)"
-        (ionCancel)="cancelSearch($event)">
-      </ion-searchbar>
-    </ion-col>
-    <ion-col col-md-12 class="search-list" *ngIf="!customer && searchBarEnabled && searchedCustomers.length > 0">
-      <ion-list>
-        <ion-item *ngFor="let item of searchedCustomers" (click)="assignCustomer(item)">
-          {{ item.firstName }} {{ item.lastName }}
-        </ion-item>
-      </ion-list>
-    </ion-col>
-    <ion-col col-md-12 class="search-list" *ngIf="!customer && searchBarEnabled && searchInput && searchedCustomers.length == 0">
-      <ion-list>
-        <ion-item (click)="createCustomer()">
-          <ion-icon name="person-add"></ion-icon> Add a Customer
-        </ion-item>
-      </ion-list>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+
 <ion-grid class="top-component basket">
   <ion-row>
     <ion-col col-12>
