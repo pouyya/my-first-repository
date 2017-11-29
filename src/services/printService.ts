@@ -4,6 +4,7 @@ import { PlatformService } from './platformService';
 import { EscPrinterProvider } from '../provider/escPrinterProvider';
 import { EscPrinterConnectorProvider } from '../provider/escPrinterConnectorProvider';
 import { ReceiptProvider } from '../provider/receiptProvider';
+import { Parser } from 'htmlparser2';
 
 @Injectable()
 export class PrintService {

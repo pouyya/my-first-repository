@@ -1,67 +1,111 @@
 import { EscPrinterProvider } from "./escPrinterProvider";
-import { PrintTable } from "./printTable";
+import { PrintTable, PrintColumn, ColumnAlign } from "./printTable";
+import { Parser } from "htmlparser2";
+import { TypeHelper } from "../utility/typeHelper";
+import { HtmlPrinterProvider } from "./htmlPrinterProvider";
 
 export class ReceiptProvider {
 
-    constructor(private printer: EscPrinterProvider) {
+    htmlPrinterProvider: HtmlPrinterProvider;
+
+    constructor(printer: EscPrinterProvider) {
+        this.htmlPrinterProvider = new HtmlPrinterProvider(printer);
     }
 
+
     setHeader(): ReceiptProvider {
-        this.printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
-        this.printer.setEmphasis(true);
-        this.printer.setTextSize(1, 2);
-        this.printer.text("Medi Hair\n");
-        this.printer.setEmphasis(false);
-        this.printer.setTextSize(1, 1);
-        this.printer.feed();
-        this.printer.text("Barber shop in Balgowlah\n");
-        this.printer.text("Ph: (02) 8034 8891\n");
-        this.printer.text("ABN: 49 864 355 835\n");
-        this.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
 
-        this.printer.printTable(PrintTable.CreateTwoColumns(24, 24)
-            .addRow(["TAX INVOICE", "23/11/2017"]));
+        var headerHtml = `
+        <center>
+            <h2><b>Medi Hair</b></h2>Barber shop in balgowlah
+Ph: (02) 8034 8891
+ABN: 49 864 355 835
+        </center>
+        <table cols="left-24,right-24">
+            <tr>
+                <td>TAX INVOICE</td>
+                <td>23/11/2017</td>
+            </tr>
+        </table>
+        <br>
+        <br>`;
 
-        this.printer.feed(2);
+        this.htmlPrinterProvider.parse(headerHtml);
 
         return this;
     }
 
     setBody(): ReceiptProvider {
 
-        this.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+        var bodyHtml = `
+        <table cols="left-38,right-10">
+            <tr>
+                <td>Example item #1</td>
+                <td>$20.00</td>
+            </tr>
+            <tr>
+                <td>Example item #2</td>
+                <td>$20.00</td>
+                </tr>
+            <tr>
+                <td>Example item #3</td>
+                <td>$20.00</td>
+            </tr>
+            <tr>
+                <td>Example item #4</td>
+                <td>$20.00</td>
+            </tr>
+            <tr>
+                <td>Example item #5</td>
+                <td>$34.34</td>
+            </tr>    
+            <tr>
+                <td>Example item #6</td>
+                <td>$41.35</td>
+            </tr>    
+            <tr>
+                <td>Example item 7#</td>
+                <td>$51.31</td>
+            </tr>                            
+            <tr>
+                <td>Example item #8</td>
+                <td>$100.1</td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <h3>
+            <table cols="left-5,right-19">
+                <tr>
+                    <td>TOTAL</td>
+                    <td>$1,405.00</td>
+                </tr>
+            </table>            
+        </h3>
+        <br>
+        <br>`;
 
-        this.printer.printTable(PrintTable.CreateTwoColumns(38, 10)
-            .addRow(["Example item #1", "$20.00"])
-            .addRow(["Example item #2", "$21.31"])
-            .addRow(["Example item #1", "$22.34"])
-            .addRow(["Example item #1", "$3.00"])
-            .addRow(["Example item #1", "$41.3"])
-            .addRow(["Example item #1", "$124.53"])
-            .addRow(["Example item #1", "$400.11"])
-            .addRow(["Example item #1", "$504.23"]));
-
-        this.printer.feed(2);
-        this.printer.setTextSize(2, 1);
-        this.printer.printTable(PrintTable.CreateTwoColumns(8, 16)
-            .addRow(["TOTAL", "$113.05"]));
-        this.printer.setTextSize(1, 1);
-        this.printer.feed(2);
+        this.htmlPrinterProvider.parse(bodyHtml);
 
         return this;
     }
 
     setFooter(): ReceiptProvider {
-        this.printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
-        this.printer.barcode("ABC", EscPrinterProvider.BARCODE_CODE39);
-        this.printer.feed();
-        this.printer.text("23/11/2017 5:38 PM  PM82341234123\n");
-        this.printer.setEmphasis(true);
-        this.printer.text("Tell us what you think\n");
-        this.printer.setEmphasis(false);
-        this.printer.text("To provide feedback call us or goto medihair.com.au\n");
-        this.printer.feed(4);
 
+        var footerHtml = `
+        <center>
+            <barcode>ABC</barcode>
+23/11/2017 5:38 PM  PM82341234123
+<b>Tell us what you think</b>
+To provide feedback call us or goto medihair.com.au
+        </center>
+        <br>
+        <br>
+        <br>
+        <br>`;
+            
+        this.htmlPrinterProvider.parse(footerHtml);
+        
         return this;
     }
 }
