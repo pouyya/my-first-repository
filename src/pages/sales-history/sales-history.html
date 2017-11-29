@@ -12,7 +12,7 @@
     <ion-row>
       <ion-col col-md-4>
         <p>Status</p>
-        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchByState()">
+        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchByStatus()">
           <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
         </ion-select>
       </ion-col>
@@ -42,7 +42,7 @@
       </ion-grid>
     </ion-item>
   </ion-list>
-  <ion-list>
+  <ion-list *ngIf="invoices.length > 0">
     <ion-item *ngFor="let invoice of invoices; let $index = index" [ngClass]="{active: isItemShown(invoice._id)}">
       <ion-grid>
         <ion-row (click)="toggleItem(invoice)">
@@ -134,7 +134,7 @@
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll (ionInfinite)="loadMoreSale($event)">
+  <ion-infinite-scroll (ionInfinite)="fetchMoreSales($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 

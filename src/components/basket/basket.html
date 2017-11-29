@@ -49,7 +49,7 @@
   <ion-row>
     <ion-col col-md-12>
       <hr/>
-      <ion-textarea [(ngModel)]="invoice.notes" (change)="syncInvoice()" placeholder="Add Sale Notes...">
+      <ion-textarea [(ngModel)]="invoice.notes" rows="1" (change)="syncInvoice()" placeholder="Add Sale Notes...">
       </ion-textarea>
     </ion-col>
     <ion-col col-md-3>
@@ -66,14 +66,11 @@
 
     <ion-col col-md-3 [ngPlural]="invoice.items.length">
       <ng-template ngPluralCase="=0">Tax</ng-template>
-      <ng-template ngPluralCase="=1">Total <small>({{invoice.items[0].tax.name}})</small></ng-template>
-      <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} taxes)</small></ng-template>
+      <ng-template ngPluralCase="=1">Tax <small>({{invoice.items[0].tax.name}})</small></ng-template>
+      <ng-template ngPluralCase="other">Tax <small>({{invoice.items.length}} taxes)</small></ng-template>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.tax | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-12>
-      <hr/>
-    </ion-col>
     <ion-col col-md-3 [ngPlural]="invoice.items.length">
       <ng-template ngPluralCase="=0">Total <small>(no items)</small></ng-template>
       <ng-template ngPluralCase="=1">Total <small>(1 item)</small></ng-template>
@@ -81,7 +78,7 @@
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-12 no-padding>
-      <button ion-button danger block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
+      <button ion-button danger small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
         <span class="button-inner pull-right" style="text-align: left">
             {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
         </span>

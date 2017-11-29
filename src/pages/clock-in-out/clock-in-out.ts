@@ -46,25 +46,26 @@ export class ClockInOutPage {
   /**
    * @AuthGuard
    */
-  async ionViewCanEnter(): Promise<any> {
-    let toast = this.toastCtrl.create({
-      message: "Invalid PIN!",
-      duration: 3000
-    });
-
-    try {
-      let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
-        { ok: 'OK', cancel: 'Cancel' });
-      if (pin) {
-        let employee: Employee = await this.employeeService.findByPin(pin);
+  async ionViewCanEnter(): Promise<boolean> {
+    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+      { ok: 'OK', cancel: 'Cancel' });
+    if (pin) {
+      let employee: Employee = await this.employeeService.findByPin(pin);
+      if (employee) {
         this.user = this.userService.getLoggedInUser();
         this.employee = employee;
-        return;
+        return true;
       }
-      return Promise.reject(null);
-    } catch (err) {
-      toast.present();
-      return Promise.reject(null);
+      else {
+        let toast = this.toastCtrl.create({
+          message: "Invalid PIN!",
+          duration: 3000
+        });
+            
+        toast.present();
+
+        return false;
+      }
     }
   }
 
@@ -187,7 +188,7 @@ export class ClockInOutPage {
           }
           newTimestamp = _.cloneDeep(this.timestamp);
           newTimestamp._id = "";
-          newTimestamp._rev = "";          
+          newTimestamp._rev = "";
           promises.push(this.employeeTimestampService.add(newTimestamp));
           Promise.all(promises).then(() => {
             let currentDate = new Date();

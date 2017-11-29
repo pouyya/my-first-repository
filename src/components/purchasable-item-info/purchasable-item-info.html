@@ -8,11 +8,6 @@
         <ion-input type="number" [(ngModel)]="item.quantity" (change)="addQuantity(item)">
         </ion-input>
       </ion-item>
-      <ion-item item-content>
-        <ion-label color="primary" stacked>Quantity</ion-label>
-        <ion-input type="number" [(ngModel)]="item.quantity" (change)="addQuantity(item)">
-        </ion-input>
-      </ion-item>
     </ion-col>
 
     <!-- Price -->
@@ -52,7 +47,7 @@
       <ion-list radio-group [(ngModel)]="item.employeeId" class="scrollable-component">
         <ion-item *ngFor="let employee of employeeHash | keys">
           <ion-label>{{employee.value.firstName}}</ion-label>
-          <ion-radio color="black" [disabled]="employee.value.disabled" [value]="employee.key"></ion-radio>
+          <ion-radio [disabled]="employee.value.disabled" [value]="employee.value._id"></ion-radio>
         </ion-item>
       
       </ion-list>

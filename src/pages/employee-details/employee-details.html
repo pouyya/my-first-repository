@@ -3,7 +3,7 @@
     <ion-title>{{action}} Employee</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="save()">
-        {{action}}
+        save
       </button>
       &nbsp;
       <button ion-button icon-only (click)="remove()">
@@ -37,28 +37,25 @@
     </ion-item>
     <ion-item>
       <button ion-button (click)="setPin()" color="{{ !employee.pin ? 'default' : 'primary' }}">{{ !employee.pin ? 'Set PIN' : 'Reset PIN' }}</button>
-    </ion-item>    
-     <ion-item>
-      <ion-list>
-        <ion-item-sliding *ngFor="let store of stores">
-          <ion-item>
-            <h2>{{store.store.name}}</h2>
-          </ion-item>
-          <ion-item-options side="right" *ngIf="!employee.isAdmin">
-            <button ion-button (click)="changeRole('staff', store.id)" [color]="store.role == 'staff' ? 'primary' : 'light'">
-              <ion-icon name="person"></ion-icon>
-              Staff
-            </button>
-            <button ion-button (click)="changeRole('manager', store.id)" [color]="store.role == 'manager' ? 'primary' : 'light'">
-              <ion-icon name="person"></ion-icon>
-              Manager
-            </button>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ion-item>    
+    </ion-item>
   </ion-list>
-    
 
-</ion-content> 
- 
+  <!-- Roles Selectables [start] -->
+  <ion-grid *ngIf="!employee.isAdmin">
+    <ion-row>
+      <ion-col col-md-12>
+        <mat-grid-list cols="12" rowHeight="1:1" gutterSize="10px">
+          <mat-grid-tile
+            [ngClass]="{ 'store-tile': !store.selected, 'store-tile-selected': store.selected }"
+            *ngFor="let store of stores; let i = index" (tap)="selectRoles(store, i)"
+            [colspan]="1"
+            [rowspan]="1" tapabble>
+            {{store.name}}
+          </mat-grid-tile>
+        </mat-grid-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!-- Roles Selectables [end] -->
+
+</ion-content>

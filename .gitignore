@@ -13,3 +13,4 @@ www/assets
 *.swp
 .io-config.json
 package-lock.json
+yarn.lock

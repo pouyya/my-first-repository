@@ -6,6 +6,15 @@ import { POS } from './../model/pos';
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
 
+  private _currentPos: POS;
+
+  get currentPos(): POS {
+    return this._currentPos;
+  }
+
+  set currentPos(pos: POS) {
+    this._currentPos = pos;
+  }
 
   constructor(private userService: UserService) {
     super(POS);

@@ -1,10 +1,11 @@
 // core
 import { FormsModule }   from '@angular/forms';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -58,6 +59,7 @@ import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
+import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -112,6 +114,7 @@ import { authProvider } from './../modules/auth.module';
 import { fakeBackendProvider } from './../services/_fakeBackend';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
+import { SecurityService } from '../services/securityService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -162,25 +165,28 @@ const cloudSettings: CloudSettings = {
     PriceBookDetails,    
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
-    TimeLogDetailsModal
+    TimeLogDetailsModal,
+    SelectRolesModal
   ],
   imports: [
     FormsModule,
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
       {
-        backButtonText:'',
-        platforms: { 
-          android: { 
-            activator: 'none' 
+        backButtonText: '',
+        platforms: {
+          android: {
+            activator: 'none'
           }
-        }         
+        }
       }),
     CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
-      name:'__mydb',
-      driverOrder:['sqlite', 'indexeddb', 'websql']
+      name: '__mydb',
+      driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
+    MatGridListModule,
+    MatInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
 
@@ -233,17 +239,18 @@ const cloudSettings: CloudSettings = {
     MoneyInOut,
     MoveCashModal,
     PriceBooksPage,
-    PriceBookDetails,    
+    PriceBookDetails,
     ForgotPassword,
     ClockInOutPage,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
-    TimeLogDetailsModal
+    TimeLogDetailsModal,
+    SelectRolesModal
   ],
   providers: [
-    {provide: ErrorHandler, useClass: AppErrorHandler},
+    { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
     Firebase,
@@ -269,6 +276,7 @@ const cloudSettings: CloudSettings = {
     PriceBookService,
     SalesTaxService,
     GroupSalesTaxService,
+    SecurityService,
     PluginService,
     EmployeeTimestampService,
     AuthService,
@@ -283,7 +291,11 @@ const cloudSettings: CloudSettings = {
     authProvider,
     fakeBackendProvider,
     MockBackend,
-    BaseRequestOptions    
+    BaseRequestOptions
   ]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(injector: Injector) {
+    window.globalInjector.emit(injector);
+  }
+}
