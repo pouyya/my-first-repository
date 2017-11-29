@@ -30,4 +30,16 @@ export class CustomerService extends BaseEntityService<Customer> {
     }
   }
 
+  public async searchByName(name) {
+    try {
+      let customers: Customer[] = await this.findBy({
+        selector: { firstName: name }
+      });
+
+      return customers.length > 0 ? customers : [];
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
 }

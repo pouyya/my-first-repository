@@ -27,6 +27,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
+import { CustomerService } from '../../services/customerService';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -75,6 +76,7 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     private storeService: StoreService,
+    private customerService: CustomerService,
     private navParams: NavParams,
     private cacheService: CacheService,
     private toastCtrl: ToastController
@@ -215,7 +217,13 @@ export class Sales {
         this.defaultTax = data[2] as any;
         this.priceBooks = data[3] as PriceBook[];
         this.priceBook = data[1] as PriceBook;
-        data[4] && (this.customer = data[4] as Customer);
+
+        if(invoiceData.invoice.customerKey) {
+          // parallel
+					this.customerService.get(invoiceData.invoice.customerKey)
+						.then(customer => this.customer = customer)
+            .catch(err => {  })
+        }
 
         this.priceBooks.sort(
           firstBy("priority").thenBy((book1, book2) => {

@@ -41,16 +41,30 @@ export class CreateCustomerModal {
     try {
       let result = await this.customerService.add(this.customer);
       let customer = await this.customerService.get(result.id);
-      this.viewCtrl.dismiss({ customer });
+      this.viewCtrl.dismiss(customer);
     } catch (err) {
       throw new Error(err);
     }
   }
 
+  private checkNameCombination(checkWith: string): ValidatorFn {
+    return (input: FormControl): any => {
+      if(this.customerForm) {
+        if(!input.value && !this.customerForm.value[checkWith]) {
+          return {oneRequired: true };
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    };
+  }
+
   private createForm() {
     this.customerForm = this.formBuilder.group({
-      firstName: new FormControl(this.customer.firstName, [Validators.required]),
-      lastName: new FormControl(this.customer.lastName, []),
+      firstName: new FormControl(this.customer.firstName, [this.checkNameCombination('lastName')]),
+      lastName: new FormControl(this.customer.lastName, [this.checkNameCombination('firstName')]),
       phone: new FormControl(this.customer.phone, [
         Validators.pattern(/^[\+\d]?(?:[\d-.\s()]*)$/) // +999-999-9999
       ]),

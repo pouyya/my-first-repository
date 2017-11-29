@@ -13,6 +13,7 @@ import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
+import { CustomerService } from '../../services/customerService';
 
 @Component({
   selector: 'basket',
@@ -23,6 +24,7 @@ import { CreateCustomerModal } from './modals/create-customer/create-customer';
 export class BasketComponent {
 
   public _invoice: Sale;
+  public _customer: Customer;
   public tax: number = 0;
   public oldValue: number = 1;
   public balance: number = 0;
@@ -33,6 +35,7 @@ export class BasketComponent {
   public appliedValueDetails: any;
   public searchBarEnabled: boolean = false;
   public showSearchCancel: boolean = true;
+  public searchInput: string = "";
   public searchedCustomers: any[] = [];
 
   set invoice(obj: Sale) {
@@ -46,7 +49,11 @@ export class BasketComponent {
 
   @Input() user: any;
   @Input() refund: boolean;
-  @Input() customer: Customer;
+  @Input('customer')
+  set customerModel(obj: any) {
+    this._customer = obj
+  }
+
   @Input('employees')
   set employee(arr: Array<any>) {
     this.employeesHash = _.keyBy(arr, '_id');
@@ -73,6 +80,7 @@ export class BasketComponent {
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
     private helperService: HelperService,
+    private customerService: CustomerService,
     private modalCtrl: ModalController) {
   }
 
@@ -179,6 +187,7 @@ export class BasketComponent {
               'text': 'OK',
               handler: () => {
                 this.salesService.instantiateInvoice().then((invoice: any) => {
+                  this._customer = null;
                   this.invoice = invoice.invoice;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
@@ -234,18 +243,40 @@ export class BasketComponent {
   }
 
   public async searchCustomers($event: any) {
-    let val = $event.target.value;
-    if (val && val.trim() != '') {
-
+    if (this.searchInput && this.searchInput.trim() != '') {
+      try {
+        let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
+        this.searchedCustomers = customers;
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    } else {
+      return await Promise.resolve([]);
     }
   }
 
+  public assignCustomer(customer: Customer) {
+    this._customer = customer;
+    this.invoice.customerKey = this._customer._id;
+    this.searchBarEnabled = false;
+    this.salesService.update(this.invoice);
+  }
+
+  public unassignCustomer() {
+    this._customer = null;
+    this.searchBarEnabled = true;
+    this.invoice.customerKey = null;
+    this.salesService.update(this.invoice);
+  }
+
   public createCustomer() {
+    this.searchBarEnabled = false;
     let modal = this.modalCtrl.create(CreateCustomerModal, {});
     modal.onDidDismiss(customer => {
       if(customer) {
-        this.customer = customer;
-        this.invoice.customerKey = this.customer._id;
+        this._customer = customer;
+        this.invoice.customerKey = this._customer._id;
+        this.salesService.update(this.invoice);
       }
     });
     modal.present();

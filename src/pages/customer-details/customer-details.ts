@@ -58,9 +58,14 @@ export class CustomerDetails implements OnInit {
   private checkNameCombination(checkWith: string): ValidatorFn {
     return (input: FormControl): any => {
       if(this.customerForm) {
-        return input.valid && !this.customerForm.value[checkWith] ? null : Validators.required;
+        if(!input.value && !this.customerForm.value[checkWith]) {
+          return {oneRequired: true };
+        } else {
+          return null;
+        }
+      } else {
+        return null;
       }
-      return null;
     };
   }
 

@@ -15,7 +15,6 @@ import { BasketItem } from './../model/bucketItem';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
-import { CustomerService } from './customerService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItem } from './../model/purchasableItem';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
@@ -39,8 +38,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private groupSalesTaxService: GroupSalesTaxService,
-		private customerService: CustomerService
+		private groupSalesTaxService: GroupSalesTaxService
 	) {
 		super(Sale);
 		this._user = this.userService.getLoggedInUser();
@@ -80,10 +78,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public static _createDefaultObject(posID: string, invoiceId: string) {
 		let sale: Sale = new Sale();
-
-		// This is piece of code temporary and used for setting dummy customer names for search
-		let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
-		sale.customerKey = names[Math.round(Math.random() * (4 - 0) + 0)];
 		sale._id = invoiceId;
 		sale.posID = posID;
 		sale.subTotal = 0;
@@ -209,19 +203,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 					.catch(error => reject(error));
 			}),
 
-			this.priceBookService.getExceptDefault(),
-
-			new Promise((resolve, reject) => {
-				if(sale && sale.customerKey) {
-					this.customerService.get(sale.customerKey)
-						.then(customer => resolve(customer))
-						.catch(error => {
-							error.name == 'not_found' ? resolve(null) : reject(error);
-						});
-				} else {
-					resolve(null);
-				}
-			})
+			this.priceBookService.getExceptDefault()
 		);
 	}
 

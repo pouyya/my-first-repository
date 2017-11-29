@@ -10,27 +10,40 @@
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-grid>
+<ion-grid class="customer-container">
   <ion-row>
-    <ion-col *ngIf="customer">
-      {{ customer.firstName }} {{ customer.lastName }}
+    <ion-col col-md-12 *ngIf="_customer && !searchBarEnabled">
+      <ion-card>
+        <ion-item>
+          <ion-avatar item-start>
+            <img src="assets/img/avatar-han.png">
+          </ion-avatar>
+          <h2>{{ _customer.firstName }} {{ _customer.lastName }}</h2>
+          <button ion-button icon-right clear small (click)="unassignCustomer()">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </ion-item>
+      </ion-card>
     </ion-col>
-    <ion-col *ngIf="!customer && !searchBarEnabled">
-      <button ion-button full (click)="createCustomer()">Create Customer</button>
+    <ion-col col-md-12 *ngIf="!_customer && !searchBarEnabled">
       <button ion-button full (click)="searchBarEnabled = true">Add Customer</button>
     </ion-col>
-    <ion-col *ngIf="!customer && searchBarEnabled">
-      <ion-searchbar autofocus debounce="1000" [showCancelButton]="showSearchCancel"
-      (ionInput)="searchCustomers($event)"
-      (ionCancel)="cancelSearch($event)">
+    <ion-col col-md-12 *ngIf="!_customer && searchBarEnabled">
+      <ion-searchbar autofocus debounce="1000" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel" (ionInput)="searchCustomers($event)"
+        (ionCancel)="cancelSearch($event)">
       </ion-searchbar>
     </ion-col>
-  </ion-row>
-  <ion-row *ngIf="searchBarEnabled && searchedCustomers.length > 0">
-    <ion-col>
+    <ion-col col-md-12 class="search-list" *ngIf="!_customer && searchBarEnabled && searchedCustomers.length > 0">
       <ion-list>
-        <ion-item *ngFor="let item of searchedCustomers">
+        <ion-item *ngFor="let item of searchedCustomers" (click)="assignCustomer(item)">
           {{ item.firstName }} {{ item.lastName }}
+        </ion-item>
+      </ion-list>
+    </ion-col>
+    <ion-col col-md-12 class="search-list" *ngIf="!_customer && searchBarEnabled && searchInput && searchedCustomers.length == 0">
+      <ion-list>
+        <ion-item (click)="createCustomer()">
+          <ion-icon name="plus"></ion-icon> Add a Customer
         </ion-item>
       </ion-list>
     </ion-col>
@@ -45,7 +58,9 @@
 
           <ion-grid>
             <ion-row (click)="viewInfo(item, $index)">
-              <ion-col col-md-11 offset-md-1 *ngIf="item.employeeId && employeesHash[item.employeeId] && (item.cssClass && (item.cssClass == 'group-item' || item.cssClass == 'group-item-start'))"><h1>{{employeesHash[item.employeeId].firstName}}</h1></ion-col>
+              <ion-col col-md-11 offset-md-1 *ngIf="item.employeeId && employeesHash[item.employeeId] && (item.cssClass && (item.cssClass == 'group-item' || item.cssClass == 'group-item-start'))">
+                <h1>{{employeesHash[item.employeeId].firstName}}</h1>
+              </ion-col>
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
@@ -56,7 +71,9 @@
                 <span>${{item.finalPrice * item.quantity | number : '1.2-2'}}</span>
                 <br/>
                 <span *ngIf="item.actualPrice != item.finalPrice">
-                  <small><s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s></small>
+                  <small>
+                    <s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s>
+                  </small>
                 </span>
               </ion-col>
               <ion-col col-md-1 class="pull-right">
@@ -79,12 +96,10 @@
       </ion-textarea>
     </ion-col>
     <ion-col col-md-3>
-      <button ion-button small color="primary" [disabled]="disablePaymentBtn" 
-      (click)="openDiscountSurchargeModal()">Discount/Surcharge</button>
+      <button ion-button small color="primary" [disabled]="disablePaymentBtn" (click)="openDiscountSurchargeModal()">Discount/Surcharge</button>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">
-      <button ion-button small color="primary" [disabled]="disablePaymentBtn"
-      (click)="viewAppliedValues()">View All</button>
+      <button ion-button small color="primary" [disabled]="disablePaymentBtn" (click)="viewAppliedValues()">View All</button>
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>
@@ -92,21 +107,31 @@
 
     <ion-col col-md-3 [ngPlural]="invoice.items.length">
       <ng-template ngPluralCase="=0">Tax</ng-template>
-      <ng-template ngPluralCase="=1">Tax <small>({{invoice.items[0].tax.name}})</small></ng-template>
-      <ng-template ngPluralCase="other">Tax <small>({{invoice.items.length}} taxes)</small></ng-template>
+      <ng-template ngPluralCase="=1">Tax
+        <small>({{invoice.items[0].tax.name}})</small>
+      </ng-template>
+      <ng-template ngPluralCase="other">Tax
+        <small>({{invoice.items.length}} taxes)</small>
+      </ng-template>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.tax | number : '1.2-2'}}</ion-col>
 
     <ion-col col-md-3 [ngPlural]="invoice.items.length">
-      <ng-template ngPluralCase="=0">Total <small>(no items)</small></ng-template>
-      <ng-template ngPluralCase="=1">Total <small>(1 item)</small></ng-template>
-      <ng-template ngPluralCase="other">Total <small>({{invoice.items.length}} items)</small></ng-template>
+      <ng-template ngPluralCase="=0">Total
+        <small>(no items)</small>
+      </ng-template>
+      <ng-template ngPluralCase="=1">Total
+        <small>(1 item)</small>
+      </ng-template>
+      <ng-template ngPluralCase="other">Total
+        <small>({{invoice.items.length}} items)</small>
+      </ng-template>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-12 no-padding>
       <button ion-button danger small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
         <span class="button-inner pull-right" style="text-align: left">
-            {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
+          {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
         </span>
       </button>
     </ion-col>

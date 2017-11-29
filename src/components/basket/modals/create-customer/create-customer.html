@@ -67,11 +67,17 @@
             <ion-label>Phone</ion-label>
             <ion-input type="text" [formControl]="phone"></ion-input>
           </ion-item>
+          <ion-item *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="alert alert-danger">
+            Invalid phone number. It should only contain numbers, hiphens and a single + sign
+          </ion-item>
         </ion-col>
         <ion-col col-md-6>
           <ion-item>
             <ion-label>Email</ion-label>
             <ion-input type="text" [formControl]="email"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+            Invalid email address
           </ion-item>
         </ion-col>
       </ion-row>
