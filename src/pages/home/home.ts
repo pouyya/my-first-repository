@@ -13,8 +13,4 @@ export class HomePage {
 
   constructor(public navCtrl: NavController, private printService: PrintService) {
   }
-
-  public print(){
-    this.printService.print();
-  }
 }
