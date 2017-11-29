@@ -1,8 +1,9 @@
 import { Customer } from './../../../../model/customer';
 import { NavParams, NavController, ViewController } from 'ionic-angular';
-import { FormGroup, FormBuilder, FormControl, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Component } from '@angular/core';
 import { CustomerService } from '../../../../services/customerService';
+import { ValidationHelper } from '../../../../utility/validationHelper';
 
 @Component({
   selector: 'create-customer-modal',
@@ -60,17 +61,6 @@ export class CreateCustomerModal {
     }
   }
 
-  private checkNameCombination(control: AbstractControl) {
-    if (control && control.value && !control.value.firstName && !control.value.lastName) {
-      return { oneRequired: true };
-    }
-    return null;
-  }
-
-  private emptyOrEmail(input: AbstractControl) {
-    return (!input.value || input.value === '') ? null : Validators.email(input);
-  }
-
   private createForm() {
     this.customerForm = this.formBuilder.group({
       firstName: new FormControl(this.customer.firstName),
@@ -78,12 +68,12 @@ export class CreateCustomerModal {
       phone: new FormControl(this.customer.phone, [
         Validators.pattern(/^[\+\d]?(?:[\d-.\s()]*)$/) // +999-999-9999
       ]),
-      email: new FormControl(this.customer.email, [this.emptyOrEmail]),
+      email: new FormControl(this.customer.email, [ValidationHelper.emptyOrEmail]),
       address: new FormControl(this.customer.address, []),
       suburb: new FormControl(this.customer.suburb, []),
       postcode: new FormControl(this.customer.postcode, []),
       country: new FormControl(this.customer.country, [])
-    }, { validator: this.checkNameCombination });
+    }, { validator: ValidationHelper.checkNameCombination });
   }
 
   public dismiss() {
