@@ -39,7 +39,23 @@
       <ion-item>
         <ion-label class="item-name">Sale Number Prefix</ion-label>
         <ion-input type="text" [(ngModel)]="item.saleNumberPrefix" name="saleNumberPrefix"></ion-input>
-      </ion-item>    
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Printer IP</ion-label>
+        <ion-input type="text" [(ngModel)]="item.printerIP" name="printerIP"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Printer Port</ion-label>
+        <ion-input type="number" [(ngModel)]="item.printerPort" name="printerPort"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Printer Port</ion-label>
+        <ion-input type="number" [(ngModel)]="item.printerPort" name="printerPort"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Tax File Number</ion-label>
+        <ion-input type="number" [(ngModel)]="item.taxFileNumber" name="taxFileNumber"></ion-input>
+      </ion-item>
     </ion-list>
 
     <ion-list-header>Physical Address and Contact Details</ion-list-header>
@@ -108,7 +124,9 @@
           <ion-list inset *ngFor="let pos of registers ; let idx=index">
             <ion-item-sliding class="sliding">
               <ion-item (click)="showPos(pos)">
-                <h2 class="item-title">{{pos.name}}<span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span></h2>
+                <h2 class="item-title">{{pos.name}}
+                  <span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span>
+                </h2>
               </ion-item>
               <ion-item-options>
                 <button ion-button color='danger' icon=left>

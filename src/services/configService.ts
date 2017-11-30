@@ -35,6 +35,10 @@ export class ConfigService {
         return true;
     }
 
+    static turnOffDeployment(): boolean {
+        return true;
+    }
+    
     static securityTokenEndPoint(): string {
         return ConfigService.securityServerBaseUrl() + "/connect/token";
     }
