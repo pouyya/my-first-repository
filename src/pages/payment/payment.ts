@@ -122,7 +122,7 @@ export class PaymentsPage {
       this.invoice.completed = true;
       this.balance = 0;
       !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
-      this.printService.printReceipt(this.invoice);
+      this.printInvoice();
     }
   }
 
@@ -132,7 +132,7 @@ export class PaymentsPage {
     this.invoice.state = 'completed';
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
-    this.printService.printReceipt(this.invoice);
+    this.printInvoice();
   }
 
   public clearInvoice() {

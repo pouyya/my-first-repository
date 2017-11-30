@@ -10,26 +10,25 @@ export class HtmlPrinterProvider {
 
     public parse(html: string) {
 
-        var self = this;
         var currentPrintTable: PrintTable;
         var currentRow: Array<string>;
         var onTd: boolean;
         var isBarcode: boolean;
 
         var parser = new Parser({
-            onopentag: function (tagName, attribs) {
+            onopentag: (tagName, attribs) => {
                 if (tagName == "center") {
-                    self.printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
+                    this.printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
                 } else if (tagName == "left") {
-                    self.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+                    this.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
                 } else if (tagName == "b") {
-                    self.printer.setEmphasis(true);
+                    this.printer.setEmphasis(true);
                 } else if (tagName == "h2") {
-                    self.printer.setTextSize(1, 2);
+                    this.printer.setTextSize(1, 2);
                 } else if (tagName == "h3") {
-                    self.printer.setTextSize(2, 1);
+                    this.printer.setTextSize(2, 1);
                 } else if (tagName == "br") {
-                    self.printer.feed();
+                    this.printer.feed();
                 } else if (tagName == "table") {
                     var columns = attribs.cols ? attribs.cols.split(",") : [];
                     var printColumns = new Array<PrintColumn>();
@@ -48,32 +47,32 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "barcode") {
                     isBarcode = true;
                 } else if (tagName == "hr") {
-                    self.printer.text("-".repeat(48));
+                    this.printer.text("-".repeat(48));
                 } else if (tagName == "cut") {
-                    self.printer.cut();
+                    this.printer.cut();
                 }
             },
-            ontext: function (text) {
+            ontext: (text) => {
                 if (!TypeHelper.isNullOrWhitespace(text)) {
                     if (onTd) {
                         currentRow.push(TypeHelper.decodeHtml(text))
                     }
                     else if (isBarcode) {
-                        self.printer.barcode(TypeHelper.decodeHtml(text));
+                        this.printer.barcode(TypeHelper.decodeHtml(text));
                     }
                     else {
-                        self.printer.text(TypeHelper.decodeHtml(text) + "\n");
+                        this.printer.text(TypeHelper.decodeHtml(text) + "\n");
                     }
                 }
             },
-            onclosetag: function (tagName) {
+            onclosetag: (tagName) => {
                 if (tagName == "h2" || tagName == "h3") {
-                    self.printer.setTextSize(1, 1);
+                    this.printer.setTextSize(1, 1);
                 } else if (tagName == "b") {
-                    self.printer.setEmphasis(false);
+                    this.printer.setEmphasis(false);
                 } else if (tagName == "table") {
                     if (currentPrintTable) {
-                        self.printer.printTable(currentPrintTable);
+                        this.printer.printTable(currentPrintTable);
                     }
                     currentPrintTable = null;
                 } else if (tagName == "tr") {
@@ -84,7 +83,7 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "td") {
                     onTd = false;
                 } else if (tagName == "center") {
-                    self.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+                    this.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
                 } else if (tagName == "barcode") {
                     isBarcode = false;
                 }
