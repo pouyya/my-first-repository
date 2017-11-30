@@ -18,6 +18,7 @@ import { LoginPage } from './../pages/login/login';
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { SecurityService } from '../services/securityService';
+import { PlatformService } from '../services/platformService';
 
 @Component({
   selector: 'app',
@@ -47,7 +48,8 @@ export class SimplePOSApp implements OnInit {
     private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
     private securityService: SecurityService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private platformService: PlatformService
   ) {
     this.checkTime.subscribe(() => {
       let date = moment().format("h:mm:ss a");
@@ -71,7 +73,7 @@ export class SimplePOSApp implements OnInit {
   async ngOnInit() {
     try {
       // TODO: Insomnia should be moved to App Settings where it can be awake or asleep
-      if (!this.platform.is('core')) {
+      if (this.platformService.isMobileDevice()) {
         await this.insomnia.keepAwake();
       }
       this.user = await this.userService.getUser();

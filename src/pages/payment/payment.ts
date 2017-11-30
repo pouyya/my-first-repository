@@ -8,6 +8,7 @@ import { Store } from './../../model/store';
 import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
+import { PrintService } from '../../services/printService';
 
 @Component({
   selector: 'payments-page',
@@ -36,12 +37,13 @@ export class PaymentsPage {
     public navCtrl: NavController,
     private navParams: NavParams,
     public modalCtrl: ModalController,
-    public helper: HelperService) {
+    public helper: HelperService,
+    private printService: PrintService) {
 
     let operation = navParams.get('operation');
-    this.invoice = <Sale> navParams.get('invoice');
+    this.invoice = <Sale>navParams.get('invoice');
     this.doRefund = navParams.get('doRefund');
-    this.store = <Store> navParams.get('store');
+    this.store = <Store>navParams.get('store');
     this.navPopCallback = this.navParams.get("callback")
 
     this.amount = this.balance = 0;
@@ -120,6 +122,7 @@ export class PaymentsPage {
       this.invoice.completed = true;
       this.balance = 0;
       !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
+      this.printInvoice();
     }
   }
 
@@ -129,12 +132,17 @@ export class PaymentsPage {
     this.invoice.state = 'completed';
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
+    this.printInvoice();
   }
 
   public clearInvoice() {
     localStorage.removeItem('invoice_id');
     this.goBack(true);
   }
+
+  public async printInvoice() {
+    await this.printService.printReceipt(this.invoice);
+  }  
 
   public goBack(state: boolean = false) {
     this.navPopCallback(state).then(() => {

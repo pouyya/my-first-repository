@@ -5,7 +5,7 @@ export abstract class DBBasedEntity
 {
     constructor()
     {
-        this._id = "";
+        this._id = new Date().toISOString();
         this._rev = "";
         this.entityTypeName = TypeHelper.getTypeName(this);
         this.entityTypeNames = TypeHelper.getParentTypeNames(this);

@@ -32,7 +32,7 @@ export class DeployPage {
               public platform: Platform,
               public deploy: Deploy) {
 
-    if (platform.is('core')) {
+    if (platform.is('core') || ConfigService.turnOffDeployment) {
       this.loadUserInfoAndNavigateToHome().catch(error => {
         this.pluginService.openDialoge("An error has occurred.").catch(error => {
           throw new Error(error);
