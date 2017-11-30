@@ -63,6 +63,10 @@ export class SimplePOSApp implements OnInit {
         this.currentStore = data.currentStore;
         this.currentPos = data.currentPos;
       }
+
+      if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
+        data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
+      }
     });
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
@@ -73,11 +77,11 @@ export class SimplePOSApp implements OnInit {
   async ngOnInit() {
     try {
       // TODO: Insomnia should be moved to App Settings where it can be awake or asleep
-      if (this.platformService.isMobileDevice()) {
-        await this.insomnia.keepAwake();
-      }
       this.user = await this.userService.getUser();
       this.rootPage = this.user ? DeployPage : LoginPage;
+      if (this.platformService.isMobileDevice()) {
+        this.user.settings.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
+      }      
       return;
     } catch (error) {
       console.error(error);

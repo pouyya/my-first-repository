@@ -5,8 +5,10 @@ import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
+import { SharedService } from './../../services/_sharedService';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
+import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { AccountSettingService } from '../../services/accountSettingService';
 
@@ -25,7 +27,7 @@ export class Settings {
   public accountSetting: any;
   private currentTax: any;
   private newTax: any;
-  private setting: any;
+  private setting: AppSettingsInterface;
 
   constructor(
     private navCtrl: NavController,
@@ -34,6 +36,7 @@ export class Settings {
     private userService: UserService,
     private helperService: HelperService,
     private appService: AppService,
+    private _sharedService: SharedService,
     private zone: NgZone,
     private toast: ToastController,
     private loading: LoadingController,
@@ -85,12 +88,15 @@ export class Settings {
     // this.currentTax = this.newTax
     // var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
     // this.salesTaxes = taxes;
-    // let user = this.userService.getLoggedInUser();
+    let user = this.userService.getLoggedInUser();
     // user.settings.defaultTax = this.newTax._id;
     // user.settings.taxEntity = this.newTax.entityTypeName;
     // user.settings.taxType = this.selectedType;
     // user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
     // this.userService.setSession(user);
+    
+    user.settings.screenAwake = this.setting.screenAwake;
+    this._sharedService.publish({ screenAwake: user.settings.screenAwake });
 
     this.accountSettingService.update(this.accountSetting);
 
