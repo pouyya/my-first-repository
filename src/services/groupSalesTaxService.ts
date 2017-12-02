@@ -57,7 +57,6 @@ export class GroupSalesTaxService extends BaseEntityService<GroupSaleTax> {
   public processDeletion(tax: GroupSaleTax): Promise<any> {
     return new Promise((resolve, reject) => {
       let promises: Array<Promise<any>> = [];
-      //if (tax._id === user.settings.defaultTax) promises.push(this.appSettingsService.setDefaultTaxToNoTax());
       promises.push(this.priceBookService.setPriceBookItemTaxToDefault(tax._id));
       Promise.all(promises)
         .then(() => resolve()).catch(error => reject(error));
