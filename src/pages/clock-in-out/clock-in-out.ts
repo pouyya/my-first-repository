@@ -12,6 +12,7 @@ import { EmployeeTimestampService } from './../../services/employeeTimestampServ
 import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
+import { UserSession } from '../../model/UserSession';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -29,7 +30,7 @@ export class ClockInOutPage {
   public clock: Observable<Date> = Observable
     .interval(1000)
     .map(() => new Date());
-  private user: any;
+  private user: UserSession;
   private previousTimestamp: EmployeeTimestamp;
 
   constructor(

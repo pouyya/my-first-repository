@@ -20,11 +20,12 @@ import { PurchasableItem } from './../model/purchasableItem';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
 import { EvaluationContext } from './EvaluationContext';
+import { UserSession } from '../model/UserSession';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
 
-	private _user: any;
+	private _user: UserSession;
 	public static readonly SALE_DISCOUNT = 'discount';
 	public static readonly SALE_SURCHARGE = 'surcharge';
 

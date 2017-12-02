@@ -11,6 +11,7 @@ import { Sale, DiscountSurchargeInterface } from './../../model/sale';
 import { BasketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
+import { UserSession } from '../../model/UserSession';
 
 @Component({
   selector: 'basket',
@@ -39,7 +40,7 @@ export class BasketComponent {
     return this._invoice;
   }
 
-  @Input() user: any;
+  @Input() user: UserSession;
   @Input() refund: boolean;
   @Input('employees')
   set employee(arr: Array<any>) {

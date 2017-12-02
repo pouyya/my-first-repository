@@ -13,6 +13,7 @@ import { ServiceService } from '../../services/serviceService';
 import { icons } from './../../metadata/itemIcons';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
+import { UserSession } from '../../model/UserSession';
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -49,7 +50,7 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-	private _user: any;
+	private _user: UserSession;
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,

@@ -36,20 +36,6 @@ export class StoreService extends BaseEntityService<Store> {
     return this.get(user.currentStore);
   }
 
-  public async update(store: Store): Promise<any> {
-    try {
-      await super.update(store);
-      let user = this.userService.getLoggedInUser();
-      if (store._id == user.currentStore) {
-        user.currentStore = store._id;
-        this.userService.setSession(user);
-      }
-      return;
-    } catch(err) {
-      return Promise.reject(err);
-    }
-  }
-
   /**
    * Delete Store, with all associations if option turned on
    * @param store

@@ -1,18 +1,14 @@
 import { UserSession } from './../model/UserSession';
 import { ConfigService } from './configService';
 import { Storage } from '@ionic/storage';
-import { AuthHttp } from 'angular2-jwt';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 
 @Injectable()
 export class UserService {
 
-  public user: UserSession;
+  private user: UserSession;
 
   constructor(
-    private http: Http,
-    private authHttp: AuthHttp,
     private storage: Storage
   ) { }
 
@@ -30,7 +26,7 @@ export class UserService {
     return this.storage.set(ConfigService.securitySessionStorageKey(), access_token);
   }
 
-  public setSession(user: any): Promise<any> {
+  public setSession(user: UserSession): Promise<any> {
     this.user = user;
     return this.storage.set(ConfigService.userSessionStorageKey(), JSON.stringify(this.user));
   }
