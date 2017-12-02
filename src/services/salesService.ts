@@ -20,12 +20,10 @@ import { PurchasableItem } from './../model/purchasableItem';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
 import { EvaluationContext } from './EvaluationContext';
-import { UserSession } from '../model/UserSession';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
 
-	private _user: UserSession;
 	public static readonly SALE_DISCOUNT = 'discount';
 	public static readonly SALE_SURCHARGE = 'surcharge';
 
@@ -42,7 +40,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private groupSalesTaxService: GroupSalesTaxService
 	) {
 		super(Sale);
-		this._user = this.userService.getLoggedInUser();
 	}
 
 	/**
@@ -60,8 +57,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @return {Promise<Sale>}
 	 */
 	public async instantiateInvoice(posId?: string): Promise<any> {
+		var user = await this.userService.getUser();
 		let id = localStorage.getItem('invoice_id') || new Date().toISOString();
-		if (!posId) posId = this._user.currentPos;
+		if (!posId) posId = user.currentPos;
 		try {
 			let invoices: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
 			if (invoices && invoices.length > 0) {
@@ -98,13 +96,14 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param salesTaxes 
 	 * @param defaultTax 
 	 */
-	public reCalculateInMemoryInvoice(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+	public async reCalculateInMemoryInvoice(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+		var user = await this.userService.getUser();
 		// re-calculate sale
-		let taxInclusive = this._user.settings.taxType;
+		let taxInclusive = user.settings.taxType;
 		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
 		return new Promise((resolve, reject) => {
 			// get account level tax
-			this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
+			this[service[user.settings.taxEntity]].get(user.settings.defaultTax)
 				.then((defaultTax: any) => {
 					sale.items.forEach((item: BasketItem) => {
 						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
@@ -132,8 +131,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param item {PurchasableItem}
 	 * @return {BasketItem}
 	 */
-	public prepareBasketItem(item: any): BasketItem {
-		let taxInclusive = this._user.settings.taxType;
+	public async prepareBasketItem(item: any): Promise<BasketItem> {
+		var user = await this.userService.getUser();
+		let taxInclusive = user.settings.taxType;
 
 		let basketItem = new BasketItem();
 		basketItem._id = item._id;
@@ -164,56 +164,47 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param sale 
 	 * @return {Observable}
 	 */
-	public initializeSalesData(sale: Sale): Observable<Array<any>> {
-		return Observable.forkJoin(
-			new Promise((resolve, reject) => {
+	public initializeSalesData(sale: Sale): Promise<Array<any>> {
+		return Promise.all([
+			new Promise(async (resolve) => {
 				if (sale) {
 					resolve({
 						invoice: sale,
 						doRecalculate: false
 					});
 				} else {
-					this.instantiateInvoice()
-						.then((data: any) => {
-							resolve(data);
-						}).catch((error) => reject(error));
+					var data: any = await this.instantiateInvoice();
+					resolve(data);
 				}
 			}),
 
-			new Promise((resolve, reject) => {
+			new Promise(async (resolve) => {
 				let taxes: Array<any> = [];
-				this.salesTaxService.getAll().then((_salesTaxes: Array<any>) => {
-					taxes = _salesTaxes.map((salesTax => {
-						return { ...salesTax, noOfTaxes: 0 };
-					}));
-					this.groupSalesTaxService.getAll().then((_groupSalesTaxes: Array<any>) => {
-						taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
-							return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
-						})));
-						resolve(taxes);
-					}).catch(error => reject(error));
-				}).catch(error => reject(error));
+				var _salesTaxes: Array<any> = await this.salesTaxService.getAll();
+				taxes = _salesTaxes.map((salesTax => {
+					return { ...salesTax, noOfTaxes: 0 };
+				}));
+				var _groupSalesTaxes: Array<any> = await this.groupSalesTaxService.getAll();
+				taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
+					return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
+				})));
+				resolve(taxes);
 			}),
 
-			new Promise((resolve, reject) => {
-				this.priceBookService.getPriceBookByCriteria()
-					.then((priceBook: PriceBook) => resolve(priceBook))
-					.catch(error => reject(error));
-			}),
+			this.priceBookService.getPriceBookByCriteria(),
 
-			new Promise((resolve, reject) => {
+			new Promise(async (resolve) => {
 				let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
-				this[service[this._user.settings.taxEntity]].get(this._user.settings.defaultTax)
-					.then((tax: any) => resolve(tax))
-					.catch(error => reject(error));
+				var user = await this.userService.getUser();
+				var tax = await this[service[user.settings.taxEntity]].get(user.settings.defaultTax);
+				resolve(tax);
 			}),
-
 			this.priceBookService.getExceptDefault()
-		);
+		]);
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
-		let selector: any = { 
+		let selector: any = {
 			selector: { posID: posId },
 			completed: true
 		};
@@ -233,7 +224,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public async getCurrentSaleIfAny() {
 		let invoiceId = localStorage.getItem('invoice_id');
-		if(invoiceId) {
+		if (invoiceId) {
 			return await this.get(invoiceId);
 		}
 		return Promise.resolve(null);
@@ -248,7 +239,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				query.selector[key] = _.isArray(value) ? { $in: value } : value;
 			}
 		});
-		if(options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
+		if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
 			query.selector.completed = options.completed
 		}
 

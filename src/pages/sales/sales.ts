@@ -101,7 +101,7 @@ export class Sales {
   }
 
   async ionViewDidLoad() {
-    this.user = this.userService.getLoggedInUser();
+    this.user = await this.userService.getUser();
     this.register = await this.posService.getCurrentPos();
     this.store = await this.storeService.getCurrentStore();
     let _init: boolean = false;
@@ -150,7 +150,7 @@ export class Sales {
   }
 
   // Event
-  public onSelect(item: PurchasableItem) {
+  public async onSelect(item: PurchasableItem) {
     let context = new EvaluationContext();
     context.currentStore = this.user.currentStore;
     context.currentDateTime = new Date();
@@ -163,7 +163,7 @@ export class Sales {
           _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
         ['rate', 'name']);
       this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
-      this.basketComponent.addItemToBasket(this.salesService.prepareBasketItem(interactableItem));
+      this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(interactableItem));
     } else {
       let toast = this.toastCtrl.create({
         message: `${item.name} does not have any price`,
@@ -205,39 +205,33 @@ export class Sales {
     if ($event.clearSale) this.invoiceParam = null;
   }
 
-  private initSalePageData(): Promise<any> {
-    return new Promise((res, rej) => {
-      this.salesService.initializeSalesData(this.invoiceParam).subscribe((data: any[]) => {
-        let invoiceData = data.shift();
-        this.salesTaxes = data[0] as Array<any>;
-        this.defaultTax = data[2] as any;
-        this.priceBooks = data[3] as PriceBook[];
-        this.priceBook = data[1] as PriceBook;
+  private async initSalePageData(): Promise<any> {
+    var data: any[] = await this.salesService.initializeSalesData(this.invoiceParam);
+    let invoiceData = data.shift();
+    this.salesTaxes = data[0] as Array<any>;
+    this.defaultTax = data[2] as any;
+    this.priceBooks = data[3] as PriceBook[];
+    this.priceBook = data[1] as PriceBook;
 
-        this.priceBooks.sort(
-          firstBy("priority").thenBy((book1, book2) => {
-            return new Date(book2._id).getTime() - new Date(book1._id).getTime();
-          })
-        );
+    this.priceBooks.sort(
+      firstBy("priority").thenBy((book1, book2) => {
+        return new Date(book2._id).getTime() - new Date(book1._id).getTime();
+      })
+    );
 
-        if (invoiceData.doRecalculate) {
-          this.salesService.reCalculateInMemoryInvoice(
-            /* Pass By Reference */
-            invoiceData.invoice,
-            this.priceBook,
-            this.salesTaxes,
-            this.defaultTax
-          ).then((_invoice: Sale) => {
-            this.invoice = _invoice;
-            this.salesService.update(this.invoice);
-            res();
-          }).catch(error => rej(error));
-        } else {
-          this.invoice = invoiceData.invoice ? invoiceData.invoice : invoiceData;
-          res();
-        }
-      }, error => rej(error));
-    });
+    if (invoiceData.doRecalculate) {
+      var _invoice: Sale = await this.salesService.reCalculateInMemoryInvoice(
+        /* Pass By Reference */
+        invoiceData.invoice,
+        this.priceBook,
+        this.salesTaxes,
+        this.defaultTax);
+
+      this.invoice = _invoice;
+      await this.salesService.update(this.invoice);
+    } else {
+      this.invoice = invoiceData.invoice ? invoiceData.invoice : invoiceData;
+    };
   }
 
   private async loadCategoriesAssociation(categories: any[]): Promise<any> {

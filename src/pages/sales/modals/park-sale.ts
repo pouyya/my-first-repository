@@ -32,11 +32,11 @@ export class ParkSale {
     this.viewCtrl.dismiss({ status: false, error: false });
   }
 
-  public parkIt() {
-
+  public async parkIt() {
+    let user = await this.userService.getUser();
     var doPark = () => {
       localStorage.removeItem('invoice_id');
-      let user = this.userService.getLoggedInUser();
+
       this.storeService.get(user.currentStore).then((store: Store) => {
         this.invoice.state = 'parked';
         !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(store));

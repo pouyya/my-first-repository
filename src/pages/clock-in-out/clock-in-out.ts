@@ -53,7 +53,7 @@ export class ClockInOutPage {
     if (pin) {
       let employee: Employee = await this.employeeService.findByPin(pin);
       if (employee) {
-        this.user = this.userService.getLoggedInUser();
+        this.user = await this.userService.getUser();
         this.employee = employee;
         return true;
       }

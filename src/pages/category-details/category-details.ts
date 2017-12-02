@@ -27,7 +27,7 @@ export class CategoryDetails {
     this.icons = icons;
   }
 
-  ionViewDidLoad() {
+  async ionViewDidLoad() {
     let editProduct = this.navParams.get('category');
     if (editProduct) {
       this.categoryItem = editProduct;
@@ -37,7 +37,7 @@ export class CategoryDetails {
         this.selectedIcon = this.categoryItem.icon.name;
       }
     } else {
-			let user = this.userService.getLoggedInUser();
+			let user = await this.userService.getUser();
 			this.categoryItem.icon = user.settings.defaultIcon;
 			this.selectedIcon = this.categoryItem.icon.name;
     }

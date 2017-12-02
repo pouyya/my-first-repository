@@ -6,20 +6,13 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class UserService {
 
-  private user: UserSession;
-
   constructor(
     private storage: Storage
   ) { }
 
-  public getLoggedInUser(): UserSession {
-    return this.user;
-  }
-
   public async getUser(): Promise<UserSession> {
     var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey())
-    this.user = userRawJson ? JSON.parse(userRawJson) : null;
-    return this.user;
+    return userRawJson ? JSON.parse(userRawJson) : null;
   }
 
   public setAccessToken(access_token: string): Promise<any> {
@@ -27,8 +20,7 @@ export class UserService {
   }
 
   public setSession(user: UserSession): Promise<any> {
-    this.user = user;
-    return this.storage.set(ConfigService.userSessionStorageKey(), JSON.stringify(this.user));
+    return this.storage.set(ConfigService.userSessionStorageKey(), JSON.stringify(user));
   }
 
   public async getUserToken(): Promise<string> {

@@ -13,7 +13,6 @@ import { ServiceService } from '../../services/serviceService';
 import { icons } from './../../metadata/itemIcons';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
-import { UserSession } from '../../model/UserSession';
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -50,7 +49,6 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-	private _user: UserSession;
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,
@@ -67,88 +65,83 @@ export class ServiceDetails {
 		private modalCtrl: ModalController,
 		private loading: LoadingController) {
 		this.icons = icons;
-		this._user = this.userService.getLoggedInUser();
 	}
 
-	ionViewDidLoad() {
-		this.platform.ready().then(() => {
-
-			let loader = this.loading.create({
-				content: 'Loading Service...',
-			});
-
-			loader.present().then(() => {
-				let editProduct = this.navParams.get('service');
-				if (editProduct) {
-					this.serviceItem = editProduct;
-					this.isNew = false;
-					this.action = 'Edit';
-					if (this.serviceItem.hasOwnProperty('icon') && this.serviceItem.icon) {
-						this.selectedIcon = this.serviceItem.icon.name;
-					}
-				} else {
-					this.serviceItem.icon = this._user.settings.defaultIcon;
-					this.selectedIcon = this.serviceItem.icon.name;
-				}
-
-				var promises: Array<Promise<any>> = [
-					this.categoryService.getAll(),
-					new Promise((_resolve, _reject) => {
-						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
-							salesTax.name = ` ${salesTax.name} (Default)`;
-							_resolve({
-								...salesTax,
-								isDefault: true,
-								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
-							});
-						}).catch(error => {
-							if (error.name == "not_found") {
-								_resolve(null);
-							} else _reject(error);
-						});
-					}),
-					this.appService.loadSalesAndGroupTaxes(),
-					this.priceBookService.getDefault()
-				];
-
-				Promise.all(promises).then((results: Array<any>) => {
-					this.zone.run(() => {
-						this.categories = results[0];
-						results[1] != null && this.salesTaxes.push(results[1]);
-						this.salesTaxes = this.salesTaxes.concat(results[2]);
-						this._defaultPriceBook = results[3];
-
-						let servicePriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
-
-						if (!servicePriceBook) {
-							this.defaultPriceBook = {
-								id: this._defaultPriceBook._id,
-								isDefault: true,
-								tax: this.salesTaxes[0],
-								item: {
-									id: "",
-									retailPrice: 0,
-									inclusivePrice: 0,
-									salesTaxId: "", // will set upon save
-									supplyPrice: 0,
-									markup: 0
-								}
-							};
-						} else {
-							this.defaultPriceBook = {
-								id: this._defaultPriceBook._id,
-								isDefault: true,
-								tax: servicePriceBook.salesTaxId == null ? this.salesTaxes[0] : _.find(this.salesTaxes, { _id: servicePriceBook.salesTaxId }),
-								item: servicePriceBook
-							};
-
-						}
-						loader.dismiss();
-					});
-				});
-			});
+	async ionViewDidLoad() {
+		await this.platform.ready();
+		var user = await this.userService.getUser();
+		let loader = this.loading.create({
+			content: 'Loading Service...',
 		});
 
+		await loader.present();
+		let editProduct = this.navParams.get('service');
+		if (editProduct) {
+			this.serviceItem = editProduct;
+			this.isNew = false;
+			this.action = 'Edit';
+			if (this.serviceItem.hasOwnProperty('icon') && this.serviceItem.icon) {
+				this.selectedIcon = this.serviceItem.icon.name;
+			}
+		} else {
+			this.serviceItem.icon = user.settings.defaultIcon;
+			this.selectedIcon = this.serviceItem.icon.name;
+		}
+
+		var promises: Array<Promise<any>> = [
+			this.categoryService.getAll(),
+			new Promise((_resolve, _reject) => {
+				this.salesTaxService.get(user.settings.defaultTax).then((salesTax: any) => {
+					salesTax.name = ` ${salesTax.name} (Default)`;
+					_resolve({
+						...salesTax,
+						isDefault: true,
+						noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
+					});
+				}).catch(error => {
+					if (error.name == "not_found") {
+						_resolve(null);
+					} else _reject(error);
+				});
+			}),
+			this.appService.loadSalesAndGroupTaxes(),
+			this.priceBookService.getDefault()
+		];
+
+		var results: Array<any> = await Promise.all(promises);
+		this.zone.run(() => {
+			this.categories = results[0];
+			results[1] != null && this.salesTaxes.push(results[1]);
+			this.salesTaxes = this.salesTaxes.concat(results[2]);
+			this._defaultPriceBook = results[3];
+
+			let servicePriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
+
+			if (!servicePriceBook) {
+				this.defaultPriceBook = {
+					id: this._defaultPriceBook._id,
+					isDefault: true,
+					tax: this.salesTaxes[0],
+					item: {
+						id: "",
+						retailPrice: 0,
+						inclusivePrice: 0,
+						salesTaxId: "", // will set upon save
+						supplyPrice: 0,
+						markup: 0
+					}
+				};
+			} else {
+				this.defaultPriceBook = {
+					id: this._defaultPriceBook._id,
+					isDefault: true,
+					tax: servicePriceBook.salesTaxId == null ? this.salesTaxes[0] : _.find(this.salesTaxes, { _id: servicePriceBook.salesTaxId }),
+					item: servicePriceBook
+				};
+
+			}
+			loader.dismiss();
+		});
 	}
 
 	public selectIcon() {
@@ -227,7 +220,7 @@ export class ServiceDetails {
 			index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
 				this._defaultPriceBook.purchasableItems.push(dBuffer);
 		}
-		
+
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
 	}

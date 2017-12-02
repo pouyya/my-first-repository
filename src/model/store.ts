@@ -24,4 +24,5 @@ export class Store extends DBBasedEntity {
   public saleNumberPrefix: string;
   public saleLastNumber: number = 0;
   public defaultSaleTaxId: string;
+  public trackEmployeeSales: boolean;
 }

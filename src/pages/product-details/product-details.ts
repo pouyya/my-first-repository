@@ -13,7 +13,6 @@ import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
-import { UserSession } from '../../model/UserSession';
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -49,7 +48,6 @@ export class ProductDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-	private _user: UserSession;
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -78,7 +76,7 @@ export class ProductDetails {
 		await loader.present();
 
 		let editProduct = this.navParams.get('item');
-		this._user = this.userService.getLoggedInUser();
+		var _user = await this.userService.getUser();
 		if (editProduct) {
 			this.productItem = editProduct;
 			this.isNew = false;
@@ -87,13 +85,13 @@ export class ProductDetails {
 				this.selectedIcon = this.productItem.icon.name;
 			}
 		} else {
-			this.productItem.icon = this._user.settings.defaultIcon;
+			this.productItem.icon = _user.settings.defaultIcon;
 			this.selectedIcon = this.productItem.icon.name;
 		}
 		var promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
 			new Promise(async (_resolve, _reject) => {
-				this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
+				this.salesTaxService.get(_user.settings.defaultTax).then((salesTax: any) => {
 					salesTax.name = ` ${salesTax.name} (Default)`;
 					_resolve({
 						...salesTax,

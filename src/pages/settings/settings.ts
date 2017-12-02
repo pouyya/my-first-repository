@@ -88,7 +88,7 @@ export class Settings {
     // this.currentTax = this.newTax
     // var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
     // this.salesTaxes = taxes;
-    let user = this.userService.getLoggedInUser();
+    let user = await this.userService.getUser();
     // user.settings.defaultTax = this.newTax._id;
     // user.settings.taxEntity = this.newTax.entityTypeName;
     // user.settings.taxType = this.selectedType;

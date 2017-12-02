@@ -69,7 +69,7 @@ export class SalesHistoryPage {
         content: 'Fetching Sales...'
       });
       await loader.present();
-      this.user = this.userService.getLoggedInUser();
+      this.user = await this.userService.getUser();
       let result: any = await this.salesService.searchSales(
         this.user.currentPos,
         this.limit, this.offset,

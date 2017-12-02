@@ -44,7 +44,7 @@ export class DataSync {
                 this._sharedService.publish({ currentStore, currentPos });
                 this.userService.setSession(user);
             } else {
-                let user = this.userService.getLoggedInUser();
+                let user = await this.userService.getUser();
                 currentPos = await this.posService.get(user.currentPos);
                 currentStore = await this.storeService.get(user.currentStore);
                 this._sharedService.publish({ currentStore, currentPos });
