@@ -60,6 +60,7 @@ import { PriceBookDetails } from './../pages/price-book-details/price-book-detai
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
+import { DataSync } from '../pages/dataSync/dataSync';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -130,6 +131,7 @@ const cloudSettings: CloudSettings = {
     SimplePOSApp,
     DeployPage,
     LoginPage,
+    DataSync,
     HomePage,
     InventoryPage,
     Products,
@@ -209,6 +211,7 @@ const cloudSettings: CloudSettings = {
   entryComponents: [
     SimplePOSApp,
     DeployPage,
+    DataSync,
     LoginPage,
     HomePage,
     InventoryPage,

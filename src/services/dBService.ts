@@ -1,94 +1,59 @@
 import { EventEmitter } from '@angular/core';
-import PouchDB from 'pouchdb';
-import pouchDBFind from 'pouchdb-find';
 import { DBBasedEntity } from "../model/DBBasedEntity";
-import { ConfigService } from "./configService"
+import { DB } from '../db/db';
+import { PouchDBProvider } from "../provider/pouchDBProvider";
 
 export class DBService<T extends DBBasedEntity> {
-    private static _db;
-    public static dbSyncProgress: EventEmitter<any> = new EventEmitter();
-    private static pendingMax = 0;
 
-    static getProgress(pending) {
-        var progress;
-        if (DBService.pendingMax > 0) {
-            progress = pending / DBService.pendingMax;
-            if (pending === 0) {
-                DBService.pendingMax = 0;    // reset for live/next replication
-            }
-        } else {
-            progress = 1;  // 100%
-        }
-        return progress;
-    }
-
-    public static async initialize() {
-
-        if (DBService._db == null) {
-            PouchDB.plugin(pouchDBFind);
-            var currentInternalDBName = ConfigService.internalDBName;
-            DBService._db = new PouchDB(currentInternalDBName);
-
-            var currentFullExternalDBUrl = ConfigService.currentFullExternalDBUrl;
-
-            var externalDBInfo = await new PouchDB(currentFullExternalDBUrl).info();
-            DBService.pendingMax = Number(externalDBInfo.update_seq.toString().substring(0, externalDBInfo.update_seq.toString().indexOf('-')));
-
-            PouchDB.sync(currentInternalDBName, currentFullExternalDBUrl, {
-                live: true,
-                retry: true
-            }).on('change', function (info) {
-                if (info.direction == "pull") {
-                    let currentUpdateSeq = Number(info.change.last_seq.toString().substring(0, info.change.last_seq.toString().indexOf('-')));
-                    let progress = DBService.getProgress(currentUpdateSeq)
-                    DBService.dbSyncProgress.emit(progress);
-                }
-            }).on('paused', function (err) {
-                // replication paused (e.g. replication up to date, user went offline)
-                DBService.dbSyncProgress.emit(1);
-            }).on('active', function () {
-                // replicate resumed (e.g. new changes replicating, user went back online)
-            }).on('denied', function (err) {
-                // a document failed to replicate (e.g. due to permissions)
-            }).on('error', function (err) {
-                // handle error
-            });
-
-            if (ConfigService.isDevelopment()) {
-                PouchDB.debug.enable('*');
-                window["PouchDB"] = PouchDB;
-            }
-            else {
-                PouchDB.debug.disable()
-            }
-
-            DBService._db.createIndex({
-                index: { fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs'] }
-            });
-            return
-        }
-    }
+    static pluginInitialized: boolean = false;
+    public static criticalDBSyncProgress: EventEmitter<any> = new EventEmitter();
+    public static criticalDB: DB;
+    private static db: DB;
 
     constructor(private entityType) {
         DBService.initialize();
     }
 
-    add(entity: T) {
+    public static initializePlugin() {
+        if (!DBService.pluginInitialized) {
+            PouchDBProvider.initializePlugin();
+            DBService.pluginInitialized = true;
+        }
+    }
+
+    public static initialize() {
+        if (DBService.criticalDB == null) {
+            DBService.criticalDB = new DB(this.criticalDBSyncProgress);
+            DBService.criticalDB.initialize();
+        }
+
+        // if (DBService.db == null) {
+        //     DBService.criticalDB = new DB();
+        //     DBService.criticalDB.initialize();
+        // }
+    }
+
+    public getDB(): DB {
+        return DBService.criticalDB;
+    }
+
+    add(entity: T): Promise<T> {
         if (!entity._id) {
             entity._id = new Date().toISOString();
         }
         return this.update(entity);
     }
 
-    update(entity: T) {
-        return this.get(entity._id).then(result => {
+    update(entity: T): Promise<T> {
+        return this.get(entity._id).then(async result => {
             entity._rev = result._rev;
-            return DBService._db.put(entity).then(function (resultAfterUpdate) {
-                entity._rev = resultAfterUpdate.rev;
-            });
+            var resultAfterUpdate = await this.getDB().put(entity);
+            entity._rev = resultAfterUpdate.rev;
+
+            return entity;
         }, error => {
             if (error.status == "404") {
-                return DBService._db.put(entity);
+                return this.getDB().put(entity);
             } else {
                 return new Promise((resolve, reject) => {
                     reject(error);
@@ -104,25 +69,16 @@ export class DBService<T extends DBBasedEntity> {
 
     async getAll(): Promise<Array<T>> {
         var entityTypeName = (new this.entityType()).entityTypeName;
-        var result = await DBService._db.find({ selector: { entityTypeName: entityTypeName }, include_docs: true });
-        if (result && result.docs) {
-            return result.docs;
-        }
-        return result;
+        return await this.getDB().find({ selector: { entityTypeName: entityTypeName }, include_docs: true });
     }
 
-    async findBy(selector: any) {
-        var entityTypeName = (new this.entityType()).entityTypeName;
-        selector.entityTypeName = entityTypeName;
-        var docs = await DBService._db.find(selector);
-        return docs.docs;
+    findBy(selector: any): Promise<Array<T>> {
+        selector.include_docs = true;
+        selector.entityTypeName = (new this.entityType()).entityTypeName;
+        return this.getDB().find(selector);
     }
 
-    get(id) {
-        return DBService._db.get(id);
+    get(id): Promise<T> {
+        return this.getDB().get(id);
     }
-
-    getDB() {
-        return DBService._db;
-    }    
 }

@@ -215,10 +215,11 @@ export class ServiceDetails {
 		}
 
 		if (this.isNew) {
-			var res = await this.serviceService.add(this.serviceItem)
+			var res = await this.serviceService.add(this.serviceItem);
 			this._defaultPriceBook.purchasableItems.push(createPurchsableItem(res.id));
 
 		} else {
+			await this.serviceService.update(this.serviceItem);
 			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
 			let dBuffer = createPurchsableItem(this.serviceItem._id);
 

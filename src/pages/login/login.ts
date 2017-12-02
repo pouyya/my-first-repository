@@ -1,12 +1,16 @@
-import { DeployPage } from './../deploy/deploy';
 import { AuthHttp } from 'angular2-jwt';
 import { ForgotPassword } from './modals/forgot-password/forgot-password';
-import { ModalController } from 'ionic-angular';
+import { ModalController, NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { LoadingController, Nav } from 'ionic-angular';
+import { LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { AuthService } from './../../services/authService';
+import { UserService } from '../../services/userService';
+import { PosService } from '../../services/posService';
+import { SharedService } from '../../services/_sharedService';
+import { StoreService } from '../../services/storeService';
+import { DataSync } from '../dataSync/dataSync';
 
 @Component({
   selector: 'login',
@@ -20,14 +24,17 @@ export class LoginPage {
 
   constructor(
     private loading: LoadingController,
+    private userService: UserService,
+    private posService: PosService,
+    private storeService: StoreService,
+    private _sharedService: SharedService,
+    public navCtrl: NavController,
     private authService: AuthService,
     private toastCtrl: ToastController,
     private iab: InAppBrowser,
     private modalCtrl: ModalController,
-    private nav: Nav,
     private authHttp: AuthHttp
-  ) {
-  }
+  ) { }
 
   public async login(): Promise<any> {
 
@@ -36,10 +43,10 @@ export class LoginPage {
     });
 
     await loader.present();
-    
+
     this.authService.login(this.email, this.password).subscribe(
-      data => {
-        this.nav.setRoot(DeployPage);
+      async data => {
+        await this.navigateToDataSync();
         loader.dismiss();
       },
       error => {
@@ -61,5 +68,9 @@ export class LoginPage {
     modal.onDidDismiss(data => {
     });
     modal.present();
+  }
+
+  navigateToDataSync() {
+    return this.navCtrl.setRoot(DataSync);
   }
 }

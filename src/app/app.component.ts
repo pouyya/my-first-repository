@@ -1,9 +1,6 @@
-import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
-import { EmployeeService } from './../services/employeeService';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
@@ -11,10 +8,8 @@ import { UserService } from './../services/userService';
 import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
-import { UserSession } from './../model/UserSession';
 import { ModuleBase } from "../modules/moduelBase";
 import { DeployPage } from "../pages/deploy/deploy";
-import { LoginPage } from './../pages/login/login';
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { SecurityService } from '../services/securityService';
@@ -29,10 +24,8 @@ export class SimplePOSApp implements OnInit {
   public rootPage: any;
   public currentModule: ModuleBase;
   public moduleName: string;
-  public user: UserSession;
   public currentStore: Store = null;
   public currentPos: POS = null;
-  private checkTime: Observable<any> = Observable.interval(1000);
 
   constructor(
     public platform: Platform,
@@ -45,19 +38,11 @@ export class SimplePOSApp implements OnInit {
     private insomnia: Insomnia,
     private pluginService: PluginService,
     private _sharedService: SharedService,
-    private employeeService: EmployeeService,
     private cdr: ChangeDetectorRef,
     private securityService: SecurityService,
     private toastController: ToastController,
     private platformService: PlatformService
   ) {
-    this.checkTime.subscribe(() => {
-      let date = moment().format("h:mm:ss a");
-      if (date === "12:00:00 am") {
-        // uncomment this line to enable log out
-        // this.logOutAllStaffs();
-      }
-    });
     this._sharedService.payload$.subscribe((data) => {
       if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
         this.currentStore = data.currentStore;
@@ -73,14 +58,12 @@ export class SimplePOSApp implements OnInit {
     this.initializeApp();
   }
 
-  // This code will persist user session in device
   async ngOnInit() {
     try {
-      // TODO: Insomnia should be moved to App Settings where it can be awake or asleep
-      this.user = await this.userService.getUser();
-      this.rootPage = this.user ? DeployPage : LoginPage;
+      var user = await this.userService.getUser();
+      this.rootPage = DeployPage;
       if (this.platformService.isMobileDevice()) {
-        this.user.settings.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
+        user.settings.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
       }      
       return;
     } catch (error) {
@@ -111,7 +94,6 @@ export class SimplePOSApp implements OnInit {
         loader.present().then(() => {
           data.hasOwnProperty('currentStore') && (this.currentStore = data.currentStore);
           data.hasOwnProperty('currentPos') && (this.currentPos = data.currentPos);
-          this.user = this.userService.getLoggedInUser();
           this.nav.setRoot(this.nav.getActive().component);
           loader.dismiss();
         });
@@ -146,14 +128,4 @@ export class SimplePOSApp implements OnInit {
     }
 
   }
-
-  private async logOutAllStaffs() {
-    let loader = this.loading.create({
-      content: "Logging out all staffs, Please Wait"
-    });
-    await loader.present();
-    await this.employeeService.logOutAllStaffs();
-    loader.dismiss();
-  }
-
 }
