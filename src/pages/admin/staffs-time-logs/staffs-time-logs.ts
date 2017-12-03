@@ -11,7 +11,10 @@ import { LoadingController } from 'ionic-angular';
 import { EmployeeTimestampService } from './../../../services/employeeTimestampService';
 import { EmployeeService } from './../../../services/employeeService';
 import { Component, ChangeDetectorRef } from '@angular/core';
+import { BackOfficeModule } from '../../../modules/backOfficeModule';
+import { PageModule } from '../../../metadata/pageModule';
 
+@PageModule(() => BackOfficeModule)
 @Component({
   selector: 'staffs-time-logs',
   templateUrl: 'staffs-time-logs.html',

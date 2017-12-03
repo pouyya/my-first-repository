@@ -48,7 +48,6 @@ export class ProductDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-	private _user: any;
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -67,94 +66,81 @@ export class ProductDetails {
 		this.icons = icons;
 	}
 
-	ionViewDidLoad() {
-		this.platform.ready().then(() => {
+	async ionViewDidLoad() {
+		await this.platform.ready();
 
-			let loader = this.loading.create({
-				content: 'Loading Product...',
-			});
+		let loader = this.loading.create({
+			content: 'Loading Product...',
+		});
 
-			loader.present().then(() => {
-				let editProduct = this.navParams.get('item');
-				this._user = this.userService.getLoggedInUser();
-				if (editProduct) {
-					this.productItem = editProduct;
-					this.isNew = false;
-					this.action = 'Edit';
-					if (this.productItem.hasOwnProperty('icon') && this.productItem.icon) {
-						this.selectedIcon = this.productItem.icon.name;
-					}
-				} else {
-					this.productItem.icon = this._user.settings.defaultIcon;
-					this.selectedIcon = this.productItem.icon.name;
-				}
-				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						this.categoryService.getAll().then(data => _resolve(data))
-							.catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						this.salesTaxService.get(this._user.settings.defaultTax).then((salesTax: any) => {
-							salesTax.name = ` ${salesTax.name} (Default)`;
-							_resolve({
-								...salesTax,
-								isDefault: true,
-								noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
-							});
-						}).catch(error => {
-							if(error.name == "not_found") {
-								_resolve(null);
-							} else _reject(error);
-						});
-					}),
-					new Promise((_resolve, _reject) => {
-						this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
-							_resolve(salesTaxes);
-						}).catch(error => _reject(error));
-					}),
-					new Promise((_resolve, _reject) => {
-						this.priceBookService.getDefault().then((priceBook: PriceBook) => {
-							_resolve(priceBook);
-						}).catch(error => _reject(error));
-					})
-				];
+		await loader.present();
 
-				Promise.all(promises).then((results: Array<any>) => {
-					this.zone.run(() => {
-						this.categories = results[0];
-						results[1] != null && this.salesTaxes.push(results[1]);
-						this.salesTaxes = this.salesTaxes.concat(results[2]);
-						this._defaultPriceBook = results[3];
-
-						let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
-
-						if (!productPriceBook) {
-							this.defaultPriceBook = {
-								id: this._defaultPriceBook._id,
-								isDefault: true,
-								tax: this.salesTaxes[0],
-								item: {
-									id: "",
-									retailPrice: 0,
-									inclusivePrice: 0,
-									salesTaxId: "", // will set upon save
-									supplyPrice: 0,
-									markup: 0
-								}
-							};
-						} else {
-							this.defaultPriceBook = {
-								id: this._defaultPriceBook._id,
-								isDefault: true,
-								tax: productPriceBook.salesTaxId == null ? this.salesTaxes[0] : _.find(this.salesTaxes, { _id: productPriceBook.salesTaxId }),
-								item: productPriceBook
-							};
-						}
-						loader.dismiss();
-
+		let editProduct = this.navParams.get('item');
+		var _user = await this.userService.getUser();
+		if (editProduct) {
+			this.productItem = editProduct;
+			this.isNew = false;
+			this.action = 'Edit';
+			if (this.productItem.hasOwnProperty('icon') && this.productItem.icon) {
+				this.selectedIcon = this.productItem.icon.name;
+			}
+		} else {
+			this.productItem.icon = _user.settings.defaultIcon;
+			this.selectedIcon = this.productItem.icon.name;
+		}
+		var promises: Array<Promise<any>> = [
+			this.categoryService.getAll(),
+			new Promise(async (_resolve, _reject) => {
+				this.salesTaxService.get(_user.settings.defaultTax).then((salesTax: any) => {
+					salesTax.name = ` ${salesTax.name} (Default)`;
+					_resolve({
+						...salesTax,
+						isDefault: true,
+						noOfTaxes: salesTax.entityTypeName == 'GroupSaleTax' ? salesTax.salesTaxes.length : 0
 					});
-				}).catch(console.error.bind(console));
-			});
+				}).catch(error => {
+					if (error.name == "not_found") {
+						_resolve(null);
+					} else _reject(error);
+				});
+			}),
+			this.appService.loadSalesAndGroupTaxes(),
+			this.priceBookService.getDefault()
+		];
+
+		var results = await Promise.all(promises);
+		
+		this.zone.run(() => {
+			this.categories = results[0];
+			results[1] != null && this.salesTaxes.push(results[1]);
+			this.salesTaxes = this.salesTaxes.concat(results[2]);
+			this._defaultPriceBook = results[3];
+
+			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
+
+			if (!productPriceBook) {
+				this.defaultPriceBook = {
+					id: this._defaultPriceBook._id,
+					isDefault: true,
+					tax: this.salesTaxes[0],
+					item: {
+						id: "",
+						retailPrice: 0,
+						inclusivePrice: 0,
+						salesTaxId: "", // will set upon save
+						supplyPrice: 0,
+						markup: 0
+					}
+				};
+			} else {
+				this.defaultPriceBook = {
+					id: this._defaultPriceBook._id,
+					isDefault: true,
+					tax: productPriceBook.salesTaxId == null ? this.salesTaxes[0] : _.find(this.salesTaxes, { _id: productPriceBook.salesTaxId }),
+					item: productPriceBook
+				};
+			}
+			loader.dismiss();
 
 		});
 	}
@@ -207,54 +193,37 @@ export class ProductDetails {
 		});
 	}
 
-	saveProducts() {
+	async saveProducts() {
+
 		if (this.isNew) {
-			this.productService.add(this.productItem).then((res) => {
-				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						this._defaultPriceBook.purchasableItems.push({
-							id: res.id,
-							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
-							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
-							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
-							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
-							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
-						});
-						this.priceBookService.update(this._defaultPriceBook)
-							.then(() => _resolve()).catch(error => _reject(error));
-					})
-				];
-
-				Promise.all(promises).catch(console.error.bind(console));
-
-			}).catch(console.error.bind(console));
+			var res = await this.productService.add(this.productItem);
+			this._defaultPriceBook.purchasableItems.push({
+				id: res.id,
+				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
+				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
+				supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
+				markup: Number(this.defaultPriceBook.item.markup),
+				salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
+				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
+			});
+			await this.priceBookService.update(this._defaultPriceBook);
 		} else {
-			this.productService.update(this.productItem).then(() => {
-				var promises: Array<Promise<any>> = [
-					new Promise((_resolve, _reject) => {
-						let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
-						let dBuffer = {
-							id: this.productItem._id,
-							retailPrice: Number(this.defaultPriceBook.item.retailPrice),
-							inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
-							supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
-							markup: Number(this.defaultPriceBook.item.markup),
-							salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
-							saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
-						};
+			await this.productService.update(this.productItem);
+			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
+			let dBuffer = {
+				id: this.productItem._id,
+				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
+				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
+				supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),
+				markup: Number(this.defaultPriceBook.item.markup),
+				salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
+				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
+			};
 
-						index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
-							this._defaultPriceBook.purchasableItems.push(dBuffer);
+			index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
+				this._defaultPriceBook.purchasableItems.push(dBuffer);
 
-						this.priceBookService.update(this._defaultPriceBook)
-							.then(() => _resolve()).catch(error => _reject(error));
-					})
-				];
-
-				Promise.all(promises).catch(console.error.bind(console));
-			})
-				.catch(console.error.bind(console));
+			await this.priceBookService.update(this._defaultPriceBook);
 		}
 		this.navCtrl.pop();
 	}

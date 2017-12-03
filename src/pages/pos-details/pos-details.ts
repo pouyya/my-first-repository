@@ -10,8 +10,8 @@ import { Component } from '@angular/core';
 })
 export class PosDetailsPage {
   public pos: POS = new POS();
-	public isNew: boolean = true;
-	public action: string = 'Add';
+  public isNew: boolean = true;
+  public action: string = 'Add';
 
   constructor(
     private navParams: NavParams,
@@ -27,7 +27,7 @@ export class PosDetailsPage {
   ionViewDidEnter() {
     var pos = this.navParams.get('pos');
     var storeId = this.navParams.get('storeId');
-    if(pos) {
+    if (pos) {
       this.pos = pos;
       this.isNew = false;
       this.action = 'Edit'
@@ -37,8 +37,8 @@ export class PosDetailsPage {
   }
 
   public save() {
-		if (this.isNew) {
-			this.posService.add(this.pos).then(() => {
+    if (this.isNew) {
+      this.posService.add(this.pos).then(() => {
         let toast = this.toastCtrl.create({
           message: 'Register has been added successfully',
           duration: 3000
@@ -48,14 +48,15 @@ export class PosDetailsPage {
       }, (error) => {
         throw new Error(error);
       })
-		} else {
-			this.posService.update(this.pos)
-				.catch(console.error.bind(console));
-		}
-		this.navCtrl.pop();
+    } else {
+      this.posService.update(this.pos)
+        .catch(console.error.bind(console));
+    }
+    this.navCtrl.pop();
   }
 
-  public remove() {
+  public async remove() {
+    let user = await this.userService.getUser();
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this POS ?',
       message: 'Deleting this POS, will delete all associated Sales and any Current Sale!',
@@ -63,14 +64,13 @@ export class PosDetailsPage {
         {
           text: 'Yes',
           handler: () => {
-            let user = this.userService.getLoggedInUser();
             if (user.currentPos == this.pos._id) {
-                let toast = this.toastCtrl.create({
-                  message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
-                  duration: 3000
-                });
-                toast.present();
-            }  else {
+              let toast = this.toastCtrl.create({
+                message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
+                duration: 3000
+              });
+              toast.present();
+            } else {
               let loader = this.loading.create({
                 content: 'Deleting. Please Wait!',
               });

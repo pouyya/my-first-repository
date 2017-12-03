@@ -30,7 +30,6 @@ export class PurchasableItemPriceComponent implements OnChanges {
 
   public _priceBook: PriceBook;
   public items: any[] = []; /* IntractableItemPriceInterface[] = []; */
-  private user: any;
   private defaultTax: any;
 
   @Input("priceBook")
@@ -53,17 +52,16 @@ export class PurchasableItemPriceComponent implements OnChanges {
     private userService: UserService,
     private appService: AppService,
     private zone: NgZone
-  ) {
-    this.user = this.userService.getLoggedInUser();
-  }
+  ) {}
 
-  ngOnChanges(): void {
+  async ngOnChanges() {
+    var user = await this.userService.getUser();
+
     let salesPromises: Promise<any>[] = [];
-    
     if (!this.salesTaxes || this.salesTaxes.length == 0) {
       salesPromises = [
         new Promise((_resolve, _reject) => {
-          this.salesTaxService.get(this.user.settings.defaultTax).then((salesTax: any) => {
+          this.salesTaxService.get(user.settings.defaultTax).then((salesTax: any) => {
             salesTax.name = ` ${salesTax.name} (Default)`;
             _resolve({
               ...salesTax,
@@ -76,11 +74,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
             } else _reject(error);
           });
         }),
-        new Promise((_resolve, _reject) => {
-          this.appService.loadSalesAndGroupTaxes().then((salesTaxes: Array<any>) => {
-            _resolve(salesTaxes);
-          }).catch(error => _reject(error));
-        }),
+        this.appService.loadSalesAndGroupTaxes()
       ];
     } else {
       salesPromises.push(Promise.resolve());

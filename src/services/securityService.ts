@@ -23,7 +23,7 @@ export class SecurityService {
             return true;
         } else {
             let employee = this.employeeService.getEmployee();
-            let currentUserStore = this.userService.getLoggedInUser().currentStore;
+            let currentUserStore = (await this.userService.getUser()).currentStore;
             if (employee) {
                 if (this.verifyEmployeeRoles(employee, currentUserStore, roles)) {
                     return true;

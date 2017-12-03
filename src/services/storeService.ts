@@ -23,31 +23,17 @@ export class StoreService extends BaseEntityService<Store> {
     super(Store);
   }
 
-  public getDefaultTax(): Promise<any> {
-    let user = this.userService.getLoggedInUser();
+  public async getDefaultTax(): Promise<any> {
+    let user = await this.userService.getUser();
     return this.findBy({
       selector: { _id: user.currentStore },
       fields: ["defaultSaleTaxId"]
     });
   }
 
-  public getCurrentStore(): Promise<Store> {
-    let user = this.userService.getLoggedInUser();
+  public async getCurrentStore(): Promise<Store> {
+    let user = await this.userService.getUser();
     return this.get(user.currentStore);
-  }
-
-  public async update(store: Store): Promise<any> {
-    try {
-      await super.update(store);
-      let user = this.userService.getLoggedInUser();
-      if (store._id == user.currentStore) {
-        user.currentStore = store._id;
-        this.userService.setSession(user);
-      }
-      return;
-    } catch(err) {
-      return Promise.reject(err);
-    }
   }
 
   /**
@@ -57,7 +43,7 @@ export class StoreService extends BaseEntityService<Store> {
    * @returns {Promise<any>}
    */
   public async delete(store: Store, associated: boolean = false): Promise<any> {
-    let user = this.userService.getLoggedInUser();
+    let user = await this.userService.getUser();
     if (user.currentStore == store._id) {
       return await Promise.reject({
         error: 'DEFAULT_STORE_EXISTS',

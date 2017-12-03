@@ -57,6 +57,7 @@
             <strong>{{getState(invoice)}}</strong>
           </ion-col>
           <ion-col col-md-1 class="clickable">
+            <ion-icon name="print" text-center *ngIf="invoice.state == 'completed'" (click)="printSale(invoice)"></ion-icon>
             <ion-icon name="refresh" text-center *ngIf="invoice.state == 'completed'" (click)="gotoSales(invoice, true, $index)"></ion-icon>
             <ion-icon name="share-alt" text-center *ngIf="invoice.state == 'parked'" (click)="gotoSales(invoice, false, $index)"></ion-icon>
           </ion-col>
@@ -119,6 +120,9 @@
               <ion-item *ngIf="invoice.state === 'completed'" class="clickable" (click)="gotoSales(invoice, true, $index)">
                 <ion-icon name="refresh"></ion-icon> Return Items
               </ion-item>
+              <ion-item *ngIf="invoice.state === 'completed'" class="clickable" (click)="printSale(invoice)">
+                  <ion-icon name="print"></ion-icon> Print Invoice
+                </ion-item>              
             </ion-col>
           </ion-row>
           <ion-row>

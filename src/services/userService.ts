@@ -1,38 +1,57 @@
 import { UserSession } from './../model/UserSession';
 import { ConfigService } from './configService';
 import { Storage } from '@ionic/storage';
-import { AuthHttp } from 'angular2-jwt';
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { AccountSettingService } from './accountSettingService';
 
 @Injectable()
 export class UserService {
 
-  public user: UserSession;
-
   constructor(
-    private http: Http,
-    private authHttp: AuthHttp,
-    private storage: Storage
+    private storage: Storage,
+    private accountSettingService: AccountSettingService
   ) { }
 
-  public getLoggedInUser(): UserSession {
-    return this.user;
+  public async hasUser(): Promise<boolean> {
+    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey());
+    return userRawJson && JSON.parse(userRawJson);
+  }
+
+  public async getDeviceUser(): Promise<UserSession> {
+    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey());
+    if(userRawJson){
+      var user = JSON.parse(userRawJson) as UserSession;
+      return user; 
+    }
+
+    return null;    
   }
 
   public async getUser(): Promise<UserSession> {
-    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey())
-    this.user = userRawJson ? JSON.parse(userRawJson) : null;
-    return this.user;
+    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey());
+    if(userRawJson){
+      var user = JSON.parse(userRawJson) as UserSession;
+      
+      var currentAccount = await this.accountSettingService.getCurrentSetting();
+      user.settings.taxType = currentAccount.taxType;
+      user.settings.screenAwake = currentAccount.screenAwake;
+      user.settings.trackEmployeeSales = currentAccount.trackEmployeeSales;
+      user.settings.defaultTax = currentAccount.defaultTax;
+      user.settings.taxEntity = currentAccount.taxEntity;
+      user.settings.defaultIcon = currentAccount.defaultIcon;
+
+      return user; 
+    }
+
+    return null;
   }
 
   public setAccessToken(access_token: string): Promise<any> {
     return this.storage.set(ConfigService.securitySessionStorageKey(), access_token);
   }
 
-  public setSession(user: any): Promise<any> {
-    this.user = user;
-    return this.storage.set(ConfigService.userSessionStorageKey(), JSON.stringify(this.user));
+  public setSession(user: UserSession): Promise<any> {
+    return this.storage.set(ConfigService.userSessionStorageKey(), JSON.stringify(user));
   }
 
   public async getUserToken(): Promise<string> {

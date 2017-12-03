@@ -13,7 +13,10 @@ export class Store extends DBBasedEntity {
   public state: string;
   public country: string;
   public email: string;
-  public phone: number;
+  public phone: string;
+  public printerIP: string;
+  public printerPort: number;
+  public taxFileNumber: string;
   public twitter?: string;
   public timezone?: string;
   public supplierReturnPrefix?: string;
@@ -21,4 +24,5 @@ export class Store extends DBBasedEntity {
   public saleNumberPrefix: string;
   public saleLastNumber: number = 0;
   public defaultSaleTaxId: string;
+  public trackEmployeeSales: boolean;
 }

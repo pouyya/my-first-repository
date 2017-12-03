@@ -14,6 +14,7 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
+import { UserSession } from '../../model/UserSession';
 
 @Component({
   selector: 'basket',
@@ -47,7 +48,7 @@ export class BasketComponent {
     return this._invoice;
   }
 
-  @Input() user: any;
+  @Input() user: UserSession;
   @Input() refund: boolean;
   @Input()
   set customer(model: Customer) {
@@ -140,10 +141,12 @@ export class BasketComponent {
     });
     modal.onDidDismiss(data => {
       let reorder = false;
-      if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-      this.invoice.items[$index] = data.item;
-      if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
-      data.hasChanged && this.calculateAndSync();
+      if (data) {
+        if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
+        this.invoice.items[$index] = data.item;
+        if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+        data.hasChanged && this.calculateAndSync();
+      }
     });
     modal.present();
   }

@@ -7,6 +7,7 @@ import { Store } from './../../../model/store';
 import { ViewController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
+import { UserSession } from '../../../model/UserSession';
 
 @Component({
   selector: "switch-pos",
@@ -19,7 +20,7 @@ export class SwitchPosModal {
   public posId: string;
   public currentStore: any;
   public registers: Array<any> = [];
-  private user: any;
+  private user: UserSession;
 
   constructor(
     private viewCtrl: ViewController,

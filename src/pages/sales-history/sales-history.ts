@@ -10,6 +10,7 @@ import { Sales } from './../sales/sales';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { SalesServices } from './../../services/salesService';
+import { PrintService } from '../../services/printService';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -50,7 +51,8 @@ export class SalesHistoryPage {
     private customerService: CustomerService,
     private alertController: AlertController,
     private toastCtrl: ToastController,
-    private loading: LoadingController
+    private loading: LoadingController,
+    private printService: PrintService
   ) {
     this.invoices = [];
     this.invoicesBackup = [];
@@ -72,7 +74,7 @@ export class SalesHistoryPage {
         content: 'Fetching Sales...'
       });
       await loader.present();
-      this.user = this.userService.getLoggedInUser();
+      this.user = await this.userService.getUser();
       let result: any = await this.salesService.searchSales(
         this.user.currentPos,
         this.limit, this.offset,
@@ -113,6 +115,10 @@ export class SalesHistoryPage {
       }
     }
     return state;
+  }
+
+  public async printSale(sale: Sale) {
+    await this.printService.printReceipt(sale);
   }
 
   public async gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {

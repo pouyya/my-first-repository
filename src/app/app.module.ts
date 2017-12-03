@@ -62,6 +62,7 @@ import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/ti
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
 import { Customers } from './../pages/customers/customers';;
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
+import { DataSync } from '../pages/dataSync/dataSync';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -117,8 +118,11 @@ import { CustomerService } from './../services/customerService';
 import { fakeBackendProvider } from './../services/_fakeBackend';
 import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
+import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
+import { PlatformService } from '../services/platformService';
+import { AccountSettingService } from '../services/accountSettingService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -131,6 +135,7 @@ const cloudSettings: CloudSettings = {
     SimplePOSApp,
     DeployPage,
     LoginPage,
+    DataSync,
     HomePage,
     InventoryPage,
     Products,
@@ -214,6 +219,7 @@ const cloudSettings: CloudSettings = {
   entryComponents: [
     SimplePOSApp,
     DeployPage,
+    DataSync,
     LoginPage,
     HomePage,
     InventoryPage,
@@ -295,6 +301,7 @@ const cloudSettings: CloudSettings = {
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
+    PrintService,
     StoreService,
     SalesServices,
     ClickStopPropagation,
@@ -303,6 +310,8 @@ const cloudSettings: CloudSettings = {
     authProvider,
     fakeBackendProvider,
     MockBackend,
+    PlatformService,
+    AccountSettingService,
     BaseRequestOptions
   ]
 })

@@ -1,5 +1,6 @@
 import {DBBasedEntity} from './dbBasedEntity';
 import {BasketItem} from './bucketItem';
+import { DBMode, DBModeEnum } from '../metadata/dbMode';
 
 interface PaymentsInterface {
   type: string,
@@ -13,6 +14,7 @@ export interface DiscountSurchargeInterface {
   createdAt: string;
 }
 
+@DBMode(DBModeEnum.Current)
 export class Sale extends DBBasedEntity {
 
   public posID: string;
