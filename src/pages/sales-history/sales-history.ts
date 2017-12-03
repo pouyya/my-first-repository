@@ -1,4 +1,3 @@
-import { Customer } from './../../model/customer';
 import { CustomerService } from './../../services/customerService';
 import { UserSession } from './../../model/UserSession';
 import { StoreService } from './../../services/storeService';
