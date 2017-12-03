@@ -114,10 +114,12 @@ export class BasketComponent {
     });
     modal.onDidDismiss(data => {
       let reorder = false;
-      if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-      this.invoice.items[$index] = data.item;
-      if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
-      data.hasChanged && this.calculateAndSync();
+      if (data) {
+        if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
+        this.invoice.items[$index] = data.item;
+        if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+        data.hasChanged && this.calculateAndSync();
+      }
     });
     modal.present();
   }
