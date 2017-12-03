@@ -1,10 +1,10 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
     <ion-col col-md-9 class="customer-container pull-left">
-      <ion-item item-content *ngIf="customer && !searchBarEnabled">
+      <ion-item item-content *ngIf="customer && !searchBarEnabled" (click)="editCustomer()" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
-          <ion-icon class="pull-right" name="close" tappable (click)="unassignCustomer()"></ion-icon>
+          <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unassignCustomer()"></ion-icon>
         </ion-label>
       </ion-item>
       <ion-searchbar *ngIf="!customer && searchBarEnabled" autofocus debounce="500" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel"
@@ -25,10 +25,10 @@
       </ion-list>
     </ion-col>
     <ion-col col-md-3 class="pull-right">
-      <button ion-button clear (click)="parkSale()" [disabled]="invoice.items.length == 0">
+      <button ion-button clear (click)="parkSale()" [disabled]="!invoice.customerKey && invoice.items.length == 0">
         <ion-icon name="pause"></ion-icon>
       </button>
-      <button ion-button clear (click)="discardSale()" [disabled]="invoice.items.length == 0">
+      <button ion-button clear (click)="discardSale()" [disabled]="!invoice.customerKey && invoice.items.length == 0">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-col>

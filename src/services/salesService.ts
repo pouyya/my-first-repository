@@ -208,7 +208,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
-		let selector: any = { 
+		let selector: any = {
 			selector: { posID: posId },
 			completed: true
 		};
@@ -228,7 +228,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public async getCurrentSaleIfAny() {
 		let invoiceId = localStorage.getItem('invoice_id');
-		if(invoiceId) {
+		if (invoiceId) {
 			return await this.get(invoiceId);
 		}
 		return Promise.resolve(null);
@@ -236,14 +236,16 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public async searchSales(posId, limit, offset, options): Promise<any> {
 		var query: any = {
-			selector: { posID: posId }
+			selector: {
+				posID: posId
+			}
 		};
 		_.each(options, (value, key) => {
 			if (value) {
 				query.selector[key] = _.isArray(value) ? { $in: value } : value;
 			}
 		});
-		if(options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
+		if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
 			query.selector.completed = options.completed
 		}
 
@@ -291,7 +293,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public manageInvoiceId(sale: Sale) {
 		let invoiceId = localStorage.getItem('invoice_id');
-		if (sale.items.length > 0) {
+		if (sale.items.length > 0 || sale.customerKey) {
 			invoiceId != sale._id && (localStorage.setItem('invoice_id', sale._id));
 		} else {
 			localStorage.removeItem('invoice_id');

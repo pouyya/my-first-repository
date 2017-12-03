@@ -10,7 +10,7 @@ export class CustomerService extends BaseEntityService<Customer> {
   }
 
   public async getResults(limit: number, offset: number) {
-    var query: any = { selector: {entityTypeName: 'Customer'} };
+    var query: any = { selector: { entityTypeName: 'Customer' } };
     query.limit = limit;
     query.offset = offset;
 
@@ -33,13 +33,27 @@ export class CustomerService extends BaseEntityService<Customer> {
   public async searchByName(name) {
     try {
       let customers: Customer[] = await this.findBy({
-        selector: { firstName: name }
+        selector: {
+          fullname: {
+            $regex: new RegExp("(\\b" + name + "\\b)", "ig")
+          }
+        }
       });
 
       return customers.length > 0 ? customers : [];
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  public async add(customer: Customer): Promise<any> {
+    customer.fullname = (`${customer.firstName} ${customer.lastName}`).trim().toLowerCase();
+    return await super.add(customer);
+  }
+
+  public async update(customer: Customer): Promise<any> {
+    customer.fullname = (`${customer.firstName} ${customer.lastName}`).trim().toLowerCase();
+    return await super.update(customer);
   }
 
 }

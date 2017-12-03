@@ -23,5 +23,6 @@ export class Customer extends DBBasedEntity {
   public suburb: string;
   public postcode: string;
   public country: string;
+  public fullname: string;
 
 }

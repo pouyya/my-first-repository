@@ -54,7 +54,7 @@ export class BasketComponent {
     this._customer = model;
     this.customerChange.emit(model);
     this.searchInput = "";
-    if(!this._customer) {
+    if (!this._customer) {
       this.searchBarEnabled = true;
     } else if (this._customer) {
       this.searchBarEnabled = false;
@@ -258,7 +258,7 @@ export class BasketComponent {
   }
 
   public async searchCustomers($event: any) {
-    if (this.searchInput && this.searchInput.trim() != '') {
+    if (this.searchInput && this.searchInput.trim() != '' && this.searchInput.length > 3) {
       try {
         let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
         this.searchedCustomers = customers;
@@ -271,7 +271,7 @@ export class BasketComponent {
   }
 
   public openSearchbar() {
-    if(this.invoice.items.length > 0) {
+    if (this.invoice.items.length > 0) {
       this.searchBarEnabled = true;
     } else {
       let toast = this.toastCtrl.create({ message: 'Please add items first', duration: 3000 });
@@ -283,20 +283,38 @@ export class BasketComponent {
     this.customer = customer;
     this.invoice.customerKey = this.customer._id;
     this.salesService.update(this.invoice);
+    this.salesService.manageInvoiceId(this.invoice);
   }
 
   public unassignCustomer() {
     this.customer = null;
     this.invoice.customerKey = null;
-    this.salesService.update(this.invoice);
+    this.invoice.items.length > 0 ?
+      this.salesService.update(this.invoice) :
+      this.salesService.delete(this.invoice);
+    this.salesService.manageInvoiceId(this.invoice);
   }
 
   public createCustomer() {
     let modal = this.modalCtrl.create(CreateCustomerModal, {
-      searchInput : this.searchInput
+      searchInput: this.searchInput
     });
     modal.onDidDismiss(customer => {
-      if(customer) {
+      if (customer) {
+        this.customer = customer;
+        this.invoice.customerKey = this.customer._id;
+        this.salesService.update(this.invoice);
+      }
+    });
+    modal.present();
+  }
+
+  public editCustomer() {
+    let modal = this.modalCtrl.create(CreateCustomerModal, {
+      customer: this.customer
+    });
+    modal.onDidDismiss(customer => {
+      if (customer) {
         this.customer = customer;
         this.invoice.customerKey = this.customer._id;
         this.salesService.update(this.invoice);
@@ -310,11 +328,15 @@ export class BasketComponent {
     this.calculateTotal(() => {
       this.setBalance();
       this.generatePaymentBtnText();
-      if(this.invoice.items.length > 0) {
+      if (this.invoice.items.length > 0) {
         this.salesService.update(this.invoice);
       } else {
-        this.salesService.delete(this.invoice);
-        this.customer = null;
+        if (this.invoice.customerKey) {
+          this.salesService.update(this.invoice);
+        } else {
+          this.salesService.delete(this.invoice);
+          this.customer = null;
+        }
       }
     });
   }

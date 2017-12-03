@@ -13,6 +13,8 @@ export class CreateCustomerModal {
 
   public customerForm: FormGroup;
   public customer: Customer;
+  public isNew: boolean = true;
+  public text: string = 'Create';
 
   get firstName() { return this.customerForm.get('firstName'); }
   get lastName() { return this.customerForm.get('lastName'); }
@@ -32,7 +34,8 @@ export class CreateCustomerModal {
   ) {
     this.customer = new Customer();
 
-    var searchInput = this.navParams.get("searchInput") as string;
+    let searchInput = this.navParams.get("searchInput") as string;
+    let customer: Customer = <Customer>this.navParams.get("customer");
     if (searchInput) {
       var fullName = searchInput.trim().replace("  ", " ").split(" ");
 
@@ -44,6 +47,12 @@ export class CreateCustomerModal {
       }
     }
 
+    if(customer) {
+      this.customer = customer;
+      this.isNew = false;
+      this.text = 'Update';
+    }
+
     this.createForm();
   }
 
@@ -52,12 +61,13 @@ export class CreateCustomerModal {
       this.customer[prop] = this.customerForm.value[prop];
     });
 
-    try {
+    if(this.isNew) {
       let result = await this.customerService.add(this.customer);
       let customer = await this.customerService.get(result.id);
       this.viewCtrl.dismiss(customer);
-    } catch (err) {
-      throw new Error(err);
+    } else {
+      await this.customerService.update(this.customer);
+      this.viewCtrl.dismiss();
     }
   }
 

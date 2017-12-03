@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Create a New Customer
+       {{ text }} Customer
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
@@ -87,5 +87,5 @@
 </ion-content>
 
 <ion-footer>
-  <button ion-button class="pull-right" (click)="create()" [disabled]="!customerForm.valid">Create</button>
+  <button ion-button class="pull-right" (click)="create()" [disabled]="!customerForm.valid">{{ text }}</button>
 </ion-footer>

@@ -1,3 +1,5 @@
+import { Customer } from './../../model/customer';
+import { CustomerService } from './../../services/customerService';
 import { UserSession } from './../../model/UserSession';
 import { StoreService } from './../../services/storeService';
 import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
@@ -18,11 +20,12 @@ import { SalesServices } from './../../services/salesService';
 })
 export class SalesHistoryPage {
 
-  public invoices: Sale[];
+  public invoices: any[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
   public states: any;
   public filtersEnabled: boolean = false;
+  public customerSearch: string;
   private user: UserSession;
   private limit: number;
   private readonly defaultLimit = 5;
@@ -30,7 +33,8 @@ export class SalesHistoryPage {
   private offset: number;
   private total: number;
   private shownItem: any = null;
-  private invoicesBackup: Sale[];
+  private customersSearchHash: any = {};
+  private invoicesBackup: any[];
   private filters: any = {
     customerName: false,
     receiptNo: false,
@@ -43,6 +47,7 @@ export class SalesHistoryPage {
     private navCtrl: NavController,
     private userService: UserService,
     private storeService: StoreService,
+    private customerService: CustomerService,
     private alertController: AlertController,
     private toastCtrl: ToastController,
     private loading: LoadingController
@@ -76,7 +81,7 @@ export class SalesHistoryPage {
       await this.platform.ready();
       this.total = result.totalCount;
       this.offset += this.limit;
-      this.invoices = result.docs;
+      this.invoices = await this.attachCustomersToSales(result.docs);
       this.invoicesBackup = this.invoices;
       loader.dismiss();
     } catch (err) {
@@ -158,6 +163,19 @@ export class SalesHistoryPage {
     });
   }
 
+  public async searchByCustomer(event: any) {
+    // if (this.customerSearch && this.customerSearch.trim() != '' && this.customerSearch.length > 3) {
+    //   try {
+    //     let customers: Customer[] = await this.customerService.searchByName(this.customerSearch);
+
+    //   } catch (err) {
+    //     return;
+    //   }
+    // } else {
+    //   return;
+    // }
+  }
+
   public searchByStatus() {
     this.invoices = this.invoicesBackup;
     switch (this.selectedStatus) {
@@ -198,7 +216,7 @@ export class SalesHistoryPage {
         this.filters);
       if (result.totalCount > 0) {
         this.total = result.totalCount;
-        this.invoices = result.docs;
+        this.invoices = await this.attachCustomersToSales(result.docs);
         this.invoicesBackup = this.invoices;
       }
     } else {
@@ -207,7 +225,8 @@ export class SalesHistoryPage {
           this.user.currentPos,
           limit | this.limit, offset | this.offset,
           this.filters);
-        this.invoices = this.invoices.concat(result.docs);
+        let invoices = await this.attachCustomersToSales(result.docs);
+        this.invoices = this.invoices.concat(invoices);
         this.invoicesBackup = this.invoices;
       }
     }
@@ -234,5 +253,31 @@ export class SalesHistoryPage {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  private async attachCustomersToSales(invoices) {
+    let customerPromises: any[] = [];
+    invoices.forEach((invoice, index) => {
+      customerPromises.push(new Promise((resolve, reject) => {
+        if (this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
+          invoices[index].customer = this.customersSearchHash[invoice.customerKey];
+          resolve();
+        } else {
+          this.customerService.get(invoice.customerKey).then(customer => {
+            invoices[index].customer = customer;
+            if(!this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
+              this.customersSearchHash[invoice.customerKey] = customer;
+            }
+            resolve();
+          }).catch(err => {
+            invoices[index].customer = null;
+            resolve();
+          });
+        }
+      }));
+    });
+
+    await Promise.all(customerPromises);
+    return invoices;
   }
 }
