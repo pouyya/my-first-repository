@@ -4,13 +4,16 @@ import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
 import { BasketItem } from './../../model/bucketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
+import { Customer } from '../../model/customer';
+import { CreateCustomerModal } from './modals/create-customer/create-customer';
+import { CustomerService } from '../../services/customerService';
 import { UserSession } from '../../model/UserSession';
 
 @Component({
@@ -22,6 +25,7 @@ import { UserSession } from '../../model/UserSession';
 export class BasketComponent {
 
   public _invoice: Sale;
+  public _customer: Customer;
   public tax: number = 0;
   public oldValue: number = 1;
   public balance: number = 0;
@@ -30,6 +34,10 @@ export class BasketComponent {
   public employeesHash: any;
   public saleAppliedValue: number;
   public appliedValueDetails: any;
+  public searchBarEnabled: boolean = true;
+  public showSearchCancel: boolean = false;
+  public searchInput: string = "";
+  public searchedCustomers: any[] = [];
 
   set invoice(obj: Sale) {
     this._invoice = obj;
@@ -42,6 +50,21 @@ export class BasketComponent {
 
   @Input() user: UserSession;
   @Input() refund: boolean;
+  @Input()
+  set customer(model: Customer) {
+    this._customer = model;
+    this.customerChange.emit(model);
+    this.searchInput = "";
+    if (!this._customer) {
+      this.searchBarEnabled = true;
+    } else if (this._customer) {
+      this.searchBarEnabled = false;
+    }
+  }
+  get customer(): Customer {
+    return this._customer;
+  }
+
   @Input('employees')
   set employee(arr: Array<any>) {
     this.employeesHash = _.keyBy(arr, '_id');
@@ -61,13 +84,17 @@ export class BasketComponent {
 
   @Output() paymentClicked = new EventEmitter<any>();
   @Output() notify = new EventEmitter<any>();
+  @Output() customerChange = new EventEmitter<Customer>();
   @Output('_invoiceChange') invoiceChange = new EventEmitter<Sale>();
+
 
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
     private helperService: HelperService,
+    private customerService: CustomerService,
+    private toastCtrl: ToastController,
     private modalCtrl: ModalController) {
   }
 
@@ -176,6 +203,7 @@ export class BasketComponent {
               'text': 'OK',
               handler: () => {
                 this.salesService.instantiateInvoice().then((invoice: any) => {
+                  this.customer = null;
                   this.invoice = invoice.invoice;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
@@ -207,6 +235,7 @@ export class BasketComponent {
           handler: () => {
             this.salesService.delete(this.invoice).then(() => {
               localStorage.removeItem('invoice_id');
+              this.customer = null;
               this.salesService.instantiateInvoice().then((invoice: any) => {
                 this.invoice = invoice.invoice;
                 this.calculateAndSync();
@@ -226,14 +255,92 @@ export class BasketComponent {
     confirm.present();
   }
 
+  public cancelSearch($event) {
+    this.searchInput = "";
+    this.searchBarEnabled = false;
+  }
+
+  public async searchCustomers($event: any) {
+    if (this.searchInput && this.searchInput.trim() != '' && this.searchInput.length > 3) {
+      try {
+        let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
+        this.searchedCustomers = customers;
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    } else {
+      return await Promise.resolve([]);
+    }
+  }
+
+  public openSearchbar() {
+    if (this.invoice.items.length > 0) {
+      this.searchBarEnabled = true;
+    } else {
+      let toast = this.toastCtrl.create({ message: 'Please add items first', duration: 3000 });
+      toast.present();
+    }
+  }
+
+  public assignCustomer(customer: Customer) {
+    this.customer = customer;
+    this.invoice.customerKey = this.customer._id;
+    this.salesService.update(this.invoice);
+    this.salesService.manageInvoiceId(this.invoice);
+  }
+
+  public unassignCustomer() {
+    this.customer = null;
+    this.invoice.customerKey = null;
+    this.invoice.items.length > 0 ?
+      this.salesService.update(this.invoice) :
+      this.salesService.delete(this.invoice);
+    this.salesService.manageInvoiceId(this.invoice);
+  }
+
+  public createCustomer() {
+    let modal = this.modalCtrl.create(CreateCustomerModal, {
+      searchInput: this.searchInput
+    });
+    modal.onDidDismiss(customer => {
+      if (customer) {
+        this.customer = customer;
+        this.invoice.customerKey = this.customer._id;
+        this.salesService.update(this.invoice);
+      }
+    });
+    modal.present();
+  }
+
+  public editCustomer() {
+    let modal = this.modalCtrl.create(CreateCustomerModal, {
+      customer: this.customer
+    });
+    modal.onDidDismiss(customer => {
+      if (customer) {
+        this.customer = customer;
+        this.invoice.customerKey = this.customer._id;
+        this.salesService.update(this.invoice);
+      }
+    });
+    modal.present();
+  }
+
   private calculateAndSync() {
     this.salesService.manageInvoiceId(this.invoice);
     this.calculateTotal(() => {
       this.setBalance();
       this.generatePaymentBtnText();
-      this.invoice.items.length > 0 ?
-        this.salesService.update(this.invoice) :
-        this.salesService.delete(this.invoice)
+      if (this.invoice.items.length > 0) {
+        this.salesService.update(this.invoice);
+      } else {
+        if (this.invoice.customerKey) {
+          this.salesService.update(this.invoice);
+        } else {
+          this.salesService.delete(this.invoice);
+          this.customer = null;
+        }
+      }
     });
   }
 

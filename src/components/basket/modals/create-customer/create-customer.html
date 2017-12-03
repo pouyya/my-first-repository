@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+       {{ text }} Customer
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="customerForm">
+    <ion-grid>
+      <ion-row>
+        <ion-col col-md-12>
+          General Details
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>First Name</ion-label>
+            <ion-input type="text" [formControl]="firstName"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>Last Name</ion-label>
+            <ion-input type="text" [formControl]="lastName"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>Suburb</ion-label>
+            <ion-input type="text" [formControl]="suburb"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>Address</ion-label>
+            <ion-input type="text" [formControl]="address"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>Postcode</ion-label>
+            <ion-input type="text" [formControl]="postcode"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col col-md-12>
+          Contact Details
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>Phone</ion-label>
+            <ion-input type="text" [formControl]="phone"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="alert alert-danger">
+            Invalid phone number. It should only contain numbers, hiphens and a single + sign
+          </ion-item>
+        </ion-col>
+        <ion-col col-md-6>
+          <ion-item>
+            <ion-label>Email</ion-label>
+            <ion-input type="text" [formControl]="email"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+            Invalid email address
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+  </form>
+</ion-content>
+
+<ion-footer>
+  <button ion-button class="pull-right" (click)="create()" [disabled]="!customerForm.valid">{{ text }}</button>
+</ion-footer>

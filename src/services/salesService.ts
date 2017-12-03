@@ -77,10 +77,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public static _createDefaultObject(posID: string, invoiceId: string) {
 		let sale: Sale = new Sale();
-
-		// This is piece of code temporary and used for setting dummy customer names for search
-		let names = ['Omar Zayak', 'Levi Jaegar', 'Mohammad Rehman', 'Fathom McCulin', 'Rothschild'];
-		sale.customerName = names[Math.round(Math.random() * (4 - 0) + 0)];
 		sale._id = invoiceId;
 		sale.posID = posID;
 		sale.subTotal = 0;
@@ -232,7 +228,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public async searchSales(posId, limit, offset, options): Promise<any> {
 		var query: any = {
-			selector: { posID: posId }
+			selector: {
+				posID: posId
+			}
 		};
 		_.each(options, (value, key) => {
 			if (value) {
@@ -287,7 +285,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public manageInvoiceId(sale: Sale) {
 		let invoiceId = localStorage.getItem('invoice_id');
-		if (sale.items.length > 0) {
+		if (sale.items.length > 0 || sale.customerKey) {
 			invoiceId != sale._id && (localStorage.setItem('invoice_id', sale._id));
 		} else {
 			localStorage.removeItem('invoice_id');
@@ -380,7 +378,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			return item;
 		});
 		sale.completed = false;
-		sale.customerName = originalSale.customerName;
+		sale.customerKey = originalSale.customerKey;
 		sale.state = 'refund';
 		sale.receiptNo = this.fountainService.getReceiptNumber(store);
 		sale.payments = [];

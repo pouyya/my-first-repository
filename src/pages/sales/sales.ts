@@ -20,12 +20,14 @@ import { Store } from './../../model/store';
 import { Sale } from './../../model/sale';
 import { SalesTax } from './../../model/salesTax';
 import { PriceBook } from './../../model/priceBook';
+import { Customer } from './../../model/customer';
 import { PurchasableItem } from './../../model/purchasableItem';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
+import { CustomerService } from '../../services/customerService';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -56,6 +58,7 @@ export class Sales {
   public employees: any[] = [];
   public selectedEmployee: any = null;
   public user: UserSession;
+  public customer: Customer = null;
   private invoiceParam: any;
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
@@ -73,6 +76,7 @@ export class Sales {
     private loading: LoadingController,
     private posService: PosService,
     private storeService: StoreService,
+    private customerService: CustomerService,
     private navParams: NavParams,
     private cacheService: CacheService,
     private toastCtrl: ToastController
@@ -175,20 +179,26 @@ export class Sales {
 
   // Event
   public paymentClicked($event) {
-    let pushCallback = async _params => {
-      if (_params) {
-        let response = await this.salesService.instantiateInvoice();
-        this.invoiceParam = null;
-        this.invoice = response.invoice;
-        this.employees = this.employees.map(employee => {
-          employee.selected = false;
-          return employee;
-        });
-        this.selectedEmployee = null;
-        return;
-      }
-
-      return await Promise.resolve();
+    let pushCallback = params => {
+      return new Promise((resolve, reject) => {
+        if(params) {
+          this.salesService.instantiateInvoice().then(response => {
+            this.invoiceParam = null;
+            this.invoice = response.invoice;
+            this.employees = this.employees.map(employee => {
+              employee.selected = false;
+              return employee;
+            });
+            this.selectedEmployee = null;
+            this.customer = null;
+            resolve();
+          }).catch(err => {
+            throw new Error(err);
+          })
+        } else {
+          resolve();
+        }
+      });
     }
 
     this.doRefund = $event.balance < 0;
@@ -213,11 +223,18 @@ export class Sales {
     this.priceBooks = data[3] as PriceBook[];
     this.priceBook = data[1] as PriceBook;
 
-    this.priceBooks.sort(
-      firstBy("priority").thenBy((book1, book2) => {
-        return new Date(book2._id).getTime() - new Date(book1._id).getTime();
-      })
-    );
+        if(invoiceData.invoice.customerKey) {
+          // parallel
+					this.customerService.get(invoiceData.invoice.customerKey)
+						.then(customer => this.customer = customer)
+            .catch(err => {  })
+        }
+
+        this.priceBooks.sort(
+          firstBy("priority").thenBy((book1, book2) => {
+            return new Date(book2._id).getTime() - new Date(book1._id).getTime();
+          })
+        );
 
     if (invoiceData.doRecalculate) {
       var _invoice: Sale = await this.salesService.reCalculateInMemoryInvoice(

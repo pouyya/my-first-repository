@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Customer</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="save()" [disabled]="!customerForm.valid">
+        save
+      </button>
+      &nbsp;
+      <button ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="customerForm">
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">First Name</ion-label>
+        <ion-input type="text" [formControl]="firstName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Last Name</ion-label>
+        <ion-input type="text" [formControl]="lastName"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="(firstName.errors && (firstName.dirty || firstName.touched) && firstName.oneRequired) || (lastName.errors && (lastName.dirty || lastName.touched) && lastName.oneRequired)" class="alert alert-danger">
+        Must be either first name or last name
+      </ion-item>
+      <ion-item>        
+        <ion-label class="item-name">Date of Birth</ion-label>
+        <ion-datetime displayFormat="MM-DD-YYYY" min="1900" pickerFormat="MM-DD-YYYY" [formControl]="dob">
+        </ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Phone</ion-label>
+        <ion-input type="text" [formControl]="phone"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="alert alert-danger">
+        Invalid phone number. It should only contain numbers, hiphens and a single + sign
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Email</ion-label>
+        <ion-input type="text" [formControl]="email"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+        Invalid email address
+      </ion-item>      
+      <ion-item>
+        <ion-label class="item-name">Suburb</ion-label>
+        <ion-input type="text" [formControl]="suburb"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Postcode</ion-label>
+        <ion-input type="text" [formControl]="postcode"></ion-input>
+      </ion-item>      
+      <ion-item>
+        <ion-label class="item-name">Country</ion-label>
+        <ion-select [formControl]="country">
+          <ion-option [value]="c.c" *ngFor="let c of countries">{{c.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

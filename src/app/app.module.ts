@@ -1,5 +1,5 @@
 // core
-import { FormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
@@ -59,7 +59,9 @@ import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
-import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles';
+import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
+import { Customers } from './../pages/customers/customers';;
+import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 import { DataSync } from '../pages/dataSync/dataSync';
 
 // components
@@ -110,6 +112,7 @@ import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluation
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
+import { CustomerService } from './../services/customerService';
 
 // used to create fake backend
 import { fakeBackendProvider } from './../services/_fakeBackend';
@@ -117,6 +120,7 @@ import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
+import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
 
@@ -171,7 +175,10 @@ const cloudSettings: CloudSettings = {
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
     TimeLogDetailsModal,
-    SelectRolesModal
+    SelectRolesModal,
+    Customers,
+    CustomerDetails,
+    CreateCustomerModal
   ],
   imports: [
     FormsModule,
@@ -194,6 +201,7 @@ const cloudSettings: CloudSettings = {
     MatInputModule,
     BrowserAnimationsModule,
     DndModule.forRoot(),
+    ReactiveFormsModule,
 
     // custom
     SharedModule,
@@ -253,7 +261,10 @@ const cloudSettings: CloudSettings = {
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
     TimeLogDetailsModal,
-    SelectRolesModal
+    SelectRolesModal,
+    Customers,
+    CustomerDetails,
+    CreateCustomerModal
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -285,6 +296,7 @@ const cloudSettings: CloudSettings = {
     SecurityService,
     PluginService,
     EmployeeTimestampService,
+    CustomerService,
     AuthService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
