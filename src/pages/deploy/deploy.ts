@@ -42,7 +42,7 @@ export class DeployPage {
   }
 
   private async navigateToNextStep() {
-    var user = await this.userService.getUser();
-    this.navCtrl.setRoot(user ? DataSync : LoginPage);
+    var hasUser = await this.userService.hasUser();
+    this.navCtrl.setRoot(hasUser ? DataSync : LoginPage);
   }
 }

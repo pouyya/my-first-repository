@@ -5,6 +5,8 @@ export interface AppSettingsInterface {
   trackEmployeeSales?: boolean;
   screenAwake?: boolean;
   db_url?: string;
+  db_critical_name?: string;
+  db_critical_local_name?: string;  
   db_name?: string;
   db_local_name?: string;
   defaultIcon?: any;

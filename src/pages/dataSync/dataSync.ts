@@ -30,7 +30,7 @@ export class DataSync {
     }
 
     async ionViewDidLoad() {
-        let user = await this.userService.getUser();
+        let user = await this.userService.getDeviceUser();
 
         let loadStoreData = async () => {
             let currentPos: POS;
@@ -44,16 +44,21 @@ export class DataSync {
                 this._sharedService.publish({ currentStore, currentPos });
                 this.userService.setSession(user);
             } else {
-                let user = await this.userService.getUser();
                 currentPos = await this.posService.get(user.currentPos);
                 currentStore = await this.storeService.get(user.currentStore);
-                this._sharedService.publish({ currentStore, currentPos });
             }
+
+            this._sharedService.publish({ currentStore, currentPos });
         };
 
         ConfigService.externalDBUrl = user.settings.db_url;
+
+        ConfigService.externalCriticalDBName = user.settings.db_critical_name;
+        ConfigService.internalCriticalDBName = user.settings.db_critical_local_name;
+        
         ConfigService.externalDBName = user.settings.db_name;
         ConfigService.internalDBName = user.settings.db_local_name;
+
 
         this.updateText = "Check for data update!";
 

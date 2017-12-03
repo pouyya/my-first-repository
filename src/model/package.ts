@@ -11,7 +11,6 @@ export class Package extends PurchasableItem
     }
 
     public name: string;
-    public price: number;
     public color: string;
     public image: string;
 }

@@ -1,6 +1,22 @@
 export class ConfigService {
     //TODO: AZ - Need to move values in different file and based on different build type (dev, pre-prod, prod) need to transform config file
 
+    static _internalCriticalDBName : string = "";
+    static get internalCriticalDBName() : string {
+        return this._internalCriticalDBName;
+    }
+    static set internalCriticalDBName(v : string) {
+        this._internalCriticalDBName = v;
+    }
+
+    static _externalCriticalDBName : string = "";
+    static get externalCriticalDBName() : string {
+        return this._externalCriticalDBName;
+    }
+    static set externalCriticalDBName(v : string) {
+        this._externalCriticalDBName = v;
+    }
+    
     static _internalDBName: string = "";
     static get internalDBName(): string {
         return ConfigService._internalDBName;
@@ -29,6 +45,10 @@ export class ConfigService {
 
     static get currentFullExternalDBUrl(): string {
         return ConfigService.externalDBUrl + "/" + ConfigService.externalDBName;
+    }
+
+    static get currentCriticalFullExternalDBUrl(): string {
+        return ConfigService.externalDBUrl + "/" + ConfigService.externalCriticalDBName;
     }
 
     static isDevelopment(): boolean {

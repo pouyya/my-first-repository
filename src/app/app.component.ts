@@ -60,7 +60,7 @@ export class SimplePOSApp implements OnInit {
 
   async ngOnInit() {
     try {
-      var user = await this.userService.getUser();
+      var user = await this.userService.getDeviceUser();
       this.rootPage = DeployPage;
       if (this.platformService.isMobileDevice()) {
         user.settings.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();

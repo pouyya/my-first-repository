@@ -2,16 +2,21 @@ import { EventEmitter } from '@angular/core';
 import { DBBasedEntity } from "../model/DBBasedEntity";
 import { DB } from '../db/db';
 import { PouchDBProvider } from "../provider/pouchDBProvider";
+import { ConfigService } from './configService';
+import { DBModeEnum } from '../metadata/dbMode';
 
 export class DBService<T extends DBBasedEntity> {
 
-    static pluginInitialized: boolean = false;
     public static criticalDBSyncProgress: EventEmitter<any> = new EventEmitter();
-    public static criticalDB: DB;
-    private static db: DB;
+    public static dbSyncProgress: EventEmitter<any> = new EventEmitter();
 
+    private static pluginInitialized: boolean = false;
+    private static criticalDB: DB;
+    private static currentDB: DB;
+
+    private entityTypeInstance: any;
     constructor(private entityType) {
-        DBService.initialize();
+        this.entityTypeInstance = new this.entityType();
     }
 
     public static initializePlugin() {
@@ -24,16 +29,22 @@ export class DBService<T extends DBBasedEntity> {
     public static initialize() {
         if (DBService.criticalDB == null) {
             DBService.criticalDB = new DB(this.criticalDBSyncProgress);
-            DBService.criticalDB.initialize();
+            DBService.criticalDB.initialize(ConfigService.currentCriticalFullExternalDBUrl, ConfigService.internalCriticalDBName);
         }
 
-        // if (DBService.db == null) {
-        //     DBService.criticalDB = new DB();
-        //     DBService.criticalDB.initialize();
-        // }
+        if (DBService.currentDB == null) {
+            DBService.currentDB = new DB(this.dbSyncProgress);
+            DBService.currentDB.initialize(ConfigService.currentFullExternalDBUrl, ConfigService.internalDBName);
+        }
     }
 
     public getDB(): DB {
+        if (this.entityTypeInstance
+            && this.entityTypeInstance.DBMode == DBModeEnum.Current) {
+
+            return DBService.currentDB;
+        }
+
         return DBService.criticalDB;
     }
 
@@ -68,13 +79,13 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     async getAll(): Promise<Array<T>> {
-        var entityTypeName = (new this.entityType()).entityTypeName;
+        var entityTypeName = this.entityTypeInstance.entityTypeName;
         return await this.getDB().find({ selector: { entityTypeName: entityTypeName }, include_docs: true });
     }
 
     findBy(selector: any): Promise<Array<T>> {
         selector.include_docs = true;
-        selector.entityTypeName = (new this.entityType()).entityTypeName;
+        selector.entityTypeName = this.entityTypeInstance.entityTypeName;
         return this.getDB().find(selector);
     }
 

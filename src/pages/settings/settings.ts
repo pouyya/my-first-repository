@@ -11,6 +11,7 @@ import { AppService } from "../../services/appService";
 import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { AccountSettingService } from '../../services/accountSettingService';
+import { AccountSetting } from '../../model/accountSetting';
 
 @PageModule(() => SettingsModule)
 @Component({
@@ -24,7 +25,7 @@ export class Settings {
   public taxTypes: Array<any> = [];
   public selectedType: number;
   public selectedTax: string;
-  public accountSetting: any;
+  public accountSetting: AccountSetting;
   private currentTax: any;
   private newTax: any;
   private setting: AppSettingsInterface;
@@ -62,10 +63,10 @@ export class Settings {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
-        this.selectedType = !this.setting.taxType ? 0 : 1;
-        this.selectedTax = this.setting.defaultTax;
+        this.selectedType = !this.accountSetting.taxType ? 0 : 1;
+        this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {
-          return saleTax._id === this.setting.defaultTax;
+          return saleTax._id === this.accountSetting.defaultTax;
         });
         this.cdr.reattach();
       });
@@ -79,24 +80,18 @@ export class Settings {
 
     await loader.present();
 
-    // this.setting.taxType = this.selectedType == 0 ? false : true;
-    // this.newTax = _.find(this.salesTaxes, (saleTax) => {
-    //   return saleTax._id === this.selectedTax;
-    // });
-    // this.setting.defaultTax = this.newTax._id;
-    // this.setting.taxEntity = this.newTax.entityTypeName;
-    // this.currentTax = this.newTax
-    // var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
-    // this.salesTaxes = taxes;
-    let user = await this.userService.getUser();
-    // user.settings.defaultTax = this.newTax._id;
-    // user.settings.taxEntity = this.newTax.entityTypeName;
-    // user.settings.taxType = this.selectedType;
-    // user.settings.trackEmployeeSales = this.setting.trackEmployeeSales;
-    // this.userService.setSession(user);
-    
-    user.settings.screenAwake = this.setting.screenAwake;
-    this._sharedService.publish({ screenAwake: user.settings.screenAwake });
+    this.newTax = _.find(this.salesTaxes, (saleTax) => {
+      return saleTax._id === this.selectedTax;
+    });
+    this.currentTax = this.newTax
+    var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
+    this.salesTaxes = taxes;
+
+    this._sharedService.publish({ screenAwake: this.accountSetting.screenAwake });
+
+    this.accountSetting.taxType = this.selectedType == 0 ? false : true;
+    this.accountSetting.defaultTax = this.newTax._id;
+    this.accountSetting.taxEntity = this.newTax.entityTypeName;
 
     this.accountSettingService.update(this.accountSetting);
 
