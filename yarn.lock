@@ -8,9 +8,9 @@
   dependencies:
     tslib "^1.7.1"
 
-"@angular/cdk@^2.0.0-beta.8":
-  version "2.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-2.0.0-beta.12.tgz#3a243cb62b93f4e039120ba70f900dc9e235622e"
+"@angular/cdk@^5.0.0-rc0":
+  version "5.0.0-rc0"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-5.0.0-rc0.tgz#b7225af1d8d23c13ac14bbd3fe1c6b427eb71368"
   dependencies:
     tslib "^1.7.1"
 
@@ -76,37 +76,37 @@
   dependencies:
     tsickle "^0.21.0"
 
-"@ionic-native/core@^4.2.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.4.0.tgz#fb0f071543bd2725d858f5a0f5c20adbece20df4"
+"@ionic-native/core@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.3.3.tgz#d527a577207843f5bdf853ea78ed79daf986b067"
 
-"@ionic-native/dialogs@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/dialogs/-/dialogs-4.2.1.tgz#fb9d3013ce2c428030b6a38bbbf94ff1553bab0a"
+"@ionic-native/dialogs@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/dialogs/-/dialogs-4.3.3.tgz#e3f86f5ab7857b15004b128c96d94c2fc4709fd2"
 
-"@ionic-native/firebase@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.2.1.tgz#561bd0728b6f984b351391e43d2de288ede442ff"
+"@ionic-native/firebase@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.3.3.tgz#b71882fa06ec07fe30bc4ebaecb0e4e257113388"
 
-"@ionic-native/in-app-browser@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.2.1.tgz#a1fed3ea095b75733563250ac48edbfec4830b99"
+"@ionic-native/in-app-browser@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.3.3.tgz#eee274f404c9c545433836935d00bdf1f336e7fc"
 
-"@ionic-native/insomnia@^4.4.0":
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/insomnia/-/insomnia-4.4.0.tgz#8b502fc07b98ca82b1cc23e6efc9ca2c4c17f580"
+"@ionic-native/insomnia@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/insomnia/-/insomnia-4.3.3.tgz#f16ad19107c157ea16e14f3a109f038c642c047e"
 
-"@ionic-native/pin-dialog@4.2.1":
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.2.1.tgz#613093c2ec7e45b89518ae0ed0e0fef8c06ead46"
+"@ionic-native/pin-dialog@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.3.3.tgz#53a4465380aaab6d77ec44946c78dc40154d144c"
 
-"@ionic-native/splash-screen@3.4.2":
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-3.4.2.tgz#3ce378a3413bab8a0cd4cfd5029c3fadd9a6774c"
+"@ionic-native/splash-screen@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.3.3.tgz#50e3deb20d45982cb27576a800c971a10029afd3"
 
-"@ionic-native/status-bar@3.14.0":
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-3.14.0.tgz#30ee1bc8a34895fb261b1e3d58fa30fb188857df"
+"@ionic-native/status-bar@4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.3.3.tgz#f68e236e84158eccc1a0144e53bc557d41ed521f"
 
 "@ionic/app-scripts@1.3.6":
   version "1.3.6"
@@ -142,9 +142,9 @@
     ws "1.1.1"
     xml2js "^0.4.17"
 
-"@ionic/cli-framework@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@ionic/cli-framework/-/cli-framework-0.1.1.tgz#083c079cc664233edf596331e64a703c04336ffb"
+"@ionic/cli-framework@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@ionic/cli-framework/-/cli-framework-0.1.2.tgz#5b094dc30ba045c8022de871e793965f1c9b1214"
   dependencies:
     chalk "^2.3.0"
     ncp "^2.0.0"
@@ -153,11 +153,11 @@
     superagent "^3.8.0"
     tslib "^1.8.0"
 
-"@ionic/cli-utils@1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@ionic/cli-utils/-/cli-utils-1.18.0.tgz#c3ca87b55a4a48d7d287b2df9bb9e3297f5db985"
+"@ionic/cli-utils@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@ionic/cli-utils/-/cli-utils-1.19.0.tgz#80b1cfab7fee812d4415f518c12515dd4c1a7b80"
   dependencies:
-    "@ionic/cli-framework" "0.1.1"
+    "@ionic/cli-framework" "0.1.2"
     "@ionic/discover" "0.4.0"
     archiver "^2.1.0"
     basic-auth "^1.1.0"
@@ -170,12 +170,13 @@
     diff "^3.4.0"
     elementtree "^0.1.7"
     express "^4.16.2"
+    http-proxy-middleware "^0.17.4"
     inquirer "^3.3.0"
     leek "0.0.24"
     lodash "^4.17.4"
     minimist "^1.2.0"
     opn "^5.1.0"
-    proxy-middleware "^0.15.0"
+    os-name "^2.0.1"
     semver "^5.4.1"
     slice-ansi "^1.0.0"
     ssh-config "^1.1.1"
@@ -233,6 +234,16 @@
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
 
+"@types/events@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/events/-/events-1.1.0.tgz#93b1be91f63c184450385272c47b6496fd028e02"
+
+"@types/htmlparser2@^3.7.31":
+  version "3.7.31"
+  resolved "https://registry.yarnpkg.com/@types/htmlparser2/-/htmlparser2-3.7.31.tgz#ae89353691ce37fa2463c3b8b4698f20ef67a59b"
+  dependencies:
+    "@types/node" "*"
+
 "@types/localforage@0.0.30":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/localforage/-/localforage-0.0.30.tgz#3d60a6bf6dda38e3f8a469611598379f1f649509"
@@ -241,123 +252,33 @@
   version "4.14.85"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.85.tgz#a16fbf942422f6eca5622b6910492c496c35069b"
 
+"@types/node@*":
+  version "8.0.54"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.54.tgz#3fd9357db4af388b79e03845340259440edffde6"
+  dependencies:
+    "@types/events" "*"
+
 "@types/node@^8.0.24":
   version "8.0.52"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.52.tgz#8e7f47747868e7687f2cd4922966e2d6af78d22d"
 
-"@types/pouchdb-adapter-fruitdown@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-fruitdown/-/pouchdb-adapter-fruitdown-6.1.1.tgz#052b51d38bd6298fec711d4f1c6c91c609b967c0"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-http@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-http/-/pouchdb-adapter-http-6.1.1.tgz#a884fc0958b8f574de75671e28533e3354255612"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-idb@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-idb/-/pouchdb-adapter-idb-6.1.1.tgz#55ea54b5662c7fc5403e7cd409d934e3f30deb8d"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-leveldb@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-leveldb/-/pouchdb-adapter-leveldb-6.1.1.tgz#97382d53d93b48dae278a0b3a4bdcd9e08b01019"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-localstorage@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-localstorage/-/pouchdb-adapter-localstorage-6.1.1.tgz#e4908599e196cf84c147516fe8b37d8040e76543"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-memory@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-memory/-/pouchdb-adapter-memory-6.1.1.tgz#cf55b70c237fa5bb64f23311a2fcb77183ac36cc"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-node-websql@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-node-websql/-/pouchdb-adapter-node-websql-6.1.1.tgz#021fd1c1baf02aac2f52d5a1e5a015aef3d5bb21"
-  dependencies:
-    "@types/pouchdb-adapter-websql" "*"
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-adapter-websql@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-adapter-websql/-/pouchdb-adapter-websql-6.1.1.tgz#dc9f0b1c420a2549dfa1ec002d4e61bf0e4d2a24"
-  dependencies:
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-browser@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-browser/-/pouchdb-browser-6.1.1.tgz#7a3874c394a83557eeb2bb689e9b02a9fe482c80"
-  dependencies:
-    "@types/pouchdb-adapter-http" "*"
-    "@types/pouchdb-adapter-idb" "*"
-    "@types/pouchdb-adapter-websql" "*"
-    "@types/pouchdb-core" "*"
-    "@types/pouchdb-mapreduce" "*"
-    "@types/pouchdb-replication" "*"
-
-"@types/pouchdb-core@*":
+"@types/pouchdb-core@*", "@types/pouchdb-core@6.1.9":
   version "6.1.9"
   resolved "https://registry.yarnpkg.com/@types/pouchdb-core/-/pouchdb-core-6.1.9.tgz#29e1fcae755c1d7f3f975ece3bb7213951f016a3"
   dependencies:
     "@types/debug" "*"
 
-"@types/pouchdb-http@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-http/-/pouchdb-http-6.1.1.tgz#c99ba06da3cdab05e8874ac30b0a4265c7077242"
-  dependencies:
-    "@types/pouchdb-adapter-http" "*"
-    "@types/pouchdb-core" "*"
-
-"@types/pouchdb-mapreduce@*":
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-mapreduce/-/pouchdb-mapreduce-6.1.2.tgz#d0bd1369c06055ee655f9ec76eb43c52ba3034b1"
+"@types/pouchdb-find@6.3.1":
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/@types/pouchdb-find/-/pouchdb-find-6.3.1.tgz#1e39e31d87613ffc2232276b66e24066a30c6d34"
   dependencies:
     "@types/pouchdb-core" "*"
 
-"@types/pouchdb-node@*":
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb-node/-/pouchdb-node-6.1.1.tgz#5084e03db543019e06bad732cd69122d1ee9a1e1"
-  dependencies:
-    "@types/pouchdb-adapter-http" "*"
-    "@types/pouchdb-adapter-leveldb" "*"
-    "@types/pouchdb-core" "*"
-    "@types/pouchdb-mapreduce" "*"
-    "@types/pouchdb-replication" "*"
-
-"@types/pouchdb-replication@*":
+"@types/pouchdb-replication@6.1.3":
   version "6.1.3"
   resolved "https://registry.yarnpkg.com/@types/pouchdb-replication/-/pouchdb-replication-6.1.3.tgz#38d365f7656e3cffae8ea4a04cfa283a9ea16a4b"
   dependencies:
     "@types/pouchdb-core" "*"
-
-"@types/pouchdb@^6.1.0":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@types/pouchdb/-/pouchdb-6.3.1.tgz#3419675b979677ba9084ffe5e59b288066571346"
-  dependencies:
-    "@types/pouchdb-adapter-fruitdown" "*"
-    "@types/pouchdb-adapter-http" "*"
-    "@types/pouchdb-adapter-idb" "*"
-    "@types/pouchdb-adapter-leveldb" "*"
-    "@types/pouchdb-adapter-localstorage" "*"
-    "@types/pouchdb-adapter-memory" "*"
-    "@types/pouchdb-adapter-node-websql" "*"
-    "@types/pouchdb-adapter-websql" "*"
-    "@types/pouchdb-browser" "*"
-    "@types/pouchdb-core" "*"
-    "@types/pouchdb-http" "*"
-    "@types/pouchdb-mapreduce" "*"
-    "@types/pouchdb-node" "*"
-    "@types/pouchdb-replication" "*"
 
 abbrev@1:
   version "1.1.1"
@@ -1469,6 +1390,14 @@ cordova-common@^2.1.0:
     underscore "^1.8.3"
     unorm "^1.3.3"
 
+cordova-plugin-chrome-apps-common@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-chrome-apps-common/-/cordova-plugin-chrome-apps-common-1.0.7.tgz#300319b59c79dc552293f83a2332cf283b10908a"
+
+cordova-plugin-chrome-apps-sockets-tcp@^1.3.7:
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-chrome-apps-sockets-tcp/-/cordova-plugin-chrome-apps-sockets-tcp-1.3.7.tgz#1fa323b362e03952b3c9c68dd8b8f6cf5eee55ac"
+
 cordova-plugin-console@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/cordova-plugin-console/-/cordova-plugin-console-1.0.5.tgz#f0e29aee9c03cab9e9d883b01d19f22ddd5c8570"
@@ -1484,6 +1413,10 @@ cordova-plugin-dialogs@~1.3.3:
 cordova-plugin-firebase@~0.1.24:
   version "0.1.24"
   resolved "https://registry.yarnpkg.com/cordova-plugin-firebase/-/cordova-plugin-firebase-0.1.24.tgz#a9993a5c767115024cd882090ee8814fa4efb984"
+
+cordova-plugin-insomnia@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-insomnia/-/cordova-plugin-insomnia-4.3.0.tgz#832a33f6d763f0b80273bdf761b35b678c43b957"
 
 cordova-plugin-pin-dialog@^0.1.3:
   version "0.1.3"
@@ -1750,9 +1683,37 @@ doctrine@^0.7.2:
     esutils "^1.1.6"
     isarray "0.0.1"
 
+dom-serializer@0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-0.1.0.tgz#073c697546ce0780ce23be4a28e293e40bc30c82"
+  dependencies:
+    domelementtype "~1.1.1"
+    entities "~1.1.1"
+
 domain-browser@^1.1.1:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.1.7.tgz#867aa4b093faa05f1de08c06f4d7b21fdf8698bc"
+
+domelementtype@1, domelementtype@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.3.0.tgz#b17aed82e8ab59e52dd9c19b1756e0fc187204c2"
+
+domelementtype@~1.1.1:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-1.1.3.tgz#bd28773e2642881aec51544924299c5cd822185b"
+
+domhandler@^2.3.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-2.4.1.tgz#892e47000a99be55bbf3774ffea0561d8879c259"
+  dependencies:
+    domelementtype "1"
+
+domutils@^1.5.1:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/domutils/-/domutils-1.6.2.tgz#1958cc0b4c9426e9ed367fb1c8e854891b0fa3ff"
+  dependencies:
+    dom-serializer "0"
+    domelementtype "1"
 
 double-ended-queue@2.1.0-0:
   version "2.1.0-0"
@@ -1860,6 +1821,10 @@ enhanced-resolve@^3.0.0:
     object-assign "^4.0.1"
     tapable "^0.2.7"
 
+entities@^1.1.1, entities@~1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
+
 errno@^0.1.3, errno@~0.1.1:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/errno/-/errno-0.1.4.tgz#b896e23a9e5e8ba33871fc996abd3635fc9a1c7d"
@@ -1960,6 +1925,10 @@ etag@~1.7.0:
 etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
+
+eventemitter3@1.x.x:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
 
 events@^1.0.0:
   version "1.1.1"
@@ -2546,6 +2515,17 @@ hosted-git-info@^2.1.4:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.5.0.tgz#6d60e34b3abbc8313062c3b798ef8d901a07af3c"
 
+htmlparser2@^3.9.2:
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.9.2.tgz#1bdf87acca0f3f9e53fa4fcceb0f4b4cbb00b338"
+  dependencies:
+    domelementtype "^1.3.0"
+    domhandler "^2.3.0"
+    domutils "^1.5.1"
+    entities "^1.1.1"
+    inherits "^2.0.1"
+    readable-stream "^2.0.2"
+
 http-errors@1.6.2, http-errors@~1.6.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.6.2.tgz#0a002cc85707192a7e7946ceedc11155f60ec736"
@@ -2566,6 +2546,22 @@ http-errors@~1.5.1:
 http-parser-js@>=0.4.0:
   version "0.4.9"
   resolved "https://registry.yarnpkg.com/http-parser-js/-/http-parser-js-0.4.9.tgz#ea1a04fb64adff0242e9974f297dd4c3cad271e1"
+
+http-proxy-middleware@^0.17.4:
+  version "0.17.4"
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-0.17.4.tgz#642e8848851d66f09d4f124912846dbaeb41b833"
+  dependencies:
+    http-proxy "^1.16.2"
+    is-glob "^3.1.0"
+    lodash "^4.17.2"
+    micromatch "^2.3.11"
+
+http-proxy@^1.16.2:
+  version "1.16.2"
+  resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.16.2.tgz#06dff292952bf64dbe8471fa9df73066d4f37742"
+  dependencies:
+    eventemitter3 "1.x.x"
+    requires-port "1.x.x"
 
 http-signature@~1.1.0:
   version "1.1.1"
@@ -2701,15 +2697,14 @@ ionic-plugin-keyboard@~2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ionic-plugin-keyboard/-/ionic-plugin-keyboard-2.2.1.tgz#f2a9e169bbe9b5522400347c9fd6d3467ee3fa12"
 
-ionic@3.18.0:
-  version "3.18.0"
-  resolved "https://registry.yarnpkg.com/ionic/-/ionic-3.18.0.tgz#62a71f892ecc4f06d97a892ac9945c524c75c852"
+ionic@3.19.0:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/ionic/-/ionic-3.19.0.tgz#e16a3389737292d7f751c50903009863fe3d181a"
   dependencies:
-    "@ionic/cli-framework" "0.1.1"
-    "@ionic/cli-utils" "1.18.0"
+    "@ionic/cli-framework" "0.1.2"
+    "@ionic/cli-utils" "1.19.0"
     chalk "^2.3.0"
     opn "^5.1.0"
-    os-name "^2.0.1"
     semver "^5.3.0"
     tslib "^1.8.0"
 
@@ -2781,6 +2776,10 @@ is-extglob@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-extglob/-/is-extglob-1.0.0.tgz#ac468177c4943405a092fc8f29760c6ffc6206c0"
 
+is-extglob@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/is-extglob/-/is-extglob-2.1.1.tgz#a88c02535791f02ed37c76a1b9ea9773c833f8c2"
+
 is-falsey-x@^1.0.0, is-falsey-x@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-falsey-x/-/is-falsey-x-1.0.1.tgz#c469951adc95b8b3fdbf90929b335a7de937d17f"
@@ -2828,6 +2827,12 @@ is-glob@^2.0.0, is-glob@^2.0.1:
   resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-2.0.1.tgz#d096f926a3ded5600f3fdfd91198cb0888c2d863"
   dependencies:
     is-extglob "^1.0.0"
+
+is-glob@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-3.1.0.tgz#7ba5ae24217804ac70707b96922567486cc3e84a"
+  dependencies:
+    is-extglob "^2.1.0"
 
 is-index-x@^1.0.0:
   version "1.1.0"
@@ -3278,7 +3283,7 @@ lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.8.0, lodash@~4.17.4:
+lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.8.0, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4024,7 +4029,7 @@ pouchdb-abstract-mapreduce@6.3.4:
     pouchdb-promise "6.3.4"
     pouchdb-utils "6.3.4"
 
-pouchdb-adapter-cordova-sqlite@^2.0.2:
+pouchdb-adapter-cordova-sqlite@2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-cordova-sqlite/-/pouchdb-adapter-cordova-sqlite-2.0.2.tgz#5ee3e4c160ac1503122e56c15ea607c5f88d55b6"
   dependencies:
@@ -4073,7 +4078,7 @@ pouchdb-errors@6.3.4:
   dependencies:
     inherits "2.0.3"
 
-pouchdb-find@^6.2.0:
+pouchdb-find@^6.3.4:
   version "6.3.4"
   resolved "https://registry.yarnpkg.com/pouchdb-find/-/pouchdb-find-6.3.4.tgz#27163e3d9a82bab2cc6db1deb73447762e8bd705"
   dependencies:
@@ -4136,7 +4141,7 @@ pouchdb-utils@6.3.4:
     pouchdb-promise "6.3.4"
     uuid "^3.1.0"
 
-pouchdb@^6.2.0:
+pouchdb@^6.3.4:
   version "6.3.4"
   resolved "https://registry.yarnpkg.com/pouchdb/-/pouchdb-6.3.4.tgz#e3c8596d19cc12f7474ca48d5d3800affaf701b1"
   dependencies:
@@ -4242,7 +4247,7 @@ proxy-addr@~2.0.2:
     forwarded "~0.1.2"
     ipaddr.js "1.5.2"
 
-proxy-middleware@0.15.0, proxy-middleware@^0.15.0:
+proxy-middleware@0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/proxy-middleware/-/proxy-middleware-0.15.0.tgz#a3fdf1befb730f951965872ac2f6074c61477a56"
 
@@ -4614,6 +4619,10 @@ require-object-coercible-x@^1.4.1:
   resolved "https://registry.yarnpkg.com/require-object-coercible-x/-/require-object-coercible-x-1.4.1.tgz#75b9fb5bda2d15cf705a5714f108e8b40ca3eb2e"
   dependencies:
     is-nil-x "^1.4.1"
+
+requires-port@1.x.x:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
 
 resolve@1.1.7:
   version "1.1.7"
@@ -5226,6 +5235,10 @@ tar@^4.0.2:
     minizlib "^1.0.4"
     mkdirp "^0.5.0"
     yallist "^3.0.2"
+
+text-encoding@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
 
 thenby@^1.2.3:
   version "1.2.3"
