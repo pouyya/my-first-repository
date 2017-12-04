@@ -382,6 +382,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.state = 'refund';
 		sale.receiptNo = this.fountainService.getReceiptNumber(store);
 		sale.payments = [];
+		sale.appliedValues = _.cloneDeep(originalSale.appliedValues);
+		sale.saleAppliedValue = originalSale.saleAppliedValue;
+		sale.saleAppliedType = originalSale.saleAppliedType;
 		this.calculateSale(sale);
 		return sale;
 	}
