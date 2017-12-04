@@ -265,10 +265,12 @@ export class BasketComponent {
       try {
         let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
         this.searchedCustomers = customers;
+        return;
       } catch (err) {
         return Promise.reject(err);
       }
     } else {
+      this.searchedCustomers = [];
       return await Promise.resolve([]);
     }
   }
