@@ -129,4 +129,5 @@
     <plugin name="ionic-plugin-deploy" spec="~0.6.7" />
     <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
     <plugin name="cordova-plugin-insomnia" spec="~4.3.0" />
+    <plugin name="cz.blocshop.socketsforcordova" spec="^1.1.0" />
 </widget>
