@@ -16,9 +16,18 @@
           <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
         </ion-select>
       </ion-col>
-      <ion-col col-md-4>
+      <ion-col col-md-4 class="customer-search-container">
         <p>Customer</p>
-        <ion-searchbar (ionInput)="searchByCustomer($event)" [(ngModel)]="customerSearch" [debounce]="500" [animated]="true"></ion-searchbar>
+        <ion-searchbar (ionInput)="searchForCustomer($event)"
+        [cancelButtonText]="cancelButtonText"
+        (ionCancel)="resetCustomerSearch($event)" 
+        showCancelButton="true"
+        [(ngModel)]="customerSearch" [debounce]="500" [animated]="true"></ion-searchbar>
+        <ion-list class="customer-search-list" *ngIf="customerSearch && searchedCustomers.length > 0">
+          <ion-item *ngFor="let item of searchedCustomers" (click)="searchByCustomer(item)" tappable>
+            {{ item.firstName }} {{ item.lastName }}
+          </ion-item>
+        </ion-list>
       </ion-col>
       <ion-col col-md-4>
         <p>Receipt No#</p>
@@ -30,13 +39,27 @@
     <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col col-md-2><strong>Date</strong></ion-col>
-          <ion-col col-md-1><strong>Receipt</strong></ion-col>
-          <ion-col col-md-2><strong>Sold by</strong></ion-col>
-          <ion-col col-md-2><strong>Customer</strong></ion-col>
-          <ion-col col-md-2><strong>Note</strong></ion-col>
-          <ion-col col-md-1><strong>Sale Total</strong></ion-col>
-          <ion-col col-md-1><strong>Status</strong></ion-col>
+          <ion-col col-md-2>
+            <strong>Date</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>Receipt</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Sold by</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Customer</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Note</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>Sale Total</strong>
+          </ion-col>
+          <ion-col col-md-1>
+            <strong>Status</strong>
+          </ion-col>
           <ion-col col-md-1></ion-col>
         </ion-row>
       </ion-grid>
@@ -91,10 +114,12 @@
           <ion-row>
             <ion-col col-md-4>Note</ion-col>
             <ion-col col-md-4>
-              SubTotal<br/> Total Tax (No Tax)
+              SubTotal
+              <br/> Total Tax (No Tax)
             </ion-col>
             <ion-col col-md-4>
-              ${{invoice.taxTotal}}<br/> $0.00
+              ${{invoice.taxTotal}}
+              <br/> $0.00
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -121,17 +146,19 @@
                 <ion-icon name="refresh"></ion-icon> Return Items
               </ion-item>
               <ion-item *ngIf="invoice.state === 'completed'" class="clickable" (click)="printSale(invoice)">
-                  <ion-icon name="print"></ion-icon> Print Invoice
-                </ion-item>              
+                <ion-icon name="print"></ion-icon> Print Invoice
+              </ion-item>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col col-md-4>Note</ion-col>
             <ion-col col-md-4>
-              SubTotal<br/> Total Tax (No Tax)
+              SubTotal
+              <br/> Total Tax (No Tax)
             </ion-col>
             <ion-col col-md-4>
-              ${{invoice.taxTotal}}<br/> $0.00
+              ${{invoice.taxTotal}}
+              <br/> $0.00
             </ion-col>
           </ion-row>
         </ion-grid>
