@@ -120,6 +120,7 @@ export class PaymentsPage {
       });
       this.invoice.state = 'refund';
       this.invoice.completed = true;
+      this.invoice.completedAt = new Date().toISOString();
       this.balance = 0;
       !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
       this.printInvoice();
