@@ -28,7 +28,7 @@ export class SalesHistoryPage {
   public customerSearch: string;
   private user: UserSession;
   private limit: number;
-  private readonly defaultLimit = 5;
+  private readonly defaultLimit = 20;
   private readonly defaultOffset = 0;
   private offset: number;
   private total: number;
