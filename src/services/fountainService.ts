@@ -18,7 +18,7 @@ export class FountainService {
   public getReceiptNumber(store: Store) {
     store.saleLastNumber++;
     this.storeService.update(store); // parallel background update
-    return `${store.saleNumberPrefix}${store.saleLastNumber}`;
+    return `${store.saleNumberPrefix || ''}${store.saleLastNumber}`;
   }
 
 }

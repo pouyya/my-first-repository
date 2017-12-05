@@ -35,7 +35,7 @@ export class CustomerService extends BaseEntityService<Customer> {
       let customers: Customer[] = await this.findBy({
         selector: {
           fullname: {
-            $regex: new RegExp("(\\b" + name + "\\b)", "ig")
+            $regex: new RegExp(name, "ig")
           }
         }
       });

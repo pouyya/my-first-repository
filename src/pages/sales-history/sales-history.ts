@@ -10,6 +10,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { SalesServices } from './../../services/salesService';
 import { PrintService } from '../../services/printService';
+import { Customer } from '../../model/customer';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -26,9 +27,11 @@ export class SalesHistoryPage {
   public states: any;
   public filtersEnabled: boolean = false;
   public customerSearch: string;
+  public searchedCustomers: Customer[] = [];
+  public cancelButtonText = 'Reset';
   private user: UserSession;
   private limit: number;
-  private readonly defaultLimit = 5;
+  private readonly defaultLimit = 20;
   private readonly defaultOffset = 0;
   private offset: number;
   private total: number;
@@ -157,28 +160,50 @@ export class SalesHistoryPage {
     }
   }
 
-  public searchBy(event: any, key: string) {
+  public async searchBy(event: any, key: string) {
     this.invoices = this.invoicesBackup;
     this.filters[key] = event.target.value || false;
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.invoices = [];
-    this.fetchMoreSales().catch((error) => {
-      console.error(error);
-    });
+    await this.fetchMoreSales();
   }
 
-  public async searchByCustomer(event: any) {
-    // if (this.customerSearch && this.customerSearch.trim() != '' && this.customerSearch.length > 3) {
-    //   try {
-    //     let customers: Customer[] = await this.customerService.searchByName(this.customerSearch);
+  public async searchForCustomer($event: any) {
+    if (this.customerSearch && this.customerSearch.trim() != '' && this.customerSearch.length > 3) {
+      try {
+        let customers: Customer[] = await this.customerService.searchByName(this.customerSearch);
+        this.searchedCustomers = customers;
+        return;
+      } catch (err) {
+        return Promise.reject(err);
+      }
+    } else {
+      this.searchedCustomers = [];
+      return await Promise.resolve([]);
+    }
+  }
 
-    //   } catch (err) {
-    //     return;
-    //   }
-    // } else {
-    //   return;
-    // }
+  public async searchByCustomer(customer: Customer) {
+    this.searchedCustomers = [];
+    this.invoices = this.invoicesBackup;
+    this.filters.customerKey = customer._id;
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.invoices = [];
+    await this.fetchMoreSales();
+  }
+
+  public async resetCustomerSearch() {
+    if (this.filters.hasOwnProperty('customerKey')) {
+      delete this.filters.customerKey;
+      this.limit = this.defaultLimit;
+      this.offset = this.defaultOffset;
+      this.invoices = [];
+      await this.fetchMoreSales();
+    }
+
+    return;
   }
 
   public searchByStatus() {
@@ -270,7 +295,7 @@ export class SalesHistoryPage {
         } else {
           this.customerService.get(invoice.customerKey).then(customer => {
             invoices[index].customer = customer;
-            if(!this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
+            if (!this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
               this.customersSearchHash[invoice.customerKey] = customer;
             }
             resolve();

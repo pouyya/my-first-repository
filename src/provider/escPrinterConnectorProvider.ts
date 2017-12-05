@@ -1,68 +1,28 @@
 import * as encoding from "text-encoding";
 
 export class EscPrinterConnectorProvider {
-    static tcp: any;
-    static socketId: string;
+    static socket: any;
 
     constructor(private ip: string, private port: number) {
-        if (EscPrinterConnectorProvider.tcp == null) {
-            EscPrinterConnectorProvider.tcp = (<any>window).chrome.sockets.tcp
+        if ((<any>window).Socket && !EscPrinterConnectorProvider.socket) {
+            EscPrinterConnectorProvider.socket = new (<any>window).Socket();
         }
     }
 
     public async write(content) {
+        if (EscPrinterConnectorProvider.socket) {
 
-        if (EscPrinterConnectorProvider.socketId) {
-            var info = await this.getInfo(EscPrinterConnectorProvider.socketId);
-
-            if (!info || !info.connected) {
-                EscPrinterConnectorProvider.socketId = null;
+            if (EscPrinterConnectorProvider.socket._state != 2) {
+                await this.openSock();
             }
-        }
 
-        if (!EscPrinterConnectorProvider.socketId) {
-            try {
-                await this.connect(this.ip, this.port);
-            }
-            catch (error) {
-                alert(error);
-            }
+            var uint8array = new encoding.TextEncoder('gb18030', { NONSTANDARD_allowLegacyEncoding: true }).encode(content);
+            EscPrinterConnectorProvider.socket.write(uint8array);
         }
-
-        if (EscPrinterConnectorProvider.socketId == null) {
-            return;
-        }
-        var uint8array = new encoding.TextEncoder('gb18030', { NONSTANDARD_allowLegacyEncoding: true }).encode(content);
-        EscPrinterConnectorProvider.tcp.send(EscPrinterConnectorProvider.socketId,
-            uint8array.buffer,
-            function (result) {
-                console.log(result);
-            });
     }
 
-    async getInfo(socketId): Promise<any> {
-        return new Promise((resolve, reject) => {
-            EscPrinterConnectorProvider.tcp.getInfo(socketId, function (info) {
-                resolve(info);
-            });
-        });
-    }
-
-    async connect(ip, port) {
-        return new Promise((resolve, reject) => {
-            console.log(ip + " " + port);
-            EscPrinterConnectorProvider.tcp.create(function (createInfo) {
-                EscPrinterConnectorProvider.tcp.connect(createInfo.socketId, ip, port ? port : 9100, function (result) {
-                    if (!result) {
-                        console.log("connect success!");
-                        EscPrinterConnectorProvider.socketId = createInfo.socketId;
-                        resolve();
-                    } else {
-                        EscPrinterConnectorProvider.socketId = null;
-                        reject();
-                    }
-                });
-            });
-        });
+    async openSock(): Promise<any> {
+        return new Promise((resolve, reject) =>
+            EscPrinterConnectorProvider.socket.open(this.ip, this.port, resolve, reject));
     }
 }  

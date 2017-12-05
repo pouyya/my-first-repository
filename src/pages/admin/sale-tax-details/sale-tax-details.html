@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <ion-title style="text-Align:center">{{action}} Sales Tax</ion-title>
+    <ion-title class="ion-title-center">{{action}} Sales Tax</ion-title>
     <ion-buttons end>
       <button *ngIf="tax._id != 'no_sales_tax'" ion-button icon-only (click)="upsert()">
         save

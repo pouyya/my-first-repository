@@ -261,14 +261,16 @@ export class BasketComponent {
   }
 
   public async searchCustomers($event: any) {
-    if (this.searchInput && this.searchInput.trim() != '' && this.searchInput.length > 3) {
+    if (this.searchInput && this.searchInput.trim() != '' && this.searchInput.length > 1) {
       try {
         let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
         this.searchedCustomers = customers;
+        return;
       } catch (err) {
         return Promise.reject(err);
       }
     } else {
+      this.searchedCustomers = [];
       return await Promise.resolve([]);
     }
   }
