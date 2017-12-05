@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title style="text-Align:center">Sales</ion-title>
+    <ion-title class="ion-title-center">Sales</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -37,7 +37,7 @@
   <ion-grid *ngIf="register.status" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
-        <ion-scroll style="height:100%" scrollY="true">
+        <ion-scroll scrollY="true" class="category-scroll">
           <ion-list no-lines class="full-height no-margin sales-category">
             <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
               (click)="selectCategory(category)">

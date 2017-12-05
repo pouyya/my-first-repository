@@ -8,21 +8,21 @@
 }
 
 .sales-category {
-  background-color: white;
+  background-color: $tile-background-color;
   button {
     text-align: center;
-    color: #585858;
-    background-color: white;
+    color: $sales-category-tile-btn-color;
+    background-color: $tile-background-color;
     .category-icon {
       padding-bottom: 10px;
       display: block;
     }
   }
   .activeCategory {
-    color: #000000;
-    background-color: #F7F7F7;
+    color: color($colors, dark);
+    background-color: $list-background-color;
     .category-icon {
-      color: #000000;
+      color: color($colors, dark);
     }
   }
 }
@@ -53,7 +53,11 @@
 
 ion-scroll {
   white-space: nowrap;
-  height: 150px
+  height: 150px;
+}
+
+ion-scroll.category-scroll {
+  height:100%;
 }
 
 img {

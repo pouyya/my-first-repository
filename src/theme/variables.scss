@@ -28,7 +28,9 @@ $colors: (
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222
+  dark:       #222,
+  white:    #ffffff,
+  black:    #000000
 );
 
 $colors-md: (
@@ -39,29 +41,23 @@ $font-family-base: "LatoWeb", "Helvetica Neue", "Roboto", sans-serif !default;
 $font-family-md-base: "LatoWeb", "Roboto", "Helvetica Neue", sans-serif !default;
 
 $background-color: #F6F6F6;
-
 $toolbar-background: #3A4953;
 $toolbar-text-color: #CBCFD2;
 $list-background-color: #F7F7F7;
 $list-background-color-border: #a9a9a9;
 $staff-group-border-color: #C1C1C1;
-
+$sales-category-tile-btn-color: #585858;
 $toolbar-md-text-color: #CBCFD2;
-
-$menu-width: 180px;
 $button-background-color: #3A4953;
-
-$category: (
-  active: #FFFFFF
-); 
-
 $tile-background-color: #FFFFFF;
 $tile-background-color-selected: #3A4953;
 $tile-background-color-border: #F1F1F1;
 $tile-hover-background-color: #62676F;
 $tile-hover-color: #FFFFFF;
-
 $basket-background-color: #FFFFFF;
+
+$menu-width: 180px;
+$category: (active: #FFFFFF);
 
 
 // App iOS Variables
@@ -123,7 +119,7 @@ $basket-background-color: #FFFFFF;
       margin-right: 4%;
       text-align: center;
       font-weight: bold;
-      color: #222;
+      color: color($colors, dark);
       font-size: 15px;
       border-radius: 3px;
       .item-addImageLabel{
@@ -167,7 +163,7 @@ ion-alert {
 } 
 
 ion-input {
-  background-color:  #FFFFFF;
+  background-color: color($colors, white);
   border-radius: 10px;
 }
 
