@@ -11,4 +11,6 @@ export class SalesTaxModule implements ModuleBase {
     { title: 'Group Sales Tax', icon: 'cash', component: GroupSaleTaxPage },
     { title: 'Settings', icon: 'cog', component: Settings }
   ];
+
+  public pinTheMenu: boolean = true;
 }
