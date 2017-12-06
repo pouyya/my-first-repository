@@ -6,6 +6,9 @@ export class EscPrinterConnectorProvider {
     constructor(private ip: string, private port: number) {
         if ((<any>window).Socket && !EscPrinterConnectorProvider.socket) {
             EscPrinterConnectorProvider.socket = new (<any>window).Socket();
+            EscPrinterConnectorProvider.socket.onClose = this.onClose;
+            EscPrinterConnectorProvider.socket.onData = this.onData;
+            EscPrinterConnectorProvider.socket.onError = this.onError;
         }
     }
 
@@ -24,5 +27,17 @@ export class EscPrinterConnectorProvider {
     async openSock(): Promise<any> {
         return new Promise((resolve, reject) =>
             EscPrinterConnectorProvider.socket.open(this.ip, this.port, resolve, reject));
+    }
+
+    onData(){
+        
+    }
+
+    onError(){
+
+    }
+
+    onClose(error){
+
     }
 }  

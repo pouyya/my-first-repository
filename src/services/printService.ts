@@ -21,7 +21,7 @@ export class PrintService {
     private accountSettingService: AccountSettingService) {
   }
 
-  public async printReceipt(invoice: Sale) {
+  public async printReceipt(invoice: Sale, openCashDrawer: boolean) {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
@@ -46,7 +46,12 @@ export class PrintService {
       var receiptProvider = new ReceiptProvider(receiptProviderContext)
         .setHeader()
         .setBody()
-        .setFooter();
+        .setFooter()
+        .cutPaper();
+
+      if (openCashDrawer) {
+        receiptProvider = receiptProvider.openCashDrawer();
+      }
 
       await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
         .write(receiptProvider.getResult());

@@ -142,8 +142,8 @@ export class PaymentsPage {
   }
 
   public async printInvoice() {
-    await this.printService.printReceipt(this.invoice);
-  }  
+    await this.printService.printReceipt(this.invoice, true);
+  }
 
   public goBack(state: boolean = false) {
     this.navPopCallback(state).then(() => {

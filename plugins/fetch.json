@@ -134,13 +134,5 @@
     },
     "is_top_level": true,
     "variables": {}
-  },
-  "cordova-plugin-chrome-apps-iossocketscommon": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-chrome-apps-iossocketscommon@1"
-    },
-    "is_top_level": false,
-    "variables": {}
   }
 }
