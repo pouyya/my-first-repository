@@ -1390,14 +1390,6 @@ cordova-common@^2.1.0:
     underscore "^1.8.3"
     unorm "^1.3.3"
 
-cordova-plugin-chrome-apps-common@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-chrome-apps-common/-/cordova-plugin-chrome-apps-common-1.0.7.tgz#300319b59c79dc552293f83a2332cf283b10908a"
-
-cordova-plugin-chrome-apps-sockets-tcp@^1.3.7:
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-chrome-apps-sockets-tcp/-/cordova-plugin-chrome-apps-sockets-tcp-1.3.7.tgz#1fa323b362e03952b3c9c68dd8b8f6cf5eee55ac"
-
 cordova-plugin-console@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/cordova-plugin-console/-/cordova-plugin-console-1.0.5.tgz#f0e29aee9c03cab9e9d883b01d19f22ddd5c8570"
