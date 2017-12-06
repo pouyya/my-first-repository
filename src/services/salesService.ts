@@ -292,52 +292,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number) {
-		value = Number(value);
-		return {
-			asCash: () => {
-				let taxAfterDiscount = tax * (1 - (value / total));
-				return {
-					tax: taxAfterDiscount,
-					subTotal: total - value - taxAfterDiscount,
-					taxTotal: total - value
-				}
-			},
-			asPercent: () => {
-				let totalDiscount = total - ((value / 100) * total);
-				let subTotalDiscount = subtotal - ((value / 100) * subtotal);
-				return {
-					tax: totalDiscount - subTotalDiscount,
-					subTotal: subTotalDiscount,
-					taxTotal: totalDiscount
-				}
-			}
-		};
-	}
-
-	public applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number) {
-		value = Number(value);
-		return {
-			asCash: () => {
-				let taxAfterDiscount = tax * (1 + (value / total));
-				return {
-					tax: taxAfterDiscount,
-					subTotal: total + value - taxAfterDiscount,
-					taxTotal: total + value
-				}
-			},
-			asPercent: () => {
-				let totalDiscount = total + ((value / 100) * total);
-				let subTotalDiscount = subtotal + ((value / 100) * subtotal);
-				return {
-					tax: totalDiscount - subTotalDiscount,
-					subTotal: subTotalDiscount,
-					taxTotal: totalDiscount
-				}
-			}
-		}
-	}
-
 	public updateEmployeeTiles(employeesList: any[], selectedEmployee: any, updatedEmployee: any, status: string) {
 		updatedEmployee.selected = false;
 		updatedEmployee.disabled = false;
@@ -382,6 +336,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.state = 'refund';
 		sale.receiptNo = this.fountainService.getReceiptNumber(store);
 		sale.payments = [];
+		sale.appliedValues = _.cloneDeep(originalSale.appliedValues);
+		sale.saleAppliedValue = originalSale.saleAppliedValue;
+		sale.saleAppliedType = originalSale.saleAppliedType;
 		this.calculateSale(sale);
 		return sale;
 	}
@@ -433,14 +390,62 @@ export class SalesServices extends BaseEntityService<Sale> {
 		let exec: any = typeHash[value.format];
 		if (value.type == SalesServices.SALE_DISCOUNT) {
 			fn = this.applyDiscountOnSale(
-				value.value, sale.taxTotal, sale.subTotal, sale.tax
+				value.value, sale.taxTotal, sale.subTotal, sale.tax, sale.state == 'refund'
 			);
 		} else if (value.type == SalesServices.SALE_SURCHARGE) {
 			fn = this.applySurchargeOnSale(
-				value.value, sale.taxTotal, sale.subTotal, sale.tax
+				value.value, sale.taxTotal, sale.subTotal, sale.tax, sale.state == 'refund'
 			);
 		}
 
 		return fn[exec]();
+	}
+
+	public applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
+		value = Number(value);
+		return {
+			asCash: () => {
+				value = isRefund ? value * -1 : value;
+				let taxAfterDiscount = tax * (1 - (value / total));
+				return {
+					tax: taxAfterDiscount,
+					subTotal: total - value - taxAfterDiscount,
+					taxTotal: total - value
+				}
+			},
+			asPercent: () => {
+				let totalDiscount = total - ((value / 100) * total);
+				let subTotalDiscount = subtotal - ((value / 100) * subtotal);
+				return {
+					tax: totalDiscount - subTotalDiscount,
+					subTotal: subTotalDiscount,
+					taxTotal: totalDiscount
+				}
+			}
+		};
+	}
+
+	public applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
+		value = Number(value);
+		return {
+			asCash: () => {
+				value = isRefund ? value * -1 : value;
+				let taxAfterDiscount = tax * (1 + (value / total));
+				return {
+					tax: taxAfterDiscount,
+					subTotal: total + value - taxAfterDiscount,
+					taxTotal: total + value
+				}
+			},
+			asPercent: () => {
+				let totalDiscount = total + ((value / 100) * total);
+				let subTotalDiscount = subtotal + ((value / 100) * subtotal);
+				return {
+					tax: totalDiscount - subTotalDiscount,
+					subTotal: subTotalDiscount,
+					taxTotal: totalDiscount
+				}
+			}
+		}
 	}
 }

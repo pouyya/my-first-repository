@@ -62,9 +62,9 @@ export class SimplePOSApp implements OnInit {
     try {
       var user = await this.userService.getDeviceUser();
       this.rootPage = DeployPage;
-      if (this.platformService.isMobileDevice() ) {
-        user && user.settings && !user.settings.screenAwake ?  this.insomnia.allowSleepAgain(): this.insomnia.keepAwake();
-      }      
+      if (this.platformService.isMobileDevice()) {
+        user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
+      }
       return;
     } catch (error) {
       console.error(error);

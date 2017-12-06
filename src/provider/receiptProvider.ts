@@ -91,10 +91,23 @@ ${this.receiptProviderContext.footerMessage}
         <br>
         <br>
         <br>
-        <br>
-        <cut>`;
+        <br>`;
 
         this.htmlPrinterProvider.parse(footerHtml);
+
+        return this;
+    }
+
+    cutPaper(): ReceiptProvider {
+
+        this.htmlPrinterProvider.parse('<cut>');
+
+        return this;
+    }
+    
+    openCashDrawer(): ReceiptProvider {
+
+        this.htmlPrinterProvider.parse('<pulse>');
 
         return this;
     }

@@ -1,3 +1,4 @@
+import { LoadingController } from 'ionic-angular';
 import { Injectable } from "@angular/core";
 import { PluginService } from "./pluginService";
 import { EmployeeService } from "./employeeService";
@@ -13,24 +14,33 @@ export class SecurityService {
         private pluginService: PluginService,
         private employeeService: EmployeeService,
         private posService: PosService,
-        private userService: UserService
+        private userService: UserService,
+        private loading: LoadingController
     ) { }
 
     async userHasAccess(roles: string[]): Promise<boolean> {
+        let loader = this.loading.create({
+          content: 'Please Wait...',
+        });
+        await loader.present();
         if (roles.length == 0) {
             // that's an insecure module!
             this.employeeService.setEmployee(null); // clear employee from memory
+            loader.dismiss();
             return true;
         } else {
             let employee = this.employeeService.getEmployee();
             let currentUserStore = (await this.userService.getUser()).currentStore;
             if (employee) {
                 if (this.verifyEmployeeRoles(employee, currentUserStore, roles)) {
+                    loader.dismiss();
                     return true;
                 } else {
+                    loader.dismiss();
                     return this.checkAccessAndSetEmployee(currentUserStore, roles);
                 }
             } else {
+                loader.dismiss();
                 return this.checkAccessAndSetEmployee(currentUserStore, roles);
             }
         }

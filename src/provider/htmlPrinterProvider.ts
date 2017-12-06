@@ -50,6 +50,8 @@ export class HtmlPrinterProvider {
                     this.printer.text("-".repeat(48));
                 } else if (tagName == "cut") {
                     this.printer.cut();
+                } else if (tagName == "pulse") {
+                    this.printer.pulse();
                 }
             },
             ontext: (text) => {
