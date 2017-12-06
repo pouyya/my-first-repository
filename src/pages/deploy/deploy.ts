@@ -21,7 +21,7 @@ export class DeployPage {
     public deploy: Deploy) { }
 
   async ionViewDidLoad() {
-    if (this.platformService.isMobileDevice() && !ConfigService.turnOffDeployment) {
+    if (this.platformService.isMobileDevice() && ConfigService.turnOnDeployment) {
       this.deploy.channel = 'dev';
       var snapshotAvailable = await this.deploy.check();
       if (snapshotAvailable) {
