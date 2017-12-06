@@ -113,7 +113,7 @@ export class Sales {
       let openingAmount: number = Number(this.navParams.get('openingAmount'));
       let openingNote: string = this.navParams.get('openingNotes');
       if (openingAmount >= 0) {
-        this.register.openTime = new Date().toISOString();
+        this.register.openTime = new Date().toUTCString();
         this.register.status = true;
         this.register.openingAmount = Number(openingAmount);
         this.register.openingNote = openingNote;
@@ -304,7 +304,7 @@ export class Sales {
     try {
       await loader.present();
       await this.initiate();
-      this.register.openTime = new Date().toISOString();
+      this.register.openTime = new Date().toUTCString();
       this.register.status = true;
       this.register.openingAmount = Number(this.register.openingAmount);
       this.posService.update(this.register);

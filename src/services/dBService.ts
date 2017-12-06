@@ -50,7 +50,7 @@ export class DBService<T extends DBBasedEntity> {
 
     add(entity: T): Promise<T> {
         if (!entity._id) {
-            entity._id = new Date().toISOString();
+            entity._id = new Date().toUTCString();
         }
         return this.update(entity);
     }

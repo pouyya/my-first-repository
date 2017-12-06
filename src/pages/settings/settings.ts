@@ -3,6 +3,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
 import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
+import { Http } from '@angular/http';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { SharedService } from './../../services/_sharedService';
@@ -20,9 +21,10 @@ import { AccountSetting } from '../../model/accountSetting';
 })
 export class Settings {
 
-  public salesTaxes: Array<any> = [];
   public defaultTax: string;
+  public salesTaxes: Array<any> = [];
   public taxTypes: Array<any> = [];
+  public timezones: Array<any>[];
   public selectedType: number;
   public selectedTax: string;
   public accountSetting: AccountSetting;
@@ -39,6 +41,7 @@ export class Settings {
     private appService: AppService,
     private _sharedService: SharedService,
     private zone: NgZone,
+    private http: Http,
     private toast: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
@@ -55,14 +58,19 @@ export class Settings {
     var promises: Array<Promise<any>> = [
       this.appService.loadSalesAndGroupTaxes(),
       this.userService.getUser(),
-      this.accountSettingService.getCurrentSetting()
+      this.accountSettingService.getCurrentSetting(),
+      new Promise((resolve, reject) => {
+        this.http.get('assets/timezones.json')
+          .subscribe(res => resolve(res.json()));
+      })
     ];
 
-    Promise.all(promises).then((results) => {
+    Promise.all(promises).then(results => {
       this.zone.run(() => {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
+        this.timezones = results[3];
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {

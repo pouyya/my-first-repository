@@ -47,7 +47,7 @@ export class Sale extends DBBasedEntity {
     this.payments = [];
     this.notes = "";
     this.round = 0;
-    this.created = new Date().toISOString();
+    this.created = new Date().toUTCString();
     this.customerKey = null;
     this.receiptNo = "";
     this.originalSalesId = "";

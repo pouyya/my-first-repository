@@ -161,7 +161,7 @@ export class OpenCloseRegister {
       });
       confirm.present();
     } else {
-      this.closure.closeTime = new Date().toISOString();
+      this.closure.closeTime = new Date().toUTCString();
       await this.closureService.add(this.closure);
       this.register.status = false;
       this.register.cashMovements = [];

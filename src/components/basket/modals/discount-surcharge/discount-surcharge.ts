@@ -35,7 +35,7 @@ export class DiscountSurchargeModal {
         value: this.value,
         type: this.action,
         format: this.inputType,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toUTCString()
       });
     } else {
       let toast = this.toastCtrl.create({
