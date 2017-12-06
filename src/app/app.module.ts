@@ -84,6 +84,7 @@ import { GroupByPipe } from './../pipes/group-by.pipe';
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
 
 // services
+import { DateTimeService } from './../services/dateTimeService';
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
@@ -277,6 +278,7 @@ const cloudSettings: CloudSettings = {
     InAppBrowser,
     SharedService,
     CacheFactory,
+    DateTimeService,
     ProductService,
     ServiceService,
     CategoryService,

@@ -9,6 +9,7 @@ export class AccountSetting extends DBBasedEntity {
     public defaultTax: string;
     public taxEntity: string;
     public defaultIcon: Icon;
+    public timeOffset: number;
 }
 
 class Icon {

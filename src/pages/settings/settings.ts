@@ -13,6 +13,7 @@ import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { AccountSettingService } from '../../services/accountSettingService';
 import { AccountSetting } from '../../model/accountSetting';
+import { DateTimeService } from './../../services/dateTimeService';
 
 @PageModule(() => SettingsModule)
 @Component({
@@ -46,6 +47,7 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
+    private datetimeService: DateTimeService
   ) {
     this.cdr.detach();
     this.taxTypes = [
@@ -100,6 +102,9 @@ export class Settings {
     this.accountSetting.taxType = this.selectedType == 0 ? false : true;
     this.accountSetting.defaultTax = this.newTax._id;
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
+    if(this.accountSetting.timeOffset) {
+      this.datetimeService.timezone = this.accountSetting.timeOffset;
+    }
 
     this.accountSettingService.update(this.accountSetting);
 
