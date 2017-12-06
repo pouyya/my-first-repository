@@ -43,7 +43,7 @@
           </ion-col>
           <ion-col col-md-3>{{value.type}} <small>({{value.format}})</small></ion-col>
           <ion-col col-md-5>{{value.createdAt | date:'short'}}</ion-col>
-          <ion-col col-md-1><ion-icon name="trash" (click)="delete(value, $index)"></ion-icon></ion-col>
+          <ion-col col-md-1><ion-icon name="trash" (click)="delete(value, $index)" tappable></ion-icon></ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>

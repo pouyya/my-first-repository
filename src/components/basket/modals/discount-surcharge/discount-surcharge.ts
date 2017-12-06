@@ -1,6 +1,6 @@
 import { DiscountSurchargeInterface } from './../../../../model/sale';
 import { SalesServices } from './../../../../services/salesService';
-import { ViewController } from 'ionic-angular';
+import { ViewController, ToastController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
 
@@ -23,18 +23,27 @@ export class DiscountSurchargeModal {
     private navParams: NavParams,
     private viewCtrl: ViewController,
     private salesService: SalesServices,
+    private toastCtrl: ToastController
   ) {
     this.action = DiscountSurchargeModal.DISCOUNT;
     this.inputType = DiscountSurchargeModal.CASH;
   }
 
   public confirmChanges() {
-    this.viewCtrl.dismiss(<DiscountSurchargeInterface> {
-      value: this.value,
-      type: this.action,
-      format: this.inputType,
-      createdAt: new Date().toISOString()
-    });
+    if (this.value > 0) {
+      this.viewCtrl.dismiss(<DiscountSurchargeInterface>{
+        value: this.value,
+        type: this.action,
+        format: this.inputType,
+        createdAt: new Date().toISOString()
+      });
+    } else {
+      let toast = this.toastCtrl.create({
+        message: 'Value must be positive',
+        duration: 3000
+      });
+      toast.present();
+    }
   }
 
   public dismiss() {

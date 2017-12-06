@@ -336,7 +336,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.state = 'refund';
 		sale.receiptNo = this.fountainService.getReceiptNumber(store);
 		sale.payments = [];
-		sale.appliedValues = _.cloneDeep(originalSale.appliedValues);
+		// set pre values to negative. The inserted ones after that will be positive
+		sale.appliedValues = _.map(_.cloneDeep(originalSale.appliedValues), value => {
+			value.value *= -1;
+			return value;
+		});
 		sale.saleAppliedValue = originalSale.saleAppliedValue;
 		sale.saleAppliedType = originalSale.saleAppliedType;
 		this.calculateSale(sale);
@@ -405,7 +409,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		value = Number(value);
 		return {
 			asCash: () => {
-				value = isRefund ? value * -1 : value;
 				let taxAfterDiscount = tax * (1 - (value / total));
 				return {
 					tax: taxAfterDiscount,
@@ -414,6 +417,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				}
 			},
 			asPercent: () => {
+				isRefund && (value *= -1);
 				let totalDiscount = total - ((value / 100) * total);
 				let subTotalDiscount = subtotal - ((value / 100) * subtotal);
 				return {
@@ -429,7 +433,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		value = Number(value);
 		return {
 			asCash: () => {
-				value = isRefund ? value * -1 : value;
 				let taxAfterDiscount = tax * (1 + (value / total));
 				return {
 					tax: taxAfterDiscount,
@@ -438,6 +441,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 				}
 			},
 			asPercent: () => {
+				isRefund && (value *= -1);
 				let totalDiscount = total + ((value / 100) * total);
 				let subTotalDiscount = subtotal + ((value / 100) * subtotal);
 				return {
