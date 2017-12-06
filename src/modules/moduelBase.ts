@@ -15,5 +15,6 @@ export interface ModalPageInterface extends PageSettingsInterface {
 
 export interface ModuleBase {
 	pages: Array<PageSettingsInterface | ModalPageInterface>;
+	pinTheMenu: boolean;
 	setInjector($injector: Injector): void;
 }

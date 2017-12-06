@@ -35,4 +35,6 @@ export class SalesModule implements ModuleBase {
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, disableFunc: this.moneyInOut_disableFunc },
     { title: 'Back Office', icon: 'build', component: HomePage }
   ];
+
+  public pinTheMenu: boolean = false;
 }
