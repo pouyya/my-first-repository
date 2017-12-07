@@ -1,9 +1,12 @@
 export class TypeHelper {
 
-    static getTypeName(inputClass) {
-        var funcNameRegex = /function (.{1,})\(/;
-        var results = (funcNameRegex).exec((<any>inputClass).constructor.toString());
-        return (results && results.length > 1) ? results[1] : "";
+    static getTypeName(inputClass: object) {
+        if (inputClass.constructor) {
+
+            return inputClass.constructor.name;
+        }
+
+        return "";
     }
 
     static getParentTypeNames(inputClas): Array<string> {
@@ -55,7 +58,7 @@ export class TypeHelper {
     static decodeHtml(source: string) {
         if (source) {
             for (let token in TypeHelper.htmlDecodeEntityMap) {
-                source = source.replace(token ,TypeHelper.htmlDecodeEntityMap[token]);
+                source = source.replace(token, TypeHelper.htmlDecodeEntityMap[token]);
             }
 
             return source;
