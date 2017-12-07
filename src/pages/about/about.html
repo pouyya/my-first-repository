@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="ion-title-center">About</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-item-group>
+    <ion-item-divider color="light">Current POS/Register</ion-item-divider>
+    <ion-item>{{ pos }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">Current Store</ion-item-divider>
+    <ion-item>{{ store }}</ion-item>
+  </ion-item-group>
+  <!-- <ion-item-group>
+    <ion-item-divider color="light">Deploy Version</ion-item-divider>
+    <ion-item>{{ ionicDeployVersion }}</ion-item>
+  </ion-item-group> -->
+  <ion-item-group>
+    <ion-item-divider color="light">Local Database Name</ion-item-divider>
+    <ion-item>{{ dbInternalName }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">External Database Name</ion-item-divider>
+    <ion-item>{{ dbExternalName }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">Local Critical Database Name</ion-item-divider>
+    <ion-item>{{ dbInternalName_Critical }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">External Critical Database Name</ion-item-divider>
+    <ion-item>{{ dbExternalName_Critical }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">Database Server URL</ion-item-divider>
+    <ion-item>{{ dbServerURL }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">Critical Database Server URL</ion-item-divider>
+    <ion-item>{{ dbServerURL_Critical }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">Identity Server Base URL</ion-item-divider>
+    <ion-item>{{ serverBaseURL }}</ion-item>
+  </ion-item-group>
+</ion-content>

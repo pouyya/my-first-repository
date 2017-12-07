@@ -1,3 +1,4 @@
+import { AboutPage } from './../pages/about/about';
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { Category } from './../pages/category/category';
@@ -30,7 +31,8 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
-    { title: 'Settings', icon: 'cog', component: Settings }
+    { title: 'Settings', icon: 'cog', component: Settings },
+    { title: 'About', icon: 'information-circle', component: AboutPage }
   ];    
 
   public pinTheMenu: boolean = true;
