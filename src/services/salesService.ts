@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as moment from 'moment';
 import { Observable } from "rxjs/Rx";
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
@@ -58,7 +59,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 */
 	public async instantiateInvoice(posId?: string): Promise<any> {
 		var user = await this.userService.getUser();
-		let id = localStorage.getItem('invoice_id') || new Date().toUTCString();
+		let id = localStorage.getItem('invoice_id') || moment().utc().format();
 		if (!posId) posId = user.currentPos;
 		try {
 			let invoices: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
@@ -324,7 +325,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public instantiateRefundSale(originalSale: Sale, store: Store): Sale {
 		let sale = new Sale();
-		sale._id = new Date().toUTCString();
+		sale._id = moment().utc().format();
 		sale.posID = originalSale.posID;
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {

@@ -1,5 +1,6 @@
-import {DBBasedEntity} from './dbBasedEntity';
-import {BasketItem} from './bucketItem';
+import * as moment from 'moment';
+import { DBBasedEntity } from './dbBasedEntity';
+import { BasketItem } from './bucketItem';
 import { DBMode, DBModeEnum } from '../metadata/dbMode';
 
 interface PaymentsInterface {
@@ -47,7 +48,7 @@ export class Sale extends DBBasedEntity {
     this.payments = [];
     this.notes = "";
     this.round = 0;
-    this.created = new Date().toUTCString();
+    this.created = moment().utc().format()
     this.customerKey = null;
     this.receiptNo = "";
     this.originalSalesId = "";

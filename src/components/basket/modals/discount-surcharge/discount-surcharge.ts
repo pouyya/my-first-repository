@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { DiscountSurchargeInterface } from './../../../../model/sale';
 import { SalesServices } from './../../../../services/salesService';
 import { ViewController, ToastController } from 'ionic-angular';
@@ -35,7 +36,7 @@ export class DiscountSurchargeModal {
         value: this.value,
         type: this.action,
         format: this.inputType,
-        createdAt: new Date().toUTCString()
+        createdAt: moment().utc().format()
       });
     } else {
       let toast = this.toastCtrl.create({

@@ -79,6 +79,7 @@ import { GroupEmployeeTimeLogModule } from './../components/group-employee-timel
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
 import { GroupByPipe } from './../pipes/group-by.pipe';
+import { LocalDatePipe } from '../pipes/local-date.pipe';
 
 // directives
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
@@ -309,6 +310,7 @@ const cloudSettings: CloudSettings = {
     ClickStopPropagation,
     KeysPipe,
     GroupByPipe,
+    LocalDatePipe,
     authProvider,
     fakeBackendProvider,
     MockBackend,

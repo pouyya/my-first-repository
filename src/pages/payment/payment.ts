@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { FountainService } from './../../services/fountainService';
 import { HelperService } from './../../services/helperService';
@@ -120,7 +121,7 @@ export class PaymentsPage {
       });
       this.invoice.state = 'refund';
       this.invoice.completed = true;
-      this.invoice.completedAt = new Date().toUTCString();
+      this.invoice.completedAt = moment().utc().format();
       this.balance = 0;
       !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
       this.printInvoice();
@@ -129,7 +130,7 @@ export class PaymentsPage {
 
   private completeSale(payments: number) {
     this.invoice.completed = true;
-    this.invoice.completedAt = new Date().toUTCString();
+    this.invoice.completedAt = moment().utc().format();
     this.invoice.state = 'completed';
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
     payments != 0 && (this.change = payments - this.invoice.taxTotal);

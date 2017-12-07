@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { LoadingController, AlertController, NavController, ToastController } from 'ionic-angular';
 import { Component, ChangeDetectorRef, ElementRef } from '@angular/core';
 
@@ -161,7 +162,7 @@ export class OpenCloseRegister {
       });
       confirm.present();
     } else {
-      this.closure.closeTime = new Date().toUTCString();
+      this.closure.closeTime = moment().utc().format();
       await this.closureService.add(this.closure);
       this.register.status = false;
       this.register.cashMovements = [];
