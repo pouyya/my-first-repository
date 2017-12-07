@@ -32,4 +32,6 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
     { title: 'Settings', icon: 'cog', component: Settings }
   ];    
+
+  public pinTheMenu: boolean = true;
 }

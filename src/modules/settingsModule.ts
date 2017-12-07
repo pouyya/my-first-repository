@@ -15,4 +15,6 @@ export class SettingsModule  implements ModuleBase {
     { title: 'Group Sales Tax', icon: 'cash', component: GroupSaleTaxPage, pushNavigation: true },
     { title: 'Back Office', icon: 'build', component: HomePage }
   ];
+
+  public pinTheMenu: boolean = true;
 }

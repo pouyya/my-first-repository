@@ -55,7 +55,7 @@ export class ConfigService {
         return true;
     }
 
-    static turnOffDeployment(): boolean {
+    static turnOnDeployment(): boolean {
         return true;
     }
     
