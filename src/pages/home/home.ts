@@ -10,7 +10,8 @@ import { PageModule } from '../../metadata/pageModule';
   templateUrl: 'home.html'
 })
 export class HomePage {
-
+  public date: Date;
   constructor(public navCtrl: NavController, private printService: PrintService) {
+    this.date = new Date();
   }
 }

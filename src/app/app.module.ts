@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 // core
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
@@ -277,6 +278,7 @@ const cloudSettings: CloudSettings = {
     Dialogs,
     Insomnia,
     InAppBrowser,
+    DatePipe,
     SharedService,
     CacheFactory,
     DateTimeService,
