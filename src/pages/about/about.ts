@@ -1,5 +1,5 @@
 import { ConfigService } from './../../services/configService';
-// import { Deploy } from '@ionic/cloud-angular';
+import { Deploy } from '@ionic/cloud-angular';
 import { StoreService } from './../../services/storeService';
 import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
@@ -34,6 +34,7 @@ export class AboutPage {
   */
 
   constructor(
+    private deploy: Deploy,
     private posService: PosService,
     private storeService: StoreService
   ) { }
@@ -43,14 +44,14 @@ export class AboutPage {
       let promises: Promise<any>[] = [
         this.posService.getCurrentPos(),
         this.storeService.getCurrentStore(),
-        // this.deploy.info()
+        this.deploy.info()
       ];
 
-      let [pos, store] = await Promise.all(promises);
+      let [pos, store, ionicDeployVersion] = await Promise.all(promises);
 
       this.pos = pos.name;
       this.store = store.name;
-      // this.ionicDeployVersion = ionicDeployVersion;
+      this.ionicDeployVersion = ionicDeployVersion;
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
       this.dbInternalName_Critical = ConfigService.internalCriticalDBName;
