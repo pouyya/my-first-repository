@@ -38,6 +38,19 @@ export class DBService<T extends DBBasedEntity> {
         }
     }
 
+    public static async destroyInternals() {
+        let destructions: Promise<any>[] = [
+            DBService.criticalDB.db.destroy(ConfigService.internalCriticalDBName),
+            DBService.currentDB.db.destroy(ConfigService.internalDBName)
+        ];
+
+        try {
+            return await Promise.all(destructions);
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
     public getDB(): DB {
         if (this.entityTypeInstance
             && this.entityTypeInstance.DBMode == DBModeEnum.Current) {

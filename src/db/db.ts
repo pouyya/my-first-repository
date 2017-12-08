@@ -9,6 +9,10 @@ export class DB {
     private _db: any;
     private pendingMax = 0;
 
+    get db() {
+        return this._db;
+    }
+
     public async initialize(dbUrl: string, internalDBName: string) {
         return new Promise(async (resolve) => {
 

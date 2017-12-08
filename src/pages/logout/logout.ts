@@ -1,3 +1,4 @@
+import { DBService } from './../../services/DBService';
 import { Component } from "@angular/core";
 import { LoadingController, NavController } from "ionic-angular";
 import { Storage } from '@ionic/storage';
@@ -22,8 +23,8 @@ export class LogOut {
     try {
       await loader.present();
       await this.storage.clear();
+      await DBService.destroyInternals();
       localStorage.clear();
-      // and finally remove pouchdb local data
       loader.dismiss();
       this.navCtrl.setRoot(LoginPage);
     } catch (err) {
