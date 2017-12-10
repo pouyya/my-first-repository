@@ -16,6 +16,7 @@ import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
 
 // pages
@@ -123,6 +124,7 @@ import { SecurityService } from '../services/securityService';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
+import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -205,6 +207,7 @@ const cloudSettings: CloudSettings = {
 
     // custom
     SharedModule,
+    NetworkMonitorModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -270,6 +273,7 @@ const cloudSettings: CloudSettings = {
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
+    Network,
     Firebase,
     PinDialog,
     Dialogs,
