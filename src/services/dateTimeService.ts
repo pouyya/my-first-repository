@@ -14,11 +14,6 @@ export class DateTimeService {
     this._timeZone = value;
   }
 
-  public getTimezoneDateOld(date: string): Date {
-    let d = new Date(date);
-    return new Date(d.getTime() + (60000 * ((this._timeZone * 60) - d.getTimezoneOffset())));
-  }
-
   public getCurrentUTCDate() {
     return moment.utc();
   }
@@ -31,5 +26,4 @@ export class DateTimeService {
     let utc = this.getUTCDate(date);
     return this._timeZone ? utc.utcOffset(this._timeZone) : utc.local();
   }
-
 }

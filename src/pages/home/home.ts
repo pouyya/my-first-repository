@@ -1,6 +1,4 @@
-import { PrintService } from './../../services/printService';
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 
@@ -10,8 +8,6 @@ import { PageModule } from '../../metadata/pageModule';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  public date: Date;
-  constructor(public navCtrl: NavController, private printService: PrintService) {
-    this.date = new Date();
+  constructor() {
   }
 }
