@@ -23,6 +23,7 @@ import { SharedModule } from './../modules/shared.module';
 import { SimplePOSApp } from './app.component';
 import { DeployPage } from './../pages/deploy/deploy';
 import { LoginPage } from './../pages/login/login';
+import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
 import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
@@ -64,6 +65,7 @@ import { SelectRolesModal } from './../pages/employee-details/modals/select-role
 import { Customers } from './../pages/customers/customers';;
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 import { DataSync } from '../pages/dataSync/dataSync';
+import { AboutPage } from './../pages/about/about';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -137,6 +139,7 @@ const cloudSettings: CloudSettings = {
     SimplePOSApp,
     DeployPage,
     LoginPage,
+    LogOut,
     DataSync,
     HomePage,
     InventoryPage,
@@ -180,7 +183,8 @@ const cloudSettings: CloudSettings = {
     SelectRolesModal,
     Customers,
     CustomerDetails,
-    CreateCustomerModal
+    CreateCustomerModal,
+    AboutPage
   ],
   imports: [
     FormsModule,
@@ -224,6 +228,7 @@ const cloudSettings: CloudSettings = {
     DeployPage,
     DataSync,
     LoginPage,
+    LogOut,
     HomePage,
     InventoryPage,
     Products,
@@ -267,7 +272,8 @@ const cloudSettings: CloudSettings = {
     SelectRolesModal,
     Customers,
     CustomerDetails,
-    CreateCustomerModal
+    CreateCustomerModal,
+    AboutPage
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
