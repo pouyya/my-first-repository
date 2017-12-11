@@ -64,6 +64,7 @@ import { SelectRolesModal } from './../pages/employee-details/modals/select-role
 import { Customers } from './../pages/customers/customers';;
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 import { DataSync } from '../pages/dataSync/dataSync';
+import { AboutPage } from './../pages/about/about';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -180,7 +181,8 @@ const cloudSettings: CloudSettings = {
     SelectRolesModal,
     Customers,
     CustomerDetails,
-    CreateCustomerModal
+    CreateCustomerModal,
+    AboutPage
   ],
   imports: [
     FormsModule,
@@ -267,7 +269,8 @@ const cloudSettings: CloudSettings = {
     SelectRolesModal,
     Customers,
     CustomerDetails,
-    CreateCustomerModal
+    CreateCustomerModal,
+    AboutPage
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
