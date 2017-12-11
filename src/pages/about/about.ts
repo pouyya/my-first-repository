@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
+import { PlatformService } from '../../services/platformService';
 
 @PageModule(() => BackOfficeModule)
 @Component({
@@ -36,22 +37,38 @@ export class AboutPage {
   constructor(
     private deploy: Deploy,
     private posService: PosService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private platformService: PlatformService,
   ) { }
 
   async ionViewDidLoad() {
     try {
       let promises: Promise<any>[] = [
         this.posService.getCurrentPos(),
-        this.storeService.getCurrentStore(),
-        this.deploy.info()
+        this.storeService.getCurrentStore()
       ];
 
-      let [pos, store, ionicDeployVersion] = await Promise.all(promises);
+      var isMobileDevice = this.platformService.isMobileDevice();
+
+      if (isMobileDevice) {
+        promises.push(this.deploy.info());
+      }
+
+      let result = await Promise.all(promises);
+
+      let pos = result[0];
+      let store = result[1];
 
       this.pos = pos.name;
       this.store = store.name;
-      this.ionicDeployVersion = ionicDeployVersion;
+      
+      if (isMobileDevice) {
+        let ionicDeployVersion = result[2];
+        this.ionicDeployVersion = ionicDeployVersion;
+      } else {
+        this.ionicDeployVersion = "N/A";
+      }
+
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
       this.dbInternalName_Critical = ConfigService.internalCriticalDBName;
