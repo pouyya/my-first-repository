@@ -54,8 +54,8 @@
                 </ion-row>
               </ion-grid>
 
-              <ion-list *ngIf="paymentsBuffer && paymentsBuffer.length > 0">
-                <ion-item *ngFor="let payment of paymentsBuffer">
+              <ion-list *ngIf="invoice.payments && invoice.payments.length > 0">
+                <ion-item *ngFor="let payment of invoice.payments">
                   <ion-grid>
                     <ion-row>
                       <ion-col col-md-4>Payment ({{payTypes[payment.type].text}})</ion-col>

@@ -76,37 +76,37 @@
   dependencies:
     tsickle "^0.21.0"
 
-"@ionic-native/core@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.3.3.tgz#d527a577207843f5bdf853ea78ed79daf986b067"
+"@ionic-native/core@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.4.2.tgz#867872b00399fc20f4f4ebe19fc303cb9f7677d4"
 
-"@ionic-native/dialogs@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/dialogs/-/dialogs-4.3.3.tgz#e3f86f5ab7857b15004b128c96d94c2fc4709fd2"
+"@ionic-native/dialogs@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/dialogs/-/dialogs-4.4.2.tgz#0340c3cc994d6683622d6d3cc36d9cd9ed4609dd"
 
-"@ionic-native/firebase@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.3.3.tgz#b71882fa06ec07fe30bc4ebaecb0e4e257113388"
+"@ionic-native/firebase@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/firebase/-/firebase-4.4.2.tgz#c8150979afa6f3d12e10982d5e70e0d3c62d0da2"
 
-"@ionic-native/in-app-browser@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.3.3.tgz#eee274f404c9c545433836935d00bdf1f336e7fc"
+"@ionic-native/in-app-browser@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.4.2.tgz#bae6fb182e328a391c21e0e3a7a77495f6a6df51"
 
-"@ionic-native/insomnia@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/insomnia/-/insomnia-4.3.3.tgz#f16ad19107c157ea16e14f3a109f038c642c047e"
+"@ionic-native/insomnia@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/insomnia/-/insomnia-4.4.2.tgz#4fba8ac64e4e5f1e6fa6e90fd77642ae66be9891"
 
-"@ionic-native/pin-dialog@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.3.3.tgz#53a4465380aaab6d77ec44946c78dc40154d144c"
+"@ionic-native/pin-dialog@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.4.2.tgz#1e1b644ba3c9a349bb8256c66e1b81f2c14dd899"
 
-"@ionic-native/splash-screen@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.3.3.tgz#50e3deb20d45982cb27576a800c971a10029afd3"
+"@ionic-native/splash-screen@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.4.2.tgz#51bb5b005743e8d62b4e574b568e2ec5465bb76d"
 
-"@ionic-native/status-bar@4.3.3":
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.3.3.tgz#f68e236e84158eccc1a0144e53bc557d41ed521f"
+"@ionic-native/status-bar@4.4.2":
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.4.2.tgz#d8b7cd70aaf6371f2012a04c9c98e22f0053efff"
 
 "@ionic/app-scripts@1.3.6":
   version "1.3.6"

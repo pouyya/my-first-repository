@@ -25,7 +25,6 @@ export class PaymentsPage {
   public change: number;
   public doRefund: boolean;
   public store: Store;
-  public paymentsBuffer: Array<any> = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
@@ -52,7 +51,6 @@ export class PaymentsPage {
     if (operation == GlobalConstants.DONE_BTN) {
       this.completeSale(0);
     } else {
-      this.paymentsBuffer = this.invoice.payments.map((payment) => payment);
       this.calculateBalance();
     }
   }
@@ -98,13 +96,9 @@ export class PaymentsPage {
 
   private addPayment(type: string, payment: number) {
     if (!this.invoice.payments) {
-      this.invoice.payments = this.paymentsBuffer = [];
+      this.invoice.payments = [];
     }
     this.invoice.payments.push({
-      type: type,
-      amount: Number(payment)
-    });
-    this.paymentsBuffer.push({
       type: type,
       amount: Number(payment)
     });
@@ -115,10 +109,11 @@ export class PaymentsPage {
   private completeRefund(payment: number, type: string) {
     var isCompleted: boolean = Math.abs(this.amount) === Math.abs(payment);
     if (isCompleted) {
-      this.paymentsBuffer.push({
+      this.invoice.payments.push({
         type: type,
         amount: Number(payment) * -1
       });
+
       this.invoice.state = 'refund';
       this.invoice.completed = true;
       this.invoice.completedAt = moment().utc().format();

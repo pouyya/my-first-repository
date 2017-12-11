@@ -86,11 +86,16 @@ export class OpenCloseRegister {
 
           invoices.forEach((invoice) => {
             invoice.payments.forEach((payment) => {
+
+              var isRefund = invoice.state == 'refund';
+              var amount = (isRefund ? -1 : 1) * Number(payment.amount);
+
               if (payment.type === 'credit_card') {
-                this.expected.cc += Number(payment.amount);
+                this.expected.cc += amount;
               }
+
               if (payment.type === 'cash') {
-                this.expected.cash += Number(payment.amount);
+                this.expected.cash += amount;
               }
             });
           });
