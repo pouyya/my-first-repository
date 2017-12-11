@@ -1,16 +1,16 @@
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DateTimeService {
 
-  private _timeZone: number;
+  private _timeZone: string;
 
   get timezone() {
     return this._timeZone;
   }
 
-  set timezone(value: number) {
+  set timezone(value: string) {
     this._timeZone = value;
   }
 
@@ -24,6 +24,6 @@ export class DateTimeService {
 
   public getTimezoneDate(date: Date | string) {
     let utc = this.getUTCDate(date);
-    return this._timeZone ? utc.utcOffset(this._timeZone) : utc.local();
+    return this._timeZone ? moment.tz(date, this._timeZone) : utc.local();
   }
 }

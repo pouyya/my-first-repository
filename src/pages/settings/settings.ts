@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as moment from 'moment-timezone';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
 import { UserService } from './../../services/userService';
@@ -25,7 +26,7 @@ export class Settings {
   public defaultTax: string;
   public salesTaxes: Array<any> = [];
   public taxTypes: Array<any> = [];
-  public timezones: Array<any>[];
+  public timezones: Array<string> = [];
   public selectedType: number;
   public selectedTax: string;
   public accountSetting: AccountSetting;
@@ -60,11 +61,11 @@ export class Settings {
     var promises: Array<Promise<any>> = [
       this.appService.loadSalesAndGroupTaxes(),
       this.userService.getUser(),
-      this.accountSettingService.getCurrentSetting(),
-      new Promise((resolve, reject) => {
-        this.http.get('assets/timezones.json')
-          .subscribe(res => resolve(res.json()));
-      })
+      this.accountSettingService.getCurrentSetting()
+      // new Promise((resolve, reject) => {
+      //   this.http.get('assets/timezones.json')
+      //     .subscribe(res => resolve(res.json()));
+      // })
     ];
 
     Promise.all(promises).then(results => {
@@ -72,7 +73,7 @@ export class Settings {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
-        this.timezones = results[3];
+        this.timezones = <string[]> moment.tz.names();
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {

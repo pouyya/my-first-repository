@@ -28,8 +28,8 @@
     <ion-item>
       <ion-label class="item-name">Time Offset</ion-label>
       <ion-select [(ngModel)]="accountSetting.timeOffset" name="timeOffset">
-        <ion-option [value]="timezone.offset" *ngFor="let timezone of timezones">
-          {{ timezone.text }}
+        <ion-option [value]="timezone" *ngFor="let timezone of timezones">
+          {{ timezone }}
         </ion-option>
       </ion-select>
     </ion-item>
