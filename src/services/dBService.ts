@@ -39,7 +39,7 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     public static destroyInternals(): Promise<any[]> {
-        let destructions: Promise<any>[];
+        let destructions: Array<Promise<any>> = new Array<Promise<any>>();
 
         if (DBService.criticalDB) {
             destructions.push(DBService.criticalDB.destroy());
