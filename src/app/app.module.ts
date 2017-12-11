@@ -20,7 +20,6 @@ import { SharedModule } from './../modules/shared.module';
 
 // pages
 import { SimplePOSApp } from './app.component';
-import { DeployPage } from './../pages/deploy/deploy';
 import { LoginPage } from './../pages/login/login';
 import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
@@ -135,7 +134,6 @@ const cloudSettings: CloudSettings = {
 @NgModule({
   declarations: [
     SimplePOSApp,
-    DeployPage,
     LoginPage,
     LogOut,
     DataSync,
@@ -222,7 +220,6 @@ const cloudSettings: CloudSettings = {
   bootstrap: [IonicApp],
   entryComponents: [
     SimplePOSApp,
-    DeployPage,
     DataSync,
     LoginPage,
     LogOut,

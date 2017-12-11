@@ -1,5 +1,5 @@
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController, ToastController, NavController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -9,11 +9,12 @@ import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
 import { ModuleBase } from "../modules/moduelBase";
-import { DeployPage } from "../pages/deploy/deploy";
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
+import { DataSync } from '../pages/dataSync/dataSync';
+import { LoginPage } from '../pages/login/login';
 
 @Component({
   selector: 'app',
@@ -38,6 +39,7 @@ export class SimplePOSApp implements OnInit {
     private insomnia: Insomnia,
     private pluginService: PluginService,
     private _sharedService: SharedService,
+    public navCtrl: NavController,
     private cdr: ChangeDetectorRef,
     private securityService: SecurityService,
     private toastController: ToastController,
@@ -60,11 +62,11 @@ export class SimplePOSApp implements OnInit {
 
   async ngOnInit() {
     try {
-      var user = await this.userService.getDeviceUser();
-      this.rootPage = DeployPage;
+      let user = await this.userService.getDeviceUser();
       if (this.platformService.isMobileDevice()) {
         user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
       }
+      this.navCtrl.setRoot(user ? DataSync : LoginPage);
       return;
     } catch (error) {
       console.error(error);
