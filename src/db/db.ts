@@ -9,10 +9,6 @@ export class DB {
     private _db: any;
     private pendingMax = 0;
 
-    get db() {
-        return this._db;
-    }
-
     public async initialize(dbUrl: string, internalDBName: string) {
         return new Promise(async (resolve) => {
 
@@ -66,5 +62,9 @@ export class DB {
 
     public query(view, key): Promise<Array<any>> {
         return this._db.query(view, key);
+    }
+
+    public destroy(): Promise<boolean>{
+        return this._db.destroy();
     }
 }
