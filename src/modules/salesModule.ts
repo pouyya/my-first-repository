@@ -1,3 +1,4 @@
+import { LogOut } from './../pages/logout/logout';
 import { PosService } from './../services/posService';
 import { Injector } from '@angular/core';
 import { ToastController } from 'ionic-angular';
@@ -33,7 +34,8 @@ export class SalesModule implements ModuleBase {
     { title: 'Sales History', icon: 'list', component: SalesHistoryPage },
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, disableFunc: this.moneyInOut_disableFunc },
-    { title: 'Back Office', icon: 'build', component: HomePage }
+    { title: 'Back Office', icon: 'build', component: HomePage },
+    { title: 'Logout', icon: 'log-out', component: LogOut }
   ];
 
   public pinTheMenu: boolean = false;
