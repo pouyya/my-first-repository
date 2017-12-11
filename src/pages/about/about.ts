@@ -61,12 +61,16 @@ export class AboutPage {
 
       this.pos = pos.name;
       this.store = store.name;
-      
+
       if (isMobileDevice) {
         let ionicDeployVersion = result[2];
-        this.ionicDeployVersion = ionicDeployVersion;
+        if (ionicDeployVersion) {
+          this.ionicDeployVersion = JSON.stringify(ionicDeployVersion);
+        } else {
+          this.ionicDeployVersion = "N/A"
+        }
       } else {
-        this.ionicDeployVersion = "N/A";
+        this.ionicDeployVersion = "Not on mobile device!";
       }
 
       this.dbInternalName = ConfigService.internalDBName;
