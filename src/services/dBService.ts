@@ -1,6 +1,7 @@
+import * as moment from 'moment';
+import { DB } from '../db/db';
 import { EventEmitter } from '@angular/core';
 import { DBBasedEntity } from "../model/DBBasedEntity";
-import { DB } from '../db/db';
 import { PouchDBProvider } from "../provider/pouchDBProvider";
 import { ConfigService } from './configService';
 import { DBModeEnum } from '../metadata/dbMode';
@@ -67,7 +68,7 @@ export class DBService<T extends DBBasedEntity> {
 
     add(entity: T): Promise<T> {
         if (!entity._id) {
-            entity._id = new Date().toISOString();
+            entity._id = moment().utc().format();
         }
         return this.update(entity);
     }

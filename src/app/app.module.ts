@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 // core
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
@@ -81,11 +82,13 @@ import { GroupEmployeeTimeLogModule } from './../components/group-employee-timel
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
 import { GroupByPipe } from './../pipes/group-by.pipe';
+import { LocalDatePipe } from '../pipes/local-date.pipe';
 
 // directives
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
 
 // services
+import { DateTimeService } from './../services/dateTimeService';
 import { ProductService } from '../services/productService';
 import { ServiceService } from '../services/serviceService';
 import { CategoryService } from '../services/categoryService';
@@ -281,8 +284,10 @@ const cloudSettings: CloudSettings = {
     Dialogs,
     Insomnia,
     InAppBrowser,
+    DatePipe,
     SharedService,
     CacheFactory,
+    DateTimeService,
     ProductService,
     ServiceService,
     CategoryService,
@@ -313,6 +318,7 @@ const cloudSettings: CloudSettings = {
     ClickStopPropagation,
     KeysPipe,
     GroupByPipe,
+    LocalDatePipe,
     authProvider,
     fakeBackendProvider,
     MockBackend,

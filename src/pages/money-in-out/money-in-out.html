@@ -29,7 +29,7 @@
     <ion-item *ngFor="let posCash of register.cashMovements">
       <ion-grid>
         <ion-row>
-          <ion-grid col-md-4>{{posCash.datetime | date:'short'}}</ion-grid>
+          <ion-grid col-md-4>{{posCash.datetime | localDate:'M/d/yy, h:mm a'}}</ion-grid>
           <ion-grid col-md-4>{{posCash.type}}</ion-grid>
           <ion-grid col-md-4>{{posCash.amount}}</ion-grid>
         </ion-row>
