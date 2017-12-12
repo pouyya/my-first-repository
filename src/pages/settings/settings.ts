@@ -62,10 +62,6 @@ export class Settings {
       this.appService.loadSalesAndGroupTaxes(),
       this.userService.getUser(),
       this.accountSettingService.getCurrentSetting()
-      // new Promise((resolve, reject) => {
-      //   this.http.get('assets/timezones.json')
-      //     .subscribe(res => resolve(res.json()));
-      // })
     ];
 
     Promise.all(promises).then(results => {
