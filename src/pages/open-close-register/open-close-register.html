@@ -54,11 +54,11 @@
       </ion-col>
       <ion-col col-md-3>
         <p><small>Opening Time</small></p>
-        <p><strong>{{ register.openTime | date:'medium' }}</strong></p>
+        <p><strong>{{ register.openTime | localDate:'MMM d, y, h:mm:ss a' }}</strong></p>
       </ion-col>
       <ion-col col-md-12>
         <p><small>Closing Time</small></p>
-        <p><strong>{{ closure.openTime | date:'medium' }}</strong></p>
+        <p><strong>{{ closure.openTime | localDate:'MMM d, y, h:mm:ss a' }}</strong></p>
       </ion-col>
 
       <ion-col col-md-12>
@@ -88,13 +88,13 @@
                   <ion-col col-md-2><strong>Reason</strong></ion-col>              
                 </ion-row>
                 <ion-row>
-                  <ion-col col-md-2 offset-md-4>{{ register.openTime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2 offset-md-4>{{ register.openTime | localDate:'h:mm a' }}</ion-col>
                   <ion-col col-md-2>-</ion-col>
                   <ion-col col-md-2>{{ register.openingAmount }}</ion-col>
                   <ion-col col-md-2>Opening Float</ion-col>                      
                 </ion-row>
                 <ion-row *ngFor="let cash of register.cashMovements">
-                  <ion-col col-md-2 offset-md-4>{{ cash.datetime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2 offset-md-4>{{ cash.datetime | localDate:'h:mm a' }}</ion-col>
                   <ion-col col-md-2>-</ion-col>
                   <ion-col col-md-2>{{ cash.amount }}</ion-col>
                   <ion-col col-md-2>{{ reason[cash.type].text }}</ion-col>
@@ -155,7 +155,7 @@
       </ion-col>
       <ion-col col-md-3>
         <p><small>Opening Time</small></p>
-        <p><strong>{{ register.openTime | date:'medium' }}</strong></p>
+        <p><strong>{{ register.openTime | localDate:'MMM d, y, h:mm:ss a' }}</strong></p>
       </ion-col>
 
       <ion-col col-md-12>
@@ -184,13 +184,13 @@
                   <ion-col col-md-2><strong>Amount($)</strong></ion-col>
                   <ion-col col-md-2><strong>Reason</strong></ion-col>
 
-                  <ion-col col-md-2 offset-md-4>{{ register.openTime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2 offset-md-4>{{ register.openTime | localDate:'h:mm a' }}</ion-col>
                   <ion-col col-md-2>-</ion-col>
                   <ion-col col-md-2>{{ register.openingAmount }}</ion-col>
                   <ion-col col-md-2>Opening Float</ion-col>                  
                 </ion-row>
                 <ion-row *ngFor="let cash of register.cashMovements">
-                  <ion-col col-md-2 offset-md-4>{{ cash.datetime | date:'shortTime' }}</ion-col>
+                  <ion-col col-md-2 offset-md-4>{{ cash.datetime | localDate:'h:mm a' }}</ion-col>
                   <ion-col col-md-2>-</ion-col>
                   <ion-col col-md-2>{{ cash.amount }}</ion-col>
                   <ion-col col-md-2>{{ reason[cash.type].text }}</ion-col>

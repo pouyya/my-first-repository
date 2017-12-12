@@ -39,7 +39,7 @@
               <ion-label>Insert Time</ion-label>
               <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="currentDate"></ion-datetime>
             </ion-item>
-            <ion-item id="clock">{{clock | async | date:'mediumTime'}}</ion-item>
+            <ion-item id="clock">{{clock | async | localDate:'h:mm:ss a'}}</ion-item>
           </ion-col>
           <ion-col col-md-6>
             <button ion-button full *ngFor="let btn of actionBtns | keys" [disabled]="!btn.value.enabled" (click)="addTimeLog(btn.key)">{{ btn.value.text }}</button>

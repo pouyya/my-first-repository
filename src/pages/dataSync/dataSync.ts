@@ -1,3 +1,5 @@
+import { DateTimeService } from './../../services/dateTimeService';
+import { AccountSettingService } from './../../services/accountSettingService';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { UserService } from '../../services/userService';
@@ -26,6 +28,8 @@ export class DataSync {
         private posService: PosService,
         private storeService: StoreService,
         private _sharedService: SharedService,
+        private accountSettingService: AccountSettingService,
+        private dateTimeService: DateTimeService,
         private navCtrl: NavController) {
     }
 
@@ -35,6 +39,8 @@ export class DataSync {
         let loadStoreData = async () => {
             let currentPos: POS;
             let currentStore: Store;
+            let accountSettings = await this.accountSettingService.getCurrentSetting()
+            this.dateTimeService.timezone = accountSettings.timeOffset || null;
             if (!user.currentPos || !user.currentStore) {
                 let allPos: POS[] = await this.posService.getAll();
                 currentPos = _.head(allPos);

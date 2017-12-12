@@ -69,7 +69,7 @@
     <ion-item *ngFor="let invoice of invoices; let $index = index" [ngClass]="{active: isItemShown(invoice._id)}">
       <ion-grid>
         <ion-row (click)="toggleItem(invoice)">
-          <ion-col col-md-2>{{invoice.created | date:'short'}}</ion-col>
+          <ion-col col-md-2>{{invoice.created | localDate:'M/d/yy, h:mm a'}}</ion-col>
           <ion-col col-md-1>{{invoice.receiptNo}}</ion-col>
           <ion-col col-md-2>-</ion-col>
           <ion-col col-md-2 *ngIf="invoice.customer">{{invoice.customer.firstName}} {{invoice.customer.lastName}}</ion-col>

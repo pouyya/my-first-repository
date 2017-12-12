@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as moment from 'moment-timezone';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
 import { UserService } from './../../services/userService';
@@ -12,6 +13,7 @@ import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { AccountSettingService } from '../../services/accountSettingService';
 import { AccountSetting } from '../../model/accountSetting';
+import { DateTimeService } from './../../services/dateTimeService';
 
 @PageModule(() => SettingsModule)
 @Component({
@@ -20,9 +22,10 @@ import { AccountSetting } from '../../model/accountSetting';
 })
 export class Settings {
 
-  public salesTaxes: Array<any> = [];
   public defaultTax: string;
+  public salesTaxes: Array<any> = [];
   public taxTypes: Array<any> = [];
+  public timezones: Array<string> = [];
   public selectedType: number;
   public selectedTax: string;
   public accountSetting: AccountSetting;
@@ -43,6 +46,7 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
+    private datetimeService: DateTimeService
   ) {
     this.cdr.detach();
     this.taxTypes = [
@@ -58,11 +62,12 @@ export class Settings {
       this.accountSettingService.getCurrentSetting()
     ];
 
-    Promise.all(promises).then((results) => {
+    Promise.all(promises).then(results => {
       this.zone.run(() => {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
+        this.timezones = <string[]> moment.tz.names();
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {
@@ -92,6 +97,9 @@ export class Settings {
     this.accountSetting.taxType = this.selectedType == 0 ? false : true;
     this.accountSetting.defaultTax = this.newTax._id;
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
+    if(this.accountSetting.timeOffset) {
+      this.datetimeService.timezone = this.accountSetting.timeOffset;
+    }
 
     this.accountSettingService.update(this.accountSetting);
 

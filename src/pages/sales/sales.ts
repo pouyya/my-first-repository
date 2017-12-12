@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import firstBy from 'thenby';
+import * as moment from 'moment';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { EvaluationContext } from './../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
@@ -113,7 +114,7 @@ export class Sales {
       let openingAmount: number = Number(this.navParams.get('openingAmount'));
       let openingNote: string = this.navParams.get('openingNotes');
       if (openingAmount >= 0) {
-        this.register.openTime = new Date().toISOString();
+        this.register.openTime = moment().utc().format();
         this.register.status = true;
         this.register.openingAmount = Number(openingAmount);
         this.register.openingNote = openingNote;
@@ -304,7 +305,7 @@ export class Sales {
     try {
       await loader.present();
       await this.initiate();
-      this.register.openTime = new Date().toISOString();
+      this.register.openTime = moment().utc().format();
       this.register.status = true;
       this.register.openingAmount = Number(this.register.openingAmount);
       this.posService.update(this.register);
