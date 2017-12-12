@@ -3,13 +3,12 @@ import { Network } from '@ionic-native/network';
 import { Component } from "@angular/core";
 
 @Component({
-  selector: 'network-monitor',
+  selector: '[network-monitor]',
   template: `<button ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
         <ion-icon [name]="networkIcon"></ion-icon>
       </button>
       <button *ngIf="syncing" ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
-        <ion-icon name="sync"></ion-icon>
-      </button>`
+        <ion-icon name="sync"></ion-icon>`
 })
 export class NetworkMonitorComponent {
   public networkIcon: string = 'eye';

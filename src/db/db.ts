@@ -34,8 +34,8 @@ export class DB {
                     this.dbSyncProgress.emit(1);
                 }).on('active', function () {
                     // replicate resumed (e.g. new changes replicating, user went back online)
-                    resolve();
-                    this.dbSyncProgress.emit(0);
+                    // resolve();
+                    // this.dbSyncProgress.emit(0);
                 }).on('denied', function (err) {
                     // a document failed to replicate (e.g. due to permissions)
                 }).on('error', function (err) {
