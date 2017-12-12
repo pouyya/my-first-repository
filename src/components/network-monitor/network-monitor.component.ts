@@ -8,7 +8,7 @@ import { Component } from "@angular/core";
         <ion-icon [name]="networkIcon"></ion-icon>
       </button>
       <button *ngIf="syncing" ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
-        <ion-icon name="sync"></ion-icon>`
+        <ion-icon name="sync"></ion-icon></button>`
 })
 export class NetworkMonitorComponent {
   public networkIcon: string = 'eye';
