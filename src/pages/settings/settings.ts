@@ -4,7 +4,6 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
 import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
-import { Http } from '@angular/http';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { SharedService } from './../../services/_sharedService';
@@ -43,7 +42,6 @@ export class Settings {
     private appService: AppService,
     private _sharedService: SharedService,
     private zone: NgZone,
-    private http: Http,
     private toast: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
