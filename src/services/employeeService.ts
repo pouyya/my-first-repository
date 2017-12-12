@@ -109,59 +109,46 @@ export class EmployeeService extends BaseEntityService<Employee> {
     return employees && employees.length > 0 ? employees[0] : null;
   }
 
-  public async getListByCurrentStatus(): Promise<any> {
+  public async getListByCurrentStatus(): Promise<Array<Employee>> {
     let currentDay = new Date(moment(new Date()).format("YYYY-MM-DD"));
-    let currentUser = await this.userService.getUser();
-    return new Promise((resolve, reject) => {
-      let storeId = currentUser.currentStore;
-      this.findBy({
-        selector: {
-          store: {
-            $elemMatch: {
-              id: { $eq: storeId },
-              role: { $eq: "staff" }
+    let storeId = (await this.userService.getUser()).currentStore;
+    var employees = await this.getAll();
+    var timeStamps = await this.employeeTimestampService.findBy({
+      sort: [{ _id: 'desc' }],
+      selector: {
+        storeId,
+        time: {
+          $gte: currentDay
+        }
+      }
+    });
+
+    let preparedEmployees: Array<Employee> = [];
+
+    if (timeStamps.length > 0) {
+      employees.forEach(employee => {
+        var currentEmployeeTimeStamp = _.orderBy(
+          _.filter(timeStamps, (timeStamp) => timeStamp.employeeId == employee._id),
+          ['_id'], ['desc']);
+
+        if (currentEmployeeTimeStamp.length > 0) {
+          let time: EmployeeTimestamp = currentEmployeeTimeStamp[0];
+          let e: any = employee;
+          e.disabled = false;
+          if (time.type !== EmployeeTimestampService.CLOCK_OUT) {
+            if (time.type == EmployeeTimestampService.BREAK_START) {
+              e.disabled = true;
+            } else if (time.type == EmployeeTimestampService.BREAK_END || time.type == EmployeeTimestampService.CLOCK_OUT) {
+              e.disabled = false;
             }
+
+            preparedEmployees.push(e);
           }
         }
-      }).then((employees: Employee[]) => {
-        let preparedEmployees: Array<any> = [];
-        let timestamps: Array<Promise<any>> = [];
-        employees.forEach(employee => {
-          timestamps.push(this.employeeTimestampService.findBy({
-            sort: [{ _id: 'desc' }],
-            selector: {
-              employeeId: employee._id,
-              storeId,
-              time: {
-                $gte: currentDay
-              }
-            }
-          }).then((ts: EmployeeTimestamp[]) => {
-            if (ts.length > 0) {
-              let time: EmployeeTimestamp = ts[0];
-              let e: any = employee;
-              e.disabled = false;
-              if (time.type !== EmployeeTimestampService.CLOCK_OUT) {
-                if (time.type == EmployeeTimestampService.BREAK_START) {
-                  e.disabled = true;
-                } else if (time.type == EmployeeTimestampService.BREAK_END || time.type == EmployeeTimestampService.CLOCK_OUT) {
-                  e.disabled = false;
-                }
+      });
+    }
 
-                preparedEmployees.push(e);
-              }
-            }
-            return;
-          }).catch(error => {
-            throw new Error(error);
-          }));
-        });
-
-        Promise.all(timestamps).then(() => {
-          resolve(preparedEmployees);
-        }).catch(error => reject(error));
-      }).catch(error => reject(error));
-    });
+    return preparedEmployees;
   }
 
   public async findByStore(storeId: string) {
