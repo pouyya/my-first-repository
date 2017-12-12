@@ -39,7 +39,7 @@ export class DBService<T extends DBBasedEntity> {
         }
     }
 
-    public static destroyInternals(): Promise<any[]> {
+    public static async destroyInternals(): Promise<any> {
         let destructions: Array<Promise<any>> = new Array<Promise<any>>();
 
         if (DBService.criticalDB) {
@@ -50,7 +50,10 @@ export class DBService<T extends DBBasedEntity> {
             destructions.push(DBService.currentDB.destroy());
         }
 
-        return Promise.all(destructions);
+        await Promise.all(destructions);
+
+        DBService.criticalDB = null;
+        DBService.currentDB = null;
     }
 
     public getDB(): DB {
