@@ -103,7 +103,6 @@
       "cordova-plugin-statusbar": {},
       "cordova-plugin-whitelist": {},
       "cordova-sqlite-storage": {},
-      "ionic-plugin-deploy": {},
       "ionic-plugin-keyboard": {},
       "cordova-plugin-firebase": {},
       "cordova-plugin-pin-dialog": {},
