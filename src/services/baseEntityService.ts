@@ -1,5 +1,5 @@
 import { DBBasedEntity } from "../model/dbBasedEntity";
-import { DBService } from "./DBService";
+import { DBService } from "./dBService";
 
 export abstract class BaseEntityService<T extends DBBasedEntity> {
   private _dbService;
