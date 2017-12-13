@@ -26,6 +26,14 @@
       <ion-label class="item-name">Receipt Footer Message</ion-label>
       <ion-textarea type="text" [(ngModel)]="accountSetting.receiptFooterMessage"></ion-textarea>
     </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Time Offset</ion-label>
+      <ion-select [(ngModel)]="accountSetting.timeOffset" name="timeOffset">
+        <ion-option [value]="timezone" *ngFor="let timezone of timezones">
+          {{ timezone }}
+        </ion-option>
+      </ion-select>
+    </ion-item>
   </ion-list>
 
   <ion-list inset>

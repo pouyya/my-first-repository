@@ -5,7 +5,7 @@ import { ConfigService } from '../services/configService';
 export class PouchDBProvider {
 
     public static initializePlugin() {
-        
+
         PouchDB.default.plugin(PouchDBFind);
 
         if (ConfigService.isDevelopment()) {
@@ -18,7 +18,7 @@ export class PouchDBProvider {
     }
 
     public static createDb(url: string) {
-        return PouchDB.default(url);
+        return PouchDB.default(url, { auto_compaction: true });
     }
 
     public static async getPendingMax(url: string) {

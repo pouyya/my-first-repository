@@ -1,6 +1,7 @@
+import * as moment from 'moment';
+import { DB } from '../db/db';
 import { EventEmitter } from '@angular/core';
 import { DBBasedEntity } from "../model/DBBasedEntity";
-import { DB } from '../db/db';
 import { PouchDBProvider } from "../provider/pouchDBProvider";
 import { ConfigService } from './configService';
 import { DBModeEnum } from '../metadata/dbMode';
@@ -38,7 +39,7 @@ export class DBService<T extends DBBasedEntity> {
         }
     }
 
-    public static destroyInternals(): Promise<any[]> {
+    public static async destroyInternals(): Promise<any> {
         let destructions: Array<Promise<any>> = new Array<Promise<any>>();
 
         if (DBService.criticalDB) {
@@ -49,7 +50,10 @@ export class DBService<T extends DBBasedEntity> {
             destructions.push(DBService.currentDB.destroy());
         }
 
-        return Promise.all(destructions);
+        await Promise.all(destructions);
+
+        DBService.criticalDB = null;
+        DBService.currentDB = null;
     }
 
     public getDB(): DB {
@@ -64,7 +68,7 @@ export class DBService<T extends DBBasedEntity> {
 
     add(entity: T): Promise<T> {
         if (!entity._id) {
-            entity._id = new Date().toISOString();
+            entity._id = moment().utc().format();
         }
         return this.update(entity);
     }
