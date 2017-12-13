@@ -1,5 +1,5 @@
 import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, ToastController, NavController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -39,7 +39,6 @@ export class SimplePOSApp implements OnInit {
     private insomnia: Insomnia,
     private pluginService: PluginService,
     private _sharedService: SharedService,
-    public navCtrl: NavController,
     private cdr: ChangeDetectorRef,
     private securityService: SecurityService,
     private toastController: ToastController,
@@ -66,7 +65,7 @@ export class SimplePOSApp implements OnInit {
       if (this.platformService.isMobileDevice()) {
         user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
       }
-      this.navCtrl.setRoot(user ? DataSync : LoginPage);
+      this.rootPage = user ? DataSync : LoginPage;
       return;
     } catch (error) {
       console.error(error);
