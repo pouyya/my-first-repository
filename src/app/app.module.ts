@@ -3,7 +3,6 @@ import { DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
-import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 import { MatInputModule, MatGridListModule } from '@angular/material';
@@ -128,11 +127,6 @@ import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
 
-const cloudSettings: CloudSettings = {
-  'core': {
-    'app_id': "5bf5f6a2"
-  }
-};
 
 @NgModule({
   declarations: [
@@ -197,7 +191,6 @@ const cloudSettings: CloudSettings = {
           }
         }
       }),
-    CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
       name: '__mydb',
       driverOrder: ['sqlite', 'indexeddb', 'websql']
