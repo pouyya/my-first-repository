@@ -25,7 +25,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid>
+  <ion-grid *ngIf="posStatus && dataLoaded">
     <ion-row>
       <ion-col col-md-12>
         <p id="welcome-text">Would you like to ?</p>
@@ -40,6 +40,13 @@
     <ion-row *ngIf="messagePlaceholder">
       <ion-col col-md-12 id="text-placeholder">
         {{messagePlaceholder}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="!posStatus && dataLoaded">
+    <ion-row>
+      <ion-col col-md-12>
+        <h3 id="welcome-text">Register Closed</h3>
       </ion-col>
     </ion-row>
   </ion-grid>

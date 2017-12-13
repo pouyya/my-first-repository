@@ -175,6 +175,41 @@ export class EmployeeService extends BaseEntityService<Employee> {
     }
   }
 
+  public async logOutCurrentStoreEmployees(checkOutTime?: Date | string): Promise<any> {
+    let user: any = await this.userService.getUser();
+    let employees = await this.findByStore(user.currentStore);
+    let promises: any[] = [];
+    if (employees.length > 0) {
+      employees.forEach(employee => {
+        promises.push(this.employeeTimestampService.findBy({
+          selector: {
+            employeeId: employee._id,
+            storeId: user.currentStore,
+            type: { $ne: 'clock_out' },
+            time: { $exists: true }
+          },
+          sort: [{ _id: 'desc' }],
+          limit: 1
+        }));
+      });
+
+      let timestamps: EmployeeTimestamp[] = _.flatten(await Promise.all(promises));
+      checkOutTime = checkOutTime || new Date();
+      let creations: Promise<any>[] = _.map(timestamps, (timestamp) => {
+        let newTimestamp = new EmployeeTimestamp();
+        newTimestamp.employeeId = timestamp.employeeId;
+        newTimestamp.storeId = timestamp.storeId;
+        newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
+        newTimestamp.time = new Date() //moment(checkOutTime).utc().format();
+        return this.employeeTimestampService.add(newTimestamp);
+      });
+
+      return await Promise.all(creations);
+    }
+
+    return Promise.resolve(null);
+  }
+
   public async logOutAllStaffs() {
     try {
       let timeLogs: any[] = await this.employeeTimestampService.getNonCheckOuts(false);
