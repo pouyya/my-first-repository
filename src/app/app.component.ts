@@ -15,6 +15,8 @@ import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { DataSync } from '../pages/dataSync/dataSync';
 import { LoginPage } from '../pages/login/login';
+import { ConfigService } from '../services/configService';
+import { DeployService } from '../services/deployService';
 
 @Component({
   selector: 'app',
@@ -42,7 +44,8 @@ export class SimplePOSApp implements OnInit {
     private cdr: ChangeDetectorRef,
     private securityService: SecurityService,
     private toastController: ToastController,
-    private platformService: PlatformService
+    private platformService: PlatformService,
+    private deployService: DeployService
   ) {
     this._sharedService.payload$.subscribe((data) => {
       if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
@@ -61,6 +64,10 @@ export class SimplePOSApp implements OnInit {
 
   async ngOnInit() {
     try {
+      if (this.platformService.isMobileDevice() && !ConfigService.isDevelopment() && ConfigService.turnOnDeployment()) {
+        await this.deployService.deploy();
+      }
+
       let user = await this.userService.getDeviceUser();
       if (this.platformService.isMobileDevice()) {
         user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();

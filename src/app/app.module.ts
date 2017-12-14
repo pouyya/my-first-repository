@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 // core
-import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
@@ -116,16 +116,17 @@ import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
 import { authProvider } from './../modules/auth.module';
 import { CustomerService } from './../services/customerService';
-
-// used to create fake backend
-import { fakeBackendProvider } from './../services/_fakeBackend';
-import { MockBackend } from '@angular/http/testing';
 import { BaseRequestOptions } from '@angular/http';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
+import { DeployService } from '../services/deployService';
+
+// used to create fake backend
+import { fakeBackendProvider } from './../services/_fakeBackend';
+import { MockBackend } from '@angular/http/testing';
 
 
 @NgModule({
@@ -169,7 +170,7 @@ import { AccountSettingService } from '../services/accountSettingService';
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
-    PriceBookDetails,    
+    PriceBookDetails,
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
     TimeLogDetailsModal,
@@ -192,7 +193,7 @@ import { AccountSettingService } from '../services/accountSettingService';
         }
       }),
     IonicStorageModule.forRoot({
-      name: '__mydb',
+      name: '__simpleposlocal',
       driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
     MatGridListModule,
@@ -298,6 +299,7 @@ import { AccountSettingService } from '../services/accountSettingService';
     PluginService,
     EmployeeTimestampService,
     CustomerService,
+    DeployService,
     AuthService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
