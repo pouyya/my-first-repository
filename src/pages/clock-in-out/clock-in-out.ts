@@ -14,6 +14,7 @@ import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
 import { UserSession } from '../../model/UserSession';
+import { POS } from '../../model/pos';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -24,7 +25,8 @@ import { UserSession } from '../../model/UserSession';
 export class ClockInOutPage {
 
   public employee: Employee;
-  public posStatus: boolean = true;
+  public posStatus: boolean;
+  public pos: POS;
   public dataLoaded: boolean = false;
   public timestamp: EmployeeTimestamp;
   public buttons: any;
@@ -86,7 +88,8 @@ export class ClockInOutPage {
       loader.dismiss();
     }
     await loader.present();
-    this.posStatus = await this.posService.getCurrentPosStatus();
+    this.pos = await this.posService.getCurrentPos();
+    this.posStatus = this.pos.status;
     if (this.posStatus) {
       let clockInBtn: any = {
         next: EmployeeTimestampService.CLOCK_IN,
@@ -130,11 +133,11 @@ export class ClockInOutPage {
       if (result) {
         result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
         this.timestamp = <EmployeeTimestamp>result.latest
-        if (this.timestamp.type == EmployeeTimestampService.CLOCK_OUT) {
+        if (this.timestamp.type == EmployeeTimestampService.CLOCK_OUT && this.pos.hasOwnProperty('lastClosureTime')) {
           // check if shift is not ended yet
-          let currentDate = new Date();
+          let openTime: Date = new Date(this.pos.openTime);
           let clockoutTime = new Date(this.timestamp.time);
-          if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
+          if (clockoutTime > openTime) {
             await this.employeeTimestampService.getEmployeeLatestTimestamp(
               this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
             );
