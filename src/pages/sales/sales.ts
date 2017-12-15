@@ -29,6 +29,7 @@ import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 import { CustomerService } from '../../services/customerService';
+import { BarcodeListener } from '../../metadata/barcodeListenerModule';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -69,6 +70,7 @@ export class Sales {
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
   private salesTaxes: SalesTax[];
+  private categoryIdKeys: string[];
   private defaultTax: any;
 
   constructor(
@@ -147,13 +149,7 @@ export class Sales {
    */
   public selectCategory(category) {
     this.activeCategory = category;
-    this.activeTiles = this.purchasableItems[this.activeCategory._id]
-    /*
-    this.salesService.loadPurchasableItems(category._id).then(
-      items => this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]),
-      error => { console.error(error); }
-    );
-    */
+    this.activeTiles = this.purchasableItems[this.activeCategory._id];
     return category._id == category._id;
   }
 
@@ -279,6 +275,7 @@ export class Sales {
       this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
       this.activeCategory = _.head(this.categories);
       this.activeTiles = this.purchasableItems[this.activeCategory._id];
+      this.categoryIdKeys = Object.keys(this.purchasableItems);
       return;
     } catch (err) {
       return Promise.reject(err);
@@ -318,6 +315,23 @@ export class Sales {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  private findPurchasableItemByBarcode(code: string): PurchasableItem {
+    let foundItem: PurchasableItem = null;
+    for(let i = 0; i < this.categoryIdKeys.length; i++) {
+      foundItem = _.find(this.purchasableItems[this.categoryIdKeys[i]], item => {
+        return item.hasOwnProperty('barcode') ? item.barcode === code : false;
+      });
+    }
+
+    return foundItem || null;
+  }
+
+  @BarcodeListener('%P', 400, 24)
+  public barcodeReader(code: string) {
+    let item: PurchasableItem = this.findPurchasableItemByBarcode(code);
+    item && this.onSelect(item); // execute in parallel
   }
 
   public async onSubmit(): Promise<any> {
