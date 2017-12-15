@@ -8,8 +8,9 @@ import { Component } from "@angular/core";
   template: `<button ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
         <ion-icon [name]="networkIcon"></ion-icon>
       </button>
-      <button ion-button *ngIf="syncing" icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
-        <ion-spinner name="crescent"></ion-spinner></button>`,
+      <button ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
+          <ion-icon [name]="syncIcon"></ion-icon>
+        </button>`,
   styles: [
     `button > ion-spinner * {
       width: 28px;
@@ -21,7 +22,7 @@ import { Component } from "@angular/core";
 })
 export class NetworkMonitorComponent {
   public networkIcon: string = 'eye';
-  public syncing: boolean = false;
+  public syncIcon: string = 'cloud-outline';
 
   constructor(private network: Network) {
     this.network.onDisconnect().subscribe(() => this.networkIcon = "eye-off");
@@ -29,13 +30,13 @@ export class NetworkMonitorComponent {
 
     DBService.criticalDBSyncProgress.subscribe(
       (data: DBEvent) => {
-        data && (this.syncing = data.isActive);
+        data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
       }
     );
 
     DBService.dbSyncProgress.subscribe(
       (data: DBEvent) => {
-        data && (this.syncing = data.isActive);
+        data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
       }
     );
   }
