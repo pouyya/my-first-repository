@@ -1,3 +1,4 @@
+import { DBEvent } from './../../db/dbEvent';
 import { DateTimeService } from './../../services/dateTimeService';
 import { AccountSettingService } from './../../services/accountSettingService';
 import { Component } from '@angular/core';
@@ -72,15 +73,17 @@ export class DataSync {
         DBService.initialize();
 
         DBService.criticalDBSyncProgress.subscribe(
-            async data => {
-                if (data === 1 && !this.isNavigated) {
-                    this.updateText = "Loading your company data 100%";
-                    await loadStoreData()
-                    this.isNavigated = true;
-                    this.navCtrl.setRoot(Sales);
-                }
-                else {
-                    this.updateText = "Loading your company data " + Math.round(data * 100) + "%";
+            async (data: DBEvent) => {
+                if(data) {
+                    if (data.progress === 1 && !this.isNavigated) {
+                        this.updateText = "Loading your company data 100%";
+                        await loadStoreData()
+                        this.isNavigated = true;
+                        this.navCtrl.setRoot(Sales);
+                    }
+                    else {
+                        this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";
+                    }
                 }
             }
         );
