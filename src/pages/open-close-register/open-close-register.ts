@@ -177,7 +177,7 @@ export class OpenCloseRegister {
       this.register.status = false;
       this.register.cashMovements = [];
       this.register.openingAmount = null;
-      // this.register.openTime = null;
+      this.register.openTime = null;
       this.register.openingNote = null;
       this.showReport = true;
       await this.posService.update(this.register);

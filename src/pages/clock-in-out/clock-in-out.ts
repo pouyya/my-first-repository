@@ -26,6 +26,7 @@ export class ClockInOutPage {
 
   public employee: Employee;
   public posStatus: boolean;
+  public posName: string;
   public pos: POS;
   public dataLoaded: boolean = false;
   public timestamp: EmployeeTimestamp;
@@ -73,6 +74,8 @@ export class ClockInOutPage {
 
         return false;
       }
+    } else {
+      return false;
     }
   }
 
@@ -90,6 +93,7 @@ export class ClockInOutPage {
     await loader.present();
     this.pos = await this.posService.getCurrentPos();
     this.posStatus = this.pos.status;
+    this.posName = this.pos.name;
     if (this.posStatus) {
       let clockInBtn: any = {
         next: EmployeeTimestampService.CLOCK_IN,

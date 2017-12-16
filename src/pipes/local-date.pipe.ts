@@ -11,7 +11,11 @@ export class LocalDatePipe implements PipeTransform {
   }
 
   transform(value: any, pattern: string = 'MMM d, y, h:mm:ss a'): string | null {
-    let localDate = this.dateTimeService.getTimezoneDate(new Date(value));
-    return this.datePipe.transform(localDate, pattern);
+    if (value) {
+      let localDate = this.dateTimeService.getTimezoneDate(new Date(value));
+      return this.datePipe.transform(localDate, pattern);
+    } else {
+      return null;
+    }
   }
 }
