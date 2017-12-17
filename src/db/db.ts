@@ -1,5 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { PouchDBProvider } from '../provider/pouchDBProvider';
+import { DBEvent } from './dbEvent';
 
 export class DB {
 
@@ -25,18 +26,23 @@ export class DB {
                             this.pendingMax = 0;
                             resolve();
                         }
-
-                        this.dbSyncProgress.emit(progress);
+                        this.dbSyncProgress.emit(new DBEvent(true, progress));
                     }
                 }).on('paused', (err) => {
                     // replication paused (e.g. replication up to date, user went offline)
+                    this.dbSyncProgress.emit(new DBEvent(false, 1));
                     resolve();
-                    this.dbSyncProgress.emit(1);
-                }).on('active', function () {
+                }).on('active', (info) => {
                     // replicate resumed (e.g. new changes replicating, user went back online)
-                }).on('denied', function (err) {
+                    resolve();
+                    this.dbSyncProgress.emit(new DBEvent(true, 0));
+                }).on('denied', (err) => {
                     // a document failed to replicate (e.g. due to permissions)
-                }).on('error', function (err) {
+                }).on('complete', (info) => {
+                    resolve();
+                    this.dbSyncProgress.emit(new DBEvent(false, 1))
+                    // handle complete
+                }).on('error', (err) => {
                     // handle error
                 });
 
@@ -64,7 +70,7 @@ export class DB {
         return this._db.query(view, key);
     }
 
-    public destroy(): Promise<boolean>{
+    public destroy(): Promise<boolean> {
         return this._db.destroy();
     }
 }
