@@ -3,6 +3,7 @@ import { DBBasedEntity } from './dbBasedEntity';
 export class Closure extends DBBasedEntity {
   public posId: string;
   public posName: string;
+  public storeId: string;
   public storeName: string;
   public openTime: string;
   public closeTime: string;

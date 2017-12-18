@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
-import { EscPrinterConnectorProvider } from '../provider/escPrinterConnectorProvider';
-import { ReceiptProvider } from '../provider/receiptProvider';
 import { Sale } from '../model/sale';
-import { ReceiptProviderContext } from '../provider/ReceiptProviderContext';
 import { StoreService } from './storeService';
 import { PosService } from './posService';
 import { AccountSettingService } from './accountSettingService';
 import { TypeHelper } from '../utility/typeHelper';
+import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
+import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
+import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';
+import { Closure } from '../model/closure';
+import { ReceiptProviderContext } from '../provider/print/receipt/ReceiptProviderContext';
+import { ReceiptProvider } from '../provider/print/receipt/receiptProvider';
 
 @Injectable()
 export class PrintService {
@@ -19,6 +22,26 @@ export class PrintService {
     private storeService: StoreService,
     private posService: PosService,
     private accountSettingService: AccountSettingService) {
+  }
+
+  public async printEndOfDayReport(closure: Closure){
+
+    var currentStore = await this.storeService.get(closure.storeId);
+
+    var context = new EndOfDayProviderContext();
+    context.openFloat = closure
+    context.posName = closure.posName;
+    context.storeName = closure.storeName;
+    context.openTime = closure.openTime;
+    context.closeTime = closure.closeTime;
+    context.currentDateTime = new Date().toLocaleString();
+    context.closureNumber = closure.closureNumber;
+    var provider = new EndOfDayProvider(context);
+
+    provider.setHeader();
+
+    await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
+    .write(provider.getResult());    
   }
 
   public async printReceipt(invoice: Sale, openCashDrawer: boolean) {

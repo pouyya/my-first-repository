@@ -16,6 +16,7 @@ import { Closure } from './../../model/closure';
 import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
 import { StoreService } from "../../services/storeService";
+import { PrintService } from '../../services/printService';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -55,7 +56,8 @@ export class OpenCloseRegister {
     private salesService: SalesServices,
     private alertCtrl: AlertController,
     private el: ElementRef,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private prinService: PrintService) {
     this.cdr.detach();
     this.showReport = false;
   }
@@ -115,6 +117,7 @@ export class OpenCloseRegister {
           this.closure = new Closure();
           this.closure.posId = this.register._id;
           this.closure.posName = this.register.name;
+          this.closure.storeId = this.store._id;
           this.closure.storeName = this.store.name;
           this.calculateDiff('cash');
           this.calculateDiff('cc');
@@ -181,6 +184,7 @@ export class OpenCloseRegister {
       this.register.openingNote = null;
       this.showReport = true;
       await this.posService.update(this.register);
+      this.prinService.printEndOfDayReport(this.closure);
       loader.setContent('Checking Out Staffs...');
       await this.employeeService.clockOutCurrentStoreClockedIn(this.closure.closeTime);
       loader.dismiss();

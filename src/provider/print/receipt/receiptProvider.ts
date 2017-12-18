@@ -1,7 +1,7 @@
-import { EscPrinterProvider } from "./escPrinterProvider";
-import { TypeHelper } from "../utility/typeHelper";
-import { HtmlPrinterProvider } from "./htmlPrinterProvider";
-import { ReceiptProviderContext } from "./ReceiptProviderContext";
+import { EscPrinterProvider } from "../escPrinterProvider";
+import { HtmlPrinterProvider } from "../htmlPrinterProvider";
+import { ReceiptProviderContext } from "./receiptProviderContext";
+import { TypeHelper } from "../../../utility/typeHelper";
 
 export class ReceiptProvider {
 
