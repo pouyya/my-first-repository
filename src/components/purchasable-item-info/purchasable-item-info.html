@@ -47,7 +47,7 @@
       <ion-list radio-group [(ngModel)]="item.employeeId" class="scrollable-component">
         <ion-item *ngFor="let employee of employeeHash | keys">
           <ion-label>{{employee.value.firstName}}</ion-label>
-          <ion-radio [disabled]="employee.value.disabled" [value]="employee.value._id"></ion-radio>
+          <ion-radio [disabled]="employee.value.disabled" [value]="employee.value._id" [checked]="employee.value._id == item.employeeId"></ion-radio>
         </ion-item>
       
       </ion-list>

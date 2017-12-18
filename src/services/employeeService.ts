@@ -109,9 +109,8 @@ export class EmployeeService extends BaseEntityService<Employee> {
     return employees && employees.length > 0 ? employees[0] : null;
   }
 
-  public async getListByCurrentStatus(): Promise<Array<Employee>> {
+  public async getClockedInEmployeesOfStore(storeId: string): Promise<Array<Employee>> {
     let currentDay = new Date(moment(new Date()).format("YYYY-MM-DD"));
-    let storeId = (await this.userService.getUser()).currentStore;
     var employees = await this.getAll();
     var timeStamps = await this.employeeTimestampService.findBy({
       sort: [{ _id: 'desc' }],
@@ -151,6 +150,11 @@ export class EmployeeService extends BaseEntityService<Employee> {
     return preparedEmployees;
   }
 
+  public async getClockedInEmployeesToCurrentStore(): Promise<Array<Employee>> {
+    let storeId = (await this.userService.getUser()).currentStore;
+    return this.getClockedInEmployeesOfStore(storeId)
+  }
+
   public async findByStore(storeId: string) {
     try {
       return await this.findBy({
@@ -173,6 +177,27 @@ export class EmployeeService extends BaseEntityService<Employee> {
     } catch (err) {
       return Promise.reject(err);
     }
+  }
+
+  public async clockOutCurrentStoreClockedIn(checkOutTime?: Date | string): Promise<any> {
+    let currentStoreId: string = (await this.userService.getUser()).currentStore;
+    let employees = await this.getClockedInEmployeesOfStore(currentStoreId);
+    if (employees.length > 0) {
+
+      checkOutTime = checkOutTime || new Date();
+      let creations: Promise<any>[] = _.map(employees, (employee) => {
+        let newTimestamp = new EmployeeTimestamp();
+        newTimestamp.employeeId = employee._id;
+        newTimestamp.storeId = currentStoreId;
+        newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
+        newTimestamp.time = moment(checkOutTime).utc().toDate();
+        return this.employeeTimestampService.add(newTimestamp);
+      });
+
+      return await Promise.all(creations);
+    }
+
+    return Promise.resolve(null);
   }
 
   public async logOutAllStaffs() {
