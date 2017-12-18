@@ -7,7 +7,6 @@ import { Settings } from './../pages/settings/settings';
 import { Stores } from './../pages/stores/stores';
 import { Employees } from './../pages/employees/employees';
 import { Services } from './../pages/service/service';
-import { Products } from './../pages/products/products';
 import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
