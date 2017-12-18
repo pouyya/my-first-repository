@@ -24,8 +24,7 @@ export class BackOfficeModule implements ModuleBase {
   public pages = [
     { title: 'Home', icon: 'home', component: HomePage },
     { title: 'POS', icon: 'cash', component: Sales },
-    { title: 'Categories', icon: 'cash', component: Category },
-    { title: 'Products', icon: 'pricetags', component: Products },
+    { title: 'Inventory', icon: 'cube', component: Category },
     { title: 'Service', icon: 'bowtie', component: Services },
     { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Customers', icon: 'contacts', component: Customers },
