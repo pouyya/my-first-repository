@@ -29,7 +29,6 @@ import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 import { CustomerService } from '../../services/customerService';
-import { BarcodeListener } from '../../metadata/barcodeListenerModule';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -331,14 +330,6 @@ export class Sales {
     return foundItem || null;
   }
 
-  public onScan($event) {
-    console.warn("onScan called!");
-    console.warn($event);
-    let item: PurchasableItem = this.findPurchasableItemByBarcode($event);
-    item && this.onSelect(item); // execute in parallel
-  }
-
-  @BarcodeListener('%P', 400, 24)
   public barcodeReader(code: string) {
     let item: PurchasableItem = this.findPurchasableItemByBarcode(code);
     item && this.onSelect(item); // execute in parallel

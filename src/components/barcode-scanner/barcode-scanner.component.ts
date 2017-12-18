@@ -7,57 +7,46 @@ import { Component, OnInit, Output, Input, EventEmitter, HostListener } from '@a
 })
 export class BarcodeScannerComponent implements OnInit {
 
-  @Input() barcodeValueRegExp: string = '';
   @Input() scanDuration: number = 400;
-  @Input() finishScanOnMatch: boolean = true;
-
-  public finishScanTimeoutId: number = 0;
-  public valueBuffer: string = '';
-  public barcodeValueTest = new RegExp(this.barcodeValueRegExp);
-  public barcode: string = '';
+  @Input() prefix: string = '';
+  @Input() length: number = -1;
 
   @Output() scan: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor() { }
+  private finishScanTimeoutId: any = null;
+  private barcode: string = '';
 
   @HostListener('document:keydown', ['$event'])
   public readBarcode(e: KeyboardEvent) {
-    let code = e.keyCode;
-    if (code === 13) { // Enter is pressed
-      let currentBarcode = this.barcode;
+    if (this.finishScanTimeoutId = null) {
+      this.finishScanTimeoutId = setTimeout(this.resetScanState, this.scanDuration);
+    }
 
-      if (this.finishScanOnMatch && this.barcodeValueTest.test(currentBarcode)) {
+    if (e.keyCode === 13) {
+      if (this.checkLenght() && this.checkPrefix()) {
+        let currentBarcode = this.barcode;
         clearTimeout(this.finishScanTimeoutId);
         this.scan.emit(currentBarcode);
-      } else {
-        console.error("There was an error.");
+        this.resetScanState();
       }
-
-      this.resetScanState();
-
     } else {
       this.barcode += e.key;
     }
   }
 
   ngOnInit() {
-    // let barcodePrefix = this.barcodePrefix;  
-    let scanDuration = this.scanDuration;
-    let finishScanOnMatch = this.finishScanOnMatch;
-
-    if (finishScanOnMatch != null && typeof finishScanOnMatch !== 'boolean') {
-      throw new TypeError('finishScanOnMatch must be a boolean');
-    }
-
-    if (scanDuration && typeof scanDuration !== 'number') {
-      throw new TypeError('scanDuration must be a number');
-    }
-
   }
 
   private resetScanState() {
     this.finishScanTimeoutId = null;
-    this.valueBuffer = '';
     this.barcode = '';
+  }
+
+  private checkPrefix() {
+    return !this.prefix || this.prefix.length == 0 || (this.barcode && this.barcode.startsWith(this.prefix));
+  }
+
+  private checkLenght() {
+    return length < 1 || (this.barcode && this.barcode.length == length);
   }
 }
