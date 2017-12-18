@@ -1,6 +1,7 @@
 import * as moment from 'moment'
 import _ from 'lodash';
 import { UserService } from './../../services/userService';
+import { PosService } from './../../services/posService';
 import { Employee } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
 import { EmployeeService } from './../../services/employeeService';
@@ -13,6 +14,7 @@ import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
 import { UserSession } from '../../model/UserSession';
+import { POS } from '../../model/pos';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -22,7 +24,11 @@ import { UserSession } from '../../model/UserSession';
 })
 export class ClockInOutPage {
 
-  public employee: Employee;
+  public employee: Employee = null;
+  public posStatus: boolean;
+  public posName: string;
+  public pos: POS;
+  public dataLoaded: boolean = false;
   public timestamp: EmployeeTimestamp;
   public buttons: any;
   public activeButtons: Array<any> = [];
@@ -41,6 +47,7 @@ export class ClockInOutPage {
     private toastCtrl: ToastController,
     private viewCtrl: ViewController,
     private userService: UserService,
+    private posService: PosService,
     private loading: LoadingController
   ) { }
 
@@ -48,109 +55,124 @@ export class ClockInOutPage {
    * @AuthGuard
    */
   async ionViewCanEnter(): Promise<boolean> {
-    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
-      { ok: 'OK', cancel: 'Cancel' });
-    if (pin) {
-      let employee: Employee = await this.employeeService.findByPin(pin);
-      if (employee) {
-        this.user = await this.userService.getUser();
-        this.employee = employee;
-        return true;
-      }
-      else {
-        let toast = this.toastCtrl.create({
-          message: "Invalid PIN!",
-          duration: 3000
-        });
-            
-        toast.present();
+    let posStatus = await this.posService.getCurrentPosStatus();
+    if (posStatus) {
+      let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+        { ok: 'OK', cancel: 'Cancel' });
+      if (pin) {
+        let employee: Employee = await this.employeeService.findByPin(pin);
+        if (employee) {
+          this.user = await this.userService.getUser();
+          this.employee = employee;
+          return true;
+        }
+        else {
+          let toast = this.toastCtrl.create({
+            message: "Invalid PIN!",
+            duration: 3000
+          });
 
+          toast.present();
+
+          return false;
+        }
+      } else {
         return false;
       }
+    } else {
+      return true;
     }
   }
 
   /**
    * After Enter
    */
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     let loader = this.loading.create({
       content: 'Please Wait...',
     });
+    let finishLoading = () => {
+      this.dataLoaded = true;
+      loader.dismiss();
+    }
+    await loader.present();
+    this.pos = await this.posService.getCurrentPos();
+    this.posStatus = this.pos.status;
+    this.posName = this.pos.name;
+    if (this.posStatus) {
+      let clockInBtn: any = {
+        next: EmployeeTimestampService.CLOCK_IN,
+        enabled: true,
+        text: 'Clock IN',
+        message: `You Clocked-IN at`
+      };
 
-    let clockInBtn: any = {
-      next: EmployeeTimestampService.CLOCK_IN,
-      enabled: true,
-      text: 'Clock IN',
-      message: `You Clocked-IN at`
-    };
+      let clockOutBtn: any = {
+        next: EmployeeTimestampService.CLOCK_OUT,
+        enabled: true,
+        text: 'Clock OUT',
+        message: 'You Clocked-OUT at'
+      };
 
-    let clockOutBtn: any = {
-      next: EmployeeTimestampService.CLOCK_OUT,
-      enabled: true,
-      text: 'Clock OUT',
-      message: 'You Clocked-OUT at'
-    };
+      let breakStartBtn = {
+        next: EmployeeTimestampService.BREAK_START,
+        enabled: true,
+        text: 'Break Start',
+        message: 'You have started your break at'
+      };
 
-    let breakStartBtn = {
-      next: EmployeeTimestampService.BREAK_START,
-      enabled: true,
-      text: 'Break Start',
-      message: 'You have started your break at'
-    };
+      let breakEndBtn = {
+        next: EmployeeTimestampService.BREAK_END,
+        enabled: true,
+        text: 'Break End',
+        message: 'You have ended your break at'
+      };
 
-    let breakEndBtn = {
-      next: EmployeeTimestampService.BREAK_END,
-      enabled: true,
-      text: 'Break End',
-      message: 'You have ended your break at'
-    };
+      this.buttons = {
+        [EmployeeTimestampService.CLOCK_IN]: [breakStartBtn, clockOutBtn],
+        [EmployeeTimestampService.CLOCK_OUT]: [clockInBtn],
+        [EmployeeTimestampService.BREAK_START]: [breakEndBtn, clockOutBtn],
+        [EmployeeTimestampService.BREAK_END]: [breakStartBtn, clockOutBtn]
+      };
 
-    this.buttons = {
-      [EmployeeTimestampService.CLOCK_IN]: [breakStartBtn, clockOutBtn],
-      [EmployeeTimestampService.CLOCK_OUT]: [clockInBtn],
-      [EmployeeTimestampService.BREAK_START]: [breakEndBtn, clockOutBtn],
-      [EmployeeTimestampService.BREAK_END]: [breakStartBtn, clockOutBtn]
-    };
+      let promises: Promise<any>[] = [this.employeeTimestampService
+        .getEmployeeLastTwoTimestamps(this.employee._id, this.user.currentStore)];
 
-    let promises: Array<Promise<any>> = [
-      this.employeeTimestampService.getEmployeeLastTwoTimestamps(
-        this.employee._id, this.user.currentStore
-      )
-    ];
-
-    Promise.all(promises).then((result) => {
-      if (result[0]) {
-        result[0].beforeLatest && (this.previousTimestamp = result[0].beforeLatest);
-        this.timestamp = result[0].latest as EmployeeTimestamp;
-        if (this.timestamp.type == EmployeeTimestampService.CLOCK_OUT) {
+      let [result] = await Promise.all(promises);
+      if (result) {
+        result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
+        this.timestamp = <EmployeeTimestamp>result.latest
+        if (this.timestamp.type == EmployeeTimestampService.CLOCK_OUT && this.pos.hasOwnProperty('lastClosureTime')) {
           // check if shift is not ended yet
-          let currentDate = new Date();
+          let openTime: Date = new Date(this.pos.openTime);
           let clockoutTime = new Date(this.timestamp.time);
-          if (moment(moment(currentDate).format('YYYY-MM-DD')).isSame(moment(clockoutTime).format('YYYY-MM-DD'))) {
-            this.employeeTimestampService.getEmployeeLatestTimestamp(
+          if (clockoutTime > openTime) {
+            await this.employeeTimestampService.getEmployeeLatestTimestamp(
               this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
-            ).then((model: EmployeeTimestamp) => {
-              let clockInTime = "";
-              clockInBtn.enabled = false;
-              this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
-              this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
-            }).catch(error => {
-              throw new Error(error)
-            });
+            );
+            let clockInTime = "";
+            clockInBtn.enabled = false;
+            this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
+            this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+            return finishLoading();
           } else {
             this.activeButtons = this.buttons[this.timestamp.type];
+            return finishLoading();
           }
         } else {
           this.activeButtons = this.buttons[this.timestamp.type];
+          return finishLoading();
         }
       } else {
         this.timestamp = new EmployeeTimestamp();
         this.timestamp.employeeId = this.employee._id;
         this.timestamp.storeId = this.user.currentStore;
         this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+        return finishLoading();
       }
-    }).catch(error => console.log(error)).then(() => loader.dismiss());
+    } else {
+      return finishLoading();
+    }
   }
 
   /**
@@ -158,8 +180,8 @@ export class ClockInOutPage {
    * @param button 
    * @param time 
    */
-  public markTime(button: any, time?: Date): void {
-    let completionPromise = new Promise((resolve, reject) => {
+  public async markTime(button: any, time?: Date): Promise<any> {
+    let completionPromise = () => new Promise((resolve, reject) => {
       time = time || new Date();
 
       this.timestamp.type = button.next;
@@ -221,7 +243,8 @@ export class ClockInOutPage {
       }
     });
 
-    completionPromise.then((type) => {
+    try {
+      let type = await completionPromise();
       this.dismiss();
       let toast = this.toastCtrl.create({
         message: this.messagePlaceholder,
@@ -232,9 +255,9 @@ export class ClockInOutPage {
         employee: this.employee,
         type
       });
-    }).catch(error => {
+    } catch (err) {
       throw new Error();
-    })
+    }
   }
 
   public dismiss(data?: any) {

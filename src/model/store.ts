@@ -1,4 +1,4 @@
-import {DBBasedEntity} from './dbBasedEntity';
+import { DBBasedEntity } from './dbBasedEntity';
 
 export class Store extends DBBasedEntity {
 
@@ -25,4 +25,5 @@ export class Store extends DBBasedEntity {
   public saleLastNumber: number = 0;
   public defaultSaleTaxId: string;
   public trackEmployeeSales: boolean;
+  public printReceiptAtEndOfSale: boolean;
 }

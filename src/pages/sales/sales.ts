@@ -298,7 +298,7 @@ export class Sales {
     if (this.user.settings.trackEmployeeSales) {
       promises.push(async () => {
         loader.setContent('Loading Employees...');
-        this.employees = await this.employeeService.getListByCurrentStatus();
+        this.employees = await this.employeeService.getClockedInEmployeesToCurrentStore();
         if (this.employees && this.employees.length > 0) {
           this.employees = this.employees.map(employee => {
             employee.selected = false;
