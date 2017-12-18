@@ -182,7 +182,7 @@ export class OpenCloseRegister {
       this.showReport = true;
       await this.posService.update(this.register);
       loader.setContent('Checking Out Staffs...');
-      await this.employeeService.logOutCurrentStoreEmployees(this.closure.closeTime);
+      await this.employeeService.clockOutCurrentStoreClockedIn(this.closure.closeTime);
       loader.dismiss();
       let toast = this.toastCtrl.create({
         message: 'Register Closed',
