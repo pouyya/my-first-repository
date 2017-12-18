@@ -2,10 +2,10 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetails } from '../category-details/category-details';
-import { BackOfficeModule } from '../../modules/backOfficeModule';
+import { InventoryModule } from '../../modules/inventoryModule';
 import { PageModule } from '../../metadata/pageModule';
 
-@PageModule(() => BackOfficeModule)
+@PageModule(() => InventoryModule)
 @Component({
   selector: 'page-variables',
   templateUrl: 'category.html'

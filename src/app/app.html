@@ -16,6 +16,11 @@
         <ion-title>Sales Tax</ion-title>
       </ion-toolbar>
     </ion-header>
+    <ion-header *ngIf="moduleName == 'InventoryModule'">
+      <ion-toolbar>
+        <ion-title>Inventory</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
     <ion-header *ngIf="moduleName == 'SalesModule'">
       <ion-toolbar *ngIf="currentPos && currentStore">
