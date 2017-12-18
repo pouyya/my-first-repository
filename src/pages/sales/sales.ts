@@ -321,11 +321,21 @@ export class Sales {
     let foundItem: PurchasableItem = null;
     for(let i = 0; i < this.categoryIdKeys.length; i++) {
       foundItem = _.find(this.purchasableItems[this.categoryIdKeys[i]], item => {
-        return item.hasOwnProperty('barcode') ? item.barcode === code : false;
+        return item.hasOwnProperty('barcode') ? item.barcode == code : false;
       });
+      if(foundItem) {
+        break;
+      }
     }
 
     return foundItem || null;
+  }
+
+  public onScan($event) {
+    console.warn("onScan called!");
+    console.warn($event);
+    let item: PurchasableItem = this.findPurchasableItemByBarcode($event);
+    item && this.onSelect(item); // execute in parallel
   }
 
   @BarcodeListener('%P', 400, 24)

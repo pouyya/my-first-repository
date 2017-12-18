@@ -79,6 +79,7 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
+import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -223,7 +224,8 @@ const cloudSettings: CloudSettings = {
     SPIconModule,
     ItemPriceBookModule,
     TileScrollableModule,
-    GroupEmployeeTimeLogModule
+    GroupEmployeeTimeLogModule,
+    BarcodeScannerModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
