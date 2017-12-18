@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, ModalController, Platform} from 'ionic-angular';
+import { NavController, AlertController, ModalController, Platform, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetails } from '../category-details/category-details';
 import { InventoryModule } from '../../modules/inventoryModule';
@@ -7,41 +7,60 @@ import { PageModule } from '../../metadata/pageModule';
 
 @PageModule(() => InventoryModule)
 @Component({
-  selector: 'page-variables',
+  selector: 'categories',
   templateUrl: 'category.html'
 })
 export class Category {
-   public items = [];
-   public itemsBackup = [];
-   public isNew = true;
-   public action = 'Add';
+  public items = [];
+  public itemsBackup = [];
+  public isNew = true;
+  public action = 'Add';
 
   constructor(public navCtrl: NavController,
-          private alertCtrl:AlertController,
-          private service:CategoryService,
-          private platform:Platform,
-          private zone: NgZone,
-          private modalCtrl: ModalController) {
+    private alertCtrl: AlertController,
+    private service: CategoryService,
+    private loading: LoadingController,
+    private platform: Platform,
+    private zone: NgZone,
+    private modalCtrl: ModalController) {
   }
-  
-  ionViewDidEnter(){
-      this.platform.ready().then(() => {
-        this.service.getAll()
-                .then(data => {
-                    this.zone.run(() => {
-                        this.items = data;
-                        this.itemsBackup = data;
-                    });
-                })
-                .catch(console.error.bind(console));
-      });
-   }
-  
-  showDetail(category){
-    this.navCtrl.push(CategoryDetails, {category:category}); 
-  } 
-  
-   delete(item, idx){
+
+  async ionViewDidEnter() {
+    try {
+      let loader = this.loading.create({ content: 'Loading Categories...' });
+      await loader.present();
+      let categories: any[] = await this.service.getAll();
+      if(categories.length > 0) {
+        let associations: any[] = [];
+        categories.forEach((category, index, array) => {
+          associations.push(async () => {
+            let items = await this.service.getAssociatedItems(category._id);
+            array[index].associated = items.length;
+            return;
+          });
+        });
+
+        await Promise.all(associations.map(assoc => assoc()));
+        await this.platform.ready();
+        this.zone.run(() => {
+          this.items = categories;
+          this.itemsBackup = categories;
+          loader.dismiss();
+        });
+      } else {
+        loader.dismiss();
+      }
+    } catch (err) {
+      console.error(err);
+      return;
+    }
+  }
+
+  showDetail(category) {
+    this.navCtrl.push(CategoryDetails, { category: category });
+  }
+
+  delete(item, idx) {
     let confirm = this.alertCtrl.create({
       title: 'Confirm Delete Category?',
       message: 'This Category using in Products or Services. Do you want to delete this Category?',
@@ -50,31 +69,31 @@ export class Category {
           text: 'YES',
           handler: () => {
             console.log("Using Category Delete");
-            
+
             this.service.delete(item).catch(console.error.bind(console));
-            this.items.splice(idx, 1);  
-              
+            this.items.splice(idx, 1);
+
           }
         },
         {
           text: 'NO',
           handler: () => {
-             
+
           }
         }
       ]
     });
     confirm.present()
-  } 
- 
-  getItems(event){
+  }
+
+  getItems(event) {
     this.items = this.itemsBackup;
     var val = event.target.value;
-    
-    if(val && val.trim() != ''){
-       this.items = this.items.filter((category)=>{
-         return((category.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
-       })
+
+    if (val && val.trim() != '') {
+      this.items = this.items.filter((category) => {
+        return ((category.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
+      })
     }
   }
 }

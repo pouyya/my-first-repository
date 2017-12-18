@@ -2,8 +2,8 @@
   <ion-navbar>
     <ion-title>{{action}} Category</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveCategories()">
-        save
+      <button type="submit" ion-button icon-only (click)="categoryForm.ngSubmit.emit()" [disabled]="!categoryForm.form.valid">
+        Save
       </button>
       <button ion-button icon-only>
         <ion-icon name="trash"></ion-icon>
@@ -14,19 +14,21 @@
 </ion-header>
 
 <ion-content>
-  <ion-list inset>
-    <ion-item>
-      <ion-label class="item-name">Name</ion-label>
-      <ion-input type="text" [(ngModel)]="categoryItem.name"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Display Order</ion-label>
-      <ion-input type="number" [(ngModel)]="categoryItem.order"></ion-input>
-    </ion-item>
-    <ion-item>
-      <button ion-button (click)="selectIcon()">Select Icon</button>
-      <sp-icon *ngIf="selectedIcon" [icon]="categoryItem.icon.name"></sp-icon>
-      <span *ngIf="selectedIcon">&nbsp;{{ categoryItem.icon.name }}</span>
-    </ion-item>
-  </ion-list>
+  <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name">Name</ion-label>
+        <ion-input type="text" [(ngModel)]="categoryItem.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Display Order</ion-label>
+        <ion-input type="number" [(ngModel)]="categoryItem.order" name="order"></ion-input>
+      </ion-item>
+      <ion-item>
+        <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
+        <sp-icon *ngIf="selectedIcon" [icon]="categoryItem.icon.name"></sp-icon>
+        <span *ngIf="selectedIcon">&nbsp;{{ categoryItem.icon.name }}</span>
+      </ion-item>
+    </ion-list>
+  </form>
 </ion-content>

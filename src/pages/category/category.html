@@ -15,10 +15,17 @@
 </ion-header>
 <ion-content>
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-list inset>
+    <ion-item>
+      <h1 item-start>Category Name</h1>
+      <h1 item-end>Products Associated</h1>
+    </ion-item>
+  </ion-list>
   <ion-list inset *ngFor="let item of items ; let idx = index">
     <ion-item-sliding class="sliding" cancelable=true>
       <ion-item (click)="showDetail(item)">
-        <h2 class="item-title">{{item.name}}</h2>
+        <h2 class="item-title" item-start>{{item.name}}</h2>
+        <h2 item-end>{{item.associated}}</h2>
       </ion-item>
       <ion-item-options>
         <button ion-button color='danger' (click)="delete(item, idx)" icon=left>
