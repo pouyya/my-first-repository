@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { EvaluationContext } from './../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { NavController, LoadingController, NavParams, ToastController } from 'ionic-angular';
+import { NavController, LoadingController, Loading, NavParams, ToastController } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -36,6 +36,10 @@ interface InteractableItem extends PurchasableItem {
   employeeId: string;
 }
 
+interface PurchasableItemTiles {
+  [id: string]: PurchasableItem[]
+}
+
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',
@@ -49,6 +53,7 @@ export class Sales {
   private basketComponent: BasketComponent;
 
   public categories: any[];
+  public purchasableItems: PurchasableItemTiles = {};
   public activeCategory: any;
   public activeTiles: any[];
   public invoice: Sale;
@@ -64,6 +69,7 @@ export class Sales {
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
   private salesTaxes: SalesTax[];
+  private categoryIdKeys: string[];
   private defaultTax: any;
 
   constructor(
@@ -130,7 +136,7 @@ export class Sales {
     if (_init) {
       let loader = this.loading.create({ content: 'Loading Register...', });
       await loader.present();
-      await this.initiate();
+      await this.initiate(loader);
       loader.dismiss();
     }
   }
@@ -142,10 +148,7 @@ export class Sales {
    */
   public selectCategory(category) {
     this.activeCategory = category;
-    this.salesService.loadPurchasableItems(category._id).then(
-      items => this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]),
-      error => { console.error(error); }
-    );
+    this.activeTiles = this.purchasableItems[this.activeCategory._id];
     return category._id == category._id;
   }
 
@@ -182,7 +185,7 @@ export class Sales {
   public paymentClicked($event) {
     let pushCallback = params => {
       return new Promise((resolve, reject) => {
-        if(params) {
+        if (params) {
           this.salesService.instantiateInvoice().then(response => {
             this.invoiceParam = null;
             this.invoice = response.invoice;
@@ -224,18 +227,18 @@ export class Sales {
     this.priceBooks = data[3] as PriceBook[];
     this.priceBook = data[1] as PriceBook;
 
-        if(invoiceData.invoice.customerKey) {
-          // parallel
-					this.customerService.get(invoiceData.invoice.customerKey)
-						.then(customer => this.customer = customer)
-            .catch(err => {  })
-        }
+    if (invoiceData.invoice.customerKey) {
+      // parallel
+      this.customerService.get(invoiceData.invoice.customerKey)
+        .then(customer => this.customer = customer)
+        .catch(err => { })
+    }
 
-        this.priceBooks.sort(
-          firstBy("priority").thenBy((book1, book2) => {
-            return new Date(book2._id).getTime() - new Date(book1._id).getTime();
-          })
-        );
+    this.priceBooks.sort(
+      firstBy("priority").thenBy((book1, book2) => {
+        return new Date(book2._id).getTime() - new Date(book1._id).getTime();
+      })
+    );
 
     if (invoiceData.doRecalculate) {
       var _invoice: Sale = await this.salesService.reCalculateInMemoryInvoice(
@@ -252,36 +255,48 @@ export class Sales {
     };
   }
 
-  private async loadCategoriesAssociation(categories: any[]): Promise<any> {
-    let promises: Promise<any>[] = [];
-    for (let categoryIndex = categories.length - 1; categoryIndex >= 0; categoryIndex--) {
-      promises.push(new Promise(async (resolve, reject) => {
-        if (categoryIndex === 0) {
-          this.activeCategory = categories[categoryIndex];
-          var items: Array<any> = await this.salesService.loadPurchasableItems(categories[categoryIndex]._id)
-          this.activeTiles = _.sortBy(items, [item => parseInt(item.order) || 0]);
-        } else {
-          await this.salesService.loadPurchasableItems(categories[categoryIndex]._id);
-        }
-      }));
+  private async loadCategoriesAndAssociations(): Promise<any> {
+    try {
+      let categories = await this.categoryService.getAll();
+      let promises: any[] = [];
+      categories.forEach((category, index, catArray) => {
+        promises.push(async () => {
+          let items: any[] = await this.salesService.loadPurchasableItems(category._id);
+          if (items.length > 0) {
+            this.purchasableItems[category._id] = _.sortBy(items, [item => parseInt(item.order) || 0]);
+          } else {
+            catArray[index] = null;
+          }
+          return;
+        });
+      });
+      await Promise.all(promises.map(promise => promise()));
+      this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
+      this.activeCategory = _.head(this.categories);
+      this.activeTiles = this.purchasableItems[this.activeCategory._id];
+      this.categoryIdKeys = Object.keys(this.purchasableItems);
+      return;
+    } catch (err) {
+      return Promise.reject(err);
     }
-
-    return await Promise.all(promises);
   }
 
-  public async initiate(): Promise<any> {
+  public async initiate(loader: Loading): Promise<any> {
     this.cdr.detach();
     let promises: any[] = [
       async () => {
-        this.categories = await this.categoryService.getAll();
-        this.categories = _.sortBy(this.categories, [category => parseInt(category.order) || 0]);
-        this.loadCategoriesAssociation(this.categories);
+        loader.setContent('Loading Items...');
+        await this.loadCategoriesAndAssociations();
       },
-      async () => await this.initSalePageData()
+      async () => {
+        loader.setContent('Loading Sales Data...');
+        await this.initSalePageData();
+      }
     ];
 
     if (this.user.settings.trackEmployeeSales) {
       promises.push(async () => {
+        loader.setContent('Loading Employees...');
         this.employees = await this.employeeService.getClockedInEmployeesToCurrentStore();
         if (this.employees && this.employees.length > 0) {
           this.employees = this.employees.map(employee => {
@@ -294,17 +309,37 @@ export class Sales {
     try {
       await Promise.all(promises.map(func => func()));
       this.cdr.reattach();
+
       return;
     } catch (err) {
       return Promise.reject(err);
     }
   }
 
+  private findPurchasableItemByBarcode(code: string): PurchasableItem {
+    let foundItem: PurchasableItem = null;
+    for(let i = 0; i < this.categoryIdKeys.length; i++) {
+      foundItem = _.find(this.purchasableItems[this.categoryIdKeys[i]], item => {
+        return item.hasOwnProperty('barcode') ? item.barcode == code : false;
+      });
+      if(foundItem) {
+        break;
+      }
+    }
+
+    return foundItem || null;
+  }
+
+  public barcodeReader(code: string) {
+    let item: PurchasableItem = this.findPurchasableItemByBarcode(code);
+    item && this.onSelect(item); // execute in parallel
+  }
+
   public async onSubmit(): Promise<any> {
     let loader = this.loading.create({ content: 'Opening Register...' });
     try {
       await loader.present();
-      await this.initiate();
+      await this.initiate(loader);
       this.register.openTime = moment().utc().format();
       this.register.status = true;
       this.register.openingAmount = Number(this.register.openingAmount);

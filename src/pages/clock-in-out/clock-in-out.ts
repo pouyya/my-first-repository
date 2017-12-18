@@ -24,7 +24,7 @@ import { POS } from '../../model/pos';
 })
 export class ClockInOutPage {
 
-  public employee: Employee;
+  public employee: Employee = null;
   public posStatus: boolean;
   public posName: string;
   public pos: POS;
@@ -55,27 +55,32 @@ export class ClockInOutPage {
    * @AuthGuard
    */
   async ionViewCanEnter(): Promise<boolean> {
-    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
-      { ok: 'OK', cancel: 'Cancel' });
-    if (pin) {
-      let employee: Employee = await this.employeeService.findByPin(pin);
-      if (employee) {
-        this.user = await this.userService.getUser();
-        this.employee = employee;
-        return true;
-      }
-      else {
-        let toast = this.toastCtrl.create({
-          message: "Invalid PIN!",
-          duration: 3000
-        });
+    let posStatus = await this.posService.getCurrentPosStatus();
+    if (posStatus) {
+      let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+        { ok: 'OK', cancel: 'Cancel' });
+      if (pin) {
+        let employee: Employee = await this.employeeService.findByPin(pin);
+        if (employee) {
+          this.user = await this.userService.getUser();
+          this.employee = employee;
+          return true;
+        }
+        else {
+          let toast = this.toastCtrl.create({
+            message: "Invalid PIN!",
+            duration: 3000
+          });
 
-        toast.present();
+          toast.present();
 
+          return false;
+        }
+      } else {
         return false;
       }
     } else {
-      return false;
+      return true;
     }
   }
 

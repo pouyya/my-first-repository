@@ -13,9 +13,9 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid *ngIf="!posStatus && dataLoaded">
     <ion-row>
-      <ion-col col-md-12 class="center">
+      <ion-col col-md-12 class="center" *ngIf="employee">
         <ion-item>
           <ion-avatar item-start>
             <img src="assets/img/avatar-han.png">
