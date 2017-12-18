@@ -138,7 +138,9 @@ export class PaymentsPage {
   }
 
   public async printInvoice() {
-    await this.printService.printReceipt(this.invoice, true);
+    if (this.store.printReceiptAtEndOfSale) {
+      await this.printService.printReceipt(this.invoice, true);
+    }
   }
 
   public goBack(state: boolean = false) {
