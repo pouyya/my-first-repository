@@ -19,6 +19,8 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
+import { authProvider } from './../modules/auth.module';
+import { BaseRequestOptions } from '@angular/http';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -67,6 +69,7 @@ import { Customers } from './../pages/customers/customers';;
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
+import { CustomerDetails } from '../pages/customer-details/customer-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -79,6 +82,7 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
+import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -117,19 +121,11 @@ import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
-import { authProvider } from './../modules/auth.module';
 import { CustomerService } from './../services/customerService';
-
-// used to create fake backend
-import { fakeBackendProvider } from './../services/_fakeBackend';
-import { MockBackend } from '@angular/http/testing';
-import { BaseRequestOptions } from '@angular/http';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
-import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
-import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -324,8 +320,6 @@ const cloudSettings: CloudSettings = {
     GroupByPipe,
     LocalDatePipe,
     authProvider,
-    fakeBackendProvider,
-    MockBackend,
     PlatformService,
     AccountSettingService,
     BaseRequestOptions
