@@ -8,7 +8,7 @@ import { Component, OnInit, Output, Input, EventEmitter, HostListener } from '@a
 export class BarcodeScannerComponent implements OnInit {
 
   @Input() barcodeValueRegExp: string = '';
-  @Input() scanDuration: number = 500;
+  @Input() scanDuration: number = 400;
   @Input() finishScanOnMatch: boolean = true;
 
   public finishScanTimeoutId: number = 0;
@@ -24,7 +24,6 @@ export class BarcodeScannerComponent implements OnInit {
   public readBarcode(e: KeyboardEvent) {
     let code = e.keyCode;
     if (code === 13) { // Enter is pressed
-      // console.warn("scan detected!");
       let currentBarcode = this.barcode;
 
       if (this.finishScanOnMatch && this.barcodeValueTest.test(currentBarcode)) {
@@ -38,8 +37,6 @@ export class BarcodeScannerComponent implements OnInit {
 
     } else {
       this.barcode += e.key;
-      // console.warn(this.barcode);
-      // this.barcode += String.fromCharCode(code);
     }
   }
 

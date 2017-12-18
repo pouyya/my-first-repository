@@ -8,7 +8,7 @@ export function BarcodeListener(prefix: string, scanDuration: number, length: nu
 
     descriptor.value = function () {
       let inputValue = arguments[0];
-      if(typeof inputValue === 'string' && inputValue.length === scanDuration) {
+      if(typeof inputValue === 'string' && inputValue.length === length) {
         originalMethod.apply(this, [ inputValue ]);
       }
     };
