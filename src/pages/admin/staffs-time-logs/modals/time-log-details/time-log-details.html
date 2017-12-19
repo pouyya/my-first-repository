@@ -17,7 +17,7 @@
       <ion-col col-md-6>
         <ion-item>
           <ion-label>{{ actionHash[timestamp.type] }}</ion-label>
-          <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="timestamp.time"></ion-datetime>
+          <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [ngModel]="timestamp.time | localDate: 'yyyy-MM-ddTHH:mm:ss'" (ngModelChange)="updateAmount(timestamp, $event)"></ion-datetime>
         </ion-item>
       </ion-col>
       <ion-col col-md-2 offset-md-4>
@@ -35,10 +35,6 @@
       <ion-grid>
         <ion-row>
           <ion-col col-md-6>
-            <ion-item>
-              <ion-label>Insert Time</ion-label>
-              <ion-datetime displayFormat="h:mm A" pickerFormat="h mm A" [(ngModel)]="currentDate"></ion-datetime>
-            </ion-item>
             <ion-item id="clock">{{clock | async | localDate:'h:mm:ss a'}}</ion-item>
           </ion-col>
           <ion-col col-md-6>

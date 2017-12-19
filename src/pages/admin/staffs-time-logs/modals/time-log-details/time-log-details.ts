@@ -6,7 +6,7 @@ import { EmployeeTimestampService } from './../../../../../services/employeeTime
 import { GlobalConstants } from './../../../../../metadata/globalConstants';
 import { ViewController, LoadingController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 
 @Component({
   selector: "time-log-details-modal",
@@ -16,6 +16,7 @@ export class TimeLogDetailsModal implements OnInit {
 
   public timestamps: any[];
   public employee: any;
+  private storeId: string;
   public date: string;
   public actionHash: any = GlobalConstants.TIME_LOG_ACTION;
   public actionBtns: any = {};
@@ -29,10 +30,12 @@ export class TimeLogDetailsModal implements OnInit {
     private navParams: NavParams,
     private viewCtrl: ViewController,
     private timestampService: EmployeeTimestampService,
-    private loading: LoadingController
-  ) {
+    private loading: LoadingController,
+    private zone: NgZone
+) {
     this.timestamps = _.cloneDeep(this.navParams.get('timestamps'));
     this.employee = this.navParams.get('employee');
+    this.storeId = this.navParams.get('storeId');
     this.date = this.navParams.get('date');
     // breakTimeLogs
     let dateMoment = moment(this.date, "dddd, Do MMMM YYYY");
@@ -66,77 +69,80 @@ export class TimeLogDetailsModal implements OnInit {
     });
 
     loader.present().then(() => {
-      let deletions: Promise<any>[] = [];
-      let updates: Promise<any>[] = [];
-      let updatedModels: any[] = [];
-      if (this.timestamps.length > 0) {
-        this.timestamps.forEach(timestamp => {
-          updatedModels.push(timestamp);
-          updates.push(this.timestampService.update(
-            <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store'])
-          ));
-        });
-      }
-      if (this.deleted.length > 0) {
-        this.deleted.forEach(timestamp => {
-          deletions.push(this.timestampService.delete(
-            <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store'])
-          ))
-        });
-      }
+      this.zone.runOutsideAngular(() => {
+        let deletions: Promise<any>[] = [];
+        let updates: Promise<any>[] = [];
+        let updatedModels: any[] = [];
 
-      Promise.all(updates.concat(deletions)).catch().then(() => {
-        loader.dismiss();
-        this.viewCtrl.dismiss(updatedModels);
+        if (this.timestamps.length > 0) {
+          this.timestamps.forEach(timestamp => {
+            updatedModels.push(timestamp);
+            updates.push(this.timestampService.update(
+              <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store'])
+            ));
+          });
+        }
+        if (this.deleted.length > 0) {
+          this.deleted.forEach(timestamp => {
+            deletions.push(this.timestampService.delete(
+              <EmployeeTimestamp>_.omit(timestamp, ['employee', 'store'])
+            ))
+          });
+        }
+
+        Promise.all(updates.concat(deletions)).catch().then(() => {
+          loader.dismiss();
+          this.viewCtrl.dismiss(updatedModels);
+        });
       });
     });
   }
 
-  public async addTimeLog(type) {
-    try {
-      let timestamp = new EmployeeTimestamp();
-      timestamp.employeeId = this.employee._id;
-      timestamp.storeId = this.employee.storeId;
-      timestamp.type = type;
-      timestamp.time = new Date(this.currentDate);
-      await this.timestampService.add(timestamp);
-      this.timestamps.push(timestamp);
-      this.evaluateActionBtns();
-      return;
-    } catch (err) {
-      return Promise.reject(err);
-    }
+  public addTimeLog(type) {
+    let timestamp = new EmployeeTimestamp();
+    timestamp.employeeId = this.employee._id;
+    timestamp.storeId = this.storeId;
+    timestamp.type = type;
+    timestamp.time = new Date(this.currentDate);
+    this.timestamps.push(timestamp);
+    this.evaluateActionBtns();
+    return;
   }
 
   private evaluateActionBtns() {
-    this.actionBtns.clock_in.enabled = (() => {
-      let item = _.find(this.timestamps, { type: 'clock_in' });
-      return !item;
-    })();
 
-    this.actionBtns.clock_out.enabled = (() => {
-      let item = _.find(this.timestamps, { type: 'clock_out' });
-      return !item;
-    })();
+    var tempTimeStamps = _.cloneDeep(this.timestamps);
+    _.orderBy(tempTimeStamps, ["time"]);
+    var lastAction = tempTimeStamps.length > 0 ? tempTimeStamps[tempTimeStamps.length - 1] : null;
 
-    let breakTimeLogs = _.filter(this.timestamps, log => log.type == 'break_start' || log.type == 'break_end');
-    if(breakTimeLogs.length > 0) {
-      breakTimeLogs.sort(function (a, b) {
-        return new Date(b.time).getTime() - new Date(a.time).getTime();
-      });
-      if (breakTimeLogs[breakTimeLogs.length - 1].type == 'break_start') {
+    let lastActionIsClockedOut = lastAction && lastAction.type == 'clock_out';
+
+    this.actionBtns.clock_in.enabled = lastActionIsClockedOut;
+    this.actionBtns.clock_out.enabled = !lastActionIsClockedOut;
+
+    if (lastActionIsClockedOut) {
+      this.actionBtns.break_start.enabled = false;
+      this.actionBtns.break_end.enabled = false;
+    } else {
+      let lastActionIsBreakStart = lastAction && lastAction.type == 'break_start';
+      if (lastActionIsBreakStart) {
         this.actionBtns.break_start.enabled = false;
         this.actionBtns.break_end.enabled = true;
-      } else if (breakTimeLogs[breakTimeLogs.length - 1].type == 'break_end') {
+      } else {
         this.actionBtns.break_start.enabled = true;
         this.actionBtns.break_end.enabled = false;
       }
     }
-
   }
 
   public dismiss() {
     this.viewCtrl.dismiss();
+  }
+
+  public updateAmount(timestamp, $event) {
+    if (timestamp) {
+      timestamp.time = $event;
+    }
   }
 
 }

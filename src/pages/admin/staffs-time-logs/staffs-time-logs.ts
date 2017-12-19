@@ -100,7 +100,8 @@ export class StaffsTimeLogs {
   public viewLogs($event: any) {
     let modal = this.modalCtrl.create(TimeLogDetailsModal, {
       timestamps: $event.timestamps,
-      employee: $event.employee.firstName,
+      employee: $event.employee,
+      storeId: $event.storeId,
       date: $event.dateKey
     })
     modal.onDidDismiss(data => {
