@@ -4,6 +4,7 @@ import { CategoryService } from '../../services/categoryService';
 import { CategoryDetails } from '../category-details/category-details';
 import { InventoryModule } from '../../modules/inventoryModule';
 import { PageModule } from '../../metadata/pageModule';
+import * as _ from 'lodash';
 
 @PageModule(() => InventoryModule)
 @Component({
@@ -29,8 +30,8 @@ export class Category {
     try {
       let loader = this.loading.create({ content: 'Loading Categories...' });
       await loader.present();
-      let categories: any[] = await this.categoryService.getAll();
-      if(categories.length > 0) {
+      let categories: any[] = _.sortBy(await this.categoryService.getAll(), [item => parseInt(item.order) || 0]);
+      if (categories.length > 0) {
         let associations: any[] = [];
         categories.forEach((category, index, array) => {
           associations.push(async () => {
