@@ -325,7 +325,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	public instantiateRefundSale(originalSale: Sale, store: Store): Sale {
 		let sale = new Sale();
-		sale._id = moment().utc().format();
+		sale._id = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSSS');
 		sale.posID = originalSale.posID;
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {

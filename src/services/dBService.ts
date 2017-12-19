@@ -68,7 +68,7 @@ export class DBService<T extends DBBasedEntity> {
 
     add(entity: T): Promise<T> {
         if (!entity._id) {
-            entity._id = moment().utc().format();
+            entity._id = moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSS");
         }
         return this.update(entity);
     }
