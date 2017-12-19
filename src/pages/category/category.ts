@@ -18,7 +18,7 @@ export class Category {
 
   constructor(public navCtrl: NavController,
     private alertCtrl: AlertController,
-    private service: CategoryService,
+    private categoryService: CategoryService,
     private loading: LoadingController,
     private platform: Platform,
     private zone: NgZone,
@@ -29,12 +29,12 @@ export class Category {
     try {
       let loader = this.loading.create({ content: 'Loading Categories...' });
       await loader.present();
-      let categories: any[] = await this.service.getAll();
+      let categories: any[] = await this.categoryService.getAll();
       if(categories.length > 0) {
         let associations: any[] = [];
         categories.forEach((category, index, array) => {
           associations.push(async () => {
-            let items = await this.service.getAssociatedItems(category._id);
+            let items = await this.categoryService.getAssociatedItems(category._id);
             array[index].associated = items.length;
             return;
           });
@@ -70,7 +70,7 @@ export class Category {
           handler: () => {
             console.log("Using Category Delete");
 
-            this.service.delete(item).catch(console.error.bind(console));
+            this.categoryService.delete(item).catch(console.error.bind(console));
             this.items.splice(idx, 1);
 
           }
