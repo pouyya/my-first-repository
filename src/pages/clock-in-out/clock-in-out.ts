@@ -15,6 +15,7 @@ import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
 import { UserSession } from '../../model/UserSession';
 import { POS } from '../../model/pos';
+import { StoreService } from '../../services/storeService';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -33,6 +34,8 @@ export class ClockInOutPage {
   public buttons: any;
   public activeButtons: Array<any> = [];
   public messagePlaceholder: string = "";
+  public currentSession: boolean = true;
+  public sessionMessage: string;
   public clock: Observable<Date> = Observable
     .interval(1000)
     .map(() => new Date());
@@ -48,6 +51,7 @@ export class ClockInOutPage {
     private viewCtrl: ViewController,
     private userService: UserService,
     private posService: PosService,
+    private storeService: StoreService,
     private loading: LoadingController
   ) { }
 
@@ -55,33 +59,31 @@ export class ClockInOutPage {
    * @AuthGuard
    */
   async ionViewCanEnter(): Promise<boolean> {
-    let posStatus = await this.posService.getCurrentPosStatus();
-    if (posStatus) {
+    let pos: POS = await this.posService.getCurrentPos();
+    if (pos.status) {
       let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
         { ok: 'OK', cancel: 'Cancel' });
       if (pin) {
-        let employee: Employee = await this.employeeService.findByPin(pin);
+        let employee: Employee = await this.employeeService.findByPinAndStore(pin, pos.storeId);
         if (employee) {
           this.user = await this.userService.getUser();
           this.employee = employee;
+          this.pos = pos;
+          this.posStatus = this.pos.status;
+          this.posName = this.pos.name;
           return true;
-        }
-        else {
+        } else {
           let toast = this.toastCtrl.create({
             message: "Invalid PIN!",
             duration: 3000
           });
-
           toast.present();
-
           return false;
         }
-      } else {
-        return false;
       }
-    } else {
-      return true;
+      return false;
     }
+    return true;
   }
 
   /**
@@ -95,10 +97,18 @@ export class ClockInOutPage {
       this.dataLoaded = true;
       loader.dismiss();
     }
+
+    let enableSessionMessage = async (timestampStoreId) => {
+      let currentStore = await this.storeService.getCurrentStore();
+      let employeeStore = await this.storeService.get(timestampStoreId);
+      this.sessionMessage = `${this.employee.firstName} ${this.employee.lastName} is already clocked into
+          ${employeeStore.name} and can't clock into ${currentStore.name}. Please first, clock out from
+          ${employeeStore.name} and then try to clock into ${currentStore.name}`;
+      this.currentSession = false;
+      return;
+    }
+
     await loader.present();
-    this.pos = await this.posService.getCurrentPos();
-    this.posStatus = this.pos.status;
-    this.posName = this.pos.name;
     if (this.posStatus) {
       let clockInBtn: any = {
         next: EmployeeTimestampService.CLOCK_IN,
@@ -139,35 +149,54 @@ export class ClockInOutPage {
         .getEmployeeLastTwoTimestamps(this.employee._id, this.user.currentStore)];
 
       let [result] = await Promise.all(promises);
+
       if (result) {
         result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
-        this.timestamp = <EmployeeTimestamp>result.latest
-        if (this.timestamp.type == EmployeeTimestampService.CLOCK_OUT && this.pos.hasOwnProperty('lastClosureTime')) {
-          // check if shift is not ended yet
-          let openTime: Date = new Date(this.pos.openTime);
-          let clockoutTime = new Date(this.timestamp.time);
-          if (clockoutTime > openTime) {
-            await this.employeeTimestampService.getEmployeeLatestTimestamp(
-              this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
-            );
-            let clockInTime = "";
-            clockInBtn.enabled = false;
-            this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
-            this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
-            return finishLoading();
+        this.timestamp = <EmployeeTimestamp>result.latest;
+
+        let isCurrentSession: boolean = (this.pos.storeId == this.timestamp.storeId) ||
+          (this.pos.storeId != this.timestamp.storeId && this.timestamp.type == EmployeeTimestampService.CLOCK_OUT);
+        // check if the user is not checked into another store
+        if (isCurrentSession) {
+          if (this.timestamp.type == EmployeeTimestampService.CLOCK_OUT && this.pos.hasOwnProperty('lastClosureTime')) {
+            // check if shift is not ended yet
+            let openTime: Date = new Date(this.pos.openTime);
+            let clockoutTime = new Date(this.timestamp.time);
+            if (clockoutTime > openTime) {
+              await this.employeeTimestampService.getEmployeeLatestTimestamp(
+                this.employee._id, this.user.currentStore, EmployeeTimestampService.CLOCK_IN
+              );
+              let clockInTime = "";
+              clockInBtn.enabled = false;
+              this.messagePlaceholder = `You already clocked in at ${clockInTime} and you can't clock in for today`;
+              this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+              return finishLoading();
+            } else {
+              this.activeButtons = this.buttons[this.timestamp.type];
+              return finishLoading();
+            }
           } else {
             this.activeButtons = this.buttons[this.timestamp.type];
             return finishLoading();
           }
         } else {
-          this.activeButtons = this.buttons[this.timestamp.type];
+          enableSessionMessage(this.timestamp.storeId);
           return finishLoading();
         }
       } else {
-        this.timestamp = new EmployeeTimestamp();
-        this.timestamp.employeeId = this.employee._id;
-        this.timestamp.storeId = this.user.currentStore;
-        this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+        let createFirstTimestamp = () => {
+          this.timestamp = new EmployeeTimestamp();
+          this.timestamp.employeeId = this.employee._id;
+          this.timestamp.storeId = this.user.currentStore;
+          this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+        }
+        let latestTimestamp: EmployeeTimestamp = await this.employeeTimestampService.getEmployeeLatestTimestamp(this.employee._id);
+        if (latestTimestamp && latestTimestamp.storeId != this.user.currentStore && latestTimestamp.type !== EmployeeTimestampService.CLOCK_OUT) {
+          enableSessionMessage(latestTimestamp.storeId);
+        } else {
+          createFirstTimestamp();
+        }
+
         return finishLoading();
       }
     } else {

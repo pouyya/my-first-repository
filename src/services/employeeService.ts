@@ -105,7 +105,23 @@ export class EmployeeService extends BaseEntityService<Employee> {
    * @returns {Promise<Employee>}
    */
   public async findByPin(pin: number): Promise<Employee> {
-    var employees: Array<Employee> = await this.findBy({ selector: { pin } });
+    let employees: Array<Employee> = await this.findBy({ selector: { pin } });
+    return employees && employees.length > 0 ? employees[0] : null;
+  }
+
+  public async findByPinAndStore(pin: number, storeId: string): Promise<Employee> {
+    let selector = {
+      selector: {
+        pin,
+        store: {
+          $elemMatch: {
+            id: { $eq: storeId }
+          }
+        }
+      }
+    };
+
+    let employees: Array<Employee> = await this.findBy(selector);
     return employees && employees.length > 0 ? employees[0] : null;
   }
 
