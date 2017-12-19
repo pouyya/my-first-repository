@@ -68,8 +68,4 @@ export class CategoryDetails {
     });
     modal.present();    
   }
-
-  addImage() {
-
-  }
 }
