@@ -1,3 +1,4 @@
+import { BrandService } from './../../services/brandService';
 import _ from 'lodash';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
@@ -28,7 +29,8 @@ export class ProductDetails {
 	public productItem: Product = new Product();
 	public priceBooks: Array<InteractableItemPriceInterface> = [];
 	public salesTaxes: Array<any> = [];
-	public categories = [];
+	public categories: any = [];
+	public brands: any = [];
 	public isNew = true;
 	public action = 'Add';
 	public selectedIcon: string = "";
@@ -52,6 +54,7 @@ export class ProductDetails {
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
 		private categoryService: CategoryService,
+		private brandService: BrandService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
@@ -105,7 +108,8 @@ export class ProductDetails {
 				});
 			}),
 			this.appService.loadSalesAndGroupTaxes(),
-			this.priceBookService.getDefault()
+			this.priceBookService.getDefault(),
+			this.brandService.getAll()
 		];
 
 		var results = await Promise.all(promises);
@@ -115,6 +119,7 @@ export class ProductDetails {
 			results[1] != null && this.salesTaxes.push(results[1]);
 			this.salesTaxes = this.salesTaxes.concat(results[2]);
 			this._defaultPriceBook = results[3];
+			this.brands = results[4];
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
