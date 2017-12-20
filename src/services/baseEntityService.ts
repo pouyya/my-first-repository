@@ -5,7 +5,7 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
   private _dbService;
   private _type;
 
-  constructor(type: { new (): T; }) {
+  constructor(type: { new(): T; }) {
     this._type = type;
   }
 
@@ -40,8 +40,12 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
     return this.dbService.getAll();
   }
 
-  findBy(selector: any) {
+  findBy(selector: any): Promise<Array<T>> {
     return this.dbService.findBy(selector);
+  }
+
+  query(selector: any): Promise<Array<any>> {
+    return this.dbService.query(selector);
   }
 
   get(id: any): Promise<T> {

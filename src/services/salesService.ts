@@ -44,15 +44,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	/**
-	 * Load Items on sales page by category id
-	 * @param id
-	 * @returns {any}
-	 */
-	public loadPurchasableItems(id: string) {
-		return this.cacheService.getAndPut('sales-cache' + id, key => this.categoryService.getAssociatedItems(id))
-	}
-
-	/**
 	 * Instantiate a default Sale Object
 	 * @param posId (Optional)
 	 * @return {Promise<Sale>}

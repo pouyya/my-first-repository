@@ -32,16 +32,12 @@ export class Category {
       await loader.present();
       let categories: any[] = _.sortBy(await this.categoryService.getAll(), [item => parseInt(item.order) || 0]);
       if (categories.length > 0) {
-        let associations: any[] = [];
+        let piItems = await this.categoryService.getPurchasableItems();
         categories.forEach((category, index, array) => {
-          associations.push(async () => {
-            let items = await this.categoryService.getAssociatedItems(category._id);
-            array[index].associated = items.length;
-            return;
-          });
+          let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
+          array[index].associated = items.length;
         });
 
-        await Promise.all(associations.map(assoc => assoc()));
         await this.platform.ready();
         this.zone.run(() => {
           this.items = categories;

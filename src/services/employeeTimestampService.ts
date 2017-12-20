@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { BaseEntityService } from "./baseEntityService";
 import { Injectable } from '@angular/core';
+import { StoreService } from './storeService';
 
 @Injectable()
 export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestamp> {
@@ -11,7 +12,7 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
   public static readonly BREAK_START: string = "break_start";
   public static readonly BREAK_END: string = "break_end";
 
-  constructor() {
+  constructor(private storeService: StoreService) {
     super(EmployeeTimestamp);
   }
 
@@ -26,42 +27,30 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
   /**
    * @param employeeId 
    * @param storeId 
-   * @param type 
-   * @returns {Promise<any>}
-   */
-  public async getEmployeeLatestTimestamp(employeeId: string, storeId?: string, type?: string): Promise<any> {
-    let selector: any = { employeeId }
-    if (storeId) selector.storeId = storeId;
-    if (type) selector.type = type;
-    try {
-      let timestamps: EmployeeTimestamp[] = await this.findBy({
-        selector,
-        sort: [{ _id: 'desc' }]
-      })
-      return timestamps.length > 0 ? timestamps[0] : null;
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
-
-  /**
-   * @param employeeId 
-   * @param storeId 
    * @returns {Promise<any>}
    */
   public async getEmployeeLastTwoTimestamps(employeeId: string, storeId: string): Promise<any> {
-    try {
-      let timestamps: EmployeeTimestamp[] = await this.findBy({
-        selector: { employeeId, storeId },
-        sort: [{ _id: 'desc' }]
-      });
-      return timestamps.length > 0 ? {
-        latest: timestamps[0],
-        beforeLatest: timestamps[1] || null
-      } : null;
-    } catch (err) {
-      return Promise.reject(err);
+    let currentStoreStartPeriod = await this.storeService.getCurrentStartPeriod(storeId);
+
+    if (!currentStoreStartPeriod) {
+      return new Array<EmployeeTimestamp>();
     }
+
+    let timestamps: EmployeeTimestamp[] = await this.findBy({
+      selector: {
+        employeeId,
+        storeId,
+        time: {
+          $gte: currentStoreStartPeriod
+        }
+      },
+      sort: [{ _id: 'desc' }]
+    });
+    
+    return timestamps.length > 0 ? {
+      latest: timestamps[0],
+      beforeLatest: timestamps[1] || null
+    } : null;
   }
 
   public async getNonCheckOuts(raw: boolean = true) {
@@ -84,7 +73,7 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
    * @param processSize {Number}
    */
   public async getTimestampsByFrame(frame: string[], processSize: number, getAll: boolean = false): Promise<any> {
-    if(processSize > frame.length) {
+    if (processSize > frame.length) {
       return Promise.reject("processSize exceeded!");
     }
     let view = "employee_timelog/by_time";
@@ -101,5 +90,24 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
 
     let records: any[] = await Promise.all(promises.map(promise => promise()));
     return _.flatten(records);
+  }
+
+  public async getAllTimeStampOfCurrentPeriodOfStore(storeId: string): Promise<Array<EmployeeTimestamp>> {
+
+    let currentStoreStartPeriod = await this.storeService.getCurrentStartPeriod(storeId);
+
+    if (!currentStoreStartPeriod) {
+      return new Array<EmployeeTimestamp>();
+    }
+
+    return await this.findBy({
+      sort: [{ _id: 'desc' }],
+      selector: {
+        storeId,
+        time: {
+          $gte: currentStoreStartPeriod
+        }
+      }
+    });
   }
 }

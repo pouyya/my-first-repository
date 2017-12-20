@@ -45,21 +45,6 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
   }
 
   /**
-   * @Override
-   * overrides the BaseEntityService getAll()
-   * @returns {Promise<PriceBook[]>}
-   */
-  public async getAll(): Promise<PriceBook[]> {
-    return this.findBy({
-      selector: {
-        entityTypeNames: {
-          $elemMatch: { $eq: "PriceBook" }
-        }
-      }
-    });
-  }
-
-  /**
    * get pricebooks above priority 0
    * @returns {Promise<PriceBook[]>}
    */
