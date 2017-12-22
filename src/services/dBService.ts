@@ -107,6 +107,10 @@ export class DBService<T extends DBBasedEntity> {
         return this.getDB().find(selector);
     }
 
+    query(selector: any): Promise<Array<any>> {
+        return this.getDB().find(selector);
+    }
+
     get(id): Promise<T> {
         return this.getDB().get(id);
     }

@@ -70,6 +70,7 @@ import { CreateCustomerModal } from './../components/basket/modals/create-custom
 import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
+import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -127,6 +128,8 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
+import { StockHistoryService } from './../services/stockHistoryService';
+import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -184,7 +187,9 @@ const cloudSettings: CloudSettings = {
     Customers,
     CustomerDetails,
     CreateCustomerModal,
-    AboutPage
+    AboutPage,
+    StockIncreaseModal,
+    StockDecreaseModal
   ],
   imports: [
     FormsModule,
@@ -274,7 +279,9 @@ const cloudSettings: CloudSettings = {
     Customers,
     CustomerDetails,
     CreateCustomerModal,
-    AboutPage
+    AboutPage,
+    StockIncreaseModal,
+    StockDecreaseModal
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -309,6 +316,7 @@ const cloudSettings: CloudSettings = {
     SecurityService,
     PluginService,
     EmployeeTimestampService,
+    StockHistoryService,
     CustomerService,
     AuthService,
     StoreEvaluationProvider,

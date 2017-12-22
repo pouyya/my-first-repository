@@ -1,3 +1,7 @@
+import { Store } from './../../model/store';
+import { StockHistoryService } from './../../services/stockHistoryService';
+import { StockHistory } from './../../model/stockHistory';
+import { StoreService } from './../../services/storeService';
 import _ from 'lodash';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
@@ -13,6 +17,17 @@ import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
+import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
+import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
+
+interface InteractableStoreStock {
+	storeId: string,
+	store: Store, /** Store */
+	value: number, /** sum of all stock values */
+	supplierId?: string, /** from supplier */
+	reorderPoint?: any,
+	reorderQty?: any
+}
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -28,6 +43,7 @@ export class ProductDetails {
 	public productItem: Product = new Product();
 	public priceBooks: Array<InteractableItemPriceInterface> = [];
 	public salesTaxes: Array<any> = [];
+	public storesStock: InteractableStoreStock[] = [];
 	public categories = [];
 	public isNew = true;
 	public action = 'Add';
@@ -52,6 +68,8 @@ export class ProductDetails {
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
 		private categoryService: CategoryService,
+		private storeService: StoreService,
+		private stockHistoryService: StockHistoryService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
@@ -77,6 +95,7 @@ export class ProductDetails {
 
 		let editProduct = this.navParams.get('item');
 		var _user = await this.userService.getUser();
+		let stores = await this.storeService.getAll();
 		if (editProduct) {
 			this.productItem = editProduct;
 			this.isNew = false;
@@ -105,16 +124,25 @@ export class ProductDetails {
 				});
 			}),
 			this.appService.loadSalesAndGroupTaxes(),
-			this.priceBookService.getDefault()
+			this.priceBookService.getDefault(),
+			this.stockHistoryService.collectProductTotalStockValueForEachStore(
+				this.productItem._id, stores.map(store => store._id))
 		];
 
 		var results = await Promise.all(promises);
-		
+
 		this.zone.run(() => {
 			this.categories = results[0];
 			results[1] != null && this.salesTaxes.push(results[1]);
 			this.salesTaxes = this.salesTaxes.concat(results[2]);
 			this._defaultPriceBook = results[3];
+			this.storesStock = results[4].map(collection => {
+				return <InteractableStoreStock>{
+					storeId: collection.storeId,
+					store: _.find(stores, { _id: collection.storeId }),
+					value: collection.value
+				}
+			});
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
@@ -191,6 +219,24 @@ export class ProductDetails {
 					break;
 			}
 		});
+	}
+
+	async stockIncrease() {
+		let modal = this.modalCtrl.create(StockIncreaseModal, { storesStock: this.storesStock });
+		modal.onDidDismiss(data => {
+			if (data) {
+			}
+		});
+		modal.present();
+	}
+
+	async stockDecrease() {
+		let modal = this.modalCtrl.create(StockDecreaseModal, { storesStock: this.storesStock });
+		modal.onDidDismiss(data => {
+			if (data) {
+			}
+		});
+		modal.present();
 	}
 
 	async saveProducts() {

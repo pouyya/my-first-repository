@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Increase Stock</ion-title>
+    <ion-buttons end>      
+      <button type="button" ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-item>{{currentStore.value}} units currently in stock at {{currentStore.store.name}}</ion-item>
+  <form (ngSubmit)="increase()" #stockForm="ngForm">
+  <ion-list inset>
+    <ion-item>
+      <ion-label class="item-name">Increase Qty.</ion-label>
+      <ion-input type="number" [(ngModel)]="stock.value" name="stockValue" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Supply Price.</ion-label>
+      <ion-input type="number" [(ngModel)]="stock.supplyPrice" name="stockPrice" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Store</ion-label>
+      <ion-select [(ngModel)]="stock.storeId" name="stockStore" (ionChange)="setStore()">
+        <ion-option *ngFor="let storeStock of storesStock" value={{storeStock.storeId}}>{{storeStock.store.name}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Reason</ion-label>
+      <ion-select [(ngModel)]="stock.reason" name="stockReason">
+        <ion-option *ngFor="let reason of reasons | keys" value={{reason.key}}>{{reason.value}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  </form>
+</ion-content>
+<ion-footer>
+  <button class="pull-right" type="submit" ion-button icon-only (click)="stockForm.ngSubmit.emit()" [disabled]="!stockForm.form.valid">Increase</button>
+</ion-footer>
