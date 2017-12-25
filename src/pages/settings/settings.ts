@@ -67,7 +67,7 @@ export class Settings {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
-        this.timezones = <string[]> moment.tz.names();
+        this.timezones = <string[]>moment.tz.names();
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {
@@ -92,12 +92,12 @@ export class Settings {
     var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
     this.salesTaxes = taxes;
 
-    this._sharedService.publish({ screenAwake: this.accountSetting.screenAwake });
+    this._sharedService.publish('storeOrPosChanged', { screenAwake: this.accountSetting.screenAwake });
 
     this.accountSetting.taxType = this.selectedType == 0 ? false : true;
     this.accountSetting.defaultTax = this.newTax._id;
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
-    if(this.accountSetting.timeOffset) {
+    if (this.accountSetting.timeOffset) {
       this.datetimeService.timezone = this.accountSetting.timeOffset;
     }
 

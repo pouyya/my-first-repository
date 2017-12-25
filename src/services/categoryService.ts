@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Category} from '../model/category';
-import {BaseEntityService} from  './baseEntityService';
+import { Category } from '../model/category';
+import { BaseEntityService } from './baseEntityService';
 
 @Injectable()
 export class CategoryService extends BaseEntityService<Category> {
@@ -13,10 +13,12 @@ export class CategoryService extends BaseEntityService<Category> {
      * @param _id
      * @returns {any}
      */
-    public getAssociatedItems(_id: string) {
-        return this.findBy({
+    public getPurchasableItems() {
+        return this.query({
             selector: {
-                categoryIDs: {$elemMatch: {$eq: _id}}
+                entityTypeNames: {
+                    $elemMatch: { $eq: "PurchasableItem" }
+                }
             }
         });
     }

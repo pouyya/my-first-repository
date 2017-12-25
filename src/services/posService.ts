@@ -1,20 +1,10 @@
 import { UserService } from './userService';
 import { Injectable } from '@angular/core';
-import { BaseEntityService } from  './baseEntityService';
+import { BaseEntityService } from './baseEntityService';
 import { POS } from './../model/pos';
 
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
-
-  private _currentPos: POS;
-
-  get currentPos(): POS {
-    return this._currentPos;
-  }
-
-  set currentPos(pos: POS) {
-    this._currentPos = pos;
-  }
 
   constructor(private userService: UserService) {
     super(POS);
@@ -26,8 +16,28 @@ export class PosService extends BaseEntityService<POS> {
     return currentPos.status;
   }
 
-  public async getCurrentPos() : Promise<POS> {
+  public async getCurrentPos(): Promise<POS> {
     let currentUser = await this.userService.getUser();
     return this.get(currentUser.currentPos);
+  }
+
+  public async getAllPosByStoreId(storeId: string): Promise<Array<POS>> {
+    return this.findBy({
+      selector: { storeId }
+    });
+  }
+
+  public async isThisLastPosClosingInStore(posId: string): Promise<boolean> {
+
+    var currentPos = await this.get(posId);
+    var otherPosOfCurrentStoreStillOpen = await this.findBy({
+      selector: {
+        _id: { $ne: posId },
+        storeId: currentPos.storeId,
+        openTime: { $gt: null }
+      }
+    });
+
+    return !otherPosOfCurrentStoreStillOpen || otherPosOfCurrentStoreStillOpen.length <= 0
   }
 }

@@ -3,7 +3,7 @@ import firstBy from 'thenby';
 import * as moment from 'moment';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { EvaluationContext } from './../../services/EvaluationContext';
-import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { NavController, LoadingController, Loading, NavParams, ToastController } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';
@@ -47,7 +47,7 @@ interface PurchasableItemTiles {
   styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices],
 })
-export class Sales {
+export class Sales implements OnDestroy, OnInit {
 
   @ViewChild(BasketComponent)
   private basketComponent: BasketComponent;
@@ -71,6 +71,7 @@ export class Sales {
   private salesTaxes: SalesTax[];
   private categoryIdKeys: string[];
   private defaultTax: any;
+  private alive: boolean = true;
 
   constructor(
     private userService: UserService,
@@ -91,20 +92,29 @@ export class Sales {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
 
-    this._sharedService.payload$.subscribe((data) => {
-      if (data.hasOwnProperty('employee') && data.hasOwnProperty('type')) {
-        let loader = this.loading.create({
-          content: 'Refreshing Staff List...',
-        });
-        loader.present().then(() => {
+    this.cdr.detach();
+  }
+
+  ngOnInit() {
+    this._sharedService
+      .getSubscribe('clockInOut')
+      .takeWhile(() => this.alive)
+      .subscribe(async (data) => {
+        if (data.hasOwnProperty('employee') && data.hasOwnProperty('type')) {
+          let loader = this.loading.create({
+            content: 'Refreshing Staff List...',
+          });
+          await loader.present();
           this.salesService.updateEmployeeTiles(
             this.employees, this.selectedEmployee, data.employee, data.type);
           this.employees = [...this.employees];
           loader.dismiss();
-        });
-      }
-    });
-    this.cdr.detach();
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.alive = false;
   }
 
   ionViewWillUnload() {
@@ -258,19 +268,15 @@ export class Sales {
   private async loadCategoriesAndAssociations(): Promise<any> {
     try {
       let categories = await this.categoryService.getAll();
-      let promises: any[] = [];
+      let piItems: any[] = await this.categoryService.getPurchasableItems()
       categories.forEach((category, index, catArray) => {
-        promises.push(async () => {
-          let items: any[] = await this.salesService.loadPurchasableItems(category._id);
-          if (items.length > 0) {
-            this.purchasableItems[category._id] = _.sortBy(items, [item => parseInt(item.order) || 0]);
-          } else {
-            catArray[index] = null;
-          }
-          return;
-        });
+        let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
+        if (items.length > 0) {
+          this.purchasableItems[category._id] = _.sortBy(items, [item => parseInt(item.order) || 0]);
+        } else {
+          catArray[index] = null;
+        }
       });
-      await Promise.all(promises.map(promise => promise()));
       this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
       this.activeCategory = _.head(this.categories);
       this.activeTiles = this.purchasableItems[this.activeCategory._id];
@@ -281,7 +287,7 @@ export class Sales {
     }
   }
 
-  public async initiate(loader: Loading): Promise<any> {
+  private async initiate(loader: Loading): Promise<any> {
     this.cdr.detach();
     let promises: any[] = [
       async () => {
@@ -297,7 +303,7 @@ export class Sales {
     if (this.user.settings.trackEmployeeSales) {
       promises.push(async () => {
         loader.setContent('Loading Employees...');
-        this.employees = await this.employeeService.getClockedInEmployeesToCurrentStore();
+        this.employees = await this.employeeService.getClockedInEmployeesOfStore(this.user.currentStore);
         if (this.employees && this.employees.length > 0) {
           this.employees = this.employees.map(employee => {
             employee.selected = false;
@@ -318,11 +324,11 @@ export class Sales {
 
   private findPurchasableItemByBarcode(code: string): PurchasableItem {
     let foundItem: PurchasableItem = null;
-    for(let i = 0; i < this.categoryIdKeys.length; i++) {
+    for (let i = 0; i < this.categoryIdKeys.length; i++) {
       foundItem = _.find(this.purchasableItems[this.categoryIdKeys[i]], item => {
         return item.hasOwnProperty('barcode') ? item.barcode == code : false;
       });
-      if(foundItem) {
+      if (foundItem) {
         break;
       }
     }
@@ -339,11 +345,15 @@ export class Sales {
     let loader = this.loading.create({ content: 'Opening Register...' });
     try {
       await loader.present();
-      await this.initiate(loader);
+
+      loader.setContent('Start Opening...');
+
       this.register.openTime = moment().utc().format();
       this.register.status = true;
       this.register.openingAmount = Number(this.register.openingAmount);
-      this.posService.update(this.register);
+      await this.posService.update(this.register);
+
+      await this.initiate(loader);
       loader.dismiss();
     } catch (err) {
       throw new Error(err);
