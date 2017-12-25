@@ -1,3 +1,4 @@
+import * as moment from 'moment-timezone';
 import _ from 'lodash';
 import { Reason } from './../../../../model/stockHistory';
 import { NavParams, LoadingController, ViewController } from 'ionic-angular';
@@ -29,6 +30,7 @@ export class StockDecreaseModal {
         this.reasons[reason] = reasons[reason];
       }
     });
+    this.stock.productId = this.navParams.get('productId');
     this.stock.storeId = this.storesStock[0].storeId;
     this.stock.reason = this.reasons[Object.keys(this.reasons)[0]];
     this.setStore();
@@ -39,7 +41,11 @@ export class StockDecreaseModal {
   }
 
   public decrease() {
-
+    this.stock.createdAt = moment().utc().format();
+    this.stock.value = Number(this.stock.value) * -1;
+    if(this.stock.value != 0) {
+      this.viewCtrl.dismiss(this.stock);
+    }
   }
 
   public dismiss() {

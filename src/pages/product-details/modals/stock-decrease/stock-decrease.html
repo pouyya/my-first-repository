@@ -10,15 +10,11 @@
 </ion-header>
 <ion-content>
   <ion-item>{{currentStore.value}} units currently in stock at {{currentStore.store.name}}</ion-item>
-  <form (ngSubmit)="increase()" #stockForm="ngForm">
+  <form (ngSubmit)="decrease()" #stockForm="ngForm">
   <ion-list inset>
     <ion-item>
-      <ion-label class="item-name">Increase Qty.</ion-label>
+      <ion-label class="item-name">Decrease Qty.</ion-label>
       <ion-input type="number" [(ngModel)]="stock.value" name="stockValue" required></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Supply Price.</ion-label>
-      <ion-input type="number" [(ngModel)]="stock.supplyPrice" name="stockPrice" required></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Store</ion-label>
