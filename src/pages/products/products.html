@@ -1,20 +1,57 @@
 <ion-header>
-  <ion-navbar >
+  <ion-navbar>
     <ion-title>Products</ion-title>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-   
+
     <ion-buttons end>
-      <button ion-button icon-only (click)="showDetail()" >
+      <button ion-button icon-only (click)="showDetail()">
         <ion-icon name="add"></ion-icon>
       </button>
-     </ion-buttons>      
+    </ion-buttons>
     <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content >
+<ion-content>
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>
+            <strong>Product Name</strong>
+          </ion-col>
+          <ion-col col-md-3>
+            <strong>SKU/Barcode</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Retail Price</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Stock on Hand</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Updated At</strong>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let product of items; let i = index;" (click)="showDetail(product)">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>{{ product.name }}</ion-col>
+          <ion-col col-md-3>{{ product.barcode }}</ion-col>
+          <ion-col col-md-2>{{ product.retailPrice }}</ion-col>
+          <ion-col col-md-2>{{ product.stockInHand }}</ion-col>
+          <ion-col col-md-2>{{ product._id | localDate }}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <!--
   <ion-list inset *ngFor="let item of items ; let idx=index">
     <ion-item-sliding class="sliding" >
       <ion-item (click)="showDetail(item)">
@@ -30,6 +67,6 @@
         </button>  
       </ion-item-options>  
     </ion-item-sliding>   
-  </ion-list> 
-</ion-content> 
- 
+  </ion-list>
+  -->
+</ion-content>
