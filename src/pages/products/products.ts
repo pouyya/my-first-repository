@@ -35,7 +35,7 @@ export class Products {
     private zone: NgZone) {
   }
 
-  async ionViewDidEnter() {
+  async ionViewDidLoad() {
     try {
       let loader = this.loading.create({ content: 'Loading Products...' });
       await loader.present();

@@ -262,7 +262,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param item 
 	 * @returns {any}
 	 */
-	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: PurchasableItem): PurchasableItemPriceInterface {
+	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: any): PurchasableItemPriceInterface {
 		let container: any = null;
 		for (let index in priceBooks) {
 			let itemPrice = _.find(priceBooks[index].purchasableItems, { id: item._id });

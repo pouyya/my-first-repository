@@ -29,15 +29,17 @@ import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 import { CustomerService } from '../../services/customerService';
+import { StockHistoryService } from '../../services/stockHistoryService';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
   priceBook: PurchasableItemPriceInterface;
   employeeId: string;
+  stockInHand?: number;
 }
 
 interface PurchasableItemTiles {
-  [id: string]: PurchasableItem[]
+  [id: string]: InteractableItem[]
 }
 
 @PageModule(() => SalesModule)
@@ -85,6 +87,7 @@ export class Sales implements OnDestroy, OnInit {
     private posService: PosService,
     private storeService: StoreService,
     private customerService: CustomerService,
+    private stockHistoryService: StockHistoryService,
     private navParams: NavParams,
     private cacheService: CacheService,
     private toastCtrl: ToastController
@@ -168,26 +171,30 @@ export class Sales implements OnDestroy, OnInit {
   }
 
   // Event
-  public async onSelect(item: PurchasableItem) {
-    let context = new EvaluationContext();
-    context.currentStore = this.user.currentStore;
-    context.currentDateTime = new Date();
+  public async onSelect(item: InteractableItem) {
+    if (item.stockInHand > 0) {
+      let context = new EvaluationContext();
+      context.currentStore = this.user.currentStore;
+      context.currentDateTime = new Date();
 
-    let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
-    if (price) {
-      let interactableItem: InteractableItem = { ...item, tax: null, priceBook: price, employeeId: null };
-      interactableItem.tax = _.pick(
-        interactableItem.priceBook.salesTaxId != null ?
-          _.find(this.salesTaxes, { _id: interactableItem.priceBook.salesTaxId }) : this.defaultTax,
-        ['rate', 'name']);
-      this.selectedEmployee != null && (interactableItem.employeeId = this.selectedEmployee._id);
-      this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(interactableItem));
+      let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
+      if (price) {
+        item.priceBook = price;
+        item.tax = _.pick(
+          item.priceBook.salesTaxId != null ?
+            _.find(this.salesTaxes, { _id: item.priceBook.salesTaxId }) : this.defaultTax,
+          ['rate', 'name']);
+        this.selectedEmployee != null && (item.employeeId = this.selectedEmployee._id);
+        this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item));
+      } else {
+        let toast = this.toastCtrl.create({
+          message: `${item.name} does not have any price`,
+          duration: 3000
+        });
+        toast.present();
+      }
     } else {
-      let toast = this.toastCtrl.create({
-        message: `${item.name} does not have any price`,
-        duration: 3000
-      });
-      toast.present();
+      /** Post message of not in stock */
     }
   }
 
@@ -268,15 +275,48 @@ export class Sales implements OnDestroy, OnInit {
   private async loadCategoriesAndAssociations(): Promise<any> {
     try {
       let categories = await this.categoryService.getAll();
-      let piItems: any[] = await this.categoryService.getPurchasableItems()
+      let piItems: any[] = await this.categoryService.getPurchasableItems();
       categories.forEach((category, index, catArray) => {
-        let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
+        let items: InteractableItem[] = _.filter(piItems, piItem => piItem.categoryIDs == category._id).map(item => {
+          return <InteractableItem>{
+            ...item,
+            tax: null,
+            priceBook: null,
+            employeeId: null,
+            stockInHand: 0
+          };
+        });
         if (items.length > 0) {
           this.purchasableItems[category._id] = _.sortBy(items, [item => parseInt(item.order) || 0]);
         } else {
           catArray[index] = null;
         }
       });
+
+      /** fetch stock in hand */
+      /*
+      Object.keys(this.purchasableItems).forEach(categoryId => {
+        this.purchasableItems[categoryId].forEach(async (item, index, array) => {
+          if (item.entityTypeName == 'Product') {
+            let fetchTotalInStock: any[] = [];
+            fetchTotalInStock.push(async () => {
+              let storeStock: any[] = await this.stockHistoryService
+                .collectProductTotalStockValueForEachStore(item._id, [this.store._id]);
+              array[index].stockInHand = storeStock.length <= 0 ? 0 : storeStock
+                .map(stock => stock.totalValue)
+                .reduce((a, b) => a + b);
+              return;
+            });
+
+            await Promise.all(fetchTotalInStock);
+            return;
+          } else {
+            return;
+          }
+        });
+      });
+      */
+
       this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
       this.activeCategory = _.head(this.categories);
       this.activeTiles = this.purchasableItems[this.activeCategory._id];
@@ -322,8 +362,8 @@ export class Sales implements OnDestroy, OnInit {
     }
   }
 
-  private findPurchasableItemByBarcode(code: string): PurchasableItem {
-    let foundItem: PurchasableItem = null;
+  private findPurchasableItemByBarcode(code: string): InteractableItem {
+    let foundItem: InteractableItem = null;
     for (let i = 0; i < this.categoryIdKeys.length; i++) {
       foundItem = _.find(this.purchasableItems[this.categoryIdKeys[i]], item => {
         return item.hasOwnProperty('barcode') ? item.barcode == code : false;
@@ -337,7 +377,7 @@ export class Sales implements OnDestroy, OnInit {
   }
 
   public barcodeReader(code: string) {
-    let item: PurchasableItem = this.findPurchasableItemByBarcode(code);
+    let item: InteractableItem = this.findPurchasableItemByBarcode(code);
     item && this.onSelect(item); // execute in parallel
   }
 
