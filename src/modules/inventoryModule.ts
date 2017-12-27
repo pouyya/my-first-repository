@@ -3,6 +3,7 @@ import { HomePage } from './../pages/home/home';
 import { Category } from '../pages/category/category';
 import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelBase';
 import { SecurityGuard } from '../metadata/securityGuardModule';
+import { Brands } from '../pages/brands/brands';
 
 @SecurityGuard(['BackOffice'])
 export class InventoryModule implements ModuleBase {
@@ -12,7 +13,7 @@ export class InventoryModule implements ModuleBase {
 
   public pages: Array<PageSettingsInterface | ModalPageInterface> = [
     { title: 'Category', icon: 'cash', component: Category },
-    { title: 'Brands', icon: 'cash', component: Category },
+    { title: 'Brands', icon: 'cash', component: Brands },
     { title: 'Products', icon: 'pricetags', component: Products },
     { title: 'Suppliers', icon: 'cash', component: Category },
     { title: 'Orders', icon: 'cash', component: Category },
