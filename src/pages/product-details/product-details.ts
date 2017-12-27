@@ -131,8 +131,7 @@ export class ProductDetails {
 			}),
 			this.appService.loadSalesAndGroupTaxes(),
 			this.priceBookService.getDefault(),
-			this.stockHistoryService.collectProductTotalStockValueForEachStore(
-				this.productItem._id, stores.map(store => store._id)),
+			this.stockHistoryService.getProductTotalStockValue(this.productItem._id),
 			new Promise((resolve, reject) => {
 				let stockHistories: { [id: string]: StockHistory[] } = {};
 				let promises: any[] = [];
@@ -159,15 +158,15 @@ export class ProductDetails {
 			results[1] != null && this.salesTaxes.push(results[1]);
 			this.salesTaxes = this.salesTaxes.concat(results[2]);
 			this._defaultPriceBook = results[3];
-			this.storesStock = results[4].map(collection => {
+			this.storesStock = results[4] ? results[4].map(collectionItem => {
 				return <InteractableStoreStock>{
-					storeId: collection.storeId,
-					store: _.find(stores, { _id: collection.storeId }),
-					value: collection.totalValue
+					storeId: collectionItem.storeId,
+					store: _.find(stores, { _id: collectionItem.storeId }),
+					value: collectionItem.value
 				}
-			});
+			}) : [];
 			this.stockHistory = _.cloneDeep(results[5]);
-			
+
 			this.brands = results[6];
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });

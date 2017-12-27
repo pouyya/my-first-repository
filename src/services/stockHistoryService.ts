@@ -1,12 +1,13 @@
 import { StockHistory } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from './baseEntityService';
-import { StoreService } from './storeService';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
+  
+  readonly view_stock_per_store = "inventory/stock_per_store";
 
-  constructor(private storeService: StoreService) {
+  constructor() {
     super(StockHistory);
   }
 
@@ -20,37 +21,31 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     }
   }
 
-  public async collectProductTotalStockValueForEachStore(productId: string, stores?: string[]) {
-    if (stores && stores.length == 0) {
-      return Promise.reject([]);
-    }
+  public async getAllProductsTotalStockValue() {
 
-    if (!stores) {
-      // then get all stores
-      stores = <string[]>(await this.storeService.getAll()).map(store => store._id);
-    }
+    var param = { reduce: true, group: true, group_level: 1 };
 
-    let collection: any[] = [];
-    let promises: any[] = [];
-    stores.forEach(store => {
-      promises.push(async () => {
-        let stocks: StockHistory[] = await this.getByStoreAndProductId(store, productId);
-        let value: number = stocks.length > 0 ? stocks.map(stock => stock.value)
-          .reduce((a, b) => Number(a) + Number(b)) : 0;
-        collection.push({
-          storeId: store,
-          totalValue: value
-        });
-        return;
-      });
-    });
+    var result = await this.getDB().query(this.view_stock_per_store, param);
 
-    try {
-      await Promise.all(promises.map(promise => promise()));
-      return collection;
-    } catch (err) {
-      return Promise.reject(err);
-    }
+    return result ? result.rows.map(row => {
+      return {
+        productId: row.key[0],
+        value: row.value
+      }
+    }) : null;
   }
 
+  public async getProductTotalStockValue(productId: string) {
+
+    var param = { reduce: true, group: true, startkey: [productId], endkey: [productId, {}] };
+
+    var result = await this.getDB().query(this.view_stock_per_store, param);
+
+    return result ? result.rows.map(row => {
+      return {
+        value: row.value,
+        storeId: row.key[1]
+      };
+    }) : null;
+  }
 }

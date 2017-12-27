@@ -43,13 +43,13 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
   findBy(selector: any): Promise<Array<T>> {
     return this.dbService.findBy(selector);
   }
+  
+  query(selector: any): Promise<Array<any>> {
+    return this.dbService.query(selector);
+  }
 
   get(id: any): Promise<T> {
     return this.dbService.get(id);
-  }
-
-  query(selector: any): Promise<Array<any>> {
-    return this.dbService.query(selector);
   }
 
   private clearAllMethods(entity: T) {
