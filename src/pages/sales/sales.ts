@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import firstBy from 'thenby';
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { EvaluationContext } from './../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { NavController, LoadingController, Loading, NavParams, ToastController } from 'ionic-angular';
+import { NavController, LoadingController, Loading, NavParams, ToastController, AlertController } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -23,6 +23,7 @@ import { SalesTax } from './../../model/salesTax';
 import { PriceBook } from './../../model/priceBook';
 import { Customer } from './../../model/customer';
 import { PurchasableItem } from './../../model/purchasableItem';
+import { Reason, StockHistory } from './../../model/stockHistory';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -30,16 +31,24 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 import { CustomerService } from '../../services/customerService';
 import { StockHistoryService } from '../../services/stockHistoryService';
+import { BasketItem } from '../../model/bucketItem';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
   priceBook: PurchasableItemPriceInterface;
   employeeId: string;
-  stockInHand?: number;
 }
 
 interface PurchasableItemTiles {
   [id: string]: InteractableItem[]
+}
+
+interface StockChangeLog {
+  productId: string;
+  storeId: string;
+  reason: Reason,
+  value: number,
+  supplyPrice: number
 }
 
 @PageModule(() => SalesModule)
@@ -72,6 +81,7 @@ export class Sales implements OnDestroy, OnInit {
   private priceBooks: PriceBook[];
   private salesTaxes: SalesTax[];
   private categoryIdKeys: string[];
+  private productsInStock: { [id: string]: number } = {};
   private defaultTax: any;
   private alive: boolean = true;
 
@@ -90,7 +100,8 @@ export class Sales implements OnDestroy, OnInit {
     private stockHistoryService: StockHistoryService,
     private navParams: NavParams,
     private cacheService: CacheService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController
   ) {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
@@ -172,13 +183,13 @@ export class Sales implements OnDestroy, OnInit {
 
   // Event
   public async onSelect(item: InteractableItem) {
-    if (item.stockInHand > 0) {
-      let context = new EvaluationContext();
-      context.currentStore = this.user.currentStore;
-      context.currentDateTime = new Date();
+    let context = new EvaluationContext();
+    context.currentStore = this.user.currentStore;
+    context.currentDateTime = new Date();
 
-      let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
-      if (price) {
+    let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
+    if (price) {
+      let addItemToBasket = async () => {
         item.priceBook = price;
         item.tax = _.pick(
           item.priceBook.salesTaxId != null ?
@@ -186,15 +197,44 @@ export class Sales implements OnDestroy, OnInit {
           ['rate', 'name']);
         this.selectedEmployee != null && (item.employeeId = this.selectedEmployee._id);
         this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item));
+        this.productsInStock[item._id] -= 1;
+        return;
+      }
+      if (this.productsInStock[item._id] > 0) {
+        return addItemToBasket();
       } else {
-        let toast = this.toastCtrl.create({
-          message: `${item.name} does not have any price`,
-          duration: 3000
+        let confirm = this.alertCtrl.create({
+          title: 'Not in Stock!!',
+          message: 'Do you want to add product anyway ? (Pre-order)',
+          buttons: [
+            {
+              text: 'Yes',
+              handler: () => {
+                let stockHistory: StockHistory = new StockHistory();
+                stockHistory.value = -1;
+                stockHistory.reason = Reason.Purchase;
+                stockHistory.productId = item._id;
+                stockHistory.storeId = this.store._id;
+                stockHistory.supplyPrice = price.retailPrice; /** Retail Price for now, Supply price will be implemented later */
+                this.stockHistoryService.add(stockHistory).then(() => {
+                  addItemToBasket();
+                }).catch(err => {
+
+                })
+              }
+            },
+            'No'
+          ]
         });
-        toast.present();
+        confirm.present();
       }
     } else {
-      /** Post message of not in stock */
+      let toast = this.toastCtrl.create({
+        message: `${item.name} does not have any price`,
+        duration: 3000
+      });
+      toast.present();
+      return;
     }
   }
 
@@ -203,6 +243,21 @@ export class Sales implements OnDestroy, OnInit {
     let pushCallback = params => {
       return new Promise((resolve, reject) => {
         if (params) {
+          let updateStockPromises: any[] = [];
+          this.invoice.items.forEach(item => {
+            if (item.hasOwnProperty('entityTypeName') && item.entityTypeName == 'Product') {
+              updateStockPromises.push(async () => {
+                await this.stockHistoryService.add(this.createStockHistory(item, this.store._id));
+              });
+            }
+          });
+          Promise.all(updateStockPromises.map(p => p())).then(() => {
+            this.stockHistoryService.getAllProductsTotalStockValue().then((stockValues: any[]) => {
+              stockValues.forEach(stock => {
+                this.productsInStock[stock.productId] = stock.value
+              });
+            });
+          });
           this.salesService.instantiateInvoice().then(response => {
             this.invoiceParam = null;
             this.invoice = response.invoice;
@@ -294,28 +349,10 @@ export class Sales implements OnDestroy, OnInit {
       });
 
       /** fetch stock in hand */
-      /*
-      Object.keys(this.purchasableItems).forEach(categoryId => {
-        this.purchasableItems[categoryId].forEach(async (item, index, array) => {
-          if (item.entityTypeName == 'Product') {
-            let fetchTotalInStock: any[] = [];
-            fetchTotalInStock.push(async () => {
-              let storeStock: any[] = await this.stockHistoryService
-                .collectProductTotalStockValueForEachStore(item._id, [this.store._id]);
-              array[index].stockInHand = storeStock.length <= 0 ? 0 : storeStock
-                .map(stock => stock.totalValue)
-                .reduce((a, b) => a + b);
-              return;
-            });
-
-            await Promise.all(fetchTotalInStock);
-            return;
-          } else {
-            return;
-          }
-        });
+      let stockValues: any[] = await this.stockHistoryService.getAllProductsTotalStockValue();
+      stockValues.forEach(stock => {
+        this.productsInStock[stock.productId] = stock.value
       });
-      */
 
       this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
       this.activeCategory = _.head(this.categories);
@@ -379,6 +416,16 @@ export class Sales implements OnDestroy, OnInit {
   public barcodeReader(code: string) {
     let item: InteractableItem = this.findPurchasableItemByBarcode(code);
     item && this.onSelect(item); // execute in parallel
+  }
+
+  private createStockHistory(product: BasketItem, storeId: string): StockHistory {
+    let stock = new StockHistory();
+    stock.productId = product._id;
+    stock.storeId = storeId;
+    stock.createdAt = moment().utc().format();
+    stock.value = product.quantity * -1;
+    stock.reason = stock.value > 0 ? Reason.Return : Reason.Purchase;
+    return stock;
   }
 
   public async onSubmit(): Promise<any> {

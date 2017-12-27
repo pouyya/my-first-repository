@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Product</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveProducts()">
+      <button type="submit" ion-button icon-only (click)="productForm.ngSubmit.emit()" [disabled]="!productForm.form.valid">
         Save
       </button>
     </ion-buttons>
@@ -11,75 +11,73 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item>
-      <ion-label class="item-name">Name</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.name"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Brand</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.brand"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Barcode</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.barcode"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Tags</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.tag"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Count</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.count"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Display Order</ion-label>
-      <ion-input type="number" [(ngModel)]="productItem.order"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>Categories</ion-label>
-      <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true">
-        <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label>Brand</ion-label>
-      <ion-select [(ngModel)]="productItem.brandId">
-        <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
-      </ion-select>
-    </ion-item>
-  </ion-list>
-  <div class="insert-image">
-    <p>
-      <ion-label class="item-addImageLabel">Add Image</ion-label>
-      <button ion-button icon-only (click)="addImage()">
-        <ion-icon name="camera"></ion-icon>
-      </button>
-    </p>
-  </div>
-  <ion-list inset>
-    <ion-item>
-      <ion-label class="item-name">Employeer</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.employeer"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Variant</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.variant"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">Description</ion-label>
-      <ion-textarea class="item-text" [(ngModel)]="productItem.description"></ion-textarea>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">SKU:</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.sku"></ion-input>
-    </ion-item>
-    <ion-item>
-      <button ion-button (click)="selectIcon()">Select Icon</button>
-      <span *ngIf="selectedIcon">
-        <sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
-    </ion-item>
-  </ion-list>
+  <form (ngSubmit)="saveProducts()" #productForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Name</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Brand</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.brand" name="brand"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Barcode</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.barcode" name="barcode"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Tags</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.tag" name="tag"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Count</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.count" name="count"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Display Order</ion-label>
+        <ion-input type="number" [(ngModel)]="productItem.order" name="order"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Categories</ion-label>
+        <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true" name="category">
+          <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>Brand</ion-label>
+        <ion-select [(ngModel)]="productItem.brandId" name="brandId">
+          <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <div class="insert-image">
+      <p>
+        <ion-label class="item-addImageLabel">Add Image</ion-label>
+        <button ion-button icon-only (click)="addImage()">
+          <ion-icon name="camera"></ion-icon>
+        </button>
+      </p>
+    </div>
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name">Employeer</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.employeer" name="employeer"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Variant</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.variant" name="variant"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Description</ion-label>
+        <ion-textarea class="item-text" [(ngModel)]="productItem.description" name="description"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <button ion-button (click)="selectIcon()">Select Icon</button>
+        <span *ngIf="selectedIcon">
+          <sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
+      </ion-item>
+    </ion-list>
+  </form>
 
 
   <!-- Default Price Book  -->

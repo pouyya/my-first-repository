@@ -23,6 +23,11 @@ interface ProductsList extends Product {
 export class Products {
   public items: ProductsList[] = [];
   public itemsBackup: ProductsList[] = [];
+  private readonly defaultLimit = 20;
+  private readonly defaultOffset = 0;
+  private limit: number;
+  private offset: number;
+  private total: number;
 
   constructor(
     private navCtrl: NavController,
@@ -33,27 +38,25 @@ export class Products {
     private platform: Platform,
     private loading: LoadingController,
     private zone: NgZone) {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.total = 0;
   }
 
   async ionViewDidLoad() {
     try {
       let loader = this.loading.create({ content: 'Loading Products...' });
       await loader.present();
-      let products: ProductsList[] = await this.loadProducts();
       await this.platform.ready();
-      this.zone.run(() => {
-        this.items = products;
-        this.itemsBackup = products;
-        console.warn(this.items)
-        loader.dismiss();
-      });
+      await this.fetchMore();
+      loader.dismiss();
     } catch (err) {
       throw new Error(err);
     }
   }
 
-  showDetail(product: ProductsList) {
-    this.navCtrl.push(ProductDetails, { item: <Product>_.omit(product, ['stockInHand']) });
+  showDetail(product?: ProductsList) {
+    this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null });
   }
 
   async delete(product: ProductsList, index) {
@@ -61,19 +64,17 @@ export class Products {
     this.items.splice(index, 1);
   }
 
-  public async loadProducts(): Promise<ProductsList[]> {
+  private async loadProducts(): Promise<ProductsList[]> {
 
-    let products: any[] = await this.productService.getAll();
-
-    if (!products) {
-      return [];
-    }
+    let result: { totalCount: any, docs: any[] } = await this.productService.searchProducts(this.limit, this.offset);
+    this.total = result.totalCount;
+    this.offset += this.limit;
+    let products: any[] = result.docs;
 
     let priceBook = await this.priceBookService.getDefault();
     let stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
 
     products.forEach((product) => {
-
       var stockValue = <any>_.find(stockValues, { productId: product._id });
       product.stockInHand = stockValue ? stockValue.value : 0;
 
@@ -84,11 +85,24 @@ export class Products {
     return <ProductsList[]>products;
   }
 
-  public loadMore() {
-
+  public fetchMore(infiniteScroll?: any) {
+    return new Promise((resolve, reject) => {
+      this.loadProducts().then(products => {
+        this.zone.run(() => {
+          if (this.items.length <= 0) {
+            this.items = products;
+          } else if (this.total > this.items.length) {
+            this.items = this.items.concat(products);
+          }
+          this.itemsBackup = products;
+          infiniteScroll && infiniteScroll.complete();
+          resolve();
+        });
+      })
+    });
   }
 
-  getItems(event) {
+  public async searchProducts(event) {
     this.items = this.itemsBackup;
     var val = event.target.value;
 

@@ -126,6 +126,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		let basketItem = new BasketItem();
 		basketItem._id = item._id;
 		item._rev && (basketItem._rev = item._rev);
+		basketItem.entityTypeName = item.entityTypeName;
 		basketItem.name = item.name;
 		basketItem.tax = {
 			...item.tax

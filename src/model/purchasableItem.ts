@@ -11,4 +11,5 @@ export abstract class PurchasableItem extends DBBasedEntity implements Orderable
     public order: number;
     public barcode?: string;
     public sku?: string; // stock keeping unit
+    public categoryIDs: string[]
 }

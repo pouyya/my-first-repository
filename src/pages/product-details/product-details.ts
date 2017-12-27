@@ -11,7 +11,7 @@ import { PriceBook } from './../../model/priceBook';
 import { UserService } from './../../services/userService';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
-import { Component, NgZone } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams, ViewController, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
@@ -85,22 +85,22 @@ export class ProductDetails {
 		private loading: LoadingController,
 		private zone: NgZone,
 		private viewCtrl: ViewController,
-		private modalCtrl: ModalController) {
+		private modalCtrl: ModalController,
+		private cdr: ChangeDetectorRef) {
 		this.icons = icons;
 	}
 
 	async ionViewDidLoad() {
-		await this.platform.ready();
-
 		let loader = this.loading.create({
 			content: 'Loading Product...',
 		});
-
+		this.cdr.detach();
 		await loader.present();
 
 		let editProduct = this.navParams.get('item');
 		var _user = await this.userService.getUser();
 		let stores = await this.storeService.getAll();
+
 		this.selectedStore = stores[0]._id;
 		if (editProduct) {
 			this.productItem = editProduct;
@@ -113,7 +113,8 @@ export class ProductDetails {
 			this.productItem.icon = _user.settings.defaultIcon;
 			this.selectedIcon = this.productItem.icon.name;
 		}
-		var promises: Array<Promise<any>> = [
+
+		let promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
 			new Promise(async (_resolve, _reject) => {
 				this.salesTaxService.get(_user.settings.defaultTax).then((salesTax: any) => {
@@ -131,8 +132,12 @@ export class ProductDetails {
 			}),
 			this.appService.loadSalesAndGroupTaxes(),
 			this.priceBookService.getDefault(),
-			this.stockHistoryService.getProductTotalStockValue(this.productItem._id),
-			new Promise((resolve, reject) => {
+			this.brandService.getAll(),
+		];
+
+		if (!this.isNew) {
+			promises.push(this.stockHistoryService.getProductTotalStockValue(this.productItem._id));
+			promises.push(new Promise((resolve, reject) => {
 				let stockHistories: { [id: string]: StockHistory[] } = {};
 				let promises: any[] = [];
 				stores.forEach(store => {
@@ -147,27 +152,34 @@ export class ProductDetails {
 				Promise.all(promises.map(promise => promise())).then(() => {
 					resolve(stockHistories);
 				}).catch(err => reject(err));
-			}),
-			this.brandService.getAll()
-		];
+			}))
+		}
 
-		var results = await Promise.all(promises);
+		let results = await Promise.all(promises);
 
 		this.zone.run(() => {
 			this.categories = results[0];
 			results[1] != null && this.salesTaxes.push(results[1]);
 			this.salesTaxes = this.salesTaxes.concat(results[2]);
 			this._defaultPriceBook = results[3];
-			this.storesStock = results[4] ? results[4].map(collectionItem => {
+			this.brands = results[4];
+
+
+			this.storesStock = results[5] ? results[5].map(collectionItem => {
 				return <InteractableStoreStock>{
 					storeId: collectionItem.storeId,
 					store: _.find(stores, { _id: collectionItem.storeId }),
 					value: collectionItem.value
 				}
-			}) : [];
-			this.stockHistory = _.cloneDeep(results[5]);
+			}) : stores.map(store => {
+				return <InteractableStoreStock>{
+					storeId: store._id,
+					store,
+					value: 0
+				}
+			});
 
-			this.brands = results[6];
+			results[6] && (this.stockHistory = _.cloneDeep(results[6]));
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
@@ -193,6 +205,7 @@ export class ProductDetails {
 					item: productPriceBook
 				};
 			}
+			this.cdr.reattach();
 			loader.dismiss();
 
 		});

@@ -14,7 +14,12 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-searchbar
+    debounce="500"
+    animated="true"
+    placeholder="Search by name or SKU/Barcode"
+    (ionInput)="searchProducts($event)">
+  </ion-searchbar>
   <ion-list>
     <ion-item>
       <ion-grid>
@@ -51,4 +56,7 @@
       </ion-grid>
     </ion-item>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
  </ion-content>
