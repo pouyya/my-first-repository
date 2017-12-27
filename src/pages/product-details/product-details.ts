@@ -2,6 +2,7 @@ import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { StockHistory } from './../../model/stockHistory';
 import { StoreService } from './../../services/storeService';
+import { BrandService } from './../../services/brandService';
 import _ from 'lodash';
 import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
@@ -47,6 +48,7 @@ export class ProductDetails {
 	public stockHistory: { [id: string]: StockHistory[] } = {};
 	public selectedStore: string;
 	public categories = [];
+	public brands: any = [];
 	public isNew = true;
 	public action = 'Add';
 	public selectedIcon: string = "";
@@ -72,6 +74,7 @@ export class ProductDetails {
 		private categoryService: CategoryService,
 		private storeService: StoreService,
 		private stockHistoryService: StockHistoryService,
+		private brandService: BrandService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
@@ -145,7 +148,8 @@ export class ProductDetails {
 				Promise.all(promises.map(promise => promise())).then(() => {
 					resolve(stockHistories);
 				}).catch(err => reject(err));
-			})
+			}),
+			this.brandService.getAll()
 		];
 
 		var results = await Promise.all(promises);
@@ -163,6 +167,8 @@ export class ProductDetails {
 				}
 			});
 			this.stockHistory = _.cloneDeep(results[5]);
+			
+			this.brands = results[6];
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 

@@ -40,7 +40,7 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
     return this.dbService.getAll();
   }
 
-  findBy(selector: any) {
+  findBy(selector: any): Promise<Array<T>> {
     return this.dbService.findBy(selector);
   }
 

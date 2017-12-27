@@ -47,7 +47,7 @@ export class DB {
                 });
 
                 this._db.createIndex({
-                    index: { fields: ['entityTypeName', 'entityTypeNames', 'categoryIDs'] }
+                    index: { fields: ['entityTypeName', 'entityTypeNames'] }
                 });
             }
         });

@@ -37,4 +37,13 @@ export class ProductService extends BaseEntityService<Product> {
 			return Promise.reject(err);
 		}
 	}
+	
+	public async getAllByBrand(brandId: string) {
+		return <Product[]> await this.findBy({
+			selector: {
+				brandId
+			}
+		});
+	}
+
 }

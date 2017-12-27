@@ -71,6 +71,8 @@ import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
+import { Brands } from '../pages/brands/brands';
+import { BrandDetails } from './../pages/brand-details/brand-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -130,6 +132,7 @@ import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
 import { StockHistoryService } from './../services/stockHistoryService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
+import { BrandService } from '../services/brandService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -189,7 +192,9 @@ const cloudSettings: CloudSettings = {
     CreateCustomerModal,
     AboutPage,
     StockIncreaseModal,
-    StockDecreaseModal
+    StockDecreaseModal,
+    Brands,
+    BrandDetails
   ],
   imports: [
     FormsModule,
@@ -281,7 +286,9 @@ const cloudSettings: CloudSettings = {
     CreateCustomerModal,
     AboutPage,
     StockIncreaseModal,
-    StockDecreaseModal
+    StockDecreaseModal,
+    Brands,
+    BrandDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -323,6 +330,7 @@ const cloudSettings: CloudSettings = {
     DaysOfWeekEvaluationProvider,
     AppService,
     PrintService,
+    BrandService,
     StoreService,
     SalesServices,
     ClickStopPropagation,

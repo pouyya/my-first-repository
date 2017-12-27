@@ -26,6 +26,7 @@ export class SimplePOSApp implements OnInit {
   public moduleName: string;
   public currentStore: Store = null;
   public currentPos: POS = null;
+  private alive: boolean = true;
 
   constructor(
     public platform: Platform,
@@ -43,19 +44,27 @@ export class SimplePOSApp implements OnInit {
     private toastController: ToastController,
     private platformService: PlatformService
   ) {
-    this._sharedService.payload$.subscribe((data) => {
-      if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
-        this.currentStore = data.currentStore;
-        this.currentPos = data.currentPos;
-      }
+    this._sharedService
+      .getSubscribe('storeOrPosChanged')
+      .takeWhile(() => this.alive)
+      .subscribe((data) => {
+        if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
+          this.currentStore = data.currentStore;
+          this.currentPos = data.currentPos;
+        }
 
-      if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
-        data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
-      }
-    });
+        if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
+          data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
+        }
+      });
+      
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
+  }
+
+  ngOnDestroy() {
+    this.alive = false;
   }
 
   async ngOnInit() {

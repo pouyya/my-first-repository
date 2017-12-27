@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Brand</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="brandForm.ngSubmit.emit()" [disabled]="!brandForm.form.valid">
+        Save
+      </button>
+      <button ion-button icon-only *ngIf="!isNew" (click)="delete()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #brandForm="ngForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name">Name</ion-label>
+        <ion-input type="text" [(ngModel)]="brand.name" name="name" required></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
