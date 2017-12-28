@@ -43,7 +43,7 @@ export class Products {
     this.total = 0;
   }
 
-  async ionViewDidLoad() {
+  async ionViewDidEnter() {
     try {
       let loader = this.loading.create({ content: 'Loading Products...' });
       await loader.present();

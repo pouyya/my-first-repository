@@ -5,21 +5,33 @@
       <button type="submit" ion-button icon-only (click)="productForm.ngSubmit.emit()" [disabled]="!productForm.form.valid">
         Save
       </button>
+      <button ion-button icon-only (click)="delete()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
     </ion-buttons>
     <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
+  <ion-fab top right edge *ngIf="productItem.stockControl">
+    <button ion-fab type="button">
+      <ion-icon name="albums"></ion-icon>
+    </button>
+    <ion-fab-list>
+      <button ion-fab type="button" (click)="stockUpdate().increase()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <button ion-fab type="button" (click)="stockUpdate().decrease()">
+        <ion-icon name="remove"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
   <form (ngSubmit)="saveProducts()" #productForm="ngForm">
     <ion-list>
       <ion-item>
         <ion-label class="item-name">Name</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Brand</ion-label>
-        <ion-input type="text" [(ngModel)]="productItem.brand" name="brand"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label class="item-name">Barcode</ion-label>
@@ -28,10 +40,6 @@
       <ion-item>
         <ion-label class="item-name">Tags</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.tag" name="tag"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Count</ion-label>
-        <ion-input type="text" [(ngModel)]="productItem.count" name="count"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label class="item-name">Display Order</ion-label>
@@ -53,7 +61,7 @@
     <div class="insert-image">
       <p>
         <ion-label class="item-addImageLabel">Add Image</ion-label>
-        <button ion-button icon-only (click)="addImage()">
+        <button ion-button icon-only>
           <ion-icon name="camera"></ion-icon>
         </button>
       </p>
@@ -72,7 +80,7 @@
         <ion-textarea class="item-text" [(ngModel)]="productItem.description" name="description"></ion-textarea>
       </ion-item>
       <ion-item>
-        <button ion-button (click)="selectIcon()">Select Icon</button>
+        <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
         <span *ngIf="selectedIcon">
           <sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
       </ion-item>
@@ -192,7 +200,7 @@
       <ion-col col-md-2><strong>Stock at hand</strong></ion-col>
     </ion-row>
     <ion-row *ngFor="let history of stockHistory[selectedStore]">
-      <ion-col col-md-2>{{ history.createdAt | localDate:'d MMM  y h:mm:ss a' }}</ion-col>
+      <ion-col col-md-2>{{ history.createdAt | localDate:'d MMM YYYY h:mm:ss a' }}</ion-col>
       <ion-col col-md-2>{{ history.createdBy }}</ion-col>
       <ion-col col-md-2>{{ history.reason }}</ion-col>
       <ion-col col-md-2>{{ history.value > 0 ? '+'+history.value : history.value }}</ion-col>
@@ -200,17 +208,4 @@
       <ion-col col-md-2></ion-col>
     </ion-row>
   </ion-grid>
-  <ion-fab right bottom *ngIf="productItem.stockControl">
-    <button ion-fab>
-      <ion-icon name="albums"></ion-icon>
-    </button>
-    <ion-fab-list side="left">
-      <button ion-fab type="button" (click)="stockIncrease()">
-        <ion-icon name="add"></ion-icon>
-      </button>
-      <button ion-fab type="button" (click)="stockDecrease()">
-        <ion-icon name="remove"></ion-icon>
-      </button>
-    </ion-fab-list>
-  </ion-fab>
 </ion-content>

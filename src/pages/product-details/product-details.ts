@@ -68,6 +68,7 @@ export class ProductDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
+	private stockEntities: StockHistory[] = [];
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -136,7 +137,22 @@ export class ProductDetails {
 		];
 
 		if (!this.isNew) {
-			promises.push(this.stockHistoryService.getProductTotalStockValue(this.productItem._id));
+			promises.push(new Promise((resolve, reject) => {
+				this.stockHistoryService.getProductTotalStockValue(this.productItem._id).then((collection: any[]) => {
+					let storesStock: InteractableStoreStock[] = stores.map(store => {
+						let obj: InteractableStoreStock = {
+							storeId: store._id,
+							store,
+							value: 0
+						};
+						let item: any = _.find(collection, { storeId: store._id });
+						item && (obj.value = item.value);
+						return obj;
+					});
+
+					resolve(storesStock);
+				});
+			}));
 			promises.push(new Promise((resolve, reject) => {
 				let stockHistories: { [id: string]: StockHistory[] } = {};
 				let promises: any[] = [];
@@ -153,33 +169,44 @@ export class ProductDetails {
 					resolve(stockHistories);
 				}).catch(err => reject(err));
 			}))
+		} else {
+			promises.push(new Promise((resolve, reject) => {
+				let storesStock: InteractableStoreStock[] = stores.map(store => {
+					return <InteractableStoreStock>{
+						storeId: store._id,
+						store,
+						value: 0
+					}
+				});
+				resolve(storesStock);
+			}));
+			promises.push(new Promise((resolve, reject) => {
+				let stockHistories: { [id: string]: StockHistory[] } = {};
+				stores.forEach(store => {
+					stockHistories[store._id] = [];
+				});
+				resolve(stockHistories);
+			}));
 		}
 
-		let results = await Promise.all(promises);
+		let [
+			categories,
+			defaultTax,
+			salesTaxes,
+			defaultPB,
+			brands,
+			storesStock,
+			stockHistory
+		] = await Promise.all(promises);
 
 		this.zone.run(() => {
-			this.categories = results[0];
-			results[1] != null && this.salesTaxes.push(results[1]);
-			this.salesTaxes = this.salesTaxes.concat(results[2]);
-			this._defaultPriceBook = results[3];
-			this.brands = results[4];
-
-
-			this.storesStock = results[5] ? results[5].map(collectionItem => {
-				return <InteractableStoreStock>{
-					storeId: collectionItem.storeId,
-					store: _.find(stores, { _id: collectionItem.storeId }),
-					value: collectionItem.value
-				}
-			}) : stores.map(store => {
-				return <InteractableStoreStock>{
-					storeId: store._id,
-					store,
-					value: 0
-				}
-			});
-
-			results[6] && (this.stockHistory = _.cloneDeep(results[6]));
+			this.categories = categories;
+			defaultTax != null && this.salesTaxes.push(defaultTax);
+			this.salesTaxes = this.salesTaxes.concat(salesTaxes);
+			this._defaultPriceBook = defaultPB;
+			this.brands = brands;
+			this.storesStock = storesStock;
+			this.stockHistory = _.cloneDeep(stockHistory);
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
@@ -259,50 +286,39 @@ export class ProductDetails {
 		});
 	}
 
-	async stockIncrease() {
-		let modal = this.modalCtrl.create(StockIncreaseModal, {
+	stockUpdate(): { increase: Function, decrease: Function } {
+		let params = {
 			productId: this.productItem._id,
 			storesStock: this.storesStock
-		});
-		modal.onDidDismiss(async (stock: StockHistory) => {
+		};
+		let onDismiss = (stock: StockHistory) => {
 			if (stock) {
 				try {
-					let model: any = await this.stockHistoryService.add(stock);
-					model = await this.stockHistoryService.get(model._id);
+					this.stockEntities.push(stock);
 					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
 					this.storesStock[index].value += stock.value;
-					this.stockHistory[stock.storeId].push(model);
+					this.stockHistory[stock.storeId].push(stock);
 				} catch (err) {
-
+					throw new Error(err);
 				}
 			}
-		});
-		modal.present();
-	}
+		}
 
-	async stockDecrease() {
-		let modal = this.modalCtrl.create(StockDecreaseModal, {
-			productId: this.productItem._id,
-			storesStock: this.storesStock
-		});
-		modal.onDidDismiss(async (stock: StockHistory) => {
-			if (stock) {
-				try {
-					let model: any = await this.stockHistoryService.add(stock);
-					model = await this.stockHistoryService.get(model._id);
-					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
-					this.storesStock[index].value += stock.value;
-					this.stockHistory[stock.storeId].push(model);
-				} catch (err) {
-
-				}
+		return {
+			increase: () => {
+				let modal = this.modalCtrl.create(StockIncreaseModal, params);
+				modal.onDidDismiss(onDismiss);
+				modal.present();
+			},
+			decrease: () => {
+				let modal = this.modalCtrl.create(StockDecreaseModal, params);
+				modal.onDidDismiss(onDismiss);
+				modal.present();
 			}
-		});
-		modal.present();
+		};
 	}
 
-	async saveProducts() {
-
+	public async saveProducts() {
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
 			this._defaultPriceBook.purchasableItems.push({
@@ -314,7 +330,6 @@ export class ProductDetails {
 				salesTaxId: this.defaultPriceBook.tax.hasOwnProperty('isDefault') && this.defaultPriceBook.tax.isDefault ? null : this.defaultPriceBook.tax._id,
 				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
 			});
-			await this.priceBookService.update(this._defaultPriceBook);
 		} else {
 			await this.productService.update(this.productItem);
 			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
@@ -333,7 +348,36 @@ export class ProductDetails {
 
 			await this.priceBookService.update(this._defaultPriceBook);
 		}
+
+		// finalize stock updates
+		await this.priceBookService.update(this._defaultPriceBook);
+		if (this.stockEntities.length > 0) {
+			let stockPromises: Promise<any>[] = this.stockEntities.map(stockHistory => {
+				return this.stockHistoryService.add(stockHistory);
+			});
+
+			await Promise.all(stockPromises);
+		}
 		this.navCtrl.pop();
+	}
+
+	public async delete() {
+		// delete associations
+		let deleteAssocs: any[] = [
+			async () => {
+				// delete pricebook entries
+				let pbIndex = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
+				if (pbIndex > -1) {
+					this._defaultPriceBook.purchasableItems.splice(pbIndex, 1);
+					return await this.priceBookService.update(this._defaultPriceBook);
+				}
+			}
+		];
+
+		await Promise.all(deleteAssocs);
+		await this.productService.delete(this.productItem);
+		this.navCtrl.pop();
+		return;
 	}
 
 }
