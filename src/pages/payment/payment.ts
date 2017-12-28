@@ -4,12 +4,14 @@ import { FountainService } from './../../services/fountainService';
 import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
-import { NavController, NavParams, ModalController } from "ionic-angular";
+import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
 import { Store } from './../../model/store';
 import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
 import { PrintService } from '../../services/printService';
+import { StockHistoryService } from '../../services/stockHistoryService';
+import { StockHistory } from '../../model/stockHistory';
 
 @Component({
   selector: 'payments-page',
@@ -25,6 +27,7 @@ export class PaymentsPage {
   public change: number;
   public doRefund: boolean;
   public store: Store;
+  public stockErrors: any[] = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
@@ -34,10 +37,13 @@ export class PaymentsPage {
   constructor(
     private salesService: SalesServices,
     private fountainService: FountainService,
-    public navCtrl: NavController,
+    private stockHistoryService: StockHistoryService,
+    private navCtrl: NavController,
+    private alertCtrl: AlertController,
     private navParams: NavParams,
-    public modalCtrl: ModalController,
-    public helper: HelperService,
+    private modalCtrl: ModalController,
+    private helper: HelperService,
+    private loading: LoadingController,
     private printService: PrintService) {
 
     let operation = navParams.get('operation');
@@ -55,9 +61,24 @@ export class PaymentsPage {
     }
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     if (!this.invoice) {
       this.navCtrl.pop();
+    } else {
+      // check stock
+      await this.checkForStockInHand();
+      if (this.stockErrors.length > 0) {
+        // display error message
+        let alert = this.alertCtrl.create(
+          {
+            title: 'Out of Stock',
+            subTitle: 'Please make changes to invoice and continue',
+            message: `${this.stockErrors.join('\n')}`,
+            buttons: ['Ok']
+          }
+        );
+        alert.present();
+      }
     }
   }
 
@@ -79,19 +100,25 @@ export class PaymentsPage {
     }
   }
 
-  public payWith(type: string) {
-    let modal = this.modalCtrl.create(this.payTypes[type].component, {
-      invoice: this.invoice,
-      amount: Number(this.amount),
-      refund: this.doRefund
-    });
-    modal.onDidDismiss(data => {
-      if (data && data.status) {
-        this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data);
-        this.salesService.update(this.invoice);
-      }
-    });
-    modal.present();
+  public payWith() {
+    let openModal = (component: Component, type: string) => {
+      let modal = this.modalCtrl.create(component, {
+        invoice: this.invoice,
+        amount: Number(this.amount),
+        refund: this.doRefund
+      });
+      modal.onDidDismiss(data => {
+        if (data && data.status) {
+          this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data);
+          this.salesService.update(this.invoice);
+        }
+      });
+      modal.present();
+    }
+    return {
+      cash: () => openModal(this.payTypes.cash.component, 'cash'),
+      creditCard: () => openModal(this.payTypes.credit_card.component, 'credit_card')
+    }
   }
 
   private addPayment(type: string, payment: number) {
@@ -106,9 +133,12 @@ export class PaymentsPage {
     this.calculateBalance();
   }
 
-  private completeRefund(payment: number, type: string) {
+  private async completeRefund(payment: number, type: string) {
     var isCompleted: boolean = Math.abs(this.amount) === Math.abs(payment);
     if (isCompleted) {
+      let loader = this.loading.create({ content: 'Processing Refund' });
+      await loader.present();
+      await this.updateStock();
       this.invoice.payments.push({
         type: type,
         amount: Number(payment) * -1
@@ -119,16 +149,21 @@ export class PaymentsPage {
       this.invoice.completedAt = moment().utc().format();
       this.balance = 0;
       !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
+      loader.dismiss();
       this.printInvoice();
     }
   }
 
-  private completeSale(payments: number) {
+  private async completeSale(payments: number) {
+    let loader = this.loading.create({ content: 'Processing Sale' });
+    await loader.present();
+    await this.updateStock();
     this.invoice.completed = true;
     this.invoice.completedAt = moment().utc().format();
     this.invoice.state = 'completed';
     !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
+    loader.dismiss();
     this.printInvoice();
   }
 
@@ -147,5 +182,29 @@ export class PaymentsPage {
     this.navPopCallback(state).then(() => {
       this.navCtrl.pop();
     });
+  }
+
+  private async checkForStockInHand() {
+    this.stockErrors = [];
+    let productsInStock: { [id: string]: number } = await this.stockHistoryService
+      .getProductsTotalStockValueByStore(this.invoice.items
+        .filter(item => item.entityTypeName == 'Product').map(item => item._id), this.store._id);
+    this.invoice.items.forEach(item => {
+      if (productsInStock.hasOwnProperty(item._id) && productsInStock[item._id] < item.quantity) {
+        // push error
+        this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item._id]}`);
+      }
+    });
+    return;
+  }
+
+  private async updateStock() {
+    let stock: StockHistory;
+    let stockUpdates: Promise<any>[] = this.invoice.items.map(item => {
+      stock = StockHistoryService.createStockForSale(item._id, this.store._id, item.quantity);
+      return this.stockHistoryService.add(stock);
+    });
+    await Promise.all(stockUpdates);
+    return;
   }
 }

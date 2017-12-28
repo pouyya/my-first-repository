@@ -49,6 +49,11 @@ export class Products {
       await loader.present();
       await this.platform.ready();
       await this.fetchMore();
+      let values = await this.stockHistoryService.getProductsTotalStockValueByStore(
+        [ "2017-07-10T02:31:43.429Z", "2017-07-10T02:32:43.715Z" ],
+        "2017-08-17T07:32:00.173Z"
+      );
+      console.warn(values);
       loader.dismiss();
     } catch (err) {
       throw new Error(err);

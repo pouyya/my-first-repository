@@ -113,10 +113,10 @@
             </ion-col>
 
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith('cash')" [disabled]="invoice.completed && !doRefund">Cash</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith().cash()" [disabled]="(invoice.completed && !doRefund) || stockErrors.length > 0">Cash</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith('credit_card')" [disabled]="invoice.completed && !doRefund">Credit Card</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith().creditCard()" [disabled]="(invoice.completed && !doRefund) || stockErrors.length > 0">Credit Card</button>
             </ion-col>
             <ion-col col-md-4>
               <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block [disabled]="invoice.completed">Gift Card</button>
@@ -139,7 +139,7 @@
           </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="invoice.completed">
+        <ion-grid *ngIf="invoice.completed && stockErrors.length == 0">
           <ion-row>
             <ion-col col-md-12>
 

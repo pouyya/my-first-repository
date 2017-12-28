@@ -31,7 +31,6 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 import { CustomerService } from '../../services/customerService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { BasketItem } from '../../model/bucketItem';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -41,14 +40,6 @@ interface InteractableItem extends PurchasableItem {
 
 interface PurchasableItemTiles {
   [id: string]: InteractableItem[]
-}
-
-interface StockChangeLog {
-  productId: string;
-  storeId: string;
-  reason: Reason,
-  value: number,
-  supplyPrice: number
 }
 
 @PageModule(() => SalesModule)
@@ -81,7 +72,6 @@ export class Sales implements OnDestroy, OnInit {
   private priceBooks: PriceBook[];
   private salesTaxes: SalesTax[];
   private categoryIdKeys: string[];
-  private productsInStock: { [id: string]: number } = {};
   private defaultTax: any;
   private alive: boolean = true;
 
@@ -105,7 +95,6 @@ export class Sales implements OnDestroy, OnInit {
   ) {
     this.invoiceParam = this.navParams.get('invoice');
     this.doRefund = this.navParams.get('doRefund');
-
     this.cdr.detach();
   }
 
@@ -189,45 +178,13 @@ export class Sales implements OnDestroy, OnInit {
 
     let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
     if (price) {
-      let addItemToBasket = async () => {
-        item.priceBook = price;
-        item.tax = _.pick(
-          item.priceBook.salesTaxId != null ?
-            _.find(this.salesTaxes, { _id: item.priceBook.salesTaxId }) : this.defaultTax,
-          ['rate', 'name']);
-        this.selectedEmployee != null && (item.employeeId = this.selectedEmployee._id);
-        this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item));
-        this.productsInStock[item._id] -= 1;
-        return;
-      }
-      if (this.productsInStock[item._id] > 0) {
-        return addItemToBasket();
-      } else {
-        let confirm = this.alertCtrl.create({
-          title: 'Not in Stock!!',
-          message: 'Do you want to add product anyway ? (Pre-order)',
-          buttons: [
-            {
-              text: 'Yes',
-              handler: () => {
-                let stockHistory: StockHistory = new StockHistory();
-                stockHistory.value = -1;
-                stockHistory.reason = Reason.Purchase;
-                stockHistory.productId = item._id;
-                stockHistory.storeId = this.store._id;
-                stockHistory.supplyPrice = price.retailPrice; /** Retail Price for now, Supply price will be implemented later */
-                this.stockHistoryService.add(stockHistory).then(() => {
-                  addItemToBasket();
-                }).catch(err => {
-
-                })
-              }
-            },
-            'No'
-          ]
-        });
-        confirm.present();
-      }
+      item.priceBook = price;
+      item.tax = _.pick(
+        item.priceBook.salesTaxId != null ?
+          _.find(this.salesTaxes, { _id: item.priceBook.salesTaxId }) : this.defaultTax,
+        ['rate', 'name']);
+      this.selectedEmployee != null && (item.employeeId = this.selectedEmployee._id);
+      this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item));
     } else {
       let toast = this.toastCtrl.create({
         message: `${item.name} does not have any price`,
@@ -241,39 +198,40 @@ export class Sales implements OnDestroy, OnInit {
   // Event
   public paymentClicked($event) {
     let pushCallback = params => {
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         if (params) {
-          let updateStockPromises: any[] = [];
-          this.invoice.items.forEach(item => {
-            if (item.hasOwnProperty('entityTypeName') && item.entityTypeName == 'Product') {
-              updateStockPromises.push(async () => {
-                await this.stockHistoryService.add(this.createStockHistory(item, this.store._id));
-              });
-            }
-          });
-          Promise.all(updateStockPromises.map(p => p())).then(() => {
-            this.stockHistoryService.getAllProductsTotalStockValue().then((stockValues: any[]) => {
-              stockValues.forEach(stock => {
-                this.productsInStock[stock.productId] = stock.value
+          /*
+            let updateStockPromises: any[] = [];
+            this.invoice.items.forEach(item => {
+              if (item.hasOwnProperty('entityTypeName') && item.entityTypeName == 'Product') {
+                updateStockPromises.push(async () => {
+                  await this.stockHistoryService.add(this.createStockHistory(item, this.store._id));
+                });
+              }
+            });
+            Promise.all(updateStockPromises.map(p => p())).then(() => {
+              this.stockHistoryService.getAllProductsTotalStockValue().then((stockValues: any[]) => {
+                stockValues.forEach(stock => {
+                  this.productsInStock[stock.productId] = stock.value
+                });
               });
             });
+           */
+
+          let response = await this.salesService.instantiateInvoice();
+          this.invoiceParam = null;
+          this.invoice = response.invoice;
+          this.employees = this.employees.map(employee => {
+            employee.selected = false;
+            return employee;
           });
-          this.salesService.instantiateInvoice().then(response => {
-            this.invoiceParam = null;
-            this.invoice = response.invoice;
-            this.employees = this.employees.map(employee => {
-              employee.selected = false;
-              return employee;
-            });
-            this.selectedEmployee = null;
-            this.customer = null;
-            resolve();
-          }).catch(err => {
-            throw new Error(err);
-          })
+          this.selectedEmployee = null;
+          this.customer = null;
+          resolve();
         } else {
           resolve();
         }
+        return;
       });
     }
 
@@ -337,8 +295,7 @@ export class Sales implements OnDestroy, OnInit {
             ...item,
             tax: null,
             priceBook: null,
-            employeeId: null,
-            stockInHand: 0
+            employeeId: null
           };
         });
         if (items.length > 0) {
@@ -346,12 +303,6 @@ export class Sales implements OnDestroy, OnInit {
         } else {
           catArray[index] = null;
         }
-      });
-
-      /** fetch stock in hand */
-      let stockValues: any[] = await this.stockHistoryService.getAllProductsTotalStockValue();
-      stockValues.forEach(stock => {
-        this.productsInStock[stock.productId] = stock.value
       });
 
       this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
@@ -416,16 +367,6 @@ export class Sales implements OnDestroy, OnInit {
   public barcodeReader(code: string) {
     let item: InteractableItem = this.findPurchasableItemByBarcode(code);
     item && this.onSelect(item); // execute in parallel
-  }
-
-  private createStockHistory(product: BasketItem, storeId: string): StockHistory {
-    let stock = new StockHistory();
-    stock.productId = product._id;
-    stock.storeId = storeId;
-    stock.createdAt = moment().utc().format();
-    stock.value = product.quantity * -1;
-    stock.reason = stock.value > 0 ? Reason.Return : Reason.Purchase;
-    return stock;
   }
 
   public async onSubmit(): Promise<any> {

@@ -1,10 +1,12 @@
-import { StockHistory } from './../model/stockHistory';
+import _ from 'lodash';
+import * as moment from 'moment';
+import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from './baseEntityService';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
-  
+
   readonly view_stock_per_store = "inventory/stock_per_store";
 
   constructor() {
@@ -57,5 +59,35 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
         storeId: row.key[1]
       };
     }) : null;
+  }
+
+  public async getProductsTotalStockValueByStore(productIds: string[], storeId: string): Promise<{ [id: string]: number }> {
+    if (productIds.length > 0) {
+      let stockPromises: Promise<any>[] = productIds.map(id => this.getByStoreAndProductId(storeId, id));
+      let productStocks: any[] = await Promise.all(stockPromises);
+      return <{ [id: string]: number }> _.zipObject(productIds, productStocks.map(stocks => {
+        let value: number = stocks.length > 0 ? stocks.map(stock => stock.value)
+          .reduce((a, b) => Number(a) + Number(b)) : 0;
+        return value;
+      }));
+    }
+
+    return null;
+  }
+
+  /**
+   * @factory
+   * @param productId 
+   * @param storeId 
+   * @param value 
+   */
+  public static createStockForSale(productId: string, storeId: string, value: number): StockHistory {
+    let stock = new StockHistory();
+    stock.createdAt = moment().utc().format();
+    stock.productId = productId;
+    stock.storeId = storeId;
+    stock.value = value * -1;
+    stock.reason = stock.value <= 0 ? Reason.Purchase : Reason.Return;
+    return stock;
   }
 }
