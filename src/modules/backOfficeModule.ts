@@ -7,7 +7,6 @@ import { Settings } from './../pages/settings/settings';
 import { Stores } from './../pages/stores/stores';
 import { Employees } from './../pages/employees/employees';
 import { Services } from './../pages/service/service';
-import { Products } from './../pages/products/products';
 import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
@@ -24,8 +23,7 @@ export class BackOfficeModule implements ModuleBase {
   public pages = [
     { title: 'Home', icon: 'home', component: HomePage },
     { title: 'POS', icon: 'cash', component: Sales },
-    { title: 'Categories', icon: 'cash', component: Category },
-    { title: 'Products', icon: 'pricetags', component: Products },
+    { title: 'Inventory', icon: 'cube', component: Category },
     { title: 'Service', icon: 'bowtie', component: Services },
     { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Customers', icon: 'contacts', component: Customers },

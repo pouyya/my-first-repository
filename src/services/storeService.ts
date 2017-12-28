@@ -3,6 +3,8 @@ import { UserService } from './userService';
 import { Injectable } from '@angular/core';
 import { Store } from '../model/store'
 import { BaseEntityService } from './baseEntityService'
+import { PosService } from './posService';
+import * as _ from 'lodash';
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
@@ -19,7 +21,8 @@ export class StoreService extends BaseEntityService<Store> {
 
   constructor(
     private userService: UserService,
-    private appService: AppService) {
+    private appService: AppService,
+    private posService: PosService) {
     super(Store);
   }
 
@@ -61,5 +64,23 @@ export class StoreService extends BaseEntityService<Store> {
         return Promise.reject(err);
       }
     }
+  }
+
+  public async getCurrentStartPeriod(storeId: string): Promise<Date> {
+    var poses = await this.posService.getAllPosByStoreId(storeId);
+
+    if (poses && poses.length > 0) {
+
+      var openedPoses = _.orderBy(_.reject(poses, ['openTime', null]), ['openTime']);
+
+      if (openedPoses && openedPoses.length > 0) {
+        
+        var earliestOpenedPOS = openedPoses[0];
+
+        return new Date(earliestOpenedPOS.openTime);
+      }
+    }
+
+    return null;
   }
 }

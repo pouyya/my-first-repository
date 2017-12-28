@@ -70,6 +70,8 @@ import { CreateCustomerModal } from './../components/basket/modals/create-custom
 import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
+import { Brands } from '../pages/brands/brands';
+import { BrandDetails } from './../pages/brand-details/brand-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -82,6 +84,7 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
+import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 
 // pipes
@@ -126,6 +129,7 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
+import { BrandService } from '../services/brandService';
 
 const cloudSettings: CloudSettings = {
   'core': {
@@ -183,7 +187,9 @@ const cloudSettings: CloudSettings = {
     Customers,
     CustomerDetails,
     CreateCustomerModal,
-    AboutPage
+    AboutPage,
+    Brands,
+    BrandDetails
   ],
   imports: [
     FormsModule,
@@ -219,7 +225,8 @@ const cloudSettings: CloudSettings = {
     SPIconModule,
     ItemPriceBookModule,
     TileScrollableModule,
-    GroupEmployeeTimeLogModule
+    GroupEmployeeTimeLogModule,
+    BarcodeScannerModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -272,7 +279,9 @@ const cloudSettings: CloudSettings = {
     Customers,
     CustomerDetails,
     CreateCustomerModal,
-    AboutPage
+    AboutPage,
+    Brands,
+    BrandDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -313,6 +322,7 @@ const cloudSettings: CloudSettings = {
     DaysOfWeekEvaluationProvider,
     AppService,
     PrintService,
+    BrandService,
     StoreService,
     SalesServices,
     ClickStopPropagation,

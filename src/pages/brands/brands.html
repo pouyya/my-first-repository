@@ -1,12 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Categories</ion-title>
+    <ion-title>Brands</ion-title>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
 
     <ion-buttons end>
-      <button ion-button icon-only (click)="showDetail()">
+      <button ion-button icon-only (click)="view()">
         <ion-icon name="add"></ion-icon>
       </button>
     </ion-buttons>
@@ -14,21 +14,21 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-searchbar (ionInput)="search($event)"></ion-searchbar>
   <ion-list inset>
     <ion-item>
-      <h1 item-start>Category Name</h1>
+      <h1 item-start>Brand Name</h1>
       <h1 item-end>Products Associated</h1>
     </ion-item>
   </ion-list>
-  <ion-list inset *ngFor="let item of items ; let idx = index">
+  <ion-list inset *ngFor="let brand of brands; let idx = index">
     <ion-item-sliding class="sliding" cancelable=true>
-      <ion-item (click)="showDetail(item)">
-        <h2 class="item-title" item-start>{{item.name}}</h2>
-        <h2 item-end>{{item.associated}}</h2>
+      <ion-item (click)="view(brand)">
+        <h2 class="item-title" item-start>{{brand.name}}</h2>
+        <h2 item-end>{{brand.associatedProducts}}</h2>
       </ion-item>
       <ion-item-options>
-        <button ion-button color='danger' (click)="delete(item, idx)" icon=left>
+        <button ion-button color='danger' (click)="delete(brand, idx)" icon=left>
           <ion-icon name="trash"></ion-icon>
           Delete
         </button>

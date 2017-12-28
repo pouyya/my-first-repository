@@ -2,7 +2,7 @@ import { Category } from './../../model/category';
 import { UserService } from './../../services/userService';
 import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, AlertController, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ViewController, AlertController, ModalController, ToastController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from './../../metadata/itemIcons';
 
@@ -20,9 +20,10 @@ export class CategoryDetails {
   constructor(public navCtrl: NavController,
     private categoryService: CategoryService,
     private userService: UserService,
-    public navParams: NavParams,
+    private navParams: NavParams,
     private viewCtrl: ViewController,
     private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
     private modalCtrl: ModalController) {
     this.icons = icons;
   }
@@ -43,17 +44,18 @@ export class CategoryDetails {
     }
   }
 
-  public saveCategories() {
-    if (this.isNew) {
-      this.categoryService.add(this.categoryItem)
-        .catch(console.error.bind(console));
-    } else {
-      this.categoryService.update(this.categoryItem)
-        .catch(console.error.bind(console));
+  public async onSubmit() {
+    try {
+      await this.categoryService[this.isNew ? 'add':'update'](this.categoryItem);
+      let toast = this.toastCtrl.create({
+        message: `Category '${this.categoryItem.name}' has been created successfully!`,
+        duration: 3000
+      });
+      toast.present();
+      this.navCtrl.pop();
+    } catch (err) {
+      throw new Error(err);
     }
-
-    this.navCtrl.pop();
-
   }
 
   public selectIcon() {
@@ -65,9 +67,5 @@ export class CategoryDetails {
       }
     });
     modal.present();    
-  }
-
-  addImage() {
-
   }
 }

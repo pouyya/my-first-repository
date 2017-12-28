@@ -5,7 +5,7 @@ export abstract class DBBasedEntity
 {
     constructor()
     {
-        this._id = moment().utc().format()
+        this._id = moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSS");
         this._rev = "";
         this.entityTypeName = TypeHelper.getTypeName(this);
         this.entityTypeNames = TypeHelper.getParentTypeNames(this);
