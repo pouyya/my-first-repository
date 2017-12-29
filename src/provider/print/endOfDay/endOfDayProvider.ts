@@ -172,7 +172,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
     setFooter(): EndOfDayProvider {
 
         var footerHtml = `<center>Current date/time: ${this.endOfDayProviderContext.currentDateTime}
-By: ${this.endOfDayProviderContext.employeeFullName}            
+By: ${this.endOfDayProviderContext.employeeFullName}
 <barcode>${this.endOfDayProviderContext.closureNumber}</barcode>
 </center>
             <br>
