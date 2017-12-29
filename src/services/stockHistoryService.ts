@@ -72,7 +72,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
       }));
     }
 
-    return null;
+    return {};
   }
 
   /**

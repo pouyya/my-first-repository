@@ -186,15 +186,23 @@ export class PaymentsPage {
 
   private async checkForStockInHand() {
     this.stockErrors = [];
-    let productsInStock: { [id: string]: number } = await this.stockHistoryService
-      .getProductsTotalStockValueByStore(this.invoice.items
-        .filter(item => item.entityTypeName == 'Product').map(item => item._id), this.store._id);
-    this.invoice.items.forEach(item => {
-      if (productsInStock.hasOwnProperty(item._id) && productsInStock[item._id] < item.quantity) {
-        // push error
-        this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item._id]}`);
+    let productsInStock: { [id: string]: number } = {};
+    let allProducts = this.invoice.items
+        .filter(item => item.entityTypeName == 'Product')
+        .map(item => item._id);
+    if(allProducts.length > 0) {
+      productsInStock = await this.stockHistoryService
+        .getProductsTotalStockValueByStore(allProducts, this.store._id);
+      if (productsInStock && Object.keys(productsInStock).length > 0) {
+        this.invoice.items.forEach(item => {
+          if (productsInStock.hasOwnProperty(item._id) && productsInStock[item._id] < item.quantity) {
+            // push error
+            this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item._id]}`);
+          }
+        });
       }
-    });
+      return;
+    }
     return;
   }
 
