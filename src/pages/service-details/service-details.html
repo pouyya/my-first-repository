@@ -9,6 +9,7 @@
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -17,6 +18,10 @@
     <ion-item>
       <ion-label class="item-name">Name</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.name"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label class="item-name">Barcode</ion-label>
+      <ion-input type="text" [(ngModel)]="serviceItem.barcode"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Display Order</ion-label>

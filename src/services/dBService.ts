@@ -68,7 +68,7 @@ export class DBService<T extends DBBasedEntity> {
 
     add(entity: T): Promise<T> {
         if (!entity._id) {
-            entity._id = moment().utc().format();
+            entity._id = moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSSSSSS");
         }
         return this.update(entity);
     }
@@ -103,7 +103,14 @@ export class DBService<T extends DBBasedEntity> {
 
     findBy(selector: any): Promise<Array<T>> {
         selector.include_docs = true;
-        selector.entityTypeName = this.entityTypeInstance.entityTypeName;
+        if (!selector.selector) {
+            selector.selector = {};
+        }
+        selector.selector.entityTypeName = this.entityTypeInstance.entityTypeName;
+        return this.query(selector);
+    }
+
+    query(selector: any): Promise<Array<any>> {
         return this.getDB().find(selector);
     }
 

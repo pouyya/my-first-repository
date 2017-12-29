@@ -11,7 +11,7 @@ export class CategoryIconSelectModal {
   public bufferedSelection: string;
 
   constructor(private navParams: NavParams, private viewCtrl: ViewController) {
-    this.selectedIcon = navParams.get('selectedIcon');
+    this.bufferedSelection = this.selectedIcon = navParams.get('selectedIcon');
   }
 
   public confirm() {

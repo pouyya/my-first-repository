@@ -1,3 +1,4 @@
+import { EmployeeService } from './../../services/employeeService';
 import * as moment from 'moment';
 import { LoadingController, AlertController, NavController, ToastController } from 'ionic-angular';
 import { Component, ChangeDetectorRef, ElementRef } from '@angular/core';
@@ -47,6 +48,7 @@ export class OpenCloseRegister {
   constructor(private loading: LoadingController,
     private posService: PosService,
     private storeService: StoreService,
+    private employeeService: EmployeeService,
     private closureService: ClosureService,
     private toastCtrl: ToastController,
     private cdr: ChangeDetectorRef,
@@ -167,15 +169,29 @@ export class OpenCloseRegister {
       });
       confirm.present();
     } else {
+      let loader = this.loading.create({
+        content: 'Closing Register...',
+      });
+
+      await loader.present();
+
+      if (await this.posService.isThisLastPosClosingInStore(this.register._id)) {
+        await this.employeeService.clockOutClockedInOfStore(this.store._id, this.closure.closeTime);
+      }
+
       this.closure.closeTime = moment().utc().format();
       await this.closureService.add(this.closure);
+
       this.register.status = false;
       this.register.cashMovements = [];
       this.register.openingAmount = null;
       this.register.openTime = null;
       this.register.openingNote = null;
       this.showReport = true;
-      await this.posService.update(this.register)
+      await this.posService.update(this.register);
+
+      loader.dismiss();
+
       let toast = this.toastCtrl.create({
         message: 'Register Closed',
         duration: 3000

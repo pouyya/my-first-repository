@@ -15,9 +15,11 @@ export class GroupEmployeeTimeLog implements OnInit {
   public renderable: any = {
     name: "",
     store: "",
-    clockIn: "No time logged",
-    clockOut: "No time logged"
+    clockIn: "----",
+    clockOut: "----"
   };
+
+  private storeId: string;
 
   @Input('timeLog')
   set timelogInput(data: any) {
@@ -58,6 +60,7 @@ export class GroupEmployeeTimeLog implements OnInit {
       }
       if (this._timeLog[0].store) {
         this.renderable.store = this._timeLog[0].store.name;
+        this.storeId = this._timeLog[0].store._id;
       }
     }
   }
@@ -66,7 +69,8 @@ export class GroupEmployeeTimeLog implements OnInit {
     this.viewLogs.emit({
       timestamps: this._timeLog,
       employee: this.renderable.employee,
-      dateKey: this._dateKey
+      dateKey: this._dateKey,
+      storeId: this.storeId
     });
   }
 

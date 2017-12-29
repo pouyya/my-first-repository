@@ -16,7 +16,9 @@ import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
+import { authProvider } from './../modules/auth.module';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -64,6 +66,9 @@ import { Customers } from './../pages/customers/customers';;
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
+import { CustomerDetails } from '../pages/customer-details/customer-details';
+import { Brands } from '../pages/brands/brands';
+import { BrandDetails } from './../pages/brand-details/brand-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -76,6 +81,8 @@ import { SPIconModule } from './../components/sp-icon/sp-icon.module';
 import { TileScrollableModule } from './../components/tiles-scrollable/tiles-scrollable.module';
 import { SelectPurchasableItemsModel } from './../components/purchasable-item-price/modals/select-items';
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
+import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
+import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -114,19 +121,13 @@ import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
 import { AuthService } from './../services/authService';
-import { authProvider } from './../modules/auth.module';
 import { CustomerService } from './../services/customerService';
-import { BaseRequestOptions } from '@angular/http';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
-import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
 import { DeployService } from '../services/deployService';
-
-// used to create fake backend
-import { fakeBackendProvider } from './../services/_fakeBackend';
-import { MockBackend } from '@angular/http/testing';
+import { BrandService } from '../services/brandService';
 
 
 @NgModule({
@@ -178,7 +179,9 @@ import { MockBackend } from '@angular/http/testing';
     Customers,
     CustomerDetails,
     CreateCustomerModal,
-    AboutPage
+    AboutPage,
+    Brands,
+    BrandDetails
   ],
   imports: [
     FormsModule,
@@ -204,6 +207,7 @@ import { MockBackend } from '@angular/http/testing';
 
     // custom
     SharedModule,
+    NetworkMonitorModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -212,7 +216,8 @@ import { MockBackend } from '@angular/http/testing';
     SPIconModule,
     ItemPriceBookModule,
     TileScrollableModule,
-    GroupEmployeeTimeLogModule
+    GroupEmployeeTimeLogModule,
+    BarcodeScannerModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -264,12 +269,15 @@ import { MockBackend } from '@angular/http/testing';
     Customers,
     CustomerDetails,
     CreateCustomerModal,
-    AboutPage
+    AboutPage,
+    Brands,
+    BrandDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
+    Network,
     Firebase,
     PinDialog,
     Dialogs,
@@ -305,6 +313,7 @@ import { MockBackend } from '@angular/http/testing';
     DaysOfWeekEvaluationProvider,
     AppService,
     PrintService,
+    BrandService,
     StoreService,
     SalesServices,
     ClickStopPropagation,
@@ -312,11 +321,8 @@ import { MockBackend } from '@angular/http/testing';
     GroupByPipe,
     LocalDatePipe,
     authProvider,
-    fakeBackendProvider,
-    MockBackend,
     PlatformService,
-    AccountSettingService,
-    BaseRequestOptions
+    AccountSettingService
   ]
 })
 export class AppModule {

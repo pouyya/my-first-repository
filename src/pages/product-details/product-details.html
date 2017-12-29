@@ -6,6 +6,7 @@
         Save
       </button>
     </ion-buttons>
+<ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -20,8 +21,8 @@
       <ion-input type="text" [(ngModel)]="productItem.brand"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">SKU/Barcode</ion-label>
-      <ion-input type="text" [(ngModel)]="productItem.sku"></ion-input>
+      <ion-label class="item-name">Barcode</ion-label>
+      <ion-input type="text" [(ngModel)]="productItem.barcode"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label class="item-name">Tags</ion-label>
@@ -40,7 +41,12 @@
       <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true">
         <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
       </ion-select>
-
+    </ion-item>
+    <ion-item>
+      <ion-label>Brand</ion-label>
+      <ion-select [(ngModel)]="productItem.brandId">
+        <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
+      </ion-select>
     </ion-item>
   </ion-list>
   <div class="insert-image">

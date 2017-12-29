@@ -3,6 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
+    <ion-buttons end network-monitor></ion-buttons>
     <ion-title class="ion-title-center">Sales</ion-title>
   </ion-navbar>
 </ion-header>
@@ -19,7 +20,9 @@
           <ion-label stacked>Opening Float</ion-label>
           <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="register.openingAmount" name="openingAmount" required></ion-input>
 
-          <ion-label color="primary" stacked>Notes <small>optional</small></ion-label>
+          <ion-label color="primary" stacked>Notes
+            <small>optional</small>
+          </ion-label>
           <ion-textarea placeholder="Enter Note" [(ngModel)]="register.openingNote" name="openingNote">
           </ion-textarea>
 
@@ -41,9 +44,9 @@
           <ion-list no-lines class="full-height no-margin sales-category">
             <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
               (click)="selectCategory(category)">
-                <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
+              <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
               {{ category.name }}
-          </button>
+            </button>
           </ion-list>
         </ion-scroll>
       </ion-col>
@@ -51,11 +54,7 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales && employees.length > 0">
-              <tiles-scrollable 
-                [(elements)]="employees" 
-                [(selectedElement)]="selectedEmployee"
-                [displayProperty]="'firstName'"
-                (notifyChange)="toggle($event)">
+              <tiles-scrollable [(elements)]="employees" [(selectedElement)]="selectedEmployee" [displayProperty]="'firstName'" (notifyChange)="toggle($event)">
               </tiles-scrollable>
             </ion-col>
           </ion-row>
@@ -64,16 +63,11 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket class="basket-component" 
-          [(_invoice)]="invoice"
-          [(customer)]="customer"
-          [refund]="doRefund"
-          [employees]="employees"
-          [user]="user"
-          (paymentClicked)="paymentClicked($event)"
-          (notify)="notify($event)">
+        <basket class="basket-component" *ngIf="invoice" [(_invoice)]="invoice" [(customer)]="customer" [refund]="doRefund" [employees]="employees"
+          [user]="user" (paymentClicked)="paymentClicked($event)" (notify)="notify($event)">
         </basket>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <barcode-scanner (scan)="barcodeReader($event)" style="display:hidden"></barcode-scanner>
 </ion-content>

@@ -62,6 +62,5 @@ export class DeployService {
 
   handleError(error: any, callback: (err: any, success: boolean) => void) {
     console.error(error)
-    callback(false)
   }
 }

@@ -96,6 +96,10 @@
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/@ionic-native/insomnia/-/insomnia-4.4.2.tgz#4fba8ac64e4e5f1e6fa6e90fd77642ae66be9891"
 
+"@ionic-native/network@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/network/-/network-4.5.0.tgz#d0bebfa00b46d460771850702f3ed17a05788466"
+
 "@ionic-native/pin-dialog@4.4.2":
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/@ionic-native/pin-dialog/-/pin-dialog-4.4.2.tgz#1e1b644ba3c9a349bb8256c66e1b81f2c14dd899"
@@ -1438,6 +1442,9 @@ cordova-plugin-ionic@~2.0.3:
     node-version-compare ">=1.0.1"
     plist ">=1.2.0"
     xml2js ">=0.4"
+cordova-plugin-network-information@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-network-information/-/cordova-plugin-network-information-1.3.4.tgz#28f426cc2659174dc622a07180f9ba0d855f7383"
 
 cordova-plugin-pin-dialog@^0.1.3:
   version "0.1.3"

@@ -1,3 +1,4 @@
+import { DBEvent } from './../../db/dbEvent';
 import { DateTimeService } from './../../services/dateTimeService';
 import { AccountSettingService } from './../../services/accountSettingService';
 import { Component } from '@angular/core';
@@ -47,21 +48,21 @@ export class DataSync {
                 currentStore = await this.storeService.get(currentPos.storeId);
                 user.currentPos = currentPos._id;
                 user.currentStore = currentStore._id;
-                this._sharedService.publish({ currentStore, currentPos });
+                this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });
                 this.userService.setSession(user);
             } else {
                 currentPos = await this.posService.get(user.currentPos);
                 currentStore = await this.storeService.get(user.currentStore);
             }
 
-            this._sharedService.publish({ currentStore, currentPos });
+            this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });
         };
 
         ConfigService.externalDBUrl = user.settings.db_url;
 
         ConfigService.externalCriticalDBName = user.settings.db_critical_name;
         ConfigService.internalCriticalDBName = user.settings.db_critical_local_name;
-        
+
         ConfigService.externalDBName = user.settings.db_name;
         ConfigService.internalDBName = user.settings.db_local_name;
 
@@ -72,15 +73,17 @@ export class DataSync {
         DBService.initialize();
 
         DBService.criticalDBSyncProgress.subscribe(
-            async data => {
-                if (data === 1 && !this.isNavigated) {
-                    this.updateText = "Loading your company data 100%";
-                    await loadStoreData()
-                    this.isNavigated = true;
-                    this.navCtrl.setRoot(Sales);
-                }
-                else {
-                    this.updateText = "Loading your company data " + Math.round(data * 100) + "%";
+            async (data: DBEvent) => {
+                if (data) {
+                    if (data.progress === 1 && !this.isNavigated) {
+                        this.updateText = "Loading your company data 100%";
+                        await loadStoreData()
+                        this.isNavigated = true;
+                        this.navCtrl.setRoot(Sales);
+                    }
+                    else {
+                        this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";
+                    }
                 }
             }
         );

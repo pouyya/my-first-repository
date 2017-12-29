@@ -1,22 +1,22 @@
 <ion-header>
-  <ion-navbar >
+  <ion-navbar>
     <ion-title>Stores</ion-title>
     <button ion-button icon-only menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-   
+
     <ion-buttons end>
-      <button ion-button icon-only (click)="showDetail()" >
+      <button ion-button icon-only (click)="showDetail()">
         <ion-icon name="add"></ion-icon>
       </button>
-     </ion-buttons>      
-    
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content >
+<ion-content>
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
   <ion-list inset *ngFor="let item of stores ; let idx=index">
-    <ion-item-sliding class="sliding" >
+    <ion-item-sliding class="sliding">
       <ion-item (click)="showDetail(item)">
         <ion-avatar class="item-avatar" item-left>
           <img src="assets/img/avatar-han.png">
@@ -27,8 +27,8 @@
         <button ion-button color='danger' (click)="delete(item, idx)" icon=left>
           <ion-icon name="trash"></ion-icon>
           Delete
-        </button>  
-      </ion-item-options>  
-    </ion-item-sliding>   
-  </ion-list> 
-</ion-content> 
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

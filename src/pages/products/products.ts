@@ -2,10 +2,10 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, Platform } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { ProductDetails } from '../product-details/product-details';
-import { BackOfficeModule } from '../../modules/backOfficeModule';
+import { InventoryModule } from '../../modules/inventoryModule';
 import { PageModule } from '../../metadata/pageModule';
 
-@PageModule(() => BackOfficeModule)
+@PageModule(() => InventoryModule)
 @Component({
   templateUrl: 'products.html'
 })

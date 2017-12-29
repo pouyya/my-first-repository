@@ -4,11 +4,7 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title class="ion-title-center">Staffs Time Logs Management</ion-title>
-    <ion-buttons end>
-      <button ion-button (click)="addManualTime()">
-        <ion-icon name="add"></ion-icon>
-      </button>
-    </ion-buttons>    
+    <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -17,16 +13,16 @@
     <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col col-md-3>
+          <ion-col col-md-2>
             <strong>Employee</strong>
           </ion-col>
           <ion-col col-md-2>
             <strong>Store</strong>
           </ion-col>
-          <ion-col col-md-2>
+          <ion-col col-md-3>
             <strong>Checked In</strong>
           </ion-col>
-          <ion-col col-md-2>
+          <ion-col col-md-3>
             <strong>Checked Out</strong>
           </ion-col>
           <ion-col col-md-1>
@@ -35,9 +31,6 @@
           <ion-col col-md-1>
             <strong>Delete</strong>
           </ion-col>
-          <ion-col col-md-1>
-            <strong>Add</strong>
-          </ion-col>          
         </ion-row>
       </ion-grid>
     </ion-item>
