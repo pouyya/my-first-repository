@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { DB } from '../db/db';
 import { EventEmitter } from '@angular/core';
-import { DBBasedEntity } from "../model/DBBasedEntity";
+import { DBBasedEntity } from "../model/dbBasedEntity";
 import { PouchDBProvider } from "../provider/pouchDBProvider";
 import { ConfigService } from './configService';
 import { DBModeEnum } from '../metadata/dbMode';

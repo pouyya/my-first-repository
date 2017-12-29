@@ -94,4 +94,12 @@ export class ConfigService {
         return 'usermedihair_aria';
         // return 'user' + ConfigService.internalDBName;
     }
+
+    static ionicDeployAppId() : string {
+        return "22d41469";
+    }
+
+    static ionicDeployAppChannel() : string {
+        return "Master";
+    }    
 }

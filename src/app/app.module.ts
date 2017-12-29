@@ -1,9 +1,8 @@
 import { DatePipe } from '@angular/common';
 // core
-import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
-import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 import { MatInputModule, MatGridListModule } from '@angular/material';
@@ -20,11 +19,9 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
-import { BaseRequestOptions } from '@angular/http';
 
 // pages
 import { SimplePOSApp } from './app.component';
-import { DeployPage } from './../pages/deploy/deploy';
 import { LoginPage } from './../pages/login/login';
 import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
@@ -76,7 +73,7 @@ import { BrandDetails } from './../pages/brand-details/brand-details';
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
-import { PurchasableItemInfoModule } from './../components/purchasable-Item-info/purchasable-Item-info.module';
+import { PurchasableItemInfoModule } from './../components/purchasable-item-info/purchasable-item-info.module';
 import { PurchasableItemPriceModule } from './../components/purchasable-item-price/purchasable-item-price.module';
 import { IconSelectModule } from './../components/icon-select/icon-select.module';
 import { ItemPriceBookModule } from './../components/item-price-book/item-price-book.module';
@@ -129,18 +126,13 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
+import { DeployService } from '../services/deployService';
 import { BrandService } from '../services/brandService';
 
-const cloudSettings: CloudSettings = {
-  'core': {
-    'app_id': "5bf5f6a2"
-  }
-};
 
 @NgModule({
   declarations: [
     SimplePOSApp,
-    DeployPage,
     LoginPage,
     LogOut,
     DataSync,
@@ -179,7 +171,7 @@ const cloudSettings: CloudSettings = {
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
-    PriceBookDetails,    
+    PriceBookDetails,
     SelectPurchasableItemsModel,
     StaffsTimeLogs,
     TimeLogDetailsModal,
@@ -203,9 +195,8 @@ const cloudSettings: CloudSettings = {
           }
         }
       }),
-    CloudModule.forRoot(cloudSettings),
     IonicStorageModule.forRoot({
-      name: '__mydb',
+      name: '__simpleposlocal',
       driverOrder: ['sqlite', 'indexeddb', 'websql']
     }),
     MatGridListModule,
@@ -231,7 +222,6 @@ const cloudSettings: CloudSettings = {
   bootstrap: [IonicApp],
   entryComponents: [
     SimplePOSApp,
-    DeployPage,
     DataSync,
     LoginPage,
     LogOut,
@@ -317,6 +307,7 @@ const cloudSettings: CloudSettings = {
     PluginService,
     EmployeeTimestampService,
     CustomerService,
+    DeployService,
     AuthService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
@@ -331,8 +322,7 @@ const cloudSettings: CloudSettings = {
     LocalDatePipe,
     authProvider,
     PlatformService,
-    AccountSettingService,
-    BaseRequestOptions
+    AccountSettingService
   ]
 })
 export class AppModule {
