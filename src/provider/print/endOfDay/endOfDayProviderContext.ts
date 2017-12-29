@@ -1,10 +1,19 @@
-export class EndOfDayProviderContext {  
-    closureNumber: number;
-    openFloat: any;
+export class EndOfDayProviderContext {    
+    dayItems: Array<any>;
+    closureNumber: string;
+    openFloat: number;
     openTime: string;
     closeTime: string;
     currentDateTime: string;
-    staffFullName: string;
+    employeeFullName: string;
     posName: string;
     storeName: string;
+    cashIn: number;
+    cashOut: number;
+    cashCounted: number;
+    cashDifference: number;
+    ccCounted: number;
+    ccDifference: number;
+    totalCounted: number;
+    totalDifference: number;
 }

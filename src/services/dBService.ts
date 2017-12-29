@@ -102,11 +102,19 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     findBy(selector: any): Promise<Array<T>> {
+
+        if(!selector){
+            selector = {};
+        }
+        
         selector.include_docs = true;
+
         if (!selector.selector) {
             selector.selector = {};
         }
+
         selector.selector.entityTypeName = this.entityTypeInstance.entityTypeName;
+
         return this.query(selector);
     }
 

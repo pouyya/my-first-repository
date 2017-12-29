@@ -24,24 +24,54 @@ export class PrintService {
     private accountSettingService: AccountSettingService) {
   }
 
-  public async printEndOfDayReport(closure: Closure){
+  public async printEndOfDayReport(closure: Closure) {
 
     var currentStore = await this.storeService.get(closure.storeId);
 
     var context = new EndOfDayProviderContext();
-    context.openFloat = closure
+    context.openFloat = closure.openingAmount
     context.posName = closure.posName;
     context.storeName = closure.storeName;
     context.openTime = closure.openTime;
     context.closeTime = closure.closeTime;
+    context.cashIn = closure.totalCashIn;
+    context.cashOut = closure.totalCashOut;
+    context.cashCounted = closure.cashCounted;
+    context.cashDifference = closure.cashDifference;
+    context.ccCounted = closure.ccCounted;
+    context.ccDifference = closure.ccDifference;
+    context.totalCounted = closure.totalCounted;
+    context.totalDifference = closure.totalDifference;
+    context.employeeFullName = closure.employeeFullName;
     context.currentDateTime = new Date().toLocaleString();
     context.closureNumber = closure.closureNumber;
+    context.dayItems = [];
+
+    if (closure.sales) {
+      closure.sales.forEach((invoice) => {
+        if (invoice && invoice.items) {
+          invoice.items.forEach((invoiceItem => {
+            if (!context.dayItems[invoiceItem._id]) {
+              context.dayItems[invoiceItem._id] = { name: invoiceItem.name, totalPrice: invoiceItem.finalPrice || 0, totalQuantity: invoiceItem.quantity || 0 };
+            } else {
+              context.dayItems[invoiceItem._id].totalPrice += invoiceItem.finalPrice;
+              context.dayItems[invoiceItem._id].totalQuantity += invoiceItem.quantity;
+            }
+          }));
+        }
+      });
+    }
+
     var provider = new EndOfDayProvider(context);
 
-    provider.setHeader();
+    provider
+      .setHeader()
+      .setBody()
+      .setFooter()
+      .cutPaper();
 
     await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
-    .write(provider.getResult());    
+      .write(provider.getResult());
   }
 
   public async printReceipt(invoice: Sale, openCashDrawer: boolean) {

@@ -1,24 +1,27 @@
-import { Store } from './../model/store';
-import { StoreService } from './storeService';
 import { UserService } from './userService';
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { AccountSettingService } from './accountSettingService';
 
 @Injectable()
 export class FountainService {
 
-  private storeService: StoreService;
-
   constructor(
-    private injector: Injector,
-    private userService: UserService
-  ) {
-    setTimeout(() => this.storeService = injector.get(StoreService));
+    private userService: UserService,
+    private accountSettingService: AccountSettingService
+  ) { }
+
+  public async getReceiptNumber() {
+    var currentAccountSetting = await this.accountSettingService.getCurrentSetting();
+    currentAccountSetting.saleLastNumber = (currentAccountSetting.saleLastNumber || 0) + 1;
+    await this.accountSettingService.update(currentAccountSetting);
+    return `${currentAccountSetting.saleNumberPrefix || 'RC'}${currentAccountSetting.saleLastNumber}`;
   }
 
-  public getReceiptNumber(store: Store) {
-    store.saleLastNumber++;
-    this.storeService.update(store); // parallel background update
-    return `${store.saleNumberPrefix || ''}${store.saleLastNumber}`;
+  public async getClosureNumber() {
+    var currentAccountSetting = await this.accountSettingService.getCurrentSetting();
+    currentAccountSetting.closureLastNumber = (currentAccountSetting.closureLastNumber || 0) + 1;
+    await this.accountSettingService.update(currentAccountSetting);
+    return `${currentAccountSetting.closureNumberPrefix || 'CL'}${currentAccountSetting.closureLastNumber}`;
   }
 
 }
