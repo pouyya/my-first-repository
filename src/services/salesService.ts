@@ -126,7 +126,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		let basketItem = new BasketItem();
 		basketItem._id = item._id;
 		item._rev && (basketItem._rev = item._rev);
-		basketItem.entityTypeName = item.entityTypeName;
 		basketItem.name = item.name;
 		basketItem.tax = {
 			...item.tax
@@ -144,6 +143,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			basketItem.actualPrice;
 		item.employeeId != null && (basketItem.employeeId = item.employeeId);
 		basketItem.isTaxIncl = taxInclusive;
+		basketItem.stockControl = (item.hasOwnProperty('stockControl') && item.stockControl);
 
 		return basketItem;
 	}

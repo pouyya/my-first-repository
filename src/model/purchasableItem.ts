@@ -6,7 +6,6 @@ export abstract class PurchasableItem extends DBBasedEntity implements Orderable
     public name: string;
     public color: string;
     public image: string;
-    public inStock?: number | boolean;
     public icon: any;
     public order: number;
     public barcode?: string;

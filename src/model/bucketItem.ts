@@ -3,7 +3,6 @@ import { PurchasableItemPriceInterface } from './purchasableItemPrice.interface'
 export class BasketItem {
   _id: string;
   _rev?: string;
-  entityTypeName: string;
   name: string;
   quantity: number;
   discount: number;
@@ -15,4 +14,5 @@ export class BasketItem {
   isTaxIncl?: boolean;
   employeeId?: string | null;
   cssClass: string | null;
+  stockControl: boolean;
 }

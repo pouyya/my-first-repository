@@ -22,7 +22,13 @@ export class StockIncreaseModal {
     private loading: LoadingController,
     private viewCtrl: ViewController
   ) {
-    let increaseReasons: string[] = ['NewStock', 'Return', 'Transfer', 'Adjustment', 'Other'];
+    let increaseReasons: string[] = [
+      Reason.NewStock,
+      Reason.Return,
+      Reason.Transfer,
+      Reason.Adjustment,
+      Reason.Other
+    ];
     this.storesStock = this.navParams.get('storesStock');
     let reasons = TypeHelper.enumToObject(Reason, 'string');
     Object.keys(reasons).forEach(reason => {

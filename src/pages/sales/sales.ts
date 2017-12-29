@@ -200,24 +200,6 @@ export class Sales implements OnDestroy, OnInit {
     let pushCallback = params => {
       return new Promise(async (resolve, reject) => {
         if (params) {
-          /*
-            let updateStockPromises: any[] = [];
-            this.invoice.items.forEach(item => {
-              if (item.hasOwnProperty('entityTypeName') && item.entityTypeName == 'Product') {
-                updateStockPromises.push(async () => {
-                  await this.stockHistoryService.add(this.createStockHistory(item, this.store._id));
-                });
-              }
-            });
-            Promise.all(updateStockPromises.map(p => p())).then(() => {
-              this.stockHistoryService.getAllProductsTotalStockValue().then((stockValues: any[]) => {
-                stockValues.forEach(stock => {
-                  this.productsInStock[stock.productId] = stock.value
-                });
-              });
-            });
-           */
-
           let response = await this.salesService.instantiateInvoice();
           this.invoiceParam = null;
           this.invoice = response.invoice;

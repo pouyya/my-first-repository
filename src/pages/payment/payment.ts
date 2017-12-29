@@ -191,7 +191,7 @@ export class PaymentsPage {
     this.stockErrors = [];
     let productsInStock: { [id: string]: number } = {};
     let allProducts = this.invoice.items
-        .filter(item => item.entityTypeName == 'Product')
+        .filter(item => item.stockControl)
         .map(item => item._id);
     if(allProducts.length > 0) {
       productsInStock = await this.stockHistoryService

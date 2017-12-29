@@ -22,7 +22,13 @@ export class StockDecreaseModal {
     private loading: LoadingController,
     private viewCtrl: ViewController
   ) {
-    let decreaseReasons: string[] = ['InternalUse', 'Damaged', 'OutOfDate', 'Adjustment', 'Other'];
+    let decreaseReasons: string[] = [
+      Reason.InternalUse,
+      Reason.Damaged,
+      Reason.OutOfDate,
+      Reason.Adjustment,
+      Reason.Other
+    ];
     this.storesStock = this.navParams.get('storesStock');
     let reasons = TypeHelper.enumToObject(Reason, 'string');
     Object.keys(reasons).forEach(reason => {
