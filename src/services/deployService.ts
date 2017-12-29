@@ -5,7 +5,7 @@ declare var IonicCordova;
 @Injectable()
 export class DeployService {
   deploy() {
-    this.update(ConfigService.ionicDeployAppId(), ConfigService.ionicDeployAppChannel());
+    return this.update(ConfigService.ionicDeployAppId(), ConfigService.ionicDeployAppChannel());
   }
 
   async update(appId: string, channelName: string) {
@@ -55,12 +55,15 @@ export class DeployService {
             }
           }, (e: any) => { this.handleError(e, resolve) })
         }
+        else {
+          resolve(true);
+        }
       }, (e: any) => { this.handleError(e, resolve) })
     });
-
   }
 
-  handleError(error: any, callback: (err: any, success: boolean) => void) {
-    console.error(error)
+  handleError(error: any, callback: (success: boolean) => void) {
+    console.error(error);
+    callback(true);
   }
 }
