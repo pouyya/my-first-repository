@@ -66,6 +66,8 @@ export class PaymentsPage {
       this.navCtrl.pop();
     } else {
       // check stock
+      let loader = this.loading.create({ content: 'Processing Sale' });
+      await loader.present();
       await this.checkForStockInHand();
       if (this.stockErrors.length > 0) {
         // display error message
@@ -79,6 +81,7 @@ export class PaymentsPage {
         );
         alert.present();
       }
+      loader.dismiss();
     }
   }
 
@@ -155,7 +158,7 @@ export class PaymentsPage {
   }
 
   private async completeSale(payments: number) {
-    let loader = this.loading.create({ content: 'Processing Sale' });
+    let loader = this.loading.create({ content: 'Finalizing Sale' });
     await loader.present();
     await this.updateStock();
     this.invoice.completed = true;
