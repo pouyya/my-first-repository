@@ -9,7 +9,7 @@ import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
 import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';
 import { Closure } from '../model/closure';
-import { ReceiptProviderContext } from '../provider/print/receipt/ReceiptProviderContext';
+import { ReceiptProviderContext } from '../provider/print/receipt/receiptProviderContext';
 import { ReceiptProvider } from '../provider/print/receipt/receiptProvider';
 
 @Injectable()
