@@ -128,7 +128,7 @@
     "variables": {
       "APP_ID": "22d41469",
       "CHANNEL_NAME": "Master",
-      "UPDATE_METHOD": "auto"
+      "UPDATE_METHOD": "none"
     }
   },
   "cordova-plugin-add-swift-support": {
