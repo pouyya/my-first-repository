@@ -1,5 +1,6 @@
 import { DBBasedEntity } from "../model/dbBasedEntity";
 import { DBService } from "./DBService";
+import * as _ from "lodash";
 
 export abstract class BaseEntityService<T extends DBBasedEntity> {
   private _dbService;
@@ -51,6 +52,25 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
   get(id: any): Promise<T> {
     return this.dbService.get(id);
   }
+
+  public search(limit: number = 10, skip: number = 0, options?: any): Promise<Array<T>> {
+		
+		var query: any = {
+			selector: {}
+		};
+
+		_.each(options, (value, key) => {
+			if (value) {
+				var regexp = new RegExp(`.*${value}.*`, 'i');
+				query.selector[key] = { $regex: regexp };
+			}
+		});
+
+		query.limit = limit;
+		query.skip = skip;
+
+		return this.findBy(query);
+	}
 
   private clearAllMethods(entity: T) {
     if (entity) {
