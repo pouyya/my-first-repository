@@ -35,7 +35,7 @@ export class DeployService {
             if (res === 'true' || res == 'false') {
 
               // We can unzip the latest version
-              IonicCordova.deploy.extract(appId, (res: any) => {
+              IonicCordova.deploy.extract((res: any) => {
                 if (res === 'true' || res == 'false') {
 
                   // we're ready to load the new version
