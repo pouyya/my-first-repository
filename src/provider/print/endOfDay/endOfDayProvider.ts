@@ -181,7 +181,8 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
             <br>
             <br>
             <br>
-            <hr>`;
+            <hr>
+            <br>`;
 
         this.htmlPrinterProvider.parse(footerHtml);
 

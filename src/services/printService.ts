@@ -51,12 +51,17 @@ export class PrintService {
       closure.sales.forEach((invoice) => {
         if (invoice && invoice.items) {
           invoice.items.forEach((invoiceItem => {
+
+            var qty = invoiceItem.quantity || 0;
+            var totalPrice = (invoiceItem.finalPrice || 0) * qty;
+
             if (!context.dayItems[invoiceItem._id]) {
-              context.dayItems[invoiceItem._id] = { name: invoiceItem.name, totalPrice: invoiceItem.finalPrice || 0, totalQuantity: invoiceItem.quantity || 0 };
+              context.dayItems[invoiceItem._id] = { name: invoiceItem.name, totalPrice: totalPrice, totalQuantity: qty };
             } else {
-              context.dayItems[invoiceItem._id].totalPrice += invoiceItem.finalPrice;
-              context.dayItems[invoiceItem._id].totalQuantity += invoiceItem.quantity;
+              context.dayItems[invoiceItem._id].totalPrice += totalPrice || 0;
+              context.dayItems[invoiceItem._id].totalQuantity += qty || 0;
             }
+
           }));
         }
       });

@@ -204,12 +204,13 @@ export class OpenCloseRegister {
 
       await loader.present();
 
-      //   loader.setContent("Clocking out current staff..");
-      // if (await this.posService.isThisLastPosClosingInStore(this.register._id)) {
-      //   await this.employeeService.clockOutClockedInOfStore(this.store._id, this.closure.closeTime);
-      // }
+      loader.setContent("Checking other POS closure status..");
+      if (await this.posService.isThisLastPosClosingInStore(this.pos._id)) {
+        loader.setContent("Clocking out current staff..");
+        await this.employeeService.clockOutClockedInOfStore(this.store._id, this.closure.closeTime);
+      }
 
-      //   loader.setContent("Saving and Printing Closure..");
+      loader.setContent("Saving and Printing Closure..");
 
       this.closure.closeTime = moment().utc().format();
       this.closure.closureNumber = await this.fountainService.getClosureNumber();
@@ -223,7 +224,7 @@ export class OpenCloseRegister {
       this.pos.openTime = null;
       this.pos.openingNote = null;
       this.showReport = true;
-      // await this.posService.update(this.register);
+      await this.posService.update(this.pos);
 
       loader.dismiss();
 
