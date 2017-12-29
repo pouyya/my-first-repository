@@ -1,7 +1,7 @@
 import { EmployeeService } from './../../services/employeeService';
 import * as moment from 'moment';
 import { LoadingController, AlertController, NavController, ToastController } from 'ionic-angular';
-import { Component, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 
 import { SalesServices } from './../../services/salesService';
 import { ClosureService } from './../../services/closureService';
@@ -16,6 +16,11 @@ import { Closure } from './../../model/closure';
 import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
 import { StoreService } from "../../services/storeService";
+import { PrintService } from '../../services/printService';
+import * as _ from 'lodash';
+import { PluginService } from '../../services/pluginService';
+import { Employee } from '../../model/employee';
+import { FountainService } from '../../services/fountainService';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -26,10 +31,10 @@ import { StoreService } from "../../services/storeService";
 })
 export class OpenCloseRegister {
 
-  public register: POS;
+  public employee: Employee
+  public pos: POS;
   public store: Store;
   public closure: Closure;
-  public posClosures: Array<Closure> = [];
   public showReport: Boolean;
   public expected: any = {
     cash: 0,
@@ -54,82 +59,106 @@ export class OpenCloseRegister {
     private cdr: ChangeDetectorRef,
     private salesService: SalesServices,
     private alertCtrl: AlertController,
-    private el: ElementRef,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private prinService: PrintService,
+    private pluginService: PluginService,
+    private fountainService: FountainService) {
     this.cdr.detach();
     this.showReport = false;
   }
 
-  ionViewDidEnter() {
+  async ionViewCanEnter(): Promise<boolean> {
+
+    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+      { ok: 'OK', cancel: 'Cancel' });
+    if (!pin) {
+      return false;
+    }
+
+    this.employee = await this.employeeService.findByPin(pin);
+
+    if (!this.employee) {
+
+      let toast = this.toastCtrl.create({
+        message: "Invalid PIN!",
+        duration: 3000
+      });
+      toast.present();
+
+      return false;
+    }
+
+    return true;
+  }
+
+  async ionViewDidEnter() {
+
     let loader = this.loading.create({
       content: 'Loading data...',
     });
 
-    loader.present().then(() => {
-      let promises: Array<Promise<any>> = [
-        this.posService.getCurrentPos(),
-        this.storeService.getCurrentStore()
-      ];
+    await loader.present();
 
-      Promise.all(promises).then((response) => {
-        this.register = response[0] as POS;
-        this.store = response[1] as Store;
+    let sales: Array<Sale>;
 
-        promises = [
-          this.closureService.getAllByPOSId(this.register._id),
-          this.salesService.findCompletedByPosId(this.register._id, this.register.openTime)
-        ];
+    this.pos = await this.posService.getCurrentPos();
 
-        Promise.all(promises).then((response) => {
-          let closures = response[0] as Array<Closure>;
-          let invoices = response[1] as Array<Sale>;
+    [sales, this.store] = await Promise.all([
+      this.salesService.findCompletedByPosId(this.pos._id, this.pos.openTime),
+      this.storeService.getCurrentStore()
+    ]);
 
-          closures.length > 0 && (this.posClosures = closures);
+    this.calculateExpectedCounts(sales);
 
-          invoices.forEach((invoice) => {
-            invoice.payments.forEach((payment) => {
+    this.populateClosure(sales);
 
-              var isRefund = invoice.state == 'refund';
-              var amount = (isRefund ? -1 : 1) * Number(payment.amount);
+    this.cdr.reattach();
+    loader.dismiss();
+  }
 
-              if (payment.type === 'credit_card') {
-                this.expected.cc += amount;
-              }
+  private populateClosure(sales: Sale[]) {
+    this.closure = new Closure();
+    this.closure.sales = sales;
+    this.closure.posId = this.pos._id;
+    this.closure.posName = this.pos.name;
+    this.closure.storeId = this.store._id;
+    this.closure.storeName = this.store.name;
+    this.closure.openTime = this.pos.openTime;
+    this.closure.openingAmount = this.pos.openingAmount;
+    this.closure.totalCashIn = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'add' ? cashMovement.amount : 0);
+    this.closure.totalCashOut = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'remove' ? cashMovement.amount : 0);
+    this.closure.employeeFullName = `${this.employee.firstName} ${this.employee.lastName}`;
+    this.closure.employeeId = this.employee._id;
+    this.calculateDiff('cash');
+    this.calculateDiff('cc');
+  }
 
-              if (payment.type === 'cash') {
-                this.expected.cash += amount;
-              }
-            });
-          });
+  private calculateExpectedCounts(sales: Array<Sale>) {
 
-          this.expected.cash += this.register.openingAmount;
-          if (this.register.cashMovements && this.register.cashMovements.length > 0) {
-            this.expected.cash = ((expected) => {
-              let sum = 0;
-              this.register.cashMovements.forEach(cash => sum += cash.amount);
-              return this.expected.cash + sum;
-            })(this.expected.cash);
+    if (sales) {
+      sales.forEach((invoice) => {
+        invoice.payments.forEach((payment) => {
+          var isRefund = invoice.state == 'refund';
+          var amount = (isRefund ? -1 : 1) * Number(payment.amount);
+          if (payment.type === 'credit_card') {
+            this.expected.cc += amount;
           }
-          this.expected.total = this.expected.cc + this.expected.cash;
-
-          this.closure = new Closure();
-          this.closure.posId = this.register._id;
-          this.closure.posName = this.register.name;
-          this.closure.storeName = this.store.name;
-          this.calculateDiff('cash');
-          this.calculateDiff('cc');
-        }).catch(error => {
-          throw new Error(error);
-        }).then(() => {
-          this.cdr.reattach();
-          console.warn(this.el.nativeElement);
-          loader.dismiss();
+          if (payment.type === 'cash') {
+            this.expected.cash += amount;
+          }
         });
-
-      }).catch(error => {
-        throw new Error(error);
       });
-    });
+    }
+
+    this.expected.cash += this.pos.openingAmount;
+    if (this.pos.cashMovements && this.pos.cashMovements.length > 0) {
+      this.expected.cash = ((expected) => {
+        let sum = 0;
+        this.pos.cashMovements.forEach(cash => sum += cash.amount);
+        return this.expected.cash + sum;
+      })(this.expected.cash);
+    }
+    this.expected.total = this.expected.cc + this.expected.cash;
   }
 
   public calculateDiff(type) {
@@ -175,20 +204,27 @@ export class OpenCloseRegister {
 
       await loader.present();
 
-      if (await this.posService.isThisLastPosClosingInStore(this.register._id)) {
+      loader.setContent("Checking other POS closure status..");
+      if (await this.posService.isThisLastPosClosingInStore(this.pos._id)) {
+        loader.setContent("Clocking out current staff..");
         await this.employeeService.clockOutClockedInOfStore(this.store._id, this.closure.closeTime);
       }
 
+      loader.setContent("Saving and Printing Closure..");
+
       this.closure.closeTime = moment().utc().format();
+      this.closure.closureNumber = await this.fountainService.getClosureNumber();
       await this.closureService.add(this.closure);
 
-      this.register.status = false;
-      this.register.cashMovements = [];
-      this.register.openingAmount = null;
-      this.register.openTime = null;
-      this.register.openingNote = null;
+      await this.prinService.printEndOfDayReport(this.closure);
+
+      this.pos.status = false;
+      this.pos.cashMovements = [];
+      this.pos.openingAmount = null;
+      this.pos.openTime = null;
+      this.pos.openingNote = null;
       this.showReport = true;
-      await this.posService.update(this.register);
+      await this.posService.update(this.pos);
 
       loader.dismiss();
 

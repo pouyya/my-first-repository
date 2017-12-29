@@ -21,8 +21,6 @@ export class Store extends DBBasedEntity {
   public timezone?: string;
   public supplierReturnPrefix?: string;
   public supplierReturnNum?: number;
-  public saleNumberPrefix: string;
-  public saleLastNumber: number = 0;
   public defaultSaleTaxId: string;
   public trackEmployeeSales: boolean;
   public printReceiptAtEndOfSale: boolean;

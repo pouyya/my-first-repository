@@ -61,7 +61,7 @@ export class PaymentsPage {
     }
   }
 
-  private calculateBalance() {
+  private async calculateBalance() {
     var totalPayments = 0;
     if (!this.doRefund) {
       if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
@@ -73,7 +73,7 @@ export class PaymentsPage {
       this.amount = this.invoice.taxTotal - totalPayments;
       this.balance = this.amount;
       // Check for payment completion
-      totalPayments >= this.invoice.taxTotal && (this.completeSale(totalPayments));
+      totalPayments >= this.invoice.taxTotal && (await this.completeSale(totalPayments));
     } else {
       this.balance = this.amount = this.invoice.taxTotal;
     }
@@ -85,16 +85,16 @@ export class PaymentsPage {
       amount: Number(this.amount),
       refund: this.doRefund
     });
-    modal.onDidDismiss(data => {
+    modal.onDidDismiss(async data => {
       if (data && data.status) {
-        this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data);
-        this.salesService.update(this.invoice);
+        await (this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data));
+        await this.salesService.update(this.invoice);
       }
     });
     modal.present();
   }
 
-  private addPayment(type: string, payment: number) {
+  private async addPayment(type: string, payment: number) {
     if (!this.invoice.payments) {
       this.invoice.payments = [];
     }
@@ -103,10 +103,10 @@ export class PaymentsPage {
       amount: Number(payment)
     });
 
-    this.calculateBalance();
+    await this.calculateBalance();
   }
 
-  private completeRefund(payment: number, type: string) {
+  private async completeRefund(payment: number, type: string) {
     var isCompleted: boolean = Math.abs(this.amount) === Math.abs(payment);
     if (isCompleted) {
       this.invoice.payments.push({
@@ -118,16 +118,16 @@ export class PaymentsPage {
       this.invoice.completed = true;
       this.invoice.completedAt = moment().utc().format();
       this.balance = 0;
-      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
+      this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
       this.printInvoice();
     }
   }
 
-  private completeSale(payments: number) {
+  private async completeSale(payments: number) {
     this.invoice.completed = true;
     this.invoice.completedAt = moment().utc().format();
     this.invoice.state = 'completed';
-    !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
+    this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
     this.printInvoice();
   }
