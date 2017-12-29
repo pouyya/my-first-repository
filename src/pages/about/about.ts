@@ -1,5 +1,4 @@
 import { ConfigService } from './../../services/configService';
-import { Deploy } from '@ionic/cloud-angular';
 import { StoreService } from './../../services/storeService';
 import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
@@ -16,7 +15,6 @@ export class AboutPage {
 
   public pos: string;
   public store: string;
-  public ionicDeployVersion: string;
   public dbInternalName: string;
   public dbExternalName: string;
   public dbInternalName_Critical: string;
@@ -35,7 +33,6 @@ export class AboutPage {
   */
 
   constructor(
-    private deploy: Deploy,
     private posService: PosService,
     private storeService: StoreService,
     private platformService: PlatformService,
@@ -48,12 +45,6 @@ export class AboutPage {
         this.storeService.getCurrentStore()
       ];
 
-      var isMobileDevice = this.platformService.isMobileDevice();
-
-      if (isMobileDevice) {
-        promises.push(this.deploy.info());
-      }
-
       let result = await Promise.all(promises);
 
       let pos = result[0];
@@ -61,17 +52,6 @@ export class AboutPage {
 
       this.pos = pos.name;
       this.store = store.name;
-
-      if (isMobileDevice) {
-        let ionicDeployVersion = result[2];
-        if (ionicDeployVersion) {
-          this.ionicDeployVersion = JSON.stringify(ionicDeployVersion);
-        } else {
-          this.ionicDeployVersion = "N/A"
-        }
-      } else {
-        this.ionicDeployVersion = "Not on mobile device!";
-      }
 
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
