@@ -22,10 +22,15 @@ export class PouchDBProvider {
     }
 
     public static async getPendingMax(url: string) {
-        var externalDBInfo = await PouchDB.default(url).info();
-        var updateSeq = externalDBInfo.update_seq.toString();
-        var firstPortionNumber = updateSeq.indexOf('-')
-        return Number(updateSeq.substring(0, firstPortionNumber));
+        try {
+            var externalDBInfo = await PouchDB.default(url).info();
+            var updateSeq = externalDBInfo.update_seq.toString();
+            var firstPortionNumber = updateSeq.indexOf('-')
+            return Number(updateSeq.substring(0, firstPortionNumber));
+                
+        } catch (error) {
+            return 0;            
+        }
     }
 
     public static getProgress(change, pendingMax) {
