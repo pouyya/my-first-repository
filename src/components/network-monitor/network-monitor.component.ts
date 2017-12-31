@@ -21,11 +21,11 @@ import { Component } from "@angular/core";
   ]
 })
 export class NetworkMonitorComponent {
+
   public networkIcon: string = 'eye';
   public syncIcon: string = 'cloud-outline';
 
   constructor(private network: Network) {
-    this.networkIcon = (this.network || this.network.type === "none") ? "eye-off" : "eye";
     this.network.onDisconnect().subscribe(() => this.networkIcon = "eye-off");
     this.network.onConnect().subscribe(() => this.networkIcon = "eye");
 

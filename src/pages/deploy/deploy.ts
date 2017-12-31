@@ -7,6 +7,7 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { SplashScreen } from '@ionic-native/splash-screen';
 
 @Component({
   selector: 'page-deploy',
@@ -22,7 +23,8 @@ export class DeployPage {
     private platformService: PlatformService,
     private insomnia: Insomnia,
     private ionicProDeployService: IonicProDeployService,
-    private zone: NgZone) {
+    private zone: NgZone,
+    public splashScreen: SplashScreen) {
   }
 
   async ngOnInit() {
@@ -65,8 +67,8 @@ export class DeployPage {
             //extract completed
             this.progressMessage = 'Extract new version done.';
 
+            this.splashScreen.show();
             await this.ionicProDeployService.redirect();
-            await this.navigateToNextPage();
           });
         })
       }
