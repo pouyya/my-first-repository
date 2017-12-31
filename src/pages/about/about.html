@@ -18,8 +18,14 @@
     <ion-item>{{ store }}</ion-item>
   </ion-item-group>
   <ion-item-group>
-    <ion-item-divider color="light">Local Database Name</ion-item-divider>
+    <ion-item-divider color="light">Deploy</ion-item-divider>
     <ion-item>{{ dbInternalName }}</ion-item>
+  </ion-item-group>  
+  <ion-item-group *ngIf="this.deployInfo">
+    <ion-item-divider color="light">Local Database Name</ion-item-divider>
+    <ion-item>Deploy uuid: {{ deployInfo.deploy_uuid }}</ion-item>
+    <ion-item>Deploy channel: {{ deployInfo.channel }}</ion-item>
+    <ion-item>Deploy binary_version: {{ deployInfo.binary_version }}</ion-item>
   </ion-item-group>
   <ion-item-group>
     <ion-item-divider color="light">External Database Name</ion-item-divider>

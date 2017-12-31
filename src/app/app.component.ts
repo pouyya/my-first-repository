@@ -13,10 +13,7 @@ import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
-import { DataSync } from '../pages/dataSync/dataSync';
-import { LoginPage } from '../pages/login/login';
-import { ConfigService } from '../services/configService';
-import { DeployService } from '../services/deployService';
+import { DeployPage } from '../pages/deploy/deploy';
 
 @Component({
   selector: 'app',
@@ -45,8 +42,7 @@ export class SimplePOSApp implements OnInit {
     private cdr: ChangeDetectorRef,
     private securityService: SecurityService,
     private toastController: ToastController,
-    private platformService: PlatformService,
-    private deployService: DeployService
+    private platformService: PlatformService
   ) {
     this._sharedService
       .getSubscribe('storeOrPosChanged')
@@ -61,7 +57,7 @@ export class SimplePOSApp implements OnInit {
           data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
         }
       });
-      
+
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
@@ -72,21 +68,7 @@ export class SimplePOSApp implements OnInit {
   }
 
   async ngOnInit() {
-    try {
-      if (this.platformService.isMobileDevice() && !ConfigService.isDevelopment() && ConfigService.turnOnDeployment()) {
-        await this.deployService.deploy();
-      }
-
-      let user = await this.userService.getDeviceUser();
-      if (this.platformService.isMobileDevice()) {
-        user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
-      }
-      this.rootPage = user ? DataSync : LoginPage;
-      return;
-    } catch (error) {
-      console.error(error);
-      this._errorHandler("An error has occurred.")
-    }
+    this.rootPage = DeployPage;
   }
 
   initializeApp() {
@@ -94,12 +76,6 @@ export class SimplePOSApp implements OnInit {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-  }
-
-  private _errorHandler(error) {
-    this.pluginService.openDialoge(error).catch(e => {
-      throw new Error(e);
-    })
   }
 
   switchRegister() {

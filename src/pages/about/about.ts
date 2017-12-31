@@ -5,6 +5,8 @@ import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { PlatformService } from '../../services/platformService';
+import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
+import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 
 @PageModule(() => BackOfficeModule)
 @Component({
@@ -22,6 +24,7 @@ export class AboutPage {
   public dbServerURL: string;
   public dbServerURL_Critical: string;
   public serverBaseURL: string;
+  public deployInfo: IonicDeployInfo;
 
   /*
   1) Current POS
@@ -36,6 +39,7 @@ export class AboutPage {
     private posService: PosService,
     private storeService: StoreService,
     private platformService: PlatformService,
+    private ionicProDeployService: IonicProDeployService
   ) { }
 
   async ionViewDidLoad() {
@@ -60,6 +64,8 @@ export class AboutPage {
       this.dbServerURL = ConfigService.currentFullExternalDBUrl;
       this.dbServerURL_Critical = ConfigService.currentCriticalFullExternalDBUrl;
       this.serverBaseURL = ConfigService.securityServerBaseUrl();
+      this.deployInfo = this.ionicProDeployService.currentInfo;
+
       return;
     } catch (e) {
       throw new Error(e);

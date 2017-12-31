@@ -126,8 +126,10 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
-import { DeployService } from '../services/deployService';
 import { BrandService } from '../services/brandService';
+import { DeployPage } from '../pages/deploy/deploy';
+import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
+import { ConfigService } from '../services/configService';
 
 
 @NgModule({
@@ -181,7 +183,8 @@ import { BrandService } from '../services/brandService';
     CreateCustomerModal,
     AboutPage,
     Brands,
-    BrandDetails
+    BrandDetails,
+    DeployPage
   ],
   imports: [
     FormsModule,
@@ -217,7 +220,11 @@ import { BrandService } from '../services/brandService';
     ItemPriceBookModule,
     TileScrollableModule,
     GroupEmployeeTimeLogModule,
-    BarcodeScannerModule
+    BarcodeScannerModule,
+    IonicProDeployModule.forRoot({
+      appId: ConfigService.ionicDeployAppId(),
+      channel: ConfigService.ionicDeployAppChannel()
+    }),    
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -271,7 +278,8 @@ import { BrandService } from '../services/brandService';
     CreateCustomerModal,
     AboutPage,
     Brands,
-    BrandDetails
+    BrandDetails,
+    DeployPage
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -307,7 +315,6 @@ import { BrandService } from '../services/brandService';
     PluginService,
     EmployeeTimestampService,
     CustomerService,
-    DeployService,
     AuthService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,

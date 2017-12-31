@@ -279,8 +279,10 @@ export class Sales implements OnDestroy, OnInit {
       });
       this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
       this.activeCategory = _.head(this.categories);
-      this.activeTiles = this.purchasableItems[this.activeCategory._id];
-      this.categoryIdKeys = Object.keys(this.purchasableItems);
+      if (this.activeCategory) {
+        this.activeTiles = this.purchasableItems[this.activeCategory._id];
+        this.categoryIdKeys = Object.keys(this.purchasableItems);
+      }
       return;
     } catch (err) {
       return Promise.reject(err);
