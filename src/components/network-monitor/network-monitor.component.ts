@@ -1,5 +1,5 @@
 import { DBEvent } from './../../db/dbEvent';
-import { DBService } from './../../services/DBService';
+import { DBService } from './../../services/dBService';
 import { Network } from '@ionic-native/network';
 import { Component } from "@angular/core";
 

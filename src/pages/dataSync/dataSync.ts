@@ -9,7 +9,7 @@ import { PosService } from '../../services/posService';
 import { StoreService } from '../../services/storeService';
 import { SharedService } from '../../services/_sharedService';
 import { ConfigService } from '../../services/configService';
-import { DBService } from '../../services/DBService';
+import { DBService } from '../../services/dBService';
 import { Sales } from '../sales/sales';
 import { POS } from '../../model/pos';
 import { Store } from '../../model/store';
