@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { DB } from '../db/db';
 import { EventEmitter } from '@angular/core';
-import { DBBasedEntity } from "../model/DBBasedEntity";
+import { DBBasedEntity } from "../model/dbBasedEntity";
 import { PouchDBProvider } from "../provider/pouchDBProvider";
 import { ConfigService } from './configService';
 import { DBModeEnum } from '../metadata/dbMode';
@@ -102,11 +102,19 @@ export class DBService<T extends DBBasedEntity> {
     }
 
     findBy(selector: any): Promise<Array<T>> {
+
+        if(!selector){
+            selector = {};
+        }
+        
         selector.include_docs = true;
+
         if (!selector.selector) {
             selector.selector = {};
         }
+
         selector.selector.entityTypeName = this.entityTypeInstance.entityTypeName;
+
         return this.query(selector);
     }
 

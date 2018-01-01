@@ -17,7 +17,7 @@ import * as _ from 'lodash';
 
 @Component({
     selector: 'datasync',
-    templateUrl: 'datasync.html'
+    templateUrl: 'dataSync.html'
 })
 export class DataSync {
 

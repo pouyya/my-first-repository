@@ -21,6 +21,7 @@ import { Component } from "@angular/core";
   ]
 })
 export class NetworkMonitorComponent {
+
   public networkIcon: string = 'eye';
   public syncIcon: string = 'cloud-outline';
 

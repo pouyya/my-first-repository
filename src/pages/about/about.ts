@@ -1,11 +1,12 @@
 import { ConfigService } from './../../services/configService';
-import { Deploy } from '@ionic/cloud-angular';
 import { StoreService } from './../../services/storeService';
 import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { PlatformService } from '../../services/platformService';
+import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
+import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 
 @PageModule(() => BackOfficeModule)
 @Component({
@@ -16,7 +17,6 @@ export class AboutPage {
 
   public pos: string;
   public store: string;
-  public ionicDeployVersion: string;
   public dbInternalName: string;
   public dbExternalName: string;
   public dbInternalName_Critical: string;
@@ -24,6 +24,7 @@ export class AboutPage {
   public dbServerURL: string;
   public dbServerURL_Critical: string;
   public serverBaseURL: string;
+  public deployInfo: IonicDeployInfo;
 
   /*
   1) Current POS
@@ -35,10 +36,10 @@ export class AboutPage {
   */
 
   constructor(
-    private deploy: Deploy,
     private posService: PosService,
     private storeService: StoreService,
     private platformService: PlatformService,
+    private ionicProDeployService: IonicProDeployService
   ) { }
 
   async ionViewDidLoad() {
@@ -48,12 +49,6 @@ export class AboutPage {
         this.storeService.getCurrentStore()
       ];
 
-      var isMobileDevice = this.platformService.isMobileDevice();
-
-      if (isMobileDevice) {
-        promises.push(this.deploy.info());
-      }
-
       let result = await Promise.all(promises);
 
       let pos = result[0];
@@ -62,17 +57,6 @@ export class AboutPage {
       this.pos = pos.name;
       this.store = store.name;
 
-      if (isMobileDevice) {
-        let ionicDeployVersion = result[2];
-        if (ionicDeployVersion) {
-          this.ionicDeployVersion = JSON.stringify(ionicDeployVersion);
-        } else {
-          this.ionicDeployVersion = "N/A"
-        }
-      } else {
-        this.ionicDeployVersion = "Not on mobile device!";
-      }
-
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
       this.dbInternalName_Critical = ConfigService.internalCriticalDBName;
@@ -80,6 +64,8 @@ export class AboutPage {
       this.dbServerURL = ConfigService.currentFullExternalDBUrl;
       this.dbServerURL_Critical = ConfigService.currentCriticalFullExternalDBUrl;
       this.serverBaseURL = ConfigService.securityServerBaseUrl();
+      this.deployInfo = this.ionicProDeployService.currentInfo;
+
       return;
     } catch (e) {
       throw new Error(e);

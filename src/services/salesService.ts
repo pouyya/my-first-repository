@@ -9,7 +9,6 @@ import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
 import { CacheService } from './cacheService';
 import { GlobalConstants } from './../metadata/globalConstants';
-import { Store } from './../model/store';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
 import { BasketItem } from './../model/bucketItem';
@@ -53,9 +52,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		let id = localStorage.getItem('invoice_id') || moment().utc().format();
 		if (!posId) posId = user.currentPos;
 		try {
-			let invoices: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
-			if (invoices && invoices.length > 0) {
-				let invoice = invoices[0];
+			let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
+			if (sales && sales.length > 0) {
+				let invoice = sales[0];
 				return { invoice, doRecalculate: invoice.state == 'current' };
 			}
 			return { invoice: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
@@ -315,7 +314,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return;
 	}
 
-	public instantiateRefundSale(originalSale: Sale, store: Store): Sale {
+	public instantiateRefundSale(originalSale: Sale): Sale {
 		let sale = new Sale();
 		sale._id = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSSS');
 		sale.posID = originalSale.posID;
@@ -327,7 +326,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.completed = false;
 		sale.customerKey = originalSale.customerKey;
 		sale.state = 'refund';
-		sale.receiptNo = this.fountainService.getReceiptNumber(store);
 		sale.payments = [];
 		// set pre values to negative. The inserted ones after that will be positive
 		sale.appliedValues = _.map(_.cloneDeep(originalSale.appliedValues), value => {

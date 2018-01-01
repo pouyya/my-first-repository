@@ -1,6 +1,6 @@
 {
   "name": "SimplePOS",
-  "app_id": "5bf5f6a2",
+  "app_id": "22d41469",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

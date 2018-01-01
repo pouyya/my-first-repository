@@ -29,7 +29,7 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
     return this.dbService.add(entityCopy);
   }
 
-  update(entity: T) {
+  update(entity: T): Promise<T> {
     return this.dbService.update(entity);
   }
 

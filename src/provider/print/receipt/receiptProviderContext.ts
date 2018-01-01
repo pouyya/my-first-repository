@@ -1,4 +1,4 @@
-import { Sale } from "../model/sale";
+import { Sale } from "../../../model/sale";
 
 export class ReceiptProviderContext {
 

@@ -116,20 +116,17 @@ export class ClockInOutPage {
    * After Enter
    */
   async ionViewDidEnter() {
-    let loader = this.loading.create({
-      content: 'Please Wait...',
-    });
-
-    let finishLoading = () => {
-      this.dataLoaded = true;
-      loader.dismiss();
-    }
-
-    await loader.present();
 
     if (!this.posStatus) {
       return;
     }
+    
+    let loader = this.loading.create({
+      content: 'Please Wait...',
+    });
+
+
+    await loader.present();
 
     let clockInBtn: any = {
       next: EmployeeTimestampService.CLOCK_IN,
@@ -181,7 +178,8 @@ export class ClockInOutPage {
       this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
     }
 
-    return finishLoading();
+    this.dataLoaded = true;
+    await loader.dismiss();
   }
 
   /**

@@ -44,6 +44,7 @@ export class DB {
                     // handle complete
                 }).on('error', (err) => {
                     // handle error
+                    this.dbSyncProgress.emit(new DBEvent(false, 1));
                 });
 
                 this._db.createIndex({

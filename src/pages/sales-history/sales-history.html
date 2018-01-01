@@ -66,8 +66,8 @@
       </ion-grid>
     </ion-item>
   </ion-list>
-  <ion-list *ngIf="invoices.length > 0">
-    <ion-item *ngFor="let invoice of invoices; let $index = index" [ngClass]="{active: isItemShown(invoice._id)}">
+  <ion-list *ngIf="sales.length > 0">
+    <ion-item *ngFor="let invoice of sales; let $index = index" [ngClass]="{active: isItemShown(invoice._id)}">
       <ion-grid>
         <ion-row (click)="toggleItem(invoice)">
           <ion-col col-md-2>{{invoice.created | localDate:'M/d/yy, h:mm a'}}</ion-col>

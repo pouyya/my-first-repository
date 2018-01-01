@@ -71,14 +71,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "ionic-plugin-deploy": {
-    "source": {
-      "type": "registry",
-      "id": "ionic-plugin-deploy@~0.6.7"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-firebase": {
     "source": {
       "type": "registry",
@@ -127,12 +119,31 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-network-information": {
+  "cordova-plugin-ionic": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-network-information"
+      "id": "cordova-plugin-ionic@~2.0.3"
     },
     "is_top_level": true,
-    "variables": {}
+    "variables": {
+      "APP_ID": "22d41469",
+      "CHANNEL_NAME": "Master",
+      "UPDATE_METHOD": "none"
+    }
+  },
+  "cordova-plugin-add-swift-support": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-add-swift-support@^1.6.1"
+    },
+    "is_top_level": false,
+    "cordova-plugin-network-information": {
+      "source": {
+        "type": "registry",
+        "id": "cordova-plugin-network-information"
+      },
+      "is_top_level": true,
+      "variables": {}
+    }
   }
 }

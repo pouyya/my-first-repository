@@ -21,7 +21,7 @@ import { Customer } from '../../model/customer';
 })
 export class SalesHistoryPage {
 
-  public invoices: any[];
+  public sales: any[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
   public states: any;
@@ -37,7 +37,7 @@ export class SalesHistoryPage {
   private total: number;
   private shownItem: any = null;
   private customersSearchHash: any = {};
-  private invoicesBackup: any[];
+  private salesBackup: any[];
   private filters: any = {
     customerName: false,
     receiptNo: false,
@@ -56,8 +56,8 @@ export class SalesHistoryPage {
     private loading: LoadingController,
     private printService: PrintService
   ) {
-    this.invoices = [];
-    this.invoicesBackup = [];
+    this.sales = [];
+    this.salesBackup = [];
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.total = 0;
@@ -85,8 +85,8 @@ export class SalesHistoryPage {
       await this.platform.ready();
       this.total = result.totalCount;
       this.offset += this.limit;
-      this.invoices = await this.attachCustomersToSales(result.docs);
-      this.invoicesBackup = this.invoices;
+      this.sales = await this.attachCustomersToSales(result.docs);
+      this.salesBackup = this.sales;
       loader.dismiss();
     } catch (err) {
       throw new Error(err);
@@ -161,11 +161,11 @@ export class SalesHistoryPage {
   }
 
   public async searchBy(event: any, key: string) {
-    this.invoices = this.invoicesBackup;
+    this.sales = this.salesBackup;
     this.filters[key] = event.target.value || false;
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
-    this.invoices = [];
+    this.sales = [];
     await this.fetchMoreSales();
   }
 
@@ -186,11 +186,11 @@ export class SalesHistoryPage {
 
   public async searchByCustomer(customer: Customer) {
     this.searchedCustomers = [];
-    this.invoices = this.invoicesBackup;
+    this.sales = this.salesBackup;
     this.filters.customerKey = customer._id;
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
-    this.invoices = [];
+    this.sales = [];
     await this.fetchMoreSales();
   }
 
@@ -199,7 +199,7 @@ export class SalesHistoryPage {
       delete this.filters.customerKey;
       this.limit = this.defaultLimit;
       this.offset = this.defaultOffset;
-      this.invoices = [];
+      this.sales = [];
       await this.fetchMoreSales();
     }
 
@@ -207,7 +207,7 @@ export class SalesHistoryPage {
   }
 
   public searchByStatus() {
-    this.invoices = this.invoicesBackup;
+    this.sales = this.salesBackup;
     switch (this.selectedStatus) {
       case 'parked':
         this.filters.state = 'parked';
@@ -232,32 +232,32 @@ export class SalesHistoryPage {
     }
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
-    this.invoices = [];
+    this.sales = [];
     this.fetchMoreSales().catch((error) => {
       console.error(error);
     });
   }
 
   private async getSales(limit?: number, offset?: number): Promise<any> {
-    if (this.invoices.length <= 0) {
+    if (this.sales.length <= 0) {
       let result = await this.salesService.searchSales(
         this.user.currentPos,
         limit | this.limit, offset | this.offset,
         this.filters);
       if (result.totalCount > 0) {
         this.total = result.totalCount;
-        this.invoices = await this.attachCustomersToSales(result.docs);
-        this.invoicesBackup = this.invoices;
+        this.sales = await this.attachCustomersToSales(result.docs);
+        this.salesBackup = this.sales;
       }
     } else {
-      if (this.total > this.invoices.length) {
+      if (this.total > this.sales.length) {
         let result: any = await this.salesService.searchSales(
           this.user.currentPos,
           limit | this.limit, offset | this.offset,
           this.filters);
-        let invoices = await this.attachCustomersToSales(result.docs);
-        this.invoices = this.invoices.concat(invoices);
-        this.invoicesBackup = this.invoices;
+        let sales = await this.attachCustomersToSales(result.docs);
+        this.sales = this.sales.concat(sales);
+        this.salesBackup = this.sales;
       }
     }
   }
@@ -265,8 +265,7 @@ export class SalesHistoryPage {
   private async loadSale(invoice: Sale, doRefund: boolean) {
     let newInvoice: Sale;
     if (doRefund && invoice.completed && invoice.state == 'completed') {
-      let store = await this.storeService.get(this.user.currentStore);
-      newInvoice = this.salesService.instantiateRefundSale(invoice, store);
+      newInvoice = this.salesService.instantiateRefundSale(invoice);
       return newInvoice;
     } else {
       newInvoice = await Promise.resolve({ ...invoice });
@@ -285,22 +284,22 @@ export class SalesHistoryPage {
     }
   }
 
-  private async attachCustomersToSales(invoices) {
+  private async attachCustomersToSales(sales) {
     let customerPromises: any[] = [];
-    invoices.forEach((invoice, index) => {
+    sales.forEach((invoice, index) => {
       customerPromises.push(new Promise((resolve, reject) => {
         if (this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
-          invoices[index].customer = this.customersSearchHash[invoice.customerKey];
+          sales[index].customer = this.customersSearchHash[invoice.customerKey];
           resolve();
         } else {
           this.customerService.get(invoice.customerKey).then(customer => {
-            invoices[index].customer = customer;
+            sales[index].customer = customer;
             if (!this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
               this.customersSearchHash[invoice.customerKey] = customer;
             }
             resolve();
           }).catch(err => {
-            invoices[index].customer = null;
+            sales[index].customer = null;
             resolve();
           });
         }
@@ -308,6 +307,6 @@ export class SalesHistoryPage {
     });
 
     await Promise.all(customerPromises);
-    return invoices;
+    return sales;
   }
 }

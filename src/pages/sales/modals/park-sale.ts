@@ -1,4 +1,3 @@
-import { Store } from './../../../model/store';
 import { StoreService } from './../../../services/storeService';
 import { UserService } from './../../../services/userService';
 import { FountainService } from './../../../services/fountainService';
@@ -33,23 +32,12 @@ export class ParkSale {
   }
 
   public async parkIt() {
-    let user = await this.userService.getUser();
-    var doPark = () => {
+    var doPark = async () => {
       localStorage.removeItem('invoice_id');
 
-      this.storeService.get(user.currentStore).then((store: Store) => {
-        this.invoice.state = 'parked';
-        !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(store));
-        this.salesService.update(this.invoice).then(() => {
-          this.viewCtrl.dismiss({ status: true, error: false });
-        }).catch(error => {
-          console.log(new Error(error));
-          this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
-        });
-      }).catch(error => {
-        console.log(new Error(error));
-        this.viewCtrl.dismiss({ status: false, error: "There was an Error parking your invoice." });
-      });
+      this.invoice.state = 'parked';
+      await this.salesService.update(this.invoice);
+      this.viewCtrl.dismiss({ status: true, error: false });
     }
 
     if (!this.invoice.notes || this.invoice.notes == "") {
@@ -59,14 +47,14 @@ export class ParkSale {
         buttons: [
           {
             'text': 'Yes',
-            handler: () => doPark()
+            handler: () => { doPark(); }
           },
           'No'
         ]
       });
       confirm.present();
     } else {
-      doPark();
+      await doPark();
     }
   }
 }

@@ -9,11 +9,11 @@ import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
 import { ModuleBase } from "../modules/moduelBase";
-import { DeployPage } from "../pages/deploy/deploy";
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
+import { DeployPage } from '../pages/deploy/deploy';
 
 @Component({
   selector: 'app',
@@ -57,7 +57,7 @@ export class SimplePOSApp implements OnInit {
           data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
         }
       });
-      
+
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
@@ -68,30 +68,22 @@ export class SimplePOSApp implements OnInit {
   }
 
   async ngOnInit() {
-    try {
-      var user = await this.userService.getDeviceUser();
-      this.rootPage = DeployPage;
-      if (this.platformService.isMobileDevice()) {
-        user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
-      }
-      return;
-    } catch (error) {
-      console.error(error);
-      this._errorHandler("An error has occurred.")
-    }
+    this.rootPage = DeployPage;
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      this.hideSplashScreen();
     });
   }
 
-  private _errorHandler(error) {
-    this.pluginService.openDialoge(error).catch(e => {
-      throw new Error(e);
-    })
+  hideSplashScreen() {
+    if (this.splashScreen) {
+      setTimeout(() => {
+        this.splashScreen.hide();
+      }, 100);
+    }
   }
 
   switchRegister() {

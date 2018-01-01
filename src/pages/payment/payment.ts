@@ -85,7 +85,7 @@ export class PaymentsPage {
     }
   }
 
-  private calculateBalance() {
+  private async calculateBalance() {
     var totalPayments = 0;
     if (!this.doRefund) {
       if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
@@ -97,7 +97,7 @@ export class PaymentsPage {
       this.amount = this.invoice.taxTotal - totalPayments;
       this.balance = this.amount;
       // Check for payment completion
-      totalPayments >= this.invoice.taxTotal && (this.completeSale(totalPayments));
+      totalPayments >= this.invoice.taxTotal && (await this.completeSale(totalPayments));
     } else {
       this.balance = this.amount = this.invoice.taxTotal;
     }
@@ -124,7 +124,7 @@ export class PaymentsPage {
     }
   }
 
-  private addPayment(type: string, payment: number) {
+  private async addPayment(type: string, payment: number) {
     if (!this.invoice.payments) {
       this.invoice.payments = [];
     }
@@ -133,7 +133,7 @@ export class PaymentsPage {
       amount: Number(payment)
     });
 
-    this.calculateBalance();
+    await this.calculateBalance();
   }
 
   private async completeRefund(payment: number, type: string) {
@@ -151,7 +151,7 @@ export class PaymentsPage {
       this.invoice.completed = true;
       this.invoice.completedAt = moment().utc().format();
       this.balance = 0;
-      !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
+      this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
       loader.dismiss();
       this.printInvoice();
     }
@@ -164,7 +164,7 @@ export class PaymentsPage {
     this.invoice.completed = true;
     this.invoice.completedAt = moment().utc().format();
     this.invoice.state = 'completed';
-    !this.invoice.receiptNo && (this.invoice.receiptNo = this.fountainService.getReceiptNumber(this.store));
+    this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
     payments != 0 && (this.change = payments - this.invoice.taxTotal);
     loader.dismiss();
     this.printInvoice();

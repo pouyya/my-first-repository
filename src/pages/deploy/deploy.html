@@ -1,14 +1,15 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Loading</ion-title>
+    <ion-title class="ion-title-center">Deploy New version</ion-title>
   </ion-navbar>
 
 </ion-header>
 
+
 <ion-content padding>
-	<div text-center>
-		<p>{{ updateText }}</p>
-		<ion-spinner name="bubbles"></ion-spinner>
-	</div>
+  <div text-center>
+    <h2 class="message" text-center>{{ progressMessage }}</h2>
+    <ion-spinner name="bubbles"></ion-spinner>
+</div>  
 </ion-content>

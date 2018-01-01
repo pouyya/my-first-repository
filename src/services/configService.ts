@@ -52,7 +52,7 @@ export class ConfigService {
     }
 
     static isDevelopment(): boolean {
-        return true;
+        return false;
     }
 
     static turnOnDeployment(): boolean {
@@ -94,4 +94,12 @@ export class ConfigService {
         return 'usermedihair_aria';
         // return 'user' + ConfigService.internalDBName;
     }
+
+    static ionicDeployAppId() : string {
+        return "22d41469";
+    }
+
+    static ionicDeployAppChannel() : string {
+        return "Master";
+    }    
 }
