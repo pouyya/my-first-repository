@@ -1,3 +1,17 @@
 login {
+    .login-content{
+        background-image : url('/assets/img/login-bg.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
 
+    .login-box{
+        width: 50%;
+        background-color:#0A192A;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        /* bring your own prefixes */
+        transform: translate(-50%, -50%);        
+    }
 }

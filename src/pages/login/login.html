@@ -9,7 +9,7 @@
   <ion-grid class="login-box">
     <form (ngSubmit)="login()" #registerForm="ngForm">
       <ion-row>
-        <ion-col col-md-6 offset-md-3>
+        <ion-col col-md-12>
           <ion-list inset>
             <ion-item>
               <ion-input type="text" placeholder="Email" name="email" [(ngModel)]="email" required></ion-input>
@@ -19,14 +19,12 @@
             </ion-item>
           </ion-list>
         </ion-col>
-        <ion-col col-md-3></ion-col>
       </ion-row>
 
       <ion-row>
-        <ion-col col-md-6 offset-md-3 class="signup-col">
+        <ion-col col-md-12 class="signup-col">
           <button ion-button class="submit-btn" full type="submit" [disabled]="!registerForm.form.valid">Login</button>
         </ion-col>
-        <ion-col col-md-3></ion-col>
       </ion-row>
 
       <ion-row>
