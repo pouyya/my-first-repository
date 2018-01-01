@@ -23,7 +23,6 @@ import { SalesTax } from './../../model/salesTax';
 import { PriceBook } from './../../model/priceBook';
 import { Customer } from './../../model/customer';
 import { PurchasableItem } from './../../model/purchasableItem';
-import { Reason, StockHistory } from './../../model/stockHistory';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
