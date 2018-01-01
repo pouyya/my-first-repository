@@ -13,16 +13,6 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     super(StockHistory);
   }
 
-  public async getByProduct(productId: string): Promise<StockHistory[]> {
-    try {
-      return await this.findBy({
-        selector: { productId }
-      });
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
-
   public async getByStoreAndProductId(storeId: string, productId: string): Promise<StockHistory[]> {
     try {
       return await this.findBy({
@@ -62,6 +52,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
   }
 
   public async getProductsTotalStockValueByStore(productIds: string[], storeId: string): Promise<{ [id: string]: number }> {
+
     if (productIds.length > 0) {
       let stockPromises: Promise<any>[] = productIds.map(id => this.getByStoreAndProductId(storeId, id));
       let productStocks: any[] = await Promise.all(stockPromises);
@@ -74,13 +65,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 
     return {};
   }
-
-  /**
-   * @factory
-   * @param productId 
-   * @param storeId 
-   * @param value 
-   */
+  
   public static createStockForSale(productId: string, storeId: string, value: number): StockHistory {
     let stock = new StockHistory();
     stock.createdAt = moment().utc().format();

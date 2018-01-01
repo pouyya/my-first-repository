@@ -65,11 +65,6 @@ export class TypeHelper {
 		}
 	}
 
-	/**
-	 * Conver ENUM to Object
-	 * @param Enum 
-	 * @returns {Object}
-	 */
 	static enumToObject(G: any, type: string = 'number'): any {
 		let obj: any = {}
 
