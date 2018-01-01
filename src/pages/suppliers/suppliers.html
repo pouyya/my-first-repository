@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Suppliers</ion-title>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="view()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-searchbar debounce="500" animated="true" placeholder="Search by Supplier Name" (ionInput)="search($event)">
+  </ion-searchbar>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-4>
+            <strong>Supplier Name</strong>
+          </ion-col>
+          <ion-col col-md-3>
+            <strong>Phone</strong>
+          </ion-col>
+          <ion-col col-md-3>
+            <strong>Email</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Products Assigned</strong>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let supplier of suppliers; let i = index;" (click)="view(supplier)">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>{{ supplier.name }}</ion-col>
+          <ion-col col-md-3>{{ supplier.phone }}</ion-col>
+          <ion-col col-md-2>{{ supplier.email }}</ion-col>
+          <ion-col col-md-2>{{ supplier.associateProducts }}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

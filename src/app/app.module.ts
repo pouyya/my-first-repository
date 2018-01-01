@@ -69,6 +69,8 @@ import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
+import { Suppliers } from '../pages/suppliers/suppliers';
+import { SupplierDetails } from './../pages/supplier-details/supplier-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -130,7 +132,7 @@ import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
-
+import { SupplierService } from '../services/supplierService';
 
 @NgModule({
   declarations: [
@@ -184,7 +186,9 @@ import { ConfigService } from '../services/configService';
     AboutPage,
     Brands,
     BrandDetails,
-    DeployPage
+    DeployPage,
+    Suppliers,
+    SupplierDetails
   ],
   imports: [
     FormsModule,
@@ -279,7 +283,9 @@ import { ConfigService } from '../services/configService';
     AboutPage,
     Brands,
     BrandDetails,
-    DeployPage
+    DeployPage,
+    Suppliers,
+    SupplierDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -329,7 +335,8 @@ import { ConfigService } from '../services/configService';
     LocalDatePipe,
     authProvider,
     PlatformService,
-    AccountSettingService
+    AccountSettingService,
+    SupplierService
   ]
 })
 export class AppModule {

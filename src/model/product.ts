@@ -6,6 +6,7 @@ export class Product extends PurchasableItem {
   public sku?: string; // stock keeping unit
   public inStock?: number | boolean;
   public brandId: string; // Brand Model
+  public supplierId?: string; // Supplier
   public tag: string;
 
   constructor() {
