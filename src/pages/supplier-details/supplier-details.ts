@@ -92,6 +92,5 @@ export class SupplierDetails {
     props.forEach((prop, index) => {
       this.supplier[`${copyToPrefix}${prop}`] = event.value ? this.supplier[`${copyFromPrefix}${prop}`] : '';
     });
-    console.warn(this.supplier);
   }
 }

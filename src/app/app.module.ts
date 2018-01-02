@@ -72,6 +72,10 @@ import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
 import { SupplierDetails } from './../pages/supplier-details/supplier-details';
+import { Orders } from '../pages/orders/orders';
+import { OrderDetails } from './../pages/order-details/order-details';
+import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAndStore/addSupplierAndStore';
+import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -136,6 +140,8 @@ import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
 import { SupplierService } from '../services/supplierService';
+import { ReceivedOrderService } from './../services/receivedOrderService';
+import { OrderService } from './../services/orderService';
 
 @NgModule({
   declarations: [
@@ -193,7 +199,11 @@ import { SupplierService } from '../services/supplierService';
     BrandDetails,
     DeployPage,
     Suppliers,
-    SupplierDetails
+    SupplierDetails,
+    Orders,
+    OrderDetails,
+    AddSupplierAndStore,
+    CreateSupplier
   ],
   imports: [
     FormsModule,
@@ -292,7 +302,11 @@ import { SupplierService } from '../services/supplierService';
     BrandDetails,
     DeployPage,
     Suppliers,
-    SupplierDetails
+    SupplierDetails,
+    Orders,
+    OrderDetails,
+    AddSupplierAndStore,
+    CreateSupplier
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -344,7 +358,9 @@ import { SupplierService } from '../services/supplierService';
     authProvider,
     PlatformService,
     AccountSettingService,
-    SupplierService
+    SupplierService,
+    OrderService,
+    ReceivedOrderService
   ]
 })
 export class AppModule {

@@ -1,17 +1,16 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>{{action}} Suppliers</ion-title>
-    <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="supplierForm.ngSubmit.emit()" [disabled]="!supplierForm.form.valid">
-        Save
-      </button>
-      <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
-        <ion-icon name="trash"></ion-icon>
+  <ion-toolbar>
+    <ion-title>
+      <small>Add a Supplier</small>
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-buttons end network-monitor></ion-buttons>
-  </ion-navbar>
+  </ion-toolbar>
 </ion-header>
+
 <ion-content>
   <form (ngSubmit)="save()" #supplierForm="ngForm">
     <ion-list-header>Details</ion-list-header>
@@ -85,9 +84,9 @@
       </ion-item>
     </ion-list>
     <ion-item>
-        <ion-label>Same as Postal Address ?</ion-label>
-        <ion-checkbox (ionChange)="makePostalSametoPhysical($event)" [checked]="postalSameAsPhysical" name="sameAsPhysical"></ion-checkbox>
-      </ion-item>
+      <ion-label>Same as Postal Address ?</ion-label>
+      <ion-checkbox (ionChange)="makePostalSametoPhysical($event)" [checked]="postalSameAsPhysical" name="sameAsPhysical"></ion-checkbox>
+    </ion-item>
 
     <div *ngIf="!postalSameAsPhysical">
       <ion-list-header>Postal Address</ion-list-header>
@@ -122,4 +121,8 @@
       </ion-list>
     </div>
   </form>
-  </ion-content>
+</ion-content>
+
+<ion-footer>
+  <button ion-button class="pull-right" (click)="supplierForm.ngSubmit.emit()" [disabled]="!supplierForm.form.valid">Create</button>
+</ion-footer>

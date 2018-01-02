@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Create Order</ion-title>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-9>
+        <p class="center-message">You haven't added any products to your order yet</p>
+        <ion-row>
+          <ion-col col-md-6 offset-md-3>
+            <button ion-button block color="primary" (click)="addProduct()">+ Add Product</button>
+          </ion-col>
+          <ion-col col-md-3></ion-col>
+        </ion-row>
+      </ion-col>
+      <ion-col col-md-3>
+        <ion-card>
+          <ion-card-header>
+            {{ supplier.name }}
+          </ion-card-header>
+          <ion-card-content>
+            <h6>Deliver To</h6>
+            <h5>{{ store.name }}</h5>
+            <p>
+              <strong>{{ store.street }}</strong>
+            </p>
+            <p>
+              <strong>{{ store.suburb }}</strong>
+            </p>
+            <p>
+              <strong>{{ store.city }}</strong>
+            </p>
+            <p>
+              <strong>{{ store.state }}, {{ store.country }}, {{ store.postCode }}</strong>
+            </p>
+          </ion-card-content>
+
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

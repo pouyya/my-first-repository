@@ -5,6 +5,7 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { SecurityGuard } from '../metadata/securityGuardModule';
 import { Brands } from '../pages/brands/brands';
 import { Suppliers } from '../pages/suppliers/suppliers';
+import { Orders } from '../pages/orders/orders';
 
 @SecurityGuard(['BackOffice'])
 export class InventoryModule implements ModuleBase {
@@ -17,7 +18,7 @@ export class InventoryModule implements ModuleBase {
     { title: 'Brands', icon: 'cash', component: Brands },
     { title: 'Products', icon: 'pricetags', component: Products },
     { title: 'Suppliers', icon: 'contacts', component: Suppliers },
-    { title: 'Orders', icon: 'cash', component: Category },
+    { title: 'Orders', icon: 'cash', component: Orders },
     { title: 'Stock Control', icon: 'cash', component: Category },
     { title: 'Back Office', icon: 'build', component: HomePage },
   ];
