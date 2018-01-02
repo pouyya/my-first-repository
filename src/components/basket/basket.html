@@ -25,10 +25,10 @@
       </ion-list>
     </ion-col>
     <ion-col col-md-3 class="pull-right">
-      <button ion-button clear (click)="parkSale()" [disabled]="!invoice.customerKey && invoice.items.length == 0">
+      <button ion-button clear (click)="parkSale()" [disabled]="!sale.customerKey && sale.items.length == 0">
         <ion-icon name="pause"></ion-icon>
       </button>
-      <button ion-button clear (click)="discardSale()" [disabled]="!invoice.customerKey && invoice.items.length == 0">
+      <button ion-button clear (click)="discardSale()" [disabled]="!sale.customerKey && sale.items.length == 0">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-col>
@@ -40,7 +40,7 @@
     <ion-col col-12>
       <ion-list>
         <!-- Items in the bucket [start] -->
-        <ion-item *ngFor="let item of invoice.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''">
+        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''">
 
           <ion-grid>
             <ion-row (click)="viewInfo(item, $index)">
@@ -78,7 +78,7 @@
   <ion-row>
     <ion-col col-md-12>
       <hr/>
-      <ion-textarea [(ngModel)]="invoice.notes" rows="1" (change)="syncInvoice()" placeholder="Add Sale Notes...">
+      <ion-textarea [(ngModel)]="sale.notes" rows="1" (change)="syncSale()" placeholder="Add Sale Notes...">
       </ion-textarea>
     </ion-col>
     <ion-col col-md-3>
@@ -89,20 +89,20 @@
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-3 [ngPlural]="invoice.items.length">
+    <ion-col col-md-3 [ngPlural]="sale.items.length">
       <ng-template ngPluralCase="=0">Tax</ng-template>
       <ng-template ngPluralCase="=1">Tax
-        <small>({{invoice.items[0].tax.name}})</small>
+        <small>({{sale.items[0].tax.name}})</small>
       </ng-template>
       <ng-template ngPluralCase="other">Tax
-        <small>({{invoice.items.length}} taxes)</small>
+        <small>({{sale.items.length}} taxes)</small>
       </ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.tax | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.tax | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-3 [ngPlural]="invoice.items.length">
+    <ion-col col-md-3 [ngPlural]="sale.items.length">
       <ng-template ngPluralCase="=0">Total
         <small>(no items)</small>
       </ng-template>
@@ -110,12 +110,12 @@
         <small>(1 item)</small>
       </ng-template>
       <ng-template ngPluralCase="other">Total
-        <small>({{invoice.items.length}} items)</small>
+        <small>({{sale.items.length}} items)</small>
       </ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-12 no-padding>
-      <button ion-button danger small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': invoice.taxTotal > 0, 'return': invoice.taxTotal < 0 }">
+      <button ion-button danger small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': sale.taxTotal > 0, 'return': sale.taxTotal < 0 }">
         <span class="button-inner pull-right">
           {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
         </span>

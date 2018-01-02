@@ -67,6 +67,7 @@ import { CreateCustomerModal } from './../components/basket/modals/create-custom
 import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
+import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
 import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
@@ -128,6 +129,8 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { AccountSettingService } from '../services/accountSettingService';
+import { StockHistoryService } from './../services/stockHistoryService';
+import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
@@ -184,6 +187,8 @@ import { SupplierService } from '../services/supplierService';
     CustomerDetails,
     CreateCustomerModal,
     AboutPage,
+    StockIncreaseModal,
+    StockDecreaseModal,
     Brands,
     BrandDetails,
     DeployPage,
@@ -281,6 +286,8 @@ import { SupplierService } from '../services/supplierService';
     CustomerDetails,
     CreateCustomerModal,
     AboutPage,
+    StockIncreaseModal,
+    StockDecreaseModal,
     Brands,
     BrandDetails,
     DeployPage,
@@ -320,6 +327,7 @@ import { SupplierService } from '../services/supplierService';
     SecurityService,
     PluginService,
     EmployeeTimestampService,
+    StockHistoryService,
     CustomerService,
     AuthService,
     StoreEvaluationProvider,

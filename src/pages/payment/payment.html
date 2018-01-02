@@ -20,12 +20,12 @@
             <hr/>
 
             <ion-col col-md-12 text-left>
-              <span>{{invoice.items.length}} item(s)</span>
+              <span>{{sale.items.length}} item(s)</span>
             </ion-col>
 
             <ion-col col-md-12>
               <ion-list>
-                <ion-item *ngFor="let item of invoice.items">
+                <ion-item *ngFor="let item of sale.items">
                   <ion-grid>
                     <ion-row>
                       <ion-col col-md-1>{{item.quantity}}</ion-col>
@@ -41,9 +41,9 @@
                 <ion-row>
 
                   <ion-col col-md-4>Sub-total</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.subTotal | number : '1.2-2'}}</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
                   <ion-col col-md-4>Total Tax (GST)</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal - invoice.subTotal | number : '1.2-2'}}</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.taxTotal - sale.subTotal | number : '1.2-2'}}</ion-col>
                 </ion-row>
               </ion-grid>
 
@@ -51,12 +51,12 @@
               <ion-grid>
                 <ion-row>
                   <ion-col col-md-4>Total</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{invoice.taxTotal | number : '1.2-2'}}</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
                 </ion-row>
               </ion-grid>
 
-              <ion-list *ngIf="invoice.payments && invoice.payments.length > 0">
-                <ion-item *ngFor="let payment of invoice.payments">
+              <ion-list *ngIf="sale.payments && sale.payments.length > 0">
+                <ion-item *ngFor="let payment of sale.payments">
                   <ion-grid>
                     <ion-row>
                       <ion-col col-md-4>Payment ({{payTypes[payment.type].text}})</ion-col>
@@ -95,7 +95,7 @@
 
       <!-- Payment :start: -->
       <ion-col col-md-7>
-        <ion-grid *ngIf="!invoice.completed">
+        <ion-grid *ngIf="!sale.completed">
           <ion-row>
             <ion-col col-md-3>
               <h2>{{ doRefund ? 'Return' : 'Pay' }}</h2>
@@ -113,13 +113,13 @@
             </ion-col>
 
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith('cash')" [disabled]="invoice.completed && !doRefund">Cash</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith().cash()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Cash</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith('credit_card')" [disabled]="invoice.completed && !doRefund">Credit Card</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWith().creditCard()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Credit Card</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block [disabled]="invoice.completed">Gift Card</button>
+              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block disabled>Gift Card</button>
             </ion-col>
 
           </ion-row>
@@ -127,19 +127,19 @@
 
         <ion-grid>
           <ion-row>
-            <ion-col col-md-12 text-center *ngIf="invoice.completed && !doRefund">
+            <ion-col col-md-12 text-center *ngIf="sale.completed && !doRefund">
               <h1>
                 <ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete</h1>
               <h5 *ngIf="change > 0">Issue change of ${{change | number : '1.2-2'}}</h5>
             </ion-col>
-            <ion-col col-md-12 text-center *ngIf="invoice.completed && doRefund">
+            <ion-col col-md-12 text-center *ngIf="sale.completed && doRefund">
               <h1>
                 <ion-icon name="checkmark-circle-outline"></ion-icon> Refund Complete</h1>
             </ion-col>
           </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="invoice.completed">
+        <ion-grid *ngIf="sale.completed && stockErrors.length == 0">
           <ion-row>
             <ion-col col-md-12>
 
@@ -147,7 +147,7 @@
                 <ion-row>
                   <ion-col col-md-3></ion-col>
                   <ion-col col-md-6 class="content-center">
-                    <a href="#" (click)="printInvoice()">
+                    <a href="#" (click)="printSale()">
                       <ion-icon name="print" class="link-payment"></ion-icon> Print Recipt</a>&nbsp;
                     <a href="#">
                       <ion-icon name="cube" class="link-payment-payment"></ion-icon> Gift Recipt</a>
@@ -174,7 +174,7 @@
             </ion-col>
 
             <ion-col col-md-12>
-              <button ion-button color="secondary" block large (click)="clearInvoice()">Done</button>
+              <button ion-button color="secondary" block large (click)="clearSale()">Done</button>
             </ion-col>
           </ion-row>
         </ion-grid>

@@ -67,33 +67,33 @@
     </ion-item>
   </ion-list>
   <ion-list *ngIf="sales.length > 0">
-    <ion-item *ngFor="let invoice of sales; let $index = index" [ngClass]="{active: isItemShown(invoice._id)}">
+    <ion-item *ngFor="let sale of sales; let $index = index" [ngClass]="{active: isItemShown(sale._id)}">
       <ion-grid>
-        <ion-row (click)="toggleItem(invoice)">
-          <ion-col col-md-2>{{invoice.created | localDate:'M/d/yy, h:mm a'}}</ion-col>
-          <ion-col col-md-1>{{invoice.receiptNo}}</ion-col>
+        <ion-row (click)="toggleItem(sale)">
+          <ion-col col-md-2>{{sale.created | localDate:'M/d/yy, h:mm a'}}</ion-col>
+          <ion-col col-md-1>{{sale.receiptNo}}</ion-col>
           <ion-col col-md-2>-</ion-col>
-          <ion-col col-md-2 *ngIf="invoice.customer">{{invoice.customer.firstName}} {{invoice.customer.lastName}}</ion-col>
-          <ion-col col-md-2 *ngIf="!invoice.customer">-</ion-col>
-          <ion-col col-md-2>{{invoice.notes}}</ion-col>
-          <ion-col col-md-1>${{invoice.taxTotal}}</ion-col>
+          <ion-col col-md-2 *ngIf="sale.customer">{{sale.customer.firstName}} {{sale.customer.lastName}}</ion-col>
+          <ion-col col-md-2 *ngIf="!sale.customer">-</ion-col>
+          <ion-col col-md-2>{{sale.notes}}</ion-col>
+          <ion-col col-md-1>${{sale.taxTotal}}</ion-col>
           <ion-col col-md-1>
-            <strong>{{getState(invoice)}}</strong>
+            <strong>{{getState(sale)}}</strong>
           </ion-col>
           <ion-col col-md-1 class="clickable">
-            <ion-icon name="print" text-center *ngIf="invoice.state == 'completed'" (click)="printSale(invoice)"></ion-icon>
-            <ion-icon name="refresh" text-center *ngIf="invoice.state == 'completed'" (click)="gotoSales(invoice, true, $index)"></ion-icon>
-            <ion-icon name="share-alt" text-center *ngIf="invoice.state == 'parked'" (click)="gotoSales(invoice, false, $index)"></ion-icon>
+            <ion-icon name="print" text-center *ngIf="sale.state == 'completed'" (click)="printSale(sale)"></ion-icon>
+            <ion-icon name="refresh" text-center *ngIf="sale.state == 'completed'" (click)="gotoSales(sale, true, $index)"></ion-icon>
+            <ion-icon name="share-alt" text-center *ngIf="sale.state == 'parked'" (click)="gotoSales(sale, false, $index)"></ion-icon>
           </ion-col>
         </ion-row>
       </ion-grid>
-      <div *ngIf="isItemShown(invoice._id)">
+      <div *ngIf="isItemShown(sale._id)">
         <hr/>
-        <ion-grid *ngIf="!invoice.completed">
+        <ion-grid *ngIf="!sale.completed">
           <ion-row>
             <ion-col col-md-10>
               <ion-grid>
-                <ion-row *ngFor="let item of invoice.items">
+                <ion-row *ngFor="let item of sale.items">
                   <ion-col col-md-5>
                     {{item.quantity}}&nbsp;&nbsp;{{item.name}}
                   </ion-col>
@@ -107,7 +107,7 @@
               </ion-grid>
             </ion-col>
             <ion-col col-md-2>
-              <ion-item *ngIf="invoice.state === 'parked'" class="clickable" (click)="gotoSales(invoice, false, $index)">
+              <ion-item *ngIf="sale.state === 'parked'" class="clickable" (click)="gotoSales(sale, false, $index)">
                 <ion-icon name="share-alt"></ion-icon> Continue Sale
               </ion-item>
             </ion-col>
@@ -119,17 +119,17 @@
               <br/> Total Tax (No Tax)
             </ion-col>
             <ion-col col-md-4>
-              ${{invoice.taxTotal}}
+              ${{sale.taxTotal}}
               <br/> $0.00
             </ion-col>
           </ion-row>
         </ion-grid>
 
-        <ion-grid *ngIf="invoice.completed">
+        <ion-grid *ngIf="sale.completed">
           <ion-row>
             <ion-col col-md-10>
               <ion-grid>
-                <ion-row *ngFor="let item of invoice.items">
+                <ion-row *ngFor="let item of sale.items">
                   <ion-col col-md-5>
                     {{item.quantity}}&nbsp;&nbsp;{{item.name}}
                   </ion-col>
@@ -143,11 +143,11 @@
               </ion-grid>
             </ion-col>
             <ion-col col-md-2>
-              <ion-item *ngIf="invoice.state === 'completed'" class="clickable" (click)="gotoSales(invoice, true, $index)">
+              <ion-item *ngIf="sale.state === 'completed'" class="clickable" (click)="gotoSales(sale, true, $index)">
                 <ion-icon name="refresh"></ion-icon> Return Items
               </ion-item>
-              <ion-item *ngIf="invoice.state === 'completed'" class="clickable" (click)="printSale(invoice)">
-                <ion-icon name="print"></ion-icon> Print Invoice
+              <ion-item *ngIf="sale.state === 'completed'" class="clickable" (click)="printSale(sale)">
+                <ion-icon name="print"></ion-icon> Print Sale
               </ion-item>
             </ion-col>
           </ion-row>
@@ -158,7 +158,7 @@
               <br/> Total Tax (No Tax)
             </ion-col>
             <ion-col col-md-4>
-              ${{invoice.taxTotal}}
+              ${{sale.taxTotal}}
               <br/> $0.00
             </ion-col>
           </ion-row>

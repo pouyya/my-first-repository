@@ -13,7 +13,7 @@ import { Component } from '@angular/core';
 })
 export class ParkSale {
 
-  public invoice: Sale;
+  public sale: Sale;
 
   constructor(
     private viewCtrl: ViewController,
@@ -24,7 +24,7 @@ export class ParkSale {
     private userService: UserService,
     private storeService: StoreService
   ) {
-    this.invoice = navParams.get('invoice');
+    this.sale = navParams.get('sale');
   }
 
   public dismissParkSale() {
@@ -33,17 +33,17 @@ export class ParkSale {
 
   public async parkIt() {
     var doPark = async () => {
-      localStorage.removeItem('invoice_id');
+      localStorage.removeItem('sale_id');
 
-      this.invoice.state = 'parked';
-      await this.salesService.update(this.invoice);
+      this.sale.state = 'parked';
+      await this.salesService.update(this.sale);
       this.viewCtrl.dismiss({ status: true, error: false });
     }
 
-    if (!this.invoice.notes || this.invoice.notes == "") {
+    if (!this.sale.notes || this.sale.notes == "") {
       let confirm = this.alertController.create({
         title: 'Hey!',
-        subTitle: 'Do you want to park your invoice without adding notes ?',
+        subTitle: 'Do you want to park your sale without adding notes ?',
         buttons: [
           {
             'text': 'Yes',

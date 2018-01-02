@@ -14,4 +14,5 @@ export class BasketItem {
   isTaxIncl?: boolean;
   employeeId?: string | null;
   cssClass: string | null;
+  stockControl: boolean;
 }

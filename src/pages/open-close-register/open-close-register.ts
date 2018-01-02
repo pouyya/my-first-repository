@@ -136,9 +136,9 @@ export class OpenCloseRegister {
   private calculateExpectedCounts(sales: Array<Sale>) {
 
     if (sales) {
-      sales.forEach((invoice) => {
-        invoice.payments.forEach((payment) => {
-          var isRefund = invoice.state == 'refund';
+      sales.forEach((sale) => {
+        sale.payments.forEach((payment) => {
+          var isRefund = sale.state == 'refund';
           var amount = (isRefund ? -1 : 1) * Number(payment.amount);
           if (payment.type === 'credit_card') {
             this.expected.cc += amount;
@@ -185,7 +185,7 @@ export class OpenCloseRegister {
                 duration: 3000
               });
               toast.present();
-              localStorage.removeItem('invoice_id');
+              localStorage.removeItem('sale_id');
             }
           },
           {
