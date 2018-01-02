@@ -23,7 +23,7 @@ export class AddSupplierAndStore {
     private navParams: NavParams,
     private modalCtrl: ModalController
   ) {
-    // this.suppliers = navParams.get('suppliers');
+    this.suppliers = navParams.get('suppliers');
     this.stores = navParams.get('stores');
     this.navPopCallback = navParams.get('callback');
   }
