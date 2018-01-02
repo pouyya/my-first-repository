@@ -49,7 +49,7 @@ export class AppService {
     try {
       let assocDeletions: any[] = [
         async () => {
-          let invoiceId = localStorage.getItem('invoice_id');
+          let saleId = localStorage.getItem('sale_id');
           let registers: POS[] = await this.posService.findBy({ selector: { storeId: store._id } });
           if (registers.length > 0) {
             let posDeletions: Promise<any>[] = [];
@@ -58,7 +58,7 @@ export class AppService {
                 if (sales.length > 0) {
                   let salesDeletion: Promise<any>[] = [];
                   sales.forEach(sale => {
-                    if (invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
+                    if (saleId && saleId == sale._id) localStorage.removeItem('sale_id');
                     salesDeletion.push(this.salesService.delete(sale));
                   });
                   Promise.all(salesDeletion).then(() => {
@@ -85,7 +85,7 @@ export class AppService {
 
   public deleteStoreAssociations(store: Store) {
     return new Promise((resolve, reject) => {
-      let invoiceId = localStorage.getItem('invoice_id');
+      let saleId = localStorage.getItem('sale_id');
       this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
         if (registers.length > 0) {
           let posDeletions: Array<Promise<any>> = [];
@@ -94,7 +94,7 @@ export class AppService {
               if (sales.length > 0) {
                 let salesDeletion: Array<Promise<any>> = [];
                 sales.forEach(sale => {
-                  if (invoiceId && invoiceId == sale._id) localStorage.removeItem('invoice_id');
+                  if (saleId && saleId == sale._id) localStorage.removeItem('sale_id');
                   salesDeletion.push(this.salesService.delete(sale));
                 });
                 Promise.all(salesDeletion).then(() => {

@@ -8,12 +8,11 @@ export class ProductService extends BaseEntityService<Product> {
 		super(Product);
 	}
 
-	public async getAllByBrand(brandId: string) {
-		return <Product[]> await this.findBy({
+	public async getAllByBrand(brandId: string): Promise<Array<Product>> {
+		return this.findBy({
 			selector: {
 				brandId
 			}
 		});
 	}
-
 }

@@ -9,7 +9,7 @@ import { NavParams, ViewController  } from "ionic-angular";
 })
 export class CreditCardModal {
 
-  public invoice: Sale;
+  public sale: Sale;
   public displayAmount: number;
   public isRefund: boolean;
 
@@ -17,7 +17,7 @@ export class CreditCardModal {
     private navParams: NavParams,
     public viewCtrl: ViewController) {
     this.displayAmount = navParams.get('amount');
-    this.invoice = navParams.get('invoice');
+    this.sale = navParams.get('sale');
     this.isRefund = navParams.get('refund');
   }
 

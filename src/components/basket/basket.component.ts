@@ -24,7 +24,7 @@ import { UserSession } from '../../model/UserSession';
 })
 export class BasketComponent {
 
-  public _invoice: Sale;
+  public _sale: Sale;
   public _customer: Customer;
   public tax: number = 0;
   public oldValue: number = 1;
@@ -39,13 +39,13 @@ export class BasketComponent {
   public searchInput: string = "";
   public searchedCustomers: any[] = [];
 
-  set invoice(obj: Sale) {
-    this._invoice = obj;
-    this.invoiceChange.emit(obj);
+  set sale(obj: Sale) {
+    this._sale = obj;
+    this.saleChange.emit(obj);
   }
 
-  get invoice() {
-    return this._invoice;
+  get sale() {
+    return this._sale;
   }
 
   @Input() user: UserSession;
@@ -70,22 +70,22 @@ export class BasketComponent {
     this.employeesHash = _.keyBy(arr, '_id');
   }
 
-  @Input('_invoice')
+  @Input('_sale')
   set model(obj: Sale) {
-    this._invoice = obj;
+    this._sale = obj;
     this.setBalance();
-    this.invoice.completed = false;
+    this.sale.completed = false;
     this.generatePaymentBtnText();
   }
 
   get model(): Sale {
-    return this.invoice;
+    return this.sale;
   }
 
   @Output() paymentClicked = new EventEmitter<any>();
   @Output() notify = new EventEmitter<any>();
   @Output() customerChange = new EventEmitter<Customer>();
-  @Output('_invoiceChange') invoiceChange = new EventEmitter<Sale>();
+  @Output('_saleChange') saleChange = new EventEmitter<Sale>();
 
 
   constructor(
@@ -100,33 +100,33 @@ export class BasketComponent {
 
   public setBalance() {
     if (!this.refund) {
-      this.balance = this.invoice.payments && this.invoice.payments.length > 0 ?
-        this.invoice.taxTotal - this.invoice.payments
+      this.balance = this.sale.payments && this.sale.payments.length > 0 ?
+        this.sale.taxTotal - this.sale.payments
           .map(payment => payment.amount)
-          .reduce((a, b) => a + b) : this.invoice.taxTotal;
+          .reduce((a, b) => a + b) : this.sale.taxTotal;
     } else {
-      this.balance = this.invoice.taxTotal;
+      this.balance = this.sale.taxTotal;
     }
-    this.invoice.state = this.balance > 0 ? 'current' : 'refund';
+    this.sale.state = this.balance > 0 ? 'current' : 'refund';
   }
 
   public addItemToBasket(item: BasketItem) {
-    var index = _.findIndex(this.invoice.items, (_item: BasketItem) => {
+    var index = _.findIndex(this.sale.items, (_item: BasketItem) => {
       return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
     });
-    index === -1 ? this.invoice.items.push(item) : this.invoice.items[index].quantity++;
-    this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+    index === -1 ? this.sale.items.push(item) : this.sale.items[index].quantity++;
+    this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
     this.calculateAndSync();
   }
 
   public removeItem($index) {
-    this.invoice.items.splice($index, 1);
-    this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+    this.sale.items.splice($index, 1);
+    this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
     this.calculateAndSync();
   }
 
-  public syncInvoice() {
-    return this.salesService.update(this.invoice).then(
+  public syncSale() {
+    return this.salesService.update(this.sale).then(
       response => console.log(response)
     ).catch(error => console.error(error));
   }
@@ -143,8 +143,8 @@ export class BasketComponent {
       let reorder = false;
       if (data) {
         if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-        this.invoice.items[$index] = data.item;
-        if (reorder) this.invoice.items = this.groupByPipe.transform(this.invoice.items, 'employeeId');
+        this.sale.items[$index] = data.item;
+        if (reorder) this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
         data.hasChanged && this.calculateAndSync();
       }
     });
@@ -155,7 +155,7 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(DiscountSurchargeModal);
     modal.onDidDismiss(data => {
       if (data) {
-        this.invoice.appliedValues.push(<DiscountSurchargeInterface>data);
+        this.sale.appliedValues.push(<DiscountSurchargeInterface>data);
         this.calculateAndSync();
       }
     });
@@ -163,10 +163,10 @@ export class BasketComponent {
   }
 
   public viewAppliedValues() {
-    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.invoice.appliedValues });
+    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.sale.appliedValues });
     modal.onDidDismiss(data => {
       if (data) {
-        this.invoice.appliedValues = <DiscountSurchargeInterface[]>data;
+        this.sale.appliedValues = <DiscountSurchargeInterface[]>data;
         this.calculateAndSync();
       }
     });
@@ -179,7 +179,7 @@ export class BasketComponent {
 
   private generatePaymentBtnText() {
     this.payBtnText = GlobalConstants.PAY_BTN
-    if (this.invoice.items && this.invoice.items.length > 0) {
+    if (this.sale.items && this.sale.items.length > 0) {
       this.disablePaymentBtn = false;
       if (this.balance == 0) {
         this.payBtnText = GlobalConstants.DONE_BTN
@@ -192,19 +192,19 @@ export class BasketComponent {
   }
 
   public parkSale() {
-    let modal = this.modalCtrl.create(ParkSale, { invoice: this.invoice });
+    let modal = this.modalCtrl.create(ParkSale, { sale: this.sale });
     modal.onDidDismiss(data => {
       if (data.status) {
         let confirm = this.alertController.create({
-          title: 'Invoice Parked!',
-          subTitle: 'Your invoice has successfully been parked',
+          title: 'Sale Parked!',
+          subTitle: 'Your sale has successfully been parked',
           buttons: [
             {
               'text': 'OK',
               handler: () => {
-                this.salesService.instantiateInvoice().then((invoice: any) => {
+                this.salesService.instantiateSale().then((sale: any) => {
                   this.customer = null;
-                  this.invoice = invoice.invoice;
+                  this.sale = sale.sale;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
                 });
@@ -233,11 +233,11 @@ export class BasketComponent {
         {
           text: 'Yes',
           handler: () => {
-            this.salesService.delete(this.invoice).then(() => {
-              localStorage.removeItem('invoice_id');
+            this.salesService.delete(this.sale).then(() => {
+              localStorage.removeItem('sale_id');
               this.customer = null;
-              this.salesService.instantiateInvoice().then((invoice: any) => {
-                this.invoice = invoice.invoice;
+              this.salesService.instantiateSale().then((sale: any) => {
+                this.sale = sale.sale;
                 this.calculateAndSync();
                 this.notify.emit({ clearSale: true });
               });
@@ -276,7 +276,7 @@ export class BasketComponent {
   }
 
   public openSearchbar() {
-    if (this.invoice.items.length > 0) {
+    if (this.sale.items.length > 0) {
       this.searchBarEnabled = true;
     } else {
       let toast = this.toastCtrl.create({ message: 'Please add items first', duration: 3000 });
@@ -286,18 +286,18 @@ export class BasketComponent {
 
   public assignCustomer(customer: Customer) {
     this.customer = customer;
-    this.invoice.customerKey = this.customer._id;
-    this.salesService.update(this.invoice);
-    this.salesService.manageInvoiceId(this.invoice);
+    this.sale.customerKey = this.customer._id;
+    this.salesService.update(this.sale);
+    this.salesService.manageSaleId(this.sale);
   }
 
   public unassignCustomer() {
     this.customer = null;
-    this.invoice.customerKey = null;
-    this.invoice.items.length > 0 ?
-      this.salesService.update(this.invoice) :
-      this.salesService.delete(this.invoice);
-    this.salesService.manageInvoiceId(this.invoice);
+    this.sale.customerKey = null;
+    this.sale.items.length > 0 ?
+      this.salesService.update(this.sale) :
+      this.salesService.delete(this.sale);
+    this.salesService.manageSaleId(this.sale);
   }
 
   public createCustomer() {
@@ -307,8 +307,8 @@ export class BasketComponent {
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this.invoice.customerKey = this.customer._id;
-        this.salesService.update(this.invoice);
+        this.sale.customerKey = this.customer._id;
+        this.salesService.update(this.sale);
       }
     });
     modal.present();
@@ -321,25 +321,25 @@ export class BasketComponent {
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this.invoice.customerKey = this.customer._id;
-        this.salesService.update(this.invoice);
+        this.sale.customerKey = this.customer._id;
+        this.salesService.update(this.sale);
       }
     });
     modal.present();
   }
 
   private calculateAndSync() {
-    this.salesService.manageInvoiceId(this.invoice);
+    this.salesService.manageSaleId(this.sale);
     this.calculateTotal(() => {
       this.setBalance();
       this.generatePaymentBtnText();
-      if (this.invoice.items.length > 0) {
-        this.salesService.update(this.invoice);
+      if (this.sale.items.length > 0) {
+        this.salesService.update(this.sale);
       } else {
-        if (this.invoice.customerKey) {
-          this.salesService.update(this.invoice);
+        if (this.sale.customerKey) {
+          this.salesService.update(this.sale);
         } else {
-          this.salesService.delete(this.invoice);
+          this.salesService.delete(this.sale);
           this.customer = null;
         }
       }
@@ -347,7 +347,7 @@ export class BasketComponent {
   }
 
   private calculateTotal(callback) {
-    this.salesService.calculateSale(this.invoice);
+    this.salesService.calculateSale(this.sale);
     callback();
   }
 }

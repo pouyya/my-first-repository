@@ -4,12 +4,14 @@ import { FountainService } from './../../services/fountainService';
 import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
-import { NavController, NavParams, ModalController } from "ionic-angular";
+import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
 import { Store } from './../../model/store';
 import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
 import { PrintService } from '../../services/printService';
+import { StockHistoryService } from '../../services/stockHistoryService';
+import { StockHistory } from '../../model/stockHistory';
 
 @Component({
   selector: 'payments-page',
@@ -19,12 +21,13 @@ import { PrintService } from '../../services/printService';
 })
 export class PaymentsPage {
 
-  public invoice: Sale
+  public sale: Sale
   public amount: number;
   public balance: number;
   public change: number;
   public doRefund: boolean;
   public store: Store;
+  public stockErrors: any[] = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
@@ -34,14 +37,17 @@ export class PaymentsPage {
   constructor(
     private salesService: SalesServices,
     private fountainService: FountainService,
-    public navCtrl: NavController,
+    private stockHistoryService: StockHistoryService,
+    private navCtrl: NavController,
+    private alertCtrl: AlertController,
     private navParams: NavParams,
-    public modalCtrl: ModalController,
-    public helper: HelperService,
+    private modalCtrl: ModalController,
+    private helper: HelperService,
+    private loading: LoadingController,
     private printService: PrintService) {
 
     let operation = navParams.get('operation');
-    this.invoice = <Sale>navParams.get('invoice');
+    this.sale = <Sale>navParams.get('sale');
     this.doRefund = navParams.get('doRefund');
     this.store = <Store>navParams.get('store');
     this.navPopCallback = this.navParams.get("callback")
@@ -55,50 +61,74 @@ export class PaymentsPage {
     }
   }
 
-  ionViewDidEnter() {
-    if (!this.invoice) {
+  async ionViewDidEnter() {
+    if (!this.sale) {
       this.navCtrl.pop();
+    } else {
+      // check stock
+      let loader = this.loading.create({ content: 'Processing Sale' });
+      await loader.present();
+      await this.checkForStockInHand();
+      if (this.stockErrors.length > 0) {
+        // display error message
+        let alert = this.alertCtrl.create(
+          {
+            title: 'Out of Stock',
+            subTitle: 'Please make changes to sale and continue',
+            message: `${this.stockErrors.join('\n')}`,
+            buttons: ['Ok']
+          }
+        );
+        alert.present();
+      }
+      loader.dismiss();
     }
   }
 
   private async calculateBalance() {
     var totalPayments = 0;
     if (!this.doRefund) {
-      if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
-        totalPayments = this.invoice.payments
+      if (this.sale.taxTotal > 0 && this.sale.payments && this.sale.payments.length > 0) {
+        totalPayments = this.sale.payments
           .map(payment => payment.amount)
           .reduce((a, b) => a + b);
       }
 
-      this.amount = this.invoice.taxTotal - totalPayments;
+      this.amount = this.sale.taxTotal - totalPayments;
       this.balance = this.amount;
       // Check for payment completion
-      totalPayments >= this.invoice.taxTotal && (await this.completeSale(totalPayments));
+      totalPayments >= this.sale.taxTotal && (await this.completeSale(totalPayments));
     } else {
-      this.balance = this.amount = this.invoice.taxTotal;
+      this.balance = this.amount = this.sale.taxTotal;
     }
   }
 
-  public payWith(type: string) {
-    let modal = this.modalCtrl.create(this.payTypes[type].component, {
-      invoice: this.invoice,
-      amount: Number(this.amount),
-      refund: this.doRefund
-    });
-    modal.onDidDismiss(async data => {
-      if (data && data.status) {
-        await (this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data));
-        await this.salesService.update(this.invoice);
-      }
-    });
-    modal.present();
+  public payWith() {
+    let openModal = (component: Component, type: string) => {
+      let modal = this.modalCtrl.create(component, {
+        sale: this.sale,
+        amount: Number(this.amount),
+        refund: this.doRefund
+      });
+      modal.onDidDismiss(async data => {
+        if (data && data.status) {
+          await (this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data));
+          this.salesService.update(this.sale);
+        }
+      });
+      modal.present();
+    }
+    return {
+      cash: () => openModal(this.payTypes.cash.component, 'cash'),
+      creditCard: () => openModal(this.payTypes.credit_card.component, 'credit_card')
+    }
   }
 
   private async addPayment(type: string, payment: number) {
-    if (!this.invoice.payments) {
-      this.invoice.payments = [];
+    if (!this.sale.payments) {
+      this.sale.payments = [];
     }
-    this.invoice.payments.push({
+    this.sale.payments.push({
       type: type,
       amount: Number(payment)
     });
@@ -109,37 +139,45 @@ export class PaymentsPage {
   private async completeRefund(payment: number, type: string) {
     var isCompleted: boolean = Math.abs(this.amount) === Math.abs(payment);
     if (isCompleted) {
-      this.invoice.payments.push({
+      let loader = this.loading.create({ content: 'Processing Refund' });
+      await loader.present();
+      await this.updateStock();
+      this.sale.payments.push({
         type: type,
         amount: Number(payment) * -1
       });
 
-      this.invoice.state = 'refund';
-      this.invoice.completed = true;
-      this.invoice.completedAt = moment().utc().format();
+      this.sale.state = 'refund';
+      this.sale.completed = true;
+      this.sale.completedAt = moment().utc().format();
       this.balance = 0;
-      this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
-      this.printInvoice();
+      this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+      loader.dismiss();
+      this.printSale();
     }
   }
 
   private async completeSale(payments: number) {
-    this.invoice.completed = true;
-    this.invoice.completedAt = moment().utc().format();
-    this.invoice.state = 'completed';
-    this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
-    payments != 0 && (this.change = payments - this.invoice.taxTotal);
-    this.printInvoice();
+    let loader = this.loading.create({ content: 'Finalizing Sale' });
+    await loader.present();
+    await this.updateStock();
+    this.sale.completed = true;
+    this.sale.completedAt = moment().utc().format();
+    this.sale.state = 'completed';
+    this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+    payments != 0 && (this.change = payments - this.sale.taxTotal);
+    loader.dismiss();
+    this.printSale();
   }
 
-  public clearInvoice() {
-    localStorage.removeItem('invoice_id');
+  public clearSale() {
+    localStorage.removeItem('sale_id');
     this.goBack(true);
   }
 
-  public async printInvoice() {
+  public async printSale() {
     if (this.store.printReceiptAtEndOfSale) {
-      await this.printService.printReceipt(this.invoice, true);
+      await this.printService.printReceipt(this.sale, true);
     }
   }
 
@@ -147,5 +185,37 @@ export class PaymentsPage {
     this.navPopCallback(state).then(() => {
       this.navCtrl.pop();
     });
+  }
+
+  private async checkForStockInHand() {
+    this.stockErrors = [];
+    let productsInStock: { [id: string]: number } = {};
+    let allProducts = this.sale.items
+        .filter(item => item.stockControl)
+        .map(item => item._id);
+    if(allProducts.length > 0) {
+      productsInStock = await this.stockHistoryService
+        .getProductsTotalStockValueByStore(allProducts, this.store._id);
+      if (productsInStock && Object.keys(productsInStock).length > 0) {
+        this.sale.items.forEach(item => {
+          if (productsInStock.hasOwnProperty(item._id) && productsInStock[item._id] < item.quantity) {
+            // push error
+            this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item._id]}`);
+          }
+        });
+      }
+      return;
+    }
+    return;
+  }
+
+  private async updateStock() {
+    let stock: StockHistory;
+    let stockUpdates: Promise<any>[] = this.sale.items.map(item => {
+      stock = StockHistoryService.createStockForSale(item._id, this.store._id, item.quantity);
+      return this.stockHistoryService.add(stock);
+    });
+    await Promise.all(stockUpdates);
+    return;
   }
 }
