@@ -1,4 +1,4 @@
-import { Component, SimpleChanges, OnChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 import { NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
 import { Supplier } from '../../model/supplier';
@@ -8,7 +8,7 @@ import { SupplierService } from '../../services/supplierService';
   selector: 'supplier-details',
   templateUrl: 'supplier-details.html'
 })
-export class SupplierDetails implements OnChanges {
+export class SupplierDetails {
 
   public supplier: Supplier = new Supplier();
   public countries: any[] = [];
@@ -23,16 +23,9 @@ export class SupplierDetails implements OnChanges {
     private navParams: NavParams,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController
-  ) {
-  }
+  ) { }
 
-  ngOnChanges(changes: SimpleChanges) {
-    for (let propName in changes) {
-      /** Detect changes here */
-    }
-  }
-
-  async ionViewDidLoad() {
+  ionViewDidLoad() {
     this.http.get('assets/countries.json')
       .subscribe(res => {
         this.countries = res.json();
@@ -99,5 +92,6 @@ export class SupplierDetails implements OnChanges {
     props.forEach((prop, index) => {
       this.supplier[`${copyToPrefix}${prop}`] = event.value ? this.supplier[`${copyFromPrefix}${prop}`] : '';
     });
+    console.warn(this.supplier);
   }
 }
