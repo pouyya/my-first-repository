@@ -21,7 +21,7 @@ import { StockHistory } from '../../model/stockHistory';
 })
 export class PaymentsPage {
 
-  public invoice: Sale
+  public sale: Sale
   public amount: number;
   public balance: number;
   public change: number;
@@ -47,7 +47,7 @@ export class PaymentsPage {
     private printService: PrintService) {
 
     let operation = navParams.get('operation');
-    this.invoice = <Sale>navParams.get('invoice');
+    this.sale = <Sale>navParams.get('sale');
     this.doRefund = navParams.get('doRefund');
     this.store = <Store>navParams.get('store');
     this.navPopCallback = this.navParams.get("callback")
@@ -62,7 +62,7 @@ export class PaymentsPage {
   }
 
   async ionViewDidEnter() {
-    if (!this.invoice) {
+    if (!this.sale) {
       this.navCtrl.pop();
     } else {
       // check stock
@@ -74,7 +74,7 @@ export class PaymentsPage {
         let alert = this.alertCtrl.create(
           {
             title: 'Out of Stock',
-            subTitle: 'Please make changes to invoice and continue',
+            subTitle: 'Please make changes to sale and continue',
             message: `${this.stockErrors.join('\n')}`,
             buttons: ['Ok']
           }
@@ -88,32 +88,32 @@ export class PaymentsPage {
   private async calculateBalance() {
     var totalPayments = 0;
     if (!this.doRefund) {
-      if (this.invoice.taxTotal > 0 && this.invoice.payments && this.invoice.payments.length > 0) {
-        totalPayments = this.invoice.payments
+      if (this.sale.taxTotal > 0 && this.sale.payments && this.sale.payments.length > 0) {
+        totalPayments = this.sale.payments
           .map(payment => payment.amount)
           .reduce((a, b) => a + b);
       }
 
-      this.amount = this.invoice.taxTotal - totalPayments;
+      this.amount = this.sale.taxTotal - totalPayments;
       this.balance = this.amount;
       // Check for payment completion
-      totalPayments >= this.invoice.taxTotal && (await this.completeSale(totalPayments));
+      totalPayments >= this.sale.taxTotal && (await this.completeSale(totalPayments));
     } else {
-      this.balance = this.amount = this.invoice.taxTotal;
+      this.balance = this.amount = this.sale.taxTotal;
     }
   }
 
   public payWith() {
     let openModal = (component: Component, type: string) => {
       let modal = this.modalCtrl.create(component, {
-        invoice: this.invoice,
+        sale: this.sale,
         amount: Number(this.amount),
         refund: this.doRefund
       });
-      modal.onDidDismiss(data => {
+      modal.onDidDismiss(async data => {
         if (data && data.status) {
-          this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data);
-          this.salesService.update(this.invoice);
+          await (this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data));
+          this.salesService.update(this.sale);
         }
       });
       modal.present();
@@ -125,10 +125,10 @@ export class PaymentsPage {
   }
 
   private async addPayment(type: string, payment: number) {
-    if (!this.invoice.payments) {
-      this.invoice.payments = [];
+    if (!this.sale.payments) {
+      this.sale.payments = [];
     }
-    this.invoice.payments.push({
+    this.sale.payments.push({
       type: type,
       amount: Number(payment)
     });
@@ -142,18 +142,18 @@ export class PaymentsPage {
       let loader = this.loading.create({ content: 'Processing Refund' });
       await loader.present();
       await this.updateStock();
-      this.invoice.payments.push({
+      this.sale.payments.push({
         type: type,
         amount: Number(payment) * -1
       });
 
-      this.invoice.state = 'refund';
-      this.invoice.completed = true;
-      this.invoice.completedAt = moment().utc().format();
+      this.sale.state = 'refund';
+      this.sale.completed = true;
+      this.sale.completedAt = moment().utc().format();
       this.balance = 0;
-      this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
+      this.sale.receiptNo = await this.fountainService.getReceiptNumber();
       loader.dismiss();
-      this.printInvoice();
+      this.printSale();
     }
   }
 
@@ -161,23 +161,23 @@ export class PaymentsPage {
     let loader = this.loading.create({ content: 'Finalizing Sale' });
     await loader.present();
     await this.updateStock();
-    this.invoice.completed = true;
-    this.invoice.completedAt = moment().utc().format();
-    this.invoice.state = 'completed';
-    this.invoice.receiptNo = await this.fountainService.getReceiptNumber();
-    payments != 0 && (this.change = payments - this.invoice.taxTotal);
+    this.sale.completed = true;
+    this.sale.completedAt = moment().utc().format();
+    this.sale.state = 'completed';
+    this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+    payments != 0 && (this.change = payments - this.sale.taxTotal);
     loader.dismiss();
-    this.printInvoice();
+    this.printSale();
   }
 
-  public clearInvoice() {
-    localStorage.removeItem('invoice_id');
+  public clearSale() {
+    localStorage.removeItem('sale_id');
     this.goBack(true);
   }
 
-  public async printInvoice() {
+  public async printSale() {
     if (this.store.printReceiptAtEndOfSale) {
-      await this.printService.printReceipt(this.invoice, true);
+      await this.printService.printReceipt(this.sale, true);
     }
   }
 
@@ -190,14 +190,14 @@ export class PaymentsPage {
   private async checkForStockInHand() {
     this.stockErrors = [];
     let productsInStock: { [id: string]: number } = {};
-    let allProducts = this.invoice.items
+    let allProducts = this.sale.items
         .filter(item => item.stockControl)
         .map(item => item._id);
     if(allProducts.length > 0) {
       productsInStock = await this.stockHistoryService
         .getProductsTotalStockValueByStore(allProducts, this.store._id);
       if (productsInStock && Object.keys(productsInStock).length > 0) {
-        this.invoice.items.forEach(item => {
+        this.sale.items.forEach(item => {
           if (productsInStock.hasOwnProperty(item._id) && productsInStock[item._id] < item.quantity) {
             // push error
             this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item._id]}`);
@@ -211,7 +211,7 @@ export class PaymentsPage {
 
   private async updateStock() {
     let stock: StockHistory;
-    let stockUpdates: Promise<any>[] = this.invoice.items.map(item => {
+    let stockUpdates: Promise<any>[] = this.sale.items.map(item => {
       stock = StockHistoryService.createStockForSale(item._id, this.store._id, item.quantity);
       return this.stockHistoryService.add(stock);
     });

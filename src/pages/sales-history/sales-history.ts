@@ -93,24 +93,24 @@ export class SalesHistoryPage {
     }
   }
 
-  public toggleItem(invoice: Sale): void {
-    this.shownItem = this.isItemShown(invoice._id) ? null : invoice._id;
+  public toggleItem(sale: Sale): void {
+    this.shownItem = this.isItemShown(sale._id) ? null : sale._id;
   }
 
   public isItemShown(id: string): boolean {
     return this.shownItem === id;
   }
 
-  public getState(invoice: Sale) {
+  public getState(sale: Sale) {
     var state = "";
-    if (invoice.completed) {
-      if (invoice.state == 'completed') {
+    if (sale.completed) {
+      if (sale.state == 'completed') {
         state = 'Completed';
-      } else if (invoice.state == 'refund') {
+      } else if (sale.state == 'refund') {
         state = 'Refund Completed';
       }
     } else {
-      if (invoice.state == 'parked') {
+      if (sale.state == 'parked') {
         state = 'Parked';
       } else {
         state = 'Voided';
@@ -123,10 +123,10 @@ export class SalesHistoryPage {
     await this.printService.printReceipt(sale, false);
   }
 
-  public async gotoSales(invoice: Sale, doRefund: boolean, saleIndex: number) {
+  public async gotoSales(sale: Sale, doRefund: boolean, saleIndex: number) {
 
-    let invoiceId = localStorage.getItem('invoice_id');
-    if (invoiceId) {
+    let saleId = localStorage.getItem('sale_id');
+    if (saleId) {
       let confirm = this.alertController.create({
         title: 'Warning!',
         message: 'There is a sale already exists in your memory. What do you want with it ?',
@@ -139,9 +139,9 @@ export class SalesHistoryPage {
                 duration: 5000
               });
               toast.present();
-              var _invoice = await this.loadSale(invoice, doRefund);
-              localStorage.setItem('invoice_id', _invoice._id);
-              this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
+              var _sale = await this.loadSale(sale, doRefund);
+              localStorage.setItem('sale_id', _sale._id);
+              this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
             }
           },
           {
@@ -154,9 +154,9 @@ export class SalesHistoryPage {
       });
       confirm.present();
     } else {
-      var _invoice = await this.loadSale(invoice, doRefund)
-      localStorage.setItem('invoice_id', _invoice._id);
-      this.navCtrl.setRoot(Sales, { invoice: _invoice, doRefund });
+      var _sale = await this.loadSale(sale, doRefund)
+      localStorage.setItem('sale_id', _sale._id);
+      this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
     }
   }
 
@@ -262,14 +262,14 @@ export class SalesHistoryPage {
     }
   }
 
-  private async loadSale(invoice: Sale, doRefund: boolean) {
-    let newInvoice: Sale;
-    if (doRefund && invoice.completed && invoice.state == 'completed') {
-      newInvoice = this.salesService.instantiateRefundSale(invoice);
-      return newInvoice;
+  private async loadSale(sale: Sale, doRefund: boolean) {
+    let newSale: Sale;
+    if (doRefund && sale.completed && sale.state == 'completed') {
+      newSale = this.salesService.instantiateRefundSale(sale);
+      return newSale;
     } else {
-      newInvoice = await Promise.resolve({ ...invoice });
-      return newInvoice;
+      newSale = await Promise.resolve({ ...sale });
+      return newSale;
     }
   }
 
@@ -286,16 +286,16 @@ export class SalesHistoryPage {
 
   private async attachCustomersToSales(sales) {
     let customerPromises: any[] = [];
-    sales.forEach((invoice, index) => {
+    sales.forEach((sale, index) => {
       customerPromises.push(new Promise((resolve, reject) => {
-        if (this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
-          sales[index].customer = this.customersSearchHash[invoice.customerKey];
+        if (this.customersSearchHash.hasOwnProperty(sale.customerKey)) {
+          sales[index].customer = this.customersSearchHash[sale.customerKey];
           resolve();
         } else {
-          this.customerService.get(invoice.customerKey).then(customer => {
+          this.customerService.get(sale.customerKey).then(customer => {
             sales[index].customer = customer;
-            if (!this.customersSearchHash.hasOwnProperty(invoice.customerKey)) {
-              this.customersSearchHash[invoice.customerKey] = customer;
+            if (!this.customersSearchHash.hasOwnProperty(sale.customerKey)) {
+              this.customersSearchHash[sale.customerKey] = customer;
             }
             resolve();
           }).catch(err => {

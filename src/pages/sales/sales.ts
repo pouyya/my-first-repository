@@ -57,7 +57,7 @@ export class Sales implements OnDestroy, OnInit {
   public purchasableItems: PurchasableItemTiles = {};
   public activeCategory: any;
   public activeTiles: any[];
-  public invoice: Sale;
+  public sale: Sale;
   public register: POS;
   public store: Store;
   public doRefund: boolean = false;
@@ -66,7 +66,7 @@ export class Sales implements OnDestroy, OnInit {
   public selectedEmployee: any = null;
   public user: UserSession;
   public customer: Customer = null;
-  private invoiceParam: any;
+  private saleParam: any;
   private priceBook: PriceBook;
   private priceBooks: PriceBook[];
   private salesTaxes: SalesTax[];
@@ -92,7 +92,7 @@ export class Sales implements OnDestroy, OnInit {
     private toastCtrl: ToastController,
     private alertCtrl: AlertController
   ) {
-    this.invoiceParam = this.navParams.get('invoice');
+    this.saleParam = this.navParams.get('sale');
     this.doRefund = this.navParams.get('doRefund');
     this.cdr.detach();
   }
@@ -199,9 +199,9 @@ export class Sales implements OnDestroy, OnInit {
     let pushCallback = params => {
       return new Promise(async (resolve, reject) => {
         if (params) {
-          let response = await this.salesService.instantiateInvoice();
-          this.invoiceParam = null;
-          this.invoice = response.invoice;
+          let response = await this.salesService.instantiateSale();
+          this.saleParam = null;
+          this.sale = response.sale;
           this.employees = this.employees.map(employee => {
             employee.selected = false;
             return employee;
@@ -218,7 +218,7 @@ export class Sales implements OnDestroy, OnInit {
 
     this.doRefund = $event.balance < 0;
     this.navCtrl.push(PaymentsPage, {
-      invoice: this.invoice,
+      sale: this.sale,
       doRefund: this.doRefund,
       callback: pushCallback,
       store: this.store
@@ -227,20 +227,20 @@ export class Sales implements OnDestroy, OnInit {
 
   // Event
   public notify($event) {
-    if ($event.clearSale) this.invoiceParam = null;
+    if ($event.clearSale) this.saleParam = null;
   }
 
   private async initSalePageData(): Promise<any> {
-    var data: any[] = await this.salesService.initializeSalesData(this.invoiceParam);
-    let invoiceData = data.shift();
+    var data: any[] = await this.salesService.initializeSalesData(this.saleParam);
+    let saleData = data.shift();
     this.salesTaxes = data[0] as Array<any>;
     this.defaultTax = data[2] as any;
     this.priceBooks = data[3] as PriceBook[];
     this.priceBook = data[1] as PriceBook;
 
-    if (invoiceData.invoice.customerKey) {
+    if (saleData.sale.customerKey) {
       // parallel
-      this.customerService.get(invoiceData.invoice.customerKey)
+      this.customerService.get(saleData.sale.customerKey)
         .then(customer => this.customer = customer)
         .catch(err => { })
     }
@@ -251,18 +251,18 @@ export class Sales implements OnDestroy, OnInit {
       })
     );
 
-    if (invoiceData.doRecalculate) {
-      var _invoice: Sale = await this.salesService.reCalculateInMemoryInvoice(
+    if (saleData.doRecalculate) {
+      var _sale: Sale = await this.salesService.reCalculateInMemorySale(
         /* Pass By Reference */
-        invoiceData.invoice,
+        saleData.sale,
         this.priceBook,
         this.salesTaxes,
         this.defaultTax);
 
-      this.invoice = _invoice;
-      await this.salesService.update(this.invoice);
+      this.sale = _sale;
+      await this.salesService.update(this.sale);
     } else {
-      this.invoice = invoiceData.invoice ? invoiceData.invoice : invoiceData;
+      this.sale = saleData.sale ? saleData.sale : saleData;
     };
   }
 

@@ -121,6 +121,9 @@ export class Products {
     this.offset = this.defaultOffset;
     this.items = [];
 
+    this.priceBook = await this.priceBookService.getDefault();
+    this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
+
     await this.fetchMore();
   }
 }

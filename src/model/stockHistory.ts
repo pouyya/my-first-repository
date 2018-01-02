@@ -21,5 +21,5 @@ export class StockHistory extends DBBasedEntity {
   public supplyPrice: number;
   public orderId: string;
   public reason: Reason;
-
+  public note: string;
 }

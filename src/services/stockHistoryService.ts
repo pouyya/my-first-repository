@@ -16,7 +16,9 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
   public async getByStoreAndProductId(storeId: string, productId: string): Promise<StockHistory[]> {
     try {
       return await this.findBy({
-        selector: { storeId, productId }
+        selector: { storeId, productId },
+        sort: [{ _id: 'desc' }],
+        limit: 50
       });
     } catch (err) {
       return Promise.reject(err);

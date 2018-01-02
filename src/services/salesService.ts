@@ -47,28 +47,28 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param posId (Optional)
 	 * @return {Promise<Sale>}
 	 */
-	public async instantiateInvoice(posId?: string): Promise<any> {
+	public async instantiateSale(posId?: string): Promise<any> {
 		var user = await this.userService.getUser();
-		let id = localStorage.getItem('invoice_id') || moment().utc().format();
+		let id = localStorage.getItem('sale_id') || moment().utc().format();
 		if (!posId) posId = user.currentPos;
 		try {
 			let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
 			if (sales && sales.length > 0) {
-				let invoice = sales[0];
-				return { invoice, doRecalculate: invoice.state == 'current' };
+				let sale = sales[0];
+				return { sale, doRecalculate: sale.state == 'current' };
 			}
-			return { invoice: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+			return { sale: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
 		} catch (error) {
 			if (error.name === GlobalConstants.NOT_FOUND) {
-				return { invoice: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+				return { sale: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
 			}
 			return Promise.reject(error);
 		}
 	}
 
-	public static _createDefaultObject(posID: string, invoiceId: string) {
+	public static _createDefaultObject(posID: string, saleId: string) {
 		let sale: Sale = new Sale();
-		sale._id = invoiceId;
+		sale._id = saleId;
 		sale.posID = posID;
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
@@ -76,14 +76,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	/**
-	 * Calculate Existing Sale
-	 * @param sale 
-	 * @param priceBook 
-	 * @param salesTaxes 
-	 * @param defaultTax 
-	 */
-	public async reCalculateInMemoryInvoice(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
+	public async reCalculateInMemorySale(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
 		var user = await this.userService.getUser();
 		// re-calculate sale
 		let taxInclusive = user.settings.taxType;
@@ -157,11 +150,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 			new Promise(async (resolve) => {
 				if (sale) {
 					resolve({
-						invoice: sale,
+						sale: sale,
 						doRecalculate: false
 					});
 				} else {
-					var data: any = await this.instantiateInvoice();
+					var data: any = await this.instantiateSale();
 					resolve(data);
 				}
 			}),
@@ -211,9 +204,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public async getCurrentSaleIfAny() {
-		let invoiceId = localStorage.getItem('invoice_id');
-		if (invoiceId) {
-			return await this.get(invoiceId);
+		let saleId = localStorage.getItem('sale_id');
+		if (saleId) {
+			return await this.get(saleId);
 		}
 		return Promise.resolve(null);
 	}
@@ -275,12 +268,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return container || _.find(defaultBook.purchasableItems, { id: item._id });
 	}
 
-	public manageInvoiceId(sale: Sale) {
-		let invoiceId = localStorage.getItem('invoice_id');
+	public manageSaleId(sale: Sale) {
+		let saleId = localStorage.getItem('sale_id');
 		if (sale.items.length > 0 || sale.customerKey) {
-			invoiceId != sale._id && (localStorage.setItem('invoice_id', sale._id));
+			saleId != sale._id && (localStorage.setItem('sale_id', sale._id));
 		} else {
-			localStorage.removeItem('invoice_id');
+			localStorage.removeItem('sale_id');
 		}
 	}
 

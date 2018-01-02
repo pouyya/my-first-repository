@@ -63,7 +63,7 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket class="basket-component" *ngIf="invoice" [(_invoice)]="invoice" [(customer)]="customer" [refund]="doRefund" [employees]="employees"
+        <basket class="basket-component" *ngIf="sale" [(_sale)]="sale" [(customer)]="customer" [refund]="doRefund" [employees]="employees"
           [user]="user" (paymentClicked)="paymentClicked($event)" (notify)="notify($event)">
         </basket>
       </ion-col>

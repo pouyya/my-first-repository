@@ -5,6 +5,7 @@ import { NavParams, LoadingController, ViewController } from 'ionic-angular';
 import { Component } from "@angular/core";
 import { StockHistory } from '../../../../model/stockHistory';
 import { TypeHelper } from '../../../../utility/typeHelper';
+import { EmployeeService } from '../../../../services/employeeService';
 
 @Component({
   selector: 'stock-decrease-modal',
@@ -20,7 +21,8 @@ export class StockDecreaseModal {
   constructor(
     private navParams: NavParams,
     private loading: LoadingController,
-    private viewCtrl: ViewController
+    private viewCtrl: ViewController,
+    private employeeService: EmployeeService
   ) {
     let decreaseReasons: string[] = [
       Reason.InternalUse,
@@ -32,7 +34,7 @@ export class StockDecreaseModal {
     this.storesStock = this.navParams.get('storesStock');
     let reasons = TypeHelper.enumToObject(Reason, 'string');
     Object.keys(reasons).forEach(reason => {
-      if(decreaseReasons.indexOf(reason) > 0) {
+      if (decreaseReasons.indexOf(reason) > 0) {
         this.reasons[reason] = reasons[reason];
       }
     });
@@ -48,8 +50,9 @@ export class StockDecreaseModal {
 
   public decrease() {
     this.stock.createdAt = moment().utc().format();
+    this.stock.createdBy = this.employeeService.getEmployee()._id;
     this.stock.value = Number(this.stock.value) * -1;
-    if(this.stock.value != 0) {
+    if (this.stock.value != 0) {
       this.viewCtrl.dismiss(this.stock);
     }
   }

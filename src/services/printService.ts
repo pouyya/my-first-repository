@@ -48,18 +48,18 @@ export class PrintService {
     context.dayItems = [];
 
     if (closure.sales) {
-      closure.sales.forEach((invoice) => {
-        if (invoice && invoice.items) {
-          invoice.items.forEach((invoiceItem => {
+      closure.sales.forEach((sale) => {
+        if (sale && sale.items) {
+          sale.items.forEach((saleItem => {
 
-            var qty = invoiceItem.quantity || 0;
-            var totalPrice = (invoiceItem.finalPrice || 0) * qty;
+            var qty = saleItem.quantity || 0;
+            var totalPrice = (saleItem.finalPrice || 0) * qty;
 
-            if (!context.dayItems[invoiceItem._id]) {
-              context.dayItems[invoiceItem._id] = { name: invoiceItem.name, totalPrice: totalPrice, totalQuantity: qty };
+            if (!context.dayItems[saleItem._id]) {
+              context.dayItems[saleItem._id] = { name: saleItem.name, totalPrice: totalPrice, totalQuantity: qty };
             } else {
-              context.dayItems[invoiceItem._id].totalPrice += totalPrice || 0;
-              context.dayItems[invoiceItem._id].totalQuantity += qty || 0;
+              context.dayItems[saleItem._id].totalPrice += totalPrice || 0;
+              context.dayItems[saleItem._id].totalQuantity += qty || 0;
             }
 
           }));
@@ -79,7 +79,7 @@ export class PrintService {
       .write(provider.getResult());
   }
 
-  public async printReceipt(invoice: Sale, openCashDrawer: boolean) {
+  public async printReceipt(sale: Sale, openCashDrawer: boolean) {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
@@ -89,12 +89,12 @@ export class PrintService {
 
     if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
 
-      var pos = await this.posService.get(invoice.posID);
+      var pos = await this.posService.get(sale.posID);
       var store = await this.storeService.get(pos.storeId);
       var currentAccountsetting = await this.accountSettingService.getCurrentSetting();
 
       var receiptProviderContext = new ReceiptProviderContext();
-      receiptProviderContext.sale = invoice;
+      receiptProviderContext.sale = sale;
       receiptProviderContext.invoiceTitle = currentAccountsetting.name;
       receiptProviderContext.shopName = store.name;
       receiptProviderContext.phoneNumber = store.phone;

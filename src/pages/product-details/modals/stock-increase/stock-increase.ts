@@ -5,6 +5,7 @@ import { NavParams, LoadingController, ViewController } from 'ionic-angular';
 import { Component } from "@angular/core";
 import { StockHistory } from '../../../../model/stockHistory';
 import { TypeHelper } from '../../../../utility/typeHelper';
+import { EmployeeService } from '../../../../services/employeeService';
 
 @Component({
   selector: 'stock-increase-modal',
@@ -20,7 +21,8 @@ export class StockIncreaseModal {
   constructor(
     private navParams: NavParams,
     private loading: LoadingController,
-    private viewCtrl: ViewController
+    private viewCtrl: ViewController,
+    private employeeService: EmployeeService
   ) {
     let increaseReasons: string[] = [
       Reason.NewStock,
@@ -49,6 +51,7 @@ export class StockIncreaseModal {
   public increase() {
     this.stock.createdAt = moment().utc().format();
     this.stock.value = Number(this.stock.value);
+    this.stock.createdBy = this.employeeService.getEmployee()._id;
     this.stock.supplyPrice = Number(this.stock.supplyPrice);
     if(this.stock.value > 0 && this.stock.supplyPrice > 0) {
       this.viewCtrl.dismiss(this.stock);
