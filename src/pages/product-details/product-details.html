@@ -57,6 +57,12 @@
           <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
         </ion-select>
       </ion-item>
+      <ion-item>
+        <ion-label>Supplier</ion-label>
+        <ion-select [(ngModel)]="productItem.supplierId" name="supplierId">
+          <ion-option *ngFor="let supplier of suppliers" value={{supplier._id}}>{{supplier.name}}</ion-option>
+        </ion-select>
+      </ion-item>
     </ion-list>
     <div class="insert-image">
       <p>

@@ -76,6 +76,7 @@ import { Orders } from '../pages/orders/orders';
 import { OrderDetails } from './../pages/order-details/order-details';
 import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAndStore/addSupplierAndStore';
 import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
+import { AddProducts } from '../pages/order-details/modals/addProducts/addProducts';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -203,7 +204,8 @@ import { OrderService } from './../services/orderService';
     Orders,
     OrderDetails,
     AddSupplierAndStore,
-    CreateSupplier
+    CreateSupplier,
+    AddProducts
   ],
   imports: [
     FormsModule,
@@ -306,7 +308,8 @@ import { OrderService } from './../services/orderService';
     Orders,
     OrderDetails,
     AddSupplierAndStore,
-    CreateSupplier
+    CreateSupplier,
+    AddProducts
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },

@@ -1,3 +1,4 @@
+import { Supplier } from './../../model/supplier';
 import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { StockHistory } from './../../model/stockHistory';
@@ -20,6 +21,7 @@ import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
+import { SupplierService } from '../../services/supplierService';
 
 interface InteractableStoreStock {
 	storeId: string,
@@ -46,6 +48,7 @@ export class ProductDetails {
 	public salesTaxes: Array<any> = [];
 	public storesStock: InteractableStoreStock[] = [];
 	public stockHistory: { [id: string]: StockHistory[] } = {};
+	public suppliers: Supplier[] = [];
 	public selectedStore: string;
 	public categories = [];
 	public brands: any = [];
@@ -75,6 +78,7 @@ export class ProductDetails {
 		private categoryService: CategoryService,
 		private storeService: StoreService,
 		private stockHistoryService: StockHistoryService,
+		private supplierService: SupplierService,
 		private brandService: BrandService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
@@ -134,6 +138,7 @@ export class ProductDetails {
 			this.appService.loadSalesAndGroupTaxes(),
 			this.priceBookService.getDefault(),
 			this.brandService.getAll(),
+			this.supplierService.getAll()
 		];
 
 		if (!this.isNew) {
@@ -195,6 +200,7 @@ export class ProductDetails {
 			salesTaxes,
 			defaultPB,
 			brands,
+			suppliers,
 			storesStock,
 			stockHistory
 		] = await Promise.all(promises);
@@ -205,6 +211,7 @@ export class ProductDetails {
 			this.salesTaxes = this.salesTaxes.concat(salesTaxes);
 			this._defaultPriceBook = defaultPB;
 			this.brands = brands;
+			this.suppliers = suppliers;
 			this.storesStock = storesStock;
 			this.stockHistory = _.cloneDeep(stockHistory);
 

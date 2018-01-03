@@ -13,8 +13,8 @@ export class AddSupplierAndStore {
   public suppliers: Supplier[] = [];
   public stores: Store[] = [];
 
-  public selectedSupplier: Supplier;
-  public selectedStore: Store;
+  public selectedSupplier: Supplier = null;
+  public selectedStore: Store = null;
 
   private navPopCallback: any;
 
