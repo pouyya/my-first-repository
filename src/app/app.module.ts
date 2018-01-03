@@ -136,6 +136,7 @@ import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
 import { SupplierService } from '../services/supplierService';
+import { ResourceService } from '../services/resourceService';
 
 @NgModule({
   declarations: [
@@ -344,7 +345,8 @@ import { SupplierService } from '../services/supplierService';
     authProvider,
     PlatformService,
     AccountSettingService,
-    SupplierService
+    SupplierService,
+    ResourceService
   ]
 })
 export class AppModule {

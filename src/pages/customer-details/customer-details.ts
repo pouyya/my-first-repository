@@ -1,10 +1,10 @@
-import { Http } from '@angular/http';
 import { Customer } from './../../model/customer';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CustomerService } from '../../services/customerService';
 import { NavParams, NavController } from 'ionic-angular';
 import { ValidationHelper } from '../../utility/validationHelper';
+import { ResourceService } from '../../services/resourceService';
 
 @Component({
   selector: 'customer-details',
@@ -22,7 +22,7 @@ export class CustomerDetails implements OnInit {
     private customerService: CustomerService,
     private navParams: NavParams,
     private navCtrl: NavController,
-    private http: Http,
+    private resourceService: ResourceService,
     private formBuilder: FormBuilder
   ) {
     this.customer = <Customer>navParams.get('customer');
@@ -36,11 +36,9 @@ export class CustomerDetails implements OnInit {
   }
 
   async ngOnInit() {
-    this.http.get('assets/countries.json')
-      .subscribe(res => {
-        this.countries = [{ name: 'None', code: null }];
-        this.countries = this.countries.concat(res.json());
-      });
+    var res = await this.resourceService.getCountries();
+    this.countries = [{ name: 'None', code: null }];
+    this.countries = this.countries.concat(res);
   }
 
   async ionViewDidLoad() {

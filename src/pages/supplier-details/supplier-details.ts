@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
 import { NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
 import { Supplier } from '../../model/supplier';
 import { SupplierService } from '../../services/supplierService';
+import { ResourceService } from '../../services/resourceService';
 
 @Component({
   selector: 'supplier-details',
@@ -17,19 +17,16 @@ export class SupplierDetails {
   public postalSameAsPhysical: boolean = false;
 
   constructor(
-    private http: Http,
     private navCtrl: NavController,
     private supplierService: SupplierService,
     private navParams: NavParams,
     private alertCtrl: AlertController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private resourceService: ResourceService
   ) { }
 
-  ionViewDidLoad() {
-    this.http.get('assets/countries.json')
-      .subscribe(res => {
-        this.countries = res.json();
-      });
+  async ionViewDidLoad() {
+    this.countries = await this.resourceService.getCountries();
     let supplier = this.navParams.get('supplier');
     if (supplier) {
       this.supplier = supplier;
@@ -38,8 +35,8 @@ export class SupplierDetails {
       let props: string[] = ['StreetAddr', 'Suburb', 'City', 'State', 'ZipCode', 'Country'];
       let copyToPrefix: string = 'pos';
       let copyFromPrefix: string = 'phy';
-      for(let i = 0; i < props.length; i++) {
-        if(this.supplier[`${copyToPrefix}${props[i]}`] !== this.supplier[`${copyFromPrefix}${props[i]}`]) {
+      for (let i = 0; i < props.length; i++) {
+        if (this.supplier[`${copyToPrefix}${props[i]}`] !== this.supplier[`${copyFromPrefix}${props[i]}`]) {
           this.postalSameAsPhysical = false;
           break;
         } else {

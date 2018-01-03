@@ -2,13 +2,13 @@ import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
 import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
 import { Store } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
+import { ResourceService } from '../../services/resourceService';
 
 @Component({
   templateUrl: 'store-details.html',
@@ -21,14 +21,14 @@ export class StoreDetailsPage {
   public countries: Array<any> = [];
 
   constructor(private navCtrl: NavController,
-              private navParams: NavParams,
-              private storeService: StoreService,
-              private employeeService: EmployeeService,
-              private posService: PosService,
-              private loading: LoadingController,
-              private toastCtrl: ToastController,
-              private alertCtrl: AlertController,
-              private http: Http) {
+    private navParams: NavParams,
+    private storeService: StoreService,
+    private employeeService: EmployeeService,
+    private posService: PosService,
+    private loading: LoadingController,
+    private toastCtrl: ToastController,
+    private alertCtrl: AlertController,
+    private resourceService: ResourceService) {
   }
 
   ionViewDidEnter() {
@@ -60,12 +60,9 @@ export class StoreDetailsPage {
           }
         }),
         // load countries list
-        new Promise((resolve, reject) => {
-          this.http.get('assets/countries.json')
-            .subscribe(res => {
-              this.countries = res.json();
-              resolve();
-            });
+        new Promise(async (resolve, reject) => {
+          this.countries = await this.resourceService.getCountries();
+          resolve();
         })
       ];
 
@@ -118,7 +115,7 @@ export class StoreDetailsPage {
               this.storeService.delete(this.item, true /* Delete all Associations */).then(() => {
                 // delete employee associations
                 this.employeeService.findByStore(this.item._id).then((employees: Employee[]) => {
-                  if(employees.length > 0) {
+                  if (employees.length > 0) {
                     employees.forEach((employee, index, arr) => {
                       let storeIndex: number = _.findIndex(employee.store, (currentStore) => currentStore.id == this.item._id);
                       arr[index].store.splice(storeIndex, 1);
