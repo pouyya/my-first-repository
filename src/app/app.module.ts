@@ -202,6 +202,9 @@ import { ResourceService } from '../services/resourceService';
     IonicModule.forRoot(SimplePOSApp,
       {
         backButtonText: '',
+        modalEnter: 'modal-slide-in',
+        modalLeave: 'modal-slide-out',
+        pageTransition: 'ios-transition',
         platforms: {
           android: {
             activator: 'none'
@@ -234,7 +237,7 @@ import { ResourceService } from '../services/resourceService';
     IonicProDeployModule.forRoot({
       appId: ConfigService.ionicDeployAppId(),
       channel: ConfigService.ionicDeployAppChannel()
-    }),    
+    }),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
