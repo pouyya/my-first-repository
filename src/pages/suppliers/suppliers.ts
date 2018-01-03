@@ -4,11 +4,14 @@ import { SupplierService } from "../../services/supplierService";
 import { LoadingController } from "ionic-angular/components/loading/loading-controller";
 import { NavController } from "ionic-angular/navigation/nav-controller";
 import { SupplierDetails } from "../supplier-details/supplier-details";
+import { PageModule } from "../../metadata/pageModule";
+import { InventoryModule } from "../../modules/inventoryModule";
 
 interface SupplierList extends Supplier {
 	associatedProducts: number;
 }
 
+@PageModule(() => InventoryModule)
 @Component({
 	selector: 'suppliers',
 	templateUrl: 'suppliers.html'
