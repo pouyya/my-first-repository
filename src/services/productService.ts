@@ -15,4 +15,12 @@ export class ProductService extends BaseEntityService<Product> {
 			}
 		});
 	}
+
+	public async getAllBySupplier(supplierId: string): Promise<Array<Product>>{
+		return this.findBy({
+			selector: {
+				supplierId
+			}
+		});
+	}
 }

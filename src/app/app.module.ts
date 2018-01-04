@@ -70,6 +70,8 @@ import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
 import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
+import { Suppliers } from '../pages/suppliers/suppliers';
+import { SupplierDetails } from './../pages/supplier-details/supplier-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -133,7 +135,8 @@ import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
-
+import { SupplierService } from '../services/supplierService';
+import { ResourceService } from '../services/resourceService';
 
 @NgModule({
   declarations: [
@@ -189,7 +192,9 @@ import { ConfigService } from '../services/configService';
     StockDecreaseModal,
     Brands,
     BrandDetails,
-    DeployPage
+    DeployPage,
+    Suppliers,
+    SupplierDetails
   ],
   imports: [
     FormsModule,
@@ -197,6 +202,9 @@ import { ConfigService } from '../services/configService';
     IonicModule.forRoot(SimplePOSApp,
       {
         backButtonText: '',
+        modalEnter: 'modal-slide-in',
+        modalLeave: 'modal-slide-out',
+        pageTransition: 'ios-transition',
         platforms: {
           android: {
             activator: 'none'
@@ -229,7 +237,7 @@ import { ConfigService } from '../services/configService';
     IonicProDeployModule.forRoot({
       appId: ConfigService.ionicDeployAppId(),
       channel: ConfigService.ionicDeployAppChannel()
-    }),    
+    }),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -286,7 +294,9 @@ import { ConfigService } from '../services/configService';
     StockDecreaseModal,
     Brands,
     BrandDetails,
-    DeployPage
+    DeployPage,
+    Suppliers,
+    SupplierDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -337,7 +347,9 @@ import { ConfigService } from '../services/configService';
     LocalDatePipe,
     authProvider,
     PlatformService,
-    AccountSettingService
+    AccountSettingService,
+    SupplierService,
+    ResourceService
   ]
 })
 export class AppModule {
