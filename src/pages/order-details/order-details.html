@@ -1,22 +1,163 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{ this.currentSettings.title }}</ion-title>
+    <ion-title>{{ currentSettings.title }}</ion-title>
     <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col col-md-8 *ngIf="orderedProducts.length <= 0">
-        <p class="center-message">You haven't added any products to your order yet</p>
-        <ion-row>
-          <ion-col col-md-6 offset-md-3>
-            <button ion-button block color="primary" (click)="addProducts()">+ Add Products</button>
-          </ion-col>
-          <ion-col col-md-3></ion-col>
-        </ion-row>
+      <ion-col col-md-8 *ngIf="currentSettings.type == 'unprocessed'">
+        <div *ngIf="orderedProducts.length <= 0">
+          <p class="center-message">You haven't added any products to your order yet</p>
+          <ion-row>
+            <ion-col col-md-6 offset-md-3>
+              <button ion-button block color="primary" (click)="addProducts()">+ Add Products</button>
+            </ion-col>
+            <ion-col col-md-3></ion-col>
+          </ion-row>
+        </div>
+        <div *ngIf="orderedProducts.length > 0">
+          <ion-list>
+            <ion-item>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4>
+                    <strong>Product</strong>
+                  </ion-col>
+                  <ion-col col-md-2>
+                    <strong>Order Qty.</strong>
+                  </ion-col>
+                  <ion-col col-md-2>
+                    <strong>Supply Price</strong>
+                  </ion-col>
+                  <ion-col col-md-2>
+                    <strong>Total Cost ($)</strong>
+                  </ion-col>
+                  <ion-col col-md-2></ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+          </ion-list>
+
+          <ion-list>
+            <ion-item *ngFor="let product of orderedProducts; let i = index;">
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-md-4>{{ product.product.name }}</ion-col>
+                  <ion-col col-md-2>
+                    <ion-item item-content>
+                      <ion-input type="number" min="1" [(ngModel)]="product.quantity" (ionChange)="calculateTotal()"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col col-md-2>
+                    <ion-item item-content>
+                      <ion-input type="number" min="1" [(ngModel)]="product.price" (ionChange)="calculateTotal()"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                  <ion-col col-md-2>${{ product.quantity * product.price | number : '1.2-2' }}</ion-col>
+                  <ion-col col-md-2>
+                    <ion-icon tappable name="trash" (click)="removeProduct(i)"></ion-icon>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+          </ion-list>
+          <ion-row>
+            <ion-col col-md-6 offset-md-3>
+              <button ion-button block color="primary" (click)="addProducts()">+ Add Products</button>
+            </ion-col>
+            <ion-col col-md-3></ion-col>
+          </ion-row>
+        </div>
       </ion-col>
-      <ion-col col-md-8 *ngIf="orderedProducts.length > 0">
+      <ion-col col-md-8 *ngIf="currentSettings.type == 'ordered'">
+        <ion-row>
+          <ion-col col-md-12>
+            <h4>Stock Ordered</h4>
+            <h5>{{ store.name }}</h5>
+            <h5>Ordered placed on {{ order.createdAt | localDate:'MMM d, y, h:mm:ss a' }}</h5>
+          </ion-col>
+          <ion-col col-md-12>
+            <button ion-button>Email Order</button>
+            <button ion-button>Download PDF</button>
+          </ion-col>
+        </ion-row>
+        <ion-list>
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col col-md-5>
+                  <strong>Product</strong>
+                </ion-col>
+                <ion-col col-md-3>
+                  <strong>Order Qty.</strong>
+                </ion-col>
+                <ion-col col-md-2>
+                  <strong>Supply Price</strong>
+                </ion-col>
+                <ion-col col-md-2>
+                  <strong>Total Cost ($)</strong>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+        <ion-list>
+          <ion-item *ngFor="let product of orderedProducts; let i = index;">
+            <ion-grid>
+              <ion-row>
+                <ion-col col-md-5>{{ product.product.name }}</ion-col>
+                <ion-col col-md-3>{{ product.quantity }}</ion-col>
+                <ion-col col-md-2>{{ product.price | number : '1.2-2' }}</ion-col>
+                <ion-col col-md-2>${{ product.quantity * product.price | number : '1.2-2' }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col col-md-8 *ngIf="currentSettings.type == 'cancelled'">
+        <ion-row>
+          <ion-col col-md-12>
+            <h4>Order Cancelled</h4>
+            <h5>Shop Placeholder</h5>
+            <h5>No stock received. Order cancelled on {{ order.cancelledAt | localDate:'MMM d, y, h:mm:ss a' }}</h5>
+          </ion-col>
+        </ion-row>
+        <ion-list>
+          <ion-item>
+            <ion-grid>
+              <ion-row>
+                <ion-col col-md-5>
+                  <strong>Product</strong>
+                </ion-col>
+                <ion-col col-md-3>
+                  <strong>Order Qty.</strong>
+                </ion-col>
+                <ion-col col-md-2>
+                  <strong>Supply Price</strong>
+                </ion-col>
+                <ion-col col-md-2>
+                  <strong>Total Cost ($)</strong>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+        <ion-list>
+          <ion-item *ngFor="let product of orderedProducts; let i = index;">
+            <ion-grid>
+              <ion-row>
+                <ion-col col-md-5>{{ product.product.name }}</ion-col>
+                <ion-col col-md-3>{{ product.quantity }}</ion-col>
+                <ion-col col-md-2>{{ product.price | number : '1.2-2' }}</ion-col>
+                <ion-col col-md-2>${{ product.quantity * product.price | number : '1.2-2' }}</ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col col-md-8 *ngIf="currentSettings.type == 'received'">
         <ion-list>
           <ion-item>
             <ion-grid>
@@ -28,22 +169,26 @@
                   <strong>Order Qty.</strong>
                 </ion-col>
                 <ion-col col-md-2>
+                  <strong>Received Qty.</strong>
+                </ion-col>
+                <ion-col col-md-2>
                   <strong>Supply Price</strong>
                 </ion-col>
                 <ion-col col-md-2>
                   <strong>Total Cost ($)</strong>
                 </ion-col>
-                <ion-col col-md-2></ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
         </ion-list>
-
         <ion-list>
           <ion-item *ngFor="let product of orderedProducts; let i = index;">
             <ion-grid>
               <ion-row>
                 <ion-col col-md-4>{{ product.product.name }}</ion-col>
+                <ion-col col-md-2>
+                  
+                </ion-col>
                 <ion-col col-md-2>
                   <ion-item item-content>
                     <ion-input type="number" min="1" [(ngModel)]="product.quantity" (ionChange)="calculateTotal()"></ion-input>
@@ -55,19 +200,13 @@
                   </ion-item>
                 </ion-col>
                 <ion-col col-md-2>${{ product.quantity * product.price | number : '1.2-2' }}</ion-col>
-                <ion-col col-md-2>
-                  <ion-icon tappable name="trash" (click)="removeProduct(i)"></ion-icon>
-                </ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
         </ion-list>
-        <ion-row>
-          <ion-col col-md-6 offset-md-3>
-            <button ion-button block color="primary" (click)="addProducts()">+ Add Products</button>
-          </ion-col>
-          <ion-col col-md-3></ion-col>
-        </ion-row>
+        <ion-list>
+          <ion-input type="number" min="1" [(ngModel)]="product.quantity" (ionChange)="calculateTotal()"></ion-input>
+        </ion-list>
       </ion-col>
       <ion-col col-md-4>
         <ion-card *ngIf="supplier && store">
@@ -76,9 +215,14 @@
           </ion-card-header>
           <ion-card-content>
             <ion-row>
-              <ion-col col-md-12>
+              <ion-col text-left>
                 <h4>Deliver To</h4>
               </ion-col>
+              <ion-col text-right *ngIf="currentSettings.type == 'ordered'">
+                <button ion-button small color="danger" (click)="cancelOrder()">Cancel Order</button>
+              </ion-col>
+            </ion-row>
+            <ion-row>
               <ion-col col-md-12>
                 <h4>{{ store.name }}</h4>
               </ion-col>
@@ -103,7 +247,7 @@
                 ${{ totalCost | number : '1.2-2' }}
               </ion-col>
             </ion-row>
-            <button [disabled]="orderedProducts.length <= 0" ion-button full (click)="placeOrder()">Place Order</button>
+            <button [disabled]="orderedProducts.length <= 0" ion-button full (click)="currentSettings.btnFunc()">{{currentSettings.btnText}}</button>
           </ion-card-content>
         </ion-card>
       </ion-col>

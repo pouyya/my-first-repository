@@ -1,33 +1,43 @@
 import _ from 'lodash';
+import * as moment from 'moment-timezone';
+import { StockHistory, Reason } from './../../model/stockHistory';
+import { ReceivedOrderService } from './../../services/receivedOrderService';
 import { OrderService } from './../../services/orderService';
 import { PriceBook } from './../../model/priceBook';
 import { AddSupplierAndStore } from './modals/addSupplierAndStore/addSupplierAndStore';
 import { StoreService } from './../../services/storeService';
-import { NavController, NavParams, LoadingController, ModalController } from 'ionic-angular';
-import { Component } from '@angular/core';
+import { NavController, NavParams, LoadingController, ModalController, AlertController, ToastController } from 'ionic-angular';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { SupplierService } from '../../services/supplierService';
 import { Supplier } from '../../model/supplier';
 import { Store } from '../../model/store';
 import { ProductService } from '../../services/productService';
 import { Product } from '../../model/product';
 import { AddProducts } from './modals/addProducts/addProducts';
-import { OrderedItems, BaseOrder, OrderStatus } from '../../model/baseOrder';
+import { OrderedItems, OrderStatus } from '../../model/baseOrder';
 import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
+import { ReceivedOrder } from '../../model/receivedOrder';
+import { StockHistoryService } from '../../services/stockHistoryService';
 
 class InteractableOrderedProducts extends OrderedItems {
-  product: Product
+  product: Product;
+  receivedQty?: number;
 }
 
 interface OrderPageCurrentSettings {
+  type: OrderStatus;
   title: string;
+  btnText: string;
   btnFunc();
-  onPageLoad(): Promise<any>;
+  onPageLoad?(): Promise<any>;
 }
+
 abstract class OrderPageSettings {
   [E: string]: OrderPageCurrentSettings
 }
+
 @Component({
   selector: 'order-details',
   templateUrl: 'order-details.html',
@@ -37,11 +47,15 @@ abstract class OrderPageSettings {
       font-size: 40px;
       font-weight: bold;
     }
+    #cancel-order {
+      color: red;
+    }
   `]
 })
 export class OrderDetails {
 
-  public order: Order;
+  public order: Order = null;
+  public receivedOrder: ReceivedOrder = null;
   public totalCost: number = 0
   public supplier: Supplier = null;
   public store: Store = null;
@@ -56,35 +70,56 @@ export class OrderDetails {
     private navCtrl: NavController,
     private loadingCtrl: LoadingController,
     private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
+    private cdr: ChangeDetectorRef,
     private supplierService: SupplierService,
     private productService: ProductService,
     private storeService: StoreService,
     private orderService: OrderService,
+    private receivedOrderService: ReceivedOrderService,
+    private stockHistoryService: StockHistoryService,
     private fountainService: FountainService,
     private priceBookService: PriceBookService
   ) {
-    this.order = navParams.get('order');
-    if (!this.order) {
+    this.cdr.detach();
+    let order = navParams.get('order');
+    if (!order) {
       this.order = new Order();
       this.order.status = OrderStatus.Unprocessed;
       this.order.items = [];
+    } else {
+      this.order = order;
     }
     this.pageSettings = {
       [OrderStatus.Unprocessed]: {
+        type: OrderStatus.Unprocessed,
         title: 'Create Order',
+        btnText: 'Place Order',
         btnFunc: this.placeOrder.bind(this),
         onPageLoad: this.onCreateOrderPageLoad.bind(this)
       },
       [OrderStatus.Ordered]: {
+        type: OrderStatus.Ordered,
         title: `Order ${this.order.orderNumber}`,
+        btnText: 'Receive Stock',
         btnFunc: this.receiveOrder.bind(this),
         onPageLoad: this.onOrderPageLoad.bind(this)
       },
       [OrderStatus.Cancelled]: {
+        type: OrderStatus.Cancelled,
         title: `Order ${this.order.orderNumber}`,
+        btnText: 'Close Order',
         btnFunc: this.closeOrder.bind(this),
         onPageLoad: this.onCancelledOrderPageLoad.bind(this)
-      }
+      },
+      [OrderStatus.Received]: {
+        type: OrderStatus.Received,
+        title: `Receive Order ${this.order.orderNumber}`,
+        btnText: 'Confirm Order',
+        btnFunc: this.confirmOrder.bind(this)
+      },
+      [OrderStatus.Completed]: null
     };
 
     this.currentSettings = this.pageSettings[this.order.status];
@@ -123,7 +158,7 @@ export class OrderDetails {
 
   public calculateTotal() {
     this.totalCost = this.orderedProducts.length > 0 ? this.orderedProducts.map(product => {
-      return Number(product.quantity) * Number(product.price);
+      return Number(product[this.currentSettings.type !== OrderStatus.Received ? 'quantity' : 'receivedQty']) * Number(product.price);
     }).reduce((a, b) => a + b) : 0;
   }
 
@@ -132,6 +167,7 @@ export class OrderDetails {
     this.order.storeId = this.store._id;
     this.order.supplierId = this.supplier._id;
     this.order.status = OrderStatus.Ordered;
+    this.order.createdAt = moment().utc().format();
     this.order.items = <OrderedItems[]>this.orderedProducts.map(product => {
       delete product.product;
       return product;
@@ -141,16 +177,88 @@ export class OrderDetails {
     return;
   }
 
-  public cancelOrder() {
-
+  public async cancelOrder() {
+    let confirm = this.alertCtrl.create({
+      title: 'Do you really wish to cancel this order ?',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            let toast = this.toastCtrl.create({ duration: 3000 });
+            this.order.cancelledAt = moment().utc().format();
+            this.order.status = OrderStatus.Cancelled;
+            this.orderService.add(this.order).then(() => {
+              toast.setMessage('Order has been cancelled!');
+            }).catch(err => {
+              console.error(new Error(err));
+              toast.setMessage('Error! Unable to cancel order!');
+            }).then(() => {
+              toast.present();
+              this.navCtrl.pop();
+            });
+          }
+        },
+        'No' /** Do not cancel */
+      ]
+    });
+    confirm.present();
   }
 
   public receiveOrder() {
+    this.receivedOrder = new ReceivedOrder();
+    this.receivedOrder.orderId = this.order._id;
+    this.receivedOrder.storeId = this.order.storeId;
+    this.receivedOrder.supplierId = this.order.supplierId;
+    this.receivedOrder.items = [];
+    this.orderedProducts = this.orderedProducts.map(product => {
+      product.receivedQty = product.quantity;
+      return product;
+    });
+    this.currentSettings = this.pageSettings[this.receivedOrder.status];
+    this.calculateTotal();
+  }
 
+  public async confirmOrder() {
+    let loader = this.loadingCtrl.create({ content: 'Confirming Order...' });
+    await loader.present();
+    this.receivedOrder.items = this.orderedProducts.map(product => {
+      return <OrderedItems>{
+        id: product.id,
+        price: product.price,
+        quantity: product.receivedQty
+      };
+    });
+    try {
+      await this.receivedOrderService.add(this.receivedOrder);
+      this.order.status = OrderStatus.Completed;
+      await this.orderService.update(this.order);
+      /** make entries to stock */
+      let addToStock: any[] = this.order.items.map(item => {
+        let stock = new StockHistory();
+        stock.reason = Reason.NewStock;
+        stock.productId = item.id;
+        stock.supplyPrice = Number(item.price);
+        stock.value = Number(item.quantity);
+        stock.createdAt = moment().utc().format();
+        stock.orderId = this.order._id;
+        return this.stockHistoryService.add(stock);
+      });
+      await Promise.all(addToStock);
+      loader.dismiss();
+      let toast = this.toastCtrl.create({
+        message: 'You ordered has been received. Items added to current stock.',
+        duration: 3000
+      });
+      toast.present();
+      this.navCtrl.pop();
+      return;
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
   public closeOrder() {
-
+    this.navCtrl.pop();
   }
 
   private async onCreateOrderPageLoad() {
@@ -163,6 +271,8 @@ export class OrderDetails {
     let [suppliers, stores, pricebook] = await Promise.all(loadEssentials);
     this.pricebook = pricebook;
 
+    this.cdr.reattach();
+
     let pushCallback: Function = async params => {
       if (params) {
         this.supplier = params.supplier;
@@ -174,15 +284,33 @@ export class OrderDetails {
     this.navCtrl.push(AddSupplierAndStore, { suppliers, stores, callback: pushCallback });
   }
 
-  private onOrderPageLoad() {
-
+  private async onOrderPageLoad() {
+    let loadEssentials: any[] = [
+      this.supplierService.get(this.order.supplierId),
+      this.storeService.get(this.order.storeId),
+      new Promise(async (resolve, reject) => {
+        let products = await this.productService.getByIds(this.order.items.map(item => item.id));
+        resolve(products);
+        return;
+      })
+    ];
+    let [supplier, store, products] = await Promise.all(loadEssentials);
+    store && (this.store = store);
+    supplier && (this.supplier = store);
+    this.orderedProducts = this.order.items.map(item => {
+      let iProduct = new InteractableOrderedProducts();
+      iProduct.price = item.price;
+      iProduct.id = item.id;
+      iProduct.quantity = item.quantity;
+      iProduct.product = _.find(products, { _id: item.id });
+      return iProduct;
+    });
+    this.calculateTotal();
+    this.cdr.reattach();
+    return;
   }
 
-  private onCancelledOrderPageLoad() {
-
-  }
-
-  private onReceivedOrderPageLoad() {
-
+  private async onCancelledOrderPageLoad() {
+    await this.onOrderPageLoad();
   }
 }
