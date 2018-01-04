@@ -133,6 +133,7 @@ import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
+import { ServiceLocator } from '../services/serviceLocator';
 
 
 @NgModule({
@@ -342,6 +343,7 @@ import { ConfigService } from '../services/configService';
 })
 export class AppModule {
   constructor(injector: Injector) {
-    window.globalInjector.emit(injector);
+    window.globalInjector.emit(injector); //TODO AZ: Can we remove this?
+    ServiceLocator.injector = injector;
   }
 }

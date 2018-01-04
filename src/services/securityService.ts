@@ -18,12 +18,12 @@ export class SecurityService {
         private loading: LoadingController
     ) { }
 
-    async userHasAccess(roles: string[]): Promise<boolean> {
+    async userHasAccess(accessRightItems: string[]): Promise<boolean> {
         let loader = this.loading.create({
-          content: 'Please Wait...',
+            content: 'Please Wait...',
         });
         await loader.present();
-        if (roles.length == 0) {
+        if (accessRightItems.length == 0) {
             // that's an insecure module!
             this.employeeService.setEmployee(null); // clear employee from memory
             loader.dismiss();
@@ -32,22 +32,22 @@ export class SecurityService {
             let employee = this.employeeService.getEmployee();
             let currentUserStore = (await this.userService.getUser()).currentStore;
             if (employee) {
-                if (this.verifyEmployeeRoles(employee, currentUserStore, roles)) {
+                if (this.verifyEmployeeAccessRightItems(employee, currentUserStore, accessRightItems)) {
                     loader.dismiss();
                     return true;
                 } else {
                     loader.dismiss();
-                    return this.checkAccessAndSetEmployee(currentUserStore, roles);
+                    return this.checkAccessAndSetEmployee(currentUserStore, accessRightItems);
                 }
             } else {
                 loader.dismiss();
-                return this.checkAccessAndSetEmployee(currentUserStore, roles);
+                return this.checkAccessAndSetEmployee(currentUserStore, accessRightItems);
             }
         }
     };
 
-    private async checkAccessAndSetEmployee(currentUserStore: string, requiredRoles: string[]): Promise<boolean> {
-        var model = await this.giveAccessByPin(currentUserStore, requiredRoles);
+    private async checkAccessAndSetEmployee(currentUserStore: string, accessRightItems: string[]): Promise<boolean> {
+        var model = await this.giveAccessByPin(currentUserStore, accessRightItems);
         if (model) {
             this.employeeService.setEmployee(model);
             return true;
@@ -55,7 +55,7 @@ export class SecurityService {
         return false;
     }
 
-    private async giveAccessByPin(currentStoreId, requiredRoles: string[]): Promise<Employee> {
+    private async giveAccessByPin(currentStoreId, accessRightItems: string[]): Promise<Employee> {
         var pin = await this.pluginService.openPinPrompt(
             'Enter PIN',
             'User Authorization', [],
@@ -63,33 +63,24 @@ export class SecurityService {
 
         if (pin) {
             var model = await this.employeeService.findByPin(pin)
-            if (this.verifyEmployeeRoles(model, currentStoreId, requiredRoles)) {
+            if (this.verifyEmployeeAccessRightItems(model, currentStoreId, accessRightItems)) {
                 return model;
             }
         }
     }
 
-    private verifyEmployeeRoles(employee: Employee, currentStoreId: string, requiredRoles: string[]): boolean {
+    private verifyEmployeeAccessRightItems(employee: Employee, currentStoreId: string, accessRightItems: string[]): boolean {
 
         if (employee) {
+
             if (employee.isAdmin) {
                 return true;
             }
 
-            if (employee.store && employee.store.length > 0) {
-                let store: any = _.find(employee.store, { id: currentStoreId });
-                if (store) {
-                    if (store.roles.length > 0) {
-                        let roles = _.intersection(requiredRoles, store.roles);
-                        if (roles.length === requiredRoles.length) {
-                            return true;
-                        }
-                    }
-                }
-            }
+            let employeeAssociatedStore = _.find(employee.store, { id: currentStoreId });
+            return employeeAssociatedStore && _.some(employeeAssociatedStore.roles, accessRightItems)
         }
 
         return false;
-    };
-
+    }
 }
