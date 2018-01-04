@@ -12,6 +12,6 @@ export class ResourceService {
         var result = await this.http.get('assets/countries.json')
             .toPromise();
 
-        result.json();
+        return result.json();
     }
 }

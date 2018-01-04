@@ -1,5 +1,5 @@
 import { Customer } from './../../model/customer';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { CustomerService } from '../../services/customerService';
 import { NavParams, NavController } from 'ionic-angular';
@@ -10,11 +10,11 @@ import { ResourceService } from '../../services/resourceService';
   selector: 'customer-details',
   templateUrl: 'customer-details.html'
 })
-export class CustomerDetails implements OnInit {
+export class CustomerDetails {
 
   public customerForm: FormGroup;
   public customer: Customer;
-  public countries: any[];
+  public countries: { name: string, code: string }[] = [{ name: 'None', code: null }];
   public isNew: boolean = true;
   public action: string = 'Add';
 
@@ -25,7 +25,7 @@ export class CustomerDetails implements OnInit {
     private resourceService: ResourceService,
     private formBuilder: FormBuilder
   ) {
-    this.customer = <Customer>navParams.get('customer');
+    this.customer = <Customer>this.navParams.get('customer');
     if (!this.customer) {
       this.customer = new Customer();
     } else {
@@ -35,14 +35,9 @@ export class CustomerDetails implements OnInit {
     this.createForm();
   }
 
-  async ngOnInit() {
-    var res = await this.resourceService.getCountries();
-    this.countries = [{ name: 'None', code: null }];
-    this.countries = this.countries.concat(res);
-  }
-
   async ionViewDidLoad() {
-
+    let countries = await this.resourceService.getCountries();
+    countries && (this.countries = this.countries.concat(countries));
   }
 
   get firstName() { return this.customerForm.get('firstName'); }
