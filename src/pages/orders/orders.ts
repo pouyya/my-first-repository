@@ -22,6 +22,14 @@ interface RenderableOrder extends BaseOrder<OrderStatus> {
 export class Orders {
 
   public orders: RenderableOrder[] = [];
+  public ordersBackup: RenderableOrder[] = [];
+  public selectedOrderStatus: string = '';
+  public orderStatuses: { value: string, text: string }[] = [
+    { value: '', text: 'All' },
+    { value: OrderStatus.Ordered, text: 'Ordered' },
+    { value: OrderStatus.Cancelled, text: 'Cancelled' },
+    { value: OrderStatus.Completed, text: 'Received' }
+  ];
   public labels: { [E: string]: { text: string, color: string } } = {
     [OrderStatus.Ordered]: { text: 'ORDERED', color: 'primary' },
     [OrderStatus.Cancelled]: { text: 'CANCELLED', color: 'danger' },
@@ -57,7 +65,7 @@ export class Orders {
       }
     ];
 
-    let [ stores, suppliers ] = await Promise.all(loadEssentials.map(p => p()));
+    let [stores, suppliers] = await Promise.all(loadEssentials.map(p => p()));
     let loadOrders: any[] = [
       this.orderService.getAll(),
       // this.receivedOrderService.getAll()
@@ -71,18 +79,42 @@ export class Orders {
       order.supplierId && (order.supplierName = suppliers[order.supplierId].name);
       return order;
     });
+    this.ordersBackup = this.orders;
   }
 
   public view(order?: RenderableOrder) {
-    this.navCtrl.push(OrderDetails, { order: order ? <BaseOrder<OrderStatus>>_.omit(order, [
-      'totalCost',
-      'supplierName',
-      'storeName'
-    ]) : null });
-    // if((order && order.status != OrderStatus.Completed) || !order) { }
+    this.navCtrl.push(OrderDetails, {
+      order: order ? <BaseOrder<OrderStatus>>_.omit(order, [
+        'totalCost',
+        'supplierName',
+        'storeName'
+      ]) : null
+    });
+  }
+
+  public loadOrders() {
+
   }
 
   public search(event) {
+    this.orders = this.ordersBackup;
+    let val = event.target.value;
 
+    if (val && val.trim() != '') {
+      this.orders = this.orders.filter((item) => {
+        return (item.orderNumber.indexOf(val) > -1);
+      })
+    }
+  }
+
+  public searchByOrderStatus() {
+    this.orders = this.ordersBackup;
+    if(this.selectedOrderStatus != '') {
+      this.orders = this.orders.filter((item) => {
+        return item.status == this.selectedOrderStatus;
+      });
+    } else {
+      this.orders = this.ordersBackup;
+    }
   }
 }

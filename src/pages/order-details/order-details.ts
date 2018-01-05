@@ -122,7 +122,7 @@ export class OrderDetails {
       },
       [OrderStatus.Completed]: {
         type: OrderStatus.Completed,
-        title: 'Completed Order ${this.order.orderNumber}',
+        title: `Completed Order ${this.order.orderNumber}`,
         btnText: 'Close Order',
         btnFunc: this.closeOrder.bind(this),
         onPageLoad: this.onCompletedOrderPageLoad.bind(this)
@@ -145,7 +145,7 @@ export class OrderDetails {
       selectedProductIds: this.orderedProducts.length > 0 ? <string[]> this.orderedProducts.map(item => item.id) : null
     });
     modal.onDidDismiss((res: { products: Product[], productsLeft: number }) => {
-      if (res.products) {
+      if (res && res.products) {
         this.disableAddProductsBtn = res.productsLeft <= 0;
         this.orderedProducts = this.orderedProducts.concat(res.products.map(product => {
           let purchasableItem = this.pricebook.purchasableItems.find(item => item.id === product._id);
