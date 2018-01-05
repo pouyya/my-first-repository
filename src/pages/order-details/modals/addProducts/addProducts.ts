@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { NavParams, ViewController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { Product } from '../../../../model/product';
@@ -19,20 +20,32 @@ export class AddProducts {
     private navParams: NavParams,
     private viewCtrl: ViewController
   ) {
-    this.products = <SelectableProduct[]>navParams.get('products').map(product => {
-      product.selected = false;
-      return product;
+    let selectedProductIds = <string[]>navParams.get('selectedProductIds');
+    let products = navParams.get('products');
+    this.products = <SelectableProduct[]>((func: Function) => {
+      return func(selectedProductIds && selectedProductIds.length > 0 ? _.reject(products, (item) => {
+        return selectedProductIds.indexOf(item._id) > -1;
+      }) : products);
+    })((products: any[]) => {
+      return products.map(product => {
+        product.selected = false;
+        return product;
+      })
     });
     this.productsBackup = this.products;
   }
 
   public add() {
-    this.viewCtrl.dismiss(<Product[]>this.products
+    let products: Product[] = this.products
       .filter(product => product.selected)
       .map(product => {
         delete product.selected;
         return product;
-      }));
+      })
+    this.viewCtrl.dismiss({
+      products,
+      productsLeft: this.products.length - products.length
+    });
   }
 
   public search(event) {

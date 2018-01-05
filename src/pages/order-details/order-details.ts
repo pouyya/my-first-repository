@@ -63,6 +63,7 @@ export class OrderDetails {
   public orderedProducts: InteractableOrderedProducts[] = [];
   public pageSettings: OrderPageSettings = {};
   public currentSettings: OrderPageCurrentSettings;
+  public disableAddProductsBtn: boolean = false;
   private pricebook: PriceBook;
   
   constructor(
@@ -139,10 +140,14 @@ export class OrderDetails {
   }
 
   public addProducts() {
-    let modal = this.modalCtrl.create(AddProducts, { products: this.products });
-    modal.onDidDismiss((products: Product[]) => {
-      if (products) {
-        this.orderedProducts = this.orderedProducts.concat(products.map(product => {
+    let modal = this.modalCtrl.create(AddProducts, {
+      products: this.products,
+      selectedProductIds: this.orderedProducts.length > 0 ? <string[]> this.orderedProducts.map(item => item.id) : null
+    });
+    modal.onDidDismiss((res: { products: Product[], productsLeft: number }) => {
+      if (res.products) {
+        this.disableAddProductsBtn = res.productsLeft <= 0;
+        this.orderedProducts = this.orderedProducts.concat(res.products.map(product => {
           let purchasableItem = this.pricebook.purchasableItems.find(item => item.id === product._id);
           let iProduct = new InteractableOrderedProducts();
           iProduct.id = product._id;
@@ -159,13 +164,14 @@ export class OrderDetails {
 
   public removeProduct(index: number) {
     this.orderedProducts.splice(index, 1);
+    this.disableAddProductsBtn = false;
     this.calculateTotal();
   }
 
   public calculateTotal() {
     this.totalCost = this.orderedProducts.length > 0 ? this.orderedProducts.map(product => {
       let qtyProp = this.currentSettings.type === OrderStatus.Received 
-      || this.currentSettings.type === OrderStatus.Completed ? 'quantity' : 'receivedQty';
+      || this.currentSettings.type === OrderStatus.Completed ? 'receivedQty' : 'quantity';
       return Number(product[qtyProp]) * Number(product.price);
     }).reduce((a, b) => a + b) : 0;
   }
@@ -257,11 +263,10 @@ export class OrderDetails {
       });
       await Promise.all(addToStock);
       loader.dismiss();
-      let toast = this.toastCtrl.create({
+      this.toastCtrl.create({
         message: 'You ordered has been received. Items added to current stock.',
         duration: 3000
-      });
-      toast.present();
+      }).present();
       this.navCtrl.pop();
       return;
     } catch (err) {
@@ -287,10 +292,16 @@ export class OrderDetails {
       this.cdr.reattach();
   
       let pushCallback: Function = async params => {
-        if (params) {
+        if (params && params.supplier && params.store) {
           this.supplier = params.supplier;
           this.store = params.store;
           this.products = await this.productService.getAllBySupplier(this.supplier._id);
+        } else {
+          this.toastCtrl.create({
+            message: 'Error! Please select a Supplier and Store',
+            duration: 3000
+          }).present();
+          this.navCtrl.pop();
         }
         return;
       }
@@ -352,11 +363,10 @@ export class OrderDetails {
   }
 
   private bounceBackOnError(err) {
-    let toast = this.toastCtrl.create({
+    this.toastCtrl.create({
       message: 'Unable to load order',
       duration: 3000
-    });
-    toast.present();
+    }).present();
     console.error(err);
     this.navCtrl.pop();
   }
