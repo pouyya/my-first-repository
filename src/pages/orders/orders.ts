@@ -74,13 +74,12 @@ export class Orders {
   }
 
   public view(order?: RenderableOrder) {
-    if((order && order.status != OrderStatus.Completed) || !order) {
-      this.navCtrl.push(OrderDetails, { order: order ? <BaseOrder<OrderStatus>>_.omit(order, [
-        'totalCost',
-        'supplierName',
-        'storeName'
-      ]) : null });
-    }
+    this.navCtrl.push(OrderDetails, { order: order ? <BaseOrder<OrderStatus>>_.omit(order, [
+      'totalCost',
+      'supplierName',
+      'storeName'
+    ]) : null });
+    // if((order && order.status != OrderStatus.Completed) || !order) { }
   }
 
   public search(event) {

@@ -7,4 +7,11 @@ export class ReceivedOrderService extends BaseEntityService<ReceivedOrder> {
     super(ReceivedOrder);
   }
 
+  public async getByOrderId(orderId: string): Promise<ReceivedOrder> {
+    let orders = await this.findBy({
+      selector: { orderId }
+    });
+
+    return orders.length > 0 ? orders.shift() : null;
+  }
 }

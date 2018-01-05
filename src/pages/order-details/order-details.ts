@@ -64,7 +64,7 @@ export class OrderDetails {
   public pageSettings: OrderPageSettings = {};
   public currentSettings: OrderPageCurrentSettings;
   private pricebook: PriceBook;
-
+  
   constructor(
     private navParams: NavParams,
     private navCtrl: NavController,
@@ -119,7 +119,13 @@ export class OrderDetails {
         btnText: 'Confirm Order',
         btnFunc: this.confirmOrder.bind(this)
       },
-      [OrderStatus.Completed]: null
+      [OrderStatus.Completed]: {
+        type: OrderStatus.Completed,
+        title: 'Completed Order ${this.order.orderNumber}',
+        btnText: 'Close Order',
+        btnFunc: this.closeOrder.bind(this),
+        onPageLoad: this.onCompletedOrderPageLoad.bind(this)
+      }
     };
 
     this.currentSettings = this.pageSettings[this.order.status];
@@ -158,7 +164,9 @@ export class OrderDetails {
 
   public calculateTotal() {
     this.totalCost = this.orderedProducts.length > 0 ? this.orderedProducts.map(product => {
-      return Number(product[this.currentSettings.type !== OrderStatus.Received ? 'quantity' : 'receivedQty']) * Number(product.price);
+      let qtyProp = this.currentSettings.type === OrderStatus.Received 
+      || this.currentSettings.type === OrderStatus.Completed ? 'quantity' : 'receivedQty';
+      return Number(product[qtyProp]) * Number(product.price);
     }).reduce((a, b) => a + b) : 0;
   }
 
@@ -169,8 +177,11 @@ export class OrderDetails {
     this.order.status = OrderStatus.Ordered;
     this.order.createdAt = moment().utc().format();
     this.order.items = <OrderedItems[]>this.orderedProducts.map(product => {
-      delete product.product;
-      return product;
+      return <OrderedItems> {
+        id: product.id,
+        price: product.price,
+        quantity: product.quantity
+      };
     });
     await this.orderService.add(this.order);
     this.navCtrl.pop();
@@ -210,8 +221,9 @@ export class OrderDetails {
     this.receivedOrder.storeId = this.order.storeId;
     this.receivedOrder.supplierId = this.order.supplierId;
     this.receivedOrder.items = [];
+    this.receivedOrder.createdAt = moment().utc().format();
     this.orderedProducts = this.orderedProducts.map(product => {
-      product.receivedQty = product.quantity;
+      product.receivedQty = Number(product.quantity);
       return product;
     });
     this.currentSettings = this.pageSettings[this.receivedOrder.status];
@@ -224,8 +236,8 @@ export class OrderDetails {
     this.receivedOrder.items = this.orderedProducts.map(product => {
       return <OrderedItems>{
         id: product.id,
-        price: product.price,
-        quantity: product.receivedQty
+        price: Number(product.price),
+        quantity: Number(product.receivedQty)
       };
     });
     try {
@@ -262,55 +274,90 @@ export class OrderDetails {
   }
 
   private async onCreateOrderPageLoad() {
-    let loadEssentials: any[] = [
-      this.supplierService.getAll(),
-      this.storeService.getAll(),
-      this.priceBookService.getDefault()
-    ];
-
-    let [suppliers, stores, pricebook] = await Promise.all(loadEssentials);
-    this.pricebook = pricebook;
-
-    this.cdr.reattach();
-
-    let pushCallback: Function = async params => {
-      if (params) {
-        this.supplier = params.supplier;
-        this.store = params.store;
-        this.products = await this.productService.getAllBySupplier(this.supplier._id);
+    try {
+      let loadEssentials: any[] = [
+        this.supplierService.getAll(),
+        this.storeService.getAll(),
+        this.priceBookService.getDefault()
+      ];
+  
+      let [suppliers, stores, pricebook] = await Promise.all(loadEssentials);
+      this.pricebook = pricebook;
+  
+      this.cdr.reattach();
+  
+      let pushCallback: Function = async params => {
+        if (params) {
+          this.supplier = params.supplier;
+          this.store = params.store;
+          this.products = await this.productService.getAllBySupplier(this.supplier._id);
+        }
+        return;
       }
-      return;
+      this.navCtrl.push(AddSupplierAndStore, { suppliers, stores, callback: pushCallback });
+    } catch (err) {
+      this.bounceBackOnError(err);
     }
-    this.navCtrl.push(AddSupplierAndStore, { suppliers, stores, callback: pushCallback });
   }
 
   private async onOrderPageLoad() {
-    let loadEssentials: any[] = [
-      this.supplierService.get(this.order.supplierId),
-      this.storeService.get(this.order.storeId),
-      new Promise(async (resolve, reject) => {
-        let products = await this.productService.getByIds(this.order.items.map(item => item.id));
-        resolve(products);
-        return;
-      })
-    ];
-    let [supplier, store, products] = await Promise.all(loadEssentials);
-    store && (this.store = store);
-    supplier && (this.supplier = store);
-    this.orderedProducts = this.order.items.map(item => {
-      let iProduct = new InteractableOrderedProducts();
-      iProduct.price = item.price;
-      iProduct.id = item.id;
-      iProduct.quantity = item.quantity;
-      iProduct.product = _.find(products, { _id: item.id });
-      return iProduct;
-    });
-    this.calculateTotal();
-    this.cdr.reattach();
-    return;
+    try {
+      let loadEssentials: any[] = [
+        this.supplierService.get(this.order.supplierId),
+        this.storeService.get(this.order.storeId),
+        this.productService.getByIds(this.order.items.map(item => item.id))
+      ];
+      let [supplier, store, products] = await Promise.all(loadEssentials);
+      store && (this.store = store);
+      supplier && (this.supplier = store);
+      products.length > 0 && (this.products = products);
+      this.orderedProducts = this.order.items.map(item => {
+        let iProduct = new InteractableOrderedProducts();
+        iProduct.price = item.price;
+        iProduct.id = item.id;
+        iProduct.quantity = item.quantity;
+        iProduct.product = _.find(this.products, { _id: item.id });
+        return iProduct;
+      });
+      this.calculateTotal();
+      this.cdr.reattach();
+      return;
+    } catch (err) {
+      this.cdr.reattach();
+      this.bounceBackOnError(err);
+    }
   }
 
   private async onCancelledOrderPageLoad() {
     await this.onOrderPageLoad();
+  }
+
+  private async onCompletedOrderPageLoad() {
+    try {
+      await this.onOrderPageLoad();
+      this.receivedOrder = await this.receivedOrderService.getByOrderId(this.order._id);
+      this.order.createdAt = this.receivedOrder.createdAt;
+      this.orderedProducts = <InteractableOrderedProducts[]> this.receivedOrder.items.map(item => {
+        let order = _.find(this.order.items, { id: item.id });
+        let iProduct = new InteractableOrderedProducts();
+        iProduct.price = item.price;
+        iProduct.quantity = order.quantity;
+        iProduct.receivedQty = item.quantity;
+        iProduct.product = _.find(this.products, { _id: item.id });
+        return iProduct;
+      });
+    } catch (err) {
+      this.bounceBackOnError(err);
+    }
+  }
+
+  private bounceBackOnError(err) {
+    let toast = this.toastCtrl.create({
+      message: 'Unable to load order',
+      duration: 3000
+    });
+    toast.present();
+    console.error(err);
+    this.navCtrl.pop();
   }
 }
