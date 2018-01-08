@@ -72,6 +72,7 @@ import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
 import { SupplierDetails } from './../pages/supplier-details/supplier-details';
+import { Closures } from './../pages/closures/closures';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -194,7 +195,8 @@ import { ResourceService } from '../services/resourceService';
     BrandDetails,
     DeployPage,
     Suppliers,
-    SupplierDetails
+    SupplierDetails,
+    Closures
   ],
   imports: [
     FormsModule,
@@ -296,7 +298,8 @@ import { ResourceService } from '../services/resourceService';
     BrandDetails,
     DeployPage,
     Suppliers,
-    SupplierDetails
+    SupplierDetails,
+    Closures
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
