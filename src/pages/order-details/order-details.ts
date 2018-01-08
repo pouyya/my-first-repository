@@ -185,8 +185,8 @@ export class OrderDetails {
     this.order.items = <OrderedItems[]>this.orderedProducts.map(product => {
       return <OrderedItems> {
         id: product.id,
-        price: product.price,
-        quantity: product.quantity
+        price: Number(product.price),
+        quantity: Number(product.quantity)
       };
     });
     await this.orderService.add(this.order);
@@ -204,7 +204,7 @@ export class OrderDetails {
             let toast = this.toastCtrl.create({ duration: 3000 });
             this.order.cancelledAt = moment().utc().format();
             this.order.status = OrderStatus.Cancelled;
-            this.orderService.add(this.order).then(() => {
+            this.orderService.update(this.order).then(() => {
               toast.setMessage('Order has been cancelled!');
             }).catch(err => {
               console.error(new Error(err));
@@ -254,6 +254,7 @@ export class OrderDetails {
       let addToStock: any[] = this.order.items.map(item => {
         let stock = new StockHistory();
         stock.reason = Reason.NewStock;
+        stock.storeId = this.store._id;
         stock.productId = item.id;
         stock.supplyPrice = Number(item.price);
         stock.value = Number(item.quantity);

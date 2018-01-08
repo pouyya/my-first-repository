@@ -1,10 +1,10 @@
-import { DatePipe } from '@angular/common';
 // core
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -143,6 +143,7 @@ import { ConfigService } from '../services/configService';
 import { SupplierService } from '../services/supplierService';
 import { ReceivedOrderService } from './../services/receivedOrderService';
 import { OrderService } from './../services/orderService';
+import { ResourceService } from '../services/resourceService';
 
 @NgModule({
   declarations: [
@@ -213,6 +214,9 @@ import { OrderService } from './../services/orderService';
     IonicModule.forRoot(SimplePOSApp,
       {
         backButtonText: '',
+        modalEnter: 'modal-slide-in',
+        modalLeave: 'modal-slide-out',
+        pageTransition: 'ios-transition',
         platforms: {
           android: {
             activator: 'none'
@@ -245,7 +249,7 @@ import { OrderService } from './../services/orderService';
     IonicProDeployModule.forRoot({
       appId: ConfigService.ionicDeployAppId(),
       channel: ConfigService.ionicDeployAppChannel()
-    }),    
+    }),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -363,7 +367,8 @@ import { OrderService } from './../services/orderService';
     AccountSettingService,
     SupplierService,
     OrderService,
-    ReceivedOrderService
+    ReceivedOrderService,
+    ResourceService
   ]
 })
 export class AppModule {

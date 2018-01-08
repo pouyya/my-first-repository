@@ -71,10 +71,13 @@ export class StoreService extends BaseEntityService<Store> {
 
     if (poses && poses.length > 0) {
 
-      var openedPoses = _.orderBy(_.reject(poses, ['openTime', null]), ['openTime']);
+      var openedPoses = _.orderBy(
+        _.filter(poses,
+          pos => pos != null && pos.hasOwnProperty('openTime') && pos.openTime != null && pos.openTime != undefined),
+        ['openTime']);
 
       if (openedPoses && openedPoses.length > 0) {
-        
+
         var earliestOpenedPOS = openedPoses[0];
 
         return new Date(earliestOpenedPOS.openTime);

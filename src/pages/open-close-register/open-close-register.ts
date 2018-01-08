@@ -216,7 +216,7 @@ export class OpenCloseRegister {
       this.closure.closureNumber = await this.fountainService.getClosureNumber();
       await this.closureService.add(this.closure);
 
-      await this.prinService.printEndOfDayReport(this.closure);
+      this.prinService.printEndOfDayReport(this.closure);
 
       this.pos.status = false;
       this.pos.cashMovements = [];
