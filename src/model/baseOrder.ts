@@ -1,4 +1,5 @@
 import { DBBasedEntity } from "./dbBasedEntity";
+import { DBMode, DBModeEnum } from "../metadata/dbMode";
 
 export enum OrderStatus {
   Unprocessed = 'unprocessed',
@@ -14,6 +15,7 @@ export class OrderedItems {
   price: number;
 }
 
+@DBMode(DBModeEnum.Current)
 export abstract class BaseOrder<E extends OrderStatus> extends DBBasedEntity {
   createdAt: string;
   orderNumber: string;
