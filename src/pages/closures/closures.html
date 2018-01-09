@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Closures</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h2 text-center>{{ pos.name }}</h2>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-2>
+            <strong>Closure Number</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Closing Time</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Opening Time</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Opening Amount ($)</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Total Counted ($)</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Total Difference ($)</strong>
+          </ion-col>
+          <ion-col col-md-1></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="closures.length > 0">
+    <ion-item *ngFor="let closure of closures; let $index = index" [ngClass]="{active: isItemShown(closure._id)}">
+      <ion-grid>
+        <ion-row (click)="toggleItem(closure)">
+          <ion-col col-md-2>{{ closure.closureNumber }}</ion-col>
+          <ion-col col-md-2>{{ closure.closeTime | localDate: 'MMM DD, YYYY h:mm:ss a' }}</ion-col>
+          <ion-col col-md-2>{{ closure.openTime | localDate: 'MMM DD, YYYY h:mm:ss a'}}</ion-col>
+          <ion-col col-md-2 text-right>${{ closure.openingAmount | number : '1.2-2' }}</ion-col>
+          <ion-col col-md-2 text-right>${{ closure.totalCounted | number : '1.2-2' }}</ion-col>
+          <ion-col col-md-2 text-right>${{ closure.totalDifference | number : '1.2-2' }}</ion-col>
+        </ion-row>
+      </ion-grid>
+      <div *ngIf="isItemShown(closure._id)">
+        <ion-grid>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Total Cash In</strong>
+            </ion-col>
+            <ion-col text-right>${{ closure.totalCashIn | number : '1.2-2' }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Total Cash Out</strong>
+            </ion-col>
+            <ion-col text-right>${{ closure.totalCashOut | number : '1.2-2' }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Cash Counted</strong>
+            </ion-col>
+            <ion-col text-right>${{ closure.cashCounted | number : '1.2-2' }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Cash Difference</strong>
+            </ion-col>
+            <ion-col text-right>${{ closure.cashDifference | number : '1.2-2' }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Credit Card Counted</strong>
+            </ion-col>
+            <ion-col text-right>${{ closure.ccCounted | number : '1.2-2' }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Credit Card Difference</strong>
+            </ion-col>
+            <ion-col text-right>${{ closure.ccDifference | number : '1.2-2' }}</ion-col>
+          </ion-row>
+          <ion-row *ngIf="closure.note">
+            <ion-col text-left>
+              <strong>Note</strong>
+            </ion-col>
+            <ion-col text-right>{{ closure.note }}</ion-col>
+          </ion-row>
+          <ion-row *ngIf="closure.employeeId">
+            <ion-col text-left>
+              <strong>Employee</strong>
+            </ion-col>
+            <ion-col text-right>{{ closure.employeeFullName }}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>
