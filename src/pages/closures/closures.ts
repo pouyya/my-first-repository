@@ -1,10 +1,12 @@
-import { Platform } from 'ionic-angular';
+import { Platform, ToastController } from 'ionic-angular';
 import { Closure } from './../../model/closure';
 import { ClosureService } from './../../services/closureService';
 import { Component, NgZone } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { POS } from '../../model/pos';
 import { QuerySelectorInterface, SortOptions, QueryOptionsInterface } from '../../services/baseEntityService';
+import { PluginService } from '../../services/pluginService';
+import { EmployeeService } from '../../services/employeeService';
 
 @Component({
   selector: 'closures',
@@ -19,11 +21,6 @@ export class Closures {
 
   public closures: Closure[] = [];
   public pos: POS = new POS();
-  public orderByOptions: any[] = [
-    { id: SortOptions.DESC, name: 'Descending' },
-    { id: SortOptions.ASC, name: 'Ascending' }
-  ];
-  public orderBy: SortOptions;
   private readonly defaultLimit = 10;
   private readonly defaultOffset = 0;
   private limit: number;
@@ -36,15 +33,42 @@ export class Closures {
     private platform: Platform,
     private zone: NgZone,
     private posService: PosService,
-    private closureService: ClosureService
+    private closureService: ClosureService,
+    private pluginService: PluginService,
+    private employeeService: EmployeeService,
+    private toastCtrl: ToastController
   ) {
     this.limit;
     this.offset;
     this.total = 0;
-    this.orderBy = SortOptions.DESC;
     this.filter = {
       closureNumber: null
     }
+  }
+
+
+  async ionViewCanEnter(): Promise<boolean> {
+
+    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+      { ok: 'OK', cancel: 'Cancel' });
+    if (!pin) {
+      return false;
+    }
+
+    let employee = await this.employeeService.findByPin(pin);
+
+    if (!employee) {
+
+      let toast = this.toastCtrl.create({
+        message: "Invalid PIN!",
+        duration: 3000
+      });
+      toast.present();
+
+      return false;
+    }
+
+    return true;
   }
 
   async ionViewDidEnter() {
@@ -69,13 +93,13 @@ export class Closures {
 
   public async loadClosures(): Promise<Closure[]> {
     let options: QueryOptionsInterface = {
-      sort: [{ _id: this.orderBy }],
+      sort: [{ _id: SortOptions.DESC }],
       conditionalSelectors: {
         posId: this.pos._id
       }
     };
     let closures = await this.closureService.search(this.limit, this.offset, this.filter, options)
-    return <Closure[]> closures;
+    return <Closure[]>closures;
   }
 
   public async fetchMore(infiniteScroll?: any) {
