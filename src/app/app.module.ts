@@ -25,7 +25,6 @@ import { SimplePOSApp } from './app.component';
 import { LoginPage } from './../pages/login/login';
 import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
-import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
 import { ProductDetails } from '../pages/product-details/product-details';
 import { Category } from '../pages/category/category';
@@ -146,7 +145,6 @@ import { ResourceService } from '../services/resourceService';
     LogOut,
     DataSync,
     HomePage,
-    InventoryPage,
     Products,
     ProductDetails,
     Services,
@@ -248,7 +246,6 @@ import { ResourceService } from '../services/resourceService';
     LoginPage,
     LogOut,
     HomePage,
-    InventoryPage,
     Products,
     ProductDetails,
     Services,
