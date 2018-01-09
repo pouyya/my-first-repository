@@ -30,7 +30,7 @@
                     <strong>Order Qty.</strong>
                   </ion-col>
                   <ion-col col-md-2>
-                    <strong>Supply Price</strong>
+                    <strong>Supply Price ($)</strong>
                   </ion-col>
                   <ion-col col-md-2>
                     <strong>Total Cost ($)</strong>
@@ -98,7 +98,7 @@
                   <strong>Order Qty.</strong>
                 </ion-col>
                 <ion-col col-md-2>
-                  <strong>Supply Price</strong>
+                  <strong>Supply Price ($)</strong>
                 </ion-col>
                 <ion-col col-md-2>
                   <strong>Total Cost ($)</strong>
@@ -113,7 +113,7 @@
               <ion-row>
                 <ion-col col-md-5>{{ product.product.name }}</ion-col>
                 <ion-col col-md-3>{{ product.quantity }}</ion-col>
-                <ion-col col-md-2>{{ product.price | number : '1.2-2' }}</ion-col>
+                <ion-col col-md-2>${{ product.price | number : '1.2-2' }}</ion-col>
                 <ion-col col-md-2>${{ product.quantity * product.price | number : '1.2-2' }}</ion-col>
               </ion-row>
             </ion-grid>
@@ -142,7 +142,7 @@
                   <strong>Order Qty.</strong>
                 </ion-col>
                 <ion-col col-md-2>
-                  <strong>Supply Price</strong>
+                  <strong>Supply Price ($)</strong>
                 </ion-col>
                 <ion-col col-md-2>
                   <strong>Total Cost ($)</strong>
@@ -157,7 +157,7 @@
               <ion-row>
                 <ion-col col-md-5>{{ product.product.name }}</ion-col>
                 <ion-col col-md-3>{{ product.quantity }}</ion-col>
-                <ion-col col-md-2>{{ product.price | number : '1.2-2' }}</ion-col>
+                <ion-col col-md-2>${{ product.price | number : '1.2-2' }}</ion-col>
                 <ion-col col-md-2>${{ product.quantity * product.price | number : '1.2-2' }}</ion-col>
               </ion-row>
             </ion-grid>
@@ -182,7 +182,7 @@
                   <strong>Received Qty.</strong>
                 </ion-col>
                 <ion-col col-md-2>
-                  <strong>Supply Price</strong>
+                  <strong>Supply Price ($)</strong>
                 </ion-col>
                 <ion-col col-md-2>
                   <strong>Total Cost ($)</strong>
