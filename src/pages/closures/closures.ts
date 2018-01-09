@@ -7,6 +7,7 @@ import { POS } from '../../model/pos';
 import { QuerySelectorInterface, SortOptions, QueryOptionsInterface } from '../../services/baseEntityService';
 import { PluginService } from '../../services/pluginService';
 import { EmployeeService } from '../../services/employeeService';
+import { PrintService, EndOfDayReportType } from '../../services/printService';
 
 @Component({
   selector: 'closures',
@@ -36,7 +37,8 @@ export class Closures {
     private closureService: ClosureService,
     private pluginService: PluginService,
     private employeeService: EmployeeService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private printService: PrintService
   ) {
     this.limit;
     this.offset;
@@ -109,5 +111,17 @@ export class Closures {
       this.closures = this.closures.concat(closures);
       infiniteScroll && infiniteScroll.complete();
     });
+  }
+
+  public printClosurePerProductGrouping(closure: Closure) {
+    this.printService.printEndOfDayReport(closure, EndOfDayReportType.PerCategory);
+  }
+
+  public printClosurePerProduct(closure: Closure) {
+    this.printService.printEndOfDayReport(closure,  EndOfDayReportType.PerProduct);
+  }
+
+  public printClosurePerEmployee(closure: Closure) {
+    this.printService.printEndOfDayReport(closure,  EndOfDayReportType.PerEmployee);
   }
 }

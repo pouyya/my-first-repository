@@ -11,7 +11,7 @@ import { CacheService } from './cacheService';
 import { GlobalConstants } from './../metadata/globalConstants';
 import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
-import { BasketItem } from './../model/bucketItem';
+import { BasketItem } from './../model/basketItem';
 import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
@@ -111,12 +111,13 @@ export class SalesServices extends BaseEntityService<Sale> {
 	 * @param item {PurchasableItem}
 	 * @return {BasketItem}
 	 */
-	public async prepareBasketItem(item: any): Promise<BasketItem> {
+	public async prepareBasketItem(item: any, categoryId: string): Promise<BasketItem> {
 		var user = await this.userService.getUser();
 		let taxInclusive = user.settings.taxType;
 
 		let basketItem = new BasketItem();
 		basketItem._id = item._id;
+		basketItem.categoryId = categoryId;
 		item._rev && (basketItem._rev = item._rev);
 		basketItem.name = item.name;
 		basketItem.tax = {

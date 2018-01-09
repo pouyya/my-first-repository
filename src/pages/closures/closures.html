@@ -99,6 +99,22 @@
             </ion-col>
             <ion-col text-right>{{ closure.employeeFullName }}</ion-col>
           </ion-row>
+          <ion-row>
+            <ion-col text-left>
+              <strong>Print</strong>
+            </ion-col>
+            <ion-col text-right>
+              <ion-item class="clickable" (click)="printClosurePerProductGrouping(closure)">
+                <ion-icon name="print"></ion-icon> Print End of day per Product Group
+              </ion-item>
+              <ion-item class="clickable" (click)="printClosurePerProduct(closure)">
+                <ion-icon name="print"></ion-icon> Print End of day per product
+              </ion-item>
+              <ion-item class="clickable" (click)="printClosurePerEmployee(closure)">
+                  <ion-icon name="print"></ion-icon> Print End of day employee
+                </ion-item>
+            </ion-col>
+          </ion-row>
         </ion-grid>
       </div>
     </ion-item>

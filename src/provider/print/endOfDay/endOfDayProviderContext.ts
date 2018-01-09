@@ -1,4 +1,5 @@
 export class EndOfDayProviderContext {    
+    reportTitle: string;
     dayItems: Array<any>;
     closureNumber: string;
     openFloat: number;

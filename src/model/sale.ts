@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import { DBBasedEntity } from './dbBasedEntity';
-import { BasketItem } from './bucketItem';
+import { BasketItem } from './basketItem';
 import { DBMode, DBModeEnum } from '../metadata/dbMode';
 
 interface PaymentsInterface {

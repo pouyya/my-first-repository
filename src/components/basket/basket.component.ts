@@ -8,7 +8,7 @@ import { AlertController, ModalController, ToastController } from 'ionic-angular
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
-import { BasketItem } from './../../model/bucketItem';
+import { BasketItem } from './../../model/basketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';

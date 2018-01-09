@@ -4,6 +4,7 @@ export class BasketItem {
   _id: string;
   _rev?: string;
   name: string;
+  categoryId: string;
   quantity: number;
   discount: number;
   actualPrice: number;

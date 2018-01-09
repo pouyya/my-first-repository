@@ -11,21 +11,46 @@ import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnect
 import { Closure } from '../model/closure';
 import { ReceiptProviderContext } from '../provider/print/receipt/receiptProviderContext';
 import { ReceiptProvider } from '../provider/print/receipt/receiptProvider';
+import { EmployeeService } from './employeeService';
+import { CategoryService } from './categoryService';
+import { BasketItem } from '../model/basketItem';
+
+export enum EndOfDayReportType {
+  PerProduct,
+  PerCategory,
+  PerEmployee
+}
+
 
 @Injectable()
 export class PrintService {
   static tcp: any;
   static socketId: string;
+  private endOfDayReportSettings = {
+    [EndOfDayReportType.PerCategory]: {
+      reportTitle: "End Of Day Report - Per Category",
+      saleItemGetter: this.getPerCategory.bind(this)
+    },
+    [EndOfDayReportType.PerEmployee]: {
+      reportTitle: "End Of Day Report - Per Employee",
+      saleItemGetter: this.getPerEmployee.bind(this)
+    },
+    [EndOfDayReportType.PerProduct]: {
+      reportTitle: "End Of Day Report - Per Product",
+      saleItemGetter: this.getPerProduct.bind(this)
+    }
+  }
 
   constructor(
     private platformService: PlatformService,
     private storeService: StoreService,
     private posService: PosService,
-    private accountSettingService: AccountSettingService) {
+    private accountSettingService: AccountSettingService,
+    private employeeService: EmployeeService,
+    private categoryService: CategoryService) {
   }
 
-  public async printEndOfDayReport(closure: Closure) {
-
+  public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
     var currentStore = await this.storeService.get(closure.storeId);
 
     var context = new EndOfDayProviderContext();
@@ -47,24 +72,29 @@ export class PrintService {
     context.closureNumber = closure.closureNumber;
     context.dayItems = [];
 
+    context.reportTitle = this.endOfDayReportSettings[endOfDayReportType].reportTitle;
     if (closure.sales) {
-      closure.sales.forEach((sale) => {
+      for (let sale of closure.sales) {
         if (sale && sale.items) {
-          sale.items.forEach((saleItem => {
+          for (let saleItem of sale.items) {
 
             var qty = saleItem.quantity || 0;
             var totalPrice = (saleItem.finalPrice || 0) * qty;
 
-            if (!context.dayItems[saleItem._id]) {
-              context.dayItems[saleItem._id] = { name: saleItem.name, totalPrice: totalPrice, totalQuantity: qty };
-            } else {
-              context.dayItems[saleItem._id].totalPrice += totalPrice || 0;
-              context.dayItems[saleItem._id].totalQuantity += qty || 0;
-            }
+            let id: string;
+            let name: string;
 
-          }));
+            ({ id, name } = await this.endOfDayReportSettings[endOfDayReportType].saleItemGetter(saleItem));
+
+            if (!context.dayItems[id]) {
+              context.dayItems[id] = { name: name, totalPrice: totalPrice, totalQuantity: qty };
+            } else {
+              context.dayItems[id].totalPrice += totalPrice || 0;
+              context.dayItems[id].totalQuantity += qty || 0;
+            }
+          }
         }
-      });
+      }
     }
 
     var provider = new EndOfDayProvider(context);
@@ -77,6 +107,43 @@ export class PrintService {
 
     await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
       .write(provider.getResult());
+  }
+
+  private getPerProduct(saleItem: BasketItem) {
+    var id = saleItem._id;
+    var name = saleItem.name;
+    return { id, name };
+  }
+
+  private async getPerEmployee(saleItem: BasketItem) {
+    var id = saleItem.employeeId;
+    var name = 'NO EMPLOYEE SELECTED';
+
+    if (id) {
+      var employee = await this.employeeService.get(id);
+      name = `${employee.firstName} ${employee.lastName}`;
+    }
+    else {
+      id = "NA";
+    }
+
+    return { id, name };
+  }
+
+  private async getPerCategory(saleItem: BasketItem) {
+    var id = saleItem.categoryId;
+    var name = "NO CATEGORY";
+
+    if (id) {
+      var category = await this.categoryService.get(id);
+      if (category && category.name) {
+        name = category.name;
+      }
+    } else {
+      id = "NA";
+    }
+
+    return { id, name };
   }
 
   public async printReceipt(sale: Sale, openCashDrawer: boolean) {

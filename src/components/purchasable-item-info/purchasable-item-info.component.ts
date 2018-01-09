@@ -1,7 +1,7 @@
 import { TaxService } from './../../services/taxService';
 import { CalculatorService } from './../../services/calculatorService';
 import { HelperService } from './../../services/helperService';
-import { BasketItem } from './../../model/bucketItem';
+import { BasketItem } from './../../model/basketItem';
 import { Component, Input } from '@angular/core';
 
 @Component({

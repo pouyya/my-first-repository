@@ -183,7 +183,7 @@ export class Sales implements OnDestroy, OnInit {
           _.find(this.salesTaxes, { _id: item.priceBook.salesTaxId }) : this.defaultTax,
         ['rate', 'name']);
       this.selectedEmployee != null && (item.employeeId = this.selectedEmployee._id);
-      this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item));
+      this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item, this.activeCategory._id));
     } else {
       let toast = this.toastCtrl.create({
         message: `${item.name} does not have any price`,
