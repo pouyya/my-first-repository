@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import * as moment from 'moment';
-import { Observable } from "rxjs/Rx";
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
@@ -42,12 +41,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		super(Sale);
 	}
 
-	/**
-	 * Instantiate a default Sale Object
-	 * @param posId (Optional)
-	 * @return {Promise<Sale>}
-	 */
-	public async instantiateSale(posId?: string): Promise<any> {
+	public async instantiateSale(posId?: string): Promise<Sale> {
 		var user = await this.userService.getUser();
 		let id = localStorage.getItem('sale_id') || moment().utc().format();
 		if (!posId) posId = user.currentPos;
@@ -55,12 +49,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 			let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
 			if (sales && sales.length > 0) {
 				let sale = sales[0];
-				return { sale, doRecalculate: sale.state == 'current' };
+				return sale;
 			}
-			return { sale: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+			return SalesServices._createDefaultObject(posId, id);
 		} catch (error) {
 			if (error.name === GlobalConstants.NOT_FOUND) {
-				return { sale: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+				return SalesServices._createDefaultObject(posId, id);
 			}
 			return Promise.reject(error);
 		}
@@ -141,48 +135,25 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return basketItem;
 	}
 
-	/**
-	 * Initialize Sales Page Data
-	 * @param sale 
-	 * @return {Observable}
-	 */
-	public initializeSalesData(sale: Sale): Promise<Array<any>> {
-		return Promise.all([
-			new Promise(async (resolve) => {
-				if (sale) {
-					resolve({
-						sale: sale,
-						doRecalculate: false
-					});
-				} else {
-					var data: any = await this.instantiateSale();
-					resolve(data);
-				}
-			}),
+	public getSaleTaxs(): Promise<any> {
+		return new Promise(async (resolve) => {
+			let taxes: Array<any> = [];
+			var _salesTaxes = await this.salesTaxService.getAll();
+			taxes = _salesTaxes.map(salesTax => {
+				return { ...salesTax, noOfTaxes: 0 };
+			});
+			var _groupSalesTaxes = await this.groupSalesTaxService.getAll();
+			taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
+				return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
+			})));
+			resolve(taxes);
+		})
+	}
 
-			new Promise(async (resolve) => {
-				let taxes: Array<any> = [];
-				var _salesTaxes: Array<any> = await this.salesTaxService.getAll();
-				taxes = _salesTaxes.map((salesTax => {
-					return { ...salesTax, noOfTaxes: 0 };
-				}));
-				var _groupSalesTaxes: Array<any> = await this.groupSalesTaxService.getAll();
-				taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
-					return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
-				})));
-				resolve(taxes);
-			}),
-
-			this.priceBookService.getPriceBookByCriteria(),
-
-			new Promise(async (resolve) => {
-				let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
-				var user = await this.userService.getUser();
-				var tax = await this[service[user.settings.taxEntity]].get(user.settings.defaultTax);
-				resolve(tax);
-			}),
-			this.priceBookService.getExceptDefault()
-		]);
+	public async getDefaultTax(): Promise<any> {
+		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
+		var user = await this.userService.getUser();
+		return this[service[user.settings.taxEntity]].get(user.settings.defaultTax);
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {

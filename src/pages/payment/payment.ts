@@ -66,8 +66,6 @@ export class PaymentsPage {
       this.navCtrl.pop();
     } else {
       // check stock
-      let loader = this.loading.create({ content: 'Processing Sale' });
-      await loader.present();
       await this.checkForStockInHand();
       if (this.stockErrors.length > 0) {
         // display error message
@@ -81,7 +79,6 @@ export class PaymentsPage {
         );
         alert.present();
       }
-      loader.dismiss();
     }
   }
 
@@ -113,7 +110,7 @@ export class PaymentsPage {
       modal.onDidDismiss(async data => {
         if (data && data.status) {
           await (this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data));
-          this.salesService.update(this.sale);
+          await this.salesService.update(this.sale);
         }
       });
       modal.present();
@@ -177,8 +174,10 @@ export class PaymentsPage {
 
   public async printSale() {
     if (this.store.printReceiptAtEndOfSale) {
-      await this.printService.printReceipt(this.sale, true);
+      await this.printService.printReceipt(this.sale);
     }
+
+    await this.printService.openCashDrawer();
   }
 
   public goBack(state: boolean = false) {
@@ -191,9 +190,13 @@ export class PaymentsPage {
     this.stockErrors = [];
     let productsInStock: { [id: string]: number } = {};
     let allProducts = this.sale.items
-        .filter(item => item.stockControl)
-        .map(item => item._id);
-    if(allProducts.length > 0) {
+      .filter(item => item.stockControl)
+      .map(item => item._id);
+    if (allProducts.length > 0) {
+
+      let loader = this.loading.create({ content: 'Check for stock' });
+      await loader.present();
+
       productsInStock = await this.stockHistoryService
         .getProductsTotalStockValueByStore(allProducts, this.store._id);
       if (productsInStock && Object.keys(productsInStock).length > 0) {
@@ -204,9 +207,9 @@ export class PaymentsPage {
           }
         });
       }
-      return;
+      
+      loader.dismiss();
     }
-    return;
   }
 
   private async updateStock() {

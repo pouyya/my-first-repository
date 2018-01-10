@@ -146,7 +146,7 @@ export class PrintService {
     return { id, name };
   }
 
-  public async printReceipt(sale: Sale, openCashDrawer: boolean) {
+  public async printReceipt(sale: Sale) {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
@@ -174,12 +174,24 @@ export class PrintService {
         .setFooter()
         .cutPaper();
 
-      if (openCashDrawer) {
-        receiptProvider = receiptProvider.openCashDrawer();
-      }
-
       await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
         .write(receiptProvider.getResult());
+    }
+  }
+
+  public async openCashDrawer() {
+    
+    if (!this.platformService.isMobileDevice()) {
+      console.warn("can't print on dekstop");
+      return;
+    }
+
+    var currentStore = await this.storeService.getCurrentStore();
+
+    if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
+
+      await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
+        .write(new ReceiptProvider(null).openCashDrawer().getResult());
     }
   }
 }
