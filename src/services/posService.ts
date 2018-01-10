@@ -2,6 +2,7 @@ import { UserService } from './userService';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from './baseEntityService';
 import { POS } from './../model/pos';
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
@@ -40,4 +41,13 @@ export class PosService extends BaseEntityService<POS> {
 
     return !otherPosOfCurrentStoreStillOpen || otherPosOfCurrentStoreStillOpen.length <= 0
   }
+
+  public openRegister(register: POS, openingAmount: number, openingNote: string): Promise<POS> {
+    register.openTime = moment().utc().format();
+    register.status = true;
+    register.openingAmount = Number(openingAmount);
+    register.openingNote = openingNote;
+    return this.update(register);
+  }
+
 }

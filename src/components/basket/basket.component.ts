@@ -204,7 +204,7 @@ export class BasketComponent {
               handler: () => {
                 this.salesService.instantiateSale().then((sale: any) => {
                   this.customer = null;
-                  this.sale = sale.sale;
+                  this.sale = sale;
                   this.calculateAndSync();
                   this.notify.emit({ clearSale: true });
                 });
@@ -232,16 +232,14 @@ export class BasketComponent {
       buttons: [
         {
           text: 'Yes',
-          handler: () => {
-            this.salesService.delete(this.sale).then(() => {
-              localStorage.removeItem('sale_id');
-              this.customer = null;
-              this.salesService.instantiateSale().then((sale: any) => {
-                this.sale = sale.sale;
-                this.calculateAndSync();
-                this.notify.emit({ clearSale: true });
-              });
-            }).catch((error) => console.log(new Error()));
+          handler: async () => {
+            await this.salesService.delete(this.sale);
+            localStorage.removeItem('sale_id');
+            this.customer = null;
+            var sale = await this.salesService.instantiateSale();
+            this.sale = sale;
+            this.calculateAndSync();
+            this.notify.emit({ clearSale: true });
           }
         },
         {
@@ -284,19 +282,17 @@ export class BasketComponent {
     }
   }
 
-  public assignCustomer(customer: Customer) {
+  public async assignCustomer(customer: Customer) {
     this.customer = customer;
     this.sale.customerKey = this.customer._id;
-    this.salesService.update(this.sale);
+    await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
   }
 
-  public unassignCustomer() {
+  public async unassignCustomer() {
     this.customer = null;
     this.sale.customerKey = null;
-    this.sale.items.length > 0 ?
-      this.salesService.update(this.sale) :
-      this.salesService.delete(this.sale);
+    await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
   }
 
@@ -339,7 +335,6 @@ export class BasketComponent {
         if (this.sale.customerKey) {
           this.salesService.update(this.sale);
         } else {
-          this.salesService.delete(this.sale);
           this.customer = null;
         }
       }
