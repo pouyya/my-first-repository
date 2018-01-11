@@ -324,7 +324,7 @@ export class BasketComponent {
     modal.present();
   }
 
-  private calculateAndSync() {
+  public calculateAndSync() {
     this.salesService.manageSaleId(this.sale);
     this.calculateTotal(() => {
       this.setBalance();

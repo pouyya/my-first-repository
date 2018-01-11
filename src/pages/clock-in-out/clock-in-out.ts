@@ -70,10 +70,13 @@ export class ClockInOutPage {
       return false;
     }
 
+    /** Check PIN against conditions */
+    let loader = this.loading.create({ content: 'Verifying PIN' });
+    await loader.present();
     let employee: Employee = await this.employeeService.findByPin(pin);
 
     if (!employee) {
-
+      loader.dismiss();
       let toast = this.toastCtrl.create({
         message: "Invalid PIN!",
         duration: 3000
@@ -86,7 +89,7 @@ export class ClockInOutPage {
     var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.pos.storeId, employee._id);
 
     if (employeeClockedInToOtherStore) {
-
+      loader.dismiss();
       let toast = this.toastCtrl.create({
         message: `You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`,
         duration: 3000
@@ -99,6 +102,7 @@ export class ClockInOutPage {
 
     this.user = await this.userService.getUser();
     this.employee = employee;
+    loader.dismiss();
     return true;
   }
 
