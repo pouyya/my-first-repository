@@ -141,7 +141,6 @@ import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
 import { SupplierService } from '../services/supplierService';
-import { ReceivedOrderService } from './../services/receivedOrderService';
 import { OrderService } from './../services/orderService';
 import { ResourceService } from '../services/resourceService';
 
@@ -366,8 +365,7 @@ import { ResourceService } from '../services/resourceService';
     PlatformService,
     AccountSettingService,
     SupplierService,
-    OrderService,
-    ReceivedOrderService,
+    OrderService
     ResourceService
   ]
 })

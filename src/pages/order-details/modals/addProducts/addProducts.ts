@@ -22,20 +22,21 @@ export class AddProducts {
   ) {
     let selectedProductIds = <string[]>navParams.get('selectedProductIds');
     let products = navParams.get('products');
-    this.products = <SelectableProduct[]>((func: Function) => {
-      return func(selectedProductIds && selectedProductIds.length > 0 ? _.reject(products, (item) => {
-        return selectedProductIds.indexOf(item._id) > -1;
-      }) : products);
-    })((products: any[]) => {
+    let generateSelectableProducts = (products: any[]) => {
       return products.map(product => {
         product.selected = false;
         return product;
       })
-    });
+    }
+    this.products = <SelectableProduct[]>((func: Function) => {
+      return func(selectedProductIds && selectedProductIds.length > 0 ? 
+        _.reject(products, (item) => selectedProductIds.indexOf(item._id) > -1) : products);
+    })(generateSelectableProducts);
     this.productsBackup = this.products;
   }
 
-  public add() {
+  public addProduct() {
+    /** Filters out selected products, and then removes their selected property  */
     let products: Product[] = this.products
       .filter(product => product.selected)
       .map(product => {

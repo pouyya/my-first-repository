@@ -2,17 +2,17 @@ import { DBBasedEntity } from "./dbBasedEntity";
 import { DBMode, DBModeEnum } from "../metadata/dbMode";
 
 export enum OrderStatus {
-  Unprocessed = 'unprocessed',
   Received = 'received',
   Ordered = 'ordered',
-  Cancelled = 'cancelled',
-  Completed = 'completed'
+  Cancelled = 'cancelled'
 }
 
 export class OrderedItems {
-  id: string;
-  quantity: number;
-  price: number;
+  public productId: string;
+  public quantity: number;
+  public price: number;
+  public receivedQty?: number;
+  public receivedPrice?: number;
 }
 
 @DBMode(DBModeEnum.Current)

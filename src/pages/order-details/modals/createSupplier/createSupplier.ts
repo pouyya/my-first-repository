@@ -1,6 +1,6 @@
+import { ResourceService } from './../../../../services/resourceService';
 import { SupplierService } from './../../../../services/supplierService';
 import { Component } from '@angular/core';
-import { Http } from '@angular/http';
 import { ViewController } from 'ionic-angular';
 import { Supplier } from '../../../../model/supplier';
 
@@ -15,16 +15,13 @@ export class CreateSupplier {
   public postalSameAsPhysical: boolean = false;
 
   constructor(
-    private http: Http,
     private supplierService: SupplierService,
-    private viewCtrl: ViewController
+    private viewCtrl: ViewController,
+    private resourceService: ResourceService
   ) { }
 
-  ionViewDidLoad() {
-    this.http.get('assets/countries.json')
-      .subscribe(res => {
-        this.countries = res.json();
-      });
+  async ionViewDidLoad() {
+    this.countries = await this.resourceService.getCountries();
   }
 
   public async save(): Promise<any> {

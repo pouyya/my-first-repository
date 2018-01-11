@@ -1,4 +1,4 @@
-<ion-header>
+p<ion-header>
   <ion-navbar>
     <ion-title>{{ currentSettings.title }}</ion-title>
     <ion-buttons end network-monitor></ion-buttons>
@@ -167,7 +167,7 @@
       <!-- Cancelled Order - END -->
 
       <!-- Confirm Order - START -->
-      <ion-col col-md-8 *ngIf="currentSettings.type == 'received'">
+      <ion-col col-md-8 *ngIf="currentSettings.type == 'receive'">
         <ion-list>
           <ion-item>
             <ion-grid>
@@ -204,10 +204,10 @@
                 </ion-col>
                 <ion-col col-md-2>
                   <ion-item item-content>
-                    <ion-input type="number" min="1" [(ngModel)]="product.price" (ionChange)="calculateTotal()"></ion-input>
+                    <ion-input type="number" min="1" [(ngModel)]="product.receivedPrice" (ionChange)="calculateTotal()"></ion-input>
                   </ion-item>
                 </ion-col>
-                <ion-col col-md-2>${{ product.receivedQty * product.price | number : '1.2-2' }}</ion-col>
+                <ion-col col-md-2>${{ product.receivedQty * product.receivedPrice | number : '1.2-2' }}</ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
@@ -216,12 +216,12 @@
       <!-- Confirm Order - END -->
 
       <!-- Received/Completed Order - START -->
-      <ion-col col-md-8 *ngIf="currentSettings.type == 'completed'">
+      <ion-col col-md-8 *ngIf="currentSettings.type == 'received'">
         <ion-row>
           <ion-col col-md-12>
             <h4>Order Received</h4>
             <h5>{{ store.name }}</h5>
-            <h5>Order received on {{ order.createdAt | localDate:'MMM d, YYYY, h:mm a' }}</h5>
+            <h5>Order received on {{ order.receivedAt | localDate:'MMM d, YYYY, h:mm a' }}</h5>
           </ion-col>
         </ion-row>
         <ion-list>
@@ -254,8 +254,8 @@
                   <ion-col col-md-4>{{ product.product.name }}</ion-col>
                   <ion-col col-md-2>{{ product.quantity }}</ion-col>
                   <ion-col col-md-2>{{ product.receivedQty }}</ion-col>
-                  <ion-col col-md-2>{{ product.price | number : '1.2-2' }}</ion-col>
-                  <ion-col col-md-2>${{ product.receivedQty * product.price | number : '1.2-2' }}</ion-col>
+                  <ion-col col-md-2>{{ product.receivedPrice | number : '1.2-2' }}</ion-col>
+                  <ion-col col-md-2>${{ product.receivedQty * product.receivedPrice | number : '1.2-2' }}</ion-col>
                 </ion-row>
               </ion-grid>
             </ion-item>
