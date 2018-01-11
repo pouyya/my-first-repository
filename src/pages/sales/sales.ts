@@ -199,6 +199,8 @@ export class Sales implements OnDestroy, OnInit {
         });
         this.selectedEmployee = null;
         this.customer = null;
+      } else {
+        this.basketComponent.calculateAndSync();
       }
     }
 
