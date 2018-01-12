@@ -73,7 +73,7 @@ export class BasketComponent {
           this.defaultTax,
           this.user.settings.taxType);
 
-          await this.salesService.update(saleData);
+        await this.salesService.update(saleData);
       }
 
       this._sale = saleData;
@@ -146,7 +146,7 @@ export class BasketComponent {
     let priceBook = await this.salesService.getItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
 
     if (priceBook) {
-      var basketItem = await this.prepareBasketItem(purchasableItem, categoryId, this.user.settings.taxType, priceBook, currentEmployeeId, stockControl);
+      var basketItem = await this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, priceBook, currentEmployeeId, stockControl);
 
       this.updateQuantity(basketItem);
 
@@ -234,9 +234,8 @@ export class BasketComponent {
         this._sale = await this.salesService.instantiateSale();
         this.paymentCompleted.emit();
         this.customer = null;
-      } else {
-        this.calculateAndSync();
       }
+      this.calculateAndSync();
     }
 
     this.refund = this.balance < 0;
@@ -410,7 +409,7 @@ export class BasketComponent {
     callback();
   }
 
-  private async prepareBasketItem(item: PurchasableItem, categoryId: string, taxInclusive: boolean, purchasableItemPriceInterface: PurchasableItemPriceInterface, employeeId: string, stockControl: boolean): Promise<BasketItem> { //need to be move to SalesBasket module
+  private async createBasketItem(item: PurchasableItem, categoryId: string, taxInclusive: boolean, purchasableItemPriceInterface: PurchasableItemPriceInterface, employeeId: string, stockControl: boolean): Promise<BasketItem> { //need to be move to SalesBasket module
 
     let basketItem = new BasketItem();
     basketItem._id = item._id;
