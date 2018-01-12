@@ -1,9 +1,7 @@
 import _ from 'lodash';
-import firstBy from 'thenby';
-import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { EvaluationContext } from './../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { NavController, LoadingController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { LoadingController, NavParams } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -13,32 +11,19 @@ import { UserService } from './../../services/userService';
 import { EmployeeService } from './../../services/employeeService';
 import { CacheService } from './../../services/cacheService';
 import { UserSession } from './../../model/UserSession';
-import { StoreService } from './../../services/storeService';
 
 import { POS } from './../../model/pos';
-import { Store } from './../../model/store';
-import { Sale } from './../../model/sale';
-import { SalesTax } from './../../model/salesTax';
-import { PriceBook } from './../../model/priceBook';
-import { Customer } from './../../model/customer';
-import { PurchasableItem } from './../../model/purchasableItem';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
-import { PaymentsPage } from "../payment/payment";
-import { CustomerService } from '../../services/customerService';
-import { StockHistoryService } from '../../services/stockHistoryService';
-import { PriceBookService } from '../../services/priceBookService';
+import { Employee } from '../../model/employee';
+import { PurchasableItem } from '../../model/purchasableItem';
+import { Sale } from '../../model/sale';
 
-interface InteractableItem extends PurchasableItem {
-  tax: any;
-  priceBook: PurchasableItemPriceInterface;
-  employeeId: string;
-}
 
 interface PurchasableItemTiles {
-  [id: string]: InteractableItem[]
+  [id: string]: PurchasableItem[]
 }
 
 @PageModule(() => SalesModule)
@@ -54,53 +39,36 @@ export class Sales implements OnDestroy, OnInit {
   private basketComponent: BasketComponent;
 
   public categories: any[];
-  public purchasableItems: PurchasableItemTiles = {};
   public activeCategory: any;
-  public activeTiles: any[];
-  public sale: Sale;
   public register: POS;
-  public store: Store;
-  public doRefund: boolean = false;
-  public icons: any;
+
   public employees: any[] = [];
-  public selectedEmployee: any = null;
+  public selectedEmployee: Employee = null;
   public user: UserSession;
-  public customer: Customer = null;
-  private saleParam: any;
-  private priceBook: PriceBook;
-  private priceBooks: PriceBook[];
-  private salesTaxes: SalesTax[];
-  private categoryIdKeys: string[];
-  private defaultTax: any;
+  public saleParam: Sale;
+  public doRefundParam: boolean = false;
   private alive: boolean = true;
 
   constructor(
     private userService: UserService,
-    private navCtrl: NavController,
     private _sharedService: SharedService,
     private employeeService: EmployeeService,
     private salesService: SalesServices,
-    private priceBookService: PriceBookService,
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private posService: PosService,
-    private storeService: StoreService,
-    private customerService: CustomerService,
-    private stockHistoryService: StockHistoryService,
     private navParams: NavParams,
-    private cacheService: CacheService,
-    private toastCtrl: ToastController,
-    private alertCtrl: AlertController
+    private cacheService: CacheService
   ) {
     this.saleParam = this.navParams.get('sale');
-    this.doRefund = this.navParams.get('doRefund');
+    this.doRefundParam = this.navParams.get('doRefund');
     this.cdr.detach();
   }
 
   ngOnInit() {
     this._sharedService
-      .getSubscribe('clockInOut')
+      .getSubscribe('clockInOut') //move it it's own module!
       .takeWhile(() => this.alive)
       .subscribe(async (data) => {
         if (data.hasOwnProperty('employee') && data.hasOwnProperty('type')) {
@@ -125,10 +93,9 @@ export class Sales implements OnDestroy, OnInit {
   }
 
   async ionViewDidLoad() {
-    [this.user, this.register, this.store] = [
+    [this.user, this.register] = [
       await this.userService.getUser(),
-      await this.posService.getCurrentPos(),
-      await this.storeService.getCurrentStore()];
+      await this.posService.getCurrentPos()];
 
     if (!this.register.status) {
       let openingAmount = Number(this.navParams.get('openingAmount'));
@@ -143,17 +110,15 @@ export class Sales implements OnDestroy, OnInit {
     this.cdr.reattach();
   }
 
-  private async loadRegister() {
+  private async loadRegister() { //move open/close to it's own module
     let loader = this.loading.create({ content: 'Loading Register...', });
     await loader.present();
-    await this.initiateSales();
+    await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
   }
 
   public selectCategory(category) {
     this.activeCategory = category;
-    this.activeTiles = this.purchasableItems[this.activeCategory._id];
-    return category._id == category._id;
   }
 
   // Event
@@ -162,111 +127,35 @@ export class Sales implements OnDestroy, OnInit {
   }
 
   // Event
-  public async onSelectTile(item: InteractableItem) {
+  public async onSelectTile(item: PurchasableItem) {
+    var currentEmployeeId = this.selectedEmployee ? this.selectedEmployee._id : null;
+    var stockControl = item["stockControl"];
+    this.basketComponent.addItemToBasket(item, this.activeCategory._id, currentEmployeeId, stockControl);
+  }
+
+  get evaluationContext() {
     let context = new EvaluationContext();
     context.currentStore = this.user.currentStore;
     context.currentDateTime = new Date();
-
-    let price = this.salesService.getItemPrice(context, this.priceBooks, this.priceBook, item);
-    if (price) {
-      item.priceBook = price;
-      item.tax = _.pick(
-        item.priceBook.salesTaxId != null ?
-          _.find(this.salesTaxes, { _id: item.priceBook.salesTaxId }) : this.defaultTax,
-        ['rate', 'name']);
-      this.selectedEmployee != null && (item.employeeId = this.selectedEmployee._id);
-      this.basketComponent.addItemToBasket(await this.salesService.prepareBasketItem(item, this.activeCategory._id));
-    } else {
-      let toast = this.toastCtrl.create({
-        message: `${item.name} does not have any price`,
-        duration: 3000
-      });
-      toast.present();
-      return;
-    }
+    return context;
   }
 
   // Event
-  public paymentClicked($event) {
-
-    let pushCallback = async params => {
-      if (params) {
-        this.saleParam = null;
-        this.sale = await this.salesService.instantiateSale();
-        this.employees = this.employees.map(employee => {
-          employee.selected = false;
-          return employee;
-        });
-        this.selectedEmployee = null;
-        this.customer = null;
-      } else {
-        this.basketComponent.calculateAndSync();
-      }
-    }
-
-    this.doRefund = $event.balance < 0;
-    this.navCtrl.push(PaymentsPage, {
-      sale: this.sale,
-      doRefund: this.doRefund,
-      callback: pushCallback,
-      store: this.store
+  public paymentCompleted() {
+    this.employees = this.employees.map(employee => {
+      employee.selected = false;
+      return employee;
     });
-  }
-
-  // Event
-  public notify($event) {
-    if ($event.clearSale) this.saleParam = null;
-  }
-
-  private async initSalePageData() {
-
-    [this.salesTaxes, this.priceBook, this.defaultTax, this.priceBooks] =
-      [await this.salesService.getSaleTaxs(),
-      await this.priceBookService.getPriceBookByCriteria(),
-      await this.salesService.getDefaultTax(),
-      await this.priceBookService.getExceptDefault()];
-
-    let saleData = this.saleParam ? this.saleParam : await this.salesService.instantiateSale();
-
-    if (saleData.customerKey) {
-      this.customer = await this.customerService.get(saleData.customerKey);
-    }
-
-    this.priceBooks.sort(
-      firstBy("priority").thenBy((book1, book2) => {
-        return new Date(book2._id).getTime() - new Date(book1._id).getTime();
-      })
-    );
-
-    if (saleData.state == 'current') {
-      var _sale: Sale = await this.salesService.reCalculateInMemorySale(
-        /* Pass By Reference */
-        saleData,
-        this.priceBook,
-        this.salesTaxes,
-        this.defaultTax);
-
-      this.sale = _sale;
-      await this.salesService.update(this.sale);
-    } else {
-      this.sale = saleData;
-    };
+    this.selectedEmployee = null;
   }
 
   private async loadCategoriesAndAssociations() {
     let categories = await this.categoryService.getAll();
-    let purchasableItems: any[] = await this.categoryService.getPurchasableItems();
+    let purchasableItems = await this.categoryService.getPurchasableItems();
     categories.forEach((category, index, catArray) => {
-      let items: InteractableItem[] = _.filter(purchasableItems, piItem => piItem.categoryIDs == category._id).map(item => {
-        return <InteractableItem>{
-          ...item,
-          tax: null,
-          priceBook: null,
-          employeeId: null
-        };
-      });
+      let items = _.filter(purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
       if (items.length > 0) {
-        this.purchasableItems[category._id] = _.sortBy(items, [item => parseInt(item.order) || 0]);
+        category["purchasableItems"] = _.sortBy(items, [item => parseInt(item.order) || 0]);
       } else {
         catArray[index] = null;
       }
@@ -274,24 +163,18 @@ export class Sales implements OnDestroy, OnInit {
 
     this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
     this.activeCategory = _.head(this.categories);
-    if (this.activeCategory) {
-      this.activeTiles = this.purchasableItems[this.activeCategory._id];
-      this.categoryIdKeys = Object.keys(this.purchasableItems);
-    }
   }
 
-  private async initiateSales() {
+  private async initiateSales(trackEmployeeSales: boolean) {
 
     await this.loadCategoriesAndAssociations();
 
-    await this.initSalePageData();
-
-    if (this.user.settings.trackEmployeeSales) {
+    if (trackEmployeeSales) {
       await this.loadEmployees();
     }
   }
 
-  private async loadEmployees() {
+  private async loadEmployees() { //move to it's own module
     this.employees = await this.employeeService.getClockedInEmployeesOfStore(this.user.currentStore);
     if (this.employees && this.employees.length > 0) {
       this.employees = this.employees.map(employee => {
@@ -301,30 +184,25 @@ export class Sales implements OnDestroy, OnInit {
     }
   }
 
-  private findPurchasableItemByBarcode(code: string): InteractableItem {
-    let foundItem: InteractableItem = null;
-    for (let i = 0; i < this.categoryIdKeys.length; i++) {
-      foundItem = _.find(this.purchasableItems[this.categoryIdKeys[i]], item => {
+  private findPurchasableItemByBarcode(code: string): PurchasableItem {
+    for (let category of this.categories) {
+      let foundItem = _.find(category.purchasableItems, item => {
         return item.hasOwnProperty('barcode') ? item.barcode == code : false;
       });
-      if (foundItem) {
-        break;
-      }
+      return foundItem;
     }
-
-    return foundItem || null;
   }
 
-  public barcodeReader(code: string) {
-    let item: InteractableItem = this.findPurchasableItemByBarcode(code);
+  public barcodeReader(code: string) { //move to separate module
+    let item = this.findPurchasableItemByBarcode(code);
     item && this.onSelectTile(item); // execute in parallel
   }
 
-  public async openRegister(): Promise<any> {
+  public async openRegister() {
     let loader = this.loading.create({ content: 'Opening Register...' });
     await loader.present();
     this.register = await this.posService.openRegister(this.register, this.register.openingAmount, this.register.openingNote);
-    await this.initiateSales();
+    await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
   }
 }

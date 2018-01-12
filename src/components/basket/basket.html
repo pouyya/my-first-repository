@@ -25,10 +25,10 @@
       </ion-list>
     </ion-col>
     <ion-col col-md-3 class="pull-right">
-      <button ion-button clear (click)="parkSale()" [disabled]="!sale.customerKey && sale.items.length == 0">
+      <button ion-button clear (click)="parkSale()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="pause"></ion-icon>
       </button>
-      <button ion-button clear (click)="discardSale()" [disabled]="!sale.customerKey && sale.items.length == 0">
+      <button ion-button clear (click)="discardSale()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-col>
@@ -38,8 +38,8 @@
 <ion-grid class="top-component basket">
   <ion-row>
     <ion-col col-12>
-      <ion-list>
-        <!-- Items in the bucket [start] -->
+      <ion-list *ngIf="sale">
+        <!-- Items in the basket [start] -->
         <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''">
 
           <ion-grid>
@@ -68,13 +68,13 @@
             </ion-row>
           </ion-grid>
         </ion-item>
-        <!-- Items in the bucket [end] -->
+        <!-- Items in the basket [end] -->
 
       </ion-list>
     </ion-col>
   </ion-row>
 </ion-grid>
-<ion-grid class="bottom-component basket">
+<ion-grid class="bottom-component basket" *ngIf="sale">
   <ion-row>
     <ion-col col-md-12>
       <hr/>

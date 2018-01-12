@@ -6,19 +6,16 @@ import { SalesTaxService } from './salesTaxService';
 import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
-import { CacheService } from './cacheService';
 import { GlobalConstants } from './../metadata/globalConstants';
-import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
 import { BasketItem } from './../model/basketItem';
-import { CategoryService } from './categoryService';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
-import { PurchasableItem } from './../model/purchasableItem';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
 import { EvaluationContext } from './EvaluationContext';
+import { BaseTaxIterface } from '../model/baseTaxIterface';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -28,12 +25,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	constructor(
 		private userService: UserService,
-		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private helperService: HelperService,
-		private fountainService: FountainService,
-		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
@@ -60,7 +54,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public static _createDefaultObject(posID: string, saleId: string) {
+	private static _createDefaultObject(posID: string, saleId: string) {
 		let sale: Sale = new Sale();
 		sale._id = saleId;
 		sale.posID = posID;
@@ -70,84 +64,37 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public async reCalculateInMemorySale(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
-		var user = await this.userService.getUser();
-		// re-calculate sale
-		let taxInclusive = user.settings.taxType;
-		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
-		return new Promise((resolve, reject) => {
-			// get account level tax
-			this[service[user.settings.taxEntity]].get(user.settings.defaultTax)
-				.then((defaultTax: any) => {
-					sale.items.forEach((item: BasketItem) => {
-						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
-						item.tax = _.pick(
-							item.priceBook.salesTaxId != null ?
-								_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax,
-							['rate', 'name']);
-						item.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
-						item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
-						item.finalPrice = item.discount != 0 ?
-							this.calcService.calcItemDiscount(
-								item.discount,
-								item.actualPrice
-							) : item.actualPrice;
-					});
-					this.calculateSale(sale);
-					resolve(sale);
-				})
-				.catch(error => reject(error));
+	public async reCalculateInMemorySale(context: EvaluationContext, sale: Sale, priceBooks: PriceBook[], salesTaxes: Array<any>, defaultTax: any, taxInclusive: boolean): Promise<any> {
+		for (let item of sale.items) {
+			var priceBook = await this.getItemPrice(context, priceBooks, item._id);
+			item.priceBook = priceBook;
+			item.tax =
+				item.priceBook.salesTaxId != null ?
+					_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax;
+			item.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
+			item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
+			item.finalPrice = item.discount != 0 ?
+				this.calcService.calcItemDiscount(
+					item.discount,
+					item.actualPrice
+				) : item.actualPrice;
+		}
+		this.calculateSale(sale);
+		return sale;
+	}
+
+	public async getSaleTaxs(): Promise<Array<BaseTaxIterface>> {
+		let taxes: BaseTaxIterface[] = [];
+		var _salesTaxes = await this.salesTaxService.getAll();
+		taxes = _salesTaxes.map(salesTax => {
+			return { ...salesTax, noOfTaxes: 0 };
 		});
-	}
+		var _groupSalesTaxes = await this.groupSalesTaxService.getAll();
+		taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
+			return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
+		})));
 
-	/**
-	 * Returns a basket compatible item
-	 * @param item {PurchasableItem}
-	 * @return {BasketItem}
-	 */
-	public async prepareBasketItem(item: any, categoryId: string): Promise<BasketItem> {
-		var user = await this.userService.getUser();
-		let taxInclusive = user.settings.taxType;
-
-		let basketItem = new BasketItem();
-		basketItem._id = item._id;
-		basketItem.categoryId = categoryId;
-		item._rev && (basketItem._rev = item._rev);
-		basketItem.name = item.name;
-		basketItem.tax = {
-			...item.tax
-		};
-		basketItem.priceBook = item.priceBook;
-		basketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
-		basketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
-		basketItem.quantity = 1;
-		basketItem.discount = item.discount || 0;
-		basketItem.finalPrice = basketItem.discount > 0 ?
-			this.calcService.calcItemDiscount(
-				basketItem.discount,
-				basketItem.actualPrice
-			) :
-			basketItem.actualPrice;
-		item.employeeId != null && (basketItem.employeeId = item.employeeId);
-		basketItem.isTaxIncl = taxInclusive;
-		basketItem.stockControl = (item.hasOwnProperty('stockControl') && item.stockControl);
-
-		return basketItem;
-	}
-
-	public getSaleTaxs(): Promise<any> {
-		return new Promise(async (resolve) => {
-			let taxes: Array<any> = [];
-			var _salesTaxes = await this.salesTaxService.getAll();
-			taxes = _salesTaxes.map(salesTax => {
-				return { ...salesTax, noOfTaxes: 0 };
-			});
-			var _groupSalesTaxes = await this.groupSalesTaxService.getAll();
-			taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
-				return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
-			})));
-			resolve(taxes);
-		})
+		return taxes;
 	}
 
 	public async getDefaultTax(): Promise<any> {
@@ -163,16 +110,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		};
 		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime });
 		return this.findBy(selector);
-	}
-
-	public findInCompletedByPosId(posId: string) {
-		return this.findBy({
-			selector: {
-				posID: posId,
-				completed: false,
-				state: 'current'
-			}
-		})
 	}
 
 	public async getCurrentSaleIfAny() {
@@ -219,25 +156,15 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	/**
-	 * Retrives price of item from pricebook
-	 * @param context 
-	 * @param priceBooks 
-	 * @param defaultBook 
-	 * @param item 
-	 * @returns {any}
-	 */
-	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: any): PurchasableItemPriceInterface {
-		let container: any = null;
-		for (let index in priceBooks) {
-			let itemPrice = _.find(priceBooks[index].purchasableItems, { id: item._id });
-			let isEligible = this.priceBookService.isEligible(context, priceBooks[index]);
-			if (itemPrice && isEligible) {
-				container = itemPrice;
-				break;
+	public async getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], purchasableItemId: string): Promise<PurchasableItemPriceInterface> {
+		for (let priceBook of priceBooks) {
+			if (await this.priceBookService.isEligible(context, priceBook)) {
+				let itemPrice = _.find(priceBook.purchasableItems, { id: purchasableItemId });
+				if (itemPrice) {
+					return itemPrice;
+				}
 			}
 		}
-		return container || _.find(defaultBook.purchasableItems, { id: item._id });
 	}
 
 	public manageSaleId(sale: Sale) {
@@ -340,7 +267,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public applyExternalValues(value: DiscountSurchargeInterface, sale: Sale): any {
+	private applyExternalValues(value: DiscountSurchargeInterface, sale: Sale): any {
 		let fn: any;
 		let typeHash = {
 			'cash': 'asCash',
@@ -361,7 +288,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return fn[exec]();
 	}
 
-	public applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
+	private applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
 		value = Number(value);
 		return {
 			asCash: () => {
@@ -385,7 +312,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		};
 	}
 
-	public applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
+	private applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
 		value = Number(value);
 		return {
 			asCash: () => {
