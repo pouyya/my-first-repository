@@ -1,7 +1,6 @@
 import * as moment from 'moment';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { FountainService } from './../../services/fountainService';
-import { HelperService } from './../../services/helperService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
@@ -42,7 +41,6 @@ export class PaymentsPage {
     private alertCtrl: AlertController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
-    private helper: HelperService,
     private loading: LoadingController,
     private printService: PrintService) {
 
@@ -191,7 +189,7 @@ export class PaymentsPage {
     let productsInStock: { [id: string]: number } = {};
     let allProducts = this.sale.items
       .filter(item => item.stockControl)
-      .map(item => item._id);
+      .map(item => item.purchsableItemId);
     if (allProducts.length > 0) {
 
       let loader = this.loading.create({ content: 'Check for stock' });
@@ -201,9 +199,9 @@ export class PaymentsPage {
         .getProductsTotalStockValueByStore(allProducts, this.store._id);
       if (productsInStock && Object.keys(productsInStock).length > 0) {
         this.sale.items.forEach(item => {
-          if (productsInStock.hasOwnProperty(item._id) && productsInStock[item._id] < item.quantity) {
+          if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
             // push error
-            this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item._id]}`);
+            this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
           }
         });
       }
@@ -215,7 +213,7 @@ export class PaymentsPage {
   private async updateStock() {
     let stock: StockHistory;
     let stockUpdates: Promise<any>[] = this.sale.items.map(item => {
-      stock = StockHistoryService.createStockForSale(item._id, this.store._id, item.quantity);
+      stock = StockHistoryService.createStockForSale(item.purchsableItemId, this.store._id, item.quantity);
       return this.stockHistoryService.add(stock);
     });
     await Promise.all(stockUpdates);

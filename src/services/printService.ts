@@ -110,7 +110,7 @@ export class PrintService {
   }
 
   private getPerProduct(saleItem: BasketItem) {
-    var id = saleItem._id;
+    var id = saleItem.purchsableItemId;
     var name = saleItem.name;
     return { id, name };
   }

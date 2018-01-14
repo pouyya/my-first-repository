@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { EvaluationContext } from './../../services/EvaluationContext';
-import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { LoadingController, NavParams } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';
@@ -19,8 +19,6 @@ import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
-import { Sale } from '../../model/sale';
-
 
 interface PurchasableItemTiles {
   [id: string]: PurchasableItem[]
@@ -33,10 +31,22 @@ interface PurchasableItemTiles {
   styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices]
 })
-export class Sales implements OnDestroy, OnInit {
+export class Sales implements OnDestroy {
 
   @ViewChild(BasketComponent)
-  private basketComponent: BasketComponent;
+  set basketComponent(basketComponent: BasketComponent) {
+    setTimeout(async () => {
+      this._basketComponent = basketComponent;
+      await this._basketComponent.initializeSale(this.navParams.get('sale'), this.navParams.get('doRefund'), this.evaluationContext);
+    }, 0);
+
+  }
+
+  get basketComponent() {
+    return this._basketComponent;
+  }
+  
+  private _basketComponent: BasketComponent;
 
   public categories: any[];
   public activeCategory: any;
@@ -45,8 +55,6 @@ export class Sales implements OnDestroy, OnInit {
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
   public user: UserSession;
-  public saleParam: Sale;
-  public doRefundParam: boolean = false;
   private alive: boolean = true;
 
   constructor(
@@ -61,12 +69,20 @@ export class Sales implements OnDestroy, OnInit {
     private navParams: NavParams,
     private cacheService: CacheService
   ) {
-    this.saleParam = this.navParams.get('sale');
-    this.doRefundParam = this.navParams.get('doRefund');
     this.cdr.detach();
   }
 
-  ngOnInit() {
+  ngOnDestroy() {
+    this.alive = false;
+  }
+
+  ionViewWillUnload() {
+    this.cacheService.removeAll();
+  }
+
+
+  async ionViewDidLoad() {
+
     this._sharedService
       .getSubscribe('clockInOut') //move it it's own module!
       .takeWhile(() => this.alive)
@@ -82,17 +98,7 @@ export class Sales implements OnDestroy, OnInit {
           loader.dismiss();
         }
       });
-  }
 
-  ngOnDestroy() {
-    this.alive = false;
-  }
-
-  ionViewWillUnload() {
-    this.cacheService.removeAll();
-  }
-
-  async ionViewDidLoad() {
     [this.user, this.register] = [
       await this.userService.getUser(),
       await this.posService.getCurrentPos()];
@@ -106,6 +112,7 @@ export class Sales implements OnDestroy, OnInit {
     } else {
       await this.loadRegister();
     }
+
 
     this.cdr.reattach();
   }
@@ -130,7 +137,7 @@ export class Sales implements OnDestroy, OnInit {
   public async onSelectTile(item: PurchasableItem) {
     var currentEmployeeId = this.selectedEmployee ? this.selectedEmployee._id : null;
     var stockControl = item["stockControl"];
-    this.basketComponent.addItemToBasket(item, this.activeCategory._id, currentEmployeeId, stockControl);
+    this._basketComponent.addItemToBasket(item, this.activeCategory._id, currentEmployeeId, stockControl);
   }
 
   get evaluationContext() {

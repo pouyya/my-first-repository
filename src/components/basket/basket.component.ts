@@ -48,52 +48,15 @@ export class BasketComponent {
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
   private store: Store;
+  private refund: boolean;
+  private sale: Sale;
+  private evaluationContext: EvaluationContext;
 
   @Input() user: UserSession;
-  @Input() refund: boolean;
-  @Input() evaluationContext: EvaluationContext;
 
   @Input('employees')
   set employee(arr: Array<any>) {
     this.employeesHash = _.keyBy(arr, '_id');
-  }
-
-  private _sale: Sale;
-  @Input('sale')
-  set sale(sale: Sale) {
-
-    var setSale = async (saleData: Sale) => {
-
-      if (saleData.state == 'current' && !this._sale) {
-        saleData = await this.salesService.reCalculateInMemorySale(
-          this.evaluationContext,
-          saleData,
-          this.priceBooks,
-          this.salesTaxes,
-          this.defaultTax,
-          this.user.settings.taxType);
-
-        await this.salesService.update(saleData);
-      }
-
-      this._sale = saleData;
-      this.setBalance();
-      this._sale.completed = false;
-      this.generatePaymentBtnText();
-    }
-
-    if (!sale) {
-      this.salesService.instantiateSale().then(async newSale => {
-        await setSale(newSale);
-      });
-    }
-    else {
-      setSale(sale);
-    }
-  }
-
-  get sale(): Sale {
-    return this._sale;
   }
 
   @Output() paymentCompleted = new EventEmitter<any>();
@@ -113,44 +76,67 @@ export class BasketComponent {
     private navCtrl: NavController) {
   }
 
-  async ngOnInit() {
+  public async initializeSale(sale: Sale, refund: boolean, evaluationContext: EvaluationContext) {
 
-    await this.loadTaxAndPriceBook();
-    this.store = await this.storeService.getCurrentStore()
+    await this.loadBaseData();
 
+    this.evaluationContext = evaluationContext;
 
+    if (!sale) {
+      sale = await this.salesService.instantiateSale()
+    }
+
+    if (sale.state == 'current') {
+      await this.recalculateSaleAmounts(sale);
+      sale = await this.salesService.update(sale);
+    }
+
+    this.sale = sale;
+    this.setBalance();
+    this.sale.completed = false;
+    this.generatePaymentBtnText();
   }
 
+  private async recalculateSaleAmounts(sale: Sale) {
+    for (let item of sale.items) {
+      var itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, item.purchsableItemId);
+      if (itemPrice) {
+        item = this.salesService.calculateAndSetBasketPriceAndTax(item, this.salesTaxes, this.defaultTax, itemPrice, this.user.settings.taxType);
+      }
+    }
+    this.salesService.calculateSale(sale);
+  }
 
-  private async loadTaxAndPriceBook() {
-    [this.salesTaxes, this.defaultTax, this.priceBooks] =
+  private async loadBaseData() {
+    [this.salesTaxes, this.defaultTax, this.priceBooks, this.store] =
       [await this.salesService.getSaleTaxs(),
       await this.salesService.getDefaultTax(),
-      await this.priceBookService.getAllSortedByPriority()];
+      await this.priceBookService.getAllSortedByPriority(),
+      await this.storeService.getCurrentStore()];
   }
 
   public setBalance() {
     if (!this.refund) {
-      this.balance = this._sale.payments && this._sale.payments.length > 0 ?
-        this._sale.taxTotal - this._sale.payments
+      this.balance = this.sale.payments && this.sale.payments.length > 0 ?
+        this.sale.taxTotal - this.sale.payments
           .map(payment => payment.amount)
-          .reduce((a, b) => a + b) : this._sale.taxTotal;
+          .reduce((a, b) => a + b) : this.sale.taxTotal;
     } else {
-      this.balance = this._sale.taxTotal;
+      this.balance = this.sale.taxTotal;
     }
-    this._sale.state = this.balance > 0 ? 'current' : 'refund';
+    this.sale.state = this.balance > 0 ? 'current' : 'refund';
   }
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
 
-    let priceBook = await this.salesService.getItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
+    let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
 
-    if (priceBook) {
-      var basketItem = await this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, priceBook, currentEmployeeId, stockControl);
+    if (itemPrice) {
+      var basketItem = await this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
 
       this.updateQuantity(basketItem);
 
-      this._sale.items = this.groupByPipe.transform(this._sale.items, 'employeeId');
+      this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
 
       this.calculateAndSync();
 
@@ -165,22 +151,22 @@ export class BasketComponent {
 
 
   private updateQuantity(basketItem: BasketItem) {
-    var index = _.findIndex(this._sale.items, (currentSaleItem: BasketItem) => {
-      return (currentSaleItem._id == basketItem._id &&
+    var index = _.findIndex(this.sale.items, (currentSaleItem: BasketItem) => {
+      return (currentSaleItem.purchsableItemId == basketItem.purchsableItemId &&
         currentSaleItem.finalPrice == basketItem.finalPrice &&
         currentSaleItem.employeeId == basketItem.employeeId);
     });
-    index === -1 ? this._sale.items.push(basketItem) : this._sale.items[index].quantity++;
+    index === -1 ? this.sale.items.push(basketItem) : this.sale.items[index].quantity++;
   }
 
   public removeItem($index) {
-    this._sale.items.splice($index, 1);
-    this._sale.items = this.groupByPipe.transform(this._sale.items, 'employeeId');
+    this.sale.items.splice($index, 1);
+    this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
     this.calculateAndSync();
   }
 
   public syncSale() {
-    return this.salesService.update(this._sale).then(
+    return this.salesService.update(this.sale).then(
       response => console.log(response)
     ).catch(error => console.error(error));
   }
@@ -197,8 +183,8 @@ export class BasketComponent {
       let reorder = false;
       if (data) {
         if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-        this._sale.items[$index] = data.item;
-        if (reorder) this._sale.items = this.groupByPipe.transform(this._sale.items, 'employeeId');
+        this.sale.items[$index] = data.item;
+        if (reorder) this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
         data.hasChanged && this.calculateAndSync();
       }
     });
@@ -209,7 +195,7 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(DiscountSurchargeModal);
     modal.onDidDismiss(data => {
       if (data) {
-        this._sale.appliedValues.push(<DiscountSurchargeInterface>data);
+        this.sale.appliedValues.push(<DiscountSurchargeInterface>data);
         this.calculateAndSync();
       }
     });
@@ -217,10 +203,10 @@ export class BasketComponent {
   }
 
   public viewAppliedValues() {
-    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this._sale.appliedValues });
+    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.sale.appliedValues });
     modal.onDidDismiss(data => {
       if (data) {
-        this._sale.appliedValues = <DiscountSurchargeInterface[]>data;
+        this.sale.appliedValues = <DiscountSurchargeInterface[]>data;
         this.calculateAndSync();
       }
     });
@@ -231,7 +217,7 @@ export class BasketComponent {
 
     let pushCallback = async params => {
       if (params) {
-        this._sale = await this.salesService.instantiateSale();
+        this.sale = await this.salesService.instantiateSale();
         this.paymentCompleted.emit();
         this.customer = null;
       }
@@ -240,7 +226,7 @@ export class BasketComponent {
 
     this.refund = this.balance < 0;
     this.navCtrl.push(PaymentsPage, {
-      sale: this._sale,
+      sale: this.sale,
       doRefund: this.refund,
       callback: pushCallback,
       store: this.store
@@ -249,7 +235,7 @@ export class BasketComponent {
 
   private generatePaymentBtnText() {
     this.payBtnText = GlobalConstants.PAY_BTN
-    if (this._sale.items && this._sale.items.length > 0) {
+    if (this.sale.items && this.sale.items.length > 0) {
       this.disablePaymentBtn = false;
       if (this.balance == 0) {
         this.payBtnText = GlobalConstants.DONE_BTN
@@ -262,7 +248,7 @@ export class BasketComponent {
   }
 
   public parkSale() {
-    let modal = this.modalCtrl.create(ParkSale, { sale: this._sale });
+    let modal = this.modalCtrl.create(ParkSale, { sale: this.sale });
     modal.onDidDismiss(data => {
       if (data.status) {
         let confirm = this.alertController.create({
@@ -274,7 +260,7 @@ export class BasketComponent {
               handler: () => {
                 this.salesService.instantiateSale().then((sale: any) => {
                   this.customer = null;
-                  this._sale = sale;
+                  this.sale = sale;
                   this.calculateAndSync();
                 });
               }
@@ -302,10 +288,10 @@ export class BasketComponent {
         {
           text: 'Yes',
           handler: () => {
-            this.salesService.delete(this._sale).then(async () => {
+            this.salesService.delete(this.sale).then(async () => {
               localStorage.removeItem('sale_id');
               this.customer = null;
-              this._sale = await this.salesService.instantiateSale();
+              this.sale = await this.salesService.instantiateSale();
               this.calculateAndSync();
             });
           }
@@ -337,7 +323,7 @@ export class BasketComponent {
   }
 
   public openSearchbar() {
-    if (this._sale.items.length > 0) {
+    if (this.sale.items.length > 0) {
       this.searchBarEnabled = true;
     } else {
       let toast = this.toastCtrl.create({ message: 'Please add items first', duration: 3000 });
@@ -347,16 +333,16 @@ export class BasketComponent {
 
   public async assignCustomer(customer: Customer) {
     this.customer = customer;
-    this._sale.customerKey = this.customer._id;
-    await this.salesService.update(this._sale);
-    this.salesService.manageSaleId(this._sale);
+    this.sale.customerKey = this.customer._id;
+    await this.salesService.update(this.sale);
+    this.salesService.manageSaleId(this.sale);
   }
 
   public async unassignCustomer() {
     this.customer = null;
-    this._sale.customerKey = null;
-    await this.salesService.update(this._sale);
-    this.salesService.manageSaleId(this._sale);
+    this.sale.customerKey = null;
+    await this.salesService.update(this.sale);
+    this.salesService.manageSaleId(this.sale);
   }
 
   public createCustomer() {
@@ -366,8 +352,8 @@ export class BasketComponent {
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this._sale.customerKey = this.customer._id;
-        this.salesService.update(this._sale);
+        this.sale.customerKey = this.customer._id;
+        this.salesService.update(this.sale);
       }
     });
     modal.present();
@@ -380,60 +366,49 @@ export class BasketComponent {
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this._sale.customerKey = this.customer._id;
-        this.salesService.update(this._sale);
+        this.sale.customerKey = this.customer._id;
+        this.salesService.update(this.sale);
       }
     });
     modal.present();
   }
 
   public calculateAndSync() {
-    this.salesService.manageSaleId(this._sale);
-    this.calculateTotal(() => {
-      this.setBalance();
-      this.generatePaymentBtnText();
-      if (this._sale.items.length > 0) {
-        this.salesService.update(this._sale);
+    this.salesService.manageSaleId(this.sale);
+    this.salesService.calculateSale(this.sale);
+    this.setBalance();
+    this.generatePaymentBtnText();
+    if (this.sale.items.length > 0) {
+      this.salesService.update(this.sale);
+    } else {
+      if (this.sale.customerKey) {
+        this.salesService.update(this.sale);
       } else {
-        if (this._sale.customerKey) {
-          this.salesService.update(this._sale);
-        } else {
-          this.customer = null;
-        }
+        this.customer = null;
       }
-    });
+    }
   }
 
-  private calculateTotal(callback) {
-    this.salesService.calculateSale(this._sale);
-    callback();
-  }
 
-  private async createBasketItem(item: PurchasableItem, categoryId: string, taxInclusive: boolean, purchasableItemPriceInterface: PurchasableItemPriceInterface, employeeId: string, stockControl: boolean): Promise<BasketItem> { //need to be move to SalesBasket module
+  private createBasketItem(purchasableItem: PurchasableItem, categoryId: string, isTaxIncl: boolean, itemPrice: PurchasableItemPriceInterface, employeeId: string, stockControl: boolean): BasketItem {
 
     let basketItem = new BasketItem();
-    basketItem._id = item._id;
-    basketItem.categoryId = categoryId;
-    item._rev && (basketItem._rev = item._rev);
-    basketItem.name = item.name;
-    basketItem.tax = purchasableItemPriceInterface.salesTaxId != null ?
-      _.find(this.salesTaxes, salesTaxe => salesTaxe._id == purchasableItemPriceInterface.salesTaxId)
-      : this.defaultTax;
-    basketItem.priceBook = purchasableItemPriceInterface;
-    basketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(purchasableItemPriceInterface.retailPrice, basketItem.tax.rate));
-    basketItem.actualPrice = taxInclusive ? purchasableItemPriceInterface.inclusivePrice : purchasableItemPriceInterface.retailPrice;
     basketItem.quantity = 1;
     basketItem.discount = 0;
-    basketItem.finalPrice = basketItem.discount > 0 ?
-      this.calcService.calcItemDiscount(
-        basketItem.discount,
-        basketItem.actualPrice
-      ) :
-      basketItem.actualPrice;
+
+    basketItem.purchsableItemId = purchasableItem._id;
+    basketItem.name = purchasableItem.name;
+
+    basketItem.categoryId = categoryId;
+
+    this.salesService.calculateAndSetBasketPriceAndTax(basketItem, this.salesTaxes, this.defaultTax, itemPrice, isTaxIncl);
+
     basketItem.employeeId = employeeId;
-    basketItem.isTaxIncl = taxInclusive;
+
     basketItem.stockControl = stockControl;
 
     return basketItem;
   }
+
+
 }

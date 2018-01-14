@@ -7,11 +7,10 @@ import { PriceBook } from './../../model/priceBook';
 import { UserService } from './../../services/userService';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, ViewController, Platform, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from './../../metadata/itemIcons';
-import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 
 interface InteractableItemPriceInterface {
@@ -56,12 +55,10 @@ export class ServiceDetails {
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private userService: UserService,
-		private helperService: HelperService,
 		private appService: AppService,
 		private navParams: NavParams,
 		private zone: NgZone,
 		private platform: Platform,
-		private viewCtrl: ViewController,
 		private modalCtrl: ModalController,
 		private loading: LoadingController) {
 		this.icons = icons;
@@ -195,7 +192,7 @@ export class ServiceDetails {
 	async saveService() {
 
 		let createPurchsableItem = (piId: string) => {
-			let puchasableItem: PurchasableItemPriceInterface = {
+			let itemPrice: PurchasableItemPriceInterface = {
 				id: piId,
 				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
 				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
@@ -205,7 +202,7 @@ export class ServiceDetails {
 				saleTaxEntity: this.defaultPriceBook.tax.entityTypeName
 			};
 
-			return puchasableItem;
+			return itemPrice;
 		}
 
 		if (this.isNew) {

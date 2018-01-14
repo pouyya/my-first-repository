@@ -56,9 +56,9 @@
               <ion-col col-md-3 offset-md-3 class="pull-right">
                 <span>${{item.finalPrice * item.quantity | number : '1.2-2'}}</span>
                 <br/>
-                <span *ngIf="item.actualPrice != item.finalPrice">
+                <span *ngIf="item.systemPrice != item.finalPrice">
                   <small>
-                    <s>${{item.actualPrice * item.quantity | number : '1.2-2'}}</s>
+                    <s>${{item.systemPrice * item.quantity | number : '1.2-2'}}</s>
                   </small>
                 </span>
               </ion-col>

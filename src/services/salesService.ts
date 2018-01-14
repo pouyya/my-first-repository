@@ -64,25 +64,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public async reCalculateInMemorySale(context: EvaluationContext, sale: Sale, priceBooks: PriceBook[], salesTaxes: Array<any>, defaultTax: any, taxInclusive: boolean): Promise<any> {
-		for (let item of sale.items) {
-			var priceBook = await this.getItemPrice(context, priceBooks, item._id);
-			item.priceBook = priceBook;
-			item.tax =
-				item.priceBook.salesTaxId != null ?
-					_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax;
-			item.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
-			item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
-			item.finalPrice = item.discount != 0 ?
-				this.calcService.calcItemDiscount(
-					item.discount,
-					item.actualPrice
-				) : item.actualPrice;
-		}
-		this.calculateSale(sale);
-		return sale;
-	}
-
 	public async getSaleTaxs(): Promise<Array<BaseTaxIterface>> {
 		let taxes: BaseTaxIterface[] = [];
 		var _salesTaxes = await this.salesTaxService.getAll();
@@ -156,17 +137,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public async getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], purchasableItemId: string): Promise<PurchasableItemPriceInterface> {
-		for (let priceBook of priceBooks) {
-			if (await this.priceBookService.isEligible(context, priceBook)) {
-				let itemPrice = _.find(priceBook.purchasableItems, { id: purchasableItemId });
-				if (itemPrice) {
-					return itemPrice;
-				}
-			}
-		}
-	}
-
 	public manageSaleId(sale: Sale) {
 		let saleId = localStorage.getItem('sale_id');
 		if (sale.items.length > 0 || sale.customerKey) {
@@ -230,6 +200,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
+	public calculateAndSetBasketPriceAndTax(basketItem: BasketItem, salesTaxes: BaseTaxIterface[], defaultTax: BaseTaxIterface, itemPrice: PurchasableItemPriceInterface, isTaxIncl: boolean): BasketItem {
+		basketItem.tax = itemPrice.salesTaxId != null ?
+			_.find(salesTaxes, salesTax => salesTax._id == itemPrice.salesTaxId)
+			: defaultTax;
+		basketItem.priceBook = itemPrice;
+		basketItem.systemPrice = isTaxIncl ? itemPrice.inclusivePrice : itemPrice.retailPrice;
+		var finalPriceBeforeDiscount = basketItem.manualPrice != null ? basketItem.manualPrice : basketItem.systemPrice;
+		basketItem.finalPrice = this.calcService.calcItemDiscount(finalPriceBeforeDiscount, basketItem.discount);
+		basketItem.taxAmount = this.taxService.calculateTaxAmount(basketItem.finalPrice, isTaxIncl, basketItem.tax.rate);
+		basketItem.isTaxIncl = isTaxIncl;
+
+		return basketItem;
+	}
+
 	public calculateSale(sale: Sale) {
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
@@ -237,13 +221,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.totalDiscount = 0;
 		sale.tax = 0;
 		if (sale.items.length > 0) {
-			sale.items.forEach((item: BasketItem) => {
-				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
-				sale.subTotal += discountedPrice * item.quantity;
-				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
-				sale.taxTotal += discountedPrice * item.quantity;
-			});
-			sale.tax = sale.taxTotal - sale.subTotal;
+			for (let item of sale.items) {
+				sale.tax += item.taxAmount * item.quantity;
+				sale.taxTotal += item.finalPrice * item.quantity;
+			};
+			sale.subTotal = sale.taxTotal - sale.tax;
 
 			/** Apply externalValues if any */
 			if (sale.appliedValues && sale.appliedValues.length > 0) {

@@ -9,6 +9,7 @@ import { PurchasableItemPriceInterface } from "../model/purchasableItemPrice.int
 import { StoreEvaluationProvider } from './StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './DaysOfWeekEvaluationProvider';
 import { EvaluationProviderBase } from './EvaluationProvider';
+import * as _ from 'lodash';
 
 @Injectable()
 export class PriceBookService extends BaseEntityService<PriceBook> {
@@ -47,12 +48,6 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     return (result && result.length > 0) ? result[0] : null;
   }
 
-
-  /**
-   * Remove sales tax from price book before deletion
-   * @param taxId
-   * @returns {Promise<void>}
-   */
   public async setPriceBookItemTaxToDefault(taxId: string): Promise<PriceBook> {
     try {
       let priceBooks: PriceBook[] = await this.findBy({
@@ -67,9 +62,9 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
       });
       if (priceBooks.length > 0) {
         let priceBook: PriceBook = priceBooks[0];
-        priceBook.purchasableItems.forEach((item: PurchasableItemPriceInterface) => {
-          if (item.salesTaxId == taxId) {
-            item.salesTaxId = null; // reset to default
+        priceBook.purchasableItems.forEach((itemPrice: PurchasableItemPriceInterface) => {
+          if (itemPrice.salesTaxId == taxId) {
+            itemPrice.salesTaxId = null; // reset to default
           }
         });
 
@@ -81,17 +76,15 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     }
   }
 
-  public async isEligible(context: EvaluationContext, priceBook: PriceBook): Promise<boolean> {
-    if (!priceBook.criteria || priceBook.criteria.length < 1) { return true; }
-
-    for (let criteria of priceBook.criteria) {
-      let provider: EvaluationProviderBase = this.injector.get(PriceBookService.providerHash[criteria.provider]);
-      if(provider && await provider.execute(context, criteria.criteria)) {
-        return true;
+  public async getEligibleItemPrice(context: EvaluationContext, priceBooks: PriceBook[], purchasableItemId: string): Promise<PurchasableItemPriceInterface> {
+    for (let priceBook of priceBooks) {
+      if (await this.isEligible(context, priceBook)) {
+        let itemPrice = _.find(priceBook.purchasableItems, { id: purchasableItemId });
+        if (itemPrice) {
+          return itemPrice;
+        }
       }
     }
-
-    return false;
   }
 
   public async getAllSortedByPriority(): Promise<Array<PriceBook>> {
@@ -103,6 +96,19 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
       }));
 
     return priceBooks;
+  }
+
+  private async isEligible(context: EvaluationContext, priceBook: PriceBook): Promise<boolean> {
+    if (!priceBook.criteria || priceBook.criteria.length < 1) { return true; }
+
+    for (let criteria of priceBook.criteria) {
+      let provider: EvaluationProviderBase = this.injector.get(PriceBookService.providerHash[criteria.provider]);
+      if (provider && await provider.execute(context, criteria.criteria)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }
