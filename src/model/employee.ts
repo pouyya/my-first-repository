@@ -1,8 +1,9 @@
-import {DBBasedEntity} from './dbBasedEntity';
+import { DBBasedEntity } from './dbBasedEntity';
+import { AccessItemRightID } from './accessItemRight';
 
 export interface RolesInterface {
   id: string;
-  roles: string[];
+  roles: AccessItemRightID[];
 }
 
 export class Employee extends DBBasedEntity {
