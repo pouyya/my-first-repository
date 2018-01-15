@@ -34,7 +34,11 @@ $colors: (
 );
 
 $colors-md: (
-  primary: #3784C6
+  primary: #3784C6,
+  light: #f4f4f4,
+  danger: #f53d3d,
+  secondary: #32db64,
+  dark: #222
 );
 
 $font-family-base: "LatoWeb", "Helvetica Neue", "Roboto", sans-serif !default;

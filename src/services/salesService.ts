@@ -3,7 +3,6 @@ import * as moment from 'moment';
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
-import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
 import { GlobalConstants } from './../metadata/globalConstants';
@@ -14,7 +13,6 @@ import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
-import { EvaluationContext } from './EvaluationContext';
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 
 @Injectable()

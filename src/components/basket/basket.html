@@ -1,7 +1,7 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
     <ion-col col-md-9 class="customer-container pull-left">
-      <ion-item item-content *ngIf="customer && !searchBarEnabled" (click)="editCustomer()" tappable>
+      <ion-item item-content *ngIf="customer" (click)="editCustomer()" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
           <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unassignCustomer()"></ion-icon>
@@ -40,7 +40,7 @@
     <ion-col col-12>
       <ion-list *ngIf="sale">
         <!-- Items in the basket [start] -->
-        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''">
+        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''" tappable>
 
           <ion-grid>
             <ion-row (click)="viewInfo(item, $index)">
@@ -85,7 +85,9 @@
       <button ion-button small color="primary" [disabled]="disablePaymentBtn" (click)="openDiscountSurchargeModal()">Discount/Surcharge</button>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">
-      <button ion-button small color="primary" [disabled]="disablePaymentBtn" (click)="viewAppliedValues()">View All</button>
+      <button ion-button small color="light" [disabled]="disablePaymentBtn || sale.appliedValues.length <= 0" (click)="viewAppliedValues()">
+        <ion-icon name="eye"></ion-icon>
+      </button>
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>
@@ -115,7 +117,7 @@
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-12 no-padding>
-      <button ion-button danger small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [ngClass]="{ 'pay': sale.taxTotal > 0, 'return': sale.taxTotal < 0 }">
+      <button ion-button small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [color]="sale.taxTotal >= 0 ? 'primary' : 'danger'">
         <span class="button-inner pull-right">
           {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}
         </span>

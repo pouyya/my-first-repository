@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { EvaluationContext } from './../../services/EvaluationContext';
-import { Component, ChangeDetectorRef, ViewChild, OnInit, OnDestroy, AfterViewChecked, AfterViewInit } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
 import { LoadingController, NavParams } from 'ionic-angular';
 
 import { SharedService } from './../../services/_sharedService';

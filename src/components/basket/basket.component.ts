@@ -86,15 +86,23 @@ export class BasketComponent {
       sale = await this.salesService.instantiateSale()
     }
 
+    let customer: Customer = null;
     if (sale.state == 'current') {
       await this.recalculateSaleAmounts(sale);
       sale = await this.salesService.update(sale);
     }
 
+    if (sale.customerKey) {
+      customer = await this.customerService.get(sale.customerKey);
+    }
+
     this.sale = sale;
+    this.customer = customer || null;
     this.setBalance();
     this.sale.completed = false;
     this.generatePaymentBtnText();
+
+    return;
   }
 
   private async recalculateSaleAmounts(sale: Sale) {
@@ -336,6 +344,7 @@ export class BasketComponent {
     this.sale.customerKey = this.customer._id;
     await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
+    this.searchBarEnabled = false;
   }
 
   public async unassignCustomer() {
@@ -343,6 +352,7 @@ export class BasketComponent {
     this.sale.customerKey = null;
     await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
+    this.searchBarEnabled = true;
   }
 
   public createCustomer() {
