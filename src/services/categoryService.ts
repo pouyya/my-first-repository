@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Category } from '../model/category';
 import { BaseEntityService } from './baseEntityService';
+import { PurchasableItem } from '../model/purchasableItem';
 
 @Injectable()
 export class CategoryService extends BaseEntityService<Category> {
@@ -8,12 +9,7 @@ export class CategoryService extends BaseEntityService<Category> {
         super(Category);
     }
 
-    /**
-     * Get associated items by category id
-     * @param _id
-     * @returns {any}
-     */
-    public getPurchasableItems() {
+    public getPurchasableItems(): Promise<Array<PurchasableItem>> {
         return this.query({
             selector: {
                 entityTypeNames: {

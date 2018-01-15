@@ -73,22 +73,26 @@ export class DBService<T extends DBBasedEntity> {
         return this.update(entity);
     }
 
-    update(entity: T): Promise<T> {
-        return this.get(entity._id).then(async result => {
+    async update(entity: T): Promise<T> {
+        try {
+            var result = await this.get(entity._id);
             entity._rev = result._rev;
             var resultAfterUpdate = await this.getDB().put(entity);
             entity._rev = resultAfterUpdate.rev;
 
             return entity;
-        }, error => {
+
+        } catch (error) {
             if (error.status == "404") {
-                return this.getDB().put(entity);
+                var resultAfterUpdate = await this.getDB().put(entity);
+                entity._rev = resultAfterUpdate.rev;
+                
+                return entity;
             } else {
-                return new Promise((resolve, reject) => {
-                    reject(error);
-                });
+                return Promise.reject(error);
             }
-        });
+
+        }
     }
 
     delete(entity: T) {
@@ -103,10 +107,10 @@ export class DBService<T extends DBBasedEntity> {
 
     findBy(selector: any): Promise<Array<T>> {
 
-        if(!selector){
+        if (!selector) {
             selector = {};
         }
-        
+
         selector.include_docs = true;
 
         if (!selector.selector) {

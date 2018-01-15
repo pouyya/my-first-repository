@@ -12,15 +12,9 @@ export class DaysOfWeekEvaluationProvider extends EvaluationProvider<DaysOfWeekC
     super();
   }
 
-  /**
-   * @Override
-   * @param context 
-   * @param criteria 
-   * @returns {boolean}
-   */
-  public execute(context: EvaluationContext, criteria: DaysOfWeekCriteria): boolean {
+  public execute(context: EvaluationContext, criteria: DaysOfWeekCriteria): Promise<boolean> {
     let day = DaysOfWeekEvaluationProvider.daysOfWeek[context.currentDateTime.getDay()];
-    return day && criteria.days.hasOwnProperty(day) ? criteria.days[day] : false;
+    return Promise.resolve(day && criteria.days.hasOwnProperty(day) ? criteria.days[day] : false);
   }
 
 }

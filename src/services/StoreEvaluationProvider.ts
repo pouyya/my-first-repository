@@ -9,14 +9,9 @@ export class StoreEvaluationProvider extends EvaluationProvider<StoreCriteria> {
   constructor() {
     super();
   }
-  /**
-   * @Override
-   * @param context 
-   * @param criteria 
-   * @returns {boolean}
-   */
-  public execute(context: EvaluationContext, criteria: StoreCriteria): boolean {
-    return criteria.storeIds.indexOf(context.currentStore) > -1;
+
+  public execute(context: EvaluationContext, criteria: StoreCriteria): Promise<boolean> {
+    return Promise.resolve(criteria.storeIds.indexOf(context.currentStore) > -1);
   }
 
 }

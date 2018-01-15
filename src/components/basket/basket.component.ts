@@ -4,7 +4,7 @@ import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController, ToastController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -15,6 +15,17 @@ import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
 import { UserSession } from '../../model/UserSession';
+import { CalculatorService } from '../../services/calculatorService';
+import { TaxService } from '../../services/taxService';
+import { BaseTaxIterface } from '../../model/baseTaxIterface';
+import { PriceBook } from '../../model/priceBook';
+import { PriceBookService } from '../../services/priceBookService';
+import { EvaluationContext } from '../../services/EvaluationContext';
+import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
+import { PurchasableItem } from '../../model/purchasableItem';
+import { Store } from '../../model/store';
+import { StoreService } from '../../services/storeService';
+import { PaymentsPage } from '../../pages/payment/payment';
 
 @Component({
   selector: 'basket',
@@ -24,69 +35,31 @@ import { UserSession } from '../../model/UserSession';
 })
 export class BasketComponent {
 
-  public _sale: Sale;
-  public _customer: Customer;
-  public tax: number = 0;
-  public oldValue: number = 1;
+  public customer: Customer;
   public balance: number = 0;
   public disablePaymentBtn = false;
   public payBtnText = "Pay";
   public employeesHash: any;
-  public saleAppliedValue: number;
-  public appliedValueDetails: any;
   public searchBarEnabled: boolean = true;
   public showSearchCancel: boolean = false;
   public searchInput: string = "";
   public searchedCustomers: any[] = [];
-
-  set sale(obj: Sale) {
-    this._sale = obj;
-    this.saleChange.emit(obj);
-  }
-
-  get sale() {
-    return this._sale;
-  }
+  private salesTaxes: BaseTaxIterface[];
+  private defaultTax: BaseTaxIterface;
+  private priceBooks: PriceBook[];
+  private store: Store;
+  private refund: boolean;
+  private sale: Sale;
+  private evaluationContext: EvaluationContext;
 
   @Input() user: UserSession;
-  @Input() refund: boolean;
-  @Input()
-  set customer(model: Customer) {
-    this._customer = model;
-    this.customerChange.emit(model);
-    this.searchInput = "";
-    if (!this._customer) {
-      this.searchBarEnabled = true;
-    } else if (this._customer) {
-      this.searchBarEnabled = false;
-    }
-  }
-  get customer(): Customer {
-    return this._customer;
-  }
 
   @Input('employees')
   set employee(arr: Array<any>) {
     this.employeesHash = _.keyBy(arr, '_id');
   }
 
-  @Input('_sale')
-  set model(obj: Sale) {
-    this._sale = obj;
-    this.setBalance();
-    this.sale.completed = false;
-    this.generatePaymentBtnText();
-  }
-
-  get model(): Sale {
-    return this.sale;
-  }
-
-  @Output() paymentClicked = new EventEmitter<any>();
-  @Output() notify = new EventEmitter<any>();
-  @Output() customerChange = new EventEmitter<Customer>();
-  @Output('_saleChange') saleChange = new EventEmitter<Sale>();
-
+  @Output() paymentCompleted = new EventEmitter<any>();
 
   constructor(
     private salesService: SalesServices,
@@ -95,7 +68,59 @@ export class BasketComponent {
     private helperService: HelperService,
     private customerService: CustomerService,
     private toastCtrl: ToastController,
-    private modalCtrl: ModalController) {
+    private modalCtrl: ModalController,
+    private calcService: CalculatorService,
+    private taxService: TaxService,
+    private priceBookService: PriceBookService,
+    private storeService: StoreService,
+    private navCtrl: NavController) {
+  }
+
+  public async initializeSale(sale: Sale, refund: boolean, evaluationContext: EvaluationContext) {
+
+    await this.loadBaseData();
+
+    this.evaluationContext = evaluationContext;
+
+    if (!sale) {
+      sale = await this.salesService.instantiateSale()
+    }
+
+    let customer: Customer = null;
+    if (sale.state == 'current') {
+      await this.recalculateSaleAmounts(sale);
+      sale = await this.salesService.update(sale);
+    }
+
+    if (sale.customerKey) {
+      customer = await this.customerService.get(sale.customerKey);
+    }
+
+    this.sale = sale;
+    this.customer = customer || null;
+    this.setBalance();
+    this.sale.completed = false;
+    this.generatePaymentBtnText();
+
+    return;
+  }
+
+  private async recalculateSaleAmounts(sale: Sale) {
+    for (let item of sale.items) {
+      var itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, item.purchsableItemId);
+      if (itemPrice) {
+        item = this.salesService.calculateAndSetBasketPriceAndTax(item, this.salesTaxes, this.defaultTax, itemPrice, this.user.settings.taxType);
+      }
+    }
+    this.salesService.calculateSale(sale);
+  }
+
+  private async loadBaseData() {
+    [this.salesTaxes, this.defaultTax, this.priceBooks, this.store] =
+      [await this.salesService.getSaleTaxs(),
+      await this.salesService.getDefaultTax(),
+      await this.priceBookService.getAllSortedByPriority(),
+      await this.storeService.getCurrentStore()];
   }
 
   public setBalance() {
@@ -110,13 +135,36 @@ export class BasketComponent {
     this.sale.state = this.balance > 0 ? 'current' : 'refund';
   }
 
-  public addItemToBasket(item: BasketItem) {
-    var index = _.findIndex(this.sale.items, (_item: BasketItem) => {
-      return (_item._id == item._id && _item.finalPrice == item.finalPrice && _item.employeeId == item.employeeId)
+  public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
+
+    let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
+
+    if (itemPrice) {
+      var basketItem = await this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
+
+      this.updateQuantity(basketItem);
+
+      this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
+
+      this.calculateAndSync();
+
+    } else {
+      let toast = this.toastCtrl.create({
+        message: `${purchasableItem.name} does not have any price`,
+        duration: 3000
+      });
+      await toast.present();
+    }
+  }
+
+
+  private updateQuantity(basketItem: BasketItem) {
+    var index = _.findIndex(this.sale.items, (currentSaleItem: BasketItem) => {
+      return (currentSaleItem.purchsableItemId == basketItem.purchsableItemId &&
+        currentSaleItem.finalPrice == basketItem.finalPrice &&
+        currentSaleItem.employeeId == basketItem.employeeId);
     });
-    index === -1 ? this.sale.items.push(item) : this.sale.items[index].quantity++;
-    this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
-    this.calculateAndSync();
+    index === -1 ? this.sale.items.push(basketItem) : this.sale.items[index].quantity++;
   }
 
   public removeItem($index) {
@@ -174,7 +222,23 @@ export class BasketComponent {
   }
 
   public gotoPayment() {
-    this.paymentClicked.emit({ balance: this.balance, operation: this.payBtnText });
+
+    let pushCallback = async params => {
+      if (params) {
+        this.sale = await this.salesService.instantiateSale();
+        this.paymentCompleted.emit();
+        this.customer = null;
+      }
+      this.calculateAndSync();
+    }
+
+    this.refund = this.balance < 0;
+    this.navCtrl.push(PaymentsPage, {
+      sale: this.sale,
+      doRefund: this.refund,
+      callback: pushCallback,
+      store: this.store
+    });
   }
 
   private generatePaymentBtnText() {
@@ -206,7 +270,6 @@ export class BasketComponent {
                   this.customer = null;
                   this.sale = sale;
                   this.calculateAndSync();
-                  this.notify.emit({ clearSale: true });
                 });
               }
             }
@@ -232,22 +295,16 @@ export class BasketComponent {
       buttons: [
         {
           text: 'Yes',
-          handler: async () => {
-            await this.salesService.delete(this.sale);
-            localStorage.removeItem('sale_id');
-            this.customer = null;
-            var sale = await this.salesService.instantiateSale();
-            this.sale = sale;
-            this.calculateAndSync();
-            this.notify.emit({ clearSale: true });
+          handler: () => {
+            this.salesService.delete(this.sale).then(async () => {
+              localStorage.removeItem('sale_id');
+              this.customer = null;
+              this.sale = await this.salesService.instantiateSale();
+              this.calculateAndSync();
+            });
           }
         },
-        {
-          text: 'No',
-          handler: () => {
-            console.log('Disagree clicked');
-          }
-        }
+        { text: 'No' }
       ]
     });
     confirm.present();
@@ -287,6 +344,7 @@ export class BasketComponent {
     this.sale.customerKey = this.customer._id;
     await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
+    this.searchBarEnabled = false;
   }
 
   public async unassignCustomer() {
@@ -294,6 +352,7 @@ export class BasketComponent {
     this.sale.customerKey = null;
     await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
+    this.searchBarEnabled = true;
   }
 
   public createCustomer() {
@@ -326,23 +385,40 @@ export class BasketComponent {
 
   public calculateAndSync() {
     this.salesService.manageSaleId(this.sale);
-    this.calculateTotal(() => {
-      this.setBalance();
-      this.generatePaymentBtnText();
-      if (this.sale.items.length > 0) {
+    this.salesService.calculateSale(this.sale);
+    this.setBalance();
+    this.generatePaymentBtnText();
+    if (this.sale.items.length > 0) {
+      this.salesService.update(this.sale);
+    } else {
+      if (this.sale.customerKey) {
         this.salesService.update(this.sale);
       } else {
-        if (this.sale.customerKey) {
-          this.salesService.update(this.sale);
-        } else {
-          this.customer = null;
-        }
+        this.customer = null;
       }
-    });
+    }
   }
 
-  private calculateTotal(callback) {
-    this.salesService.calculateSale(this.sale);
-    callback();
+
+  private createBasketItem(purchasableItem: PurchasableItem, categoryId: string, isTaxIncl: boolean, itemPrice: PurchasableItemPriceInterface, employeeId: string, stockControl: boolean): BasketItem {
+
+    let basketItem = new BasketItem();
+    basketItem.quantity = 1;
+    basketItem.discount = 0;
+
+    basketItem.purchsableItemId = purchasableItem._id;
+    basketItem.name = purchasableItem.name;
+
+    basketItem.categoryId = categoryId;
+
+    this.salesService.calculateAndSetBasketPriceAndTax(basketItem, this.salesTaxes, this.defaultTax, itemPrice, isTaxIncl);
+
+    basketItem.employeeId = employeeId;
+
+    basketItem.stockControl = stockControl;
+
+    return basketItem;
   }
+
+
 }
