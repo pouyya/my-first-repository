@@ -30,6 +30,7 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { PaymentsPage } from "../payment/payment";
 import { CustomerService } from '../../services/customerService';
 import { StockHistoryService } from '../../services/stockHistoryService';
+import { SecurityModule } from '../../infra/security/securityModule';
 
 interface InteractableItem extends PurchasableItem {
   tax: any;
@@ -41,6 +42,7 @@ interface PurchasableItemTiles {
   [id: string]: InteractableItem[]
 }
 
+@SecurityModule(/** Public Access */)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',

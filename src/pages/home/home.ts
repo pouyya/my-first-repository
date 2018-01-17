@@ -10,7 +10,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 )
 @PageModule(() => BackOfficeModule)
 @Component({
-  selector: 'page-variables',
+  selector: 'app-home',
   templateUrl: 'home.html'
 })
 export class HomePage {

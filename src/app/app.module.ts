@@ -70,6 +70,8 @@ import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
 import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
+import { Roles } from '../pages/roles/roles';
+import { RoleDetails } from '../pages/role-details/role-details';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -134,6 +136,7 @@ import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
 import { ServiceLocator } from '../services/serviceLocator';
+import { RoleService } from '../services/roleService';
 
 
 @NgModule({
@@ -190,7 +193,9 @@ import { ServiceLocator } from '../services/serviceLocator';
     StockDecreaseModal,
     Brands,
     BrandDetails,
-    DeployPage
+    DeployPage,
+    Roles,
+    RoleDetails
   ],
   imports: [
     FormsModule,
@@ -287,7 +292,9 @@ import { ServiceLocator } from '../services/serviceLocator';
     StockDecreaseModal,
     Brands,
     BrandDetails,
-    DeployPage
+    DeployPage,
+    Roles,
+    RoleDetails
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -338,7 +345,8 @@ import { ServiceLocator } from '../services/serviceLocator';
     LocalDatePipe,
     authProvider,
     PlatformService,
-    AccountSettingService
+    AccountSettingService,
+    RoleService
   ]
 })
 export class AppModule {

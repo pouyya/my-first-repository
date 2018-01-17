@@ -5,7 +5,9 @@ import { PosService } from './../../services/posService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
+import { SecurityModule } from '../../infra/security/securityModule';
 
+@SecurityModule(/** Public Access */)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'money-in-out',

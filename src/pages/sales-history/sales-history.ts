@@ -11,7 +11,9 @@ import { PageModule } from './../../metadata/pageModule';
 import { SalesServices } from './../../services/salesService';
 import { PrintService } from '../../services/printService';
 import { Customer } from '../../model/customer';
+import { SecurityModule } from '../../infra/security/securityModule';
 
+@SecurityModule(/** Public Access */)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'sales-history',

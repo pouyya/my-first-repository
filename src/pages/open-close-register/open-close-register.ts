@@ -21,7 +21,9 @@ import * as _ from 'lodash';
 import { PluginService } from '../../services/pluginService';
 import { Employee } from '../../model/employee';
 import { FountainService } from '../../services/fountainService';
+import { SecurityModule } from '../../infra/security/securityModule';
 
+@SecurityModule(/** Public Access */)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'open-close-pos',

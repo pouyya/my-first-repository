@@ -1,3 +1,5 @@
+import { RoleService } from './roleService';
+import * as _ from "lodash";
 import { LoadingController } from 'ionic-angular';
 import { Injectable } from "@angular/core";
 import { PluginService } from "./pluginService";
@@ -5,81 +7,105 @@ import { EmployeeService } from "./employeeService";
 import { PosService } from "./posService";
 import { UserService } from "./userService";
 import { Employee } from "../model/employee";
-import * as _ from "lodash";
-import { AccessItemRight } from '../model/accessItemRight';
+import { AccessRightItem } from '../model/accessItemRight';
+import { GuardInterface } from "../model/guardInterface";
+import { SecurityResult, SecurityResultReason } from './../infra/security/model/securityResult';
 
 @Injectable()
-export class SecurityService {
+export class SecurityService implements GuardInterface {
 
 	constructor(
 		private pluginService: PluginService,
 		private employeeService: EmployeeService,
+		private roleService: RoleService,
 		private posService: PosService,
 		private userService: UserService,
 		private loading: LoadingController
 	) { }
 
-	async userHasAccess(accessRightItems: AccessItemRight[]): Promise<boolean> {
-		let loader = this.loading.create({
-			content: 'Please Wait...',
-		});
+	/**
+	 * Check Page Access for Employee
+	 * @param accessRightItems 
+	 * @returns {Promise<SecurityResult>}
+	 */
+	public async canAccess<T extends AccessRightItem>(accessRightItems: T[] = []): Promise<SecurityResult> {
+		let securityResult: SecurityResult;
+		let loader = this.loading.create({ content: 'Please Wait...' });
 		await loader.present();
-		if (accessRightItems.length == 0) {
-			// that's an insecure module!
-			this.employeeService.setEmployee(null); // clear employee from memory
+
+		if (accessRightItems.length === 0) {
+			this.employeeService.setEmployee(null);
+			securityResult = new SecurityResult(true, SecurityResultReason.accessGrant);
 			loader.dismiss();
-			return true;
-		} else {
-			let employee = this.employeeService.getEmployee();
-			let currentUserStore = (await this.userService.getUser()).currentStore;
-			if (employee) {
-				if (this.verifyEmployeeAccessRightItems(employee, currentUserStore, accessRightItems)) {
-					loader.dismiss();
-					return true;
-				} else {
-					loader.dismiss();
-					return this.checkAccessAndSetEmployee(currentUserStore, accessRightItems);
-				}
+			return securityResult;
+		}
+
+		let employee = this.employeeService.getEmployee();
+		let currentUserStore = (await this.userService.getUser()).currentStore;
+		if (employee) {
+			if (await this.verifyEmployeeAccessRightItems(employee, currentUserStore, accessRightItems)) {
+				securityResult = new SecurityResult(true, SecurityResultReason.accessGrant);
+				loader.dismiss();
+				return securityResult;
 			} else {
 				loader.dismiss();
-				return this.checkAccessAndSetEmployee(currentUserStore, accessRightItems);
+				securityResult = await this.verifyPinAndGiveAccess(currentUserStore, accessRightItems);
+				return securityResult;
 			}
+		} else {
+			securityResult = await this.verifyPinAndGiveAccess(currentUserStore, accessRightItems);
+			loader.dismiss();
+			return securityResult;
 		}
-	};
-
-	private async checkAccessAndSetEmployee(currentUserStore: string, accessRightItems: AccessItemRight[]): Promise<boolean> {
-		var model = await this.giveAccessByPin(currentUserStore, accessRightItems);
-		if (model) {
-			this.employeeService.setEmployee(model);
-			return true;
-		}
-		return false;
 	}
 
-	private async giveAccessByPin(currentStoreId, accessRightItems: AccessItemRight[]): Promise<Employee> {
-		var pin = await this.pluginService.openPinPrompt(
-			'Enter PIN',
-			'User Authorization', [],
-			{ ok: 'OK', cancel: 'Cancel' })
-
+	/**
+	 * Accepts PIN and set employee to give access
+	 * @param currentUsersStore 
+	 * @param accessRightItems 
+	 * @returns {Promise<SecurityResult>}
+	 */
+	private async verifyPinAndGiveAccess(currentUsersStore: string, accessRightItems: AccessRightItem[]): Promise<SecurityResult> {
+		let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
+			{ ok: 'OK', cancel: 'Cancel' });
 		if (pin) {
-			var model = await this.employeeService.findByPin(pin)
-			if (this.verifyEmployeeAccessRightItems(model, currentStoreId, accessRightItems)) {
-				return model;
+			let model: Employee = await this.employeeService.findByPin(pin);
+			if (!model) {
+				return new SecurityResult(false, SecurityResultReason.wrongPIN);
 			}
+
+			if (!await this.verifyEmployeeAccessRightItems(model, currentUsersStore, accessRightItems)) {
+				return new SecurityResult(false, SecurityResultReason.notEnoughAccess);
+			}
+
+			this.employeeService.setEmployee(model);
+			return new SecurityResult(true, SecurityResultReason.accessGrant);
 		}
 	}
 
-	private verifyEmployeeAccessRightItems(employee: Employee, currentStoreId: string, accessRightItems: AccessItemRight[]): boolean {
-
+	/**
+	 * 
+	 * @param employee 
+	 * @param currentStoreId 
+	 * @param accessRightItems 
+	 * @returns {Promise<boolean>}
+	 */
+	private async verifyEmployeeAccessRightItems(employee: Employee, currentStoreId: string, accessRightItems: AccessRightItem[]): Promise<boolean> {
 		if (employee) {
-
-			if (employee.isAdmin) {
+			if (employee.hasOwnProperty('isAdmin') && employee.isAdmin) {
 				return true;
 			}
 
 			let employeeAssociatedStore = _.find(employee.store, { id: currentStoreId });
-			return employeeAssociatedStore && _.some(employeeAssociatedStore.roles, accessRightItems.map(right => right.id));
+			if(employeeAssociatedStore) {
+				if(!employeeAssociatedStore.role) {
+					return false;
+				} else {
+					let role = await this.roleService.get(employeeAssociatedStore.role);
+					return _.some(role.accessRightItems, accessRightItems.map(right => right.id));
+				}
+			}
+			return false;
 		}
 
 		return false;

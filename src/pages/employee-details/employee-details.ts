@@ -1,9 +1,11 @@
+import { Store } from './../../model/store';
+import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import _ from 'lodash';
 import { SelectRolesModal } from './modals/select-roles/select-roles';
 import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
-import { Employee, RolesInterface } from './../../model/employee';
+import { Employee, EmployeeStore } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
 import { Component, NgZone, ChangeDetectorRef } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
@@ -14,7 +16,14 @@ import {
   ModalController,
   LoadingController
 } from "ionic-angular";
+import { SecurityModule } from '../../infra/security/securityModule';
 
+interface SelectableStore extends Store {
+  selected: boolean;
+  role: string;
+}
+
+@SecurityModule(SecurityAccessRightRepo.EmployeeAddEdit)
 @Component({
   selector: 'employee-detail',
   templateUrl: 'employee-details.html',
@@ -25,11 +34,7 @@ export class EmployeeDetails {
   public employee: Employee = new Employee();
   public isNew = true;
   public action = 'Add';
-  public stores: any[] = [];
-  public roles: string[] = [
-    'BackOffice',
-    'Settings'
-  ];
+  public stores: SelectableStore[] = [];
 
   constructor(
     private employeeService: EmployeeService,
@@ -46,21 +51,15 @@ export class EmployeeDetails {
   }
 
   async ionViewDidLoad() {
-    let loader = this.loading.create({ content: 'Loading Details...' });
+    let loader = this.loading.create();
 
     await loader.present();
     this.cdr.detach();
-    let stores = await this.storeService.getAll();
-    this.stores = stores.map(store => {
-      return {
+    this.stores = (await this.storeService.getAll()).map(store => {
+      return <SelectableStore>{
         ...store,
         selected: false,
-        roles: this.roles.map(role => {
-          return {
-            name: role,
-            selected: false
-          }
-        })
+        role: null
       };
     });
 
@@ -73,17 +72,8 @@ export class EmployeeDetails {
         let index = _.findIndex(this.employee.store, { id: store._id });
         if (index > -1) {
           store.selected = true;
-          let roles = this.employee.store[index].roles;
-          if (roles && roles.length > 0) {
-            store.roles = store.roles.map(role => {
-              if (roles.indexOf(role.name) > -1) {
-                role.selected = true;
-              }
-              return role;
-            });
-          }
+          store.role = this.employee.store[index].role || null;
         }
-
         return store;
       });
     }
@@ -95,12 +85,10 @@ export class EmployeeDetails {
   public async save(): Promise<any> {
     try {
       this.employee.store = _.filter(this.stores, { selected: true })
-        .map((store: any) => {
-          store.roles = _.filter(store.roles, { selected: true })
-            .map((role: any) => role.name);
-          return <RolesInterface>{
+        .map(store => {
+          return <EmployeeStore> {
             id: store._id,
-            roles: store.roles
+            role: store.role
           };
         });
 
@@ -124,8 +112,13 @@ export class EmployeeDetails {
     }
   }
 
-  public selectRoles(store, index: number) {
-    let modal = this.modalCtrl.create(SelectRolesModal, { store, index });
+  public selectRoles(store: SelectableStore, index: number) {
+    let modal = this.modalCtrl.create(SelectRolesModal, { store });
+    modal.onDidDismiss((res) => {
+      if (store.selected && res.selectedRole) {
+        store.role = res.selectedRole;
+      }
+    });
     modal.present();
   }
 

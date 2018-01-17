@@ -5,7 +5,7 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { SecurityGuard } from '../metadata/securityGuardModule';
 import { Brands } from '../pages/brands/brands';
 
-@SecurityGuard(['BackOffice'])
+// @SecurityGuard(['BackOffice'])
 export class InventoryModule implements ModuleBase {
   public setInjector() {
 

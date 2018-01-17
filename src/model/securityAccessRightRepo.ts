@@ -1,4 +1,4 @@
-import { AccessItemRight, AccessItemRightID } from './accessItemRight';
+import { AccessRightItem, AccessRightItemID } from './accessItemRight';
 
 export class SecurityAccessRightRepo {
 
@@ -6,32 +6,43 @@ export class SecurityAccessRightRepo {
    * @AccessRight
    * Can view all employees
    */
-  public static EmployeeListing: AccessItemRight = new AccessItemRight(
-    AccessItemRightID.EmployeeListing,
+  public static EmployeeListing: AccessRightItem = new AccessRightItem(
+    AccessRightItemID.EmployeeListing,
     'Employee Listing');
 
   /**
    * @AccessRIght
    * Can Add/Edit employee
    */
-  public static EmployeeAddEdit: AccessItemRight = new AccessItemRight(
-    AccessItemRightID.EmployeeAddEdit,
+  public static EmployeeAddEdit: AccessRightItem = new AccessRightItem(
+    AccessRightItemID.EmployeeAddEdit,
     'Employee Add/Edit');
 
   /**
    * @AccessRight
    * Can view all stores
    */
-  public static StoreListing: AccessItemRight = new AccessItemRight(
-    AccessItemRightID.StoreListing,
+  public static StoreListing: AccessRightItem = new AccessRightItem(
+    AccessRightItemID.StoreListing,
     'Store Listing');
 
   /**
    * @AccessRight
    * Can Add/Edit store
    */
-  public static StoreAddEdit: AccessItemRight = new AccessItemRight(
-    AccessItemRightID.StoreAddEdit,
+  public static StoreAddEdit: AccessRightItem = new AccessRightItem(
+    AccessRightItemID.StoreAddEdit,
     'Store Add/Edit');
+
+  public repo: AccessRightItem[];
+
+  constructor() {
+    this.repo = [
+      SecurityAccessRightRepo.EmployeeAddEdit,
+      SecurityAccessRightRepo.EmployeeListing,
+      SecurityAccessRightRepo.StoreAddEdit,
+      SecurityAccessRightRepo.StoreListing
+    ];
+  }
 
 }
