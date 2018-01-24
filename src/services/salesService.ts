@@ -99,23 +99,52 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Promise.resolve(null);
 	}
 
-	public async searchSales(posId, limit, offset, options): Promise<any> {
-		var query: any = {
+	public async searchSales(posId, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string): Promise<any> {
+		let query: any = {
 			selector: {
 				posID: posId
 			}
 		};
-		_.each(options, (value, key) => {
-			if (value) {
-				query.selector[key] = _.isArray(value) ? { $in: value } : value;
+
+		if (options) {
+			_.each(options, (value, key) => {
+				if (value) {
+					query.selector[key] = _.isArray(value) ? { $in: value } : value;
+				}
+			});
+			if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
+				query.selector.completed = options.completed
 			}
-		});
-		if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
-			query.selector.completed = options.completed
+		}
+
+		if (timeFrame) {
+			query.selector['created'] = { '$exists': true };
+			query.selector['$and'] = [
+				{
+					"created": {
+						"$lte": timeFrame.endDate
+					}
+				},
+				{
+					"created": {
+						"$gte": timeFrame.startDate
+					}
+				}
+			];
+		}
+
+		if(employeeId) {
+			query.selector['items'] = {
+				"$elemMatch": {
+					"employeeId": {
+						"$eq": employeeId
+					}
+				}
+			};
 		}
 
 		query.sort = [{ _id: 'desc' }];
-		var countQuery = _.cloneDeep(query);
+		let countQuery = _.cloneDeep(query);
 		query.limit = limit;
 		query.offset = offset;
 

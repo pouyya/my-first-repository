@@ -93,6 +93,23 @@ export class EmployeeService extends BaseEntityService<Employee> {
     }
   }
 
+  public async searchByName(name) {
+    try {
+      let employees: Employee[] = await this.findBy({
+        selector: {
+          // will later upgrade to support full name search
+          firstName: {
+            $regex: new RegExp(name, "ig")
+          }
+        }
+      });
+
+      return employees.length > 0 ? employees : [];
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   public async updateBulk(employees: Employee[]): Promise<any> {
     try {
       return await Promise.all(employees.map(employee => this.update(employee)));

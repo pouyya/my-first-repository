@@ -1,3 +1,4 @@
+import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
 import { UserSession } from './../../model/UserSession';
 import { StoreService } from './../../services/storeService';
@@ -11,6 +12,14 @@ import { PageModule } from './../../metadata/pageModule';
 import { SalesServices } from './../../services/salesService';
 import { PrintService } from '../../services/printService';
 import { Customer } from '../../model/customer';
+import { Employee } from '../../model/employee';
+
+enum TimeValues {
+  anytime = "1",
+  today = "2",
+  thisWeek = "3",
+  thisMonth = "4"
+}
 
 @PageModule(() => SalesModule)
 @Component({
@@ -24,10 +33,13 @@ export class SalesHistoryPage {
   public sales: any[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
+  public selectedTime: TimeValues = TimeValues.anytime;
   public states: any;
   public filtersEnabled: boolean = false;
   public customerSearch: string;
   public searchedCustomers: Customer[] = [];
+  public employeeSearch: string;
+  public searchedEmployees: Employee[] = [];
   public cancelButtonText = 'Reset';
   private user: UserSession;
   private limit: number;
@@ -43,6 +55,8 @@ export class SalesHistoryPage {
     receiptNo: false,
     state: false
   };
+  private timeFrame: any = null;
+  private employeeId: string = null;
 
   constructor(
     private platform: Platform,
@@ -51,6 +65,7 @@ export class SalesHistoryPage {
     private userService: UserService,
     private storeService: StoreService,
     private customerService: CustomerService,
+    private employeeService: EmployeeService,
     private alertController: AlertController,
     private toastCtrl: ToastController,
     private loading: LoadingController,
@@ -184,10 +199,42 @@ export class SalesHistoryPage {
     }
   }
 
+  public searchbar(event) {
+    return {
+      searchCustomers: async () => {
+
+      },
+      searchEmployees: async () => {
+        if (this.employeeSearch && this.employeeSearch.trim() != '' && this.employeeSearch.length > 3) {
+          try {
+            let employees = await this.employeeService.searchByName(this.employeeSearch);
+            employees.length > 0 && (this.searchedEmployees = employees);
+            return;
+          } catch (err) {
+            return Promise.reject(err);
+          }
+        } else {
+          this.searchedEmployees = [];
+          return [];
+        }
+      }
+    }
+  }
+
   public async searchByCustomer(customer: Customer) {
     this.searchedCustomers = [];
     this.sales = this.salesBackup;
     this.filters.customerKey = customer._id;
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.sales = [];
+    await this.fetchMoreSales();
+  }
+
+  public async searchByEmployee(employee: Employee) {
+    this.searchedEmployees = [];
+    this.sales = this.salesBackup;
+    this.employeeId = employee._id;
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
@@ -202,7 +249,17 @@ export class SalesHistoryPage {
       this.sales = [];
       await this.fetchMoreSales();
     }
+    return;
+  }
 
+  public async resetEmployeeSearch() {
+    if (this.employeeId) {
+      this.employeeId = null;
+      this.limit = this.defaultLimit;
+      this.offset = this.defaultOffset;
+      this.sales = [];
+      await this.fetchMoreSales();
+    }
     return;
   }
 
@@ -238,12 +295,51 @@ export class SalesHistoryPage {
     });
   }
 
+  public searchByTime() {
+    this.sales = this.salesBackup;
+    let startDate: Date;
+    let endDate: Date;
+    switch (this.selectedTime) {
+      case TimeValues.today:
+        startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
+        this.timeFrame = {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        };
+        break;
+      case TimeValues.thisWeek:
+        this.timeFrame = null; // will later add the logic
+        break;
+      case TimeValues.thisMonth:
+        let date = new Date();
+        startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+        endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        this.timeFrame = {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        };
+        break;
+      default:
+        this.timeFrame = null;
+        break;
+    }
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.sales = [];
+    this.fetchMoreSales().catch((error) => {
+      console.error(error);
+    });
+  }
+
   private async getSales(limit?: number, offset?: number): Promise<any> {
     if (this.sales.length <= 0) {
       let result = await this.salesService.searchSales(
         this.user.currentPos,
         limit | this.limit, offset | this.offset,
-        this.filters);
+        this.filters, this.timeFrame, this.employeeId);
       if (result.totalCount > 0) {
         this.total = result.totalCount;
         this.sales = await this.attachCustomersToSales(result.docs);
@@ -254,7 +350,7 @@ export class SalesHistoryPage {
         let result: any = await this.salesService.searchSales(
           this.user.currentPos,
           limit | this.limit, offset | this.offset,
-          this.filters);
+          this.filters, this.timeFrame, this.employeeId);
         let sales = await this.attachCustomersToSales(result.docs);
         this.sales = this.sales.concat(sales);
         this.salesBackup = this.sales;
