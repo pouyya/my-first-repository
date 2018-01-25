@@ -10,6 +10,6 @@ export class TaxService {
   public calculateTaxAmount(price: number, isTaxInclusive: boolean, tax?: number): number {
     tax = tax || 0;
 
-    return isTaxInclusive ? (price * 100 / (tax + 100)) : (price * (tax / 100));
+    return isTaxInclusive ? (price * tax / (tax + 100)) : (price * (tax / 100));
   }
 }

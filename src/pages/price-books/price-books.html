@@ -35,9 +35,9 @@
           <ion-row>
             <ion-col col-md-3><strong>{{priceBook.name}}</strong></ion-col>
             <ion-col col-md-3><strong>Store Name</strong></ion-col>
-            <ion-col col-md-2><strong *ngIf="priceBook.validFrom">{{ priceBook.validFrom | localDate:'M/d/yy, h:mm a' }}</strong></ion-col>
-            <ion-col col-md-2><strong *ngIf="priceBook.validTo">{{ priceBook.validTo | localDate:'M/d/yy, h:mm a' }}</strong></ion-col>
-            <ion-col col-md-2><strong *ngIf="priceBook.createdAt">{{ priceBook.createdAt | localDate:'M/d/yy, h:mm a' }}</strong></ion-col>
+            <ion-col col-md-2><strong *ngIf="priceBook.validFrom">{{ priceBook.validFrom | localDate:'4' }}</strong></ion-col>
+            <ion-col col-md-2><strong *ngIf="priceBook.validTo">{{ priceBook.validTo | localDate:'M/d/YY, h:mm a' }}</strong></ion-col>
+            <ion-col col-md-2><strong *ngIf="priceBook.createdAt">{{ priceBook.createdAt | localDate:'M/d/YY, h:mm a' }}</strong></ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>

@@ -99,16 +99,15 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
   }
 
   private async isEligible(context: EvaluationContext, priceBook: PriceBook): Promise<boolean> {
-    if (!priceBook.criteria || priceBook.criteria.length < 1) { return true; }
+    if (!priceBook.criteria || priceBook.criteria.length < 1 || priceBook.priority == PriceBookService.MAX_PRIORITY) { return true; }
 
     for (let criteria of priceBook.criteria) {
       let provider: EvaluationProviderBase = this.injector.get(PriceBookService.providerHash[criteria.provider]);
-      if (provider && await provider.execute(context, criteria.criteria)) {
-        return true;
+      if (!provider || !(await provider.execute(context, criteria.criteria))) {
+        return false;
       }
     }
 
-    return false;
+    return true;
   }
-
 }

@@ -187,13 +187,21 @@ export class BasketComponent {
         trackStaff: this.user.settings.trackEmployeeSales
       }
     });
-    modal.onDidDismiss(data => {
-      let reorder = false;
-      if (data) {
-        if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-        this.sale.items[$index] = data.item;
-        if (reorder) this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
-        data.hasChanged && this.calculateAndSync();
+    modal.onDidDismiss(async data => {
+
+      if (data && data.hasChanged) {
+
+        var itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, item.purchsableItemId);
+
+        if (itemPrice) {
+          this.sale.items[$index] = this.salesService.calculateAndSetBasketPriceAndTax(data.item, this.salesTaxes, this.defaultTax, itemPrice, this.user.settings.taxType);
+        }
+
+        if (data.buffer.employeeId != data.item.employeeId) {
+          this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
+        }
+
+        this.calculateAndSync();
       }
     });
     modal.present();
