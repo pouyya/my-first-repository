@@ -11,7 +11,6 @@ import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 
-// @SecurityGuard([])
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
   private posService: PosService;

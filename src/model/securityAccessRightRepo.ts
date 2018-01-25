@@ -34,15 +34,14 @@ export class SecurityAccessRightRepo {
     AccessRightItemID.StoreAddEdit,
     'Store Add/Edit');
 
-  public repo: AccessRightItem[];
-
-  constructor() {
-    this.repo = [
-      SecurityAccessRightRepo.EmployeeAddEdit,
-      SecurityAccessRightRepo.EmployeeListing,
-      SecurityAccessRightRepo.StoreAddEdit,
-      SecurityAccessRightRepo.StoreListing
-    ];
-  }
+  /**
+   * Holds all the Access Right Items 
+   */
+  public static readonly Repo: AccessRightItem[] = [
+    SecurityAccessRightRepo.EmployeeAddEdit,
+    SecurityAccessRightRepo.EmployeeListing,
+    SecurityAccessRightRepo.StoreAddEdit,
+    SecurityAccessRightRepo.StoreListing
+  ];
 
 }

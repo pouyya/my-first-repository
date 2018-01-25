@@ -1,11 +1,11 @@
+import _ from 'lodash';
 import { Store } from './../../model/store';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import _ from 'lodash';
 import { SelectRolesModal } from './modals/select-roles/select-roles';
 import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
-import { Employee, EmployeeStore } from './../../model/employee';
+import { Employee, EmployeeRolePerStore } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
 import { Component, NgZone, ChangeDetectorRef } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
@@ -86,7 +86,7 @@ export class EmployeeDetails {
     try {
       this.employee.store = _.filter(this.stores, { selected: true })
         .map(store => {
-          return <EmployeeStore> {
+          return <EmployeeRolePerStore> {
             id: store._id,
             role: store.role
           };

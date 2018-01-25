@@ -1,7 +1,7 @@
 import { DBBasedEntity } from './dbBasedEntity';
 import { AccessRightItemID } from './accessItemRight';
 
-export interface EmployeeStore {
+export interface EmployeeRolePerStore {
   id: string;
   role: AccessRightItemID;
 }
@@ -12,6 +12,6 @@ export class Employee extends DBBasedEntity {
   public address: string;
   public phone: string;
   public isAdmin?: boolean;
-  public store?: EmployeeStore[];
+  public store?: EmployeeRolePerStore[];
   public pin: number;
 }

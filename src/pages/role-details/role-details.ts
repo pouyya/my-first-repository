@@ -32,7 +32,7 @@ export class RoleDetails {
       this.action = 'Edit';
     }
 
-    this.accessRightItems = (new SecurityAccessRightRepo()).repo.map(accessRightItem => {
+    this.accessRightItems = SecurityAccessRightRepo.Repo.map(accessRightItem => {
       let selected = false;
       if(!this.isNew && this.role.accessRightItems.indexOf(accessRightItem.id) > -1) {
         selected = true;

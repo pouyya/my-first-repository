@@ -5,8 +5,6 @@ import { HomePage } from './../pages/home/home';
 import { ModuleBase, PageSettingsInterface } from './moduelBase';
 import { Roles } from '../pages/roles/roles';
 
-
-// @SecurityGuard(['Settings'])
 export class SettingsModule  implements ModuleBase {
   public setInjector() {
     

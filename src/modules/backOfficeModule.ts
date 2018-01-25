@@ -14,7 +14,6 @@ import { Customers } from '../pages/customers/customers';
 import { LogOut } from '../pages/logout/logout';
 
 @Injectable()
-// @SecurityGuard(['BackOffice'])
 export class BackOfficeModule implements ModuleBase {
   public setInjector() {
   }

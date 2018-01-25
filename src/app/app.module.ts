@@ -363,7 +363,6 @@ import { ResourceService } from '../services/resourceService';
 })
 export class AppModule {
   constructor(injector: Injector) {
-    window.globalInjector.emit(injector); //TODO AZ: Can we remove this?
     ServiceLocator.injector = injector;
   }
 }
