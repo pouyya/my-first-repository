@@ -1,4 +1,4 @@
-import { BasketItem } from './../../../model/bucketItem';
+import { BasketItem } from './../../../model/basketItem';
 import { NavParams, ViewController } from 'ionic-angular';
 import { Component } from '@angular/core';
 

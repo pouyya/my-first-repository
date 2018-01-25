@@ -122,7 +122,7 @@ export class PriceBookDetails {
           this.priceBook = priceBook;
           this.isNew = false;
           this.action = 'Edit';
-          this.priceBook.priority == 0 && (this.isDefault = true);
+          this.priceBook.priority == PriceBookService.MAX_PRIORITY && (this.isDefault = true);
           if (this.isDefault) {
             Object.keys(this.criteria).forEach((key, index, array) => {
               this.criteria[key].disabled = true;
@@ -181,7 +181,7 @@ export class PriceBookDetails {
   }
 
   public onSubmit(): void {
-    if(this.priceBook.priority == 0 && !this.isDefault) {
+    if(this.priceBook.priority >= PriceBookService.MAX_PRIORITY && !this.isDefault) {
       this.showFormError("Priority must be greater than 0");
       return;
     }

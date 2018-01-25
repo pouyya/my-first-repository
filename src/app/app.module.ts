@@ -25,7 +25,6 @@ import { SimplePOSApp } from './app.component';
 import { LoginPage } from './../pages/login/login';
 import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
-import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
 import { ProductDetails } from '../pages/product-details/product-details';
 import { Category } from '../pages/category/category';
@@ -77,6 +76,7 @@ import { OrderDetails } from './../pages/order-details/order-details';
 import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAndStore/addSupplierAndStore';
 import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
 import { AddProducts } from '../pages/order-details/modals/addProducts/addProducts';
+import { Closures } from './../pages/closures/closures';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -151,7 +151,6 @@ import { ResourceService } from '../services/resourceService';
     LogOut,
     DataSync,
     HomePage,
-    InventoryPage,
     Products,
     ProductDetails,
     Services,
@@ -205,7 +204,8 @@ import { ResourceService } from '../services/resourceService';
     OrderDetails,
     AddSupplierAndStore,
     CreateSupplier,
-    AddProducts
+    AddProducts,
+    Closures
   ],
   imports: [
     FormsModule,
@@ -257,7 +257,6 @@ import { ResourceService } from '../services/resourceService';
     LoginPage,
     LogOut,
     HomePage,
-    InventoryPage,
     Products,
     ProductDetails,
     Services,
@@ -312,7 +311,8 @@ import { ResourceService } from '../services/resourceService';
     OrderDetails,
     AddSupplierAndStore,
     CreateSupplier,
-    AddProducts
+    AddProducts,
+    Closures
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -365,7 +365,7 @@ import { ResourceService } from '../services/resourceService';
     PlatformService,
     AccountSettingService,
     SupplierService,
-    OrderService
+    OrderService,
     ResourceService
   ]
 })

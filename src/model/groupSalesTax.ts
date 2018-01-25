@@ -1,6 +1,7 @@
 import { DBBasedEntity } from './dbBasedEntity';
+import { BaseTaxIterface } from './baseTaxIterface';
 
-export class GroupSaleTax extends DBBasedEntity {
+export class GroupSaleTax extends DBBasedEntity implements BaseTaxIterface {
 
   public name: string;
   public userId: string;

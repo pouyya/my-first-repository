@@ -1,25 +1,19 @@
 import _ from 'lodash';
 import * as moment from 'moment';
-import { Observable } from "rxjs/Rx";
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
-import { PriceBook } from './../model/priceBook';
 import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
-import { CacheService } from './cacheService';
 import { GlobalConstants } from './../metadata/globalConstants';
-import { FountainService } from './fountainService';
 import { HelperService } from './helperService';
-import { BasketItem } from './../model/bucketItem';
-import { CategoryService } from './categoryService';
+import { BasketItem } from './../model/basketItem';
 import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
-import { PurchasableItem } from './../model/purchasableItem';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
-import { EvaluationContext } from './EvaluationContext';
+import { BaseTaxIterface } from '../model/baseTaxIterface';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -29,12 +23,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 	constructor(
 		private userService: UserService,
-		private categoryService: CategoryService,
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private helperService: HelperService,
-		private fountainService: FountainService,
-		private cacheService: CacheService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
@@ -42,12 +33,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		super(Sale);
 	}
 
-	/**
-	 * Instantiate a default Sale Object
-	 * @param posId (Optional)
-	 * @return {Promise<Sale>}
-	 */
-	public async instantiateSale(posId?: string): Promise<any> {
+	public async instantiateSale(posId?: string): Promise<Sale> {
 		var user = await this.userService.getUser();
 		let id = localStorage.getItem('sale_id') || moment().utc().format();
 		if (!posId) posId = user.currentPos;
@@ -55,18 +41,18 @@ export class SalesServices extends BaseEntityService<Sale> {
 			let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
 			if (sales && sales.length > 0) {
 				let sale = sales[0];
-				return { sale, doRecalculate: sale.state == 'current' };
+				return sale;
 			}
-			return { sale: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+			return SalesServices._createDefaultObject(posId, id);
 		} catch (error) {
 			if (error.name === GlobalConstants.NOT_FOUND) {
-				return { sale: SalesServices._createDefaultObject(posId, id), doRecalculate: false };
+				return SalesServices._createDefaultObject(posId, id);
 			}
 			return Promise.reject(error);
 		}
 	}
 
-	public static _createDefaultObject(posID: string, saleId: string) {
+	private static _createDefaultObject(posID: string, saleId: string) {
 		let sale: Sale = new Sale();
 		sale._id = saleId;
 		sale.posID = posID;
@@ -76,112 +62,24 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
-	public async reCalculateInMemorySale(sale: Sale, priceBook: PriceBook, salesTaxes: Array<any>, defaultTax: any): Promise<any> {
-		var user = await this.userService.getUser();
-		// re-calculate sale
-		let taxInclusive = user.settings.taxType;
-		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
-		return new Promise((resolve, reject) => {
-			// get account level tax
-			this[service[user.settings.taxEntity]].get(user.settings.defaultTax)
-				.then((defaultTax: any) => {
-					sale.items.forEach((item: BasketItem) => {
-						item.priceBook = _.find(priceBook.purchasableItems, { id: item._id }) as any;
-						item.tax = _.pick(
-							item.priceBook.salesTaxId != null ?
-								_.find(salesTaxes, { _id: item.priceBook.salesTaxId }) : defaultTax,
-							['rate', 'name']);
-						item.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
-						item.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
-						item.finalPrice = item.discount != 0 ?
-							this.calcService.calcItemDiscount(
-								item.discount,
-								item.actualPrice
-							) : item.actualPrice;
-					});
-					this.calculateSale(sale);
-					resolve(sale);
-				})
-				.catch(error => reject(error));
+	public async getSaleTaxs(): Promise<Array<BaseTaxIterface>> {
+		let taxes: BaseTaxIterface[] = [];
+		var _salesTaxes = await this.salesTaxService.getAll();
+		taxes = _salesTaxes.map(salesTax => {
+			return { ...salesTax, noOfTaxes: 0 };
 		});
+		var _groupSalesTaxes = await this.groupSalesTaxService.getAll();
+		taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
+			return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
+		})));
+
+		return taxes;
 	}
 
-	/**
-	 * Returns a basket compatible item
-	 * @param item {PurchasableItem}
-	 * @return {BasketItem}
-	 */
-	public async prepareBasketItem(item: any): Promise<BasketItem> {
+	public async getDefaultTax(): Promise<any> {
+		let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
 		var user = await this.userService.getUser();
-		let taxInclusive = user.settings.taxType;
-
-		let basketItem = new BasketItem();
-		basketItem._id = item._id;
-		item._rev && (basketItem._rev = item._rev);
-		basketItem.name = item.name;
-		basketItem.tax = {
-			...item.tax
-		};
-		basketItem.priceBook = item.priceBook;
-		basketItem.priceBook.inclusivePrice = this.helperService.round2Cents(this.taxService.calculate(item.priceBook.retailPrice, item.tax.rate));
-		basketItem.actualPrice = taxInclusive ? item.priceBook.inclusivePrice : item.priceBook.retailPrice;
-		basketItem.quantity = 1;
-		basketItem.discount = item.discount || 0;
-		basketItem.finalPrice = basketItem.discount > 0 ?
-			this.calcService.calcItemDiscount(
-				basketItem.discount,
-				basketItem.actualPrice
-			) :
-			basketItem.actualPrice;
-		item.employeeId != null && (basketItem.employeeId = item.employeeId);
-		basketItem.isTaxIncl = taxInclusive;
-		basketItem.stockControl = (item.hasOwnProperty('stockControl') && item.stockControl);
-
-		return basketItem;
-	}
-
-	/**
-	 * Initialize Sales Page Data
-	 * @param sale 
-	 * @return {Observable}
-	 */
-	public initializeSalesData(sale: Sale): Promise<Array<any>> {
-		return Promise.all([
-			new Promise(async (resolve) => {
-				if (sale) {
-					resolve({
-						sale: sale,
-						doRecalculate: false
-					});
-				} else {
-					var data: any = await this.instantiateSale();
-					resolve(data);
-				}
-			}),
-
-			new Promise(async (resolve) => {
-				let taxes: Array<any> = [];
-				var _salesTaxes: Array<any> = await this.salesTaxService.getAll();
-				taxes = _salesTaxes.map((salesTax => {
-					return { ...salesTax, noOfTaxes: 0 };
-				}));
-				var _groupSalesTaxes: Array<any> = await this.groupSalesTaxService.getAll();
-				taxes = taxes.concat(_groupSalesTaxes.map((groupSaleTax => {
-					return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
-				})));
-				resolve(taxes);
-			}),
-
-			this.priceBookService.getPriceBookByCriteria(),
-
-			new Promise(async (resolve) => {
-				let service = { "SalesTax": "salesTaxService", "GroupSaleTax": "groupSaleTaxService" };
-				var user = await this.userService.getUser();
-				var tax = await this[service[user.settings.taxEntity]].get(user.settings.defaultTax);
-				resolve(tax);
-			}),
-			this.priceBookService.getExceptDefault()
-		]);
+		return this[service[user.settings.taxEntity]].get(user.settings.defaultTax);
 	}
 
 	public findCompletedByPosId(posId: string, posOpeningTime?: string): Promise<any> {
@@ -191,16 +89,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		};
 		posOpeningTime && (selector.selector.completedAt = { $gt: posOpeningTime });
 		return this.findBy(selector);
-	}
-
-	public findInCompletedByPosId(posId: string) {
-		return this.findBy({
-			selector: {
-				posID: posId,
-				completed: false,
-				state: 'current'
-			}
-		})
 	}
 
 	public async getCurrentSaleIfAny() {
@@ -245,27 +133,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		} catch (err) {
 			return Promise.reject(err);
 		}
-	}
-
-	/**
-	 * Retrives price of item from pricebook
-	 * @param context 
-	 * @param priceBooks 
-	 * @param defaultBook 
-	 * @param item 
-	 * @returns {any}
-	 */
-	public getItemPrice(context: EvaluationContext, priceBooks: PriceBook[], defaultBook: PriceBook, item: any): PurchasableItemPriceInterface {
-		let container: any = null;
-		for (let index in priceBooks) {
-			let itemPrice = _.find(priceBooks[index].purchasableItems, { id: item._id });
-			let isEligible = this.priceBookService.isEligible(context, priceBooks[index]);
-			if (itemPrice && isEligible) {
-				container = itemPrice;
-				break;
-			}
-		}
-		return container || _.find(defaultBook.purchasableItems, { id: item._id });
 	}
 
 	public manageSaleId(sale: Sale) {
@@ -331,6 +198,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return sale;
 	}
 
+	public calculateAndSetBasketPriceAndTax(basketItem: BasketItem, salesTaxes: BaseTaxIterface[], defaultTax: BaseTaxIterface, itemPrice: PurchasableItemPriceInterface, isTaxIncl: boolean): BasketItem {
+		basketItem.tax = itemPrice.salesTaxId != null ?
+			_.find(salesTaxes, salesTax => salesTax._id == itemPrice.salesTaxId)
+			: defaultTax;
+		basketItem.priceBook = itemPrice;
+		basketItem.systemPrice = isTaxIncl ? itemPrice.inclusivePrice : itemPrice.retailPrice;
+		var finalPriceBeforeDiscount = basketItem.manualPrice != null ? basketItem.manualPrice : basketItem.systemPrice;
+		basketItem.finalPrice = this.calcService.calcItemDiscount(finalPriceBeforeDiscount, basketItem.discount);
+		basketItem.taxAmount = this.taxService.calculateTaxAmount(basketItem.finalPrice, isTaxIncl, basketItem.tax.rate);
+		basketItem.isTaxIncl = isTaxIncl;
+
+		return basketItem;
+	}
+
 	public calculateSale(sale: Sale) {
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
@@ -338,13 +219,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.totalDiscount = 0;
 		sale.tax = 0;
 		if (sale.items.length > 0) {
-			sale.items.forEach((item: BasketItem) => {
-				let discountedPrice: number = this.calcService.calcItemDiscount(item.discount, item.priceBook.retailPrice);
-				sale.subTotal += discountedPrice * item.quantity;
-				discountedPrice = this.calcService.calcItemDiscount(item.discount, item.priceBook.inclusivePrice);
-				sale.taxTotal += discountedPrice * item.quantity;
-			});
-			sale.tax = sale.taxTotal - sale.subTotal;
+			for (let item of sale.items) {
+				sale.tax += item.taxAmount * item.quantity;
+				sale.taxTotal += item.finalPrice * item.quantity;
+			};
+			sale.subTotal = sale.taxTotal - sale.tax;
 
 			/** Apply externalValues if any */
 			if (sale.appliedValues && sale.appliedValues.length > 0) {
@@ -368,7 +247,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public applyExternalValues(value: DiscountSurchargeInterface, sale: Sale): any {
+	private applyExternalValues(value: DiscountSurchargeInterface, sale: Sale): any {
 		let fn: any;
 		let typeHash = {
 			'cash': 'asCash',
@@ -389,7 +268,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return fn[exec]();
 	}
 
-	public applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
+	private applyDiscountOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
 		value = Number(value);
 		return {
 			asCash: () => {
@@ -413,7 +292,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		};
 	}
 
-	public applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
+	private applySurchargeOnSale(value: number, total: number, subtotal: number, tax: number, isRefund: boolean = false) {
 		value = Number(value);
 		return {
 			asCash: () => {

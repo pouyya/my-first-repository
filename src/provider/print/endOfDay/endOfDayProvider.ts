@@ -16,7 +16,7 @@ export class EndOfDayProvider {
     setHeader(): EndOfDayProvider {
         var headerHtml = `
         <center>
-            <h2><b>End Of Day Report (Z-Report)</b>${this.endOfDayProviderContext.storeName}</h2>${this.endOfDayProviderContext.posName}
+            <h2><b>${this.endOfDayProviderContext.reportTitle}</b>${this.endOfDayProviderContext.storeName}</h2>${this.endOfDayProviderContext.posName}
 Shop open time: ${this.endOfDayProviderContext.openTime}
 Shop close time: ${this.endOfDayProviderContext.closeTime}
 Closure#: ${this.endOfDayProviderContext.closureNumber}

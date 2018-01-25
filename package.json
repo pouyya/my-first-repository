@@ -84,7 +84,7 @@
     "electron": "^1.7.10",
     "electron-builder": "^19.50.0",
     "htmlparser2": "^3.9.2",
-    "ionic": "3.19.0",
+    "ionic": "3.19.1",
     "typescript": "^2.4.0"
   },
   "cordovaPlugins": [

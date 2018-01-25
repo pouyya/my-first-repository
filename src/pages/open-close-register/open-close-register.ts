@@ -16,7 +16,7 @@ import { Closure } from './../../model/closure';
 import { Store } from './../../model/store';
 import { POS } from './../../model/pos';
 import { StoreService } from "../../services/storeService";
-import { PrintService } from '../../services/printService';
+import { PrintService, EndOfDayReportType } from '../../services/printService';
 import * as _ from 'lodash';
 import { PluginService } from '../../services/pluginService';
 import { Employee } from '../../model/employee';
@@ -216,7 +216,7 @@ export class OpenCloseRegister {
       this.closure.closureNumber = await this.fountainService.getClosureNumber();
       await this.closureService.add(this.closure);
 
-      this.prinService.printEndOfDayReport(this.closure);
+      this.prinService.printEndOfDayReport(this.closure, EndOfDayReportType.PerCategory);
 
       this.pos.status = false;
       this.pos.cashMovements = [];

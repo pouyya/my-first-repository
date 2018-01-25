@@ -70,7 +70,7 @@
     <ion-item *ngFor="let sale of sales; let $index = index" [ngClass]="{active: isItemShown(sale._id)}">
       <ion-grid>
         <ion-row (click)="toggleItem(sale)">
-          <ion-col col-md-2>{{sale.created | localDate:'M/d/yy, h:mm a'}}</ion-col>
+          <ion-col col-md-2>{{sale.created | localDate:'M/d/YY, h:mm a'}}</ion-col>
           <ion-col col-md-1>{{sale.receiptNo}}</ion-col>
           <ion-col col-md-2>-</ion-col>
           <ion-col col-md-2 *ngIf="sale.customer">{{sale.customer.firstName}} {{sale.customer.lastName}}</ion-col>
@@ -98,7 +98,7 @@
                     {{item.quantity}}&nbsp;&nbsp;{{item.name}}
                   </ion-col>
                   <ion-col col-md-5>
-                    @ ${{item.actualPrice}}
+                    @ ${{item.systemPrice}}
                   </ion-col>
                   <ion-col col-md-2>
                     ${{item.finalPrice}}
@@ -134,7 +134,7 @@
                     {{item.quantity}}&nbsp;&nbsp;{{item.name}}
                   </ion-col>
                   <ion-col col-md-5>
-                    @ ${{item.actualPrice}}
+                    @ ${{item.systemPrice}}
                   </ion-col>
                   <ion-col col-md-2>
                     ${{item.finalPrice}}

@@ -1,4 +1,7 @@
 @import "../../theme/variables";
+.tile-col {
+  padding: 0px;
+}
 
 .tile {
   font-size: 1.4rem;
@@ -9,6 +12,7 @@
   cursor: pointer;
   text-align: center;
   height: 110px;
+  margin: 3px;
 } 
 
 .tile-content {
