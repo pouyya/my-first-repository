@@ -1,6 +1,5 @@
-import _ from 'lodash';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { AccessRightItem, AccessRightItemID } from './../../model/accessItemRight';
+import { AccessRightItem } from './../../model/accessItemRight';
 import { NavParams, NavController } from 'ionic-angular';
 import { RoleService } from './../../services/roleService';
 import { Component } from '@angular/core';

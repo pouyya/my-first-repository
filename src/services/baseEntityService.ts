@@ -2,6 +2,20 @@ import { DBBasedEntity } from "../model/dbBasedEntity";
 import { DBService } from "./dBService";
 import * as _ from "lodash";
 
+export enum SortOptions {
+  DESC = 'desc',
+  ASC = 'asc'
+}
+
+export interface QuerySelectorInterface {
+  [selector: string]: any;
+}
+
+export interface QueryOptionsInterface {
+  conditionalSelectors?: QuerySelectorInterface;
+  sort?: Array<{ [selector: string]: SortOptions }>;
+}
+
 export abstract class BaseEntityService<T extends DBBasedEntity> {
   private _dbService;
   private _type;
@@ -53,21 +67,29 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
     return this.dbService.get(id);
   }
 
-  public search(limit: number = 10, skip: number = 0, options?: any): Promise<Array<T>> {
+  public search(limit: number = 10, skip: number = 0, selectors?: QuerySelectorInterface, options?: QueryOptionsInterface): Promise<Array<T>> {
 		
 		var query: any = {
 			selector: {}
 		};
 
-		_.each(options, (value, key) => {
-			if (value) {
+		_.each(selectors, (value, key) => {
+			if (value && value != null) {
 				var regexp = new RegExp(`.*${value}.*`, 'i');
 				query.selector[key] = { $regex: regexp };
 			}
 		});
 
 		query.limit = limit;
-		query.skip = skip;
+    query.skip = skip;
+    if(options) {
+      options.hasOwnProperty('sort') && (query.sort = options.sort);
+      if(options.hasOwnProperty('conditionalSelectors') && Object.keys(options.conditionalSelectors).length > 0) {
+        _.each(options.conditionalSelectors, (value, key) => {
+          query.selector[key] = typeof value == 'string' ? value.trim() : value;
+        });
+      }
+    }
 
 		return this.findBy(query);
 	}

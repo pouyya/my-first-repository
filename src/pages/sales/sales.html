@@ -13,7 +13,7 @@
   <ion-grid *ngIf="!register.status">
     <ion-row>
       <ion-col col-md-6 offset-md-3>
-        <form (ngSubmit)="onSubmit()" #salesForm="ngForm">
+        <form (ngSubmit)="openRegister()" #salesForm="ngForm">
           <h2 text-center>Register Closed</h2>
           <h5 text-center>Set an opening float to open the register and make sale</h5>
 
@@ -37,7 +37,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="register.status" class="full-height">
+  <ion-grid *ngIf="register.status && activeCategory" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
         <ion-scroll scrollY="true" class="category-scroll">
@@ -54,17 +54,17 @@
         <ion-grid>
           <ion-row>
             <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales && employees.length > 0">
-              <tiles-scrollable [(elements)]="employees" [(selectedElement)]="selectedEmployee" [displayProperty]="'firstName'" (notifyChange)="toggle($event)">
+              <tiles-scrollable [(elements)]="employees" [(selectedElement)]="selectedEmployee" [displayProperty]="'firstName'" (notifyChange)="toggleEmployee($event)">
               </tiles-scrollable>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <tile-items [items]="activeTiles" [activeEmployee]="selectedEmployee" (onSelect)="onSelect($event)">
+        <tile-items [items]="activeCategory.purchasableItems" [activeEmployee]="selectedEmployee" (onSelect)="onSelectTile($event)">
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket class="basket-component" *ngIf="sale" [(_sale)]="sale" [(customer)]="customer" [refund]="doRefund" [employees]="employees"
-          [user]="user" (paymentClicked)="paymentClicked($event)" (notify)="notify($event)">
+        <basket class="basket-component" [employees]="employees"
+          [user]="user" (paymentCompleted)="paymentCompleted()">
         </basket>
       </ion-col>
     </ion-row>

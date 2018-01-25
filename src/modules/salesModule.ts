@@ -1,3 +1,4 @@
+import { Closures } from './../pages/closures/closures';
 import { LogOut } from './../pages/logout/logout';
 import { PosService } from './../services/posService';
 import { Injector } from '@angular/core';
@@ -9,7 +10,6 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
-import { SecurityGuard } from '../metadata/securityGuardModule';
 
 // @SecurityGuard([])
 export class SalesModule implements ModuleBase {
@@ -34,6 +34,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Sales History', icon: 'list', component: SalesHistoryPage },
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, disableFunc: this.moneyInOut_disableFunc },
+    { title: 'Closures', icon: 'bookmarks', component: Closures },
     { title: 'Back Office', icon: 'build', component: HomePage },
     { title: 'Logout', icon: 'log-out', component: LogOut }
   ];

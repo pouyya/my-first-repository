@@ -122,7 +122,7 @@ export class SalesHistoryPage {
   }
 
   public async printSale(sale: Sale) {
-    await this.printService.printReceipt(sale, false);
+    await this.printService.printReceipt(sale);
   }
 
   public async gotoSales(sale: Sale, doRefund: boolean, saleIndex: number) {

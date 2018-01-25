@@ -52,7 +52,7 @@ export class ConfigService {
     }
 
     static isDevelopment(): boolean {
-        return false;
+        return true;
     }
 
     static turnOnDeployment(): boolean {

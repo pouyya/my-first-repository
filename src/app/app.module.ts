@@ -25,7 +25,6 @@ import { SimplePOSApp } from './app.component';
 import { LoginPage } from './../pages/login/login';
 import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
-import { InventoryPage } from '../pages/inventory/inventory';
 import { Products } from '../pages/products/products';
 import { ProductDetails } from '../pages/product-details/product-details';
 import { Category } from '../pages/category/category';
@@ -72,6 +71,9 @@ import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
 import { Roles } from '../pages/roles/roles';
 import { RoleDetails } from '../pages/role-details/role-details';
+import { Suppliers } from '../pages/suppliers/suppliers';
+import { SupplierDetails } from './../pages/supplier-details/supplier-details';
+import { Closures } from './../pages/closures/closures';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -137,7 +139,8 @@ import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deplo
 import { ConfigService } from '../services/configService';
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
-
+import { SupplierService } from '../services/supplierService';
+import { ResourceService } from '../services/resourceService';
 
 @NgModule({
   declarations: [
@@ -146,7 +149,6 @@ import { RoleService } from '../services/roleService';
     LogOut,
     DataSync,
     HomePage,
-    InventoryPage,
     Products,
     ProductDetails,
     Services,
@@ -195,7 +197,10 @@ import { RoleService } from '../services/roleService';
     BrandDetails,
     DeployPage,
     Roles,
-    RoleDetails
+    RoleDetails,
+    Suppliers,
+    SupplierDetails,
+    Closures
   ],
   imports: [
     FormsModule,
@@ -203,6 +208,9 @@ import { RoleService } from '../services/roleService';
     IonicModule.forRoot(SimplePOSApp,
       {
         backButtonText: '',
+        modalEnter: 'modal-slide-in',
+        modalLeave: 'modal-slide-out',
+        pageTransition: 'ios-transition',
         platforms: {
           android: {
             activator: 'none'
@@ -235,7 +243,7 @@ import { RoleService } from '../services/roleService';
     IonicProDeployModule.forRoot({
       appId: ConfigService.ionicDeployAppId(),
       channel: ConfigService.ionicDeployAppChannel()
-    }),    
+    }),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -244,7 +252,6 @@ import { RoleService } from '../services/roleService';
     LoginPage,
     LogOut,
     HomePage,
-    InventoryPage,
     Products,
     ProductDetails,
     Services,
@@ -294,7 +301,10 @@ import { RoleService } from '../services/roleService';
     BrandDetails,
     DeployPage,
     Roles,
-    RoleDetails
+    RoleDetails,
+    Suppliers,
+    SupplierDetails,
+    Closures
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
@@ -346,7 +356,9 @@ import { RoleService } from '../services/roleService';
     authProvider,
     PlatformService,
     AccountSettingService,
-    RoleService
+    RoleService,
+    SupplierService,
+    ResourceService
   ]
 })
 export class AppModule {

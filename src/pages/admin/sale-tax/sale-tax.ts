@@ -5,7 +5,10 @@ import { Platform, NavController, ToastController } from 'ionic-angular';
 import { SalesTax } from './../../../model/salesTax';
 import { SalesTaxService } from './../../../services/salesTaxService';
 import { Component, NgZone } from '@angular/core';
+import { SettingsModule } from '../../../modules/settingsModule';
+import { PageModule } from '../../../metadata/pageModule';
 
+@PageModule(() => SettingsModule)
 @Component({
   selector: 'sale-tax-page',
   templateUrl: 'sale-tax.html'
