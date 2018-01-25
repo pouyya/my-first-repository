@@ -37,7 +37,9 @@ export class Sales implements OnDestroy {
   set basketComponent(basketComponent: BasketComponent) {
     setTimeout(async () => {
       this._basketComponent = basketComponent;
-      await this._basketComponent.initializeSale(this.navParams.get('sale'), this.navParams.get('doRefund'), this.evaluationContext);
+      if (this._basketComponent) {
+        await this._basketComponent.initializeSale(this.navParams.get('sale'), this.navParams.get('doRefund'), this.evaluationContext);
+      }
     }, 0);
 
   }
@@ -45,7 +47,7 @@ export class Sales implements OnDestroy {
   get basketComponent() {
     return this._basketComponent;
   }
-  
+
   private _basketComponent: BasketComponent;
 
   public categories: any[];
