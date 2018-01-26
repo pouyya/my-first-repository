@@ -2,12 +2,13 @@ import _ from 'lodash';
 import { StoreService } from './../../services/storeService';
 import { InventoryModule } from './../../modules/inventoryModule';
 import { OrderDetails } from './../order-details/order-details';
-import { NavController } from 'ionic-angular/navigation/nav-controller';
+import { NavController, InfiniteScroll } from 'ionic-angular';
 import { OrderService } from './../../services/orderService';
 import { OrderStatus, BaseOrder } from './../../model/baseOrder';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { SupplierService } from '../../services/supplierService';
+
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;
   storeName?: string;
@@ -35,12 +36,28 @@ export class Orders {
     [OrderStatus.Received]: { text: 'RECEIVED', color: 'secondary' }
   }
 
+  private readonly defaultLimit = 10;
+  private readonly defaultOffset = 0;
+  private limit: number;
+  private offset: number;
+  private filter: { orderNumber: string, status: OrderStatus };
+  private stores: any;
+  private suppliers: any;
+
   constructor(
     private storeService: StoreService,
     private supplierService: SupplierService,
     private orderService: OrderService,
-    private navCtrl: NavController
-  ) { }
+    private navCtrl: NavController,
+    private zone: NgZone
+  ) {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.filter = {
+      orderNumber: null,
+      status: null
+    };
+  }
 
   async ionViewDidEnter() {
     let loadEssentials: any[] = [
@@ -63,18 +80,9 @@ export class Orders {
     ];
 
     let [stores, suppliers] = await Promise.all(loadEssentials.map(p => p()));
-    let loadOrders: any[] = [this.orderService.getAll()];
-
-    this.orders = (<RenderableOrder[]>_.flatten(await Promise.all(loadOrders))).map(order => {
-      order.totalCost = (order.status == OrderStatus.Received) ?
-        order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
-        order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
-
-      order.storeId && (order.storeName = stores[order.storeId].name);
-      order.supplierId && (order.supplierName = suppliers[order.supplierId].name);
-      return order;
-    });
-    this.ordersBackup = this.orders;
+    this.stores = stores;
+    this.suppliers = suppliers;
+    await this.fetchMore();
   }
 
   public view(order?: RenderableOrder) {
@@ -87,25 +95,45 @@ export class Orders {
     });
   }
 
-  public search(event) {
+  public async searchByOrderNumber(event) {
     this.orders = this.ordersBackup;
     let val = event.target.value;
-
-    if (val && val.trim() != '') {
-      this.orders = this.orders.filter((item) => {
-        return (item.orderNumber.indexOf(val) > -1);
-      })
-    }
+    this.filter.orderNumber = val && val.trim() != '' ? val : null;
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.orders = [];
+    await this.fetchMore();
   }
 
-  public searchByOrderStatus() {
+  public async searchByOrderStatus() {
     this.orders = this.ordersBackup;
-    if (this.selectedOrderStatus != '') {
-      this.orders = this.orders.filter((item) => {
-        return item.status == this.selectedOrderStatus;
-      });
-    } else {
-      this.orders = this.ordersBackup;
-    }
+    this.filter.status = <OrderStatus>this.selectedOrderStatus || null;
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.orders = [];
+    await this.fetchMore();
+  }
+
+  public async fetchMore(infiniteScroll?: InfiniteScroll) {
+    let orders = await this.loadOrders();
+    this.offset += orders ? orders.length : 0;
+    this.zone.run(() => {
+      this.orders = this.orders.concat(orders);
+      this.ordersBackup = this.orders;
+      infiniteScroll && infiniteScroll.complete();
+    });
+  }
+
+  private async loadOrders(): Promise<RenderableOrder[]> {
+    let orders = (<RenderableOrder[]>await this.orderService.search(this.limit, this.offset, this.filter)).map(order => {
+      order.totalCost = (order.status == OrderStatus.Received) ?
+        order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
+        order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
+
+      order.storeId && (order.storeName = this.stores[order.storeId].name);
+      order.supplierId && (order.supplierName = this.suppliers[order.supplierId].name);
+      return order;
+    });
+    return orders;
   }
 }

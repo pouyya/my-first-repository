@@ -75,8 +75,12 @@ export abstract class BaseEntityService<T extends DBBasedEntity> {
 
 		_.each(selectors, (value, key) => {
 			if (value && value != null) {
-				var regexp = new RegExp(`.*${value}.*`, 'i');
-				query.selector[key] = { $regex: regexp };
+        // remove any special characters
+        let sanatized = value.replace(/[^a-zA-Z ]/g, "");
+        if(sanatized) {
+          let regexp = new RegExp(`.*${value}.*`, 'i');
+          query.selector[key] = { $regex: regexp };
+        }
 			}
 		});
 

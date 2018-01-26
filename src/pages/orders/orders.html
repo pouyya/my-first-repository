@@ -17,7 +17,7 @@
   <ion-grid>
     <ion-row>
       <ion-col col-md-8 class="customer-search-container">
-        <ion-searchbar debounce="500" animated="true" placeholder="Search by order number" (ionInput)="search($event)"></ion-searchbar>
+        <ion-searchbar debounce="500" animated="true" placeholder="Search by order number" (ionInput)="searchByOrderNumber($event)"></ion-searchbar>
       </ion-col>
       <ion-col col-md-4>
         <ion-select [(ngModel)]="selectedOrderStatus" (ionChange)="searchByOrderStatus()">
@@ -78,4 +78,7 @@
       </ion-grid>
     </ion-item>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

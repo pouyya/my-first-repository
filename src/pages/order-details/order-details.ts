@@ -51,7 +51,6 @@ export class OrderDetails {
 
   public order: InteractableOrder = null;
   public orderBackup: InteractableOrder = null;
-  public receivedOrder: InteractableOrder = null;
   public totalCost: number = 0
   public supplier: Supplier = null;
   public store: Store = null;
