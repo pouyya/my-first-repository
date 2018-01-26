@@ -8,10 +8,10 @@ interface SelectableProduct extends Product {
 }
 
 @Component({
-  selector: 'add-products',
-  templateUrl: 'addProducts.html'
+  selector: 'products-selector',
+  templateUrl: 'products-selector.html'
 })
-export class AddProducts {
+export class ProductsSelector {
 
   public products: SelectableProduct[] = [];
   public productsBackup: SelectableProduct[] = [];

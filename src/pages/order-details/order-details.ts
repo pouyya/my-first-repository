@@ -11,7 +11,7 @@ import { Supplier } from '../../model/supplier';
 import { Store } from '../../model/store';
 import { ProductService } from '../../services/productService';
 import { Product } from '../../model/product';
-import { AddProducts } from './modals/addProducts/addProducts';
+import { ProductsSelector } from './modals/products-selector/products-selector';
 import { OrderedItems, OrderStatus } from '../../model/baseOrder';
 import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
@@ -145,7 +145,7 @@ export class OrderDetails {
   }
 
   public addProducts() {
-    let modal = this.modalCtrl.create(AddProducts, {
+    let modal = this.modalCtrl.create(ProductsSelector, {
       products: this.products,
       selectedProductIds: this.orderedProducts.length > 0 ? <string[]>this.orderedProducts
         .map(item => item.productId) : null

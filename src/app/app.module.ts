@@ -75,7 +75,7 @@ import { Orders } from '../pages/orders/orders';
 import { OrderDetails } from './../pages/order-details/order-details';
 import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAndStore/addSupplierAndStore';
 import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
-import { AddProducts } from '../pages/order-details/modals/addProducts/addProducts';
+import { ProductsSelector } from '../pages/order-details/modals/products-selector/products-selector';
 import { Closures } from './../pages/closures/closures';
 
 // components
@@ -204,7 +204,7 @@ import { ResourceService } from '../services/resourceService';
     OrderDetails,
     AddSupplierAndStore,
     CreateSupplier,
-    AddProducts,
+    ProductsSelector,
     Closures
   ],
   imports: [
@@ -311,7 +311,7 @@ import { ResourceService } from '../services/resourceService';
     OrderDetails,
     AddSupplierAndStore,
     CreateSupplier,
-    AddProducts,
+    ProductsSelector,
     Closures
   ],
   providers: [
