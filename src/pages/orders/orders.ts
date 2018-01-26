@@ -8,6 +8,7 @@ import { OrderStatus, BaseOrder } from './../../model/baseOrder';
 import { Component, NgZone } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { SupplierService } from '../../services/supplierService';
+import { SortOptions } from './../../services/baseEntityService';
 
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;
@@ -125,15 +126,17 @@ export class Orders {
   }
 
   private async loadOrders(): Promise<RenderableOrder[]> {
-    let orders = (<RenderableOrder[]>await this.orderService.search(this.limit, this.offset, this.filter)).map(order => {
-      order.totalCost = (order.status == OrderStatus.Received) ?
-        order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
-        order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
+    let orders = (<RenderableOrder[]>await this.orderService.search(
+      this.limit, this.offset, this.filter, { sort: [{ _id: SortOptions.DESC }] }))
+      .map(order => {
+        order.totalCost = (order.status == OrderStatus.Received) ?
+          order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
+          order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
 
-      order.storeId && (order.storeName = this.stores[order.storeId].name);
-      order.supplierId && (order.supplierName = this.suppliers[order.supplierId].name);
-      return order;
-    });
+        order.storeId && (order.storeName = this.stores[order.storeId].name);
+        order.supplierId && (order.supplierName = this.suppliers[order.supplierId].name);
+        return order;
+      });
     return orders;
   }
 }
