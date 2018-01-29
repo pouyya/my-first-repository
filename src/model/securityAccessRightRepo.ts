@@ -1,4 +1,4 @@
-import { AccessRightItem, AccessRightItemID } from './accessItemRight';
+import { AccessRightItem } from './accessItemRight';
 
 export class SecurityAccessRightRepo {
 
@@ -7,7 +7,7 @@ export class SecurityAccessRightRepo {
    * Can view all employees
    */
   public static EmployeeListing: AccessRightItem = new AccessRightItem(
-    AccessRightItemID.EmployeeListing,
+    'EmployeeListing',
     'Employee Listing');
 
   /**
@@ -15,7 +15,7 @@ export class SecurityAccessRightRepo {
    * Can Add/Edit employee
    */
   public static EmployeeAddEdit: AccessRightItem = new AccessRightItem(
-    AccessRightItemID.EmployeeAddEdit,
+    'EmployeeAddEdit',
     'Employee Add/Edit');
 
   /**
@@ -23,7 +23,7 @@ export class SecurityAccessRightRepo {
    * Can view all stores
    */
   public static StoreListing: AccessRightItem = new AccessRightItem(
-    AccessRightItemID.StoreListing,
+    'StoreListing',
     'Store Listing');
 
   /**
@@ -31,8 +31,32 @@ export class SecurityAccessRightRepo {
    * Can Add/Edit store
    */
   public static StoreAddEdit: AccessRightItem = new AccessRightItem(
-    AccessRightItemID.StoreAddEdit,
+    'StoreAddEdit',
     'Store Add/Edit');
+
+  /**
+   * @AccessRight
+   * Can List Roles
+   */
+  public static readonly RoleListing: AccessRightItem = new AccessRightItem(
+    'RoleListing',
+    'Role Add/Edit');
+
+  /**
+   * @AccessRight
+   * Can Add/Edit Roles
+   */
+  public static readonly RoleAddEdit: AccessRightItem = new AccessRightItem(
+    'RoleAddEdit',
+    'Role Add/Edit');
+
+  /**
+   * @AccessRight
+   * Can Access App Settings
+   */
+  public static readonly Settings: AccessRightItem = new AccessRightItem(
+    "Settings",
+    "Access Settings");
 
   /**
    * Holds all the Access Right Items 
@@ -41,7 +65,10 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.EmployeeAddEdit,
     SecurityAccessRightRepo.EmployeeListing,
     SecurityAccessRightRepo.StoreAddEdit,
-    SecurityAccessRightRepo.StoreListing
+    SecurityAccessRightRepo.StoreListing,
+    SecurityAccessRightRepo.RoleListing,
+    SecurityAccessRightRepo.RoleAddEdit,
+    SecurityAccessRightRepo.Settings
   ];
 
 }

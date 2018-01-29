@@ -102,7 +102,17 @@ export class SecurityService implements GuardInterface {
 					return false;
 				} else {
 					let role = await this.roleService.get(employeeAssociatedStore.role);
-					return _.some(role.accessRightItems, accessRightItems.map(right => right.id));
+					let accessRightItemIds = accessRightItems.map(right => right.id);
+					let i = 0;
+					let approved: boolean = true;
+					while(i < accessRightItemIds.length) {
+						if(role.accessRightItems.indexOf(accessRightItemIds[i]) == -1) {
+							approved = false;
+							break;
+						}
+						i++;
+					}
+					return approved;
 				}
 			}
 			return false;

@@ -5,8 +5,11 @@ import { BackOfficeModule } from './../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { Role } from '../../model/role';
 import { RoleService } from '../../services/roleService';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
 @PageModule(() => BackOfficeModule)
+@SecurityModule(SecurityAccessRightRepo.RoleListing)
 @Component({
   selector: 'roles',
   templateUrl: 'roles.html'

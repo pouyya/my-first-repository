@@ -4,11 +4,13 @@ import { NavParams, NavController } from 'ionic-angular';
 import { RoleService } from './../../services/roleService';
 import { Component } from '@angular/core';
 import { Role } from '../../model/role';
+import { SecurityModule } from '../../infra/security/securityModule';
 
 interface InteractableAccessRightItem extends AccessRightItem {
   selected: boolean;
 }
 
+@SecurityModule(SecurityAccessRightRepo.RoleAddEdit)
 @Component({
   selector: 'role-details',
   templateUrl: 'role-details.html'
