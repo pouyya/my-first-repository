@@ -7,10 +7,8 @@ import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
-import { UserService } from './../../services/userService';
 import { EmployeeService } from './../../services/employeeService';
 import { CacheService } from './../../services/cacheService';
-import { UserSession } from './../../model/UserSession';
 
 import { POS } from './../../model/pos';
 
@@ -19,6 +17,8 @@ import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 interface PurchasableItemTiles {
   [id: string]: PurchasableItem[]

@@ -1,6 +1,6 @@
-import { UserService } from './userService';
 import { Injectable } from '@angular/core';
-import { AccountSettingService } from './accountSettingService';
+import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class FountainService {

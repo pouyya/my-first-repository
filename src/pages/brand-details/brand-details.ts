@@ -1,9 +1,9 @@
 import * as moment from 'moment-timezone';
 import { BrandService } from './../../services/brandService';
 import { Brand } from './../../model/brand';
-import { UserService } from './../../services/userService';
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController, ModalController, ToastController } from 'ionic-angular';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 
 @Component({

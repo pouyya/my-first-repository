@@ -4,14 +4,14 @@ import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
-import { UserService } from './../../services/userService';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
-import { icons } from './../../metadata/itemIcons';
+import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { AppService } from "../../services/appService";
+import { UserService } from '../../modules/dataSync/services/userService';
 
 interface InteractableItemPriceInterface {
 	id: string;

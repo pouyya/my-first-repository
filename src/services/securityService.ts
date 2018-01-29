@@ -3,9 +3,9 @@ import { Injectable } from "@angular/core";
 import { PluginService } from "./pluginService";
 import { EmployeeService } from "./employeeService";
 import { PosService } from "./posService";
-import { UserService } from "./userService";
 import { Employee } from "../model/employee";
 import * as _ from "lodash";
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class SecurityService {

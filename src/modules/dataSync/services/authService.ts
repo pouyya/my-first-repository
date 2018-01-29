@@ -1,5 +1,4 @@
 import { UserSession } from './../model/UserSession';
-import { PosService } from './posService';
 import { ConfigService } from './configService';
 import { UserService } from './userService';
 import { Injectable } from '@angular/core';
@@ -8,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { AuthHttp } from 'angular2-jwt';
 
 import 'rxjs/add/operator/map'
-import { icons } from '../metadata/itemIcons';
+import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,6 @@ export class AuthService {
   constructor(
     private http: Http,
     private userService: UserService,
-    private posService: PosService,
     private authHttp: AuthHttp
   ) { }
 

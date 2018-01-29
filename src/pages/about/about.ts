@@ -1,4 +1,3 @@
-import { ConfigService } from '../../services/configService';
 import { StoreService } from '../../services/storeService';
 import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
@@ -7,6 +6,7 @@ import { PageModule } from '../../metadata/pageModule';
 import { PlatformService } from '../../services/platformService';
 import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { ConfigService } from '../../modules/dataSync/services/configService';
 
 @PageModule(() => BackOfficeModule)
 @Component({

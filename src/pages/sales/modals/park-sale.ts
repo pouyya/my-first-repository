@@ -1,10 +1,10 @@
 import { StoreService } from './../../../services/storeService';
-import { UserService } from './../../../services/userService';
 import { FountainService } from './../../../services/fountainService';
 import { SalesServices } from './../../../services/salesService';
 import { Sale } from './../../../model/sale';
 import { ViewController, NavParams, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
+import { UserService } from '../../../modules/dataSync/services/userService';
 
 @Component({
   selector: 'park-sale',

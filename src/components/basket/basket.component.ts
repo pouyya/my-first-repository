@@ -14,7 +14,6 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
-import { UserSession } from '../../model/UserSession';
 import { CalculatorService } from '../../services/calculatorService';
 import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
@@ -26,6 +25,7 @@ import { PurchasableItem } from '../../model/purchasableItem';
 import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { PaymentsPage } from '../../pages/payment/payment';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
 
 @Component({
   selector: 'basket',

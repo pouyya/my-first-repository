@@ -86,15 +86,7 @@ export class ConfigService {
     static securityScope(): string {
         return ENV.security.scope;
     }
-
-    static securitySessionStorageKey(): string {
-        return ENV.security.sessionStorageKey;
-    }
-
-    static userSessionStorageKey(): string {
-        return ENV.security.userSessionStorageKey;
-    }
-
+    
     static ionicDeployAppId(): string {
         return ENV.ionicDeploy.appId;
     }
