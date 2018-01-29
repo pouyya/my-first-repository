@@ -1,3 +1,4 @@
+import { IonicPageModule } from 'ionic-angular';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { LoginPage } from './pages/login/login';
 import { DataSync } from './pages/dataSync/dataSync';
@@ -9,26 +10,21 @@ import { ForgotPassword } from './pages/login/modals/forgot-password/forgot-pass
 import { CommonModule } from '@angular/common';
 
 @NgModule({
-    imports: [CommonModule],
-    declarations: [LoginPage, DataSync, LogOut, ForgotPassword],
-    entryComponents: [LoginPage, DataSync, LogOut, ForgotPassword]
+	imports: [CommonModule, IonicPageModule.forChild(DataSync)],
+	declarations: [LoginPage, DataSync, LogOut, ForgotPassword],
+	entryComponents: [LoginPage, DataSync, LogOut, ForgotPassword]
 })
 export class DataSyncModule {
 
-    static _appMainPage: any;
-
-    static forRoot(appMainPage: any): ModuleWithProviders {
-
-        DataSyncModule._appMainPage = appMainPage;
-
-        return {
-            ngModule: DataSyncModule,
-            providers: [
-                AccountSettingService,
-                AuthService,
-                UserService
-            ]
-        }
-    }
+	static forRoot(): ModuleWithProviders {
+		return <ModuleWithProviders>{
+			ngModule: DataSyncModule,
+			providers: [
+				AccountSettingService,
+				AuthService,
+				UserService
+			]
+		}
+	}
 
 }

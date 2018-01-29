@@ -1,3 +1,4 @@
+import { Sales } from './../../../../pages/sales/sales';
 import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
 import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Component } from '@angular/core';
@@ -43,7 +44,7 @@ export class DataSync {
                         this.updateText = "Loading your company data 100%";
                         // await loadStoreData()
                         this.isNavigated = true;
-                        this.navCtrl.setRoot(DataSyncModule._appMainPage);
+                        this.navCtrl.setRoot(Sales);
                     }
                     else {
                         this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";

@@ -189,7 +189,6 @@ import { ConfigService } from '../modules/dataSync/services/configService';
   imports: [
     FormsModule,
     HttpModule,
-    DataSyncModule.forRoot(Sales),
     IonicModule.forRoot(SimplePOSApp,
       {
         backButtonText: '',
@@ -211,6 +210,7 @@ import { ConfigService } from '../modules/dataSync/services/configService';
     BrowserAnimationsModule,
     DndModule.forRoot(),
     ReactiveFormsModule,
+    DataSyncModule.forRoot(),
 
     // custom
     SharedModule,
