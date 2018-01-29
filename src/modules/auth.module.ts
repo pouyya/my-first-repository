@@ -1,4 +1,4 @@
-import { ConfigService } from './../services/configService';
+import { ConfigService } from '../services/configService';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';

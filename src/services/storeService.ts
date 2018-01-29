@@ -2,7 +2,7 @@ import { AppService } from './appService';
 import { UserService } from './userService';
 import { Injectable } from '@angular/core';
 import { Store } from '../model/store'
-import { BaseEntityService } from './baseEntityService'
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { PosService } from './posService';
 import * as _ from 'lodash';
 

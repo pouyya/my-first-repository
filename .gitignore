@@ -14,3 +14,4 @@ www/assets
 .io-config.json
 package-lock.json
 yarn.lock
+.sourcemaps

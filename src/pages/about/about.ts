@@ -1,5 +1,5 @@
-import { ConfigService } from './../../services/configService';
-import { StoreService } from './../../services/storeService';
+import { ConfigService } from '../../services/configService';
+import { StoreService } from '../../services/storeService';
 import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';

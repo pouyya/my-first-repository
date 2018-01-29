@@ -1,4 +1,5 @@
-import { DBEvent } from './../../db/dbEvent';
+import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
+import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { DateTimeService } from './../../services/dateTimeService';
 import { AccountSettingService } from './../../services/accountSettingService';
 import { Component } from '@angular/core';
@@ -9,7 +10,6 @@ import { PosService } from '../../services/posService';
 import { StoreService } from '../../services/storeService';
 import { SharedService } from '../../services/_sharedService';
 import { ConfigService } from '../../services/configService';
-import { DBService } from '../../services/dBService';
 import { Sales } from '../sales/sales';
 import { POS } from '../../model/pos';
 import { Store } from '../../model/store';
@@ -69,8 +69,8 @@ export class DataSync {
 
         this.updateText = "Check for data update!";
 
-        DBService.initializePlugin();
-        DBService.initialize();
+        DBService.initializePlugin(ConfigService.isDevelopment());
+        DBService.initialize(ConfigService.currentCriticalFullExternalDBUrl, ConfigService.internalCriticalDBName, ConfigService.currentFullExternalDBUrl, ConfigService.internalDBName);
 
         DBService.criticalDBSyncProgress.subscribe(
             async (data: DBEvent) => {

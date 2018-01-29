@@ -1,4 +1,4 @@
-import { DBBasedEntity } from './dbBasedEntity';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 
 export interface CashMovement {
   amount: number,

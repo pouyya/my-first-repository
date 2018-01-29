@@ -4,7 +4,7 @@ import { Sale } from '../model/sale';
 import { StoreService } from './storeService';
 import { PosService } from './posService';
 import { AccountSettingService } from './accountSettingService';
-import { TypeHelper } from '../utility/typeHelper';
+import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
 import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';

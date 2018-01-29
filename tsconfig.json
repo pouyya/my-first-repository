@@ -18,6 +18,11 @@
     "custom-typings.d.ts",
     "src/**/*.ts"
   ],
+  "paths": {
+    "@app/env": [
+      "environments/environment"
+    ]
+  },  
   "exclude": [
     "node_modules"
   ],
