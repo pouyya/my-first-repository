@@ -10,8 +10,8 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [CommonModule],
-    declarations: [LoginPage, DataSync, LogOut,ForgotPassword],
-    entryComponents: [LoginPage, DataSync, LogOut,ForgotPassword]
+    declarations: [LoginPage, DataSync, LogOut, ForgotPassword],
+    entryComponents: [LoginPage, DataSync, LogOut, ForgotPassword]
 })
 export class DataSyncModule {
 
