@@ -14,6 +14,8 @@ import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from './baseEntityService';
 import { BaseTaxIterface } from '../model/baseTaxIterface';
+import { StockHistoryService } from './stockHistoryService';
+import { StockHistory } from './../model/stockHistory';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -28,7 +30,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private helperService: HelperService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private groupSalesTaxService: GroupSalesTaxService
+		private groupSalesTaxService: GroupSalesTaxService,
+		private stockHistoryService: StockHistoryService
 	) {
 		super(Sale);
 	}
@@ -210,6 +213,16 @@ export class SalesServices extends BaseEntityService<Sale> {
 		basketItem.isTaxIncl = isTaxIncl;
 
 		return basketItem;
+	}
+
+	public async updateStock(sale: Sale, storeId: string) {
+		let stock: StockHistory;
+		let stockUpdates: Promise<any>[] = sale.items.map(item => {
+			stock = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
+			return this.stockHistoryService.add(stock);
+		});
+		await Promise.all(stockUpdates);
+		return;
 	}
 
 	public calculateSale(sale: Sale) {

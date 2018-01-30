@@ -136,7 +136,7 @@ export class PaymentsPage {
     if (isCompleted) {
       let loader = this.loading.create({ content: 'Processing Refund' });
       await loader.present();
-      await this.updateStock();
+      await this.salesService.updateStock(this.sale, this.store._id);
       this.sale.payments.push({
         type: type,
         amount: Number(payment) * -1
@@ -155,7 +155,7 @@ export class PaymentsPage {
   private async completeSale(payments: number) {
     let loader = this.loading.create({ content: 'Finalizing Sale' });
     await loader.present();
-    await this.updateStock();
+    await this.salesService.updateStock(this.sale, this.store._id);
     this.sale.completed = true;
     this.sale.completedAt = moment().utc().format();
     this.sale.state = 'completed';
@@ -208,15 +208,5 @@ export class PaymentsPage {
       
       loader.dismiss();
     }
-  }
-
-  private async updateStock() {
-    let stock: StockHistory;
-    let stockUpdates: Promise<any>[] = this.sale.items.map(item => {
-      stock = StockHistoryService.createStockForSale(item.purchsableItemId, this.store._id, item.quantity);
-      return this.stockHistoryService.add(stock);
-    });
-    await Promise.all(stockUpdates);
-    return;
   }
 }

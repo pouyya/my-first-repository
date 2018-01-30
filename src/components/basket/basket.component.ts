@@ -1,10 +1,12 @@
+import { PrintService } from './../../services/printService';
 import _ from 'lodash';
+import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -26,6 +28,7 @@ import { PurchasableItem } from '../../model/purchasableItem';
 import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { PaymentsPage } from '../../pages/payment/payment';
+import { FountainService } from './../../services/fountainService';
 
 @Component({
   selector: 'basket',
@@ -72,7 +75,10 @@ export class BasketComponent {
     private calcService: CalculatorService,
     private taxService: TaxService,
     private priceBookService: PriceBookService,
+    private fountainService: FountainService,
     private storeService: StoreService,
+    private printService: PrintService,
+    private loading: LoadingController,
     private navCtrl: NavController) {
   }
 
@@ -247,6 +253,33 @@ export class BasketComponent {
       callback: pushCallback,
       store: this.store
     });
+  }
+
+  public async fastPayment() {
+    let loader = this.loading.create({ content: 'Completing Sale' });
+    try {
+      await loader.present();
+      await this.salesService.updateStock(this.sale, this.store._id);
+      this.sale.completed = true;
+      this.sale.completedAt = moment().utc().format();
+      this.sale.state = 'completed';
+      this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+      await this.salesService.update(this.sale);
+      if (this.store.printReceiptAtEndOfSale) {
+        await this.printService.printReceipt(this.sale);
+      }
+      await this.printService.openCashDrawer();
+      localStorage.removeItem('sale_id');
+      this.sale = await this.salesService.instantiateSale();
+      this.paymentCompleted.emit();
+      this.customer = null;
+      this.calculateAndSync();
+      loader.dismiss();
+    } catch (err) {
+      loader.dismiss();
+      return Promise.reject(err);
+    }
+    // this.printSale();
   }
 
   private generatePaymentBtnText() {
