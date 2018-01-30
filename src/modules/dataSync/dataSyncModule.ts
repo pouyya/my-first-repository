@@ -1,3 +1,7 @@
+import { SharedService } from './../../services/_sharedService';
+import { StoreService } from './../../services/storeService';
+import { PosService } from './../../services/posService';
+import { DateTimeService } from './../../services/dateTimeService';
 import { IonicPageModule } from 'ionic-angular';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { LoginPage } from './pages/login/login';
@@ -8,11 +12,12 @@ import { UserService } from './services/userService';
 import { LogOut } from './pages/logout/logout';
 import { ForgotPassword } from './pages/login/modals/forgot-password/forgot-password';
 import { CommonModule } from '@angular/common';
+import { DataBootstrapper } from '../../pages/data-bootstrapper/data-bootstrapper';
 
 @NgModule({
 	imports: [CommonModule, IonicPageModule.forChild(DataSync)],
-	declarations: [LoginPage, DataSync, LogOut, ForgotPassword],
-	entryComponents: [LoginPage, DataSync, LogOut, ForgotPassword]
+	declarations: [LoginPage, DataSync, DataBootstrapper, LogOut, ForgotPassword],
+	entryComponents: [LoginPage, DataSync, DataBootstrapper, LogOut, ForgotPassword]
 })
 export class DataSyncModule {
 
@@ -22,7 +27,11 @@ export class DataSyncModule {
 			providers: [
 				AccountSettingService,
 				AuthService,
-				UserService
+				UserService,
+				DateTimeService,
+				PosService,
+				StoreService,
+				SharedService
 			]
 		}
 	}
