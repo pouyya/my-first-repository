@@ -32,6 +32,7 @@ interface PurchasableItemTiles {
   [id: string]: PurchasableItem[]
 }
 
+@SecurityModule()
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',
