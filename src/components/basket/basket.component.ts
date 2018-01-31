@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
-import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
@@ -65,12 +64,9 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
-    private helperService: HelperService,
     private customerService: CustomerService,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private calcService: CalculatorService,
-    private taxService: TaxService,
     private priceBookService: PriceBookService,
     private storeService: StoreService,
     private navCtrl: NavController) {

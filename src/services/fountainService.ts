@@ -6,7 +6,6 @@ import { UserService } from '../modules/dataSync/services/userService';
 export class FountainService {
 
   constructor(
-    private userService: UserService,
     private accountSettingService: AccountSettingService
   ) { }
 

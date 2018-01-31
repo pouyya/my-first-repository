@@ -10,12 +10,15 @@ import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { SalesTaxService } from './../../services/salesTaxService';
 import { DateTimeService } from './../../services/dateTimeService';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
 import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
 
 @PageModule(() => SettingsModule)
+@SecurityModule(SecurityAccessRightRepo.Settings)
 @Component({
   selector: 'app-settings',
   templateUrl: 'settings.html'

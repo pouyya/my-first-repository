@@ -9,21 +9,30 @@ import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
 import { EmployeeService } from './../../services/employeeService';
 import { CacheService } from './../../services/cacheService';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 import { POS } from './../../model/pos';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
+import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
-import { UserSession } from '../../modules/dataSync/model/UserSession';
-import { UserService } from '../../modules/dataSync/services/userService';
+import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
+
+interface InteractableItem extends PurchasableItem {
+  tax: any;
+  priceBook: PurchasableItemPriceInterface;
+  employeeId: string;
+}
 
 interface PurchasableItemTiles {
   [id: string]: PurchasableItem[]
 }
 
+@SecurityModule()
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',

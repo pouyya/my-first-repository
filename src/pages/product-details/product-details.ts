@@ -19,6 +19,8 @@ import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { UserService } from '../../modules/dataSync/services/userService';
 
 interface InteractableStoreStock {
@@ -37,6 +39,7 @@ interface InteractableItemPriceInterface {
 	isDefault: boolean
 }
 
+@SecurityModule(SecurityAccessRightRepo.ProductAddEdit)
 @Component({
 	templateUrl: 'product-details.html'
 })

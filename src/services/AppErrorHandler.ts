@@ -1,20 +1,26 @@
-import { Injectable, ErrorHandler } from '@angular/core';
+import { Pro } from '@ionic/pro';
+import { ConfigService } from './../modules/dataSync/services/configService';
+import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { IonicErrorHandler } from 'ionic-angular';
-import { Firebase } from '@ionic-native/firebase';
+
+
+const IonicPro = Pro.init(ConfigService.ionicDeployAppId(), {
+  appVersion: "0.0.3"
+});
 
 @Injectable()
-export class AppErrorHandler extends IonicErrorHandler implements ErrorHandler {
+export class AppErrorHandler implements ErrorHandler {
+  ionicErrorHandler: IonicErrorHandler;
 
-  constructor(private firebase: Firebase) {
-    super()
+  constructor(injector: Injector) {
+    try {
+      this.ionicErrorHandler = injector.get(IonicErrorHandler);
+    } catch (e) {
+    }
   }
 
-  /**
-   * Handles error along with logging on Firebase
-   * @param err 
-   */
   handleError(err: any): void {
-    this.firebase.logError(err.stack);
-    super.handleError(err);
+    IonicPro.monitoring.handleNewError(err);
+    this.ionicErrorHandler && this.ionicErrorHandler.handleError(err);
   }
 }

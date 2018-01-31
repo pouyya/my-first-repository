@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
-import { PriceBookService } from './priceBookService';
+import { UserService } from './../modules/dataSync/services/userService';
 import { GlobalConstants } from './../metadata/globalConstants';
 import { HelperService } from './helperService';
 import { BasketItem } from './../model/basketItem';
@@ -13,7 +13,6 @@ import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { BaseTaxIterface } from '../model/baseTaxIterface';
-import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -26,7 +25,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private helperService: HelperService,
-		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
 	) {

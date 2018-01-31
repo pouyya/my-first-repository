@@ -5,7 +5,7 @@ let cache;
 
 @Injectable()
 export class CacheService {
-    constructor(private cacheService: CacheFactory) {
+    constructor() {
         var cacheFactory = new CacheFactory();
         if (!cacheFactory.exists('SimplePOS-Cache')) {
             cache = cacheFactory.createCache('SimplePOS-Cache');

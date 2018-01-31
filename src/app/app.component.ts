@@ -10,7 +10,6 @@ import { SharedService } from './../services/_sharedService';
 import { ModuleBase } from "../modules/moduelBase";
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
-import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
 
@@ -38,7 +37,6 @@ export class SimplePOSApp implements OnInit {
     private pluginService: PluginService,
     private _sharedService: SharedService,
     private cdr: ChangeDetectorRef,
-    private securityService: SecurityService,
     private toastController: ToastController,
     private platformService: PlatformService
   ) {
@@ -102,29 +100,24 @@ export class SimplePOSApp implements OnInit {
   }
 
   async openPage(page) {
-    var modules = this.moduleService.getCurrentModule(page);
-    if (await this.securityService.userHasAccess((modules as any).Roles)) {
-      this.currentModule = modules;
-      this.moduleName = this.currentModule.constructor.name;
-      if (page.hasOwnProperty('modal') && page.modal) {
-        let modal = this.modalCtrl.create(page.component);
-        modal.onDidDismiss(data => {
-          if (page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
-            page.onDismiss(data);
-          }
-        });
-        modal.present();
-      } else {
-        this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
-      }
-    }
-    else {
-      let toast = this.toastController.create({
-        message: 'You do not have enough permission',
-        duration: 3000
+    if (page.hasOwnProperty('modal') && page.modal) {
+      let modal = this.modalCtrl.create(page.component);
+      modal.onDidDismiss(data => {
+        if (page.hasOwnProperty('onDismiss') && typeof page.onDismiss == 'function') {
+          page.onDismiss(data);
+        }
       });
-      toast.present();
-    }
 
+      modal.present();
+
+    } else {
+      var canEnter = await this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
+
+      if (canEnter) {
+        this.currentModule = this.moduleService.getCurrentModule(page);
+        this.moduleName = this.currentModule.constructor.name;
+      }
+
+    }
   }
 }

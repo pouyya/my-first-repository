@@ -10,8 +10,7 @@ import { UserService } from '../modules/dataSync/services/userService';
 export class GroupSalesTaxService extends BaseEntityService<GroupSaleTax> {
 
   constructor(
-    private priceBookService: PriceBookService,
-    private userService: UserService
+    private priceBookService: PriceBookService
   ) {
     super(GroupSaleTax);
   }

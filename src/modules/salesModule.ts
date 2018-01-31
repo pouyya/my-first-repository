@@ -1,3 +1,4 @@
+import { LogOut } from './dataSync/pages/logout/logout';
 import { Closures } from './../pages/closures/closures';
 import { PosService } from './../services/posService';
 import { Injector } from '@angular/core';
@@ -9,10 +10,7 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
-import { SecurityGuard } from '../metadata/securityGuardModule';
-import { LogOut } from './dataSync/pages/logout/logout';
 
-@SecurityGuard([])
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
   private posService: PosService;

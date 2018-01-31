@@ -10,8 +10,7 @@ export class SalesTaxService extends BaseEntityService<SalesTax> {
 
   static readonly noSalesTaxId: string = 'no_sales_tax';
 
-  constructor(private userService: UserService,
-              private groupSalesTaxService: GroupSalesTaxService,
+  constructor(private groupSalesTaxService: GroupSalesTaxService,
               private priceBookService: PriceBookService) {
     super(SalesTax);
   }

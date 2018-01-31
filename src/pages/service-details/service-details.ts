@@ -11,6 +11,8 @@ import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { AppService } from "../../services/appService";
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { UserService } from '../../modules/dataSync/services/userService';
 
 interface InteractableItemPriceInterface {
@@ -20,6 +22,7 @@ interface InteractableItemPriceInterface {
 	isDefault: boolean
 }
 
+@SecurityModule(SecurityAccessRightRepo.ServiceAddEdit)
 @Component({
 	selector: 'page-variables',
 	templateUrl: 'service-details.html'

@@ -1,10 +1,7 @@
-import { StoreService } from './../../../services/storeService';
-import { FountainService } from './../../../services/fountainService';
 import { SalesServices } from './../../../services/salesService';
 import { Sale } from './../../../model/sale';
 import { ViewController, NavParams, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { UserService } from '../../../modules/dataSync/services/userService';
 
 @Component({
   selector: 'park-sale',
@@ -20,9 +17,6 @@ export class ParkSale {
     private alertController: AlertController,
     private navParams: NavParams,
     private salesService: SalesServices,
-    private fountainService: FountainService,
-    private userService: UserService,
-    private storeService: StoreService
   ) {
     this.sale = navParams.get('sale');
   }

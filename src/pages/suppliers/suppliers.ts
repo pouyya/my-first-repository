@@ -6,11 +6,14 @@ import { NavController } from "ionic-angular/navigation/nav-controller";
 import { SupplierDetails } from "../supplier-details/supplier-details";
 import { PageModule } from "../../metadata/pageModule";
 import { InventoryModule } from "../../modules/inventoryModule";
+import { SecurityModule } from "../../infra/security/securityModule";
+import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
 
 interface SupplierList extends Supplier {
 	associatedProducts: number;
 }
 
+@SecurityModule(SecurityAccessRightRepo.SupplierListing)
 @PageModule(() => InventoryModule)
 @Component({
 	selector: 'suppliers',
