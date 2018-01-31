@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 // core
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
-import { IonicApp, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 import { MatInputModule, MatGridListModule } from '@angular/material';
@@ -12,7 +12,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DndModule } from 'ng2-dnd';
 import { PinDialog } from '@ionic-native/pin-dialog';
-import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
@@ -307,11 +306,11 @@ import { ResourceService } from '../services/resourceService';
     Closures
   ],
   providers: [
+    IonicErrorHandler,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
     Network,
-    Firebase,
     PinDialog,
     Dialogs,
     Insomnia,
