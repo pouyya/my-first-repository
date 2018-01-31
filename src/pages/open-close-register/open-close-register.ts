@@ -9,7 +9,7 @@ import { PosService } from './../../services/posService';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from "../../metadata/pageModule";
-import { Sales } from "./../sales/sales.ts";
+import { Sales } from "./../sales/sales";
 
 import { Sale } from './../../model/sale';
 import { Closure } from './../../model/closure';
@@ -18,10 +18,12 @@ import { POS } from './../../model/pos';
 import { StoreService } from "../../services/storeService";
 import { PrintService, EndOfDayReportType } from '../../services/printService';
 import * as _ from 'lodash';
-import { PluginService } from '../../services/pluginService';
 import { Employee } from '../../model/employee';
 import { FountainService } from '../../services/fountainService';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.OpenCloseRegister)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'open-close-pos',
@@ -31,7 +33,6 @@ import { FountainService } from '../../services/fountainService';
 })
 export class OpenCloseRegister {
 
-  public employee: Employee
   public pos: POS;
   public store: Store;
   public closure: Closure;
@@ -61,34 +62,9 @@ export class OpenCloseRegister {
     private alertCtrl: AlertController,
     private navCtrl: NavController,
     private prinService: PrintService,
-    private pluginService: PluginService,
     private fountainService: FountainService) {
     this.cdr.detach();
     this.showReport = false;
-  }
-
-  async ionViewCanEnter(): Promise<boolean> {
-
-    let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
-      { ok: 'OK', cancel: 'Cancel' });
-    if (!pin) {
-      return false;
-    }
-
-    this.employee = await this.employeeService.findByPin(pin);
-
-    if (!this.employee) {
-
-      let toast = this.toastCtrl.create({
-        message: "Invalid PIN!",
-        duration: 3000
-      });
-      toast.present();
-
-      return false;
-    }
-
-    return true;
   }
 
   async ionViewDidEnter() {
@@ -110,13 +86,13 @@ export class OpenCloseRegister {
 
     this.calculateExpectedCounts(sales);
 
-    this.populateClosure(sales);
+    this.populateClosure(sales, this.employeeService.getEmployee());
 
     this.cdr.reattach();
     loader.dismiss();
   }
 
-  private populateClosure(sales: Sale[]) {
+  private populateClosure(sales: Sale[], employee: Employee) {
     this.closure = new Closure();
     this.closure.sales = sales;
     this.closure.posId = this.pos._id;
@@ -127,8 +103,8 @@ export class OpenCloseRegister {
     this.closure.openingAmount = this.pos.openingAmount;
     this.closure.totalCashIn = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'add' ? cashMovement.amount : 0);
     this.closure.totalCashOut = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'remove' ? cashMovement.amount : 0);
-    this.closure.employeeFullName = `${this.employee.firstName} ${this.employee.lastName}`;
-    this.closure.employeeId = this.employee._id;
+    this.closure.employeeFullName = `${employee.firstName} ${employee.lastName}`;
+    this.closure.employeeId = employee._id;
     this.calculateDiff('cash');
     this.calculateDiff('cc');
   }

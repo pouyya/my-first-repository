@@ -1,5 +1,4 @@
 import { UserSession } from './../model/UserSession';
-import { PosService } from './posService';
 import { ConfigService } from './configService';
 import { UserService } from './userService';
 import { Injectable } from '@angular/core';
@@ -16,7 +15,6 @@ export class AuthService {
   constructor(
     private http: Http,
     private userService: UserService,
-    private posService: PosService,
     private authHttp: AuthHttp
   ) { }
 

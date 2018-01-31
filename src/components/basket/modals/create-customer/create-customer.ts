@@ -1,5 +1,5 @@
 import { Customer } from './../../../../model/customer';
-import { NavParams, NavController, ViewController } from 'ionic-angular';
+import { NavParams, ViewController } from 'ionic-angular';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Component } from '@angular/core';
 import { CustomerService } from '../../../../services/customerService';
@@ -27,7 +27,6 @@ export class CreateCustomerModal {
 
   constructor(
     private navParams: NavParams,
-    private navCtrl: NavController,
     private viewCtrl: ViewController,
     private formBuilder: FormBuilder,
     private customerService: CustomerService

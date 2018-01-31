@@ -4,7 +4,10 @@ import { NavController, AlertController, Platform } from 'ionic-angular';
 import { StoreDetailsPage } from "../store-details/store-details";
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.StoreListing)
 @PageModule(() => BackOfficeModule)
 @Component({
   templateUrl: 'stores.html'

@@ -17,13 +17,22 @@ import { POS } from './../../model/pos';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
+import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
+import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
+
+interface InteractableItem extends PurchasableItem {
+  tax: any;
+  priceBook: PurchasableItemPriceInterface;
+  employeeId: string;
+}
 
 interface PurchasableItemTiles {
   [id: string]: PurchasableItem[]
 }
 
+@SecurityModule()
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',
