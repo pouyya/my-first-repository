@@ -9,7 +9,7 @@ import { PosService } from './../../services/posService';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from "../../metadata/pageModule";
-import { Sales } from "./../sales/sales.ts";
+import { Sales } from "./../sales/sales";
 
 import { Sale } from './../../model/sale';
 import { Closure } from './../../model/closure';
