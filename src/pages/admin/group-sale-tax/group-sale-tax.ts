@@ -6,7 +6,10 @@ import { GroupSaleTax } from './../../../model/groupSalesTax';
 import { Component, NgZone } from '@angular/core';
 import { SettingsModule } from '../../../modules/settingsModule';
 import { PageModule } from '../../../metadata/pageModule';
+import { SecurityModule } from '../../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.GroupSaleTax)
 @PageModule(() => SettingsModule)
 @Component({
   selector: "group-sale-tax",

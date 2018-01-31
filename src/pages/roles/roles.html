@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Roles</ion-title>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="view()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list inset *ngFor="let role of roles ; let idx=index">
+    <ion-item (click)="view(role)">
+      <h2 class="item-title">{{ role.name }}</h2>
+    </ion-item>
+  </ion-list>
+</ion-content>

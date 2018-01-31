@@ -69,6 +69,8 @@ import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
 import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
+import { Roles } from '../pages/roles/roles';
+import { RoleDetails } from '../pages/role-details/role-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
 import { SupplierDetails } from './../pages/supplier-details/supplier-details';
 import { Closures } from './../pages/closures/closures';
@@ -135,6 +137,8 @@ import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
 import { ConfigService } from '../services/configService';
+import { ServiceLocator } from '../services/serviceLocator';
+import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
 import { ResourceService } from '../services/resourceService';
 
@@ -192,6 +196,8 @@ import { ResourceService } from '../services/resourceService';
     Brands,
     BrandDetails,
     DeployPage,
+    Roles,
+    RoleDetails,
     Suppliers,
     SupplierDetails,
     Closures
@@ -294,6 +300,8 @@ import { ResourceService } from '../services/resourceService';
     Brands,
     BrandDetails,
     DeployPage,
+    Roles,
+    RoleDetails,
     Suppliers,
     SupplierDetails,
     Closures
@@ -348,12 +356,13 @@ import { ResourceService } from '../services/resourceService';
     authProvider,
     PlatformService,
     AccountSettingService,
+    RoleService,
     SupplierService,
     ResourceService
   ]
 })
 export class AppModule {
   constructor(injector: Injector) {
-    window.globalInjector.emit(injector);
+    ServiceLocator.injector = injector;
   }
 }
