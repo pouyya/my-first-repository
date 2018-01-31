@@ -7,7 +7,10 @@ import { SalesTaxService } from './../../../services/salesTaxService';
 import { Component, NgZone } from '@angular/core';
 import { SettingsModule } from '../../../modules/settingsModule';
 import { PageModule } from '../../../metadata/pageModule';
+import { SecurityModule } from '../../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.SaleTax)
 @PageModule(() => SettingsModule)
 @Component({
   selector: 'sale-tax-page',

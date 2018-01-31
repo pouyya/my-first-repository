@@ -5,7 +5,10 @@ import { PriceBook } from './../../model/priceBook';
 import { Component } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.PriceBookListing)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'price-books',

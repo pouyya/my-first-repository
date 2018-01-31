@@ -5,7 +5,10 @@ import { CustomerService } from './../../services/customerService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { CustomerDetails } from '../customer-details/customer-details';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.CustomerListing)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'customers-page',

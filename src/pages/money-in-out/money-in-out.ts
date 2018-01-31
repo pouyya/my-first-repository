@@ -6,8 +6,9 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
-@SecurityModule(/** Public Access */)
+@SecurityModule(SecurityAccessRightRepo.MoneyInOut)
 @PageModule(() => SalesModule)
 @Component({
   selector: 'money-in-out',
@@ -37,10 +38,10 @@ export class MoneyInOut {
   public openMoveCashModal(reason: string): void {
     let modal = this.modalCtrl.create(MoveCashModal, { reason });
     modal.onDidDismiss((cash: CashMovement) => {
-      if(cash) {
+      if (cash) {
         this.btnDisabled = true;
-        
-        if(!this.register.cashMovements) {
+
+        if (!this.register.cashMovements) {
           this.register.cashMovements = new Array<CashMovement>();
         }
 

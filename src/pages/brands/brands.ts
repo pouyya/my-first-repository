@@ -9,11 +9,14 @@ import { PageModule } from '../../metadata/pageModule';
 import { Brand } from '../../model/brand';
 import { AlertOptions } from 'ionic-angular/components/alert/alert-options';
 import { BrandDetails } from '../brand-details/brand-details';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
 interface PageBrand extends Brand {
   associatedProducts: number;
 }
 
+@SecurityModule(SecurityAccessRightRepo.BrandListing)
 @PageModule(() => InventoryModule)
 @Component({
   selector: 'brands',
