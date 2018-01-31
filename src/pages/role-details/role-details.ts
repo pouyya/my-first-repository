@@ -5,11 +5,14 @@ import { RoleService } from './../../services/roleService';
 import { Component } from '@angular/core';
 import { Role } from '../../model/role';
 import { SecurityModule } from '../../infra/security/securityModule';
+import { PageModule } from '../../metadata/pageModule';
+import { SettingsModule } from '../../modules/settingsModule';
 
 interface InteractableAccessRightItem extends AccessRightItem {
   selected: boolean;
 }
 
+@PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.RoleAddEdit)
 @Component({
   selector: 'role-details',

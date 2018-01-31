@@ -1,14 +1,14 @@
 import { RoleDetails } from './../role-details/role-details';
 import { NavController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { BackOfficeModule } from './../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { Role } from '../../model/role';
 import { RoleService } from '../../services/roleService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { SettingsModule } from '../../modules/settingsModule';
 
-@PageModule(() => BackOfficeModule)
+@PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.RoleListing)
 @Component({
   selector: 'roles',
