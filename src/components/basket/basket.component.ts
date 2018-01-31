@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
-import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
@@ -15,8 +14,6 @@ import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
 import { UserSession } from '../../model/UserSession';
-import { CalculatorService } from '../../services/calculatorService';
-import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
 import { PriceBook } from '../../model/priceBook';
 import { PriceBookService } from '../../services/priceBookService';
@@ -65,12 +62,9 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
-    private helperService: HelperService,
     private customerService: CustomerService,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private calcService: CalculatorService,
-    private taxService: TaxService,
     private priceBookService: PriceBookService,
     private storeService: StoreService,
     private navCtrl: NavController) {

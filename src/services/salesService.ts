@@ -3,7 +3,6 @@ import * as moment from 'moment';
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
-import { PriceBookService } from './priceBookService';
 import { UserService } from './userService';
 import { GlobalConstants } from './../metadata/globalConstants';
 import { HelperService } from './helperService';
@@ -26,7 +25,6 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private calcService: CalculatorService,
 		private taxService: TaxService,
 		private helperService: HelperService,
-		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService
 	) {
