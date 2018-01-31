@@ -10,12 +10,15 @@ import { InventoryModule } from '../../modules/inventoryModule';
 import { PageModule } from '../../metadata/pageModule';
 import { Product } from '../../model/product';
 import { PriceBook } from '../../model/priceBook';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
   retailPrice: number /** From default pricebook */
 }
 
+@SecurityModule(SecurityAccessRightRepo.ProductListing)
 @PageModule(() => InventoryModule)
 @Component({
   templateUrl: 'products.html',

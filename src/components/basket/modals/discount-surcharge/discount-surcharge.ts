@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import { DiscountSurchargeInterface } from './../../../../model/sale';
-import { SalesServices } from './../../../../services/salesService';
 import { ViewController, ToastController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
@@ -23,7 +22,6 @@ export class DiscountSurchargeModal {
   constructor(
     private navParams: NavParams,
     private viewCtrl: ViewController,
-    private salesService: SalesServices,
     private toastCtrl: ToastController
   ) {
     this.action = DiscountSurchargeModal.DISCOUNT;

@@ -7,7 +7,10 @@ import { PageModule } from '../../metadata/pageModule';
 import { PlatformService } from '../../services/platformService';
 import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'about-page',

@@ -5,7 +5,10 @@ import { Supplier } from '../../model/supplier';
 import { SupplierService } from '../../services/supplierService';
 import { ResourceService } from '../../services/resourceService';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.SupplierAddEdit)
 @Component({
   selector: 'supplier-details',
   templateUrl: 'supplier-details.html'

@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Role</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="roleForm.ngSubmit.emit()" [disabled]="!roleForm.form.valid">
+        save
+      </button>
+      &nbsp;
+      <button ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="save()" #roleForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Name</ion-label>
+        <ion-input type="text" [(ngModel)]="role.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item *ngFor="let accessRightItem of accessRightItems">
+        <ion-label>{{ accessRightItem.name }}</ion-label>
+        <ion-checkbox (ionChange)="onSelect($event, accessRightItem)" [checked]="accessRightItem.selected"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

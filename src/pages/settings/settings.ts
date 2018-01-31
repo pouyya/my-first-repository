@@ -14,8 +14,11 @@ import { SalesTaxService } from './../../services/salesTaxService';
 import { AccountSettingService } from '../../services/accountSettingService';
 import { AccountSetting } from '../../model/accountSetting';
 import { DateTimeService } from './../../services/dateTimeService';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 
 @PageModule(() => SettingsModule)
+@SecurityModule(SecurityAccessRightRepo.Settings)
 @Component({
   selector: 'app-settings',
   templateUrl: 'settings.html'
