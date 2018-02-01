@@ -64,7 +64,7 @@ export class PaymentsPage {
       this.navCtrl.pop();
     } else {
       // check stock
-      await this.checkForStockInHand();
+      await this._checkForStockInHand();
       if (this.stockErrors.length > 0) {
         // display error message
         let alert = this.alertCtrl.create(
@@ -184,29 +184,11 @@ export class PaymentsPage {
     });
   }
 
-  private async checkForStockInHand() {
+  private async _checkForStockInHand() {
     this.stockErrors = [];
-    let productsInStock: { [id: string]: number } = {};
-    let allProducts = this.sale.items
-      .filter(item => item.stockControl)
-      .map(item => item.purchsableItemId);
-    if (allProducts.length > 0) {
-
-      let loader = this.loading.create({ content: 'Check for stock' });
-      await loader.present();
-
-      productsInStock = await this.stockHistoryService
-        .getProductsTotalStockValueByStore(allProducts, this.store._id);
-      if (productsInStock && Object.keys(productsInStock).length > 0) {
-        this.sale.items.forEach(item => {
-          if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
-            // push error
-            this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
-          }
-        });
-      }
-      
-      loader.dismiss();
-    }
+    let loader = this.loading.create({ content: 'Checking for stock...' });
+    await loader.present();
+    this.stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    loader.dismiss();
   }
 }

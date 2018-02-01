@@ -250,30 +250,46 @@ export class BasketComponent {
   }
 
   public async fastPayment() {
-    let loader = this.loading.create({ content: 'Completing Sale' });
-    try {
-      await loader.present();
-      await this.salesService.updateStock(this.sale, this.store._id);
-      this.sale.completed = true;
-      this.sale.completedAt = moment().utc().format();
-      this.sale.state = 'completed';
-      this.sale.receiptNo = await this.fountainService.getReceiptNumber();
-      await this.salesService.update(this.sale);
-      if (this.store.printReceiptAtEndOfSale) {
-        await this.printService.printReceipt(this.sale);
+    let loader = this.loading.create({ content: 'Checking for stock...' });
+    await loader.present();
+    let stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    if (stockErrors.length > 0) {
+      let alert = this.alertController.create(
+        {
+          title: 'Out of Stock',
+          subTitle: 'Please make changes to sale and continue',
+          message: `${stockErrors.join('\n')}`,
+          buttons: ['Ok']
+        }
+      );
+      loader.dismiss();
+      alert.present();
+      return;
+    } else {
+      loader.setContent('Completing Sale...');
+      try {
+        await loader.present();
+        await this.salesService.updateStock(this.sale, this.store._id);
+        this.sale.completed = true;
+        this.sale.completedAt = moment().utc().format();
+        this.sale.state = 'completed';
+        this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+        await this.salesService.update(this.sale);
+        if (this.store.printReceiptAtEndOfSale) {
+          await this.printService.printReceipt(this.sale);
+        }
+        await this.printService.openCashDrawer();
+        localStorage.removeItem('sale_id');
+        this.sale = await this.salesService.instantiateSale();
+        this.paymentCompleted.emit();
+        this.customer = null;
+        this.calculateAndSync();
+        loader.dismiss();
+      } catch (err) {
+        loader.dismiss();
+        return Promise.reject(err);
       }
-      await this.printService.openCashDrawer();
-      localStorage.removeItem('sale_id');
-      this.sale = await this.salesService.instantiateSale();
-      this.paymentCompleted.emit();
-      this.customer = null;
-      this.calculateAndSync();
-      loader.dismiss();
-    } catch (err) {
-      loader.dismiss();
-      return Promise.reject(err);
     }
-    // this.printSale();
   }
 
   private generatePaymentBtnText() {

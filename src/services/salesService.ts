@@ -223,6 +223,27 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return;
 	}
 
+	public async checkForStockInHand(sale: Sale, storeId: string): Promise<string[]> {
+		let stockErrors: string[] = [];
+		let productsInStock: { [id: string]: number } = {};
+		let allProducts = sale.items
+			.filter(item => item.stockControl)
+			.map(item => item.purchsableItemId);
+		if (allProducts.length > 0) {
+			productsInStock = await this.stockHistoryService
+				.getProductsTotalStockValueByStore(allProducts, storeId);
+			if (productsInStock && Object.keys(productsInStock).length > 0) {
+				sale.items.forEach(item => {
+					if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
+						stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
+					}
+				});
+			}
+		}
+
+		return stockErrors;
+	}
+
 	public calculateSale(sale: Sale) {
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
