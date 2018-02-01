@@ -37,7 +37,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="register.status" class="full-height">
+  <ion-grid *ngIf="register.status && activeCategory" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
         <ion-scroll scrollY="true" class="category-scroll">

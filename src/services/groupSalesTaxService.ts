@@ -3,15 +3,13 @@ import { Injectable } from '@angular/core';
 import { BaseEntityService } from './baseEntityService';
 import { GroupSaleTax } from './../model/groupSalesTax';
 import { PriceBookService } from './priceBookService';
-import { UserService } from './userService';
 import { SalesTax } from './../model/salesTax';
 
 @Injectable()
 export class GroupSalesTaxService extends BaseEntityService<GroupSaleTax> {
 
   constructor(
-    private priceBookService: PriceBookService,
-    private userService: UserService
+    private priceBookService: PriceBookService
   ) {
     super(GroupSaleTax);
   }

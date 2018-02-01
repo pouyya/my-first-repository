@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
-import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
@@ -15,8 +14,6 @@ import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
 import { UserSession } from '../../model/UserSession';
-import { CalculatorService } from '../../services/calculatorService';
-import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
 import { PriceBook } from '../../model/priceBook';
 import { PriceBookService } from '../../services/priceBookService';
@@ -65,12 +62,9 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
-    private helperService: HelperService,
     private customerService: CustomerService,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private calcService: CalculatorService,
-    private taxService: TaxService,
     private priceBookService: PriceBookService,
     private storeService: StoreService,
     private navCtrl: NavController) {
@@ -187,13 +181,21 @@ export class BasketComponent {
         trackStaff: this.user.settings.trackEmployeeSales
       }
     });
-    modal.onDidDismiss(data => {
-      let reorder = false;
-      if (data) {
-        if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-        this.sale.items[$index] = data.item;
-        if (reorder) this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
-        data.hasChanged && this.calculateAndSync();
+    modal.onDidDismiss(async data => {
+
+      if (data && data.hasChanged) {
+
+        var itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, item.purchsableItemId);
+
+        if (itemPrice) {
+          this.sale.items[$index] = this.salesService.calculateAndSetBasketPriceAndTax(data.item, this.salesTaxes, this.defaultTax, itemPrice, this.user.settings.taxType);
+        }
+
+        if (data.buffer.employeeId != data.item.employeeId) {
+          this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
+        }
+
+        this.calculateAndSync();
       }
     });
     modal.present();

@@ -9,7 +9,10 @@ import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
   templateUrl: 'store-details.html',
 })

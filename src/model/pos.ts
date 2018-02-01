@@ -3,6 +3,7 @@ import { DBBasedEntity } from './dbBasedEntity';
 export interface CashMovement {
   amount: number,
   type: string,
+  employeeId: string,
   note?: string,
   datetime: Date
 }

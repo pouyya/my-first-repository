@@ -4,8 +4,10 @@ import { Brand } from './../../model/brand';
 import { UserService } from './../../services/userService';
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController, ModalController, ToastController } from 'ionic-angular';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
-
+@SecurityModule(SecurityAccessRightRepo.BrandAddEdit)
 @Component({
   selector: 'brand-details',
   templateUrl: 'brand-details.html'

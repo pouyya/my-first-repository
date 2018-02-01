@@ -1,4 +1,3 @@
-import { UserService } from './userService';
 import { Injectable } from '@angular/core';
 import { AccountSettingService } from './accountSettingService';
 
@@ -6,7 +5,6 @@ import { AccountSettingService } from './accountSettingService';
 export class FountainService {
 
   constructor(
-    private userService: UserService,
     private accountSettingService: AccountSettingService
   ) { }
 

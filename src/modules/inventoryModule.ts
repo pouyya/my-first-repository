@@ -2,11 +2,9 @@ import { Products } from './../pages/products/products';
 import { HomePage } from './../pages/home/home';
 import { Category } from '../pages/category/category';
 import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelBase';
-import { SecurityGuard } from '../metadata/securityGuardModule';
 import { Brands } from '../pages/brands/brands';
 import { Suppliers } from '../pages/suppliers/suppliers';
 
-@SecurityGuard(['BackOffice'])
 export class InventoryModule implements ModuleBase {
   public setInjector() {
 
