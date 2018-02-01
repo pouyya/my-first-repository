@@ -68,19 +68,22 @@ export class SecurityService implements GuardInterface {
 	private async verifyPinAndGiveAccess(currentUsersStore: string, accessRightItems: AccessRightItem[]): Promise<SecurityResult> {
 		let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
 			{ ok: 'OK', cancel: 'Cancel' });
-		if (pin) {
-			let model: Employee = await this.employeeService.findByPin(pin);
-			if (!model) {
-				return new SecurityResult(false, SecurityResultReason.wrongPIN);
-			}
 
-			if (!await this.verifyEmployeeAccessRightItems(model, currentUsersStore, accessRightItems)) {
-				return new SecurityResult(false, SecurityResultReason.notEnoughAccess);
-			}
-
-			this.employeeService.setEmployee(model);
-			return new SecurityResult(true, SecurityResultReason.accessGrant);
+		if (!pin) {
+			return new SecurityResult(false, SecurityResultReason.notEnoughAccess);
 		}
+
+		let model: Employee = await this.employeeService.findByPin(pin);
+		if (!model) {
+			return new SecurityResult(false, SecurityResultReason.wrongPIN);
+		}
+
+		if (!await this.verifyEmployeeAccessRightItems(model, currentUsersStore, accessRightItems)) {
+			return new SecurityResult(false, SecurityResultReason.notEnoughAccess);
+		}
+
+		this.employeeService.setEmployee(model);
+		return new SecurityResult(true, SecurityResultReason.accessGrant);
 	}
 
 	/**
@@ -97,16 +100,16 @@ export class SecurityService implements GuardInterface {
 			}
 
 			let employeeAssociatedStore = _.find(employee.store, { id: currentStoreId });
-			if(employeeAssociatedStore) {
-				if(!employeeAssociatedStore.role) {
+			if (employeeAssociatedStore) {
+				if (!employeeAssociatedStore.role) {
 					return false;
 				} else {
 					let role = await this.roleService.get(employeeAssociatedStore.role);
 					let accessRightItemIds = accessRightItems.map(right => right.id);
 					let i = 0;
 					let approved: boolean = true;
-					while(i < accessRightItemIds.length) {
-						if(role.accessRightItems.indexOf(accessRightItemIds[i]) == -1) {
+					while (i < accessRightItemIds.length) {
+						if (role.accessRightItems.indexOf(accessRightItemIds[i]) == -1) {
 							approved = false;
 							break;
 						}
