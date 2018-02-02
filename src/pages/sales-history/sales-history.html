@@ -52,6 +52,14 @@
           <ion-option value="4">This Month</ion-option>
         </ion-select>
       </ion-col>
+      <ion-col col-md-4>
+        <p>Payment Type</p>
+        <ion-select [(ngModel)]="selectedPaymentType" (ionChange)="searchByPaymentType()">
+          <ion-option value="">All</ion-option>
+          <ion-option value="cash">Cash</ion-option>
+          <ion-option value="credit_card">Credit Card</ion-option>
+        </ion-select>
+      </ion-col>
     </ion-row>
   </ion-grid>
   <ion-list>

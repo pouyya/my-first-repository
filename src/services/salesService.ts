@@ -97,7 +97,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Promise.resolve(null);
 	}
 
-	public async searchSales(posId, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string): Promise<any> {
+	public async searchSales(posId, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<any> {
 		let query: any = {
 			selector: {
 				posID: posId
@@ -139,6 +139,16 @@ export class SalesServices extends BaseEntityService<Sale> {
 					}
 				}
 			};
+		}
+
+		if(paymentType) {
+			query.selector['payments'] = {
+				"$elemMatch": {
+					"type": {
+						"$eq": paymentType
+					}
+				}
+			}
 		}
 
 		query.sort = [{ _id: 'desc' }];

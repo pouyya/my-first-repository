@@ -1,7 +1,6 @@
 import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
 import { UserSession } from './../../model/UserSession';
-import { StoreService } from './../../services/storeService';
 import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { UserService } from './../../services/userService';
@@ -33,6 +32,7 @@ export class SalesHistoryPage {
   public sales: any[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
+  public selectedPaymentType: string = '';
   public selectedTime: TimeValues = TimeValues.anytime;
   public states: any;
   public filtersEnabled: boolean = false;
@@ -63,7 +63,6 @@ export class SalesHistoryPage {
     private salesService: SalesServices,
     private navCtrl: NavController,
     private userService: UserService,
-    private storeService: StoreService,
     private customerService: CustomerService,
     private employeeService: EmployeeService,
     private alertController: AlertController,
@@ -228,6 +227,7 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
+    this.customerSearch = `${customer.firstName} ${customer.lastName}`;
     await this.fetchMoreSales();
   }
 
@@ -238,6 +238,7 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
+    this.employeeSearch = `${employee.firstName} ${employee.lastName}`;
     await this.fetchMoreSales();
   }
 
@@ -295,6 +296,11 @@ export class SalesHistoryPage {
     });
   }
 
+  public async searchByPaymentType() {
+    this.sales = [];
+    await this.fetchMoreSales();
+  }
+
   public searchByTime() {
     this.sales = this.salesBackup;
     let startDate: Date;
@@ -339,7 +345,7 @@ export class SalesHistoryPage {
       let result = await this.salesService.searchSales(
         this.user.currentPos,
         limit | this.limit, offset | this.offset,
-        this.filters, this.timeFrame, this.employeeId);
+        this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
       if (result.totalCount > 0) {
         this.total = result.totalCount;
         this.sales = await this.attachCustomersToSales(result.docs);
@@ -350,7 +356,7 @@ export class SalesHistoryPage {
         let result: any = await this.salesService.searchSales(
           this.user.currentPos,
           limit | this.limit, offset | this.offset,
-          this.filters, this.timeFrame, this.employeeId);
+          this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
         let sales = await this.attachCustomersToSales(result.docs);
         this.sales = this.sales.concat(sales);
         this.salesBackup = this.sales;
