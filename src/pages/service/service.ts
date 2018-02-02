@@ -5,7 +5,10 @@ import { ServiceDetails } from '../service-details/service-details';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import * as _ from 'lodash';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.ServiceListing)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'page-variables',

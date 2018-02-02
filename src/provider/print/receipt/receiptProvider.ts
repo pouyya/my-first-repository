@@ -57,7 +57,7 @@ ABN: ${this.receiptProviderContext.taxFileNumber}
             <table cols="left-10,right-38">
                 <tr>
                     <td>Tax</td>
-                    <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.taxTotal)}</td>
+                    <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.tax)}</td>
                 </tr>
                 <tr>
                 <td>Sub total</td>

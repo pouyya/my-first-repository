@@ -12,6 +12,8 @@ import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from './../../metadata/itemIcons';
 import { AppService } from "../../services/appService";
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -20,6 +22,7 @@ interface InteractableItemPriceInterface {
 	isDefault: boolean
 }
 
+@SecurityModule(SecurityAccessRightRepo.ServiceAddEdit)
 @Component({
 	selector: 'page-variables',
 	templateUrl: 'service-details.html'

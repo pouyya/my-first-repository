@@ -52,7 +52,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
     private userService: UserService,
     private appService: AppService,
     private zone: NgZone
-  ) {}
+  ) { }
 
   async ngOnChanges() {
     var user = await this.userService.getUser();
@@ -87,7 +87,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
           this.defaultTax = results[0]
           this.salesTaxes.push(this.defaultTax);
         }
-        if(results[1] != null && results[1].length > 0) {
+        if (results[1] != null && results[1].length > 0) {
           this.salesTaxes = this.salesTaxes.concat(results[1]);
         }
       }
@@ -134,33 +134,47 @@ export class PurchasableItemPriceComponent implements OnChanges {
     this.zone.runOutsideAngular(() => {
       switch (type) {
         case 'supplyPrice':
+          item.supplyPrice = Number(item.supplyPrice);
+          item.retailPrice = Number(item.retailPrice);
           item.markup = this.priceBookService.calculateMarkup(item.supplyPrice, item.retailPrice);
           break;
         case 'markup':
+          item.tax.rate = Number(item.tax.rate);
+          item.supplyPrice = Number(item.supplyPrice);
+          item.retailPrice = Number(item.retailPrice);
           if (item.supplyPrice !== 0) {
             item.retailPrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-              Number(item.supplyPrice), Number(item.markup)
+              item.supplyPrice, item.markup
             );
             item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-              Number(item.retailPrice), Number(item.tax.rate)
+              item.retailPrice, item.tax.rate
             );
           }
           break;
         case 'retailPrice':
+          item.tax.rate = Number(item.tax.rate);
+          item.supplyPrice = Number(item.supplyPrice);
+          item.retailPrice = Number(item.retailPrice);
           item.markup = this.priceBookService.calculateMarkup(item.supplyPrice, item.retailPrice);
           item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-            Number(item.retailPrice), Number(item.tax.rate)
+            item.retailPrice, item.tax.rate
           );
           break;
         case 'salesTax':
+          item.tax.rate = Number(item.tax.rate);
+          item.retailPrice = Number(item.retailPrice);
           item.inclusivePrice = this.priceBookService.calculateRetailPriceTaxInclusive(
-            Number(item.retailPrice), Number(item.tax.rate)
+            item.retailPrice, item.tax.rate
           );
+          item.supplyPrice = Number(item.supplyPrice);
+          item.markup = this.priceBookService.calculateMarkup(item.supplyPrice, item.retailPrice);
           break;
         case 'inclusivePrice':
+          item.inclusivePrice = Number(item.inclusivePrice);
           item.retailPrice = this.priceBookService.calculateRetailPriceTaxExclusive(
-            Number(item.inclusivePrice), Number(item.tax.rate)
+            item.inclusivePrice, item.tax.rate
           );
+          item.supplyPrice = Number(item.supplyPrice);
           item.markup = this.priceBookService.calculateMarkup(item.supplyPrice, item.retailPrice);
           break;
       }
@@ -189,7 +203,7 @@ export class PurchasableItemPriceComponent implements OnChanges {
     this.items.forEach(item => {
       if (!item.deleted) {
         item.salesTaxId = item.tax.isDefault ? null : item.tax._id;
-        let itemPrice = <PurchasableItemPriceInterface> _.omit(item, ['name', 'entityTypeName', 'tax', 'deleted'])
+        let itemPrice = <PurchasableItemPriceInterface>_.omit(item, ['name', 'entityTypeName', 'tax', 'deleted'])
         this._priceBook.purchasableItems.push(itemPrice)
       }
     });

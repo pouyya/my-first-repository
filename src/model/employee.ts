@@ -1,8 +1,8 @@
-import {DBBasedEntity} from './dbBasedEntity';
+import { DBBasedEntity } from './dbBasedEntity';
 
-export interface RolesInterface {
+export interface EmployeeRolePerStore {
   id: string;
-  roles: string[];
+  role: string;
 }
 
 export class Employee extends DBBasedEntity {
@@ -11,6 +11,6 @@ export class Employee extends DBBasedEntity {
   public address: string;
   public phone: string;
   public isAdmin?: boolean;
-  public store?: RolesInterface[];
+  public store?: EmployeeRolePerStore[];
   public pin: number;
 }
