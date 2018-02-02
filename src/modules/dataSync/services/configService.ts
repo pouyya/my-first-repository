@@ -1,4 +1,4 @@
-import { ENV } from '@app/env'
+import { ENV } from '@app/env';
 
 export class ConfigService {
 
@@ -57,7 +57,7 @@ export class ConfigService {
     }
 
     static turnOnDeployment(): boolean {
-        return ENV.upgrade;
+        return ENV.turnOnDeployment;
     }
 
     static securityTokenEndPoint(): string {
