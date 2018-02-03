@@ -18,7 +18,13 @@ export class AuthService {
     private authHttp: AuthHttp
   ) { }
 
-  public login(email: string, password: string): Promise<any> {
+  /**
+   * Logins the users and creates session
+   * @param email 
+   * @param password 
+   * @returns {Observable<any>}
+   */
+  public login(email: string, password: string): Observable<any> {
 
     let payLoad = new URLSearchParams();
     payLoad.append("client_id", ConfigService.securityClientId());
@@ -51,33 +57,13 @@ export class AuthService {
 
             userSession.settings.defaultIcon = {};
             var firstIconKey = Object.keys(icons)[0];
-            userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey];
+            userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey]; 
 
             await this.userService.setSession(userSession);
-
+    
           })
           .toPromise();
-      }).toPromise();
-  }
-
-  public register(firstName: string, lastName: string, phone: string, email: string, password: string, configPassword: string, shopName: string): Promise<any> {
-
-    var payLoad = {
-      "FirstName": firstName,
-      "LastName": lastName,
-      "Phone": phone,
-      "Email": email,
-      "Password": password,
-      "ConfirmPassword": password,
-      "ShopName": configPassword
-    };
-
-    var headers = new Headers({ 'Content-Type': 'application/application/json' });
-
-    return this.http.post(ConfigService.registeEndPoint(), JSON.stringify(payLoad), { headers: headers })
-      .flatMap(async (response: Response) => {
-        let user = response.json();
-      }).toPromise();
+      });
   }
 
   /**
