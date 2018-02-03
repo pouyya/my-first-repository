@@ -5,9 +5,6 @@ platforms/
 platforms/ios
 platforms/android
 plugins/
-www/build/
-www/index.html
-www/assets
 *.DS_Store
 *.log
 *.swp
@@ -15,3 +12,4 @@ www/assets
 package-lock.json
 yarn.lock
 .sourcemaps
+www
