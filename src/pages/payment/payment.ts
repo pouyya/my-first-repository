@@ -15,7 +15,7 @@ import { StockHistory } from '../../model/stockHistory';
 @Component({
   selector: 'payments-page',
   templateUrl: 'payment.html',
-  styleUrls: ['/pages/payment/payment.scss'],
+  styleUrls: ['payment.scss'],
   providers: [SalesServices]
 })
 export class PaymentsPage {

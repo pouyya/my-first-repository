@@ -35,7 +35,7 @@ interface CritieriaView {
 @Component({
   selector: 'pricebook-details',
   templateUrl: 'price-book-details.html',
-  styleUrls: ['/pages/price-book-details/price-book-details.scss']
+  styleUrls: ['price-book-details.scss']
 })
 export class PriceBookDetails {
 
