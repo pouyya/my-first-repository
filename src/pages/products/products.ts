@@ -22,7 +22,7 @@ interface ProductsList extends Product {
 @PageModule(() => InventoryModule)
 @Component({
   templateUrl: 'products.html',
-  styleUrls: ['/pages/products/products.scss']
+  styleUrls: ['products.scss']
 })
 export class Products {
   public items: ProductsList[];

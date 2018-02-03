@@ -37,7 +37,7 @@ interface PurchasableItemTiles {
 @Component({
   selector: 'page-variables',
   templateUrl: 'sales.html',
-  styleUrls: ['/pages/sales/sales.scss'],
+  styleUrls: ['sales.scss'],
   providers: [SalesServices]
 })
 export class Sales implements OnDestroy {

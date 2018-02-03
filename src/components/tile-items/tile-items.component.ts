@@ -4,7 +4,7 @@ import { AlertController, ActionSheetController } from 'ionic-angular';
 @Component({
   selector: 'tile-items',
   templateUrl: 'tile-items.html',
-  styleUrls: ['/components/tile-items/tile-items.scss']
+  styleUrls: ['tile-items.scss']
 })
 export class TileItemsComponent {
   @Input() items: Array<any>;
