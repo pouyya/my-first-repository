@@ -30,7 +30,7 @@ import { FountainService } from './../../services/fountainService';
 @Component({
   selector: 'basket',
   templateUrl: 'basket.html',
-  styleUrls: ['basket.scss'],
+  styleUrls: ['/components/basket/basket.scss'],
   providers: [SalesServices]
 })
 export class BasketComponent {

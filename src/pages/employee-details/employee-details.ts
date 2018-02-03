@@ -27,7 +27,7 @@ interface SelectableStore extends Store {
 @Component({
   selector: 'employee-detail',
   templateUrl: 'employee-details.html',
-  styleUrls: ['employee-details.scss']
+  styleUrls: ['/pages/employee-details/employee-details.scss']
 })
 export class EmployeeDetails {
 

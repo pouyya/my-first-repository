@@ -21,7 +21,7 @@ import { Store } from '../../model/store';
 @Component({
   selector: 'clock-in-out',
   templateUrl: 'clock-in-out.html',
-  styleUrls: ['clock-in-out.scss']
+  styleUrls: ['/pages/clock-in-out/clock-in-out.scss']
 })
 export class ClockInOutPage {
 

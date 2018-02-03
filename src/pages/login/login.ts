@@ -15,7 +15,7 @@ import { DataSync } from '../dataSync/dataSync';
 @Component({
   selector: 'login',
   templateUrl: 'login.html',
-  styleUrls: ['login.scss'],
+  styleUrls: ['/pages/login/login.scss'],
 })
 export class LoginPage {
 

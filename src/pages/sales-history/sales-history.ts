@@ -16,7 +16,7 @@ import { Customer } from '../../model/customer';
 @Component({
   selector: 'sales-history',
   templateUrl: 'sales-history.html',
-  styleUrls: ['sales-history.scss'],
+  styleUrls: ['/pages/sales-history/sales-history.scss'],
   providers: [SalesServices]
 })
 export class SalesHistoryPage {

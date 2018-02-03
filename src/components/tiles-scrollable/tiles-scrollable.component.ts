@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'tiles-scrollable',
   templateUrl: 'tiles-scrollable.html',
-  styleUrls: ['tiles-scrollable.scss']
+  styleUrls: ['/components/tiles-scrollable/tiles-scrollable.scss']
 })
 export class TileScrollableComponent {
 

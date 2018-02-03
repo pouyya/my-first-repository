@@ -28,7 +28,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 @Component({
   selector: 'open-close-pos',
   templateUrl: 'open-close-register.html',
-  styleUrls: ['open-close-register.scss'],
+  styleUrls: ['/pages/open-close-register.scss'],
   providers: [SalesServices, ClosureService, PosService, StoreService]
 })
 export class OpenCloseRegister {
