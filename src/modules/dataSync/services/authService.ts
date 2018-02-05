@@ -66,6 +66,22 @@ export class AuthService {
       });
   }
 
+  public register(firstName: string, lastName: string, phone: string, email: string, password: string, configPassword: string, shopName: string): Observable<any> {
+
+    let payLoad = new URLSearchParams();
+    payLoad.append("FirstName", firstName);
+    payLoad.append("LastName", lastName);
+    payLoad.append("Phone", phone);
+    payLoad.append("Email", email);
+    payLoad.append("Password", password);
+    payLoad.append("ConfirmPassword", password);
+    payLoad.append("ShopName", shopName);
+
+    var headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+
+    return this.http.post(ConfigService.registeEndPoint(), payLoad.toString(), { headers: headers });
+  }
+
   /**
    * Check if email exists in Server Database
    * @param email 

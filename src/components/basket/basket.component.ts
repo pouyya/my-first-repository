@@ -1,9 +1,11 @@
+import { PrintService } from './../../services/printService';
 import _ from 'lodash';
+import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -25,6 +27,7 @@ import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { PaymentsPage } from '../../pages/payment/payment';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { FountainService } from './../../services/fountainService';
 
 @Component({
   selector: 'basket',
@@ -68,7 +71,10 @@ export class BasketComponent {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private priceBookService: PriceBookService,
+    private fountainService: FountainService,
     private storeService: StoreService,
+    private printService: PrintService,
+    private loading: LoadingController,
     private navCtrl: NavController) {
   }
 
@@ -243,6 +249,49 @@ export class BasketComponent {
       callback: pushCallback,
       store: this.store
     });
+  }
+
+  public async fastPayment() {
+    let loader = this.loading.create({ content: 'Checking for stock...' });
+    await loader.present();
+    let stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    if (stockErrors.length > 0) {
+      let alert = this.alertController.create(
+        {
+          title: 'Out of Stock',
+          subTitle: 'Please make changes to sale and continue',
+          message: `${stockErrors.join('\n')}`,
+          buttons: ['Ok']
+        }
+      );
+      loader.dismiss();
+      alert.present();
+      return;
+    } else {
+      loader.setContent('Completing Sale...');
+      try {
+        await loader.present();
+        await this.salesService.updateStock(this.sale, this.store._id);
+        this.sale.completed = true;
+        this.sale.completedAt = moment().utc().format();
+        this.sale.state = 'completed';
+        this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+        await this.salesService.update(this.sale);
+        if (this.store.printReceiptAtEndOfSale) {
+          await this.printService.printReceipt(this.sale);
+        }
+        await this.printService.openCashDrawer();
+        localStorage.removeItem('sale_id');
+        this.sale = await this.salesService.instantiateSale();
+        this.paymentCompleted.emit();
+        this.customer = null;
+        this.calculateAndSync();
+        loader.dismiss();
+      } catch (err) {
+        loader.dismiss();
+        return Promise.reject(err);
+      }
+    }
   }
 
   private generatePaymentBtnText() {

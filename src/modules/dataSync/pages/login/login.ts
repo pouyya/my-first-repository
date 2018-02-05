@@ -4,6 +4,7 @@ import { ToastController } from 'ionic-angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
+import { RegisterPage } from '../register/register';
 import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
 
@@ -50,7 +51,7 @@ export class LoginPage {
   }
 
   public register(): void {
-    this.iab.create('https://google.com.pk/');
+    this.navCtrl.push(RegisterPage);
   }
 
   public forgotPassword(): void {

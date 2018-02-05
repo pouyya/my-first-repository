@@ -13,6 +13,8 @@ import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { BaseTaxIterface } from '../model/baseTaxIterface';
+import { StockHistoryService } from './stockHistoryService';
+import { StockHistory } from './../model/stockHistory';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -26,7 +28,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private taxService: TaxService,
 		private helperService: HelperService,
 		private salesTaxService: SalesTaxService,
-		private groupSalesTaxService: GroupSalesTaxService
+		private groupSalesTaxService: GroupSalesTaxService,
+		private stockHistoryService: StockHistoryService
 	) {
 		super(Sale);
 	}
@@ -208,6 +211,37 @@ export class SalesServices extends BaseEntityService<Sale> {
 		basketItem.isTaxIncl = isTaxIncl;
 
 		return basketItem;
+	}
+
+	public async updateStock(sale: Sale, storeId: string) {
+		let stock: StockHistory;
+		let stockUpdates: Promise<any>[] = sale.items.map(item => {
+			stock = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
+			return this.stockHistoryService.add(stock);
+		});
+		await Promise.all(stockUpdates);
+		return;
+	}
+
+	public async checkForStockInHand(sale: Sale, storeId: string): Promise<string[]> {
+		let stockErrors: string[] = [];
+		let productsInStock: { [id: string]: number } = {};
+		let allProducts = sale.items
+			.filter(item => item.stockControl)
+			.map(item => item.purchsableItemId);
+		if (allProducts.length > 0) {
+			productsInStock = await this.stockHistoryService
+				.getProductsTotalStockValueByStore(allProducts, storeId);
+			if (productsInStock && Object.keys(productsInStock).length > 0) {
+				sale.items.forEach(item => {
+					if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
+						stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
+					}
+				});
+			}
+		}
+
+		return stockErrors;
 	}
 
 	public calculateSale(sale: Sale) {

@@ -64,12 +64,20 @@ export class ConfigService {
         return ConfigService.securityServerBaseUrl() + "/connect/token";
     }
 
+    static registeEndPoint(): string {
+        return ConfigService.apiServerBaseUrl() + "/common/register";
+    }
+
     static securityUserInfoEndPoint(): string {
         return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
     }
 
     static securityServerBaseUrl(): string {
         return ENV.security.serverBaseUrl;
+    }
+
+    static apiServerBaseUrl(): string {
+        return 'https://simpleposapp-dev.azurewebsites.net/api';
     }
 
     static securityClientId(): string {
