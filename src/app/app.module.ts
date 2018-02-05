@@ -140,11 +140,13 @@ import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
 import { ResourceService } from '../services/resourceService';
+import { RegisterPage } from '../pages/register/register';
 
 @NgModule({
   declarations: [
     SimplePOSApp,
     LoginPage,
+    RegisterPage,
     LogOut,
     DataSync,
     HomePage,
@@ -249,6 +251,7 @@ import { ResourceService } from '../services/resourceService';
     SimplePOSApp,
     DataSync,
     LoginPage,
+    RegisterPage,
     LogOut,
     HomePage,
     Products,

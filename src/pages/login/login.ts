@@ -11,6 +11,7 @@ import { PosService } from '../../services/posService';
 import { SharedService } from '../../services/_sharedService';
 import { StoreService } from '../../services/storeService';
 import { DataSync } from '../dataSync/dataSync';
+import { RegisterPage } from '../register/register';
 
 @Component({
   selector: 'login',
@@ -60,7 +61,7 @@ export class LoginPage {
   }
 
   public register(): void {
-    this.iab.create('https://google.com.pk/');
+    this.navCtrl.push(RegisterPage);
   }
 
   public forgotPassword(): void {
