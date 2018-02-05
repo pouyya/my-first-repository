@@ -272,6 +272,18 @@ export class BasketComponent {
       try {
         await loader.present();
         await this.salesService.updateStock(this.sale, this.store._id);
+
+        if (!this.sale.payments) {
+          this.sale.payments = [];
+        }
+
+        var totalPayment = this.sale.items ? _.sumBy(this.sale.items, function (item) { return item.finalPrice * item.quantity; }) : 0;
+
+        this.sale.payments.push({
+          type: 'cash',
+          amount: Number(totalPayment)
+        });
+
         this.sale.completed = true;
         this.sale.completedAt = moment().utc().format();
         this.sale.state = 'completed';

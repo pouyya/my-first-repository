@@ -148,7 +148,7 @@ export class PaymentsPage {
       this.balance = 0;
       this.sale.receiptNo = await this.fountainService.getReceiptNumber();
       loader.dismiss();
-      this.printSale();
+      this.printSale(false);
     }
   }
 
@@ -162,7 +162,7 @@ export class PaymentsPage {
     this.sale.receiptNo = await this.fountainService.getReceiptNumber();
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     loader.dismiss();
-    this.printSale();
+    this.printSale(false);
   }
 
   public clearSale() {
@@ -170,8 +170,8 @@ export class PaymentsPage {
     this.goBack(true);
   }
 
-  public async printSale() {
-    if (this.store.printReceiptAtEndOfSale) {
+  public async printSale(forcePrint: boolean) {
+    if (this.store.printReceiptAtEndOfSale || forcePrint) {
       await this.printService.printReceipt(this.sale);
     }
 
