@@ -4,7 +4,6 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
-import { UserService } from './../services/userService';
 import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
@@ -31,7 +30,6 @@ export class SimplePOSApp implements OnInit {
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
-    private userService: UserService,
     private moduleService: ModuleService,
     private modalCtrl: ModalController,
     private loading: LoadingController,

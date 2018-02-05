@@ -1,5 +1,4 @@
 import { UserSession } from './../model/UserSession';
-import { ConfigService } from './configService';
 import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { AccountSettingService } from './accountSettingService';
@@ -12,13 +11,8 @@ export class UserService {
     private accountSettingService: AccountSettingService
   ) { }
 
-  public async hasUser(): Promise<boolean> {
-    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey());
-    return userRawJson && JSON.parse(userRawJson);
-  }
-
   public async getDeviceUser(): Promise<UserSession> {
-    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey());
+    var userRawJson = await this.storage.get("usermedihair_aria");
     if(userRawJson){
       var user = JSON.parse(userRawJson) as UserSession;
       return user; 
@@ -28,7 +22,7 @@ export class UserService {
   }
 
   public async getUser(): Promise<UserSession> {
-    var userRawJson = await this.storage.get(ConfigService.userSessionStorageKey());
+    var userRawJson = await this.storage.get("usermedihair_aria");
     if(userRawJson){
       var user = JSON.parse(userRawJson) as UserSession;
       
@@ -47,11 +41,11 @@ export class UserService {
   }
 
   public setAccessToken(access_token: string): Promise<any> {
-    return this.storage.set(ConfigService.securitySessionStorageKey(), access_token);
+    return this.storage.set("jwt-token", access_token);
   }
 
   public setSession(user: UserSession): Promise<any> {
-    return this.storage.set(ConfigService.userSessionStorageKey(), JSON.stringify(user));
+    return this.storage.set("usermedihair_aria", JSON.stringify(user));
   }
 
   public async getUserToken(): Promise<string> {

@@ -4,7 +4,7 @@ import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { EmployeeTimestampService } from './employeeTimestampService';
 import { Injectable } from "@angular/core";
 import { Employee } from "../model/employee";
-import { BaseEntityService } from "./baseEntityService";
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 
 @Injectable()
 export class EmployeeService extends BaseEntityService<Employee> {

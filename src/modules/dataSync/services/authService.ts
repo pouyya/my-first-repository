@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import { AuthHttp } from 'angular2-jwt';
 
 import 'rxjs/add/operator/map'
-import { icons } from '../metadata/itemIcons';
+import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 
 @Injectable()
 export class AuthService {
