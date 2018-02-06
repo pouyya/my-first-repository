@@ -1,8 +1,8 @@
-import { DatePipe } from '@angular/common';
 // core
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
-import { IonicApp, IonicModule } from 'ionic-angular';
+import { DatePipe } from '@angular/common';
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 import { MatInputModule, MatGridListModule } from '@angular/material';
@@ -12,7 +12,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
 import { DndModule } from 'ng2-dnd';
 import { PinDialog } from '@ionic-native/pin-dialog';
-import { Firebase } from '@ionic-native/firebase';
 import { Dialogs } from '@ionic-native/dialogs';
 import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
@@ -22,8 +21,6 @@ import { authProvider } from './../modules/auth.module';
 
 // pages
 import { SimplePOSApp } from './app.component';
-import { LoginPage } from './../pages/login/login';
-import { LogOut } from './../pages/logout/logout';
 import { HomePage } from '../pages/home/home';
 import { Products } from '../pages/products/products';
 import { ProductDetails } from '../pages/product-details/product-details';
@@ -50,7 +47,6 @@ import { GroupSaleTaxDetailsPage } from './../pages/admin/group-sale-tax-details
 import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../pages/admin/sale-tax-details/sale-tax-details';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
-import { ForgotPassword } from './../pages/login/modals/forgot-password/forgot-password';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { MoveCashModal } from './../pages/money-in-out/modals/move-cash';
@@ -63,12 +59,13 @@ import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/ti
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
 import { Customers } from './../pages/customers/customers';;
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
-import { DataSync } from '../pages/dataSync/dataSync';
 import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
 import { StockIncreaseModal } from '../pages/product-details/modals/stock-increase/stock-increase';
 import { Brands } from '../pages/brands/brands';
 import { BrandDetails } from './../pages/brand-details/brand-details';
+import { Roles } from '../pages/roles/roles';
+import { RoleDetails } from '../pages/role-details/role-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
 import { SupplierDetails } from './../pages/supplier-details/supplier-details';
 import { Closures } from './../pages/closures/closures';
@@ -107,7 +104,6 @@ import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
 import { PosService } from "../services/posService";
 import { PosDetailsPage } from './../pages/pos-details/pos-details';
-import { UserService } from './../services/userService';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
@@ -124,27 +120,26 @@ import { SharedService } from './../services/_sharedService';
 import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
-import { AuthService } from './../services/authService';
 import { CustomerService } from './../services/customerService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
-import { AccountSettingService } from '../services/accountSettingService';
 import { StockHistoryService } from './../services/stockHistoryService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
-import { ConfigService } from '../services/configService';
+import { ServiceLocator } from '../services/serviceLocator';
+import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
 import { ResourceService } from '../services/resourceService';
+import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
+import { ConfigService } from '../modules/dataSync/services/configService';
+import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
 
 @NgModule({
   declarations: [
     SimplePOSApp,
-    LoginPage,
-    LogOut,
-    DataSync,
     HomePage,
     Products,
     ProductDetails,
@@ -175,7 +170,6 @@ import { ResourceService } from '../services/resourceService';
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
-    ForgotPassword,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
@@ -193,6 +187,8 @@ import { ResourceService } from '../services/resourceService';
     Brands,
     BrandDetails,
     DeployPage,
+    Roles,
+    RoleDetails,
     Suppliers,
     SupplierDetails,
     Closures
@@ -221,6 +217,7 @@ import { ResourceService } from '../services/resourceService';
     BrowserAnimationsModule,
     DndModule.forRoot(),
     ReactiveFormsModule,
+    DataSyncModule.forRoot(),
 
     // custom
     SharedModule,
@@ -244,9 +241,6 @@ import { ResourceService } from '../services/resourceService';
   bootstrap: [IonicApp],
   entryComponents: [
     SimplePOSApp,
-    DataSync,
-    LoginPage,
-    LogOut,
     HomePage,
     Products,
     ProductDetails,
@@ -279,7 +273,6 @@ import { ResourceService } from '../services/resourceService';
     MoveCashModal,
     PriceBooksPage,
     PriceBookDetails,
-    ForgotPassword,
     ClockInOutPage,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
@@ -296,16 +289,18 @@ import { ResourceService } from '../services/resourceService';
     Brands,
     BrandDetails,
     DeployPage,
+    Roles,
+    RoleDetails,
     Suppliers,
     SupplierDetails,
     Closures
   ],
   providers: [
+    IonicErrorHandler,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
     Network,
-    Firebase,
     PinDialog,
     Dialogs,
     Insomnia,
@@ -324,7 +319,6 @@ import { ResourceService } from '../services/resourceService';
     HelperService,
     ModuleService,
     ClosureService,
-    UserService,
     CacheService,
     FountainService,
     PriceBookService,
@@ -335,7 +329,6 @@ import { ResourceService } from '../services/resourceService';
     EmployeeTimestampService,
     StockHistoryService,
     CustomerService,
-    AuthService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
@@ -350,12 +343,13 @@ import { ResourceService } from '../services/resourceService';
     authProvider,
     PlatformService,
     AccountSettingService,
+    RoleService,
     SupplierService,
     ResourceService
   ]
 })
 export class AppModule {
   constructor(injector: Injector) {
-    window.globalInjector.emit(injector);
+    ServiceLocator.injector = injector;
   }
 }

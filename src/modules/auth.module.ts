@@ -1,4 +1,3 @@
-import { ConfigService } from './../services/configService';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
 import { Http } from '@angular/http';
 import { Storage } from '@ionic/storage';
@@ -9,7 +8,7 @@ export function getAuthHttp(http: Http, storage: Storage) {
     noJwtError: true,
     globalHeaders: [{ 'Accept': 'application/json' }],
     tokenGetter: (async () => {
-      var result =  await storage.get(ConfigService.securitySessionStorageKey());
+      var result =  await storage.get("jwt-token");
       return result;
     }),
   }), http);

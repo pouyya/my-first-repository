@@ -5,7 +5,10 @@ import { CategoryDetails } from '../category-details/category-details';
 import { InventoryModule } from '../../modules/inventoryModule';
 import { PageModule } from '../../metadata/pageModule';
 import * as _ from 'lodash';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.InventoryCategory)
 @PageModule(() => InventoryModule)
 @Component({
   selector: 'categories',

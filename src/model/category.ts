@@ -1,5 +1,5 @@
 import { OrderableInterface } from './orderableInterface';
-import { DBBasedEntity } from './dbBasedEntity';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 
 export class Category extends DBBasedEntity implements OrderableInterface {
   public name: string;

@@ -1,7 +1,7 @@
 import { EscPrinterProvider } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ReceiptProviderContext } from "./receiptProviderContext";
-import { TypeHelper } from "../../../utility/typeHelper";
+import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
 
 export class ReceiptProvider {
 
@@ -57,7 +57,7 @@ ABN: ${this.receiptProviderContext.taxFileNumber}
             <table cols="left-10,right-38">
                 <tr>
                     <td>Tax</td>
-                    <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.taxTotal)}</td>
+                    <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.tax)}</td>
                 </tr>
                 <tr>
                 <td>Sub total</td>

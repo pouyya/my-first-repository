@@ -4,7 +4,7 @@ import { Reason } from './../../../../model/stockHistory';
 import { NavParams, LoadingController, ViewController } from 'ionic-angular';
 import { Component } from "@angular/core";
 import { StockHistory } from '../../../../model/stockHistory';
-import { TypeHelper } from '../../../../utility/typeHelper';
+import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EmployeeService } from '../../../../services/employeeService';
 
 @Component({

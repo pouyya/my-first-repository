@@ -7,7 +7,9 @@ export class CalculatorService {
   }
 
   public calcItemDiscount(price: number, discount: number) {
-    return discount > 0 ? price - ((discount / 100) * price) : price;
+    if(discount == 0) return price;
+
+    return price - ((discount / 100) * price);
   }
 
   public findDiscountPercent(originalPrice: number, newPrice: number) {

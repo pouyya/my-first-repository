@@ -5,7 +5,10 @@ import { CustomerService } from '../../services/customerService';
 import { NavParams, NavController } from 'ionic-angular';
 import { ValidationHelper } from '../../utility/validationHelper';
 import { ResourceService } from '../../services/resourceService';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.CustomerAddEdit)
 @Component({
   selector: 'customer-details',
   templateUrl: 'customer-details.html'

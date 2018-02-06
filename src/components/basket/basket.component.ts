@@ -1,10 +1,11 @@
+import { PrintService } from './../../services/printService';
 import _ from 'lodash';
+import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
-import { HelperService } from './../../services/helperService';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -14,7 +15,6 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
-import { UserSession } from '../../model/UserSession';
 import { CalculatorService } from '../../services/calculatorService';
 import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
@@ -26,6 +26,8 @@ import { PurchasableItem } from '../../model/purchasableItem';
 import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { PaymentsPage } from '../../pages/payment/payment';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { FountainService } from './../../services/fountainService';
 
 @Component({
   selector: 'basket',
@@ -65,14 +67,14 @@ export class BasketComponent {
     private salesService: SalesServices,
     private alertController: AlertController,
     private groupByPipe: GroupByPipe,
-    private helperService: HelperService,
     private customerService: CustomerService,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private calcService: CalculatorService,
-    private taxService: TaxService,
     private priceBookService: PriceBookService,
+    private fountainService: FountainService,
     private storeService: StoreService,
+    private printService: PrintService,
+    private loading: LoadingController,
     private navCtrl: NavController) {
   }
 
@@ -187,13 +189,21 @@ export class BasketComponent {
         trackStaff: this.user.settings.trackEmployeeSales
       }
     });
-    modal.onDidDismiss(data => {
-      let reorder = false;
-      if (data) {
-        if (data.hasChanged && data.buffer.employeeId != data.item.employeeId) reorder = true;
-        this.sale.items[$index] = data.item;
-        if (reorder) this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
-        data.hasChanged && this.calculateAndSync();
+    modal.onDidDismiss(async data => {
+
+      if (data && data.hasChanged) {
+
+        var itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, item.purchsableItemId);
+
+        if (itemPrice) {
+          this.sale.items[$index] = this.salesService.calculateAndSetBasketPriceAndTax(data.item, this.salesTaxes, this.defaultTax, itemPrice, this.user.settings.taxType);
+        }
+
+        if (data.buffer.employeeId != data.item.employeeId) {
+          this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
+        }
+
+        this.calculateAndSync();
       }
     });
     modal.present();
@@ -239,6 +249,61 @@ export class BasketComponent {
       callback: pushCallback,
       store: this.store
     });
+  }
+
+  public async fastPayment() {
+    let loader = this.loading.create({ content: 'Checking for stock...' });
+    await loader.present();
+    let stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    if (stockErrors.length > 0) {
+      let alert = this.alertController.create(
+        {
+          title: 'Out of Stock',
+          subTitle: 'Please make changes to sale and continue',
+          message: `${stockErrors.join('\n')}`,
+          buttons: ['Ok']
+        }
+      );
+      loader.dismiss();
+      alert.present();
+      return;
+    } else {
+      loader.setContent('Completing Sale...');
+      try {
+        await loader.present();
+        await this.salesService.updateStock(this.sale, this.store._id);
+
+        if (!this.sale.payments) {
+          this.sale.payments = [];
+        }
+
+        var totalPayment = this.sale.items ? _.sumBy(this.sale.items, function (item) { return item.finalPrice * item.quantity; }) : 0;
+
+        this.sale.payments.push({
+          type: 'cash',
+          amount: Number(totalPayment)
+        });
+
+        this.sale.completed = true;
+        this.sale.completedAt = moment().utc().format();
+        this.sale.state = 'completed';
+        this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+        await this.salesService.update(this.sale);
+        if (this.store.printReceiptAtEndOfSale) {
+          await this.printService.printReceipt(this.sale);
+        }
+        await this.printService.openCashDrawer();
+        localStorage.removeItem('sale_id');
+        this.sale = await this.salesService.instantiateSale();
+        this.paymentCompleted.emit();
+        this.customer = null;
+        this.calculateAndSync();
+        loader.dismiss();
+      } catch (err) {
+        loader.dismiss();
+        return Promise.reject(err);
+      }
+    }
   }
 
   private generatePaymentBtnText() {
