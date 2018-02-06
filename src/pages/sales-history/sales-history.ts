@@ -1,6 +1,5 @@
 import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
-import { UserSession } from './../../model/UserSession';
 import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { Sale } from './../../model/sale';
