@@ -1,14 +1,14 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{selectComponent.title || 'Selwct'}}</ion-title>
+    <ion-title>{{searchableIonSelect.title || 'Select'}}</ion-title>
   </ion-navbar>
   <ion-toolbar>
-    <ion-searchbar #searchBar [(ngModel)]="selectComponent.filterText" (ionInput)="filterItems()" [placeholder]="selectComponent.searchPlaceholder || 'Search'">
+    <ion-searchbar #searchBar [(ngModel)]="searchableIonSelect.filterText" (ionInput)="filterItems()" [placeholder]="searchableIonSelect.searchPlaceholder || 'Search'">
     </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class="select-searchable-spinner" *ngIf="selectComponent.isSearching">
+  <div class="select-searchable-spinner" *ngIf="searchableIonSelect.isSearching">
     <div class="select-searchable-spinner-background"></div>
     <ion-spinner></ion-spinner>
   </div>
@@ -17,20 +17,8 @@
       <ion-icon [name]="isItemSelected(item) ? 'checkmark-circle' : 'radio-button-off'" [color]="isItemSelected(item) ? 'primary' : 'daek'"
         item-left>
       </ion-icon>
-      <h2>{{selectComponent.formatItem(item)}}</h2>
+      <h2>{{searchableIonSelect.formatItem(item)}}</h2>
     </button>
   </ion-list>
   <div *ngIf="!filteredItems.length" margin>No items found.</div>
 </ion-content>
-<ion-footer *ngIf="selectComponent.multiple">
-  <ion-toolbar padding>
-    <ion-row>
-      <ion-col no-padding *ngIf="selectComponent.multiple" [attr.col-6]="selectComponent.canReset && selectComponent.multiple ? '' : null"
-        [attr.col-12]="!selectComponent.canReset && selectComponent.multiple ? '' : null">
-        <button ion-button full no-margin (click)="ok()">
-          OK
-        </button>
-      </ion-col>
-    </ion-row>
-  </ion-toolbar>
-</ion-footer>

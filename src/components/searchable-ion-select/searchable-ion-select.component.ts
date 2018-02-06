@@ -1,7 +1,8 @@
-import { NavController, Platform, Item, Form } from 'ionic-angular';
+import { NavController, Platform, Item } from 'ionic-angular';
 import { Component, OnDestroy, OnChanges, OnInit, Input, Output, EventEmitter, HostListener, SimpleChanges, Optional, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchableIonSelectView } from './searchable-ion-select-view/searchable-ion-select-view';
+import { Form } from 'ionic-angular/util/form';
 
 /**
  * @name SearchableIonSelectComponent
@@ -51,8 +52,9 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
     return this._items;
   }
   @Input('items')
-  set items(values: any[]) {
-    this._items = values;
+  set items(items: any[]) {
+    this._items.splice(0, this._items.length);
+    Array.prototype.push.apply(this._items, items);
   }
 
   @Input() title: string;
@@ -74,7 +76,7 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
   }
 
   ngOnInit() {
-    // this.ionForm.register()
+    this.ionForm.register(this);
 
     if (this.ionItem) {
       this.ionItem.setElementClass('item-select-searchable', true);
@@ -82,7 +84,7 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
   }
 
   ngOnDestroy() {
-
+    this.ionForm.deregister(this);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -91,10 +93,11 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
     }
   }
 
+  initFocus() { }
+
   @HostListener('click', ['$event'])
   _click(event: UIEvent) {
     if (event.detail === 0) {
-      // Don't continue if the click event came from a form submit.
       return;
     }
 
@@ -129,6 +132,22 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
     });
   }
 
+  formatItem(value: any): string {
+    if (this.isNullOrWhiteSpace(value)) {
+      return null;
+    }
+
+    return this.textField ? value[this.textField] : value.toString();
+  }
+
+  formatValue(): string {
+    if (!this.value) {
+      return null;
+    }
+
+    return this.formatItem(this.value);
+  }
+
   private open() {
     this.navCtrl.push(SearchableIonSelectView, {
       selectComponent: this,
@@ -161,11 +180,11 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
   }
 
   writeValue(obj: any): void {
-
+    this.setValue(obj);
   }
 
   registerOnChange(fn: any): void {
-
+    this.propagateChange = fn;
   }
 
   registerOnTouched(fn: any): void {

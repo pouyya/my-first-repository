@@ -78,11 +78,9 @@
         <ion-input type="text" [(ngModel)]="item.state" name="state"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Country</ion-label>
-        <ion-select [(ngModel)]="item.country" name="countries">
-          <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
-        </ion-select>
-        <ion-input type="text" [(ngModel)]="item.country" name="country"></ion-input>
+        <searchable-ion-select name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name"
+          [items]="countries" (onChange)="countryChange($event)">
+        </searchable-ion-select>
       </ion-item>
       <ion-item>
         <ion-label class="item-name">Timezone</ion-label>

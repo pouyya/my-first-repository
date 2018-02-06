@@ -14,9 +14,7 @@ export class SearchableIonSelectView {
   public navCtrl: NavController;
   @ViewChild('searchBar') searchBar: Searchbar;
 
-  constructor(
-    private navParams: NavParams
-  ) {
+  constructor(private navParams: NavParams) {
     this.searchableIonSelect = <SearchableIonSelectComponent>this.navParams.get('selectComponent');
     this.navCtrl = <NavController>this.navParams.get('navController');
     this.filteredItems = this.searchableIonSelect.items;
@@ -35,14 +33,13 @@ export class SearchableIonSelectView {
 
   ngAfterViewInit() {
     if (this.searchableIonSelect) {
-      // Focus after a delay because focus doesn't work without it.
       setTimeout(() => {
         // this.searchableIonSelect.setFocus();
       }, 1000);
     }
   }
 
-  isItemSelected(item: any) {
+  public isItemSelected(item: any) {
     return this.selectedItems.find(selectedItem => {
       if (this.searchableIonSelect.valueField) {
         return item[this.searchableIonSelect.valueField] === selectedItem[this.searchableIonSelect.valueField];
@@ -52,9 +49,8 @@ export class SearchableIonSelectView {
     }) !== undefined;
   }
 
-  deleteSelectedItem(item: any) {
+  public deleteSelectedItem(item: any) {
     let itemToDeleteIndex;
-
     this.selectedItems.forEach((selectedItem, itemIndex) => {
       if (this.searchableIonSelect.valueField) {
         if (item[this.searchableIonSelect.valueField] === selectedItem[this.searchableIonSelect.valueField]) {
@@ -72,7 +68,7 @@ export class SearchableIonSelectView {
     this.selectedItems.push(item);
   }
 
-  select(item: any) {
+  public select(item: any) {
     if (this.searchableIonSelect.multiple) {
       if (this.isItemSelected(item)) {
         this.deleteSelectedItem(item);
@@ -96,8 +92,6 @@ export class SearchableIonSelectView {
   }
 
   public close() {
-    // Focused input interferes with the animation.
-    // Blur it first, wait a bit and then close the page.
     if (this.searchBar) {
       this.searchBar._fireBlur();
     }
@@ -113,12 +107,10 @@ export class SearchableIonSelectView {
 
   public filterItems() {
     if (this.searchableIonSelect.hasSearchEvent) {
-      // Delegate filtering to the event.
       this.searchableIonSelect.emitSearch();
     } else {
       let items = [];
 
-      // Default filtering.
       if (!this.searchableIonSelect.filterText || !this.searchableIonSelect.filterText.trim()) {
         items = this.searchableIonSelect.items;
       } else {
