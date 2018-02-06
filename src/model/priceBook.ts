@@ -1,5 +1,5 @@
 import { PurchasableItemPriceInterface } from './purchasableItemPrice.interface';
-import { DBBasedEntity } from './dbBasedEntity';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 
 export interface PriceBookCriteriaInterface {
   provider: string;

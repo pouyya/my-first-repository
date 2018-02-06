@@ -1,12 +1,12 @@
-import { RoleService } from './roleService';
 import * as _ from "lodash";
+import { RoleService } from './roleService';
 import { LoadingController } from 'ionic-angular';
 import { Injectable } from "@angular/core";
 import { PluginService } from "./pluginService";
 import { EmployeeService } from "./employeeService";
 import { PosService } from "./posService";
-import { UserService } from "./userService";
 import { Employee } from "../model/employee";
+import { UserService } from './../modules/dataSync/services/userService';
 import { AccessRightItem } from '../model/accessItemRight';
 import { GuardInterface } from "../model/guardInterface";
 import { SecurityResult, SecurityResultReason } from './../infra/security/model/securityResult';

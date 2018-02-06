@@ -7,10 +7,10 @@ import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
-import { UserService } from './../../services/userService';
 import { EmployeeService } from './../../services/employeeService';
 import { CacheService } from './../../services/cacheService';
-import { UserSession } from './../../model/UserSession';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 import { POS } from './../../model/pos';
 

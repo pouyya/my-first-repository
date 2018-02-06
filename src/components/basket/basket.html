@@ -8,8 +8,7 @@
         </ion-label>
       </ion-item>
       <ion-searchbar *ngIf="!customer && searchBarEnabled" autofocus debounce="500" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel"
-        (ionInput)="searchCustomers($event)" (ionCancel)="cancelSearch($event)"
-        placeholder="Search Customer">
+        (ionInput)="searchCustomers($event)" (ionCancel)="cancelSearch($event)" placeholder="Search Customer">
       </ion-searchbar>
 
       <ion-list class="search-list" *ngIf="!customer && searchBarEnabled && searchInput && searchedCustomers.length > 0">
@@ -116,7 +115,14 @@
       </ng-template>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
-    <ion-col col-md-12 no-padding>
+    <ion-col col-md-2 no-padding>
+      <button ion-button small block padding (click)="fastPayment()" class="pay-button" color="warning" [disabled]="disablePaymentBtn">
+        <span class="button-inner pull-left">
+          <ion-icon name="flash"></ion-icon>
+        </span>
+      </button>
+    </ion-col>
+    <ion-col col-md-10 no-padding>
       <button ion-button small block padding (click)="gotoPayment()" class="pay-button" [disabled]="disablePaymentBtn" [color]="sale.taxTotal >= 0 ? 'primary' : 'danger'">
         <span class="button-inner pull-right">
           {{ payBtnText }} &nbsp;&nbsp; ${{balance | number : '1.2-2'}}

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { AppService } from './../../services/appService';
-import { UserService } from './../../services/userService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { SelectPurchasableItemsModel } from './modals/select-items';
 import { ModalController } from 'ionic-angular';
@@ -8,6 +7,7 @@ import { SalesTaxService } from './../../services/salesTaxService';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { Component, Input, OnChanges, NgZone, Output, EventEmitter } from '@angular/core';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 interface IntractableItemPriceInterface extends PurchasableItemPriceInterface {
   name: string,

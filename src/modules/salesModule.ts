@@ -1,5 +1,5 @@
+import { LogOut } from './dataSync/pages/logout/logout';
 import { Closures } from './../pages/closures/closures';
-import { LogOut } from './../pages/logout/logout';
 import { PosService } from './../services/posService';
 import { Injector } from '@angular/core';
 import { ToastController } from 'ionic-angular';
