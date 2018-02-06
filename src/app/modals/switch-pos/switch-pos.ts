@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { UserService } from './../../../services/userService';
 import { POS } from './../../../model/pos';
 import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
@@ -7,7 +6,8 @@ import { Store } from './../../../model/store';
 import { ViewController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
-import { UserSession } from '../../../model/UserSession';
+import { UserSession } from '../../../modules/dataSync/model/UserSession';
+import { UserService } from '../../../modules/dataSync/services/userService';
 
 @Component({
   selector: "switch-pos",

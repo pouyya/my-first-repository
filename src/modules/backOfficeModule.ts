@@ -10,12 +10,10 @@ import { Services } from './../pages/service/service';
 import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
-import { SecurityGuard } from '../metadata/securityGuardModule';
 import { Customers } from '../pages/customers/customers';
-import { LogOut } from '../pages/logout/logout';
+import { LogOut } from './dataSync/pages/logout/logout';
 
 @Injectable()
-@SecurityGuard(['BackOffice'])
 export class BackOfficeModule implements ModuleBase {
   public setInjector() {
   }

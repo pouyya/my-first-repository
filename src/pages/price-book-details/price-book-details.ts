@@ -10,6 +10,8 @@ import { PriceBook } from './../../model/priceBook';
 import { Platform, LoadingController, NavParams, NavController } from 'ionic-angular';
 import { StoreService } from './../../services/storeService';
 import { Component } from '@angular/core';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
 interface CritieriaView {
   store?: {
@@ -29,6 +31,7 @@ interface CritieriaView {
   }
 }
 
+@SecurityModule(SecurityAccessRightRepo.PriceBookAddEdit)
 @Component({
   selector: 'pricebook-details',
   templateUrl: 'price-book-details.html',

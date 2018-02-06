@@ -1,8 +1,8 @@
-import { UserService } from './userService';
 import { Injectable } from '@angular/core';
-import { BaseEntityService } from './baseEntityService';
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { POS } from './../model/pos';
 import * as moment from 'moment-timezone';
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class PosService extends BaseEntityService<POS> {

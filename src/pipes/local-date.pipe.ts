@@ -8,7 +8,7 @@ export class LocalDatePipe implements PipeTransform {
     private dateTimeService: DateTimeService) {
   }
 
-  transform(value: any, pattern: string = 'MMM d, YYYY, h:mm:ss a'): string | null {
+  transform(value: any, pattern: string = 'M/d/YY, h:mm a'): string | null {
     if (value) {
       let localDate = this.dateTimeService.getTimezoneDate(new Date(value));
       return localDate.format(pattern);

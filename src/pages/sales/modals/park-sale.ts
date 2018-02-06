@@ -1,6 +1,3 @@
-import { StoreService } from './../../../services/storeService';
-import { UserService } from './../../../services/userService';
-import { FountainService } from './../../../services/fountainService';
 import { SalesServices } from './../../../services/salesService';
 import { Sale } from './../../../model/sale';
 import { ViewController, NavParams, AlertController } from 'ionic-angular';
@@ -20,9 +17,6 @@ export class ParkSale {
     private alertController: AlertController,
     private navParams: NavParams,
     private salesService: SalesServices,
-    private fountainService: FountainService,
-    private userService: UserService,
-    private storeService: StoreService
   ) {
     this.sale = navParams.get('sale');
   }

@@ -7,23 +7,32 @@ import { SharedService } from './../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
-import { UserService } from './../../services/userService';
 import { EmployeeService } from './../../services/employeeService';
 import { CacheService } from './../../services/cacheService';
-import { UserSession } from './../../model/UserSession';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 import { POS } from './../../model/pos';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
+import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
+import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
+
+interface InteractableItem extends PurchasableItem {
+  tax: any;
+  priceBook: PurchasableItemPriceInterface;
+  employeeId: string;
+}
 
 interface PurchasableItemTiles {
   [id: string]: PurchasableItem[]
 }
 
+@SecurityModule()
 @PageModule(() => SalesModule)
 @Component({
   selector: 'page-variables',
@@ -37,7 +46,9 @@ export class Sales implements OnDestroy {
   set basketComponent(basketComponent: BasketComponent) {
     setTimeout(async () => {
       this._basketComponent = basketComponent;
-      await this._basketComponent.initializeSale(this.navParams.get('sale'), this.navParams.get('doRefund'), this.evaluationContext);
+      if (this._basketComponent) {
+        await this._basketComponent.initializeSale(this.navParams.get('sale'), this.navParams.get('doRefund'), this.evaluationContext);
+      }
     }, 0);
 
   }
@@ -45,7 +56,7 @@ export class Sales implements OnDestroy {
   get basketComponent() {
     return this._basketComponent;
   }
-  
+
   private _basketComponent: BasketComponent;
 
   public categories: any[];

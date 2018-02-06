@@ -13,7 +13,10 @@ import { EmployeeService } from './../../../services/employeeService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { BackOfficeModule } from '../../../modules/backOfficeModule';
 import { PageModule } from '../../../metadata/pageModule';
+import { SecurityModule } from '../../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../../model/securityAccessRightRepo';
 
+@SecurityModule(SecurityAccessRightRepo.StaffsTimeLogs)
 @PageModule(() => BackOfficeModule)
 @Component({
   selector: 'staffs-time-logs',

@@ -64,7 +64,7 @@ export class PaymentsPage {
       this.navCtrl.pop();
     } else {
       // check stock
-      await this.checkForStockInHand();
+      await this._checkForStockInHand();
       if (this.stockErrors.length > 0) {
         // display error message
         let alert = this.alertCtrl.create(
@@ -136,7 +136,7 @@ export class PaymentsPage {
     if (isCompleted) {
       let loader = this.loading.create({ content: 'Processing Refund' });
       await loader.present();
-      await this.updateStock();
+      await this.salesService.updateStock(this.sale, this.store._id);
       this.sale.payments.push({
         type: type,
         amount: Number(payment) * -1
@@ -148,21 +148,21 @@ export class PaymentsPage {
       this.balance = 0;
       this.sale.receiptNo = await this.fountainService.getReceiptNumber();
       loader.dismiss();
-      this.printSale();
+      this.printSale(false);
     }
   }
 
   private async completeSale(payments: number) {
     let loader = this.loading.create({ content: 'Finalizing Sale' });
     await loader.present();
-    await this.updateStock();
+    await this.salesService.updateStock(this.sale, this.store._id);
     this.sale.completed = true;
     this.sale.completedAt = moment().utc().format();
     this.sale.state = 'completed';
     this.sale.receiptNo = await this.fountainService.getReceiptNumber();
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     loader.dismiss();
-    this.printSale();
+    this.printSale(false);
   }
 
   public clearSale() {
@@ -170,8 +170,8 @@ export class PaymentsPage {
     this.goBack(true);
   }
 
-  public async printSale() {
-    if (this.store.printReceiptAtEndOfSale) {
+  public async printSale(forcePrint: boolean) {
+    if (this.store.printReceiptAtEndOfSale || forcePrint) {
       await this.printService.printReceipt(this.sale);
     }
 
@@ -184,39 +184,11 @@ export class PaymentsPage {
     });
   }
 
-  private async checkForStockInHand() {
+  private async _checkForStockInHand() {
     this.stockErrors = [];
-    let productsInStock: { [id: string]: number } = {};
-    let allProducts = this.sale.items
-      .filter(item => item.stockControl)
-      .map(item => item.purchsableItemId);
-    if (allProducts.length > 0) {
-
-      let loader = this.loading.create({ content: 'Check for stock' });
-      await loader.present();
-
-      productsInStock = await this.stockHistoryService
-        .getProductsTotalStockValueByStore(allProducts, this.store._id);
-      if (productsInStock && Object.keys(productsInStock).length > 0) {
-        this.sale.items.forEach(item => {
-          if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
-            // push error
-            this.stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
-          }
-        });
-      }
-      
-      loader.dismiss();
-    }
-  }
-
-  private async updateStock() {
-    let stock: StockHistory;
-    let stockUpdates: Promise<any>[] = this.sale.items.map(item => {
-      stock = StockHistoryService.createStockForSale(item.purchsableItemId, this.store._id, item.quantity);
-      return this.stockHistoryService.add(stock);
-    });
-    await Promise.all(stockUpdates);
-    return;
+    let loader = this.loading.create({ content: 'Checking for stock...' });
+    await loader.present();
+    this.stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    loader.dismiss();
   }
 }
