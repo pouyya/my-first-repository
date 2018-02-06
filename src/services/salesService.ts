@@ -100,58 +100,62 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Promise.resolve(null);
 	}
 
-	public async searchSales(posId, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<any> {
+	public async searchSales(posID, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<any> {
 		let query: any = {
 			selector: {
-				posID: posId
+				$and: [
+					{ posID }
+				]
 			}
 		};
 
 		if (options) {
 			_.each(options, (value, key) => {
 				if (value) {
-					query.selector[key] = _.isArray(value) ? { $in: value } : value;
+					query.selector.$and.push({ [key]: _.isArray(value) ? { $in: value } : value });
 				}
 			});
 			if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
-				query.selector.completed = options.completed
+				query.selector.$and.push({ completed: options.completed });
 			}
 		}
 
 		if (timeFrame) {
-			query.selector['created'] = { '$exists': true };
-			query.selector['$and'] = [
-				{
-					"created": {
-						"$lte": timeFrame.endDate
-					}
-				},
-				{
-					"created": {
-						"$gte": timeFrame.startDate
-					}
+			query.selector.$and.push({ created: { $exists: true } });
+			query.selector.$and.push({
+				created: {
+					$lte: timeFrame.endDate
 				}
-			];
+			});
+			query.selector.$and.push({
+				created: {
+					$gte: timeFrame.startDate
+				}
+			});
 		}
 
-		if(employeeId) {
-			query.selector['items'] = {
-				"$elemMatch": {
-					"employeeId": {
-						"$eq": employeeId
+		if (employeeId) {
+			query.selector.$and.push({
+				items: {
+					$elemMatch: {
+						employeeId: {
+							$eq: employeeId
+						}
 					}
 				}
-			};
+			});
 		}
 
-		if(paymentType) {
-			query.selector['payments'] = {
-				"$elemMatch": {
-					"type": {
-						"$eq": paymentType
+		if (paymentType) {
+			query.selector.$and.push({
+				payments: {
+					$elemMatch: {
+						type: {
+							$eq: paymentType
+						}
 					}
 				}
-			}
+			});
 		}
 
 		query.sort = [{ _id: 'desc' }];
