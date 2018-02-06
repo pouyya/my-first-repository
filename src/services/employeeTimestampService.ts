@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
-import { BaseEntityService } from "./baseEntityService";
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { Injectable } from '@angular/core';
 import { StoreService } from './storeService';
 

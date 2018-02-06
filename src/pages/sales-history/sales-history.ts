@@ -3,7 +3,6 @@ import { CustomerService } from './../../services/customerService';
 import { UserSession } from './../../model/UserSession';
 import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { UserService } from './../../services/userService';
 import { Sale } from './../../model/sale';
 import { Sales } from './../sales/sales';
 import { SalesModule } from "../../modules/salesModule";
@@ -12,6 +11,8 @@ import { SalesServices } from './../../services/salesService';
 import { PrintService } from '../../services/printService';
 import { Customer } from '../../model/customer';
 import { Employee } from '../../model/employee';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 enum TimeValues {
   anytime = "1",

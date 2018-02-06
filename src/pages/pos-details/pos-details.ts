@@ -1,9 +1,9 @@
 import { AppService } from './../../services/appService';
-import { UserService } from './../../services/userService';
 import { NavParams, NavController, ToastController, AlertController, LoadingController } from 'ionic-angular';
 import { PosService } from './../../services/posService';
 import { POS } from './../../model/pos';
 import { Component } from '@angular/core';
+import { UserService } from '../../modules/dataSync/services/userService';
 @Component({
   selector: "pos-details",
   templateUrl: 'pos-details.html'

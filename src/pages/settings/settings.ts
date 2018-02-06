@@ -2,20 +2,20 @@ import _ from 'lodash';
 import * as moment from 'moment-timezone';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
-import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { SharedService } from './../../services/_sharedService';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
-import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
-import { AccountSettingService } from '../../services/accountSettingService';
-import { AccountSetting } from '../../model/accountSetting';
 import { DateTimeService } from './../../services/dateTimeService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
+import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
+import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
+import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)

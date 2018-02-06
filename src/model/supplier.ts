@@ -1,4 +1,4 @@
-import { DBBasedEntity } from './dbBasedEntity';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 
 export class Supplier extends DBBasedEntity {
     public name: string;

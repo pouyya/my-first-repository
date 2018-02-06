@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { UserService } from './../../services/userService';
 import { PosService } from './../../services/posService';
 import { Employee } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
@@ -12,10 +11,11 @@ import { EmployeeTimestampService } from './../../services/employeeTimestampServ
 import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
-import { UserSession } from '../../model/UserSession';
 import { POS } from '../../model/pos';
 import { StoreService } from '../../services/storeService';
 import { Store } from '../../model/store';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 @PageModule(() => SalesModule)
 @Component({

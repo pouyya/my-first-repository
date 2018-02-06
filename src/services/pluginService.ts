@@ -32,7 +32,7 @@ export class PluginService {
           if (result.buttonIndex == 1) {
             resolve(Number(result.input1));
           } else if (result.buttonIndex == 2) {
-            reject(false);
+            resolve(null);
           }
         }).catch((error) => {
           reject(error);

@@ -4,7 +4,7 @@ import { ClosureService } from './../../services/closureService';
 import { Component, NgZone } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { POS } from '../../model/pos';
-import { QuerySelectorInterface, SortOptions, QueryOptionsInterface } from '../../services/baseEntityService';
+import { QuerySelectorInterface, SortOptions, QueryOptionsInterface } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { PluginService } from '../../services/pluginService';
 import { EmployeeService } from '../../services/employeeService';
 import { PrintService, EndOfDayReportType } from '../../services/printService';
