@@ -11,19 +11,10 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col col-md-4>
-        <p>Status</p>
-        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchByStatus()">
-          <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
-        </ion-select>
-      </ion-col>
       <ion-col col-md-4 class="customer-search-container">
         <p>Customer</p>
-        <ion-searchbar (ionInput)="searchForCustomer($event)"
-        [cancelButtonText]="cancelButtonText"
-        (ionCancel)="resetCustomerSearch($event)" 
-        showCancelButton="true"
-        [(ngModel)]="customerSearch" [debounce]="500" [animated]="true"></ion-searchbar>
+        <ion-searchbar (ionInput)="searchForCustomer($event)" [cancelButtonText]="cancelButtonText" (ionCancel)="resetCustomerSearch($event)"
+          showCancelButton="true" [(ngModel)]="customerSearch" [debounce]="500" [animated]="true"></ion-searchbar>
         <ion-list class="customer-search-list" *ngIf="customerSearch && searchedCustomers.length > 0">
           <ion-item *ngFor="let item of searchedCustomers" (click)="searchByCustomer(item)" tappable>
             {{ item.firstName }} {{ item.lastName }}
@@ -33,6 +24,41 @@
       <ion-col col-md-4>
         <p>Receipt No#</p>
         <ion-searchbar (ionInput)="searchBy($event, 'receiptNo')" [debounce]="500" [animated]="true"></ion-searchbar>
+      </ion-col>
+      <ion-col col-md-4>
+        <p>Employee</p>
+        <ion-searchbar (ionInput)="searchbar($event).searchEmployees()" [cancelButtonText]="cancelButtonText" (ionCancel)="resetEmployeeSearch($event)"
+          showCancelButton="true" [(ngModel)]="employeeSearch" debounce="500" animated="true"></ion-searchbar>
+        <ion-list class="customer-search-list" *ngIf="employeeSearch && searchedEmployees.length > 0">
+          <ion-item *ngFor="let item of searchedEmployees" (click)="searchByEmployee(item)" tappable>
+            {{ item.firstName }} {{ item.lastName }}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-md-4>
+        <p>Status</p>
+        <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchByStatus()">
+          <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
+        </ion-select>
+      </ion-col>
+      <ion-col col-md-4>
+        <p>Time</p>
+        <ion-select [(ngModel)]="selectedTime" (ionChange)="searchByTime()">
+          <ion-option value="1">Anytime</ion-option>
+          <ion-option value="2">Today</ion-option>
+          <ion-option value="3">This Week (Mon-Sun)</ion-option>
+          <ion-option value="4">This Month</ion-option>
+        </ion-select>
+      </ion-col>
+      <ion-col col-md-4>
+        <p>Payment Type</p>
+        <ion-select [(ngModel)]="selectedPaymentType" (ionChange)="searchByPaymentType()">
+          <ion-option value="">All</ion-option>
+          <ion-option value="cash">Cash</ion-option>
+          <ion-option value="credit_card">Credit Card</ion-option>
+        </ion-select>
       </ion-col>
     </ion-row>
   </ion-grid>
