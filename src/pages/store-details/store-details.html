@@ -78,8 +78,7 @@
         <ion-input type="text" [(ngModel)]="item.state" name="state"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name"
-          [items]="countries" (onChange)="countryChange($event)">
+        <searchable-ion-select name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name" [items]="countries">
         </searchable-ion-select>
       </ion-item>
       <ion-item>

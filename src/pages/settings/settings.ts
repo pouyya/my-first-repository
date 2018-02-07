@@ -28,7 +28,7 @@ export class Settings {
   public defaultTax: string;
   public salesTaxes: Array<any> = [];
   public taxTypes: Array<any> = [];
-  public timezones: Array<string> = [];
+  public timezones: Array<{ code: string, name: string }> = [];
   public selectedType: number;
   public selectedTax: string;
   public accountSetting: AccountSetting;
@@ -70,7 +70,12 @@ export class Settings {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
-        this.timezones = <string[]>moment.tz.names();
+        this.timezones = moment.tz.names().map(timezone => {
+          return <{ code: string, name: string }> {
+            code: timezone,
+            name: timezone
+          }
+        });
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {

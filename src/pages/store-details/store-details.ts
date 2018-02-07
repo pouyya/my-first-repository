@@ -162,8 +162,4 @@ export class StoreDetailsPage {
 
     confirm.present();
   }
-
-  countryChange(event: { component: SearchableIonSelectComponent, value: any }) {
-    console.warn('value:', event.value);
-  }
 }
