@@ -209,10 +209,6 @@ export class IonicProDeployService {
     }
 
     public async getNextPageAfterDeploy() {
-        let user = await this.userService.getDeviceUser();
-        if (this.platformService.isMobileDevice()) {
-            user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
-        }
-        return user ? DataSync : LoginPage;
+        return (await this.userService.isUserLoggedIn()) ? DataSync : LoginPage;
     }
 }

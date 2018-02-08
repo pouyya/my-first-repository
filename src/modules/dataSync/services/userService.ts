@@ -13,19 +13,24 @@ export class UserService {
 
   public async getDeviceUser(): Promise<UserSession> {
     var userRawJson = await this.storage.get("usermedihair_aria");
-    if(userRawJson){
+    if (userRawJson) {
       var user = JSON.parse(userRawJson) as UserSession;
-      return user; 
+      return user;
     }
 
-    return null;    
+    return null;
+  }
+
+  public async isUserLoggedIn(): Promise<boolean> {
+    var userRawJson = await this.storage.get("usermedihair_aria");
+    return userRawJson;
   }
 
   public async getUser(): Promise<UserSession> {
     var userRawJson = await this.storage.get("usermedihair_aria");
-    if(userRawJson){
+    if (userRawJson) {
       var user = JSON.parse(userRawJson) as UserSession;
-      
+
       var currentAccount = await this.accountSettingService.getCurrentSetting();
       user.settings.taxType = currentAccount.taxType;
       user.settings.screenAwake = currentAccount.screenAwake;
@@ -34,7 +39,7 @@ export class UserService {
       user.settings.taxEntity = currentAccount.taxEntity;
       user.settings.defaultIcon = currentAccount.defaultIcon;
 
-      return user; 
+      return user;
     }
 
     return null;

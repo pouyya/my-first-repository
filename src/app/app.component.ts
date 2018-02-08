@@ -14,6 +14,7 @@ import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { UserService } from 'modules/dataSync/services/userService';
 
 @Component({
   selector: 'app',
@@ -41,7 +42,8 @@ export class SimplePOSApp implements OnInit {
     private cdr: ChangeDetectorRef,
     private toastController: ToastController,
     private platformService: PlatformService,
-    private ionicProDeployService: IonicProDeployService
+    private ionicProDeployService: IonicProDeployService,
+    private userService: UserService
   ) {
     this._sharedService
       .getSubscribe('storeOrPosChanged')
@@ -67,6 +69,13 @@ export class SimplePOSApp implements OnInit {
   }
 
   async ngOnInit() {
+
+    let user = await this.userService.getDeviceUser();
+
+    if (this.platformService.isMobileDevice()) {
+        user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
+    }
+
     var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
     this.rootPage =  eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
   }
