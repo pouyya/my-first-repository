@@ -11,6 +11,7 @@ import { CreditCardModal } from './modals/credit-card/credit-card';
 import { PrintService } from '../../services/printService';
 import { StockHistoryService } from '../../services/stockHistoryService';
 import { StockHistory } from '../../model/stockHistory';
+import { PaymentService } from '../../services/paymentService';
 
 @Component({
   selector: 'payments-page',
@@ -37,6 +38,7 @@ export class PaymentsPage {
     private salesService: SalesServices,
     private fountainService: FountainService,
     private stockHistoryService: StockHistoryService,
+    private paymentService: PaymentService,
     private navCtrl: NavController,
     private alertCtrl: AlertController,
     private navParams: NavParams,
@@ -136,17 +138,9 @@ export class PaymentsPage {
     if (isCompleted) {
       let loader = this.loading.create({ content: 'Processing Refund' });
       await loader.present();
-      await this.salesService.updateStock(this.sale, this.store._id);
-      this.sale.payments.push({
-        type: type,
-        amount: Number(payment) * -1
-      });
-
-      this.sale.state = 'refund';
-      this.sale.completed = true;
-      this.sale.completedAt = moment().utc().format();
+      let func = await this.paymentService.completePayment(this.sale, this.store._id, false, payment, type);
+      this.sale = func.normalSale();
       this.balance = 0;
-      this.sale.receiptNo = await this.fountainService.getReceiptNumber();
       loader.dismiss();
       this.printSale(false);
     }
@@ -155,11 +149,8 @@ export class PaymentsPage {
   private async completeSale(payments: number) {
     let loader = this.loading.create({ content: 'Finalizing Sale' });
     await loader.present();
-    await this.salesService.updateStock(this.sale, this.store._id);
-    this.sale.completed = true;
-    this.sale.completedAt = moment().utc().format();
-    this.sale.state = 'completed';
-    this.sale.receiptNo = await this.fountainService.getReceiptNumber();
+    let func = await this.paymentService.completePayment(this.sale, this.store._id, false, payments);
+    this.sale = func.normalSale();
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     loader.dismiss();
     this.printSale(false);

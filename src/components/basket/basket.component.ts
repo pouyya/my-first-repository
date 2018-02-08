@@ -1,4 +1,3 @@
-import { PrintService } from './../../services/printService';
 import _ from 'lodash';
 import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
@@ -25,9 +24,11 @@ import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.
 import { PurchasableItem } from '../../model/purchasableItem';
 import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
-import { PaymentsPage } from '../../pages/payment/payment';
+import { PaymentService } from '../../services/paymentService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { FountainService } from './../../services/fountainService';
+import { PrintService } from './../../services/printService';
+import { PaymentsPage } from './../../pages/payment/payment';
 
 @Component({
   selector: 'basket',
@@ -71,9 +72,9 @@ export class BasketComponent {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private priceBookService: PriceBookService,
-    private fountainService: FountainService,
     private storeService: StoreService,
     private printService: PrintService,
+    private paymentService: PaymentService,
     private loading: LoadingController,
     private navCtrl: NavController) {
   }
@@ -261,7 +262,7 @@ export class BasketComponent {
           title: 'Out of Stock',
           subTitle: 'Please make changes to sale and continue',
           message: `${stockErrors.join('\n')}`,
-          buttons: ['Ok']
+          buttons: ['Ok'],
         }
       );
       loader.dismiss();
@@ -269,40 +270,19 @@ export class BasketComponent {
       return;
     } else {
       loader.setContent('Completing Sale...');
-      try {
-        await loader.present();
-        await this.salesService.updateStock(this.sale, this.store._id);
-
-        if (!this.sale.payments) {
-          this.sale.payments = [];
-        }
-
-        var totalPayment = this.sale.items ? _.sumBy(this.sale.items, function (item) { return item.finalPrice * item.quantity; }) : 0;
-
-        this.sale.payments.push({
-          type: 'cash',
-          amount: Number(totalPayment)
-        });
-
-        this.sale.completed = true;
-        this.sale.completedAt = moment().utc().format();
-        this.sale.state = 'completed';
-        this.sale.receiptNo = await this.fountainService.getReceiptNumber();
-        await this.salesService.update(this.sale);
-        if (this.store.printReceiptAtEndOfSale) {
-          await this.printService.printReceipt(this.sale);
-        }
-        await this.printService.openCashDrawer();
-        localStorage.removeItem('sale_id');
-        this.sale = await this.salesService.instantiateSale();
-        this.paymentCompleted.emit();
-        this.customer = null;
-        this.calculateAndSync();
-        loader.dismiss();
-      } catch (err) {
-        loader.dismiss();
-        return Promise.reject(err);
+      let func = await this.paymentService.completePayment(this.sale, this.store._id, this.refund);
+      this.sale = func.fastCash()
+      await this.salesService.update(this.sale);
+      if (this.store.printReceiptAtEndOfSale) {
+        await this.printService.printReceipt(this.sale);
       }
+      await this.printService.openCashDrawer();
+      localStorage.removeItem('sale_id');
+      this.sale = await this.salesService.instantiateSale();
+      this.paymentCompleted.emit();
+      this.customer = null;
+      this.calculateAndSync();
+      loader.dismiss();
     }
   }
 
