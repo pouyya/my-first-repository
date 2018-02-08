@@ -29,6 +29,7 @@ import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { FountainService } from './../../services/fountainService';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
+import { NgZone } from '@simpleidea/simplepos-core/node_modules/@angular/core/src/zone/ng_zone';
 
 @Component({
   selector: 'basket',
@@ -76,7 +77,8 @@ export class BasketComponent {
     private printService: PrintService,
     private paymentService: PaymentService,
     private loading: LoadingController,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private ngZone: NgZone) {
   }
 
   public async initializeSale(sale: Sale, refund: boolean, evaluationContext: EvaluationContext) {
@@ -255,7 +257,13 @@ export class BasketComponent {
   public async fastPayment() {
     let loader = this.loading.create({ content: 'Checking for stock...' });
     await loader.present();
-    let stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+
+    let stockErrors;
+
+    this.ngZone.runOutsideAngular(async () => {
+      let stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    });
+
     if (stockErrors.length > 0) {
       let alert = this.alertController.create(
         {
@@ -270,16 +278,22 @@ export class BasketComponent {
       return;
     } else {
       loader.setContent('Completing Sale...');
-      let func = await this.paymentService.completePayment(this.sale, this.store._id, this.refund);
-      this.sale = func.fastCash()
-      await this.salesService.update(this.sale);
-      if (this.store.printReceiptAtEndOfSale) {
-        this.printService.printReceipt(this.sale);
-      }
-      
-      this.printService.openCashDrawer();
 
-      localStorage.removeItem('sale_id');
+      this.ngZone.runOutsideAngular(async () => {
+
+        let func = await this.paymentService.completePayment(this.sale, this.store._id, this.refund);
+        this.sale = func.fastCash()
+        await this.salesService.update(this.sale);
+        if (this.store.printReceiptAtEndOfSale) {
+          this.printService.printReceipt(this.sale);
+        }
+
+        this.printService.openCashDrawer();
+
+        localStorage.removeItem('sale_id');
+
+      });
+
       this.sale = await this.salesService.instantiateSale();
       this.paymentCompleted.emit();
       this.customer = null;
