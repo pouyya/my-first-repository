@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
 import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
@@ -29,7 +29,6 @@ import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { FountainService } from './../../services/fountainService';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
-import { NgZone } from '@simpleidea/simplepos-core/node_modules/@angular/core/src/zone/ng_zone';
 
 @Component({
   selector: 'basket',
