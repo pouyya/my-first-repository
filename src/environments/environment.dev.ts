@@ -1,7 +1,7 @@
 export const ENV = {
   name: "Development",
-  production: true,
-  turnOnDeployment: true,
+  production: false,
+  turnOnDeployment: false,
   security: {
     serverBaseUrl: "https://simpleposapp-dev.azurewebsites.net/identity",
     clientId: "simplepos",
