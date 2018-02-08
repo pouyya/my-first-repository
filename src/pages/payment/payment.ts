@@ -1,6 +1,4 @@
-import * as moment from 'moment';
 import { GlobalConstants } from './../../metadata/globalConstants';
-import { FountainService } from './../../services/fountainService';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
@@ -9,8 +7,6 @@ import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
 import { PrintService } from '../../services/printService';
-import { StockHistoryService } from '../../services/stockHistoryService';
-import { StockHistory } from '../../model/stockHistory';
 import { PaymentService } from '../../services/paymentService';
 
 @Component({
@@ -36,8 +32,6 @@ export class PaymentsPage {
 
   constructor(
     private salesService: SalesServices,
-    private fountainService: FountainService,
-    private stockHistoryService: StockHistoryService,
     private paymentService: PaymentService,
     private navCtrl: NavController,
     private alertCtrl: AlertController,
