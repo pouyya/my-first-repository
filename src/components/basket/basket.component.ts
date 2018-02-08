@@ -274,9 +274,11 @@ export class BasketComponent {
       this.sale = func.fastCash()
       await this.salesService.update(this.sale);
       if (this.store.printReceiptAtEndOfSale) {
-        await this.printService.printReceipt(this.sale);
+        this.printService.printReceipt(this.sale);
       }
-      await this.printService.openCashDrawer();
+      
+      this.printService.openCashDrawer();
+
       localStorage.removeItem('sale_id');
       this.sale = await this.salesService.instantiateSale();
       this.paymentCompleted.emit();
