@@ -2,6 +2,13 @@ import { Injectable } from '@angular/core';
 import { IonicDeploy, IonicProConfig, IonicDeployInfo } from './ionic-pro-deploy.interfaces';
 import { Observable } from 'rxjs/Observable';
 import { checkDeploy } from './ionic-pro-deploy.decorators';
+import { PlatformService } from '../../services/platformService';
+import { ConfigService } from '../dataSync/services/configService';
+import { UserService } from '../dataSync/services/userService';
+import { NavController } from 'ionic-angular';
+import { DataSync } from '../dataSync/pages/dataSync/dataSync';
+import { LoginPage } from '../dataSync/pages/login/login';
+import { Insomnia } from '@ionic-native/insomnia';
 
 declare const IonicCordova;
 
@@ -21,11 +28,16 @@ export class IonicProDeployService {
     deploy: IonicDeploy;
 
 
-    constructor(config: IonicProConfig = null) {
+    public static config: IonicProConfig = null;
+
+    constructor(
+        private platformService: PlatformService,
+        private userService: UserService,
+        private insomnia: Insomnia) {
         /* istanbul ignore next */
         this.deploy = typeof IonicCordova !== 'undefined' && IonicCordova.deploy || null;
-        if (config) {
-            this.init(config).catch(/* istanbul ignore next */err => console.error(err));
+        if (IonicProDeployService.config) {
+            this.init(IonicProDeployService.config).catch(/* istanbul ignore next */err => console.error(err));
         }
     }
 
@@ -192,4 +204,15 @@ export class IonicProDeployService {
         };
     }
 
+    public eligibleForDeploy() {
+        return this.platformService.isMobileDevice() && !ConfigService.isDevelopment() && ConfigService.turnOnDeployment();
+    }
+
+    public async getNextPageAfterDeploy() {
+        let user = await this.userService.getDeviceUser();
+        if (this.platformService.isMobileDevice()) {
+            user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
+        }
+        return user ? DataSync : LoginPage;
+    }
 }

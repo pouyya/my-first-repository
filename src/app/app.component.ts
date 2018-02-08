@@ -12,6 +12,8 @@ import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
+import { ConfigService } from '../modules/dataSync/services/configService';
+import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
 
 @Component({
   selector: 'app',
@@ -38,7 +40,8 @@ export class SimplePOSApp implements OnInit {
     private _sharedService: SharedService,
     private cdr: ChangeDetectorRef,
     private toastController: ToastController,
-    private platformService: PlatformService
+    private platformService: PlatformService,
+    private ionicProDeployService: IonicProDeployService
   ) {
     this._sharedService
       .getSubscribe('storeOrPosChanged')
@@ -64,7 +67,8 @@ export class SimplePOSApp implements OnInit {
   }
 
   async ngOnInit() {
-    this.rootPage = DeployPage;
+    var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
+    this.rootPage =  eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
   }
 
   initializeApp() {
@@ -117,7 +121,6 @@ export class SimplePOSApp implements OnInit {
         this.currentModule = this.moduleService.getCurrentModule(page);
         this.moduleName = this.currentModule.constructor.name;
       }
-
     }
   }
 }
