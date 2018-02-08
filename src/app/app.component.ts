@@ -14,7 +14,7 @@ import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
-import { UserService } from 'modules/dataSync/services/userService';
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Component({
   selector: 'app',
