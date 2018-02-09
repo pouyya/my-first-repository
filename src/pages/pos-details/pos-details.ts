@@ -12,6 +12,7 @@ export class PosDetailsPage {
   public pos: POS = new POS();
   public isNew: boolean = true;
   public action: string = 'Add';
+  private navPopCallback: any;
 
   constructor(
     private navParams: NavParams,
@@ -25,34 +26,24 @@ export class PosDetailsPage {
   ) { }
 
   ionViewDidEnter() {
-    var pos = this.navParams.get('pos');
-    var storeId = this.navParams.get('storeId');
-    if (pos) {
+    let pos = this.navParams.get('pos');
+    let storeId = this.navParams.get('storeId');
+    this.navPopCallback = this.navParams.get("pushCallback")
+    if (pos && pos._id !== "") {
       this.pos = pos;
       this.isNew = false;
-      this.action = 'Edit'
-    } else {
-      this.pos.storeId = storeId;
+      this.action = 'Edit';
     }
   }
 
-  public save() {
+  public async save() {
     if (this.isNew) {
-      this.posService.add(this.pos).then(() => {
-        let toast = this.toastCtrl.create({
-          message: 'Register has been added successfully',
-          duration: 3000
-        });
-        toast.present();
-        this.navCtrl.pop();
-      }, (error) => {
-        throw new Error(error);
-      })
+      await this.navPopCallback(this.pos);
+      this.navCtrl.pop();
     } else {
-      this.posService.update(this.pos)
-        .catch(console.error.bind(console));
+      await this.posService.update(this.pos);
+      this.navCtrl.pop();
     }
-    this.navCtrl.pop();
   }
 
   public async remove() {
