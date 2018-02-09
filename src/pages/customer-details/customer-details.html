@@ -54,12 +54,16 @@
       <ion-item>
         <ion-label class="item-name">Postcode</ion-label>
         <ion-input type="text" [formControl]="postcode"></ion-input>
-      </ion-item>      
+      </ion-item>
       <ion-item>
-        <ion-label class="item-name">Country</ion-label>
-        <ion-select [formControl]="country">
-          <ion-option [value]="c.code" *ngFor="let c of countries">{{c.name}}</ion-option>
-        </ion-select>
+        <searchable-ion-select
+          name="country" 
+          [formControl]="country"
+          title="Country"
+          valueField="code"
+          textField="name"
+          [items]="countries">
+        </searchable-ion-select>
       </ion-item>
     </ion-list>
   </form>

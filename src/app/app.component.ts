@@ -16,6 +16,8 @@ import { ConfigService } from '../modules/dataSync/services/configService';
 import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { UserService } from '../modules/dataSync/services/userService';
 
+declare var Appsee: any;
+
 @Component({
   selector: 'app',
   templateUrl: 'app.html'
@@ -54,7 +56,7 @@ export class SimplePOSApp implements OnInit {
           this.currentPos = data.currentPos;
         }
 
-        if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
+        if (data.hasOwnProperty('screenAwake') && this.platformService.isMobileDevice()) {
           data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
         }
       });
@@ -73,15 +75,20 @@ export class SimplePOSApp implements OnInit {
     let user = await this.userService.getDeviceUser();
 
     if (this.platformService.isMobileDevice()) {
-        user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
+      user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
     }
 
     var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
-    this.rootPage =  eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
+    this.rootPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
+
+      if (typeof Appsee !== 'undefined' && Appsee) {
+        Appsee.start(ConfigService.ApseeApiKey);
+      }
+      
       this.statusBar.styleDefault();
       this.hideSplashScreen();
     });

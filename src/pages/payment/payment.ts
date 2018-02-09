@@ -19,7 +19,6 @@ export class PaymentsPage {
 
   public sale: Sale
   public amount: number;
-  public balance: number;
   public change: number;
   public doRefund: boolean;
   public store: Store;
@@ -39,20 +38,17 @@ export class PaymentsPage {
     private modalCtrl: ModalController,
     private loading: LoadingController,
     private printService: PrintService) {
+  }
 
-    let operation = navParams.get('operation');
-    this.sale = <Sale>navParams.get('sale');
-    this.doRefund = navParams.get('doRefund');
-    this.store = <Store>navParams.get('store');
+  async ionViewDidLoad() {
+    this.sale = <Sale>this.navParams.get('sale');
+    this.doRefund = this.navParams.get('doRefund');
+    this.store = <Store>this.navParams.get('store');
     this.navPopCallback = this.navParams.get("callback")
 
-    this.amount = this.balance = 0;
+    this.amount = 0;
     this.change = 0;
-    if (operation == GlobalConstants.DONE_BTN) {
-      this.completeSale(0);
-    } else {
-      this.calculateBalance();
-    }
+    await this.calculateBalance(this.sale);
   }
 
   async ionViewDidEnter() {
@@ -76,46 +72,50 @@ export class PaymentsPage {
     }
   }
 
-  private async calculateBalance() {
+  private async calculateBalance(sale: Sale) {
+
+    let loader = this.loading.create({ content: 'Finalizing Sale' });
+    loader.present();
+
     var totalPayments = 0;
-    if (!this.doRefund) {
-      if (this.sale.taxTotal > 0 && this.sale.payments && this.sale.payments.length > 0) {
-        totalPayments = this.sale.payments
-          .map(payment => payment.amount)
-          .reduce((a, b) => a + b);
+    if (sale.taxTotal != 0 && sale.payments && sale.payments.length > 0) {
+      totalPayments = sale.payments
+        .map(payment => payment.amount)
+        .reduce((a, b) => a + b);
+    }
+
+    this.amount = sale.taxTotal - totalPayments;
+
+    totalPayments == sale.taxTotal && (await this.completeSale(totalPayments));
+
+    loader.dismiss();
+  }
+
+  public payWithCard() {
+    this.openModal(this.payTypes.credit_card.component, 'credit_card')
+  }
+
+  public payWithCash() {
+    this.openModal(this.payTypes.cash.component, 'cash');
+  }
+
+  private openModal(component: Component, type: string) {
+    let modal = this.modalCtrl.create(component, {
+      sale: this.sale,
+      amount: Number(this.amount),
+      refund: this.doRefund
+    });
+    modal.onDidDismiss(async data => {
+      if (data && data.status) {
+        this.addPayment(type, data.data);
+        await this.calculateBalance(this.sale);
+        await this.salesService.update(this.sale);
       }
-
-      this.amount = this.sale.taxTotal - totalPayments;
-      this.balance = this.amount;
-      // Check for payment completion
-      totalPayments >= this.sale.taxTotal && (await this.completeSale(totalPayments));
-    } else {
-      this.balance = this.amount = this.sale.taxTotal;
-    }
+    });
+    modal.present();
   }
 
-  public payWith() {
-    let openModal = (component: Component, type: string) => {
-      let modal = this.modalCtrl.create(component, {
-        sale: this.sale,
-        amount: Number(this.amount),
-        refund: this.doRefund
-      });
-      modal.onDidDismiss(async data => {
-        if (data && data.status) {
-          await (this.doRefund ? this.completeRefund(data.data, type) : this.addPayment(type, data.data));
-          await this.salesService.update(this.sale);
-        }
-      });
-      modal.present();
-    }
-    return {
-      cash: () => openModal(this.payTypes.cash.component, 'cash'),
-      creditCard: () => openModal(this.payTypes.credit_card.component, 'credit_card')
-    }
-  }
-
-  private async addPayment(type: string, payment: number) {
+  private addPayment(type: string, payment: number) {
     if (!this.sale.payments) {
       this.sale.payments = [];
     }
@@ -123,31 +123,14 @@ export class PaymentsPage {
       type: type,
       amount: Number(payment)
     });
-
-    await this.calculateBalance();
-  }
-
-  private async completeRefund(payment: number, type: string) {
-    var isCompleted: boolean = Math.abs(this.amount) === Math.abs(payment);
-    if (isCompleted) {
-      let loader = this.loading.create({ content: 'Processing Refund' });
-      await loader.present();
-      let func = await this.paymentService.completePayment(this.sale, this.store._id, false, payment, type);
-      this.sale = func.normalSale();
-      this.balance = 0;
-      loader.dismiss();
-      this.printSale(false);
-    }
   }
 
   private async completeSale(payments: number) {
-    let loader = this.loading.create({ content: 'Finalizing Sale' });
-    await loader.present();
-    let func = await this.paymentService.completePayment(this.sale, this.store._id, false, payments);
-    this.sale = func.normalSale();
+    await this.paymentService.completePayment(this.sale, this.store._id, this.doRefund);
     payments != 0 && (this.change = payments - this.sale.taxTotal);
-    loader.dismiss();
-    this.printSale(false);
+    try {
+      this.printSale(false);
+    } catch(error)  { }
   }
 
   public clearSale() {
