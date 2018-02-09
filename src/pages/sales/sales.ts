@@ -47,7 +47,7 @@ export class Sales implements OnDestroy {
     setTimeout(async () => {
       this._basketComponent = basketComponent;
       if (this._basketComponent) {
-        await this._basketComponent.initializeSale(this.navParams.get('sale'), this.navParams.get('doRefund'), this.evaluationContext);
+        await this._basketComponent.initializeSale(this.navParams.get('sale'), this.evaluationContext);
       }
     }, 0);
 
