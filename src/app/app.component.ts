@@ -56,7 +56,7 @@ export class SimplePOSApp implements OnInit {
           this.currentPos = data.currentPos;
         }
 
-        if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
+        if (data.hasOwnProperty('screenAwake') && this.platformService.isMobileDevice()) {
           data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
         }
       });
@@ -86,7 +86,7 @@ export class SimplePOSApp implements OnInit {
     this.platform.ready().then(() => {
 
       if (typeof Appsee !== 'undefined' && Appsee) {
-        Appsee.start("4ab58eb9940440b2a77518b94b722bde");
+        Appsee.start(ConfigService.ApseeApiKey);
       }
       
       this.statusBar.styleDefault();

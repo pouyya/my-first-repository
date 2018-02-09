@@ -83,6 +83,7 @@ import { SelectPurchasableItemsModel } from './../components/purchasable-item-pr
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
+import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -232,6 +233,7 @@ import { PaymentService } from '../services/paymentService';
     TileScrollableModule,
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
+    SearchableIonSelectModule,
     IonicProDeployModule.forRoot({
       appId: ConfigService.ionicDeployAppId(),
       channel: ConfigService.ionicDeployAppChannel()

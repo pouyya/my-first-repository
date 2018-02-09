@@ -102,4 +102,8 @@ export class ConfigService {
     static ionicDeployAppChannel(): string {
         return ENV.ionicDeploy.appChannel;
     }
+
+    static ApseeApiKey(): string {
+        return ENV.appSee.apikey;
+    }
 }
