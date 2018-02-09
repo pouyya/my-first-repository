@@ -155,7 +155,7 @@ export class SalesHistoryPage {
               toast.present();
               var _sale = await this.loadSale(sale, doRefund);
               localStorage.setItem('sale_id', _sale._id);
-              this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
+              this.navCtrl.setRoot(Sales, { sale: _sale });
             }
           },
           {

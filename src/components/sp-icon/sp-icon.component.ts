@@ -18,9 +18,4 @@ export class SPIconComponent {
   get model() {
     return this.spIcon;
   }
-
-  constructor() {
-
-  }
-
 }
