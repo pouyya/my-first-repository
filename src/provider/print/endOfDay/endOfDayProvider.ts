@@ -1,7 +1,7 @@
 import { EscPrinterProvider } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { EndOfDayProviderContext } from "./endOfDayProviderContext";
-import { TypeHelper } from "../../../utility/typeHelper";
+import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
 
 export class EndOfDayProvider {
 

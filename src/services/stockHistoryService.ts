@@ -2,7 +2,7 @@ import _ from 'lodash';
 import * as moment from 'moment';
 import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
-import { BaseEntityService } from './baseEntityService';
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {

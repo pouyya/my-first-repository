@@ -2,20 +2,20 @@ import _ from 'lodash';
 import * as moment from 'moment-timezone';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
-import { UserService } from './../../services/userService';
 import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { SharedService } from './../../services/_sharedService';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
-import { AppSettingsInterface } from './../../model/UserSession';
 import { SalesTaxService } from './../../services/salesTaxService';
-import { AccountSettingService } from '../../services/accountSettingService';
-import { AccountSetting } from '../../model/accountSetting';
 import { DateTimeService } from './../../services/dateTimeService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
+import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
+import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
+import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -28,7 +28,7 @@ export class Settings {
   public defaultTax: string;
   public salesTaxes: Array<any> = [];
   public taxTypes: Array<any> = [];
-  public timezones: Array<string> = [];
+  public timezones: Array<{ code: string, name: string }> = [];
   public selectedType: number;
   public selectedTax: string;
   public accountSetting: AccountSetting;
@@ -70,7 +70,12 @@ export class Settings {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
-        this.timezones = <string[]>moment.tz.names();
+        this.timezones = moment.tz.names().map(timezone => {
+          return <{ code: string, name: string }> {
+            code: timezone,
+            name: timezone
+          }
+        });
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {

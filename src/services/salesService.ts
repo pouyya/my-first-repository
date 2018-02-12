@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { Injectable } from '@angular/core';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTaxService } from './salesTaxService';
-import { UserService } from './userService';
+import { UserService } from './../modules/dataSync/services/userService';
 import { GlobalConstants } from './../metadata/globalConstants';
 import { HelperService } from './helperService';
 import { BasketItem } from './../model/basketItem';
@@ -11,7 +11,7 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
-import { BaseEntityService } from './baseEntityService';
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 import { StockHistoryService } from './stockHistoryService';
 import { StockHistory } from './../model/stockHistory';
@@ -35,27 +35,38 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public async instantiateSale(posId?: string): Promise<Sale> {
-		var user = await this.userService.getUser();
-		let id = localStorage.getItem('sale_id') || moment().utc().format();
-		if (!posId) posId = user.currentPos;
+
+		if (!posId) {
+			var user = await this.userService.getUser();
+			posId = user.currentPos;
+		}
+
 		try {
-			let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
-			if (sales && sales.length > 0) {
-				let sale = sales[0];
-				return sale;
+			let id = localStorage.getItem('sale_id');
+
+			if (id) {
+				let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
+				if (sales && sales.length > 0) {
+					let sale = sales[0];
+					return sale;
+				}
 			}
-			return SalesServices._createDefaultObject(posId, id);
+
+			return SalesServices._createDefaultObject(posId);
+
 		} catch (error) {
+
 			if (error.name === GlobalConstants.NOT_FOUND) {
-				return SalesServices._createDefaultObject(posId, id);
+				return SalesServices._createDefaultObject(posId);
 			}
+
 			return Promise.reject(error);
 		}
 	}
 
-	private static _createDefaultObject(posID: string, saleId: string) {
-		let sale: Sale = new Sale();
-		sale._id = saleId;
+	private static _createDefaultObject(posID: string): Sale {
+		let sale = new Sale();
+		sale._id = moment().utc().format();
 		sale.posID = posID;
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
@@ -100,23 +111,66 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Promise.resolve(null);
 	}
 
-	public async searchSales(posId, limit, offset, options): Promise<any> {
-		var query: any = {
+	public async searchSales(posID, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<any> {
+		let query: any = {
 			selector: {
-				posID: posId
+				$and: [
+					{ posID }
+				]
 			}
 		};
-		_.each(options, (value, key) => {
-			if (value) {
-				query.selector[key] = _.isArray(value) ? { $in: value } : value;
+
+		if (options) {
+			_.each(options, (value, key) => {
+				if (value) {
+					query.selector.$and.push({ [key]: _.isArray(value) ? { $in: value } : value });
+				}
+			});
+			if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
+				query.selector.$and.push({ completed: options.completed });
 			}
-		});
-		if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
-			query.selector.completed = options.completed
+		}
+
+		if (timeFrame) {
+			query.selector.$and.push({ created: { $exists: true } });
+			query.selector.$and.push({
+				created: {
+					$lte: timeFrame.endDate
+				}
+			});
+			query.selector.$and.push({
+				created: {
+					$gte: timeFrame.startDate
+				}
+			});
+		}
+
+		if (employeeId) {
+			query.selector.$and.push({
+				items: {
+					$elemMatch: {
+						employeeId: {
+							$eq: employeeId
+						}
+					}
+				}
+			});
+		}
+
+		if (paymentType) {
+			query.selector.$and.push({
+				payments: {
+					$elemMatch: {
+						type: {
+							$eq: paymentType
+						}
+					}
+				}
+			});
 		}
 
 		query.sort = [{ _id: 'desc' }];
-		var countQuery = _.cloneDeep(query);
+		let countQuery = _.cloneDeep(query);
 		query.limit = limit;
 		query.offset = offset;
 
@@ -137,8 +191,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public manageSaleId(sale: Sale) {
-		let saleId = localStorage.getItem('sale_id');
 		if (sale.items.length > 0 || sale.customerKey) {
+			let saleId = localStorage.getItem('sale_id');
 			saleId != sale._id && (localStorage.setItem('sale_id', sale._id));
 		} else {
 			localStorage.removeItem('sale_id');

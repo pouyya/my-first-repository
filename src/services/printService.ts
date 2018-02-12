@@ -3,8 +3,7 @@ import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
 import { StoreService } from './storeService';
 import { PosService } from './posService';
-import { AccountSettingService } from './accountSettingService';
-import { TypeHelper } from '../utility/typeHelper';
+import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
 import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';
@@ -14,6 +13,7 @@ import { ReceiptProvider } from '../provider/print/receipt/receiptProvider';
 import { EmployeeService } from './employeeService';
 import { CategoryService } from './categoryService';
 import { BasketItem } from '../model/basketItem';
+import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 
 export enum EndOfDayReportType {
   PerProduct,

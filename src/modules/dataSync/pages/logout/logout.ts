@@ -1,4 +1,4 @@
-import { DBService } from './../../services/dBService';
+import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Component } from "@angular/core";
 import { LoadingController, NavController, AlertController } from "ionic-angular";
 import { Storage } from '@ionic/storage';

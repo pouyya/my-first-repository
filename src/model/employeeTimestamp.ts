@@ -1,5 +1,5 @@
-import { DBBasedEntity } from './dbBasedEntity';
-import { DBMode, DBModeEnum } from '../metadata/dbMode';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBMode, DBModeEnum } from '@simpleidea/simplepos-core/dist/metadata/dbMode';
 
 @DBMode(DBModeEnum.Current)
 export class EmployeeTimestamp extends DBBasedEntity {

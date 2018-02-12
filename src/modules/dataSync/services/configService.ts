@@ -1,22 +1,23 @@
-export class ConfigService {
-    //TODO: AZ - Need to move values in different file and based on different build type (dev, pre-prod, prod) need to transform config file
+import { ENV } from '@app/env';
 
-    static _internalCriticalDBName : string = "";
-    static get internalCriticalDBName() : string {
+export class ConfigService {
+
+    static _internalCriticalDBName: string = "";
+    static get internalCriticalDBName(): string {
         return this._internalCriticalDBName;
     }
-    static set internalCriticalDBName(v : string) {
+    static set internalCriticalDBName(v: string) {
         this._internalCriticalDBName = v;
     }
 
-    static _externalCriticalDBName : string = "";
-    static get externalCriticalDBName() : string {
+    static _externalCriticalDBName: string = "";
+    static get externalCriticalDBName(): string {
         return this._externalCriticalDBName;
     }
-    static set externalCriticalDBName(v : string) {
+    static set externalCriticalDBName(v: string) {
         this._externalCriticalDBName = v;
     }
-    
+
     static _internalDBName: string = "";
     static get internalDBName(): string {
         return ConfigService._internalDBName;
@@ -52,13 +53,13 @@ export class ConfigService {
     }
 
     static isDevelopment(): boolean {
-        return true;
+        return !ENV.production;
     }
 
     static turnOnDeployment(): boolean {
-        return true;
+        return ENV.turnOnDeployment;
     }
-    
+
     static securityTokenEndPoint(): string {
         return ConfigService.securityServerBaseUrl() + "/connect/token";
     }
@@ -72,7 +73,7 @@ export class ConfigService {
     }
 
     static securityServerBaseUrl(): string {
-        return 'https://simpleposapp-dev.azurewebsites.net/identity';
+        return ENV.security.serverBaseUrl;
     }
 
     static apiServerBaseUrl(): string {
@@ -80,34 +81,29 @@ export class ConfigService {
     }
 
     static securityClientId(): string {
-        return 'simplepos';
+        return ENV.security.clientId;
     }
     static securityClientSecret(): string {
-        return '21B5F798-BE55-42BC-8AA8-0025B903DC3B';
+        return ENV.security.clientSecret;
     }
 
     static securityGrantType(): string {
-        return 'password';
+        return ENV.security.grantType;
     }
 
     static securityScope(): string {
-        return 'openid';
+        return ENV.security.scope;
+    }
+    
+    static ionicDeployAppId(): string {
+        return ENV.ionicDeploy.appId;
     }
 
-    static securitySessionStorageKey(): string {
-        return 'jwt-token';
+    static ionicDeployAppChannel(): string {
+        return ENV.ionicDeploy.appChannel;
     }
 
-    static userSessionStorageKey(): string {
-        return 'usermedihair_aria';
-        // return 'user' + ConfigService.internalDBName;
+    static ApseeApiKey(): string {
+        return ENV.appSee.apikey;
     }
-
-    static ionicDeployAppId() : string {
-        return "22d41469";
-    }
-
-    static ionicDeployAppChannel() : string {
-        return "Master";
-    }    
 }

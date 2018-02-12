@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{searchableIonSelect.title || 'Select'}}</ion-title>
+  </ion-navbar>
+  <ion-toolbar>
+    <ion-searchbar #searchBar [(ngModel)]="searchableIonSelect.filterText" (ionInput)="filterItems()" [placeholder]="searchableIonSelect.searchPlaceholder || 'Search'">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="select-searchable-spinner" *ngIf="searchableIonSelect.isSearching">
+    <div class="select-searchable-spinner-background"></div>
+    <ion-spinner></ion-spinner>
+  </div>
+  <ion-list no-margin *ngIf="filteredItems.length > 0">
+    <button ion-item detail-none *ngFor="let item of filteredItems" (click)="select(item)">
+      <ion-icon [name]="isItemSelected(item) ? 'checkmark-circle' : 'radio-button-off'" [color]="isItemSelected(item) ? 'primary' : 'daek'"
+        item-left>
+      </ion-icon>
+      <h2>{{searchableIonSelect.formatItem(item)}}</h2>
+    </button>
+  </ion-list>
+  <div *ngIf="!filteredItems.length" margin>No items found.</div>
+</ion-content>

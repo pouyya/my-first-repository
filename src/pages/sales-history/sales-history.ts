@@ -1,9 +1,7 @@
+import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
-import { UserSession } from './../../model/UserSession';
-import { StoreService } from './../../services/storeService';
 import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { UserService } from './../../services/userService';
 import { Sale } from './../../model/sale';
 import { Sales } from './../sales/sales';
 import { SalesModule } from "../../modules/salesModule";
@@ -11,6 +9,16 @@ import { PageModule } from './../../metadata/pageModule';
 import { SalesServices } from './../../services/salesService';
 import { PrintService } from '../../services/printService';
 import { Customer } from '../../model/customer';
+import { Employee } from '../../model/employee';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
+
+enum TimeValues {
+  anytime = "1",
+  today = "2",
+  thisWeek = "3",
+  thisMonth = "4"
+}
 
 @PageModule(() => SalesModule)
 @Component({
@@ -24,10 +32,14 @@ export class SalesHistoryPage {
   public sales: any[];
   public statusList: Array<{ value: any, text: string }>;
   public selectedStatus: string = '';
+  public selectedPaymentType: string = '';
+  public selectedTime: TimeValues = TimeValues.anytime;
   public states: any;
   public filtersEnabled: boolean = false;
   public customerSearch: string;
   public searchedCustomers: Customer[] = [];
+  public employeeSearch: string;
+  public searchedEmployees: Employee[] = [];
   public cancelButtonText = 'Reset';
   private user: UserSession;
   private limit: number;
@@ -43,14 +55,16 @@ export class SalesHistoryPage {
     receiptNo: false,
     state: false
   };
+  private timeFrame: any = null;
+  private employeeId: string = null;
 
   constructor(
     private platform: Platform,
     private salesService: SalesServices,
     private navCtrl: NavController,
     private userService: UserService,
-    private storeService: StoreService,
     private customerService: CustomerService,
+    private employeeService: EmployeeService,
     private alertController: AlertController,
     private toastCtrl: ToastController,
     private loading: LoadingController,
@@ -141,7 +155,7 @@ export class SalesHistoryPage {
               toast.present();
               var _sale = await this.loadSale(sale, doRefund);
               localStorage.setItem('sale_id', _sale._id);
-              this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
+              this.navCtrl.setRoot(Sales, { sale: _sale });
             }
           },
           {
@@ -184,6 +198,28 @@ export class SalesHistoryPage {
     }
   }
 
+  public searchbar(event) {
+    return {
+      searchCustomers: async () => {
+
+      },
+      searchEmployees: async () => {
+        if (this.employeeSearch && this.employeeSearch.trim() != '' && this.employeeSearch.length > 3) {
+          try {
+            let employees = await this.employeeService.searchByName(this.employeeSearch);
+            employees.length > 0 && (this.searchedEmployees = employees);
+            return;
+          } catch (err) {
+            return Promise.reject(err);
+          }
+        } else {
+          this.searchedEmployees = [];
+          return [];
+        }
+      }
+    }
+  }
+
   public async searchByCustomer(customer: Customer) {
     this.searchedCustomers = [];
     this.sales = this.salesBackup;
@@ -191,6 +227,18 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
+    this.customerSearch = `${customer.firstName} ${customer.lastName}`;
+    await this.fetchMoreSales();
+  }
+
+  public async searchByEmployee(employee: Employee) {
+    this.searchedEmployees = [];
+    this.sales = this.salesBackup;
+    this.employeeId = employee._id;
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.sales = [];
+    this.employeeSearch = `${employee.firstName} ${employee.lastName}`;
     await this.fetchMoreSales();
   }
 
@@ -202,7 +250,17 @@ export class SalesHistoryPage {
       this.sales = [];
       await this.fetchMoreSales();
     }
+    return;
+  }
 
+  public async resetEmployeeSearch() {
+    if (this.employeeId) {
+      this.employeeId = null;
+      this.limit = this.defaultLimit;
+      this.offset = this.defaultOffset;
+      this.sales = [];
+      await this.fetchMoreSales();
+    }
     return;
   }
 
@@ -238,12 +296,56 @@ export class SalesHistoryPage {
     });
   }
 
+  public async searchByPaymentType() {
+    this.sales = [];
+    await this.fetchMoreSales();
+  }
+
+  public searchByTime() {
+    this.sales = this.salesBackup;
+    let startDate: Date;
+    let endDate: Date;
+    switch (this.selectedTime) {
+      case TimeValues.today:
+        startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
+        this.timeFrame = {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        };
+        break;
+      case TimeValues.thisWeek:
+        this.timeFrame = null; // will later add the logic
+        break;
+      case TimeValues.thisMonth:
+        let date = new Date();
+        startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+        endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        this.timeFrame = {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        };
+        break;
+      default:
+        this.timeFrame = null;
+        break;
+    }
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.sales = [];
+    this.fetchMoreSales().catch((error) => {
+      console.error(error);
+    });
+  }
+
   private async getSales(limit?: number, offset?: number): Promise<any> {
     if (this.sales.length <= 0) {
       let result = await this.salesService.searchSales(
         this.user.currentPos,
         limit | this.limit, offset | this.offset,
-        this.filters);
+        this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
       if (result.totalCount > 0) {
         this.total = result.totalCount;
         this.sales = await this.attachCustomersToSales(result.docs);
@@ -254,7 +356,7 @@ export class SalesHistoryPage {
         let result: any = await this.salesService.searchSales(
           this.user.currentPos,
           limit | this.limit, offset | this.offset,
-          this.filters);
+          this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
         let sales = await this.attachCustomersToSales(result.docs);
         this.sales = this.sales.concat(sales);
         this.salesBackup = this.sales;

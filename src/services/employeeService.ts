@@ -4,7 +4,7 @@ import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { EmployeeTimestampService } from './employeeTimestampService';
 import { Injectable } from "@angular/core";
 import { Employee } from "../model/employee";
-import { BaseEntityService } from "./baseEntityService";
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 
 @Injectable()
 export class EmployeeService extends BaseEntityService<Employee> {
@@ -88,6 +88,23 @@ export class EmployeeService extends BaseEntityService<Employee> {
           }
         }
       });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async searchByName(name) {
+    try {
+      let employees: Employee[] = await this.findBy({
+        selector: {
+          // will later upgrade to support full name search
+          firstName: {
+            $regex: new RegExp(name, "ig")
+          }
+        }
+      });
+
+      return employees.length > 0 ? employees : [];
     } catch (err) {
       return Promise.reject(err);
     }

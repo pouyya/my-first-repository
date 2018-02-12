@@ -4,7 +4,6 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
-import { UserService } from './../services/userService';
 import { ModuleService } from './../services/moduleService';
 import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
@@ -13,6 +12,11 @@ import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
+import { ConfigService } from '../modules/dataSync/services/configService';
+import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { UserService } from '../modules/dataSync/services/userService';
+
+declare var Appsee: any;
 
 @Component({
   selector: 'app',
@@ -31,7 +35,6 @@ export class SimplePOSApp implements OnInit {
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
-    private userService: UserService,
     private moduleService: ModuleService,
     private modalCtrl: ModalController,
     private loading: LoadingController,
@@ -40,7 +43,9 @@ export class SimplePOSApp implements OnInit {
     private _sharedService: SharedService,
     private cdr: ChangeDetectorRef,
     private toastController: ToastController,
-    private platformService: PlatformService
+    private platformService: PlatformService,
+    private ionicProDeployService: IonicProDeployService,
+    private userService: UserService
   ) {
     this._sharedService
       .getSubscribe('storeOrPosChanged')
@@ -51,7 +56,7 @@ export class SimplePOSApp implements OnInit {
           this.currentPos = data.currentPos;
         }
 
-        if (data.hasOwnProperty('screenAwake') && !this.platform.is('core')) {
+        if (data.hasOwnProperty('screenAwake') && this.platformService.isMobileDevice()) {
           data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
         }
       });
@@ -66,11 +71,24 @@ export class SimplePOSApp implements OnInit {
   }
 
   async ngOnInit() {
-    this.rootPage = DeployPage;
+
+    let user = await this.userService.getDeviceUser();
+
+    if (this.platformService.isMobileDevice()) {
+      user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
+    }
+
+    var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
+    this.rootPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
+
+      if (typeof Appsee !== 'undefined' && Appsee) {
+        Appsee.start(ConfigService.ApseeApiKey);
+      }
+      
       this.statusBar.styleDefault();
       this.hideSplashScreen();
     });
@@ -119,7 +137,6 @@ export class SimplePOSApp implements OnInit {
         this.currentModule = this.moduleService.getCurrentModule(page);
         this.moduleName = this.currentModule.constructor.name;
       }
-
     }
   }
 }

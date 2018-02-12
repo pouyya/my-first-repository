@@ -124,5 +124,13 @@
       "MAX_STORE": "2",
       "UPDATE_METHOD": "none"
     }
+  },
+  "cordova-plugin-appsee": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-appsee"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

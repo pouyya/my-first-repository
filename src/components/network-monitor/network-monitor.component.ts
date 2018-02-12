@@ -1,5 +1,5 @@
-import { DBEvent } from './../../db/dbEvent';
-import { DBService } from './../../services/dBService';
+import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
+import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Network } from '@ionic-native/network';
 import { Component } from "@angular/core";
 
@@ -28,7 +28,7 @@ export class NetworkMonitorComponent {
   constructor(private network: Network) {
     this.network.onDisconnect().subscribe(() => this.networkIcon = "eye-off");
     this.network.onConnect().subscribe(() => this.networkIcon = "eye");
-
+    
     DBService.criticalDBSyncProgress.subscribe(
       (data: DBEvent) => {
         data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
