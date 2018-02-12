@@ -49,10 +49,10 @@
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
-              <ion-col col-md-4 class="name">
+              <ion-col col-md-7 class="name">
                 {{item.name}}
               </ion-col>
-              <ion-col col-md-3 offset-md-3 class="pull-right">
+              <ion-col col-md-3 class="pull-right">
                 <span>${{item.finalPrice * item.quantity | number : '1.2-2'}}</span>
                 <br/>
                 <span *ngIf="item.systemPrice != item.finalPrice">
