@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import * as moment from 'moment';
 import { DiscountSurchargeInterface } from './../../../../model/sale';
 import { ViewController, ToastController } from 'ionic-angular';
@@ -16,25 +17,32 @@ export class DiscountSurchargeModal {
   public static readonly PRECENTAGE: string = 'percentage';
 
   public value: number;
-  public action: string;
-  public inputType: string;
+  public action: string = DiscountSurchargeModal.DISCOUNT;
+  public inputType: string = DiscountSurchargeModal.CASH;
+
+  private values: DiscountSurchargeInterface[] = [];
+  private valuesBackup: DiscountSurchargeInterface[] = [];
 
   constructor(
     private navParams: NavParams,
     private viewCtrl: ViewController,
     private toastCtrl: ToastController
   ) {
-    this.action = DiscountSurchargeModal.DISCOUNT;
-    this.inputType = DiscountSurchargeModal.CASH;
+    this.action = <string>navParams.get('action');
+    this.values = <DiscountSurchargeInterface[]>navParams.get('values');
+    this.valuesBackup = _.map(this.values, value => value);
   }
 
   public confirmChanges() {
     if (this.value > 0) {
-      this.viewCtrl.dismiss(<DiscountSurchargeInterface>{
-        value: this.value,
-        type: this.action,
-        format: this.inputType,
-        createdAt: moment().utc().format()
+      this.viewCtrl.dismiss({
+        values: this.valuesBackup,
+        data: <DiscountSurchargeInterface>{
+          value: this.value,
+          type: this.action,
+          format: this.inputType,
+          createdAt: moment().utc().format()
+        }
       });
     } else {
       let toast = this.toastCtrl.create({
@@ -45,8 +53,15 @@ export class DiscountSurchargeModal {
     }
   }
 
+  public remove(value, index) {
+    this.valuesBackup.splice(index, 1);
+  }
+
   public dismiss() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({
+      values: this.valuesBackup,
+      data: null
+    });
   }
 
 }

@@ -80,13 +80,11 @@
       <ion-textarea [(ngModel)]="sale.notes" rows="1" (change)="syncSale()" placeholder="Add Sale Notes...">
       </ion-textarea>
     </ion-col>
-    <ion-col col-md-3>
-      <button ion-button small color="primary" [disabled]="disablePaymentBtn" (click)="openDiscountSurchargeModal()">Discount/Surcharge</button>
+    <ion-col col-md-6>
+      <button ion-button small block color="light" [disabled]="disablePaymentBtn" (click)="externalValue().applyDiscount()">Discount</button>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">
-      <button ion-button small color="light" [disabled]="disablePaymentBtn || sale.appliedValues.length <= 0" (click)="viewAppliedValues()">
-        <ion-icon name="eye"></ion-icon>
-      </button>
+    <ion-col col-md-6>
+      <button ion-button small block color="light" [disabled]="disablePaymentBtn" (click)="externalValue().applySurcharge()">Surcharge</button>
     </ion-col>
 
     <ion-col col-md-3>Subtotal</ion-col>
@@ -102,6 +100,9 @@
       </ng-template>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.tax | number : '1.2-2'}}</ion-col>
+
+    <ion-col col-md-3 *ngIf="totalExternalValue !== 0">{{ totalExternalValue > 0 ? "Total Surcharge": "Total Discount" }}</ion-col>
+    <ion-col col-md-3 offset-md-6 *ngIf="totalExternalValue !== 0" class="pull-right">{{totalExternalValue | number : '1.2-2'}}</ion-col>
 
     <ion-col col-md-3 [ngPlural]="sale.items.length">
       <ng-template ngPluralCase="=0">Total

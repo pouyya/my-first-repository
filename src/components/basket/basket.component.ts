@@ -4,7 +4,7 @@ import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/vi
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController, LoadingController, Modal } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -47,6 +47,7 @@ export class BasketComponent {
   public showSearchCancel: boolean = false;
   public searchInput: string = "";
   public searchedCustomers: any[] = [];
+  public totalExternalValue: number = 0;
   private salesTaxes: BaseTaxIterface[];
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
@@ -210,26 +211,32 @@ export class BasketComponent {
     modal.present();
   }
 
-  public openDiscountSurchargeModal() {
-    let modal = this.modalCtrl.create(DiscountSurchargeModal);
-    modal.onDidDismiss(data => {
-      if (data) {
-        this.sale.appliedValues.push(<DiscountSurchargeInterface>data);
+  public externalValue(): { applyDiscount: Function, applySurcharge: Function } {
+    let modal: Modal;
+    let modalOptions: any = { values: this.sale.appliedValues }
+    let onDismiss = ((response: { values: DiscountSurchargeInterface[], data: DiscountSurchargeInterface }) => {
+      if (response) {
+        this.sale.appliedValues = response.values;
+        response.data && this.sale.appliedValues.push(response.data);
         this.calculateAndSync();
+        // TODO: Excluded Percentage inclusion
+        this.totalExternalValue = _.sum(this.sale.appliedValues
+          .filter(value => value.format == 'cash')
+          .map(value => Number(value.value)));
       }
     });
-    modal.present();
-  }
 
-  public viewAppliedValues() {
-    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.sale.appliedValues });
-    modal.onDidDismiss(data => {
-      if (data) {
-        this.sale.appliedValues = <DiscountSurchargeInterface[]>data;
-        this.calculateAndSync();
-      }
-    });
-    modal.present();
+    let exec = (action) => {
+      modalOptions.action = action;
+      modal = this.modalCtrl.create(DiscountSurchargeModal, modalOptions);
+      modal.onDidDismiss(onDismiss);
+      modal.present();
+    }
+
+    return {
+      applyDiscount: () => exec('discount'),
+      applySurcharge: () => exec('surcharge')
+    }
   }
 
   public gotoPayment() {

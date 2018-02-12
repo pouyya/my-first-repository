@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Apply Discount or Surcharge
+      {{ action === 'surcharge' ? 'Apply Surcharge' : 'Apply Discount' }}
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
@@ -12,17 +12,6 @@
 </ion-header>
 
 <ion-content>
-  <div padding>
-    <ion-segment [(ngModel)]="action">
-      <ion-segment-button value="discount">
-        Discount
-      </ion-segment-button>
-      <ion-segment-button value="surcharge">
-        Surcharge
-      </ion-segment-button>
-    </ion-segment>
-  </div>
-
   <div [ngSwitch]="action">
     <ion-grid *ngSwitchCase="'discount'">
       <ion-row radio-group [(ngModel)]="inputType">
@@ -74,6 +63,41 @@
       </ion-row>
     </ion-grid>
   </div>
+  <ion-list *ngIf="valuesBackup.length > 0">
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-4>
+            <strong>Value</strong>
+          </ion-col>
+          <ion-col col-md-5>
+            <strong>Added At</strong>
+          </ion-col>
+          <ion-col col-md-4>
+            <strong>Type</strong>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let value of valuesBackup; let $index = index">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>
+            <ion-item item-content>
+              <ion-input type="text" [(ngModel)]="value.value"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col col-md-3>{{value.format}} </ion-col>
+          <ion-col col-md-5>{{value.createdAt | localDate:'M/d/YY, h:mm a'}}</ion-col>
+          <ion-col col-md-1>
+            <ion-icon name="trash" (click)="remove(value, $index)" tappable></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
 </ion-content>
 
 <ion-footer>
