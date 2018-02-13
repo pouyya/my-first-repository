@@ -12,6 +12,7 @@ import { Product } from '../../model/product';
 import { PriceBook } from '../../model/priceBook';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -78,14 +79,20 @@ export class Products {
   }
 
   private async loadProducts(): Promise<ProductsList[]> {
-
-    var options = {};
+    let selectors: QuerySelectorInterface = {};
+    var options: QueryOptionsInterface = {
+      sort: [
+        { order: SortOptions.ASC }
+      ]
+    };
     
     if (this.filter) {
-      options['name'] = this.filter;
+      selectors = {
+        name: this.filter
+      }
     }    
 
-    let products = await this.productService.search(this.limit, this.offset, options);
+    let products = await this.productService.search(this.limit, this.offset, selectors, options);
 
     products.forEach((product) => {
       var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
