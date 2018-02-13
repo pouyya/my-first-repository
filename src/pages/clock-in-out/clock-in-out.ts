@@ -1,21 +1,21 @@
 import _ from 'lodash';
-import { UserService } from './../../services/userService';
 import { PosService } from './../../services/posService';
 import { Employee } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
 import { EmployeeService } from './../../services/employeeService';
 import { PluginService } from './../../services/pluginService';
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
-import { UserSession } from '../../model/UserSession';
 import { POS } from '../../model/pos';
 import { StoreService } from '../../services/storeService';
 import { Store } from '../../model/store';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -50,7 +50,8 @@ export class ClockInOutPage {
     private userService: UserService,
     private posService: PosService,
     private storeService: StoreService,
-    private loading: LoadingController
+    private loading: LoadingController,
+    private zone: NgZone
   ) { }
 
   /**
@@ -73,35 +74,45 @@ export class ClockInOutPage {
     /** Check PIN against conditions */
     let loader = this.loading.create({ content: 'Verifying PIN' });
     await loader.present();
-    let employee: Employee = await this.employeeService.findByPin(pin);
 
-    if (!employee) {
-      loader.dismiss();
-      let toast = this.toastCtrl.create({
-        message: "Invalid PIN!",
-        duration: 3000
-      });
-      toast.present();
+    this.employee = await this.zone.runOutsideAngular(async () => {
 
-      return false;
-    }
+      let employee: Employee = await this.employeeService.findByPin(pin);
 
-    var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.pos.storeId, employee._id);
+      if (!employee) {
+        let toast = this.toastCtrl.create({
+          message: "Invalid PIN!",
+          duration: 3000
+        });
+        toast.present();
 
-    if (employeeClockedInToOtherStore) {
-      loader.dismiss();
-      let toast = this.toastCtrl.create({
-        message: `You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`,
-        duration: 3000
-      });
+        return null;
+      }
 
-      toast.present();
+      var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.pos.storeId, employee._id);
+
+      if (employeeClockedInToOtherStore) {
+        let toast = this.toastCtrl.create({
+          message: `You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`,
+          duration: 3000
+        });
+
+        toast.present();
+        
+        return null;
+      }
+
+      return employee;
+    });
+
+    if (this.employee == null) {
+
+      await loader.dismiss();
 
       return false;
     }
 
     this.user = await this.userService.getUser();
-    this.employee = employee;
     loader.dismiss();
     return true;
   }
@@ -124,7 +135,7 @@ export class ClockInOutPage {
     if (!this.posStatus) {
       return;
     }
-    
+
     let loader = this.loading.create({
       content: 'Please Wait...',
     });
@@ -167,21 +178,24 @@ export class ClockInOutPage {
       [EmployeeTimestampService.BREAK_END]: [breakStartBtn, clockOutBtn]
     };
 
-    let result = await this.employeeTimestampService
-      .getEmployeeLastTwoTimestamps(this.employee._id, this.user.currentStore);
+    this.zone.runOutsideAngular(async () => {
 
-    if (result) {
-      result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
-      this.timestamp = <EmployeeTimestamp>result.latest;
-      this.activeButtons = this.buttons[this.timestamp.type];
 
-    } else {
-      this.timestamp = new EmployeeTimestamp();
-      this.timestamp.employeeId = this.employee._id;
-      this.timestamp.storeId = this.user.currentStore;
-      this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
-    }
+      let result = await this.employeeTimestampService
+        .getEmployeeLastTwoTimestamps(this.employee._id, this.user.currentStore);
 
+      if (result) {
+        result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
+        this.timestamp = <EmployeeTimestamp>result.latest;
+        this.activeButtons = this.buttons[this.timestamp.type];
+
+      } else {
+        this.timestamp = new EmployeeTimestamp();
+        this.timestamp.employeeId = this.employee._id;
+        this.timestamp.storeId = this.user.currentStore;
+        this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
+      }
+    });
     this.dataLoaded = true;
     await loader.dismiss();
   }

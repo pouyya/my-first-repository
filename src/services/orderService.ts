@@ -1,4 +1,4 @@
-import { BaseEntityService } from "./baseEntityService";
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { Order } from "../model/order";
 import { OrderStatus } from "../model/baseOrder";
 

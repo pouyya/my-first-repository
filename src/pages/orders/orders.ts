@@ -8,7 +8,7 @@ import { OrderStatus, BaseOrder } from './../../model/baseOrder';
 import { Component, NgZone } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { SupplierService } from '../../services/supplierService';
-import { SortOptions } from './../../services/baseEntityService';
+import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;

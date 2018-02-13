@@ -1,9 +1,10 @@
 import _ from 'lodash';
+import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
+import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
+import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -13,7 +14,8 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
-import { UserSession } from '../../model/UserSession';
+import { CalculatorService } from '../../services/calculatorService';
+import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
 import { PriceBook } from '../../model/priceBook';
 import { PriceBookService } from '../../services/priceBookService';
@@ -22,7 +24,11 @@ import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.
 import { PurchasableItem } from '../../model/purchasableItem';
 import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
-import { PaymentsPage } from '../../pages/payment/payment';
+import { PaymentService } from '../../services/paymentService';
+import { UserSession } from '../../modules/dataSync/model/UserSession';
+import { FountainService } from './../../services/fountainService';
+import { PrintService } from './../../services/printService';
+import { PaymentsPage } from './../../pages/payment/payment';
 
 @Component({
   selector: 'basket',
@@ -45,9 +51,12 @@ export class BasketComponent {
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
   private store: Store;
-  private refund: boolean;
   private sale: Sale;
   private evaluationContext: EvaluationContext;
+
+  private get refund(): boolean {
+    return this.balance < 0
+  }
 
   @Input() user: UserSession;
 
@@ -67,10 +76,14 @@ export class BasketComponent {
     private modalCtrl: ModalController,
     private priceBookService: PriceBookService,
     private storeService: StoreService,
-    private navCtrl: NavController) {
+    private printService: PrintService,
+    private paymentService: PaymentService,
+    private loading: LoadingController,
+    private navCtrl: NavController,
+    private ngZone: NgZone) {
   }
 
-  public async initializeSale(sale: Sale, refund: boolean, evaluationContext: EvaluationContext) {
+  public async initializeSale(sale: Sale, evaluationContext: EvaluationContext) {
 
     await this.loadBaseData();
 
@@ -117,15 +130,11 @@ export class BasketComponent {
       await this.storeService.getCurrentStore()];
   }
 
-  public setBalance() {
-    if (!this.refund) {
-      this.balance = this.sale.payments && this.sale.payments.length > 0 ?
-        this.sale.taxTotal - this.sale.payments
-          .map(payment => payment.amount)
-          .reduce((a, b) => a + b) : this.sale.taxTotal;
-    } else {
-      this.balance = this.sale.taxTotal;
-    }
+  setBalance() {
+    this.balance = this.sale.payments && this.sale.payments.length > 0 ?
+      this.sale.taxTotal - this.sale.payments
+        .map(payment => payment.amount)
+        .reduce((a, b) => a + b) : this.sale.taxTotal;
     this.sale.state = this.balance > 0 ? 'current' : 'refund';
   }
 
@@ -134,7 +143,7 @@ export class BasketComponent {
     let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
 
     if (itemPrice) {
-      var basketItem = await this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
+      var basketItem = this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
 
       this.updateQuantity(basketItem);
 
@@ -234,13 +243,71 @@ export class BasketComponent {
       this.calculateAndSync();
     }
 
-    this.refund = this.balance < 0;
     this.navCtrl.push(PaymentsPage, {
       sale: this.sale,
       doRefund: this.refund,
       callback: pushCallback,
       store: this.store
     });
+  }
+
+  public async fastPayment() {
+
+    let stockErrors;
+
+    this.ngZone.runOutsideAngular(async () => {
+      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    });
+
+    if (stockErrors && stockErrors.length > 0) {
+      let alert = this.alertController.create(
+        {
+          title: 'Out of Stock',
+          subTitle: 'Please make changes to sale and continue',
+          message: `${stockErrors.join('\n')}`,
+          buttons: ['Ok'],
+        }
+      );
+      alert.present();
+      return;
+    } else {
+
+      this.ngZone.runOutsideAngular(async () => {
+        let sale = { ...this.sale }
+
+        sale.payments = [
+          {
+            type: 'cash',
+            amount: Number(sale.items.length > 0 ? _.sumBy(sale.items, item => item.finalPrice * item.quantity) : 0)
+          }
+        ];
+
+        await this.paymentService.completePayment(sale, this.store._id, this.refund);
+
+        await this.salesService.update(sale);
+
+        try {
+          this.printSale(false, sale);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+
+      localStorage.removeItem('sale_id');
+
+      this.sale = await this.salesService.instantiateSale(this.user.currentPos);
+      this.paymentCompleted.emit();
+      this.customer = null;
+      this.calculateAndSync();
+    }
+  }
+
+  private async printSale(forcePrint: boolean, sale: Sale) {
+    if (this.store.printReceiptAtEndOfSale || forcePrint) {
+      await this.printService.printReceipt(sale);
+    }
+
+    await this.printService.openCashDrawer();
   }
 
   private generatePaymentBtnText() {

@@ -1,13 +1,13 @@
 import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { LoginPage } from '../login/login';
-import { DataSync } from '../dataSync/dataSync';
 import { PlatformService } from '../../services/platformService';
 import { Insomnia } from '@ionic-native/insomnia';
-import { UserService } from '../../services/userService';
-import { ConfigService } from '../../services/configService';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { UserService } from '../../modules/dataSync/services/userService';
+import { ConfigService } from '../../modules/dataSync/services/configService';
+import { LoginPage } from '../../modules/dataSync/pages/login/login';
+import { DataSync } from '../../modules/dataSync/pages/dataSync/dataSync';
 
 @Component({
   selector: 'page-deploy',
@@ -27,12 +27,6 @@ export class DeployPage {
     public splashScreen: SplashScreen) {
   }
 
-  async ngOnInit() {
-    if (!this.eligibleForDeploy()) {
-      await this.navigateToNextPage();
-    }
-  }
-
   async ionViewDidLoad() {
     try {
 
@@ -49,7 +43,9 @@ export class DeployPage {
             this.progressMessage = `Download New version ${downloadProgress}%`;
           });
         }, async error => {
-          await this.navigateToNextPage();
+
+          console.error('error in downloading new version');
+          await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
         }, () => {
           //download completed 
           this.progressMessage = 'Download new version done.';
@@ -62,7 +58,7 @@ export class DeployPage {
               this.progressMessage = `Extract new version ${extractProgress}%`;
             });
           }, async error => {
-            await this.navigateToNextPage();
+            await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
           }, async () => {
             //extract completed
             this.progressMessage = 'Extract new version done.';
@@ -73,22 +69,10 @@ export class DeployPage {
         })
       }
       else {
-        await this.navigateToNextPage();
+        await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
       }
     } catch (error) {
-      await this.navigateToNextPage();
+      await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
     }
-  }
-
-  private eligibleForDeploy() {
-    return this.platformService.isMobileDevice() && !ConfigService.isDevelopment() && ConfigService.turnOnDeployment();
-  }
-
-  private async navigateToNextPage() {
-    let user = await this.userService.getDeviceUser();
-    if (this.platformService.isMobileDevice()) {
-      user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
-    }
-    this.navCtrl.setRoot(user ? DataSync : LoginPage);
   }
 }

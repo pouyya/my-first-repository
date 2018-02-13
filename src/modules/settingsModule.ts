@@ -1,9 +1,9 @@
-import { LogOut } from './../pages/logout/logout';
 import { GroupSaleTaxPage } from './../pages/admin/group-sale-tax/group-sale-tax';
 import { SaleTaxPage } from './../pages/admin/sale-tax/sale-tax';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase, PageSettingsInterface } from './moduelBase';
 import { Roles } from '../pages/roles/roles';
+import { LogOut } from './dataSync/pages/logout/logout';
 
 export class SettingsModule  implements ModuleBase {
   public setInjector() {

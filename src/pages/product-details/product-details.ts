@@ -9,14 +9,13 @@ import { SalesTaxService } from './../../services/salesTaxService';
 import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
-import { UserService } from './../../services/userService';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams, ViewController, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
-import { icons } from './../../metadata/itemIcons';
+import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
@@ -24,6 +23,7 @@ import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SupplierService } from '../../services/supplierService';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 interface InteractableStoreStock {
 	storeId: string,

@@ -1,7 +1,7 @@
 import * as moment from 'moment';
-import { DBBasedEntity } from './dbBasedEntity';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBMode, DBModeEnum } from '@simpleidea/simplepos-core/dist/metadata/dbMode';
 import { BasketItem } from './basketItem';
-import { DBMode, DBModeEnum } from '../metadata/dbMode';
 
 interface PaymentsInterface {
   type: string,

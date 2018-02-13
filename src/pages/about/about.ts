@@ -1,5 +1,4 @@
-import { ConfigService } from './../../services/configService';
-import { StoreService } from './../../services/storeService';
+import { StoreService } from '../../services/storeService';
 import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
@@ -9,6 +8,7 @@ import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { ConfigService } from '../../modules/dataSync/services/configService';
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)

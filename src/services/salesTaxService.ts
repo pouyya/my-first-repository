@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BaseEntityService } from './baseEntityService';
+import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { PriceBookService } from './priceBookService';
 import { GroupSalesTaxService } from './groupSalesTaxService';
 import { SalesTax } from './../model/salesTax';
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class SalesTaxService extends BaseEntityService<SalesTax> {

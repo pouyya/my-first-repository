@@ -11,7 +11,7 @@ import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
 import { Customers } from '../pages/customers/customers';
-import { LogOut } from '../pages/logout/logout';
+import { LogOut } from './dataSync/pages/logout/logout';
 
 @Injectable()
 export class BackOfficeModule implements ModuleBase {

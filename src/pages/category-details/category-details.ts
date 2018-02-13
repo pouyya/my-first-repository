@@ -1,10 +1,10 @@
 import { Category } from './../../model/category';
-import { UserService } from './../../services/userService';
 import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController, AlertController, ModalController, ToastController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
-import { icons } from './../../metadata/itemIcons';
+import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 @Component({
   selector: 'page-variables',

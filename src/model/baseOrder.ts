@@ -1,5 +1,6 @@
-import { DBBasedEntity } from "./dbBasedEntity";
-import { DBMode, DBModeEnum } from "../metadata/dbMode";
+import { DBModeEnum, DBMode } from "@simpleidea/simplepos-core/dist/metadata/dbMode";
+import { DBBasedEntity } from "@simpleidea/simplepos-core/dist/model/dbBasedEntity";
+
 
 export enum OrderStatus {
   Received = 'received',

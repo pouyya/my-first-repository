@@ -1,4 +1,4 @@
-import { DBBasedEntity } from './dbBasedEntity';
+import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 import { BaseTaxIterface } from './baseTaxIterface';
 
 export class SalesTax extends DBBasedEntity implements BaseTaxIterface {
