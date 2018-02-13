@@ -13,6 +13,9 @@
     text-align: center;
     color: $sales-category-tile-btn-color;
     background-color: $tile-background-color;
+    ion-label {
+      white-space: normal;
+    }
     .category-icon {
       padding-bottom: 10px;
       display: block;
