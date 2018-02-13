@@ -199,6 +199,7 @@ import { PaymentService } from '../services/paymentService';
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
       {
+        mode: 'md',
         backButtonText: '',
         modalEnter: 'modal-slide-in',
         modalLeave: 'modal-slide-out',
