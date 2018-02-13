@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Orders</ion-title>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="view()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-8 class="customer-search-container">
+        <ion-searchbar debounce="500" animated="true" placeholder="Search by order number" (ionInput)="searchByOrderNumber($event)"></ion-searchbar>
+      </ion-col>
+      <ion-col col-md-4>
+        <ion-select [(ngModel)]="selectedOrderStatus" (ionChange)="searchByOrderStatus()">
+          <ion-option *ngFor="let status of orderStatuses" [value]="status.value">{{ status.text }}</ion-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-2>
+            <strong>Order No#</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Created Date</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Supplier</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Status</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Shop</strong>
+          </ion-col>
+          <ion-col col-md-2>
+            <strong>Total Cost</strong>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list>
+    <ion-item *ngFor="let order of orders;" (click)="view(order)">
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-2>
+            {{ order.orderNumber }}
+          </ion-col>
+          <ion-col col-md-2>
+            {{ order.createdAt | localDate:'MMM d, YYYY, h:mm a' }}
+          </ion-col>
+          <ion-col col-md-2>
+            {{ order.supplierName }}
+          </ion-col>
+          <ion-col col-md-2>
+            <ion-badge [color]="labels[order.status].color">{{ labels[order.status].text }}</ion-badge>
+          </ion-col>
+          <ion-col col-md-2>
+            {{ order.storeName }}
+          </ion-col>
+          <ion-col col-md-2>
+            {{ order.totalCost }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
