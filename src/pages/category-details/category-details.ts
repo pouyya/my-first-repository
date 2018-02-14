@@ -46,6 +46,7 @@ export class CategoryDetails {
 
   public async onSubmit() {
     try {
+      this.categoryItem.order = Number(this.categoryItem.order);
       await this.categoryService[this.isNew ? 'add':'update'](this.categoryItem);
       let toast = this.toastCtrl.create({
         message: `Category '${this.categoryItem.name}' has been created successfully!`,

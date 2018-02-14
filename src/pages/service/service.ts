@@ -1,3 +1,4 @@
+import { LoadingController } from 'ionic-angular';
 import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { Component, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController } from 'ionic-angular';
@@ -29,18 +30,22 @@ export class Services {
   constructor(public navCtrl: NavController,
     private alertCtrl: AlertController,
     private serviceService: ServiceService,
+    private loading: LoadingController,
     private zone: NgZone,
     private modalCtrl: ModalController) {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
   }
 
   async ionViewDidEnter() {
+    let loader = this.loading.create({ content: 'Loading Services...' });
+    await loader.present();
     try {
-      let loader = this.loading.create({ content: 'Loading Services...' });
-      await loader.present();
       await this.fetchMore();
       loader.dismiss();
     } catch (err) {
       console.error(err);
+      loader.dismiss();
       return;
     }
   }
@@ -59,23 +64,24 @@ export class Services {
   }
 
   private async loadServices(): Promise<any> {
-    let selectors: QuerySelectorInterface = {
-      order: {
-        $exists: true
-      }
-    };
+    let selectors: QuerySelectorInterface = {};
 
     let options: QueryOptionsInterface = {
       sort: [
         {
           order: SortOptions.ASC
         }
-      ]
+      ],
+      conditionalSelectors: {
+        order: {
+          $gt: true
+        }
+      }
     }
 
-    if(Object.keys(this.filter).length > 0) {
+    if (Object.keys(this.filter).length > 0) {
       _.each(this.filter, (value, key) => {
-        if(value) {
+        if (value) {
           selectors[key] = value;
         }
       });

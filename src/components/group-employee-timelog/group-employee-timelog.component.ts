@@ -56,7 +56,7 @@ export class GroupEmployeeTimeLog implements OnInit {
       });
       if (this._timeLog[0].employee) {
         this.renderable.employee = this._timeLog[0].employee;
-        this.renderable.name = `${this._timeLog[0].employee.firstName} ${this._timeLog[0].employee.lastName}`;
+        this.renderable.name = `${this._timeLog[0].employee.firstName} ${this._timeLog[0].employee.lastName || ''}`;
       }
       if (this._timeLog[0].store) {
         this.renderable.store = this._timeLog[0].store.name;

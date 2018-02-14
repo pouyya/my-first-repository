@@ -31,16 +31,19 @@ export class Category {
     private platform: Platform,
     private zone: NgZone,
     private modalCtrl: ModalController) {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
   }
 
   async ionViewDidEnter() {
+    let loader = this.loading.create({ content: 'Loading Categories...' });
+    await loader.present();
     try {
-      let loader = this.loading.create({ content: 'Loading Categories...' });
-      await loader.present();
       await this.fetchMore();
       loader.dismiss();
     } catch (err) {
-      console.error(err);
+      console.error(new Error(err));
+      loader.dismiss();
       return;
     }
   }
@@ -68,15 +71,11 @@ export class Category {
   }
 
   private async loadCategories(): Promise<any> {
-    let selectors: QuerySelectorInterface = {
-      order: {
-        $exists: true
-      }
-    };
+    let selectors: QuerySelectorInterface = { };
 
-    if(Object.keys(this.filter).length > 0) {
+    if (Object.keys(this.filter).length > 0) {
       _.each(this.filter, (value, key) => {
-        if(value) {
+        if (value) {
           selectors[key] = value;
         }
       });
@@ -85,14 +84,19 @@ export class Category {
     let options: QueryOptionsInterface = {
       sort: [
         { order: SortOptions.ASC }
-      ]
+      ],
+      conditionalSelectors: {
+        order: {
+          $gt: true
+        }
+      }
     }
     return await this.categoryService.search(this.limit, this.offset, selectors, options);
   }
 
   public async fetchMore(infiniteScroll?: any) {
     let categories = await this.loadCategories();
-    if(categories.length > 0) {
+    if (categories.length > 0) {
       let piItems = await this.categoryService.getPurchasableItems();
       categories.forEach((category, index, array) => {
         let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
