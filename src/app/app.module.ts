@@ -1,10 +1,10 @@
 // core
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -68,6 +68,11 @@ import { Roles } from '../pages/roles/roles';
 import { RoleDetails } from '../pages/role-details/role-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
 import { SupplierDetails } from './../pages/supplier-details/supplier-details';
+import { Orders } from '../pages/orders/orders';
+import { OrderDetails } from './../pages/order-details/order-details';
+import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAndStore/addSupplierAndStore';
+import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
+import { ProductsSelector } from '../pages/order-details/modals/products-selector/products-selector';
 import { Closures } from './../pages/closures/closures';
 
 // components
@@ -132,6 +137,7 @@ import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deplo
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
+import { OrderService } from './../services/orderService';
 import { ResourceService } from '../services/resourceService';
 import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
 import { ConfigService } from '../modules/dataSync/services/configService';
@@ -192,6 +198,11 @@ import { PaymentService } from '../services/paymentService';
     RoleDetails,
     Suppliers,
     SupplierDetails,
+    Orders,
+    OrderDetails,
+    AddSupplierAndStore,
+    CreateSupplier,
+    ProductsSelector,
     Closures
   ],
   imports: [
@@ -295,6 +306,11 @@ import { PaymentService } from '../services/paymentService';
     RoleDetails,
     Suppliers,
     SupplierDetails,
+    Orders,
+    OrderDetails,
+    AddSupplierAndStore,
+    CreateSupplier,
+    ProductsSelector,
     Closures
   ],
   providers: [
@@ -347,6 +363,7 @@ import { PaymentService } from '../services/paymentService';
     AccountSettingService,
     RoleService,
     SupplierService,
+    OrderService,
     ResourceService,
     PaymentService
   ]

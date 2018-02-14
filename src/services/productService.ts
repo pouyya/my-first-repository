@@ -23,4 +23,12 @@ export class ProductService extends BaseEntityService<Product> {
 			}
 		});
 	}
+
+	public async getByCategoryIds(categoryIds: string[]) {
+		return this.findBy({
+			selector: {
+				_id: { $in: categoryIds }
+			}
+		});
+	}
 }

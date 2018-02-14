@@ -4,6 +4,7 @@ import { Category } from '../pages/category/category';
 import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelBase';
 import { Brands } from '../pages/brands/brands';
 import { Suppliers } from '../pages/suppliers/suppliers';
+import { Orders } from '../pages/orders/orders';
 
 export class InventoryModule implements ModuleBase {
   public setInjector() {
@@ -15,7 +16,7 @@ export class InventoryModule implements ModuleBase {
     { title: 'Brands', icon: 'cash', component: Brands },
     { title: 'Products', icon: 'pricetags', component: Products },
     { title: 'Suppliers', icon: 'contacts', component: Suppliers },
-    { title: 'Orders', icon: 'cash', component: Category },
+    { title: 'Orders', icon: 'cash', component: Orders },
     { title: 'Stock Control', icon: 'cash', component: Category },
     { title: 'Back Office', icon: 'build', component: HomePage },
   ];

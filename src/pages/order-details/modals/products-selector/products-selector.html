@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <small>Add Products</small>
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-searchbar (ionInput)="search($event)"></ion-searchbar>
+  <ion-list>
+    <ion-item *ngFor="let product of products">
+      <ion-label>{{product.name}}</ion-label>
+      <ion-checkbox color="primary" [(ngModel)]="product.selected"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <button ion-button class="pull-right" (click)="addProduct()">Add Products</button>
+</ion-footer>

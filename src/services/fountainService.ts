@@ -23,4 +23,8 @@ export class FountainService {
     return `${currentAccountSetting.closureNumberPrefix || 'CL'}${currentAccountSetting.closureLastNumber}`;
   }
 
+  public async getOrderNumber() {
+    return await Promise.resolve(`O${Math.round(Math.random() * 1000)}`);
+  }
+
 }
