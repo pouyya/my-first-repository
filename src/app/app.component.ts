@@ -86,7 +86,7 @@ export class SimplePOSApp implements OnInit {
     this.platform.ready().then(() => {
 
       if (typeof Appsee !== 'undefined' && Appsee) {
-        Appsee.start(ConfigService.ApseeApiKey);
+        Appsee.start(ConfigService.ApseeApiKey());
       }
       
       this.statusBar.styleDefault();
