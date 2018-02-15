@@ -88,8 +88,12 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
       });
     });
 
-    let records: any[] = await Promise.all(promises.map(promise => promise()));
-    return _.flatten(records);
+    try {
+      let records: any[] = await Promise.all(promises.map(promise => promise()));
+      return _.flatten(records);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   public async getAllTimeStampOfCurrentPeriodOfStore(storeId: string): Promise<Array<EmployeeTimestamp>> {

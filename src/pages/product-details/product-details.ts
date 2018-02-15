@@ -329,6 +329,7 @@ export class ProductDetails {
 	}
 
 	public async saveProducts() {
+		this.productItem.order = Number(this.productItem.order);
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
 			this._defaultPriceBook.purchasableItems.push({

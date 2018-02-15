@@ -208,6 +208,7 @@ export class ServiceDetails {
 			return itemPrice;
 		}
 
+		this.serviceItem.order = Number(this.serviceItem.order);
 		if (this.isNew) {
 			var res = await this.serviceService.add(this.serviceItem);
 			this._defaultPriceBook.purchasableItems.push(createPurchsableItem(res.id));
