@@ -1,12 +1,13 @@
 <ion-header>
   <ion-navbar>
     <ion-buttons end network-monitor></ion-buttons>
-    <ion-title>Launching...</ion-title>
+    <ion-title>{{ headerTitle }}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <div text-center>
-    <ion-spinner name="bubbles"></ion-spinner>
+      <h2>{{ message }}</h2>
+    <ion-spinner *ngIf="!hideSpinner" name="bubbles"></ion-spinner>
   </div>
 </ion-content>

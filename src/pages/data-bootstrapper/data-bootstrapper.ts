@@ -17,6 +17,9 @@ import { POS } from '../../model/pos';
 export class DataBootstrapper implements OnInit {
 
   private _initialPage: any;
+  public message: string;
+  public headerTitle: string;
+  public hideSpinner: boolean;
 
   constructor(
     private accountSettingService: AccountSettingService,
@@ -28,6 +31,8 @@ export class DataBootstrapper implements OnInit {
     private navCtrl: NavController
   ) {
     this._initialPage = Sales;
+    this.headerTitle = "Launching...";
+    this.hideSpinner = false;
   }
 
   async ngOnInit() {
@@ -40,6 +45,13 @@ export class DataBootstrapper implements OnInit {
 
     if (!user.currentPos || !user.currentStore) {
       let allPos: POS[] = await this.posService.getAll();
+
+      if (!allPos || allPos.length == 0) {
+        this.hideSpinner = true;
+        this.headerTitle = "Error connecting to server!";
+        this.message = "There is a problem in syncing data. Seems like the app is offline. Please make sure the app is connected to internet and close and open the app again.";
+        return;
+      }
       currentPos = allPos[0];
       currentStore = await this.storeService.get(currentPos.storeId);
       user.currentPos = currentPos._id;
