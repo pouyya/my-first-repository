@@ -28,7 +28,7 @@ export class SecurityService implements GuardInterface {
 	 * @param accessRightItems 
 	 * @returns {Promise<SecurityResult>}
 	 */
-	public async canAccess<T extends AccessRightItem>(accessRightItems: T[] = []): Promise<SecurityResult> {
+	public async canAccess<T extends AccessRightItem>(accessRightItems: T[] = [], persistsCurrentEmployee: boolean = true): Promise<SecurityResult> {
 		let securityResult: SecurityResult;
 		let loader = this.loading.create({ content: 'Please Wait...' });
 		await loader.present();
@@ -49,11 +49,11 @@ export class SecurityService implements GuardInterface {
 				return securityResult;
 			} else {
 				loader.dismiss();
-				securityResult = await this.verifyPinAndGiveAccess(currentUserStore, accessRightItems);
+				securityResult = await this.verifyPinAndGiveAccess(currentUserStore, accessRightItems, persistsCurrentEmployee);
 				return securityResult;
 			}
 		} else {
-			securityResult = await this.verifyPinAndGiveAccess(currentUserStore, accessRightItems);
+			securityResult = await this.verifyPinAndGiveAccess(currentUserStore, accessRightItems, persistsCurrentEmployee);
 			loader.dismiss();
 			return securityResult;
 		}
@@ -65,7 +65,7 @@ export class SecurityService implements GuardInterface {
 	 * @param accessRightItems 
 	 * @returns {Promise<SecurityResult>}
 	 */
-	private async verifyPinAndGiveAccess(currentUsersStore: string, accessRightItems: AccessRightItem[]): Promise<SecurityResult> {
+	private async verifyPinAndGiveAccess(currentUsersStore: string, accessRightItems: AccessRightItem[], persistsCurrentEmployee: boolean): Promise<SecurityResult> {
 		let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
 			{ ok: 'OK', cancel: 'Cancel' });
 
@@ -82,7 +82,9 @@ export class SecurityService implements GuardInterface {
 			return new SecurityResult(false, SecurityResultReason.notEnoughAccess);
 		}
 
-		this.employeeService.setEmployee(model);
+		if (persistsCurrentEmployee) {
+			this.employeeService.setEmployee(model);
+		}
 		return new SecurityResult(true, SecurityResultReason.accessGrant);
 	}
 

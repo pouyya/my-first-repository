@@ -87,6 +87,8 @@ export class OpenCloseRegister {
     this.calculateExpectedCounts(sales);
 
     this.populateClosure(sales, this.employeeService.getEmployee());
+    
+    this.prinService.openCashDrawer();
 
     this.cdr.reattach();
     loader.dismiss();

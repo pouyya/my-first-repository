@@ -15,6 +15,11 @@ import { DeployPage } from '../pages/deploy/deploy';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { UserService } from '../modules/dataSync/services/userService';
+import { PrintService } from '../services/printService';
+import { SecurityService } from '../services/securityService';
+import { AccessRightItem } from '../model/accessItemRight';
+import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
+import { SecurityResultReason } from '../infra/security/model/securityResult';
 
 declare var Appsee: any;
 
@@ -45,7 +50,9 @@ export class SimplePOSApp implements OnInit {
     private toastController: ToastController,
     private platformService: PlatformService,
     private ionicProDeployService: IonicProDeployService,
-    private userService: UserService
+    private userService: UserService,
+    private printService: PrintService,
+    private securityService: SecurityService
   ) {
     this._sharedService
       .getSubscribe('storeOrPosChanged')
@@ -88,7 +95,7 @@ export class SimplePOSApp implements OnInit {
       if (typeof Appsee !== 'undefined' && Appsee) {
         Appsee.start(ConfigService.ApseeApiKey());
       }
-      
+
       this.statusBar.styleDefault();
       this.hideSplashScreen();
     });
@@ -138,5 +145,34 @@ export class SimplePOSApp implements OnInit {
         this.moduleName = this.currentModule.constructor.name;
       }
     }
+  }
+
+  async openCashDrawer() {
+
+    var securityResult = await this.securityService.canAccess([SecurityAccessRightRepo.OpenCashDrawer], false);
+
+    let message: string;
+
+    if (securityResult.isValid) {
+      message = "PIN validated, the drawer is opened!";
+      this.printService.openCashDrawer();
+    }
+    else {
+      switch (securityResult.reason) {
+        case SecurityResultReason.notEnoughAccess:
+          message = 'You do not have enough access rights!';
+          break;
+        case SecurityResultReason.wrongPIN:
+          message = 'Incorrect PIN!';
+          break;
+      }
+    }
+
+    let toast = this.toastController.create({
+      message,
+      duration: 3000
+    });
+    
+    toast.present();
   }
 }
