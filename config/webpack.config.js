@@ -10,7 +10,7 @@ useDefaultConfig.prod.resolve.alias = {
 };
 
 useDefaultConfig.dev.resolve.alias = {
-  "@app/env": path.resolve(environmentPath('dev'))
+  "@app/env": env == 'stage' ? path.resolve(environmentPath('stage')) : path.resolve(environmentPath('dev'))
 };
 
 if (env !== 'prod' && env !== 'dev' && env !== 'stage') {

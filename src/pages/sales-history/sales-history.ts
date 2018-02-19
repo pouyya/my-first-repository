@@ -12,6 +12,8 @@ import { Customer } from '../../model/customer';
 import { Employee } from '../../model/employee';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
+import * as moment from 'moment-timezone';
+import { DateTimeHelper } from '../../infra/helpers/dateTimeHelper';
 
 enum TimeValues {
   anytime = "1",
@@ -155,7 +157,7 @@ export class SalesHistoryPage {
               toast.present();
               var _sale = await this.loadSale(sale, doRefund);
               localStorage.setItem('sale_id', _sale._id);
-              this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
+              this.navCtrl.setRoot(Sales, { sale: _sale });
             }
           },
           {
@@ -312,12 +314,16 @@ export class SalesHistoryPage {
         endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         this.timeFrame = {
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString()
+          startDate: moment.utc(startDate).format(),
+          endDate: moment.utc(endDate).format()
         };
         break;
       case TimeValues.thisWeek:
-        this.timeFrame = null; // will later add the logic
+        var thisWeek = DateTimeHelper.getWeekRange(new Date());
+        this.timeFrame = {
+          startDate: moment.utc(thisWeek.startDate).format(),
+          endDate: moment.utc(thisWeek.endDate).format()
+        };
         break;
       case TimeValues.thisMonth:
         let date = new Date();

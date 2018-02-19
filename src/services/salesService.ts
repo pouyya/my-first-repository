@@ -35,27 +35,38 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public async instantiateSale(posId?: string): Promise<Sale> {
-		var user = await this.userService.getUser();
-		let id = localStorage.getItem('sale_id') || moment().utc().format();
-		if (!posId) posId = user.currentPos;
+
+		if (!posId) {
+			var user = await this.userService.getUser();
+			posId = user.currentPos;
+		}
+
 		try {
-			let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
-			if (sales && sales.length > 0) {
-				let sale = sales[0];
-				return sale;
+			let id = localStorage.getItem('sale_id');
+
+			if (id) {
+				let sales: Sale[] = await this.findBy({ selector: { _id: id, posID: posId, state: { $in: ['current', 'refund'] } }, include_docs: true });
+				if (sales && sales.length > 0) {
+					let sale = sales[0];
+					return sale;
+				}
 			}
-			return SalesServices._createDefaultObject(posId, id);
+
+			return SalesServices._createDefaultObject(posId);
+
 		} catch (error) {
+
 			if (error.name === GlobalConstants.NOT_FOUND) {
-				return SalesServices._createDefaultObject(posId, id);
+				return SalesServices._createDefaultObject(posId);
 			}
+
 			return Promise.reject(error);
 		}
 	}
 
-	private static _createDefaultObject(posID: string, saleId: string) {
-		let sale: Sale = new Sale();
-		sale._id = saleId;
+	private static _createDefaultObject(posID: string): Sale {
+		let sale = new Sale();
+		sale._id = moment().utc().format();
 		sale.posID = posID;
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
@@ -180,8 +191,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public manageSaleId(sale: Sale) {
-		let saleId = localStorage.getItem('sale_id');
 		if (sale.items.length > 0 || sale.customerKey) {
+			let saleId = localStorage.getItem('sale_id');
 			saleId != sale._id && (localStorage.setItem('sale_id', sale._id));
 		} else {
 			localStorage.removeItem('sale_id');

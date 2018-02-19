@@ -87,6 +87,8 @@ export class OpenCloseRegister {
     this.calculateExpectedCounts(sales);
 
     this.populateClosure(sales, this.employeeService.getEmployee());
+    
+    this.prinService.openCashDrawer();
 
     this.cdr.reattach();
     loader.dismiss();
@@ -114,13 +116,11 @@ export class OpenCloseRegister {
     if (sales) {
       sales.forEach((sale) => {
         sale.payments.forEach((payment) => {
-          var isRefund = sale.state == 'refund';
-          var amount = (isRefund ? -1 : 1) * Number(payment.amount);
           if (payment.type === 'credit_card') {
-            this.expected.cc += amount;
+            this.expected.cc += payment.amount;
           }
           if (payment.type === 'cash') {
-            this.expected.cash += amount;
+            this.expected.cash += payment.amount;
           }
         });
       });

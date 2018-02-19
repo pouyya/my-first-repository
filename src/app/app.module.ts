@@ -1,10 +1,10 @@
 // core
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorHandler, NgModule, Injector } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -68,6 +68,11 @@ import { Roles } from '../pages/roles/roles';
 import { RoleDetails } from '../pages/role-details/role-details';
 import { Suppliers } from '../pages/suppliers/suppliers';
 import { SupplierDetails } from './../pages/supplier-details/supplier-details';
+import { Orders } from '../pages/orders/orders';
+import { OrderDetails } from './../pages/order-details/order-details';
+import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAndStore/addSupplierAndStore';
+import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
+import { ProductsSelector } from '../pages/order-details/modals/products-selector/products-selector';
 import { Closures } from './../pages/closures/closures';
 
 // components
@@ -83,6 +88,7 @@ import { SelectPurchasableItemsModel } from './../components/purchasable-item-pr
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
+import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -131,10 +137,12 @@ import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deplo
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
+import { OrderService } from './../services/orderService';
 import { ResourceService } from '../services/resourceService';
 import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
+import { PaymentService } from '../services/paymentService';
 
 @NgModule({
   declarations: [
@@ -190,6 +198,11 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
     RoleDetails,
     Suppliers,
     SupplierDetails,
+    Orders,
+    OrderDetails,
+    AddSupplierAndStore,
+    CreateSupplier,
+    ProductsSelector,
     Closures
   ],
   imports: [
@@ -197,6 +210,7 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
       {
+        mode: 'md',
         backButtonText: '',
         modalEnter: 'modal-slide-in',
         modalLeave: 'modal-slide-out',
@@ -231,6 +245,7 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
     TileScrollableModule,
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
+    SearchableIonSelectModule,
     IonicProDeployModule.forRoot({
       appId: ConfigService.ionicDeployAppId(),
       channel: ConfigService.ionicDeployAppChannel()
@@ -291,6 +306,11 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
     RoleDetails,
     Suppliers,
     SupplierDetails,
+    Orders,
+    OrderDetails,
+    AddSupplierAndStore,
+    CreateSupplier,
+    ProductsSelector,
     Closures
   ],
   providers: [
@@ -343,7 +363,9 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
     AccountSettingService,
     RoleService,
     SupplierService,
-    ResourceService
+    OrderService,
+    ResourceService,
+    PaymentService
   ]
 })
 export class AppModule {

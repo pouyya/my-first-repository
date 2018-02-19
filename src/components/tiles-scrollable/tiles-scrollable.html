@@ -1,6 +1,6 @@
 <div class="scroll">
-  <ion-card (click)="toggle(element)" [ngClass]="{ 'selected-element-tile': element.selected, 'element-tile': !element.selected && !element.disabled, 'disabled-element-tile': !element.selected && element.disabled }"
-    *ngFor="let element of elements; let i = index" tapabble>
+  <ion-card tappable (click)="toggle(element)" [ngClass]="{ 'selected-element-tile': element.selected, 'element-tile': !element.selected && !element.disabled, 'disabled-element-tile': !element.selected && element.disabled }"
+    *ngFor="let element of elements">
     <ion-item>
       {{ element[displayProperty] }}
     </ion-item>

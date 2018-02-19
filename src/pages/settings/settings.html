@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
+    <button ion-button menuToggle="leftMenu">
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title class="ion-title-center">Settings</ion-title>
@@ -35,12 +35,14 @@
       <ion-textarea type="text" [(ngModel)]="accountSetting.receiptFooterMessage"></ion-textarea>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Time Offset</ion-label>
-      <ion-select [(ngModel)]="accountSetting.timeOffset" name="timeOffset">
-        <ion-option [value]="timezone" *ngFor="let timezone of timezones">
-          {{ timezone }}
-        </ion-option>
-      </ion-select>
+      <searchable-ion-select
+        name="timeOffset" 
+        [(ngModel)]="accountSetting.timeOffset"
+        title="Time Offset"
+        valueField="code"
+        textField="name"
+        [items]="timezones">
+      </searchable-ion-select>
     </ion-item>
   </ion-list>
 

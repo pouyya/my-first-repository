@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Services</ion-title>
-    <button ion-button icon-only menuToggle>
+    <button ion-button icon-only menuToggle="leftMenu">
       <ion-icon name="menu"></ion-icon>
     </button>
 
@@ -14,18 +14,26 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-searchbar
+    debounce="500"
+    animated="true"
+    placeholder="Search by name"
+    (ionInput)="searchByName($event)">
+  </ion-searchbar>
   <ion-list inset *ngFor="let item of services ; let idx=index">
     <ion-item-sliding class="sliding">
       <ion-item (click)="showDetail(item)">
         <h2 class="item-title">{{item.name}}</h2>
       </ion-item>
       <ion-item-options>
-        <button ion-button color='danger' (click)="deleteServices(item, idx)" icon=left>
+        <button ion-button color='danger' (click)="remove(item, idx)" icon=left>
           <ion-icon name="trash"></ion-icon>
           Delete
         </button>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

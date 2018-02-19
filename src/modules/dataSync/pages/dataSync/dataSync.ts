@@ -35,7 +35,14 @@ export class DataSync {
 		this.updateText = "Check for data update!";
 
 		DBService.initializePlugin(ConfigService.isDevelopment());
-		DBService.initialize(ConfigService.currentCriticalFullExternalDBUrl, ConfigService.internalCriticalDBName, ConfigService.currentFullExternalDBUrl, ConfigService.internalDBName);
+		DBService.initialize(
+			ConfigService.currentCriticalFullExternalDBUrl,
+			ConfigService.internalCriticalDBName,
+			ConfigService.currentFullExternalDBUrl,
+			ConfigService.internalDBName,
+			user.access_token,
+			['order', 'entityTypeName', 'entityTypeNames'],
+			['entityTypeName', 'entityTypeNames']);
 
 		DBService.criticalDBSyncProgress.subscribe(
 			async (data: DBEvent) => {

@@ -1,3 +1,4 @@
+import { SearchableIonSelectComponent } from './../../components/searchable-ion-select/searchable-ion-select.component';
 import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
@@ -22,6 +23,7 @@ export class StoreDetailsPage {
   public action: string = 'Add';
   public registers: Array<POS> = [];
   public countries: Array<any> = [];
+  public posToAdd: POS[] = [];
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
@@ -76,30 +78,52 @@ export class StoreDetailsPage {
     });
   }
 
-  onSubmit() {
-    console.log(this.item);
+  async onSubmit() {
+    let loader = this.loading.create({ content: 'Saving store...' });
+    let addPos = async (storeId) => {
+      if (this.posToAdd.length > 0) {
+        let promises: any[] = [];
+        this.posToAdd.forEach(pos => {
+          pos.storeId = storeId;
+          promises.push(async () => await this.posService.add(pos));
+        });
+        return await Promise.all(promises.map(p => p()));
+      }
+      return;
+    };
+    await loader.present();
     if (this.isNew) {
-      this.storeService.add(this.item)
-        .catch(console.error.bind(console));
+      let info = await this.storeService.add(this.item);
+      loader.setContent('Saving Registers...');
+      await addPos(info._id);
     } else {
-      this.storeService.update(this.item)
-        .catch(console.error.bind(console));
+      await this.storeService.update(this.item);
+      loader.setContent('Saving Registers...');
+      await addPos(this.item._id);
     }
+    loader.dismiss();
     this.navCtrl.pop();
   }
 
   public showPos(pos: POS) {
     this.navCtrl.push(PosDetailsPage, {
       pos: pos,
-      storeId: this.item._id
+      storeId: this.item._id,
+      pushCallback: null
     });
   }
 
   public addRegister() {
+    let pushCallback = async (pos: POS) => pos && this.posToAdd.push(pos);
     this.navCtrl.push(PosDetailsPage, {
       pos: null,
-      storeId: this.item._id
+      storeId: this.item._id,
+      pushCallback: pushCallback
     });
+  }
+
+  public removeAddedRegister(index: number) {
+    this.posToAdd.splice(index, 1);
   }
 
   public remove() {

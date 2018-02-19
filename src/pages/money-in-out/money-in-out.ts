@@ -7,6 +7,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { PrintService } from '../../services/printService';
 
 @SecurityModule(SecurityAccessRightRepo.MoneyInOut)
 @PageModule(() => SalesModule)
@@ -22,7 +23,8 @@ export class MoneyInOut {
   constructor(
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
-    private posService: PosService) {
+    private posService: PosService,
+    private printService: PrintService) {
     this.cdr.detach();
   }
 
@@ -44,6 +46,8 @@ export class MoneyInOut {
         if (!this.register.cashMovements) {
           this.register.cashMovements = new Array<CashMovement>();
         }
+
+        this.printService.openCashDrawer();
 
         this.register.cashMovements.push(cash);
         this.posService.update(this.register).catch(error => {

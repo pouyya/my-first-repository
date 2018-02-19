@@ -2,6 +2,8 @@
 .basket {
   background-color: $basket-background-color;
   .name {
+    overflow:hidden; 
+    white-space:normal; 
     font-weight: 500;
   }
 }

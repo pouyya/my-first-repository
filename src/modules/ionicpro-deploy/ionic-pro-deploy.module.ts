@@ -12,11 +12,10 @@ import { IonicProDeployService } from './ionic-pro-deploy.service';
 })
 export class IonicProDeployModule {
   static forRoot(config: IonicProConfig = null): ModuleWithProviders {
+    IonicProDeployService.config = config;
     return {
       ngModule: IonicProDeployModule,
-      providers: [
-        { provide: IonicProDeployService, useValue: new IonicProDeployService(config) }
-      ]
+      providers: [IonicProDeployService]
     };
   }
 }

@@ -1,3 +1,4 @@
+import { Supplier } from './../../model/supplier';
 import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { StockHistory } from './../../model/stockHistory';
@@ -21,6 +22,7 @@ import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
 
 interface InteractableStoreStock {
@@ -49,6 +51,7 @@ export class ProductDetails {
 	public salesTaxes: Array<any> = [];
 	public storesStock: InteractableStoreStock[] = [];
 	public stockHistory: { [id: string]: StockHistory[] } = {};
+	public suppliers: Supplier[] = [];
 	public selectedStore: string;
 	public categories = [];
 	public brands: any = [];
@@ -78,6 +81,7 @@ export class ProductDetails {
 		private categoryService: CategoryService,
 		private storeService: StoreService,
 		private stockHistoryService: StockHistoryService,
+		private supplierService: SupplierService,
 		private brandService: BrandService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
@@ -137,6 +141,7 @@ export class ProductDetails {
 			this.appService.loadSalesAndGroupTaxes(),
 			this.priceBookService.getDefault(),
 			this.brandService.getAll(),
+			this.supplierService.getAll()
 		];
 
 		if (!this.isNew) {
@@ -198,6 +203,7 @@ export class ProductDetails {
 			salesTaxes,
 			defaultPB,
 			brands,
+			suppliers,
 			storesStock,
 			stockHistory
 		] = await Promise.all(promises);
@@ -208,6 +214,7 @@ export class ProductDetails {
 			this.salesTaxes = this.salesTaxes.concat(salesTaxes);
 			this._defaultPriceBook = defaultPB;
 			this.brands = brands;
+			this.suppliers = suppliers;
 			this.storesStock = storesStock;
 			this.stockHistory = _.cloneDeep(stockHistory);
 
@@ -322,6 +329,7 @@ export class ProductDetails {
 	}
 
 	public async saveProducts() {
+		this.productItem.order = Number(this.productItem.order);
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
 			this._defaultPriceBook.purchasableItems.push({

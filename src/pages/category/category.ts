@@ -7,6 +7,7 @@ import { PageModule } from '../../metadata/pageModule';
 import * as _ from 'lodash';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 
 @SecurityModule(SecurityAccessRightRepo.InventoryCategory)
 @PageModule(() => InventoryModule)
@@ -17,8 +18,11 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 export class Category {
   public items = [];
   public itemsBackup = [];
-  public isNew = true;
-  public action = 'Add';
+  private readonly defaultLimit = 10;
+  private readonly defaultOffset = 0;
+  private limit: number;
+  private offset: number;
+  private filter: any = {};
 
   constructor(public navCtrl: NavController,
     private alertCtrl: AlertController,
@@ -27,31 +31,19 @@ export class Category {
     private platform: Platform,
     private zone: NgZone,
     private modalCtrl: ModalController) {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
   }
 
   async ionViewDidEnter() {
+    let loader = this.loading.create({ content: 'Loading Categories...' });
+    await loader.present();
     try {
-      let loader = this.loading.create({ content: 'Loading Categories...' });
-      await loader.present();
-      let categories: any[] = _.sortBy(await this.categoryService.getAll(), [item => parseInt(item.order) || 0]);
-      if (categories.length > 0) {
-        let piItems = await this.categoryService.getPurchasableItems();
-        categories.forEach((category, index, array) => {
-          let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
-          array[index].associated = items.length;
-        });
-
-        await this.platform.ready();
-        this.zone.run(() => {
-          this.items = categories;
-          this.itemsBackup = categories;
-          loader.dismiss();
-        });
-      } else {
-        loader.dismiss();
-      }
+      await this.fetchMore();
+      loader.dismiss();
     } catch (err) {
-      console.error(err);
+      console.error(new Error(err));
+      loader.dismiss();
       return;
     }
   }
@@ -60,7 +52,7 @@ export class Category {
     this.navCtrl.push(CategoryDetails, { category: category });
   }
 
-  delete(item, idx) {
+  delete(category: any, idx) {
     let confirm = this.alertCtrl.create({
       title: 'Confirm Delete Category?',
       message: 'This Category using in Products or Services. Do you want to delete this Category?',
@@ -68,32 +60,62 @@ export class Category {
         {
           text: 'YES',
           handler: () => {
-            console.log("Using Category Delete");
-
-            this.categoryService.delete(item).catch(console.error.bind(console));
+            this.categoryService.delete(category).catch(console.error.bind(console));
             this.items.splice(idx, 1);
-
           }
         },
-        {
-          text: 'NO',
-          handler: () => {
-
-          }
-        }
+        'NO'
       ]
     });
     confirm.present()
   }
 
-  getItems(event) {
-    this.items = this.itemsBackup;
-    var val = event.target.value;
+  private async loadCategories(): Promise<any> {
+    let selectors: QuerySelectorInterface = { };
 
-    if (val && val.trim() != '') {
-      this.items = this.items.filter((category) => {
-        return ((category.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+    if (Object.keys(this.filter).length > 0) {
+      _.each(this.filter, (value, key) => {
+        if (value) {
+          selectors[key] = value;
+        }
+      });
     }
+
+    let options: QueryOptionsInterface = {
+      sort: [
+        { order: SortOptions.ASC }
+      ],
+      conditionalSelectors: {
+        order: {
+          $gt: true
+        }
+      }
+    }
+    return await this.categoryService.search(this.limit, this.offset, selectors, options);
+  }
+
+  public async fetchMore(infiniteScroll?: any) {
+    let categories = await this.loadCategories();
+    if (categories.length > 0) {
+      let piItems = await this.categoryService.getPurchasableItems();
+      categories.forEach((category, index, array) => {
+        let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
+        array[index].associated = items.length;
+      });
+    }
+    this.offset += categories ? categories.length : 0;
+    this.zone.run(() => {
+      this.items = this.items.concat(categories);
+      infiniteScroll && infiniteScroll.complete();
+    });
+  }
+
+  public async searchByName(event) {
+    let val = event.target.value;
+    this.filter['name'] = (val && val.trim() != '') ? val : "";
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.items = [];
+    await this.fetchMore();
   }
 }

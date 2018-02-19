@@ -90,10 +90,8 @@
         <ion-input type="text" [formControl]="phyZipCode" name="phyZipCode"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Country</ion-label>
-        <ion-select [formControl]="phyCountry" name="countries">
-          <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
-        </ion-select>
+        <searchable-ion-select [formControl]="phyCountry" title="Country" valueField="code" textField="name" [items]="countries">
+        </searchable-ion-select>
       </ion-item>
     </ion-list>
     <ion-item>
@@ -125,11 +123,15 @@
           <ion-input type="text" [formControl]="posZipCode" name="posZipCode"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name">Country</ion-label>
-          <ion-select [formControl]="posCountry" name="countries">
-            <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
-          </ion-select>
+          <searchable-ion-select
+            [(ngModel)]="posCountry"
+            title="Country"
+            valueField="code"
+            textField="name"
+            [items]="countries">
+          </searchable-ion-select>
         </ion-item>
       </ion-list>
     </div>
   </form>
+  </ion-content>

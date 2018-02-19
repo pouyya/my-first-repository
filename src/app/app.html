@@ -1,5 +1,17 @@
+<ion-menu [content]="content" side="right" id="rightMenu">
+    <ion-content>
+        <ion-list>
+          <button menuClose ion-item (click)="openCashDrawer(p)" large>
+            <ion-icon name='cash' item-left></ion-icon>
+            <label padding-left item-left>Open Cash Drawer</label>
+          </button>
+        </ion-list>
+      </ion-content>
+  </ion-menu>
+  
 <ion-split-pane [when]=(currentModule.pinTheMenu)>
-  <ion-menu [content]="content" side="left" enable-menu-with-back-views="true" style="width: 180px">
+
+  <ion-menu [content]="content" side="left" id="leftMenu" enable-menu-with-back-views="true" style="width: 180px">
 
     <ion-header *ngIf="moduleName == 'BackOfficeModule'">
       <ion-toolbar>
