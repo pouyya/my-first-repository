@@ -141,7 +141,8 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.OpenCloseRegister,
     SecurityAccessRightRepo.GroupSaleTax,
     SecurityAccessRightRepo.MoneyInOut,
-    SecurityAccessRightRepo.SaleTax    
+    SecurityAccessRightRepo.SaleTax,    
+    SecurityAccessRightRepo.OpenCashDrawer    
   ];
 
 }
