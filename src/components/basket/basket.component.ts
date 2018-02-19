@@ -91,13 +91,12 @@ export class BasketComponent {
 
     if (!sale) {
       sale = await this.salesService.instantiateSale()
-    }
-
-    let customer: Customer = null;
-    if (sale.state == 'current') {
+    } else if (sale && sale.state == 'current') {
       await this.recalculateSaleAmounts(sale);
       sale = await this.salesService.update(sale);
     }
+
+    let customer: Customer = null;
 
     if (sale.customerKey) {
       customer = await this.customerService.get(sale.customerKey);
@@ -470,22 +469,15 @@ export class BasketComponent {
 
 
   private createBasketItem(purchasableItem: PurchasableItem, categoryId: string, isTaxIncl: boolean, itemPrice: PurchasableItemPriceInterface, employeeId: string, stockControl: boolean): BasketItem {
-
     let basketItem = new BasketItem();
     basketItem.quantity = 1;
     basketItem.discount = 0;
-
     basketItem.purchsableItemId = purchasableItem._id;
     basketItem.name = purchasableItem.name;
-
     basketItem.categoryId = categoryId;
-
-    this.salesService.calculateAndSetBasketPriceAndTax(basketItem, this.salesTaxes, this.defaultTax, itemPrice, isTaxIncl);
-
     basketItem.employeeId = employeeId;
-
     basketItem.stockControl = stockControl;
-
+    this.salesService.calculateAndSetBasketPriceAndTax(basketItem, this.salesTaxes, this.defaultTax, itemPrice, isTaxIncl);
     return basketItem;
   }
 
