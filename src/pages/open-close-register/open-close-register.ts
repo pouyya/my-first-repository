@@ -37,12 +37,12 @@ export class OpenCloseRegister {
   public store: Store;
   public closure: Closure;
   public showReport: Boolean;
-  public expected: any = {
+  public expected: { [type: string]: number } = {
     cash: 0,
     cc: 0,
     total: 0
   };
-  public openingPos: any = {
+  public openingPos: { amount: number, notes: string } = {
     amount: null,
     notes: null
   };
@@ -50,6 +50,8 @@ export class OpenCloseRegister {
     add: { text: 'Cash In' },
     remove: { text: 'Cash Out' }
   };
+
+  private totalCashMaking: number = 0;
 
   constructor(private loading: LoadingController,
     private posService: PosService,
@@ -103,6 +105,7 @@ export class OpenCloseRegister {
     this.closure.storeName = this.store.name;
     this.closure.openTime = this.pos.openTime;
     this.closure.openingAmount = this.pos.openingAmount;
+    this.closure.totalCashMaking = this.totalCashMaking;
     this.closure.totalCashIn = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'add' ? cashMovement.amount : 0);
     this.closure.totalCashOut = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'remove' ? cashMovement.amount : 0);
     this.closure.employeeFullName = `${employee.firstName} ${employee.lastName}`;
@@ -125,7 +128,7 @@ export class OpenCloseRegister {
         });
       });
     }
-
+    this.totalCashMaking = this.expected.cash;
     this.expected.cash += this.pos.openingAmount;
     if (this.pos.cashMovements && this.pos.cashMovements.length > 0) {
       this.expected.cash = ((expected) => {
