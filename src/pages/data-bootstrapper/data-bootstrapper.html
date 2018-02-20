@@ -6,8 +6,13 @@
 </ion-header>
 
 <ion-content padding>
-  <div text-center>
-      <h2>{{ message }}</h2>
+  <div text-center *ngIf="haveAccess">
+    <h2>{{ message }}</h2>
     <ion-spinner *ngIf="!hideSpinner" name="bubbles"></ion-spinner>
+  </div>
+  <div text-center *ngIf="!haveAccess">
+    <h2>To open the app for shop (Shope Name), please provide your PIN number</h2>
+    <button ion-button block color="primary" (click)="openNextPage()">Enter PIN</button>
+    <button ion-button block color="primary" (click)="switchStore()">Change current store</button>
   </div>
 </ion-content>
