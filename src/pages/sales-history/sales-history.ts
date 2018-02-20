@@ -358,7 +358,7 @@ export class SalesHistoryPage {
         this.employeeId,
         this.selectedPaymentType
       );
-      this.offset += sales ? sales.length : 0; // this.limit;
+      this.offset += sales ? sales.length : 0;
       sales = await this.attachCustomersToSales(sales);
       this.zone.run(() => {
         this.sales = this.sales.concat(sales);

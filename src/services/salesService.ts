@@ -169,12 +169,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 			});
 		}
 
-		let selector: QueryOptionsInterface = {
-			sort: [{
-				_id: SortOptions.DESC
-			}],
-			conditionalSelectors: query.selector
-		};
+		options.sort = [{
+			_id: SortOptions.DESC
+		}];
 
 		return await super.search(limit, skip, {}, options);
 
