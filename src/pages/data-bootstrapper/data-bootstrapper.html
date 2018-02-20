@@ -12,7 +12,17 @@
   </div>
   <div text-center *ngIf="!haveAccess">
     <h2>To open the app for shop (Shope Name), please provide your PIN number</h2>
-    <button ion-button block color="primary" (click)="openNextPage()">Enter PIN</button>
-    <button ion-button block color="primary" (click)="switchStore()">Change current store</button>
+    <ion-row>
+      <ion-col col-md-4 offset-md-4>
+        <button ion-button block color="primary" (click)="openNextPage()">Enter PIN</button>
+      </ion-col>
+      <ion-col col-md-4></ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-md-4 offset-md-4>
+        <button ion-button block color="primary" (click)="switchStore()">Change current store</button>
+      </ion-col>
+      <ion-col col-md-4></ion-col>
+    </ion-row>j
   </div>
 </ion-content>
