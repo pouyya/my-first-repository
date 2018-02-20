@@ -95,16 +95,6 @@ export class SalesHistoryPage {
     try {
       this.user = await this.userService.getUser();
       await this.fetchMoreSales();
-      // let result: any = await this.salesService.searchSales(
-      //   this.user.currentPos,
-      //   this.limit, this.offset,
-      //   this.filters
-      // );
-      // await this.platform.ready();
-      // this.total = result.totalCount;
-      // this.offset += this.limit;
-      // this.sales = await this.attachCustomersToSales(result.docs);
-      // this.salesBackup = this.sales;
       loader.dismiss();
     } catch (err) {
       throw new Error(err);
@@ -346,40 +336,6 @@ export class SalesHistoryPage {
     await this.fetchMoreSales();
   }
 
-  private async getSales(limit?: number, offset?: number): Promise<Array<Sale>> {
-    return await this.salesService.searchSales(
-      this.user.currentPos,
-      this.limit,
-      this.offset,
-      this.filters,
-      this.timeFrame,
-      this.employeeId,
-      this.selectedPaymentType
-    );
-
-    // if (this.sales.length <= 0) {
-    //   let result = await this.salesService.searchSales(
-    //     this.user.currentPos,
-    //     limit | this.limit, offset | this.offset,
-    //     this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
-    //   if (result.totalCount > 0) {
-    //     this.total = result.totalCount;
-    //     this.sales = await this.attachCustomersToSales(result.docs);
-    //     this.salesBackup = this.sales;
-    //   }
-    // } else {
-    //   if (this.total > this.sales.length) {
-    //     let result: any = await this.salesService.searchSales(
-    //       this.user.currentPos,
-    //       limit | this.limit, offset | this.offset,
-    //       this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
-    //     let sales = await this.attachCustomersToSales(result.docs);
-    //     this.sales = this.sales.concat(sales);
-    //     this.salesBackup = this.sales;
-    //   }
-    // }
-  }
-
   private async loadSale(sale: Sale, doRefund: boolean) {
     let newSale: Sale;
     if (doRefund && sale.completed && sale.state == 'completed') {
@@ -393,7 +349,15 @@ export class SalesHistoryPage {
 
   public async fetchMoreSales(infiniteScroll?: any) {
     try {
-      let sales = await this.getSales();
+      let sales = await await this.salesService.searchSales(
+        this.user.currentPos,
+        this.limit,
+        this.offset,
+        this.filters,
+        this.timeFrame,
+        this.employeeId,
+        this.selectedPaymentType
+      );
       this.offset += sales ? sales.length : 0; // this.limit;
       sales = await this.attachCustomersToSales(sales);
       this.zone.run(() => {
