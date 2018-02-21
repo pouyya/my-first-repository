@@ -58,12 +58,19 @@ export class ClockInOutPage {
    * @AuthGuard
    */
   async ionViewCanEnter(): Promise<boolean> {
-    this.pos = await this.posService.getCurrentPos();;
+    this.pos = await this.posService.getCurrentPos();
     this.posStatus = this.pos.status;
     this.posName = this.pos.name;
 
     if (!this.posStatus) {
-      return true;
+
+      let toast = this.toastCtrl.create({
+        message: "POS is closed!",
+        duration: 3000
+      });
+      toast.present();
+
+      return false;
     }
     let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
       { ok: 'OK', cancel: 'Cancel' });
