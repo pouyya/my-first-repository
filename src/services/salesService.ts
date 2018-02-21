@@ -169,12 +169,14 @@ export class SalesServices extends BaseEntityService<Sale> {
 			});
 		}
 
-		options.sort = [{
+		query.sort = [{
 			_id: SortOptions.DESC
 		}];
 
-		return await super.search(limit, skip, {}, options);
+		query.limit = limit;
+		query.skip = skip;
 
+		return await super.findBy(query);
 	}
 
 	public async searchSalesOld(posID, limit, offset, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<any> {
