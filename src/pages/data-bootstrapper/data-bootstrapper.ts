@@ -23,6 +23,7 @@ import { POS } from '../../model/pos';
 export class DataBootstrapper {
 
   public message: string;
+  public securityMessage: string;
   public headerTitle: string;
   public hideSpinner: boolean;
   public haveAccess: boolean;
@@ -45,6 +46,7 @@ export class DataBootstrapper {
     private cdr: ChangeDetectorRef
   ) {
     this.cdr.detach();
+    this.securityMessage = `To open the app, please provide your PIN number`
     this._initialPage = Sales;
     this.headerTitle = "Launching...";
     this.hideSpinner = false;
@@ -54,6 +56,10 @@ export class DataBootstrapper {
   /** @AuthGuard */
   async ionViewCanEnter() {
     this._user = await this.userService.getDeviceUser();
+    if(this._user.currentStore) {
+      let store = await this.storeService.get(this._user.currentStore);
+      this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`
+    }
     return this.enterPin();
   }
 
@@ -67,7 +73,7 @@ export class DataBootstrapper {
       { ok: 'OK', cancel: 'Cancel' });
     if (pin) {
       let employee: Employee = await this.employeeService.findByPin(pin);
-      if ((employee && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined) || employee.isAdmin) {
+      if (employee && ((employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined) || employee.isAdmin)) {
         this.haveAccess = true;
       }
     }
@@ -81,6 +87,8 @@ export class DataBootstrapper {
         let loader = this.loading.create();
         await loader.present();
         this._user = await this.userService.getDeviceUser();
+        let store = await this.storeService.get(this._user.currentStore);
+        this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`
         loader.dismiss();
         await this.openNextPage();
       }
