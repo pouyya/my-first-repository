@@ -20,6 +20,7 @@ import { SecurityService } from '../services/securityService';
 import { AccessRightItem } from '../model/accessItemRight';
 import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
+import { StoreService } from "../services/storeService";
 
 declare var Appsee: any;
 
@@ -40,6 +41,7 @@ export class SimplePOSApp implements OnInit {
     public platform: Platform,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
+    private storeService: StoreService,
     private moduleService: ModuleService,
     private modalCtrl: ModalController,
     private loading: LoadingController,
@@ -174,5 +176,15 @@ export class SimplePOSApp implements OnInit {
     });
     
     toast.present();
+  }
+
+  async updatePrintReceiptSetting(){
+    const message: string = "Settings saved";
+      await this.storeService.update(this.currentStore);
+      this.toastController.create({
+          message,
+          duration: 3000,
+          position: 'top'
+      }).present();
   }
 }
