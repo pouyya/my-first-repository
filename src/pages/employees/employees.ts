@@ -2,7 +2,7 @@ import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import { Employee } from "../../model/employee";
-import { NavController, AlertController, Platform } from 'ionic-angular';
+import { NavController, AlertController, Platform, LoadingController } from 'ionic-angular';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
@@ -23,31 +23,28 @@ export class Employees {
     private alertCtrl: AlertController,
     private service: EmployeeService,
     private platform: Platform,
+    private loading: LoadingController,
     private zone: NgZone) {
   }
 
-  ionViewDidEnter() {
-    this.platform.ready().then(() => {
-
-      this.service.getAll()
-        .then(data => {
-          this.zone.run(() => {
-            this.items = data;
-            this.itemsBackup = data;
-          });
-        })
-        .catch(console.error.bind(console));
-    });
+  async ionViewDidEnter() {
+    let loader = this.loading.create({ content: 'Loading Services...' });
+    await loader.present();
+    this.items = await this.service.getAll();
+    this.itemsBackup = this.items;
   }
 
-  showDetail(item) {
+  public showDetail(item) {
     this.navCtrl.push(EmployeeDetails, { item: item });
   }
 
-  delete(item, idx) {
-    this.service.delete(item)
-      .catch(console.error.bind(console));
-    this.items.splice(idx, 1);
+  public async remove (employee: Employee, index) {
+    try {
+      await this.service.delete(employee);
+      this.items.splice(index, 1);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
   getItems(event) {
