@@ -33,6 +33,9 @@ export function SecurityModule(...accessRights: AccessRightItem[]): Function {
 				case SecurityResultReason.wrongPIN:
 					message = 'Incorrect PIN!';
 					break;
+				case SecurityResultReason.employeeNotActive:
+					message = 'Employee not Active';
+					break;
 			}
 
 			let toast = toastController.create({

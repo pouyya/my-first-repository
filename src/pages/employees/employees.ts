@@ -1,3 +1,4 @@
+import { SearchableListing } from './../../modules/searchableListing';
 import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
@@ -11,34 +12,35 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 @SecurityModule(SecurityAccessRightRepo.EmployeeListing)
 @PageModule(() => BackOfficeModule)
 @Component({
-  selector: 'page-employees',
+  selector: 'employees',
   templateUrl: 'employees.html',
 })
-export class Employees {
+export class Employees extends SearchableListing<Employee> {
 
   public items: Array<Employee> = [];
-  public itemsBackup = [];
 
-  constructor(public navCtrl: NavController,
+  constructor(protected zone: NgZone,
+    protected service: EmployeeService,
+    private navCtrl: NavController,
     private alertCtrl: AlertController,
-    private service: EmployeeService,
     private platform: Platform,
     private loading: LoadingController,
-    private zone: NgZone) {
+  ) {
+    super(service, zone);
   }
 
   async ionViewDidEnter() {
-    let loader = this.loading.create({ content: 'Loading Services...' });
+    let loader = this.loading.create({ content: 'Loading Employees...' });
     await loader.present();
-    this.items = await this.service.getAll();
-    this.itemsBackup = this.items;
+    await this.fetchMore();
+    loader.dismiss();
   }
 
   public showDetail(item) {
     this.navCtrl.push(EmployeeDetails, { item: item });
   }
 
-  public async remove (employee: Employee, index) {
+  public async remove(employee: Employee, index) {
     try {
       await this.service.delete(employee);
       this.items.splice(index, 1);
@@ -47,15 +49,13 @@ export class Employees {
     }
   }
 
-  getItems(event) {
-    this.items = this.itemsBackup;
-    var val = event.target.value;
-
-    if (val && val.trim() != '') {
-      this.items = this.items.filter((item) => {
-        return ((item.firstName + ' ' + item.lastName).toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
-    }
+  public async searchByName(event) {
+    let val = event.target.value;
+    this.filter.name = (val && val.trim() != '') ? val : "";
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.items = [];
+    await this.fetchMore();
   }
 
 }

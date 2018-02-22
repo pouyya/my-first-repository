@@ -78,6 +78,10 @@ export class SecurityService implements GuardInterface {
 			return new SecurityResult(false, SecurityResultReason.wrongPIN);
 		}
 
+		if(!model.isActive && !model.isAdmin) {
+			return new SecurityResult(false, SecurityResultReason.employeeNotActive);
+		}
+
 		if (!await this.verifyEmployeeAccessRightItems(model, currentUsersStore, accessRightItems)) {
 			return new SecurityResult(false, SecurityResultReason.notEnoughAccess);
 		}
