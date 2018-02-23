@@ -60,14 +60,16 @@ export class SimplePOSApp implements OnInit {
       .getSubscribe('storeOrPosChanged')
       .takeWhile(() => this.alive)
       .subscribe((data) => {
-        if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
-          this.currentStore = data.currentStore;
-          this.currentPos = data.currentPos;
-        }
+          data.hasOwnProperty('currentStore') && (this.currentStore = data.currentStore);
+          data.hasOwnProperty('currentPos') && (this.currentPos = data.currentPos);
+      });
 
-        if (data.hasOwnProperty('screenAwake') && this.platformService.isMobileDevice()) {
-          data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
-        }
+    this._sharedService
+      .getSubscribe('screenAwake')
+      .subscribe((data) => {
+          if (data.hasOwnProperty('screenAwake') && this.platformService.isMobileDevice()) {
+              data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
+          }
       });
 
     this.currentModule = this.moduleService.getCurrentModule();
