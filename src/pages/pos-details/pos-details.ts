@@ -27,7 +27,6 @@ export class PosDetailsPage {
 
   ionViewDidEnter() {
     let pos = this.navParams.get('pos');
-    let storeId = this.navParams.get('storeId');
     this.navPopCallback = this.navParams.get("pushCallback")
     if (pos && pos._id !== "") {
       this.pos = pos;

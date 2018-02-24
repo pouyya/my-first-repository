@@ -1,7 +1,6 @@
 import { ForgotPassword } from './modals/forgot-password/forgot-password';
 import { ModalController, NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { RegisterPage } from '../register/register';
@@ -23,7 +22,6 @@ export class LoginPage {
     public navCtrl: NavController,
     private authService: AuthService,
     private toastCtrl: ToastController,
-    private iab: InAppBrowser,
     private modalCtrl: ModalController,
   ) { }
 

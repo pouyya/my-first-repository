@@ -1,7 +1,7 @@
 import { StoreService } from './../../../../services/storeService';
 import { SupplierService } from './../../../../services/supplierService';
 import { Supplier } from './../../../../model/supplier';
-import { NavParams, ModalController, NavController } from 'ionic-angular';
+import { NavParams, ModalController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { Store } from '../../../../model/store';
 import { CreateSupplier } from '../createSupplier/createSupplier';
@@ -23,7 +23,6 @@ export class AddSupplierAndStore {
   constructor(
     private supplierService: SupplierService,
     private storeService: StoreService,
-    private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController
   ) {

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { LoadingController } from 'ionic-angular';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, Platform } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { ProductDetails } from '../product-details/product-details';
 import { InventoryModule } from '../../modules/inventoryModule';
@@ -37,7 +37,6 @@ export class Products {
 
   constructor(
     private navCtrl: NavController,
-    private alertCtrl: AlertController,
     private productService: ProductService,
     private stockHistoryService: StockHistoryService,
     private priceBookService: PriceBookService,

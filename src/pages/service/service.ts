@@ -1,7 +1,7 @@
 import { LoadingController } from 'ionic-angular';
 import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, ModalController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { ServiceService } from '../../services/serviceService';
 import { ServiceDetails } from '../service-details/service-details';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
@@ -28,11 +28,9 @@ export class Services {
 
 
   constructor(public navCtrl: NavController,
-    private alertCtrl: AlertController,
     private serviceService: ServiceService,
     private loading: LoadingController,
-    private zone: NgZone,
-    private modalCtrl: ModalController) {
+    private zone: NgZone) {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
   }

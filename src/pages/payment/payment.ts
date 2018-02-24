@@ -1,4 +1,3 @@
-import { GlobalConstants } from './../../metadata/globalConstants';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";

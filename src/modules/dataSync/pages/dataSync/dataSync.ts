@@ -1,11 +1,9 @@
-import { Sales } from './../../../../pages/sales/sales';
 import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
 import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
-import { DataSyncModule } from '../../dataSyncModule';
 import { DataBootstrapper } from '../../../../pages/data-bootstrapper/data-bootstrapper';
 
 @Component({
