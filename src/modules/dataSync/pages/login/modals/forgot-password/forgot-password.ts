@@ -17,18 +17,16 @@ export class ForgotPassword {
   ) { }
 
   public sendEmail() {
-    this.authService.checkForValidEmail(this.email).finally(() => this.viewCtrl.dismiss())
+    this.authService.resetPassword(this.email).finally(() => this.viewCtrl.dismiss())
     .subscribe((data) => {
-      if(data._body.found) {
         let toast = this.toastCtrl.create({
           message: "An email will be send to you shortly",
           duration: 3000
         });
         toast.present();
-      }
     }, error => {
       let toast = this.toastCtrl.create({
-        message: error.message,
+        message: 'Invalid Email!',
         duration: 3000
       });
       toast.present();
