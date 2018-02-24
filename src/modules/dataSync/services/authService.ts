@@ -83,11 +83,12 @@ export class AuthService {
   }
 
   /**
-   * Check if email exists in Server Database
-   * @param email 
+   * Resets the password for user email
+   * @param email
    * @returns {Observable<any>}
    */
-  public checkForValidEmail(email: string): Observable<any> {
-    return this.http.post('/api/checkForValidEmail', JSON.stringify({ email }))
+  public resetPassword(email: string): Observable<any> {
+      var headers = new Headers({ 'Content-Type': ' application/json', 'Accept': 'application/json, text/plain'});
+      return this.http.post(ConfigService.forgotPasswordEndPoint(), JSON.stringify({"Email" : email}), { headers });
   }
 }
