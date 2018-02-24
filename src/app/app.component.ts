@@ -135,7 +135,7 @@ export class SimplePOSApp implements OnInit {
         }
       });
 
-      modal.present();
+      await modal.present();
 
     } else {
       var canEnter = await this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
