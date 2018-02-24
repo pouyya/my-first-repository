@@ -26,7 +26,7 @@ export class AddSupplierAndStore {
     private navParams: NavParams,
     private modalCtrl: ModalController
   ) {
-    this.navPopCallback = navParams.get('callback');
+    this.navPopCallback = this.navParams.get('callback');
   }
 
   async ionViewDidLoad() {

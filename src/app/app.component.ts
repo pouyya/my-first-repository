@@ -18,7 +18,6 @@ import { SecurityService } from '../services/securityService';
 import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
 
-declare var Appsee: any;
 
 @Component({
   selector: 'app',

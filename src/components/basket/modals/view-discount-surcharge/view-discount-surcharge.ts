@@ -16,7 +16,7 @@ export class ViewDiscountSurchargesModal {
     private navParams: NavParams,
     private viewCtrl: ViewController
   ) {
-    this.values = <DiscountSurchargeInterface[]> navParams.get('values');
+    this.values = <DiscountSurchargeInterface[]> this.navParams.get('values');
     this.valuesBackup = _.map(this.values, value => value);
   }
 
