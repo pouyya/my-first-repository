@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
-import { PlatformService } from '../../services/platformService';
 import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { SecurityModule } from '../../infra/security/securityModule';
@@ -41,7 +40,6 @@ export class AboutPage {
   constructor(
     private posService: PosService,
     private storeService: StoreService,
-    private platformService: PlatformService,
     private ionicProDeployService: IonicProDeployService
   ) { }
 

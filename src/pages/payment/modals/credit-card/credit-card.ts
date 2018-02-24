@@ -16,9 +16,9 @@ export class CreditCardModal {
   constructor(
     private navParams: NavParams,
     public viewCtrl: ViewController) {
-    this.displayAmount = navParams.get('amount');
-    this.sale = navParams.get('sale');
-    this.isRefund = navParams.get('refund');
+    this.displayAmount = this.navParams.get('amount');
+    this.sale = this.navParams.get('sale');
+    this.isRefund = this.navParams.get('refund');
   }
 
   public dismiss() {

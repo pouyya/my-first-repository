@@ -1,7 +1,7 @@
 import * as moment from 'moment-timezone';
 import _ from 'lodash';
 import { Reason } from './../../../../model/stockHistory';
-import { NavParams, LoadingController, ViewController } from 'ionic-angular';
+import { NavParams, ViewController } from 'ionic-angular';
 import { Component } from "@angular/core";
 import { StockHistory } from '../../../../model/stockHistory';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
@@ -20,7 +20,6 @@ export class StockDecreaseModal {
 
   constructor(
     private navParams: NavParams,
-    private loading: LoadingController,
     private viewCtrl: ViewController,
     private employeeService: EmployeeService
   ) {
