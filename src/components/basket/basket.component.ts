@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -14,8 +13,6 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
-import { CalculatorService } from '../../services/calculatorService';
-import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
 import { PriceBook } from '../../model/priceBook';
 import { PriceBookService } from '../../services/priceBookService';
@@ -26,7 +23,6 @@ import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { PaymentService } from '../../services/paymentService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
-import { FountainService } from './../../services/fountainService';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 
@@ -78,7 +74,6 @@ export class BasketComponent {
     private storeService: StoreService,
     private printService: PrintService,
     private paymentService: PaymentService,
-    private loading: LoadingController,
     private navCtrl: NavController,
     private ngZone: NgZone) {
   }

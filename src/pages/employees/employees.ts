@@ -2,7 +2,7 @@ import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import { Employee } from "../../model/employee";
-import { NavController, AlertController, Platform } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
@@ -20,7 +20,6 @@ export class Employees {
   public itemsBackup = [];
 
   constructor(public navCtrl: NavController,
-    private alertCtrl: AlertController,
     private service: EmployeeService,
     private platform: Platform,
     private zone: NgZone) {

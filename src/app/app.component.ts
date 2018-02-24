@@ -1,27 +1,23 @@
-import { Component, ViewChild, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { ModuleService } from './../services/moduleService';
-import { PluginService } from './../services/pluginService';
 import { SharedService } from './../services/_sharedService';
 import { ModuleBase } from "../modules/moduelBase";
 import { POS } from './../model/pos';
 import { Store } from './../model/store';
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { ConfigService } from '../modules/dataSync/services/configService';
 import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { UserService } from '../modules/dataSync/services/userService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
-import { AccessRightItem } from '../model/accessItemRight';
 import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
 
-declare var Appsee: any;
 
 @Component({
   selector: 'app',
@@ -44,9 +40,7 @@ export class SimplePOSApp implements OnInit {
     private modalCtrl: ModalController,
     private loading: LoadingController,
     private insomnia: Insomnia,
-    private pluginService: PluginService,
     private _sharedService: SharedService,
-    private cdr: ChangeDetectorRef,
     private toastController: ToastController,
     private platformService: PlatformService,
     private ionicProDeployService: IonicProDeployService,
@@ -135,7 +129,7 @@ export class SimplePOSApp implements OnInit {
         }
       });
 
-      modal.present();
+      await modal.present();
 
     } else {
       var canEnter = await this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);

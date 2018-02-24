@@ -58,9 +58,18 @@ export class ClockInOutPage {
    * @AuthGuard
    */
   async ionViewCanEnter(): Promise<boolean> {
+
+    let loader = this.loading.create({
+      content: 'Please Wait...',
+    });
+
+    await loader.present();
+
     this.pos = await this.posService.getCurrentPos();
     this.posStatus = this.pos.status;
     this.posName = this.pos.name;
+
+    await loader.dismiss();
 
     if (!this.posStatus) {
 
@@ -79,7 +88,7 @@ export class ClockInOutPage {
     }
 
     /** Check PIN against conditions */
-    let loader = this.loading.create({ content: 'Verifying PIN' });
+    loader = this.loading.create({ content: 'Verifying PIN' });
     await loader.present();
 
     this.employee = await this.zone.runOutsideAngular(async () => {

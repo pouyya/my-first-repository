@@ -12,11 +12,10 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, ViewController, Platform, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
-import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
@@ -86,13 +85,10 @@ export class ProductDetails {
 		private userService: UserService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private helperService: HelperService,
 		private appService: AppService,
-		private platform: Platform,
 		private navParams: NavParams,
 		private loading: LoadingController,
 		private zone: NgZone,
-		private viewCtrl: ViewController,
 		private modalCtrl: ModalController,
 		private cdr: ChangeDetectorRef) {
 		this.icons = icons;

@@ -1,6 +1,6 @@
 import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
-import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import { NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { Component, NgZone } from '@angular/core';
 import { Sale } from './../../model/sale';
 import { Sales } from './../sales/sales';
@@ -62,7 +62,6 @@ export class SalesHistoryPage {
 
   constructor(
     private zone: NgZone,
-    private platform: Platform,
     private navCtrl: NavController,
     private salesService: SalesServices,
     private userService: UserService,
