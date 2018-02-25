@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { AlertController, ActionSheetController } from 'ionic-angular';
 
 @Component({
   selector: 'tile-items',
@@ -11,10 +10,7 @@ export class TileItemsComponent {
   @Input() activeEmployee: any | null;
   @Output() onSelect = new EventEmitter<Object>();
 
-  constructor(
-    private alertController: AlertController,
-    private actionSheetCtrl: ActionSheetController
-  ) { }
+  constructor() {}
 
   public selectItem(item) {
     this.onSelect.emit(item);

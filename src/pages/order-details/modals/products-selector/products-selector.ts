@@ -20,8 +20,8 @@ export class ProductsSelector {
     private navParams: NavParams,
     private viewCtrl: ViewController
   ) {
-    let selectedProductIds = <string[]>navParams.get('selectedProductIds');
-    let products = navParams.get('products');
+    let selectedProductIds = <string[]>this.navParams.get('selectedProductIds');
+    let products = this.navParams.get('products');
     let generateSelectableProducts = (products: any[]) => {
       return products.map(product => {
         product.selected = false;

@@ -4,7 +4,6 @@ import { LoadingController } from 'ionic-angular';
 import { Injectable } from "@angular/core";
 import { PluginService } from "./pluginService";
 import { EmployeeService } from "./employeeService";
-import { PosService } from "./posService";
 import { Employee } from "../model/employee";
 import { UserService } from './../modules/dataSync/services/userService';
 import { AccessRightItem } from '../model/accessItemRight';
@@ -18,7 +17,6 @@ export class SecurityService implements GuardInterface {
 		private pluginService: PluginService,
 		private employeeService: EmployeeService,
 		private roleService: RoleService,
-		private posService: PosService,
 		private userService: UserService,
 		private loading: LoadingController
 	) { }

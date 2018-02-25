@@ -3,7 +3,7 @@ import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import { Employee } from "../../model/employee";
-import { NavController, AlertController, Platform, LoadingController } from 'ionic-angular';
+import { NavController, Platform, LoadingController } from 'ionic-angular';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
@@ -19,12 +19,11 @@ export class Employees extends SearchableListing<Employee> {
 
   public items: Array<Employee> = [];
 
-  constructor(protected zone: NgZone,
+  constructor(public navCtrl: NavController,
     protected service: EmployeeService,
-    private navCtrl: NavController,
-    private alertCtrl: AlertController,
+    protected zone: NgZone,
     private platform: Platform,
-    private loading: LoadingController,
+    private loading: LoadingController
   ) {
     super(service, zone);
   }

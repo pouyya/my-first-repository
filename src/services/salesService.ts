@@ -11,7 +11,7 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
-import { BaseEntityService, QuerySelectorInterface, QueryOptionsInterface, SortOptions } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService, SortOptions } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 import { StockHistoryService } from './stockHistoryService';
 import { StockHistory } from './../model/stockHistory';
