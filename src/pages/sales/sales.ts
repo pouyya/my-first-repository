@@ -20,17 +20,7 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
-import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
 
-interface InteractableItem extends PurchasableItem {
-  tax: any;
-  priceBook: PurchasableItemPriceInterface;
-  employeeId: string;
-}
-
-interface PurchasableItemTiles {
-  [id: string]: PurchasableItem[]
-}
 
 @SecurityModule()
 @PageModule(() => SalesModule)
@@ -172,11 +162,11 @@ export class Sales implements OnDestroy {
     let purchasableItems = await this.categoryService.getPurchasableItems();
     categories.forEach((category, index, catArray) => {
       let items = _.filter(purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
-      if (items.length > 0) {
-        category["purchasableItems"] = _.sortBy(items, [item => parseInt(item.order) || 0]);
-      } else {
-        catArray[index] = null;
+      if(items.length === 0){
+          category["purchasableItems"] = [];
+          return;
       }
+      category["purchasableItems"] = _.sortBy(items, [item => parseInt(item.order) || 0]);
     });
 
     this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
