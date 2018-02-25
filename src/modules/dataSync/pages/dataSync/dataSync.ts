@@ -33,7 +33,7 @@ export class DataSync {
 		ConfigService.internalDBName = user.settings.db_local_name;
 
 		ConfigService.externalAuditDBName = 'audit_db';
-		ConfigService.internalDBName = 'audit_db';
+		ConfigService.internalAuditDBName = 'audit_db';
 
 		this.updateText = "Check for data update!";
 
