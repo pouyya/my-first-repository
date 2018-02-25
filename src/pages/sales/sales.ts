@@ -162,11 +162,11 @@ export class Sales implements OnDestroy {
     let purchasableItems = await this.categoryService.getPurchasableItems();
     categories.forEach((category, index, catArray) => {
       let items = _.filter(purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
-      if (items.length > 0) {
-        category["purchasableItems"] = _.sortBy(items, [item => parseInt(item.order) || 0]);
-      } else {
-        catArray[index] = null;
+      if(items.length === 0){
+          category["purchasableItems"] = [];
+          return;
       }
+      category["purchasableItems"] = _.sortBy(items, [item => parseInt(item.order) || 0]);
     });
 
     this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
