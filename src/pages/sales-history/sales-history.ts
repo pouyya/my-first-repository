@@ -1,7 +1,7 @@
 import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
-import { Platform, NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
-import { Component } from '@angular/core';
+import { NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import { Component, NgZone } from '@angular/core';
 import { Sale } from './../../model/sale';
 import { Sales } from './../sales/sales';
 import { SalesModule } from "../../modules/salesModule";
@@ -61,9 +61,9 @@ export class SalesHistoryPage {
   private employeeId: string = null;
 
   constructor(
-    private platform: Platform,
-    private salesService: SalesServices,
+    private zone: NgZone,
     private navCtrl: NavController,
+    private salesService: SalesServices,
     private userService: UserService,
     private customerService: CustomerService,
     private employeeService: EmployeeService,
@@ -87,22 +87,13 @@ export class SalesHistoryPage {
   }
 
   async ionViewDidLoad() {
+    let loader = this.loading.create({
+      content: 'Fetching Sales...'
+    });
+    await loader.present();
     try {
-      let loader = this.loading.create({
-        content: 'Fetching Sales...'
-      });
-      await loader.present();
       this.user = await this.userService.getUser();
-      let result: any = await this.salesService.searchSales(
-        this.user.currentPos,
-        this.limit, this.offset,
-        this.filters
-      );
-      await this.platform.ready();
-      this.total = result.totalCount;
-      this.offset += this.limit;
-      this.sales = await this.attachCustomersToSales(result.docs);
-      this.salesBackup = this.sales;
+      await this.fetchMoreSales();
       loader.dismiss();
     } catch (err) {
       throw new Error(err);
@@ -266,7 +257,7 @@ export class SalesHistoryPage {
     return;
   }
 
-  public searchByStatus() {
+  public async searchByStatus() {
     this.sales = this.salesBackup;
     switch (this.selectedStatus) {
       case 'parked':
@@ -293,17 +284,17 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
-    this.fetchMoreSales().catch((error) => {
-      console.error(error);
-    });
+    await this.fetchMoreSales()
   }
 
   public async searchByPaymentType() {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
     this.sales = [];
     await this.fetchMoreSales();
   }
 
-  public searchByTime() {
+  public async searchByTime() {
     this.sales = this.salesBackup;
     let startDate: Date;
     let endDate: Date;
@@ -341,33 +332,7 @@ export class SalesHistoryPage {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
-    this.fetchMoreSales().catch((error) => {
-      console.error(error);
-    });
-  }
-
-  private async getSales(limit?: number, offset?: number): Promise<any> {
-    if (this.sales.length <= 0) {
-      let result = await this.salesService.searchSales(
-        this.user.currentPos,
-        limit | this.limit, offset | this.offset,
-        this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
-      if (result.totalCount > 0) {
-        this.total = result.totalCount;
-        this.sales = await this.attachCustomersToSales(result.docs);
-        this.salesBackup = this.sales;
-      }
-    } else {
-      if (this.total > this.sales.length) {
-        let result: any = await this.salesService.searchSales(
-          this.user.currentPos,
-          limit | this.limit, offset | this.offset,
-          this.filters, this.timeFrame, this.employeeId, this.selectedPaymentType);
-        let sales = await this.attachCustomersToSales(result.docs);
-        this.sales = this.sales.concat(sales);
-        this.salesBackup = this.sales;
-      }
-    }
+    await this.fetchMoreSales();
   }
 
   private async loadSale(sale: Sale, doRefund: boolean) {
@@ -383,10 +348,21 @@ export class SalesHistoryPage {
 
   public async fetchMoreSales(infiniteScroll?: any) {
     try {
-      await this.getSales()
-      this.offset += this.limit;
-      infiniteScroll && infiniteScroll.complete();
-      return;
+      let sales = await await this.salesService.searchSales(
+        this.user.currentPos,
+        this.limit,
+        this.offset,
+        this.filters,
+        this.timeFrame,
+        this.employeeId,
+        this.selectedPaymentType
+      );
+      this.offset += sales ? sales.length : 0;
+      sales = await this.attachCustomersToSales(sales);
+      this.zone.run(() => {
+        this.sales = this.sales.concat(sales);
+        infiniteScroll && infiniteScroll.complete();
+      });
     } catch (err) {
       return Promise.reject(err);
     }

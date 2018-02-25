@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, ModalController, Platform, LoadingController } from 'ionic-angular';
+import { NavController, AlertController, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetails } from '../category-details/category-details';
 import { InventoryModule } from '../../modules/inventoryModule';
@@ -28,9 +28,7 @@ export class Category {
     private alertCtrl: AlertController,
     private categoryService: CategoryService,
     private loading: LoadingController,
-    private platform: Platform,
-    private zone: NgZone,
-    private modalCtrl: ModalController) {
+    private zone: NgZone) {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
   }

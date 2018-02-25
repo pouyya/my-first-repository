@@ -1,7 +1,7 @@
 import { Category } from './../../model/category';
 import { CategoryIconSelectModal } from './modals/category-icon-select/category-icon-select';
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, AlertController, ModalController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { UserService } from '../../modules/dataSync/services/userService';
@@ -21,8 +21,6 @@ export class CategoryDetails {
     private categoryService: CategoryService,
     private userService: UserService,
     private navParams: NavParams,
-    private viewCtrl: ViewController,
-    private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController) {
     this.icons = icons;

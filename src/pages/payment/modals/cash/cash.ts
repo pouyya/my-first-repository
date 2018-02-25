@@ -17,9 +17,9 @@ export class CashModal {
   constructor(
     private navParams: NavParams,
     public viewCtrl: ViewController) {
-    this.sale = navParams.get('sale');
-    this.displayAmount = navParams.get('amount');
-    this.isRefund = navParams.get('refund');
+    this.sale = this.navParams.get('sale');
+    this.displayAmount = this.navParams.get('amount');
+    this.isRefund = this.navParams.get('refund');
     if(this.isRefund) {
       this.quickCash = [];
     }

@@ -68,6 +68,10 @@ export class ConfigService {
         return ConfigService.apiServerBaseUrl() + "/common/register";
     }
 
+    static forgotPasswordEndPoint(): string {
+        return ConfigService.apiServerBaseUrl() + "/common/ForgotPassword";
+    }
+
     static securityUserInfoEndPoint(): string {
         return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
     }

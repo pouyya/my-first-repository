@@ -1,4 +1,3 @@
-import { SearchableIonSelectComponent } from './../../components/searchable-ion-select/searchable-ion-select.component';
 import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
