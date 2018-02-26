@@ -92,29 +92,28 @@ export class ClockInOutPage {
     await loader.present();
 
     this.employee = await this.zone.runOutsideAngular(async () => {
+
       let employee: Employee = await this.employeeService.findByPin(pin);
 
-      let toast = this.toastCtrl.create({duration: 3000});
-
       if (!employee) {
-        toast.setMessage('Invalid PIN!');
+        let toast = this.toastCtrl.create({
+          message: "Invalid PIN!",
+          duration: 3000
+        });
         toast.present();
+
         return null;
       }
 
-      if(!employee.isActive) {
-        toast.setMessage('Employee not Active!');
-        toast.present();
-        return null;
-      }
-
-      let employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.pos.storeId, employee._id);
+      var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.pos.storeId, employee._id);
 
       if (employeeClockedInToOtherStore) {
         let toast = this.toastCtrl.create({
           message: `You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`,
           duration: 3000
-        }).present();
+        });
+
+        toast.present();
         
         return null;
       }

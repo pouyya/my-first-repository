@@ -1,7 +1,6 @@
 export enum SecurityResultReason {
 	notEnoughAccess,
 	wrongPIN,
-	employeeNotActive,
 	accessGrant
 }
 
