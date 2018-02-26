@@ -13,4 +13,10 @@ export class Employee extends DBBasedEntity {
   public isAdmin?: boolean;
   public store?: EmployeeRolePerStore[];
   public pin: number;
+  public isActive: boolean;
+
+  constructor() {
+    super();
+    this.isActive = true;
+  }
 }
