@@ -8,25 +8,23 @@ export interface FilterQuery {
   [property: string]: any;
 }
 
-export interface SearchableListingContract<T extends DBBasedEntity> {
-  loadData(): Promise<Array<T>>;
-  fetchMore(infiniteScroll?: InfiniteScroll)
-}
+export class SearchableListing<T extends DBBasedEntity> {
 
-export class SearchableListing<T extends DBBasedEntity> implements SearchableListingContract<T> {
-
-  protected items: T[];
-
-  protected readonly defaultLimit: number = 10;
-  protected readonly defaultOffset: number = 0;
+  protected items: T[] = [];
+  protected static readonly defaultLimit: number = 10;
+  protected static readonly defaultOffset: number = 0;
   protected limit: number;
   protected offset: number;
   protected filter: FilterQuery = {};
-  protected options: QueryOptionsInterface = null;
+  protected options: QueryOptionsInterface = {
+    conditionalSelectors: {}
+  };
 
-  constructor(protected service: BaseEntityService<T>, protected zone: NgZone) {
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
+  constructor(
+    protected service: BaseEntityService<T>,
+    protected zone: NgZone) {
+    this.limit = SearchableListing.defaultLimit;
+    this.offset = SearchableListing.defaultOffset;
   }
 
   public async loadData(): Promise<Array<T>> {
@@ -34,9 +32,7 @@ export class SearchableListing<T extends DBBasedEntity> implements SearchableLis
 
     if (Object.keys(this.filter).length > 0) {
       _.each(this.filter, (value, key) => {
-        if (value) {
-          selectors[key] = value;
-        }
+        selectors[key] = value;
       });
     }
 

@@ -14,6 +14,7 @@ export class Employee extends DBBasedEntity {
   public store?: EmployeeRolePerStore[];
   public pin: number;
   public isActive: boolean;
+  public fullname: string;
 
   constructor() {
     super();

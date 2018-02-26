@@ -17,7 +17,13 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 })
 export class Employees extends SearchableListing<Employee> {
 
-  public items: Array<Employee> = [];
+  protected items: Employee[] = [];
+  public selectedStatus: any = 'all';
+  public statusList: any = [
+    { value: 'all', text: 'All' },
+    { value: 'true', text: 'Active' },
+    { value: 'false', text: 'In-Active' }
+  ];
 
   constructor(public navCtrl: NavController,
     protected service: EmployeeService,
@@ -50,11 +56,30 @@ export class Employees extends SearchableListing<Employee> {
 
   public async searchByName(event) {
     let val = event.target.value;
-    this.filter.name = (val && val.trim() != '') ? val : "";
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
+    this.filter.fullname = (val && val.trim() != '') ? val : "";
+    this.limit = SearchableListing.defaultLimit;
+    this.offset = SearchableListing.defaultOffset;
     this.items = [];
     await this.fetchMore();
+  }
+
+  public async searchByStatus() {
+    switch (this.selectedStatus) {
+      case 'all':
+        delete this.options.conditionalSelectors.isActive;
+        break;
+      case 'true':
+        this.options.conditionalSelectors.isActive = true;
+        break;
+      case 'false':
+        this.options.conditionalSelectors.isActive = false;
+        break;
+    }
+    this.limit = SearchableListing.defaultLimit;
+    this.offset = SearchableListing.defaultOffset;
+    this.items = [];
+    await this.fetchMore();
+    return;
   }
 
 }
