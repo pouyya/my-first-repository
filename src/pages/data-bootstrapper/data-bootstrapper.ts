@@ -7,7 +7,7 @@ import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { Store } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
-import { NavController, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { DateTimeService } from '../../services/dateTimeService';
@@ -42,11 +42,12 @@ export class DataBootstrapper {
     private pluginService: PluginService,
     private navCtrl: NavController,
     private modalCtrl: ModalController,
+    private toastCtrl: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef
   ) {
     this.cdr.detach();
-    this.securityMessage = `To open the app, please provide your PIN number`
+    this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`
     this._initialPage = Sales;
     this.headerTitle = "Launching...";
     this.hideSpinner = false;
@@ -58,7 +59,7 @@ export class DataBootstrapper {
     this._user = await this.userService.getDeviceUser();
     if(this._user.currentStore) {
       let store = await this.storeService.get(this._user.currentStore);
-      this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`
+      this.securityMessage = `To open the app for store ${store.name}, please provide your PIN number`
     }
     return this.enterPin();
   }
@@ -77,6 +78,7 @@ export class DataBootstrapper {
         this.haveAccess = true;
       }
     }
+    !this.haveAccess && this.toastCtrl.create({ message: 'Invalid Access', duration: 5000 }).present();
     return true;
   }
 
