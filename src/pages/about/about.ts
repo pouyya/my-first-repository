@@ -8,6 +8,7 @@ import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-d
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)
@@ -40,20 +41,15 @@ export class AboutPage {
   constructor(
     private posService: PosService,
     private storeService: StoreService,
-    private ionicProDeployService: IonicProDeployService
+    private ionicProDeployService: IonicProDeployService,
+    private context: SyncContext
+
   ) { }
 
   async ionViewDidLoad() {
     try {
-      let promises: Promise<any>[] = [
-        this.posService.getCurrentPos(),
-        this.storeService.getCurrentStore()
-      ];
-
-      let result = await Promise.all(promises);
-
-      let pos = result[0];
-      let store = result[1];
+      let pos = this.context.currentPos;
+      let store = this.context.currentStore;
 
       this.pos = pos.name;
       this.store = store.name;

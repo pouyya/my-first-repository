@@ -15,6 +15,7 @@ import { BaseEntityService, SortOptions } from "@simpleidea/simplepos-core/dist/
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 import { StockHistoryService } from './stockHistoryService';
 import { StockHistory } from './../model/stockHistory';
+import { SyncContext } from "./SyncContext";
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -29,7 +30,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private helperService: HelperService,
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService,
-		private stockHistoryService: StockHistoryService
+		private stockHistoryService: StockHistoryService,
+		private context: SyncContext
 	) {
 		super(Sale);
 	}
@@ -37,8 +39,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async instantiateSale(posId?: string): Promise<Sale> {
 
 		if (!posId) {
-			var user = await this.userService.getUser();
-			posId = user.currentPos;
+			posId = this.context.currentPos._id;
 		}
 
 		try {

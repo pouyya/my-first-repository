@@ -25,6 +25,7 @@ import { PaymentService } from '../../services/paymentService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
+import { SyncContext } from "../../services/SyncContext";
 
 @Component({
   selector: 'basket',
@@ -75,6 +76,7 @@ export class BasketComponent {
     private printService: PrintService,
     private paymentService: PaymentService,
     private navCtrl: NavController,
+    private context: SyncContext,
     private ngZone: NgZone) {
   }
 
@@ -117,11 +119,11 @@ export class BasketComponent {
   }
 
   private async loadBaseData() {
-    [this.salesTaxes, this.defaultTax, this.priceBooks, this.store] =
+    this.store = this.context.currentStore;
+    [this.salesTaxes, this.defaultTax, this.priceBooks] =
       [await this.salesService.getSaleTaxs(),
       await this.salesService.getDefaultTax(),
-      await this.priceBookService.getAllSortedByPriority(),
-      await this.storeService.getCurrentStore()];
+      await this.priceBookService.getAllSortedByPriority()]
   }
 
   setBalance() {
@@ -289,7 +291,7 @@ export class BasketComponent {
 
       localStorage.removeItem('sale_id');
 
-      this.sale = await this.salesService.instantiateSale(this.user.currentPos);
+      this.sale = await this.salesService.instantiateSale(this.context.currentPos._id);
       this.paymentCompleted.emit();
       this.customer = null;
       this.calculateAndSync();

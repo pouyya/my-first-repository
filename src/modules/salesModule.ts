@@ -10,16 +10,21 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
+import { SyncContext } from "../services/SyncContext";
+import { Pro } from "@ionic/pro";
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
   private posService: PosService;
+  private context: SyncContext
 
   constructor() {
   }
 
   public moneyInOut_disableFunc(data: any): Promise<boolean> {
-    return this.posService.getCurrentPosStatus();
+    return new Promise((resolve, reject) =>{
+      resolve(this.context.currentPos.status);
+    });
   }
 
   public setInjector(injector: Injector): void {

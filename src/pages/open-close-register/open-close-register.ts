@@ -22,6 +22,7 @@ import { Employee } from '../../model/employee';
 import { FountainService } from '../../services/fountainService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.OpenCloseRegister)
 @PageModule(() => SalesModule)
@@ -55,6 +56,7 @@ export class OpenCloseRegister {
 
   constructor(private loading: LoadingController,
     private posService: PosService,
+    private context: SyncContext,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private closureService: ClosureService,
@@ -79,12 +81,10 @@ export class OpenCloseRegister {
 
     let sales: Array<Sale>;
 
-    this.pos = await this.posService.getCurrentPos();
+    this.pos = this.context.currentPos;
+    this.store = this.context.currentStore;
 
-    [sales, this.store] = await Promise.all([
-      this.salesService.findCompletedByPosId(this.pos._id, this.pos.openTime),
-      this.storeService.getCurrentStore()
-    ]);
+    sales = await this.salesService.findCompletedByPosId(this.pos._id, this.pos.openTime);
 
     this.calculateExpectedCounts(sales);
 

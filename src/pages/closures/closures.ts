@@ -8,6 +8,7 @@ import { QuerySelectorInterface, SortOptions, QueryOptionsInterface } from '@sim
 import { PluginService } from '../../services/pluginService';
 import { EmployeeService } from '../../services/employeeService';
 import { PrintService, EndOfDayReportType } from '../../services/printService';
+import { SyncContext } from "../../services/SyncContext";
 
 @Component({
   selector: 'closures',
@@ -38,7 +39,8 @@ export class Closures {
     private pluginService: PluginService,
     private employeeService: EmployeeService,
     private toastCtrl: ToastController,
-    private printService: PrintService
+    private printService: PrintService,
+    private context: SyncContext
   ) {
     this.limit;
     this.offset;
@@ -77,7 +79,7 @@ export class Closures {
     try {
       this.limit = this.defaultLimit;
       this.offset = this.defaultOffset;
-      this.pos = await this.posService.getCurrentPos();
+      this.pos = this.context.currentPos;
       await this.platform.ready();
       await this.fetchMore();
     } catch (err) {

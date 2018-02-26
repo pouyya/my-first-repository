@@ -20,6 +20,7 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
+import { SyncContext } from "../../services/SyncContext";
 
 
 @SecurityModule()
@@ -68,7 +69,8 @@ export class Sales implements OnDestroy {
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private context: SyncContext
   ) {
     this.cdr.detach();
   }
@@ -99,10 +101,8 @@ export class Sales implements OnDestroy {
           loader.dismiss();
         }
       });
-
-    [this.user, this.register] = [
-      await this.userService.getUser(),
-      await this.posService.getCurrentPos()];
+    this.register = this.context.currentPos;
+    this.user = await this.userService.getUser();
 
     if (!this.register.status) {
       let openingAmount = Number(this.navParams.get('openingAmount'));
@@ -143,7 +143,7 @@ export class Sales implements OnDestroy {
 
   get evaluationContext() {
     let context = new EvaluationContext();
-    context.currentStore = this.user.currentStore;
+    context.currentStore = this.context.currentStore._id;
     context.currentDateTime = new Date();
     return context;
   }
@@ -183,7 +183,7 @@ export class Sales implements OnDestroy {
   }
 
   private async loadEmployees() { //move to it's own module
-    this.employees = await this.employeeService.getClockedInEmployeesOfStore(this.user.currentStore);
+    this.employees = await this.employeeService.getClockedInEmployeesOfStore(this.context.currentStore._id);
     if (this.employees && this.employees.length > 0) {
       this.employees = this.employees.map(employee => {
         employee.selected = false;

@@ -3,24 +3,15 @@ import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/base
 import { POS } from './../model/pos';
 import * as moment from 'moment-timezone';
 import { UserService } from '../modules/dataSync/services/userService';
+import { SyncContext } from "./SyncContext";
 
 @Injectable()
 export class PosService extends BaseEntityService<POS> {
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private context: SyncContext) {
     super(POS);
   }
 
-  public async getCurrentPosStatus(): Promise<boolean> {
-    var currentUser = await this.userService.getUser();
-    let currentPos = await this.get(currentUser.currentPos);
-    return currentPos.status;
-  }
-
-  public async getCurrentPos(): Promise<POS> {
-    let currentUser = await this.userService.getUser();
-    return this.get(currentUser.currentPos);
-  }
 
   public async getAllPosByStoreId(storeId: string): Promise<Array<POS>> {
     return this.findBy({
@@ -30,11 +21,10 @@ export class PosService extends BaseEntityService<POS> {
 
   public async isThisLastPosClosingInStore(posId: string): Promise<boolean> {
 
-    var currentPos = await this.get(posId);
     var otherPosOfCurrentStoreStillOpen = await this.findBy({
       selector: {
         _id: { $ne: posId },
-        storeId: currentPos.storeId,
+        storeId: this.context.currentPos.storeId,
         openTime: { $gt: null }
       }
     });

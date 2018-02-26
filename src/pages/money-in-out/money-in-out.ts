@@ -8,6 +8,7 @@ import { PageModule } from './../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { PrintService } from '../../services/printService';
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.MoneyInOut)
 @PageModule(() => SalesModule)
@@ -24,16 +25,17 @@ export class MoneyInOut {
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
     private posService: PosService,
-    private printService: PrintService) {
+    private printService: PrintService,
+    private context: SyncContext) {
     this.cdr.detach();
   }
 
-  ionViewCanEnter(): Promise<boolean> {
-    return this.posService.getCurrentPosStatus();
+  ionViewCanEnter(): boolean {
+    return this.context.currentPos.status;
   }
 
   async ionViewDidLoad() {
-    this.register = await this.posService.getCurrentPos();
+    this.register = this.context.currentPos;
     this.cdr.reattach();
   }
 

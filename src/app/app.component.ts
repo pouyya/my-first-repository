@@ -17,6 +17,7 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
+import { SyncContext } from "../services/SyncContext";
 
 
 @Component({
@@ -46,7 +47,7 @@ export class SimplePOSApp implements OnInit {
     private ionicProDeployService: IonicProDeployService,
     private userService: UserService,
     private printService: PrintService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
   ) {
     this._sharedService
       .getSubscribe('storeOrPosChanged')
@@ -110,8 +111,6 @@ export class SimplePOSApp implements OnInit {
         let loader = this.loading.create();
 
         loader.present().then(() => {
-          data.hasOwnProperty('currentStore') && (this.currentStore = data.currentStore);
-          data.hasOwnProperty('currentPos') && (this.currentPos = data.currentPos);
           this.nav.setRoot(this.nav.getActive().component);
           loader.dismiss();
         });

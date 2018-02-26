@@ -9,6 +9,7 @@ import { UserService } from './../modules/dataSync/services/userService';
 import { AccessRightItem } from '../model/accessItemRight';
 import { GuardInterface } from "../model/guardInterface";
 import { SecurityResult, SecurityResultReason } from './../infra/security/model/securityResult';
+import { SyncContext } from "./SyncContext";
 
 @Injectable()
 export class SecurityService implements GuardInterface {
@@ -17,8 +18,8 @@ export class SecurityService implements GuardInterface {
 		private pluginService: PluginService,
 		private employeeService: EmployeeService,
 		private roleService: RoleService,
-		private userService: UserService,
-		private loading: LoadingController
+		private loading: LoadingController,
+		private context: SyncContext
 	) { }
 
 	/**
@@ -39,7 +40,7 @@ export class SecurityService implements GuardInterface {
 		}
 
 		let employee = this.employeeService.getEmployee();
-		let currentUserStore = (await this.userService.getUser()).currentStore;
+		let currentUserStore = this.context.currentStore._id;
 		if (employee) {
 			if (await this.verifyEmployeeAccessRightItems(employee, currentUserStore, accessRightItems)) {
 				securityResult = new SecurityResult(true, SecurityResultReason.accessGrant);
