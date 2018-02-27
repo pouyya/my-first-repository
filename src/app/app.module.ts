@@ -371,8 +371,8 @@ import { SyncContext } from "../services/SyncContext";
   ]
 })
 export class AppModule {
-  constructor(private context: SyncContext, injector: Injector) {
+  constructor(private syncContext: SyncContext, injector: Injector) {
     ServiceLocator.injector = injector;
-    this.context.initSubscribe();
+    this.syncContext.initSubscribe();
   }
 }

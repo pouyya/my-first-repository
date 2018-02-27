@@ -31,7 +31,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService,
 		private stockHistoryService: StockHistoryService,
-		private context: SyncContext
+		private syncContext: SyncContext
 	) {
 		super(Sale);
 	}
@@ -39,7 +39,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async instantiateSale(posId?: string): Promise<Sale> {
 
 		if (!posId) {
-			posId = this.context.currentPos._id;
+			posId = this.syncContext.currentPos._id;
 		}
 
 		try {

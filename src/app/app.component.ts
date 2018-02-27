@@ -17,7 +17,6 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
-import { SyncContext } from "../services/SyncContext";
 
 
 @Component({

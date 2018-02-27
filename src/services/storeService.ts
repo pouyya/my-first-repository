@@ -6,6 +6,7 @@ import { PosService } from './posService';
 import * as _ from 'lodash';
 import { UserService } from '../modules/dataSync/services/userService';
 import { SyncContext } from "./SyncContext";
+import { SharedService } from "./_sharedService";
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
@@ -14,7 +15,8 @@ export class StoreService extends BaseEntityService<Store> {
     private userService: UserService,
     private appService: AppService,
     private posService: PosService,
-    private context: SyncContext) {
+    private syncContext: SyncContext,
+    private _sharedService: SharedService) {
     super(Store);
   }
 
@@ -27,7 +29,7 @@ export class StoreService extends BaseEntityService<Store> {
    */
   public async delete(store: Store, associated: boolean = false): Promise<any> {
     let user = await this.userService.getUser();
-    if (this.context.currentStore._id == store._id) {
+    if (this.syncContext.currentStore._id == store._id) {
       return await Promise.reject({
         error: 'DEFAULT_STORE_EXISTS',
         error_msg: 'This is your current store. Please switch to other one before deleting it.'
@@ -44,6 +46,13 @@ export class StoreService extends BaseEntityService<Store> {
         return Promise.reject(err);
       }
     }
+  }
+
+  public async update(store: Store): Promise<any> {
+    if(this.syncContext.currentStore._id == store._id){
+      this._sharedService.publish('storeOrPosChanged', {currentStore : store, currentPos : this.syncContext.currentPos});
+    }
+    return await super.update(store);
   }
 
   public async getCurrentStartPeriod(storeId: string): Promise<Date> {

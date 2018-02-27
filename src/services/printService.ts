@@ -49,11 +49,11 @@ export class PrintService {
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
-    private context: SyncContext) {
+    private syncContext: SyncContext) {
   }
 
   public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
-    var currentStore = this.context.currentStore;
+    var currentStore = this.syncContext.currentStore;
 
     var context = new EndOfDayProviderContext();
     context.openFloat = closure.openingAmount;
@@ -154,7 +154,7 @@ export class PrintService {
       return;
     }
 
-    var currentStore = this.context.currentStore;
+    var currentStore = this.syncContext.currentStore;
 
     if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
 
@@ -188,11 +188,11 @@ export class PrintService {
       return;
     }
 
-    var currentStore = this.context.currentStore;
+    var currentStore = this.syncContext.currentStore;
 
-    if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
+    if (!TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerPort)) {
 
-      await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
+      await new EscPrinterConnectorProvider(this.syncContext.currentStore.printerIP, this.syncContext.currentStore.printerPort)
         .write(new ReceiptProvider(null).openCashDrawer().getResult());
     }
   }

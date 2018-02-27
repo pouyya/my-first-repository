@@ -19,8 +19,6 @@ import { PriceBookService } from '../../services/priceBookService';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
 import { PurchasableItem } from '../../model/purchasableItem';
-import { Store } from '../../model/store';
-import { StoreService } from '../../services/storeService';
 import { PaymentService } from '../../services/paymentService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { PrintService } from './../../services/printService';
@@ -47,7 +45,6 @@ export class BasketComponent {
   private salesTaxes: BaseTaxIterface[];
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
-  private store: Store;
   private sale: Sale;
   private evaluationContext: EvaluationContext;
 
@@ -72,11 +69,10 @@ export class BasketComponent {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private priceBookService: PriceBookService,
-    private storeService: StoreService,
     private printService: PrintService,
     private paymentService: PaymentService,
     private navCtrl: NavController,
-    private context: SyncContext,
+    private syncContext: SyncContext,
     private ngZone: NgZone) {
   }
 
@@ -119,7 +115,6 @@ export class BasketComponent {
   }
 
   private async loadBaseData() {
-    this.store = this.context.currentStore;
     [this.salesTaxes, this.defaultTax, this.priceBooks] =
       [await this.salesService.getSaleTaxs(),
       await this.salesService.getDefaultTax(),
@@ -243,7 +238,7 @@ export class BasketComponent {
       sale: this.sale,
       doRefund: this.refund,
       callback: pushCallback,
-      store: this.store
+      store: this.syncContext.currentStore
     });
   }
 
@@ -252,7 +247,7 @@ export class BasketComponent {
     let stockErrors;
 
     this.ngZone.runOutsideAngular(async () => {
-      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
     });
 
     if (stockErrors && stockErrors.length > 0) {
@@ -278,7 +273,7 @@ export class BasketComponent {
           }
         ];
 
-        await this.paymentService.completePayment(sale, this.store._id, this.refund);
+        await this.paymentService.completePayment(sale, this.syncContext.currentStore._id, this.refund);
 
         await this.salesService.update(sale);
 
@@ -291,7 +286,7 @@ export class BasketComponent {
 
       localStorage.removeItem('sale_id');
 
-      this.sale = await this.salesService.instantiateSale(this.context.currentPos._id);
+      this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos._id);
       this.paymentCompleted.emit();
       this.customer = null;
       this.calculateAndSync();
@@ -299,7 +294,7 @@ export class BasketComponent {
   }
 
   private async printSale(forcePrint: boolean, sale: Sale) {
-    if (this.store.printReceiptAtEndOfSale || forcePrint) {
+    if (this.syncContext.currentStore.printReceiptAtEndOfSale || forcePrint) {
       await this.printService.printReceipt(sale);
     }
 

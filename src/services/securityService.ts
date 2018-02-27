@@ -5,7 +5,6 @@ import { Injectable } from "@angular/core";
 import { PluginService } from "./pluginService";
 import { EmployeeService } from "./employeeService";
 import { Employee } from "../model/employee";
-import { UserService } from './../modules/dataSync/services/userService';
 import { AccessRightItem } from '../model/accessItemRight';
 import { GuardInterface } from "../model/guardInterface";
 import { SecurityResult, SecurityResultReason } from './../infra/security/model/securityResult';
@@ -19,7 +18,7 @@ export class SecurityService implements GuardInterface {
 		private employeeService: EmployeeService,
 		private roleService: RoleService,
 		private loading: LoadingController,
-		private context: SyncContext
+		private syncContext: SyncContext
 	) { }
 
 	/**
@@ -40,7 +39,7 @@ export class SecurityService implements GuardInterface {
 		}
 
 		let employee = this.employeeService.getEmployee();
-		let currentUserStore = this.context.currentStore._id;
+		let currentUserStore = this.syncContext.currentStore._id;
 		if (employee) {
 			if (await this.verifyEmployeeAccessRightItems(employee, currentUserStore, accessRightItems)) {
 				securityResult = new SecurityResult(true, SecurityResultReason.accessGrant);

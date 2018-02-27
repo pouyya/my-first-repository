@@ -1,6 +1,4 @@
-import { StoreService } from '../../services/storeService';
 import { Component } from '@angular/core';
-import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
@@ -19,7 +17,6 @@ import { SyncContext } from "../../services/SyncContext";
 export class AboutPage {
 
   public pos: string;
-  public store: string;
   public dbInternalName: string;
   public dbExternalName: string;
   public dbInternalName_Critical: string;
@@ -39,21 +36,12 @@ export class AboutPage {
   */
 
   constructor(
-    private posService: PosService,
-    private storeService: StoreService,
     private ionicProDeployService: IonicProDeployService,
-    private context: SyncContext
-
+    private syncContext: SyncContext // Used in view
   ) { }
 
   async ionViewDidLoad() {
     try {
-      let pos = this.context.currentPos;
-      let store = this.context.currentStore;
-
-      this.pos = pos.name;
-      this.store = store.name;
-
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
       this.dbInternalName_Critical = ConfigService.internalCriticalDBName;

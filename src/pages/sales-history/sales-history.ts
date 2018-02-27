@@ -68,7 +68,7 @@ export class SalesHistoryPage {
     private toastCtrl: ToastController,
     private loading: LoadingController,
     private printService: PrintService,
-    private context: SyncContext
+    private syncContext: SyncContext
   ) {
     this.sales = [];
     this.salesBackup = [];
@@ -346,7 +346,7 @@ export class SalesHistoryPage {
   public async fetchMoreSales(infiniteScroll?: any) {
     try {
       let sales = await await this.salesService.searchSales(
-        this.context.currentPos._id,
+        this.syncContext.currentPos._id,
         this.limit,
         this.offset,
         this.filters,

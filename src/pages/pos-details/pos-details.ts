@@ -24,7 +24,7 @@ export class PosDetailsPage {
     private loading: LoadingController,
     private userService: UserService,
     private appService: AppService,
-    private context: SyncContext
+    private syncContext: SyncContext
   ) { }
 
   ionViewDidEnter() {
@@ -56,7 +56,7 @@ export class PosDetailsPage {
         {
           text: 'Yes',
           handler: () => {
-            if (this.context.currentPos._id == this.pos._id) {
+            if (this.syncContext.currentPos._id == this.pos._id) {
               let toast = this.toastCtrl.create({
                 message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
                 duration: 3000
