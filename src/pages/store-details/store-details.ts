@@ -184,10 +184,4 @@ export class StoreDetailsPage {
 
     confirm.present();
   }
-
-
-  private async isCurrentStore(){
-    const currentStore: Store = await this.storeService.getCurrentStore();
-    return currentStore._id === this.item._id;
-  }
 }
