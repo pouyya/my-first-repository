@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ action === 'surcharge' ? 'Apply Surcharge' : 'Apply Discount' }}
+      Apply Discount or Surcharge
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
@@ -12,6 +12,16 @@
 </ion-header>
 
 <ion-content>
+  <div padding>
+    <ion-segment [(ngModel)]="action">
+      <ion-segment-button value="discount">
+        Discount
+      </ion-segment-button>
+      <ion-segment-button value="surcharge">
+        Surcharge
+      </ion-segment-button>
+    </ion-segment>
+  </div>
   <div [ngSwitch]="action">
     <ion-grid *ngSwitchCase="'discount'">
       <ion-row radio-group [(ngModel)]="inputType">

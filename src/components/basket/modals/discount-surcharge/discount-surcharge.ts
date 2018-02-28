@@ -38,7 +38,7 @@ export class DiscountSurchargeModal {
       this.viewCtrl.dismiss({
         values: this.valuesBackup,
         data: <DiscountSurchargeInterface>{
-          value: this.value,
+          value: +this.value,
           type: this.action,
           format: this.inputType,
           createdAt: moment().utc().format()

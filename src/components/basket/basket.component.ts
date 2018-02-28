@@ -1,21 +1,17 @@
 import _ from 'lodash';
-import * as moment from 'moment';
-import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
 import { AlertController, ModalController, ToastController, NavController, LoadingController, Modal } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
-import { Sale, DiscountSurchargeInterface } from './../../model/sale';
+import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes } from './../../model/sale';
 import { BasketItem } from './../../model/basketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
-import { CalculatorService } from '../../services/calculatorService';
-import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
 import { PriceBook } from '../../model/priceBook';
 import { PriceBookService } from '../../services/priceBookService';
@@ -26,7 +22,6 @@ import { Store } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { PaymentService } from '../../services/paymentService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
-import { FountainService } from './../../services/fountainService';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 
@@ -109,6 +104,7 @@ export class BasketComponent {
     this.setBalance();
     this.sale.completed = false;
     this.generatePaymentBtnText();
+    this.calculateTotalExternalValues();
 
     return;
   }
@@ -211,6 +207,23 @@ export class BasketComponent {
     modal.present();
   }
 
+  private calculateTotalExternalValues(){
+    let taxTotal = this.salesService.getTaxTotalSaleValue(this.sale);
+    this.totalExternalValue = this.sale.appliedValues.reduce((initialVal, nextVal: DiscountSurchargeInterface) => {
+      let value = nextVal.value;
+      if(nextVal.format === 'percentage'){
+        value = taxTotal * value / 100;
+      }
+
+      if(nextVal.type === DiscountSurchargeTypes.Surcharge){
+        initialVal += value;
+      }else{
+        initialVal -= value;
+      }
+      return initialVal;
+    }, 0);
+  }
+
   public externalValue(): { applyDiscount: Function, applySurcharge: Function } {
     let modal: Modal;
     let modalOptions: any = { values: this.sale.appliedValues }
@@ -219,10 +232,7 @@ export class BasketComponent {
         this.sale.appliedValues = response.values;
         response.data && this.sale.appliedValues.push(response.data);
         this.calculateAndSync();
-        // TODO: Excluded Percentage inclusion
-        this.totalExternalValue = _.sum(this.sale.appliedValues
-          .filter(value => value.format == 'cash')
-          .map(value => Number(value.value)));
+        this.calculateTotalExternalValues();
       }
     });
 

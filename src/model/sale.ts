@@ -8,6 +8,11 @@ interface PaymentsInterface {
   amount: number
 }
 
+export enum DiscountSurchargeTypes {
+  Surcharge = 'surcharge',
+  Discount = 'discount'
+}
+
 export interface DiscountSurchargeInterface {
   value: number;
   type: string;

@@ -298,6 +298,21 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return stockErrors;
 	}
 
+  public getTaxTotalSaleValue(sale: Sale): number {
+    let taxTotal = 0;
+    if (sale.items.length > 0) {
+      for (let item of sale.items) {
+        taxTotal += item.finalPrice * item.quantity;
+      }
+      /** Rounding Starts */
+      taxTotal = this.helperService.round10(taxTotal, -2);
+      let roundedTotal = this.helperService.round10(taxTotal, -2);
+      taxTotal = roundedTotal;
+      /** Rounding Ends */
+    }
+    return taxTotal;
+  }
+
 	public calculateSale(sale: Sale) {
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
