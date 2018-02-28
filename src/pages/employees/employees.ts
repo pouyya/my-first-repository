@@ -18,7 +18,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 export class Employees extends SearchableListing<Employee> {
 
   protected items: Employee[] = [];
-  public selectedStatus: any = 'all';
+  public selectedStatus: any = 'true';
   public statusList: any = [
     { value: 'all', text: 'All' },
     { value: 'true', text: 'Active' },
@@ -37,7 +37,7 @@ export class Employees extends SearchableListing<Employee> {
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Employees...' });
     await loader.present();
-    await this.fetchMore();
+    await this.searchByStatus();
     loader.dismiss();
   }
 
