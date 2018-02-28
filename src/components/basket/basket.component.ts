@@ -237,8 +237,7 @@ export class BasketComponent {
     this.navCtrl.push(PaymentsPage, {
       sale: this.sale,
       doRefund: this.refund,
-      callback: pushCallback,
-      store: this.syncContext.currentStore
+      callback: pushCallback
     });
   }
 

@@ -16,7 +16,6 @@ import { SyncContext } from "../../services/SyncContext";
 })
 export class AboutPage {
 
-  public pos: string;
   public dbInternalName: string;
   public dbExternalName: string;
   public dbInternalName_Critical: string;
