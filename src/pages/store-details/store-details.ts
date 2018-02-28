@@ -11,7 +11,6 @@ import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { SharedService } from '../../services/_sharedService';
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -33,8 +32,7 @@ export class StoreDetailsPage {
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private resourceService: ResourceService,
-    private _sharedService: SharedService) {
+    private resourceService: ResourceService) {
   }
 
   ionViewDidEnter() {
@@ -99,10 +97,6 @@ export class StoreDetailsPage {
       await addPos(info._id);
     } else {
       await this.storeService.update(this.item);
-      const isStoreChanged = await this.isCurrentStore();
-      if(isStoreChanged){
-          this._sharedService.publish('storeOrPosChanged', { currentStore : this.item});
-      }
       loader.setContent('Saving Registers...');
       await addPos(this.item._id);
     }
