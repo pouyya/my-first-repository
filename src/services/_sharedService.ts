@@ -12,7 +12,6 @@ export class SharedService {
     if (subject) {
       subject.next(data);
     }
-
   }
 
   getSubscribe(name: string) {

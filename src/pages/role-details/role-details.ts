@@ -30,7 +30,7 @@ export class RoleDetails {
     private navCtrl: NavController,
     private navParams: NavParams
   ) {
-    let role = <Role>navParams.get('role');
+    let role = <Role>this.navParams.get('role');
     if (role) {
       this.role = role;
       this.isNew = false;

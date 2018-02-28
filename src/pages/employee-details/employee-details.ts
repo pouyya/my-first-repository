@@ -7,7 +7,7 @@ import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee, EmployeeRolePerStore } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
-import { Component, NgZone, ChangeDetectorRef } from "@angular/core";
+import { Component, ChangeDetectorRef } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
 import {
   NavParams,
@@ -39,7 +39,6 @@ export class EmployeeDetails {
   constructor(
     private employeeService: EmployeeService,
     private timestampService: EmployeeTimestampService,
-    private zone: NgZone,
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,

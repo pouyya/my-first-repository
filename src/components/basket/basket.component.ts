@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import * as moment from 'moment';
 import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController, LoadingController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface } from './../../model/sale';
@@ -14,21 +13,17 @@ import { ItemInfoModal } from './item-info-modal/item-info';
 import { Customer } from '../../model/customer';
 import { CreateCustomerModal } from './modals/create-customer/create-customer';
 import { CustomerService } from '../../services/customerService';
-import { CalculatorService } from '../../services/calculatorService';
-import { TaxService } from '../../services/taxService';
 import { BaseTaxIterface } from '../../model/baseTaxIterface';
 import { PriceBook } from '../../model/priceBook';
 import { PriceBookService } from '../../services/priceBookService';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { PurchasableItemPriceInterface } from '../../model/purchasableItemPrice.interface';
 import { PurchasableItem } from '../../model/purchasableItem';
-import { Store } from '../../model/store';
-import { StoreService } from '../../services/storeService';
 import { PaymentService } from '../../services/paymentService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
-import { FountainService } from './../../services/fountainService';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
+import { SyncContext } from "../../services/SyncContext";
 
 @Component({
   selector: 'basket',
@@ -50,7 +45,6 @@ export class BasketComponent {
   private salesTaxes: BaseTaxIterface[];
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
-  private store: Store;
   private sale: Sale;
   private evaluationContext: EvaluationContext;
 
@@ -75,11 +69,10 @@ export class BasketComponent {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private priceBookService: PriceBookService,
-    private storeService: StoreService,
     private printService: PrintService,
     private paymentService: PaymentService,
-    private loading: LoadingController,
     private navCtrl: NavController,
+    private syncContext: SyncContext,
     private ngZone: NgZone) {
   }
 
@@ -122,11 +115,10 @@ export class BasketComponent {
   }
 
   private async loadBaseData() {
-    [this.salesTaxes, this.defaultTax, this.priceBooks, this.store] =
+    [this.salesTaxes, this.defaultTax, this.priceBooks] =
       [await this.salesService.getSaleTaxs(),
       await this.salesService.getDefaultTax(),
-      await this.priceBookService.getAllSortedByPriority(),
-      await this.storeService.getCurrentStore()];
+      await this.priceBookService.getAllSortedByPriority()]
   }
 
   setBalance() {
@@ -245,8 +237,7 @@ export class BasketComponent {
     this.navCtrl.push(PaymentsPage, {
       sale: this.sale,
       doRefund: this.refund,
-      callback: pushCallback,
-      store: this.store
+      callback: pushCallback
     });
   }
 
@@ -255,7 +246,7 @@ export class BasketComponent {
     let stockErrors;
 
     this.ngZone.runOutsideAngular(async () => {
-      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
     });
 
     if (stockErrors && stockErrors.length > 0) {
@@ -281,7 +272,7 @@ export class BasketComponent {
           }
         ];
 
-        await this.paymentService.completePayment(sale, this.store._id, this.refund);
+        await this.paymentService.completePayment(sale, this.syncContext.currentStore._id, this.refund);
 
         await this.salesService.update(sale);
 
@@ -294,7 +285,7 @@ export class BasketComponent {
 
       localStorage.removeItem('sale_id');
 
-      this.sale = await this.salesService.instantiateSale(this.user.currentPos);
+      this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos._id);
       this.paymentCompleted.emit();
       this.customer = null;
       this.calculateAndSync();
@@ -302,7 +293,7 @@ export class BasketComponent {
   }
 
   private async printSale(forcePrint: boolean, sale: Sale) {
-    if (this.store.printReceiptAtEndOfSale || forcePrint) {
+    if (this.syncContext.currentStore.printReceiptAtEndOfSale || forcePrint) {
       await this.printService.printReceipt(sale);
     }
 

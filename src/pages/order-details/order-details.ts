@@ -78,7 +78,7 @@ export class OrderDetails {
     private priceBookService: PriceBookService
   ) {
     this.cdr.detach();
-    let order = <Order>navParams.get('order');
+    let order = <Order>this.navParams.get('order');
     if (!order) {
       this.order = <InteractableOrder>new Order();
       this.order.UIState = OrderUIState.Unprocessed;

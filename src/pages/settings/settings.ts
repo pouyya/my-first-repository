@@ -1,14 +1,12 @@
 import _ from 'lodash';
 import * as moment from 'moment-timezone';
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { NavController, Platform, ToastController, LoadingController } from 'ionic-angular';
+import { ToastController, LoadingController } from 'ionic-angular';
 import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { SharedService } from './../../services/_sharedService';
-import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
-import { SalesTaxService } from './../../services/salesTaxService';
 import { DateTimeService } from './../../services/dateTimeService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
@@ -37,11 +35,7 @@ export class Settings {
   private setting: AppSettingsInterface;
 
   constructor(
-    private navCtrl: NavController,
-    private platform: Platform,
-    private salesTaxService: SalesTaxService,
     private userService: UserService,
-    private helperService: HelperService,
     private appService: AppService,
     private _sharedService: SharedService,
     private zone: NgZone,

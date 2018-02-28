@@ -18,7 +18,7 @@ export class ParkSale {
     private navParams: NavParams,
     private salesService: SalesServices,
   ) {
-    this.sale = navParams.get('sale');
+    this.sale = this.navParams.get('sale');
   }
 
   public dismissParkSale() {

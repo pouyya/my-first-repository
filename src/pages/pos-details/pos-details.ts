@@ -4,6 +4,7 @@ import { PosService } from './../../services/posService';
 import { POS } from './../../model/pos';
 import { Component } from '@angular/core';
 import { UserService } from '../../modules/dataSync/services/userService';
+import { SyncContext } from "../../services/SyncContext";
 @Component({
   selector: "pos-details",
   templateUrl: 'pos-details.html'
@@ -22,12 +23,12 @@ export class PosDetailsPage {
     private alertCtrl: AlertController,
     private loading: LoadingController,
     private userService: UserService,
-    private appService: AppService
+    private appService: AppService,
+    private syncContext: SyncContext
   ) { }
 
   ionViewDidEnter() {
     let pos = this.navParams.get('pos');
-    let storeId = this.navParams.get('storeId');
     this.navPopCallback = this.navParams.get("pushCallback")
     if (pos && pos._id !== "") {
       this.pos = pos;
@@ -55,7 +56,7 @@ export class PosDetailsPage {
         {
           text: 'Yes',
           handler: () => {
-            if (user.currentPos == this.pos._id) {
+            if (this.syncContext.currentPos._id == this.pos._id) {
               let toast = this.toastCtrl.create({
                 message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
                 duration: 3000

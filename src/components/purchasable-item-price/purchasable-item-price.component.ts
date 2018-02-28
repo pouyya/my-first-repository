@@ -9,13 +9,6 @@ import { PriceBook } from './../../model/priceBook';
 import { Component, Input, OnChanges, NgZone, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../modules/dataSync/services/userService';
 
-interface IntractableItemPriceInterface extends PurchasableItemPriceInterface {
-  name: string,
-  entityTypeName: string;
-  tax: any;
-  deleted: boolean;
-}
-
 interface ComponentOptions {
   enableAddidtion: boolean;
   enableDeletion: boolean;

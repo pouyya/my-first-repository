@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { GroupSaleTaxPage } from './../group-sale-tax/group-sale-tax';
 import { SaleTaxDetails } from './../sale-tax-details/sale-tax-details';
-import { Platform, NavController, ToastController } from 'ionic-angular';
+import { Platform, NavController } from 'ionic-angular';
 import { SalesTax } from './../../../model/salesTax';
 import { SalesTaxService } from './../../../services/salesTaxService';
 import { Component, NgZone } from '@angular/core';
@@ -24,8 +24,7 @@ export class SaleTaxPage {
     private salesTaxService: SalesTaxService,
     private platform: Platform,
     private zone: NgZone,
-    private navCtrl: NavController,
-    private toastCtrl: ToastController
+    private navCtrl: NavController
   ) {
 
   }

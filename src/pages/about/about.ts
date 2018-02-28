@@ -1,14 +1,12 @@
-import { StoreService } from '../../services/storeService';
 import { Component } from '@angular/core';
-import { PosService } from '../../services/posService';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
-import { PlatformService } from '../../services/platformService';
 import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)
@@ -18,8 +16,6 @@ import { ConfigService } from '../../modules/dataSync/services/configService';
 })
 export class AboutPage {
 
-  public pos: string;
-  public store: string;
   public dbInternalName: string;
   public dbExternalName: string;
   public dbInternalName_Critical: string;
@@ -39,27 +35,12 @@ export class AboutPage {
   */
 
   constructor(
-    private posService: PosService,
-    private storeService: StoreService,
-    private platformService: PlatformService,
-    private ionicProDeployService: IonicProDeployService
+    private ionicProDeployService: IonicProDeployService,
+    private syncContext: SyncContext // Used in view
   ) { }
 
   async ionViewDidLoad() {
     try {
-      let promises: Promise<any>[] = [
-        this.posService.getCurrentPos(),
-        this.storeService.getCurrentStore()
-      ];
-
-      let result = await Promise.all(promises);
-
-      let pos = result[0];
-      let store = result[1];
-
-      this.pos = pos.name;
-      this.store = store.name;
-
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
       this.dbInternalName_Critical = ConfigService.internalCriticalDBName;

@@ -1,4 +1,4 @@
-import { NavController, Platform, Item } from 'ionic-angular';
+import { NavController, Item } from 'ionic-angular';
 import { Component, OnDestroy, OnChanges, OnInit, Input, Output, EventEmitter, HostListener, SimpleChanges, Optional, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchableIonSelectView } from './searchable-ion-select-view/searchable-ion-select-view';
@@ -70,7 +70,6 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
   constructor(
     private navCtrl: NavController,
     private ionForm: Form,
-    private platform: Platform,
     @Optional() private ionItem: Item
   ) {
   }

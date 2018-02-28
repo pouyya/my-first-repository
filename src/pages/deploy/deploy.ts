@@ -1,13 +1,7 @@
 import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { PlatformService } from '../../services/platformService';
-import { Insomnia } from '@ionic-native/insomnia';
 import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { UserService } from '../../modules/dataSync/services/userService';
-import { ConfigService } from '../../modules/dataSync/services/configService';
-import { LoginPage } from '../../modules/dataSync/pages/login/login';
-import { DataSync } from '../../modules/dataSync/pages/dataSync/dataSync';
 
 @Component({
   selector: 'page-deploy',
@@ -19,9 +13,6 @@ export class DeployPage {
 
   constructor(
     private navCtrl: NavController,
-    private userService: UserService,
-    private platformService: PlatformService,
-    private insomnia: Insomnia,
     private ionicProDeployService: IonicProDeployService,
     private zone: NgZone,
     public splashScreen: SplashScreen) {
