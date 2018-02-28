@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { PosService } from './../../services/posService';
 import { Employee } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
 import { EmployeeService } from './../../services/employeeService';
@@ -14,8 +13,7 @@ import { Observable } from 'rxjs/Rx';
 import { POS } from '../../model/pos';
 import { StoreService } from '../../services/storeService';
 import { Store } from '../../model/store';
-import { UserSession } from '../../modules/dataSync/model/UserSession';
-import { UserService } from '../../modules/dataSync/services/userService';
+import { SyncContext } from "../../services/SyncContext";
 
 @PageModule(() => SalesModule)
 @Component({
@@ -37,7 +35,6 @@ export class ClockInOutPage {
   public clock: Observable<Date> = Observable
     .interval(1000)
     .map(() => new Date());
-  private user: UserSession;
   private previousTimestamp: EmployeeTimestamp;
 
   constructor(
@@ -47,32 +44,17 @@ export class ClockInOutPage {
     private employeeTimestampService: EmployeeTimestampService,
     private toastCtrl: ToastController,
     private viewCtrl: ViewController,
-    private userService: UserService,
-    private posService: PosService,
     private storeService: StoreService,
     private loading: LoadingController,
-    private zone: NgZone
+    private zone: NgZone,
+    private syncContext: SyncContext
   ) { }
 
   /**
    * @AuthGuard
    */
   async ionViewCanEnter(): Promise<boolean> {
-
-    let loader = this.loading.create({
-      content: 'Please Wait...',
-    });
-
-    await loader.present();
-
-    this.pos = await this.posService.getCurrentPos();
-    this.posStatus = this.pos.status;
-    this.posName = this.pos.name;
-
-    await loader.dismiss();
-
-    if (!this.posStatus) {
-
+    if (!this.syncContext.currentPos.status) {
       let toast = this.toastCtrl.create({
         message: "POS is closed!",
         duration: 3000
@@ -88,7 +70,7 @@ export class ClockInOutPage {
     }
 
     /** Check PIN against conditions */
-    loader = this.loading.create({ content: 'Verifying PIN' });
+    let loader = this.loading.create({ content: 'Verifying PIN' });
     await loader.present();
 
     this.employee = await this.zone.runOutsideAngular(async () => {
@@ -108,7 +90,7 @@ export class ClockInOutPage {
         return null;
       }
 
-      let employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.pos.storeId, employee._id);
+      var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.syncContext.currentPos.storeId, employee._id);
 
       if (employeeClockedInToOtherStore) {
         let toast = this.toastCtrl.create({
@@ -129,7 +111,6 @@ export class ClockInOutPage {
       return false;
     }
 
-    this.user = await this.userService.getUser();
     loader.dismiss();
     return true;
   }
@@ -149,7 +130,7 @@ export class ClockInOutPage {
    */
   async ionViewDidEnter() {
 
-    if (!this.posStatus) {
+    if (!this.syncContext.currentPos.status) {
       return;
     }
 
@@ -199,7 +180,7 @@ export class ClockInOutPage {
 
 
       let result = await this.employeeTimestampService
-        .getEmployeeLastTwoTimestamps(this.employee._id, this.user.currentStore);
+        .getEmployeeLastTwoTimestamps(this.employee._id, this.syncContext.currentStore._id);
 
       if (result) {
         result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
@@ -209,7 +190,7 @@ export class ClockInOutPage {
       } else {
         this.timestamp = new EmployeeTimestamp();
         this.timestamp.employeeId = this.employee._id;
-        this.timestamp.storeId = this.user.currentStore;
+        this.timestamp.storeId = this.syncContext.currentStore._id;
         this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
       }
     });
@@ -255,7 +236,7 @@ export class ClockInOutPage {
       if (button.next == EmployeeTimestampService.CLOCK_OUT && this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
         let breakEnd = new EmployeeTimestamp();
         breakEnd.employeeId = this.employee._id;
-        breakEnd.storeId = this.user.currentStore;
+        breakEnd.storeId = this.syncContext.currentStore._id;
         breakEnd.time = time;
         breakEnd.type = EmployeeTimestampService.BREAK_END;
         await this.employeeTimestampService.add(breakEnd);

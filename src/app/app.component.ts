@@ -5,10 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { SwitchPosModal } from './modals/switch-pos/switch-pos';
 import { ModuleService } from './../services/moduleService';
-import { SharedService } from './../services/_sharedService';
 import { ModuleBase } from "../modules/moduelBase";
-import { POS } from './../model/pos';
-import { Store } from './../model/store';
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
 import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
@@ -17,6 +14,7 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
+import { SyncContext } from "../services/SyncContext";
 
 
 @Component({
@@ -28,8 +26,6 @@ export class SimplePOSApp implements OnInit {
   public rootPage: any;
   public currentModule: ModuleBase;
   public moduleName: string;
-  public currentStore: Store = null;
-  public currentPos: POS = null;
   private alive: boolean = true;
 
   constructor(
@@ -40,28 +36,14 @@ export class SimplePOSApp implements OnInit {
     private modalCtrl: ModalController,
     private loading: LoadingController,
     private insomnia: Insomnia,
-    private _sharedService: SharedService,
     private toastController: ToastController,
     private platformService: PlatformService,
     private ionicProDeployService: IonicProDeployService,
     private userService: UserService,
     private printService: PrintService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
+    private syncContext: SyncContext // used in view
   ) {
-    this._sharedService
-      .getSubscribe('storeOrPosChanged')
-      .takeWhile(() => this.alive)
-      .subscribe((data) => {
-        if (data.hasOwnProperty('currentStore') && data.hasOwnProperty('currentPos')) {
-          this.currentStore = data.currentStore;
-          this.currentPos = data.currentPos;
-        }
-
-        if (data.hasOwnProperty('screenAwake') && this.platformService.isMobileDevice()) {
-          data.screenAwake ? this.insomnia.keepAwake() : this.insomnia.allowSleepAgain();
-        }
-      });
-
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
@@ -110,8 +92,6 @@ export class SimplePOSApp implements OnInit {
         let loader = this.loading.create();
 
         loader.present().then(() => {
-          data.hasOwnProperty('currentStore') && (this.currentStore = data.currentStore);
-          data.hasOwnProperty('currentPos') && (this.currentPos = data.currentPos);
           this.nav.setRoot(this.nav.getActive().component);
           loader.dismiss();
         });

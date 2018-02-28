@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
 import { UserSession } from '../../../modules/dataSync/model/UserSession';
 import { UserService } from '../../../modules/dataSync/services/userService';
+import { SharedService } from "../../../services/_sharedService";
 
 @Component({
   selector: "switch-pos",
@@ -28,6 +29,7 @@ export class SwitchPosModal {
     private posService: PosService,
     private loading: LoadingController,
     private userService: UserService,
+    private _sharedService: SharedService
   ) {
   }
 
@@ -64,6 +66,7 @@ export class SwitchPosModal {
   public switchRegister(register: POS) {
     this.user.currentStore = register.storeId;
     this.user.currentPos = register._id;
+    this._sharedService.publish('storeOrPosChanged', { currentStore: this.currentStore, currentPos: register});
     let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
     let currentStore = _.pick(this.stores.find((store) => store._id == register.storeId), GlobalConstants.STORE_SESSION_PROPS);
     this.userService.setSession(this.user);

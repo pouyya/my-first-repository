@@ -10,10 +10,9 @@ import { SalesServices } from './../../services/salesService';
 import { PrintService } from '../../services/printService';
 import { Customer } from '../../model/customer';
 import { Employee } from '../../model/employee';
-import { UserSession } from '../../modules/dataSync/model/UserSession';
-import { UserService } from '../../modules/dataSync/services/userService';
 import * as moment from 'moment-timezone';
 import { DateTimeHelper } from '../../infra/helpers/dateTimeHelper';
+import { SyncContext } from "../../services/SyncContext";
 
 enum TimeValues {
   anytime = "1",
@@ -43,7 +42,6 @@ export class SalesHistoryPage {
   public employeeSearch: string;
   public searchedEmployees: Employee[] = [];
   public cancelButtonText = 'Reset';
-  private user: UserSession;
   private limit: number;
   private readonly defaultLimit = 20;
   private readonly defaultOffset = 0;
@@ -64,13 +62,13 @@ export class SalesHistoryPage {
     private zone: NgZone,
     private navCtrl: NavController,
     private salesService: SalesServices,
-    private userService: UserService,
     private customerService: CustomerService,
     private employeeService: EmployeeService,
     private alertController: AlertController,
     private toastCtrl: ToastController,
     private loading: LoadingController,
-    private printService: PrintService
+    private printService: PrintService,
+    private syncContext: SyncContext
   ) {
     this.sales = [];
     this.salesBackup = [];
@@ -92,7 +90,6 @@ export class SalesHistoryPage {
     });
     await loader.present();
     try {
-      this.user = await this.userService.getUser();
       await this.fetchMoreSales();
       loader.dismiss();
     } catch (err) {
@@ -349,7 +346,7 @@ export class SalesHistoryPage {
   public async fetchMoreSales(infiniteScroll?: any) {
     try {
       let sales = await await this.salesService.searchSales(
-        this.user.currentPos,
+        this.syncContext.currentPos._id,
         this.limit,
         this.offset,
         this.filters,

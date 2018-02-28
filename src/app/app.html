@@ -35,10 +35,10 @@
     </ion-header>
 
     <ion-header *ngIf="moduleName == 'SalesModule'">
-      <ion-toolbar *ngIf="currentPos && currentStore">
-        <ion-title>{{currentStore.name}}</ion-title>
+      <ion-toolbar *ngIf="syncContext.currentPos && syncContext.currentStore">
+        <ion-title>{{syncContext.currentStore.name}}</ion-title>
         <ion-title>
-          <small>{{currentPos.name}}</small>
+          <small>{{syncContext.currentPos.name}}</small>
         </ion-title>
         <ion-title>
           <small>
