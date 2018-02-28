@@ -143,6 +143,7 @@ import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
 import { PaymentService } from '../services/paymentService';
+import { SyncContext } from "../services/SyncContext";
 
 @NgModule({
   declarations: [
@@ -365,11 +366,13 @@ import { PaymentService } from '../services/paymentService';
     SupplierService,
     OrderService,
     ResourceService,
-    PaymentService
+    PaymentService,
+    SyncContext
   ]
 })
 export class AppModule {
-  constructor(injector: Injector) {
+  constructor(private syncContext: SyncContext, injector: Injector) {
     ServiceLocator.injector = injector;
+    this.syncContext.initSubscribe();
   }
 }

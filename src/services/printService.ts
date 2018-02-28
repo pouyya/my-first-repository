@@ -14,6 +14,7 @@ import { EmployeeService } from './employeeService';
 import { CategoryService } from './categoryService';
 import { BasketItem } from '../model/basketItem';
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
+import { SyncContext } from "./SyncContext";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -47,14 +48,15 @@ export class PrintService {
     private posService: PosService,
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
-    private categoryService: CategoryService) {
+    private categoryService: CategoryService,
+    private syncContext: SyncContext) {
   }
 
   public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
-    var currentStore = await this.storeService.get(closure.storeId);
+    var currentStore = this.syncContext.currentStore;
 
     var context = new EndOfDayProviderContext();
-    context.openFloat = closure.openingAmount
+    context.openFloat = closure.openingAmount;
     context.posName = closure.posName;
     context.storeName = closure.storeName;
     context.openTime = closure.openTime;
@@ -152,7 +154,7 @@ export class PrintService {
       return;
     }
 
-    var currentStore = await this.storeService.getCurrentStore();
+    var currentStore = this.syncContext.currentStore;
 
     if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
 
@@ -186,11 +188,11 @@ export class PrintService {
       return;
     }
 
-    var currentStore = await this.storeService.getCurrentStore();
+    var currentStore = this.syncContext.currentStore;
 
-    if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
+    if (!TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerPort)) {
 
-      await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
+      await new EscPrinterConnectorProvider(this.syncContext.currentStore.printerIP, this.syncContext.currentStore.printerPort)
         .write(new ReceiptProvider(null).openCashDrawer().getResult());
     }
   }

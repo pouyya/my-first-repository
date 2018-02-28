@@ -11,11 +11,11 @@
 <ion-content>
   <ion-item-group>
     <ion-item-divider color="light">Current POS/Register</ion-item-divider>
-    <ion-item>{{ pos }}</ion-item>
+    <ion-item>{{ syncContext.currentPos.name }}</ion-item>
   </ion-item-group>
   <ion-item-group>
     <ion-item-divider color="light">Current Store</ion-item-divider>
-    <ion-item>{{ store }}</ion-item>
+    <ion-item>{{ syncContext.currentStore.name }}</ion-item>
   </ion-item-group>
   <ion-item-group>
     <ion-item-divider color="light">Deploy</ion-item-divider>
