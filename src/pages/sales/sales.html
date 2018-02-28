@@ -13,7 +13,7 @@
 
 <ion-content>
 
-  <ion-grid *ngIf="!register.status">
+  <ion-grid *ngIf="!syncContext.currentPos.status">
     <ion-row>
       <ion-col col-md-6 offset-md-3>
         <form (ngSubmit)="openRegister()" #salesForm="ngForm">
@@ -21,12 +21,12 @@
           <h5 text-center>Set an opening float to open the register and make sale</h5>
 
           <ion-label stacked>Opening Float</ion-label>
-          <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="register.openingAmount" name="openingAmount" required></ion-input>
+          <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="syncContext.currentPos.openingAmount" name="openingAmount" required></ion-input>
 
           <ion-label color="primary" stacked>Notes
             <small>optional</small>
           </ion-label>
-          <ion-textarea placeholder="Enter Note" [(ngModel)]="register.openingNote" name="openingNote">
+          <ion-textarea placeholder="Enter Note" [(ngModel)]="syncContext.currentPos.openingNote" name="openingNote">
           </ion-textarea>
 
           <button ion-button color="primary" [disabled]="!salesForm.form.valid" block type="submit">
@@ -40,7 +40,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="register.status && activeCategory" class="full-height">
+  <ion-grid *ngIf="syncContext.currentPos.status && activeCategory" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
         <ion-scroll scrollY="true" class="category-scroll">

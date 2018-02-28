@@ -20,6 +20,7 @@ import { BasketComponent } from './../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
+import { SyncContext } from "../../services/SyncContext";
 
 
 @SecurityModule()
@@ -68,7 +69,8 @@ export class Sales implements OnDestroy {
     private loading: LoadingController,
     private posService: PosService,
     private navParams: NavParams,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private syncContext: SyncContext
   ) {
     this.cdr.detach();
   }
@@ -100,20 +102,17 @@ export class Sales implements OnDestroy {
         }
       });
 
-    [this.user, this.register] = [
-      await this.userService.getUser(),
-      await this.posService.getCurrentPos()];
+    this.user = await this.userService.getUser();
 
-    if (!this.register.status) {
+    if (!this.syncContext.currentPos.status) {
       let openingAmount = Number(this.navParams.get('openingAmount'));
       if (openingAmount >= 0) {
-        this.register = await this.posService.openRegister(this.register, openingAmount, this.navParams.get('openingNotes'));
+        this.syncContext.currentPos = await this.posService.openRegister(this.syncContext.currentPos, openingAmount, this.navParams.get('openingNotes'));
         await this.loadRegister();
       }
     } else {
       await this.loadRegister();
     }
-
 
     this.cdr.reattach();
   }
@@ -143,7 +142,7 @@ export class Sales implements OnDestroy {
 
   get evaluationContext() {
     let context = new EvaluationContext();
-    context.currentStore = this.user.currentStore;
+    context.currentStore = this.syncContext.currentStore._id;
     context.currentDateTime = new Date();
     return context;
   }
@@ -183,7 +182,7 @@ export class Sales implements OnDestroy {
   }
 
   private async loadEmployees() { //move to it's own module
-    this.employees = await this.employeeService.getClockedInEmployeesOfStore(this.user.currentStore);
+    this.employees = await this.employeeService.getClockedInEmployeesOfStore(this.syncContext.currentStore._id);
     if (this.employees && this.employees.length > 0) {
       this.employees = this.employees.map(employee => {
         employee.selected = false;
@@ -209,7 +208,8 @@ export class Sales implements OnDestroy {
   public async openRegister() {
     let loader = this.loading.create({ content: 'Opening Register...' });
     await loader.present();
-    this.register = await this.posService.openRegister(this.register, this.register.openingAmount, this.register.openingNote);
+    this.syncContext.currentPos = await this.posService.openRegister(this.syncContext.currentPos,
+      this.syncContext.currentPos.openingAmount, this.syncContext.currentPos.openingNote);
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
   }

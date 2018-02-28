@@ -1,6 +1,6 @@
 import { ModalController } from 'ionic-angular';
 import { MoveCashModal } from './modals/move-cash';
-import { CashMovement, POS } from './../../model/pos';
+import { CashMovement } from './../../model/pos';
 import { PosService } from './../../services/posService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
@@ -8,6 +8,7 @@ import { PageModule } from './../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { PrintService } from '../../services/printService';
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.MoneyInOut)
 @PageModule(() => SalesModule)
@@ -17,23 +18,22 @@ import { PrintService } from '../../services/printService';
 })
 export class MoneyInOut {
 
-  private register: POS;
   public btnDisabled: boolean = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
     private posService: PosService,
-    private printService: PrintService) {
+    private printService: PrintService,
+    private syncContext: SyncContext) {
     this.cdr.detach();
   }
 
-  ionViewCanEnter(): Promise<boolean> {
-    return this.posService.getCurrentPosStatus();
+  ionViewCanEnter(): boolean {
+    return this.syncContext.currentPos.status;
   }
 
   async ionViewDidLoad() {
-    this.register = await this.posService.getCurrentPos();
     this.cdr.reattach();
   }
 
@@ -43,14 +43,14 @@ export class MoneyInOut {
       if (cash) {
         this.btnDisabled = true;
 
-        if (!this.register.cashMovements) {
-          this.register.cashMovements = new Array<CashMovement>();
+        if (!this.syncContext.currentPos.cashMovements) {
+          this.syncContext.currentPos.cashMovements = new Array<CashMovement>();
         }
 
         this.printService.openCashDrawer();
 
-        this.register.cashMovements.push(cash);
-        this.posService.update(this.register).catch(error => {
+        this.syncContext.currentPos.cashMovements.push(cash);
+        this.posService.update(this.syncContext.currentPos).catch(error => {
           throw new Error(error);
         }).then(() => this.btnDisabled = false);
       }
