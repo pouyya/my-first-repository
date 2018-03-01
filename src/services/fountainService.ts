@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
-import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class FountainService {
@@ -21,6 +20,10 @@ export class FountainService {
     currentAccountSetting.closureLastNumber = (currentAccountSetting.closureLastNumber || 0) + 1;
     await this.accountSettingService.update(currentAccountSetting);
     return `${currentAccountSetting.closureNumberPrefix || 'CL'}${currentAccountSetting.closureLastNumber}`;
+  }
+
+  public async getOrderNumber() {
+    return await Promise.resolve(`O${Math.round(Math.random() * 1000)}`);
   }
 
 }

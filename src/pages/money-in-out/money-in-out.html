@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
+    <button ion-button menuToggle="leftMenu">
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-buttons end network-monitor></ion-buttons>
@@ -27,7 +27,7 @@
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-item *ngFor="let posCash of register.cashMovements">
+    <ion-item *ngFor="let posCash of syncContext.currentPos.cashMovements">
       <ion-grid>
         <ion-row>
           <ion-grid col-md-4>{{posCash.datetime | localDate:'M/d/yy, h:mm a'}}</ion-grid>

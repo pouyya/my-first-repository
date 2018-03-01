@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { LoadingController } from 'ionic-angular';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, Platform } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { ProductDetails } from '../product-details/product-details';
 import { InventoryModule } from '../../modules/inventoryModule';
@@ -12,6 +12,7 @@ import { Product } from '../../model/product';
 import { PriceBook } from '../../model/priceBook';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -30,37 +31,30 @@ export class Products {
   private readonly defaultOffset = 0;
   private limit: number;
   private offset: number;
-  private total: number;
   private priceBook: PriceBook;
   private stockValues: any;
   private filter: string;
 
   constructor(
     private navCtrl: NavController,
-    private alertCtrl: AlertController,
     private productService: ProductService,
     private stockHistoryService: StockHistoryService,
     private priceBookService: PriceBookService,
     private platform: Platform,
     private loading: LoadingController,
     private zone: NgZone) {
-    this.limit;
-    this.offset;
-    this.total = 0;
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.items = [];
   }
 
   async ionViewDidEnter() {
+    await this.platform.ready();
+    let loader = this.loading.create({ content: 'Loading Products...' });
+    await loader.present();
     try {
-      this.limit = this.defaultLimit;
-      this.offset = this.defaultOffset;
-      this.items = [];
-      await this.platform.ready();
-      let loader = this.loading.create({ content: 'Loading Products...' });
-      await loader.present();
-
       this.priceBook = await this.priceBookService.getDefault();
       this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
-
       await this.fetchMore();
       loader.dismiss();
     } catch (err) {
@@ -78,14 +72,25 @@ export class Products {
   }
 
   private async loadProducts(): Promise<ProductsList[]> {
+    let selectors: QuerySelectorInterface = {};
+    var options: QueryOptionsInterface = {
+      sort: [
+        { order: SortOptions.ASC }
+      ],
+      conditionalSelectors: {
+        order: {
+          $gt: true
+        }
+      }
+    };
 
-    var options = {};
-    
     if (this.filter) {
-      options['name'] = this.filter;
-    }    
+      selectors = {
+        name: this.filter
+      }
+    }
 
-    let products = await this.productService.search(this.limit, this.offset, options);
+    let products = await this.productService.search(this.limit, this.offset, selectors, options);
 
     products.forEach((product) => {
       var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
@@ -99,7 +104,7 @@ export class Products {
   }
 
   public async fetchMore(infiniteScroll?: any) {
-  
+
     var products = await this.loadProducts();
 
     this.offset += products ? products.length : 0;

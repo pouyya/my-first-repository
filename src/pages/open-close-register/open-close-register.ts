@@ -22,6 +22,7 @@ import { Employee } from '../../model/employee';
 import { FountainService } from '../../services/fountainService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.OpenCloseRegister)
 @PageModule(() => SalesModule)
@@ -37,12 +38,12 @@ export class OpenCloseRegister {
   public store: Store;
   public closure: Closure;
   public showReport: Boolean;
-  public expected: any = {
+  public expected: { [type: string]: number } = {
     cash: 0,
     cc: 0,
     total: 0
   };
-  public openingPos: any = {
+  public openingPos: { amount: number, notes: string } = {
     amount: null,
     notes: null
   };
@@ -51,9 +52,11 @@ export class OpenCloseRegister {
     remove: { text: 'Cash Out' }
   };
 
+  private totalCashMaking: number = 0;
+
   constructor(private loading: LoadingController,
     private posService: PosService,
-    private storeService: StoreService,
+    private syncContext: SyncContext,
     private employeeService: EmployeeService,
     private closureService: ClosureService,
     private toastCtrl: ToastController,
@@ -77,16 +80,13 @@ export class OpenCloseRegister {
 
     let sales: Array<Sale>;
 
-    this.pos = await this.posService.getCurrentPos();
-
-    [sales, this.store] = await Promise.all([
-      this.salesService.findCompletedByPosId(this.pos._id, this.pos.openTime),
-      this.storeService.getCurrentStore()
-    ]);
+    sales = await this.salesService.findCompletedByPosId(this.syncContext.currentPos._id, this.syncContext.currentPos.openTime);
 
     this.calculateExpectedCounts(sales);
 
     this.populateClosure(sales, this.employeeService.getEmployee());
+    
+    this.prinService.openCashDrawer();
 
     this.cdr.reattach();
     loader.dismiss();
@@ -95,14 +95,15 @@ export class OpenCloseRegister {
   private populateClosure(sales: Sale[], employee: Employee) {
     this.closure = new Closure();
     this.closure.sales = sales;
-    this.closure.posId = this.pos._id;
-    this.closure.posName = this.pos.name;
-    this.closure.storeId = this.store._id;
-    this.closure.storeName = this.store.name;
-    this.closure.openTime = this.pos.openTime;
-    this.closure.openingAmount = this.pos.openingAmount;
-    this.closure.totalCashIn = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'add' ? cashMovement.amount : 0);
-    this.closure.totalCashOut = _.sumBy(this.pos.cashMovements, cashMovement => cashMovement.type == 'remove' ? cashMovement.amount : 0);
+    this.closure.posId = this.syncContext.currentPos._id;
+    this.closure.posName = this.syncContext.currentPos.name;
+    this.closure.storeId = this.syncContext.currentStore._id;
+    this.closure.storeName = this.syncContext.currentStore.name;
+    this.closure.openTime = this.syncContext.currentPos.openTime;
+    this.closure.openingAmount = this.syncContext.currentPos.openingAmount;
+    this.closure.totalCashMaking = this.totalCashMaking;
+    this.closure.totalCashIn = _.sumBy(this.syncContext.currentPos.cashMovements, cashMovement => cashMovement.type == 'add' ? cashMovement.amount : 0);
+    this.closure.totalCashOut = _.sumBy(this.syncContext.currentPos.cashMovements, cashMovement => cashMovement.type == 'remove' ? cashMovement.amount : 0);
     this.closure.employeeFullName = `${employee.firstName} ${employee.lastName}`;
     this.closure.employeeId = employee._id;
     this.calculateDiff('cash');
@@ -123,12 +124,12 @@ export class OpenCloseRegister {
         });
       });
     }
-
-    this.expected.cash += this.pos.openingAmount;
-    if (this.pos.cashMovements && this.pos.cashMovements.length > 0) {
+    this.totalCashMaking = this.expected.cash;
+    this.expected.cash += this.syncContext.currentPos.openingAmount;
+    if (this.syncContext.currentPos.cashMovements && this.syncContext.currentPos.cashMovements.length > 0) {
       this.expected.cash = ((expected) => {
         let sum = 0;
-        this.pos.cashMovements.forEach(cash => sum += cash.amount);
+        this.syncContext.currentPos.cashMovements.forEach(cash => sum += cash.amount);
         return this.expected.cash + sum;
       })(this.expected.cash);
     }
@@ -179,9 +180,9 @@ export class OpenCloseRegister {
       await loader.present();
 
       loader.setContent("Checking other POS closure status..");
-      if (await this.posService.isThisLastPosClosingInStore(this.pos._id)) {
+      if (await this.posService.isThisLastPosClosingInStore(this.syncContext.currentPos._id)) {
         loader.setContent("Clocking out current staff..");
-        await this.employeeService.clockOutClockedInOfStore(this.store._id, this.closure.closeTime);
+        await this.employeeService.clockOutClockedInOfStore(this.syncContext.currentStore._id, this.closure.closeTime);
       }
 
       loader.setContent("Saving and Printing Closure..");
@@ -192,13 +193,13 @@ export class OpenCloseRegister {
 
       this.prinService.printEndOfDayReport(this.closure, EndOfDayReportType.PerCategory);
 
-      this.pos.status = false;
-      this.pos.cashMovements = [];
-      this.pos.openingAmount = null;
-      this.pos.openTime = null;
-      this.pos.openingNote = null;
+      this.syncContext.currentPos.status = false;
+      this.syncContext.currentPos.cashMovements = [];
+      this.syncContext.currentPos.openingAmount = null;
+      this.syncContext.currentPos.openTime = null;
+      this.syncContext.currentPos.openingNote = null;
       this.showReport = true;
-      await this.posService.update(this.pos);
+      await this.posService.update(this.syncContext.currentPos);
 
       loader.dismiss();
 

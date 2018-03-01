@@ -1,3 +1,4 @@
+import { Supplier } from './../../model/supplier';
 import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { StockHistory } from './../../model/stockHistory';
@@ -11,16 +12,16 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, ViewController, Platform, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
-import { HelperService } from "../../services/helperService";
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
 
 interface InteractableStoreStock {
@@ -49,6 +50,7 @@ export class ProductDetails {
 	public salesTaxes: Array<any> = [];
 	public storesStock: InteractableStoreStock[] = [];
 	public stockHistory: { [id: string]: StockHistory[] } = {};
+	public suppliers: Supplier[] = [];
 	public selectedStore: string;
 	public categories = [];
 	public brands: any = [];
@@ -78,17 +80,15 @@ export class ProductDetails {
 		private categoryService: CategoryService,
 		private storeService: StoreService,
 		private stockHistoryService: StockHistoryService,
+		private supplierService: SupplierService,
 		private brandService: BrandService,
 		private userService: UserService,
 		private priceBookService: PriceBookService,
 		private salesTaxService: SalesTaxService,
-		private helperService: HelperService,
 		private appService: AppService,
-		private platform: Platform,
 		private navParams: NavParams,
 		private loading: LoadingController,
 		private zone: NgZone,
-		private viewCtrl: ViewController,
 		private modalCtrl: ModalController,
 		private cdr: ChangeDetectorRef) {
 		this.icons = icons;
@@ -137,6 +137,7 @@ export class ProductDetails {
 			this.appService.loadSalesAndGroupTaxes(),
 			this.priceBookService.getDefault(),
 			this.brandService.getAll(),
+			this.supplierService.getAll()
 		];
 
 		if (!this.isNew) {
@@ -198,6 +199,7 @@ export class ProductDetails {
 			salesTaxes,
 			defaultPB,
 			brands,
+			suppliers,
 			storesStock,
 			stockHistory
 		] = await Promise.all(promises);
@@ -208,6 +210,7 @@ export class ProductDetails {
 			this.salesTaxes = this.salesTaxes.concat(salesTaxes);
 			this._defaultPriceBook = defaultPB;
 			this.brands = brands;
+			this.suppliers = suppliers;
 			this.storesStock = storesStock;
 			this.stockHistory = _.cloneDeep(stockHistory);
 
@@ -322,6 +325,7 @@ export class ProductDetails {
 	}
 
 	public async saveProducts() {
+		this.productItem.order = Number(this.productItem.order);
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
 			this._defaultPriceBook.purchasableItems.push({

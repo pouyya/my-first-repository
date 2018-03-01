@@ -2,7 +2,6 @@ import _ from 'lodash';
 import * as moment from 'moment';
 import { DiscountSurchargeInterface } from './../../../../model/sale';
 import { ViewController, ToastController } from 'ionic-angular';
-import { NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
 
 @Component({
@@ -24,7 +23,6 @@ export class DiscountSurchargeModal {
   private valuesBackup: DiscountSurchargeInterface[] = [];
 
   constructor(
-    private navParams: NavParams,
     private viewCtrl: ViewController,
     private toastCtrl: ToastController
   ) {

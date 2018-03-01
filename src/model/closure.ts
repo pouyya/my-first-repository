@@ -20,6 +20,7 @@ export class Closure extends DBBasedEntity {
   public ccDifference: number;
   public totalCounted: number;
   public totalDifference: number;
+  public totalCashMaking: number;
   public note: string;
   public sales: Array<Sale>;
   public employeeFullName: string;
@@ -33,5 +34,6 @@ export class Closure extends DBBasedEntity {
     this.ccDifference = 0;
     this.totalCounted = 0;
     this.totalDifference = 0;
+    this.totalCashMaking = 0;
   }
 }

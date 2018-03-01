@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
+    <button ion-button menuToggle="leftMenu">
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-buttons end network-monitor></ion-buttons>
@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content>
-  <h2 text-center>{{ pos.name }}</h2>
+  <h2 text-center>{{ syncContext.currentPos.name }}</h2>
   <ion-list>
     <ion-item>
       <ion-grid>

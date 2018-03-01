@@ -1,11 +1,9 @@
-import { Sales } from './../../../../pages/sales/sales';
 import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
 import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
-import { DataSyncModule } from '../../dataSyncModule';
 import { DataBootstrapper } from '../../../../pages/data-bootstrapper/data-bootstrapper';
 
 @Component({
@@ -35,13 +33,14 @@ export class DataSync {
 		this.updateText = "Check for data update!";
 
 		DBService.initializePlugin(ConfigService.isDevelopment());
-		DBService.initialize(ConfigService.currentCriticalFullExternalDBUrl,
-            ConfigService.internalCriticalDBName,
-            ConfigService.currentFullExternalDBUrl,
-            ConfigService.internalDBName,
-            user.access_token,
-            ['order', 'entityTypeName', 'entityTypeNames'],
-            ['entityTypeName', 'entityTypeNames']);
+		DBService.initialize(
+			ConfigService.currentCriticalFullExternalDBUrl,
+			ConfigService.internalCriticalDBName,
+			ConfigService.currentFullExternalDBUrl,
+			ConfigService.internalDBName,
+			user.access_token,
+			['order', 'entityTypeName', 'entityTypeNames'],
+			['entityTypeName', 'entityTypeNames']);
 
 		DBService.criticalDBSyncProgress.subscribe(
 			async (data: DBEvent) => {

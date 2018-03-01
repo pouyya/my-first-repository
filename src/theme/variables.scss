@@ -28,18 +28,21 @@ $colors: (
   secondary:  #32db64,
   danger:     #f53d3d,
   light:      #f4f4f4,
+  warning:    yellow,
   dark:       #222,
   white:    #ffffff,
   black:    #000000
 );
 
 $colors-md: (
-  primary: #3784C6,
-  light: #f4f4f4,
-  danger: #f53d3d,
-  secondary: #32db64,
-  warning: yellow,
-  dark: #222
+  primary:    #3784C6,
+  secondary:  #32db64,
+  danger:     #f53d3d,
+  light:      #f4f4f4,
+  dark:       #222,
+  white:    #ffffff,
+  warning:    yellow,
+  black:    #000000  
 );
 
 $font-family-base: "LatoWeb", "Helvetica Neue", "Roboto", sans-serif !default;

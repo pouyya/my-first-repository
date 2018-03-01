@@ -1,5 +1,4 @@
 import { Sale } from './../model/sale';
-import _ from 'lodash';
 import * as moment from 'moment';
 import { SalesServices } from './salesService';
 import { Injectable } from '@angular/core';

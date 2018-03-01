@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>Categories</ion-title>
-    <button ion-button icon-only menuToggle>
+    <button ion-button icon-only menuToggle="leftMenu">
       <ion-icon name="menu"></ion-icon>
     </button>
 
@@ -14,7 +14,12 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  <ion-searchbar
+    debounce="500"
+    animated="true"
+    placeholder="Search by name"
+    (ionInput)="searchByName($event)">
+  </ion-searchbar>
   <ion-list inset>
     <ion-item>
       <h1 item-start>Category Name</h1>
@@ -35,4 +40,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

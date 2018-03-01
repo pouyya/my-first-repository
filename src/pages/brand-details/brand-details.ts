@@ -2,10 +2,9 @@ import * as moment from 'moment-timezone';
 import { BrandService } from './../../services/brandService';
 import { Brand } from './../../model/brand';
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, AlertController, ModalController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { UserService } from '../../modules/dataSync/services/userService';
 
 @SecurityModule(SecurityAccessRightRepo.BrandAddEdit)
 @Component({
@@ -19,12 +18,8 @@ export class BrandDetails {
 
   constructor(public navCtrl: NavController,
     private brandService: BrandService,
-    private userService: UserService,
     private navParams: NavParams,
-    private viewCtrl: ViewController,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController,
-    private modalCtrl: ModalController) {
+    private toastCtrl: ToastController) {
   }
 
   async ionViewDidLoad() {

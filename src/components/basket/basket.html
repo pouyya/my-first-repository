@@ -1,6 +1,6 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
-    <ion-col col-md-9 class="customer-container pull-left">
+    <ion-col col-md-8 class="customer-container pull-left">
       <ion-item item-content *ngIf="customer" (click)="editCustomer()" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
@@ -23,7 +23,7 @@
         </ion-item>
       </ion-list>
     </ion-col>
-    <ion-col col-md-3 class="pull-right">
+    <ion-col col-md-4 class="pull-right">
       <button ion-button clear (click)="parkSale()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="pause"></ion-icon>
       </button>
@@ -49,10 +49,10 @@
               <ion-col col-md-1>
                 {{item.quantity}}
               </ion-col>
-              <ion-col col-md-4 class="name">
+              <ion-col col-md-7 class="name">
                 {{item.name}}
               </ion-col>
-              <ion-col col-md-3 offset-md-3 class="pull-right">
+              <ion-col col-md-3 class="pull-right">
                 <span>${{item.finalPrice * item.quantity | number : '1.2-2'}}</span>
                 <br/>
                 <span *ngIf="item.systemPrice != item.finalPrice">

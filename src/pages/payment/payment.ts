@@ -1,4 +1,3 @@
-import { GlobalConstants } from './../../metadata/globalConstants';
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
@@ -8,6 +7,7 @@ import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
 import { PrintService } from '../../services/printService';
 import { PaymentService } from '../../services/paymentService';
+import { SyncContext } from "../../services/SyncContext";
 
 @Component({
   selector: 'payments-page',
@@ -21,7 +21,6 @@ export class PaymentsPage {
   public amount: number;
   public change: number;
   public doRefund: boolean;
-  public store: Store;
   public stockErrors: any[] = [];
   public payTypes: any = {
     'cash': { text: 'Cash', component: CashModal },
@@ -37,13 +36,13 @@ export class PaymentsPage {
     private navParams: NavParams,
     private modalCtrl: ModalController,
     private loading: LoadingController,
-    private printService: PrintService) {
+    private printService: PrintService,
+    private syncContext: SyncContext) {
   }
 
   async ionViewDidLoad() {
     this.sale = <Sale>this.navParams.get('sale');
     this.doRefund = this.navParams.get('doRefund');
-    this.store = <Store>this.navParams.get('store');
     this.navPopCallback = this.navParams.get("callback")
 
     this.amount = 0;
@@ -126,7 +125,7 @@ export class PaymentsPage {
   }
 
   private async completeSale(payments: number) {
-    await this.paymentService.completePayment(this.sale, this.store._id, this.doRefund);
+    await this.paymentService.completePayment(this.sale, this.syncContext.currentStore._id, this.doRefund);
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
       this.printSale(false);
@@ -139,7 +138,7 @@ export class PaymentsPage {
   }
 
   public async printSale(forcePrint: boolean) {
-    if (this.store.printReceiptAtEndOfSale || forcePrint) {
+    if (this.syncContext.currentStore.printReceiptAtEndOfSale || forcePrint) {
       await this.printService.printReceipt(this.sale);
     }
 
@@ -156,7 +155,7 @@ export class PaymentsPage {
     this.stockErrors = [];
     let loader = this.loading.create({ content: 'Checking for stock...' });
     await loader.present();
-    this.stockErrors = await this.salesService.checkForStockInHand(this.sale, this.store._id);
+    this.stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
     loader.dismiss();
   }
 }

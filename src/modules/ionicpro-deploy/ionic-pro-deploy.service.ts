@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { IonicDeploy, IonicProConfig, IonicDeployInfo } from './ionic-pro-deploy.interfaces';
 import { Observable } from 'rxjs/Observable';
 import { checkDeploy } from './ionic-pro-deploy.decorators';
+import { Platform } from 'ionic-angular';
 import { PlatformService } from '../../services/platformService';
 import { ConfigService } from '../dataSync/services/configService';
 import { UserService } from '../dataSync/services/userService';
-import { NavController } from 'ionic-angular';
 import { DataSync } from '../dataSync/pages/dataSync/dataSync';
 import { LoginPage } from '../dataSync/pages/login/login';
-import { Insomnia } from '@ionic-native/insomnia';
 
 declare const IonicCordova;
 
@@ -33,12 +32,14 @@ export class IonicProDeployService {
     constructor(
         private platformService: PlatformService,
         private userService: UserService,
-        private insomnia: Insomnia) {
+        private platform: Platform) {
         /* istanbul ignore next */
-        this.deploy = typeof IonicCordova !== 'undefined' && IonicCordova.deploy || null;
-        if (IonicProDeployService.config) {
-            this.init(IonicProDeployService.config).catch(/* istanbul ignore next */err => console.error(err));
-        }
+        this.platform.ready().then(() => {
+            this.deploy = typeof IonicCordova !== 'undefined' && IonicCordova.deploy || null;
+            if (IonicProDeployService.config) {
+                this.init(IonicProDeployService.config).catch(/* istanbul ignore next */err => console.error(err));
+            }
+        });
     }
 
     /**

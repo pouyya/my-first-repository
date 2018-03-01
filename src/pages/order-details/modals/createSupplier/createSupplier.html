@@ -1,0 +1,128 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <small>Add a Supplier</small>
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="save()" #supplierForm="ngForm">
+    <ion-list-header>Details</ion-list-header>
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Supplier Name*</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Supplier Description</ion-label>
+        <ion-textarea [(ngModel)]="supplier.description" name="description"></ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    <ion-list-header>Contact Information</ion-list-header>
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">First name*</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.firstName" name="firstName" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Last name*</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.lastName" name="lastName" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Email*</ion-label>
+        <ion-input type="email" [(ngModel)]="supplier.email" name="email" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Mobile number*</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.cellphone" name="cellphone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Telephone number</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.telephone" name="telephone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Website</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.website" name="website"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-list-header>Physical Address</ion-list-header>
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Street*</ion-label>
+        <ion-textarea [(ngModel)]="supplier.phyStreetAddr" name="phyStreetAddr" required></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Suburb</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.phySuburb" name="phySuburb"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">City</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.phyCity" name="phyCity"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">State</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.phyState" name="phyState"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Zip/Postal Code</ion-label>
+        <ion-input type="text" [(ngModel)]="supplier.phyZipCode" name="phyZipCode"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Country</ion-label>
+        <ion-select [(ngModel)]="supplier.country" name="countries">
+          <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
+        </ion-select>
+        <ion-input type="text" [(ngModel)]="supplier.phyCountry" name="phyCountry"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-item>
+      <ion-label>Same as Postal Address ?</ion-label>
+      <ion-checkbox (ionChange)="makePostalSametoPhysical($event)" [checked]="postalSameAsPhysical" name="sameAsPhysical"></ion-checkbox>
+    </ion-item>
+
+    <div *ngIf="!postalSameAsPhysical">
+      <ion-list-header>Postal Address</ion-list-header>
+      <ion-list>
+        <ion-item>
+          <ion-label class="item-name">Street</ion-label>
+          <ion-textarea [(ngModel)]="supplier.posStreetAddr" name="posStreetAddr"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name">Suburb</ion-label>
+          <ion-input type="text" [(ngModel)]="supplier.posSuburb" name="posSuburb"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name">City</ion-label>
+          <ion-input type="text" [(ngModel)]="supplier.posCity" name="posCity"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name">State</ion-label>
+          <ion-input type="text" [(ngModel)]="supplier.posState" name="posState"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name">Zip/Postal Code</ion-label>
+          <ion-input type="text" [(ngModel)]="supplier.posZipCode" name="posZipCode"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name">Country</ion-label>
+          <ion-select [(ngModel)]="supplier.country" name="countries">
+            <ion-option [value]="country.code" *ngFor="let country of countries">{{country.name}}</ion-option>
+          </ion-select>
+          <ion-input type="text" [(ngModel)]="supplier.posCountry" name="posCountry"></ion-input>
+        </ion-item>
+      </ion-list>
+    </div>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <button ion-button class="pull-right" (click)="supplierForm.ngSubmit.emit()" [disabled]="!supplierForm.form.valid">Create</button>
+</ion-footer>

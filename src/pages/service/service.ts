@@ -1,5 +1,7 @@
+import { LoadingController } from 'ionic-angular';
+import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, ModalController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import { ServiceService } from '../../services/serviceService';
 import { ServiceDetails } from '../service-details/service-details';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
@@ -17,40 +19,90 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 export class Services {
   public services = [];
   public servicesBackup = [];
-  public isNew = true;
-  public action = 'Add';
   public isoDate = '';
+  private readonly defaultLimit = 10;
+  private readonly defaultOffset = 0;
+  private limit: number;
+  private offset: number;
+  private filter: any = {};
 
 
   constructor(public navCtrl: NavController,
-    private alertCtrl: AlertController,
     private serviceService: ServiceService,
-    private zone: NgZone,
-    private modalCtrl: ModalController) {
+    private loading: LoadingController,
+    private zone: NgZone) {
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
   }
 
   async ionViewDidEnter() {
-    this.services = this.servicesBackup = _.sortBy(await this.serviceService.getAll(), [item => parseInt(item.order) || 0]);
+    let loader = this.loading.create({ content: 'Loading Services...' });
+    await loader.present();
+    try {
+      await this.fetchMore();
+      loader.dismiss();
+    } catch (err) {
+      console.error(err);
+      loader.dismiss();
+      return;
+    }
   }
 
   showDetail(service) {
     this.navCtrl.push(ServiceDetails, { service: service });
   }
 
-  deleteServices(item, idx) {
-    this.serviceService.delete(item)
-      .catch(console.error.bind(console));
-    this.services.splice(idx, 1);
+  async remove(item, idx) {
+    try {
+      await this.serviceService.delete(item);
+      this.services.splice(idx, 1);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
-  getItems(event) {
-    this.services = this.servicesBackup;
-    var val = event.target.value;
+  private async loadServices(): Promise<any> {
+    let selectors: QuerySelectorInterface = {};
 
-    if (val && val.trim() != '') {
-      this.services = this.services.filter((service) => {
-        return ((service.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+    let options: QueryOptionsInterface = {
+      sort: [
+        {
+          order: SortOptions.ASC
+        }
+      ],
+      conditionalSelectors: {
+        order: {
+          $gt: true
+        }
+      }
     }
+
+    if (Object.keys(this.filter).length > 0) {
+      _.each(this.filter, (value, key) => {
+        if (value) {
+          selectors[key] = value;
+        }
+      });
+    }
+
+    return await this.serviceService.search(this.limit, this.offset, selectors, options);
+  }
+
+  public async fetchMore(infiniteScroll?: any) {
+    let services = await this.loadServices();
+    this.offset += services ? services.length : 0;
+    this.zone.run(() => {
+      this.services = this.services.concat(services);
+      infiniteScroll && infiniteScroll.complete();
+    });
+  }
+
+  public async searchByName(event) {
+    let val = event.target.value;
+    this.filter['name'] = (val && val.trim() != '') ? val : "";
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.services = [];
+    await this.fetchMore();
   }
 }
