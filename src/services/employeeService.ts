@@ -25,6 +25,24 @@ export class EmployeeService extends BaseEntityService<Employee> {
   }
 
   /**
+   * @Override
+   * @param employee
+   */
+  public async add(employee: Employee): Promise<any> {
+    employee.fullname = (`${employee.firstName} ${employee.lastName}`).trim().toLowerCase();
+    return await super.add(employee);
+  }
+
+  /**
+   * @Override
+   * @param employee
+   */
+  public async update(employee: Employee): Promise<any> {
+    employee.fullname = (`${employee.firstName} ${employee.lastName}`).trim().toLowerCase();
+    return await super.update(employee);
+  }
+
+  /**
    * Verify if pin is used or not
    * @param pin 
    * @returns {Promise<boolean>}

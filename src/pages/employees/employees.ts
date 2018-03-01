@@ -1,8 +1,9 @@
+import { SearchableListing } from './../../modules/searchableListing';
 import { EmployeeDetails } from './../employee-details/employee-details';
 import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import { Employee } from "../../model/employee";
-import { NavController, Platform } from 'ionic-angular';
+import { NavController, Platform, LoadingController } from 'ionic-angular';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
@@ -11,53 +12,74 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 @SecurityModule(SecurityAccessRightRepo.EmployeeListing)
 @PageModule(() => BackOfficeModule)
 @Component({
-  selector: 'page-employees',
+  selector: 'employees',
   templateUrl: 'employees.html',
 })
-export class Employees {
+export class Employees extends SearchableListing<Employee> {
 
-  public items: Array<Employee> = [];
-  public itemsBackup = [];
+  protected items: Employee[] = [];
+  public selectedStatus: any = 'true';
+  public statusList: any = [
+    { value: 'all', text: 'All' },
+    { value: 'true', text: 'Active' },
+    { value: 'false', text: 'In-Active' }
+  ];
 
   constructor(public navCtrl: NavController,
-    private service: EmployeeService,
+    protected service: EmployeeService,
+    protected zone: NgZone,
     private platform: Platform,
-    private zone: NgZone) {
+    private loading: LoadingController
+  ) {
+    super(service, zone);
   }
 
-  ionViewDidEnter() {
-    this.platform.ready().then(() => {
-
-      this.service.getAll()
-        .then(data => {
-          this.zone.run(() => {
-            this.items = data;
-            this.itemsBackup = data;
-          });
-        })
-        .catch(console.error.bind(console));
-    });
+  async ionViewDidEnter() {
+    let loader = this.loading.create({ content: 'Loading Employees...' });
+    await loader.present();
+    await this.searchByStatus();
+    loader.dismiss();
   }
 
-  showDetail(item) {
+  public showDetail(item) {
     this.navCtrl.push(EmployeeDetails, { item: item });
   }
 
-  delete(item, idx) {
-    this.service.delete(item)
-      .catch(console.error.bind(console));
-    this.items.splice(idx, 1);
+  public async remove(employee: Employee, index) {
+    try {
+      await this.service.delete(employee);
+      this.items.splice(index, 1);
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 
-  getItems(event) {
-    this.items = this.itemsBackup;
-    var val = event.target.value;
+  public async searchByName(event) {
+    let val = event.target.value;
+    this.filter.fullname = (val && val.trim() != '') ? val : "";
+    this.limit = SearchableListing.defaultLimit;
+    this.offset = SearchableListing.defaultOffset;
+    this.items = [];
+    await this.fetchMore();
+  }
 
-    if (val && val.trim() != '') {
-      this.items = this.items.filter((item) => {
-        return ((item.firstName + ' ' + item.lastName).toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+  public async searchByStatus() {
+    switch (this.selectedStatus) {
+      case 'all':
+        delete this.options.conditionalSelectors.isActive;
+        break;
+      case 'true':
+        this.options.conditionalSelectors.isActive = true;
+        break;
+      case 'false':
+        this.options.conditionalSelectors.isActive = false;
+        break;
     }
+    this.limit = SearchableListing.defaultLimit;
+    this.offset = SearchableListing.defaultOffset;
+    this.items = [];
+    await this.fetchMore();
+    return;
   }
 
 }

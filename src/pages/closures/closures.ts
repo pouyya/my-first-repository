@@ -57,16 +57,20 @@ export class Closures {
 
     let employee = await this.employeeService.findByPin(pin);
 
+    let toast = this.toastCtrl.create({duration: 3000});
+
     if (!employee) {
-
-      let toast = this.toastCtrl.create({
-        message: "Invalid PIN!",
-        duration: 3000
-      });
+      toast.setMessage('Invalid PIN!');
       toast.present();
-
       return false;
     }
+
+    if(!employee.isActive) {
+      toast.setMessage('Employee not Active!');
+      toast.present();
+      return false;
+    }
+
 
     return true;
   }
