@@ -143,7 +143,6 @@ import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
 import { PaymentService } from '../services/paymentService';
-import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 
 @NgModule({
@@ -368,7 +367,6 @@ import { SyncContext } from "../services/SyncContext";
     OrderService,
     ResourceService,
     PaymentService,
-    AuditService,
     SyncContext
   ]
 })
