@@ -9,6 +9,8 @@ export interface AppSettingsInterface {
   db_critical_local_name?: string;  
   db_name?: string;
   db_local_name?: string;
+  db_audit_name?: string;
+  db_audit_local_name?: string;
   defaultIcon?: any;
   
 }

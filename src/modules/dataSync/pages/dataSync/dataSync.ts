@@ -30,6 +30,9 @@ export class DataSync {
 		ConfigService.externalDBName = user.settings.db_name;
 		ConfigService.internalDBName = user.settings.db_local_name;
 
+		ConfigService.externalAuditDBName = user.settings.db_audit_name;
+		ConfigService.internalAuditDBName = user.settings.db_audit_local_name;
+
 		this.updateText = "Check for data update!";
 
 		DBService.initializePlugin(ConfigService.isDevelopment());
@@ -38,8 +41,11 @@ export class DataSync {
 			ConfigService.internalCriticalDBName,
 			ConfigService.currentFullExternalDBUrl,
 			ConfigService.internalDBName,
+			ConfigService.currentAuditDBUrl,
+			ConfigService.internalAuditDBName,
 			user.access_token,
 			['order', 'entityTypeName', 'entityTypeNames'],
+			['entityTypeName', 'entityTypeNames'],
 			['entityTypeName', 'entityTypeNames']);
 
 		DBService.criticalDBSyncProgress.subscribe(
