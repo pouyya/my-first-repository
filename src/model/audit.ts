@@ -2,12 +2,17 @@ import { DBModeEnum, DBMode } from "@simpleidea/simplepos-core/dist/metadata/dbM
 import { DBBasedEntity } from "@simpleidea/simplepos-core/dist/model/dbBasedEntity";
 
 
+export enum AuditAction {
+  PIN
+}
+
 @DBMode(DBModeEnum.Audit)
 export class Audit extends DBBasedEntity {
   public created: string;
   public storeId: string;
   public posId: string;
-  public pin: number;
+  public message: string;
+  public action: AuditAction;
   public image: string;
   constructor() {
     super();

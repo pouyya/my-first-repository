@@ -4,6 +4,7 @@ import { Dialogs } from '@ionic-native/dialogs';
 import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { AuditService } from './auditService';
+import { AuditAction } from '../model/audit';
 
 @Injectable()
 export class PluginService {
@@ -31,7 +32,7 @@ export class PluginService {
         ]).then((result: any) => {
           if (result.buttonIndex == 1) {
             const pin = Number(result.input1);
-            this.auditService.addAuditInfo(pin);
+            this.auditService.addAuditInfo(AuditAction.PIN, pin.toString());
             resolve(pin);
           } else if (result.buttonIndex == 2) {
             resolve(null);
@@ -51,7 +52,7 @@ export class PluginService {
               text: buttons.ok || 'OK',
               handler(data: any) {
                 const pin = Number(data[inputs[0].name || 'pin']);
-                self.auditService.addAuditInfo(pin);
+                self.auditService.addAuditInfo(AuditAction.PIN, pin.toString());
                 resolve(pin);
               }
             },

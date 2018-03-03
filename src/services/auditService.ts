@@ -1,26 +1,25 @@
 import { Injectable } from "@angular/core";
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
-import { Audit } from "../model/audit";
+import { Audit, AuditAction } from "../model/audit";
 import { UserService } from "../modules/dataSync/services/userService";
+import { SyncContext } from "./SyncContext";
 
 @Injectable()
 export class AuditService extends BaseEntityService<Audit> {
 
-  constructor(private userService: UserService) {
+  constructor(private syncContext: SyncContext) {
     super(Audit);
   }
 
   /**
    * Pushes audit details to audit db
-   * @param pin
-   * @returns {Promise<void>}
    */
-  public async addAuditInfo(pin: number): Promise<void>{
-    let currentUser = await this.userService.getUser();
+  public async addAuditInfo(action: AuditAction, message: string): Promise<void> {
     let audit = new Audit();
-    audit.storeId = currentUser.currentStore;
-    audit.posId = currentUser.currentPos;
-    audit.pin = pin;
+    audit.storeId = this.syncContext.currentStore != null ? this.syncContext.currentStore._id : null;
+    audit.posId = this.syncContext.currentPos ? this.syncContext.currentPos._id : null;
+    audit.action = action;
+    audit.message = message;
     this.add(audit);
   }
 }
