@@ -132,5 +132,6 @@
       "android",
       "ios"
     ]
-  }
+  },
+  "ionic:build": "node --max-old-space-size=8192 ./node_modules/@ionic/app-scripts/bin/ionic-app-scripts.js build"
 }
