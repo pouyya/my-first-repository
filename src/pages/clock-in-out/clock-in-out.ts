@@ -18,8 +18,7 @@ import { SyncContext } from "../../services/SyncContext";
 @PageModule(() => SalesModule)
 @Component({
   selector: 'clock-in-out',
-  templateUrl: 'clock-in-out.html',
-  styleUrls: ['/pages/clock-in-out/clock-in-out.scss']
+  templateUrl: 'clock-in-out.html'
 })
 export class ClockInOutPage {
 

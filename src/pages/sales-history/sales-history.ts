@@ -25,7 +25,6 @@ enum TimeValues {
 @Component({
   selector: 'sales-history',
   templateUrl: 'sales-history.html',
-  styleUrls: ['/pages/sales-history/sales-history.scss'],
   providers: [SalesServices]
 })
 export class SalesHistoryPage {

@@ -27,9 +27,8 @@ import { SyncContext } from "../../services/SyncContext";
 @SecurityModule(SecurityAccessRightRepo.OpenCloseRegister)
 @PageModule(() => SalesModule)
 @Component({
-  selector: 'open-close-pos',
+  selector: 'open-close-register',
   templateUrl: 'open-close-register.html',
-  styleUrls: ['/pages/open-close-register.scss'],
   providers: [SalesServices, ClosureService, PosService, StoreService]
 })
 export class OpenCloseRegister {

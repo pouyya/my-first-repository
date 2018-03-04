@@ -17,7 +17,8 @@
     "paths": {
       "@app/env": [
         "environments/environment"
-      ]
+      ],
+      "@angular/*": ["../node_modules/@angular/*"] 
     }
   },
   "include": [

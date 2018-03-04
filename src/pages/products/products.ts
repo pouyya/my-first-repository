@@ -22,8 +22,7 @@ interface ProductsList extends Product {
 @SecurityModule(SecurityAccessRightRepo.ProductListing)
 @PageModule(() => InventoryModule)
 @Component({
-  templateUrl: 'products.html',
-  styleUrls: ['/pages/products/products.scss']
+  templateUrl: 'products.html'
 })
 export class Products {
   public items: ProductsList[];

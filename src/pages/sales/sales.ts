@@ -26,9 +26,8 @@ import { SyncContext } from "../../services/SyncContext";
 @SecurityModule()
 @PageModule(() => SalesModule)
 @Component({
-  selector: 'page-variables',
+  selector: 'sales',
   templateUrl: 'sales.html',
-  styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices]
 })
 export class Sales implements OnDestroy {
