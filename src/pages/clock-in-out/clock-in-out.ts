@@ -92,11 +92,8 @@ export class ClockInOutPage {
       var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.syncContext.currentPos.storeId, employee._id);
 
       if (employeeClockedInToOtherStore) {
-        let toast = this.toastCtrl.create({
-          message: `You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`,
-          duration: 3000
-        }).present();
-        
+        toast.setMessage(`You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`);
+        toast.present();
         return null;
       }
 

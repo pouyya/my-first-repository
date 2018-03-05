@@ -136,20 +136,25 @@ export class EmployeeService extends BaseEntityService<Employee> {
     }
   }
 
+  private clockOutEmployee(employeeId: string, currentStoreId: string, checkOutTime: Date | string){
+    return new Promise((resolve, reject) =>{
+      setTimeout(async ()=>{
+        let newTimestamp = new EmployeeTimestamp();
+        newTimestamp.employeeId = employeeId;
+        newTimestamp.storeId = currentStoreId;
+        newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
+        newTimestamp.time = moment(checkOutTime).utc().toDate();
+        await this.employeeTimestampService.add(newTimestamp);
+        resolve();
+      })
+    });
+  }
+  
   public async clockOutClockedInOfStore(currentStoreId: string, checkOutTime?: Date | string): Promise<any> {
     let employees = await this.getClockedInEmployeesOfStore(currentStoreId);
     if (employees.length > 0) {
       checkOutTime = checkOutTime || new Date();
-      let creations: Promise<any>[] = _.map(employees, (employee) => {
-        let newTimestamp = new EmployeeTimestamp();
-        newTimestamp.employeeId = employee._id;
-        newTimestamp.storeId = currentStoreId;
-        newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
-        newTimestamp.time = moment(checkOutTime).utc().toDate();
-
-        return this.employeeTimestampService.add(newTimestamp);
-      });
-
+      let creations: Promise<any>[] = employees.map(employee => this.clockOutEmployee(employee._id, currentStoreId, checkOutTime));
       return await Promise.all(creations);
     }
 
