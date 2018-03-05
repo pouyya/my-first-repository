@@ -72,20 +72,26 @@ export class DataBootstrapper {
   public async enterPin(): Promise<boolean> {
     let pin = await this.pluginService.openPinPrompt('Enter PIN', 'User Authorization', [],
       { ok: 'OK', cancel: 'Cancel' });
+
     let employee: Employee;
     if (pin) {
       employee = await this.employeeService.findByPin(pin);
-      if (employee && employee.isAdmin || ((employee.isActive && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined))) {
+      if (employee && employee.isAdmin || (employee &&(employee.isActive && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined))) {
         this.haveAccess = true;
       }
-    }
-    if(!this.haveAccess){
-      if(!employee.isActive){
-        this.toastCtrl.create({ message: 'Employee is not active', duration: 5000 }).present();
-      }else{
-        this.toastCtrl.create({ message: 'Invalid Access', duration: 5000 }).present();
+    
+      if(!this.haveAccess){
+        
+        if(employee && !employee.isActive)
+          this.toastCtrl.create({ message: 'Employee is not active', duration: 5000 }).present();
+        //if(!employee)
+        else
+          this.toastCtrl.create({ message: 'Invalid Access', duration: 5000 }).present();
       }
     }
+    else 
+    return false;
+
     return true;
   }
 
