@@ -11,8 +11,7 @@ import { IonicProDeployService } from './ionic-pro-deploy.service';
   declarations: []
 })
 export class IonicProDeployModule {
-  static forRoot(config: IonicProConfig = null): ModuleWithProviders {
-    IonicProDeployService.config = config;
+  static forRoot(): ModuleWithProviders {
     return {
       ngModule: IonicProDeployModule,
       providers: [IonicProDeployService]
