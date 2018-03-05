@@ -248,10 +248,7 @@ import { SyncContext } from "../services/SyncContext";
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
     SearchableIonSelectModule,
-    IonicProDeployModule.forRoot({
-      appId: ConfigService.ionicDeployAppId(),
-      channel: ConfigService.ionicDeployAppChannel()
-    }),
+    IonicProDeployModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [

@@ -27,7 +27,10 @@ export class IonicProDeployService {
     deploy: IonicDeploy;
 
 
-    public static config: IonicProConfig = null;
+    private config: IonicProConfig = {
+        appId: ConfigService.ionicDeployAppId(),
+        channel: ConfigService.ionicDeployAppChannel()
+    };
 
     constructor(
         private platformService: PlatformService,
@@ -36,9 +39,7 @@ export class IonicProDeployService {
         /* istanbul ignore next */
         this.platform.ready().then(() => {
             this.deploy = typeof IonicCordova !== 'undefined' && IonicCordova.deploy || null;
-            if (IonicProDeployService.config) {
-                this.init(IonicProDeployService.config).catch(/* istanbul ignore next */err => console.error(err));
-            }
+            this.init().catch(/* istanbul ignore next */err => console.error(err));
         });
     }
 
@@ -47,9 +48,9 @@ export class IonicProDeployService {
      * @param {IonicProConfig} config App configuration
      */
     @checkDeploy()
-    init(config: IonicProConfig): Promise<any> {
+    init(): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.deploy.init(config, resolve, reject);
+            this.deploy.init(this.config, resolve, reject);
         }).then(/* istanbul ignore next */async () => {
             this.currentInfo = await this.info();
         });
