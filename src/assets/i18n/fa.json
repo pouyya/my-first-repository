@@ -1,0 +1,14 @@
+
+{
+  "HOME": "خانه",
+  "ABOUT": "درباره",
+  "CONTACT": "تماس",
+  "HI" : "سلام {{name}}",
+  "AGE" : "سن شما: {{age}}",
+  "SELECT_LANGUAGE": "زبان خود را انتخاب کنید",
+  "SELECT_COUNTRY": "کشور خود را انتخاب کنید",
+  "LANGUAGES": "زبان ها",
+  "CANCEL": "انصراف",
+  "FOLLOW_US_TW": "ما را در توییتر دنبال کنید",
+  "BussinesNumber": "IBN"
+}

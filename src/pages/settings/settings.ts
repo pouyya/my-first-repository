@@ -14,6 +14,10 @@ import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
 import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageServiceProvider } from "../../providers/language-service/language-service";
+import { LanguageModel } from "../../model/language.model";
+
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -33,6 +37,9 @@ export class Settings {
   private currentTax: any;
   private newTax: any;
   private setting: AppSettingsInterface;
+  languageSelected : any = 'au';
+  languages : Array<LanguageModel>;
+
 
   constructor(
     private userService: UserService,
@@ -43,13 +50,18 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
-    private datetimeService: DateTimeService
+    private datetimeService: DateTimeService,
+    public translate: TranslateService,
+    public languageService: LanguageServiceProvider
   ) {
     this.cdr.detach();
     this.taxTypes = [
       { _id: 0, type: 'Tax Exclusive' },
       { _id: 1, type: 'Tax Inclusive' }
-    ]
+    ];
+
+    this.languages = this.languageService.getLanguages();
+    this.setLanguage();
   }
 
   ionViewDidLoad() {
@@ -112,4 +124,17 @@ export class Settings {
     });
     toast.present();
   }
+
+  setLanguage(){
+    let defaultLanguage = this.translate.getDefaultLang();
+    if(this.languageSelected){
+      this.translate.setDefaultLang(this.languageSelected);
+      this.translate.use(this.languageSelected);
+    }else{
+      this.languageSelected = defaultLanguage;
+      this.translate.use(defaultLanguage);
+    }
+  }
+
+
 }

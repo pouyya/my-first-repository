@@ -4,6 +4,8 @@ import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+//https://stackoverflow.com/a/45383455
+import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,6 +20,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
+import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import { TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -145,6 +149,7 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
+import { LanguageServiceProvider } from '../providers/language-service/language-service';
 
 @NgModule({
   declarations: [
@@ -210,6 +215,7 @@ import { SyncContext } from "../services/SyncContext";
   imports: [
     FormsModule,
     HttpModule,
+    HttpClientModule,
     IonicModule.forRoot(SimplePOSApp,
       {
         mode: 'md',
@@ -233,6 +239,13 @@ import { SyncContext } from "../services/SyncContext";
     DndModule.forRoot(),
     ReactiveFormsModule,
     DataSyncModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    }),
 
     // custom
     SharedModule,
@@ -316,6 +329,7 @@ import { SyncContext } from "../services/SyncContext";
     Closures
   ],
   providers: [
+    LanguageServiceProvider,
     IonicErrorHandler,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
@@ -369,7 +383,8 @@ import { SyncContext } from "../services/SyncContext";
     ResourceService,
     PaymentService,
     AuditService,
-    SyncContext
+    SyncContext,
+    LanguageServiceProvider
   ]
 })
 export class AppModule {
@@ -378,3 +393,9 @@ export class AppModule {
     this.syncContext.initSubscribe();
   }
 }
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
+}
+
+  
