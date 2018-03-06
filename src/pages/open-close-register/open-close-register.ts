@@ -178,7 +178,6 @@ export class OpenCloseRegister {
       await loader.present();
 
       loader.setContent("Checking other POS closure status..");
-      this.clockOutEmployeesIfRequired();
 
       loader.setContent("Saving and Printing Closure..");
 
@@ -196,6 +195,7 @@ export class OpenCloseRegister {
       this.showReport = true;
       this.posService.update(this.syncContext.currentPos);
 
+      await this.clockOutEmployeesIfRequired();
       loader.dismiss();
 
       let toast = this.toastCtrl.create({
