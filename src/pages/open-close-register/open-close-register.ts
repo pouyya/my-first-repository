@@ -84,7 +84,7 @@ export class OpenCloseRegister {
     this.calculateExpectedCounts(sales);
 
     this.populateClosure(sales, this.employeeService.getEmployee());
-    
+
     this.printService.openCashDrawer();
 
     this.cdr.reattach();
@@ -206,12 +206,12 @@ export class OpenCloseRegister {
     }
   }
 
-  private async clockOutEmployeesIfRequired(){
-    try{
+  private async clockOutEmployeesIfRequired() {
+    try {
       if (await this.posService.isThisLastPosClosingInStore(this.syncContext.currentPos._id)) {
         await this.employeeService.clockOutClockedInOfStore(this.syncContext.currentStore._id, this.closure.closeTime);
       }
-    }catch(ex){
+    } catch (ex) {
 
     }
   }

@@ -67,8 +67,13 @@ export class EmployeeService extends BaseEntityService<Employee> {
   }
 
   public async getClockedInEmployeesOfStore(storeId: string): Promise<Array<Employee>> {
-    let employees: Employee[] = await this.findByStore(storeId);
-    return employees.filter(employee => employee.workingStatus && employee.workingStatus.status == WorkingStatusEnum.ClockedIn);
+    let employees: Employee[] = await this.getAll();
+
+    return employees.filter(employee => employee.workingStatus &&
+      employee.workingStatus.storeId == storeId &&
+      (employee.workingStatus.status == WorkingStatusEnum.ClockedIn ||
+        employee.workingStatus.status == WorkingStatusEnum.BreakStart ||
+        employee.workingStatus.status == WorkingStatusEnum.BreakEnd));
   }
 
   public async findByStore(storeId: string) {
@@ -112,9 +117,9 @@ export class EmployeeService extends BaseEntityService<Employee> {
     }
   }
 
-  private clockOutEmployee(employee: Employee, currentStoreId: string, checkOutTime: Date | string){
-    return new Promise((resolve, reject) =>{
-      setTimeout(async ()=>{
+  private clockOutEmployee(employee: Employee, currentStoreId: string, checkOutTime: Date | string) {
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
         let newTimestamp = new EmployeeTimestamp();
         newTimestamp.employeeId = employee._id;
         newTimestamp.storeId = currentStoreId;
@@ -131,7 +136,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
       })
     });
   }
-  
+
   public async clockOutClockedInOfStore(currentStoreId: string, checkOutTime?: Date | string): Promise<any> {
     const employees = await this.getClockedInEmployeesOfStore(currentStoreId);
     if (employees.length > 0) {
