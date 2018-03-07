@@ -193,7 +193,7 @@ export class OpenCloseRegister {
       this.syncContext.currentPos.openTime = null;
       this.syncContext.currentPos.openingNote = null;
       this.showReport = true;
-      this.posService.update(this.syncContext.currentPos);
+      await this.posService.update(this.syncContext.currentPos);
 
       await this.clockOutEmployeesIfRequired();
       loader.dismiss();
