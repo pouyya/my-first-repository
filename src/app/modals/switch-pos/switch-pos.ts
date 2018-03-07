@@ -9,7 +9,10 @@ import { GlobalConstants } from './../../../metadata/globalConstants';
 import { UserSession } from '../../../modules/dataSync/model/UserSession';
 import { UserService } from '../../../modules/dataSync/services/userService';
 import { SharedService } from "../../../services/_sharedService";
+import { SecurityAccessRightRepo } from "../../../model/securityAccessRightRepo";
+import { SecurityModule } from "../../../infra/security/securityModule";
 
+@SecurityModule(SecurityAccessRightRepo.SwitchPos, true, false)
 @Component({
   selector: "switch-pos",
   templateUrl: "switch-pos.html"
