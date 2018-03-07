@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import { Employee } from './../../model/employee';
+import { Employee, WorkingStatus, WorkingStatusEnum } from './../../model/employee';
 import { ToastController, ViewController, LoadingController } from 'ionic-angular';
 import { EmployeeService } from './../../services/employeeService';
 import { PluginService } from './../../services/pluginService';
@@ -12,7 +11,6 @@ import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
 import { POS } from '../../model/pos';
 import { StoreService } from '../../services/storeService';
-import { Store } from '../../model/store';
 import { SyncContext } from "../../services/SyncContext";
 
 @PageModule(() => SalesModule)
@@ -22,9 +20,7 @@ import { SyncContext } from "../../services/SyncContext";
 })
 export class ClockInOutPage {
 
-  public employee: Employee = null;
-  public posStatus: boolean;
-  public posName: string;
+  public employee: Employee;
   public pos: POS;
   public dataLoaded: boolean = false;
   public timestamp: EmployeeTimestamp;
@@ -34,8 +30,12 @@ export class ClockInOutPage {
   public clock: Observable<Date> = Observable
     .interval(1000)
     .map(() => new Date());
-  private previousTimestamp: EmployeeTimestamp;
-
+  private mappingTimestamp = {
+    [WorkingStatusEnum.ClockedIn]: EmployeeTimestampService.CLOCK_IN,
+    [WorkingStatusEnum.ClockedOut]: EmployeeTimestampService.CLOCK_OUT,
+    [WorkingStatusEnum.BreakStart]: EmployeeTimestampService.BREAK_START,
+    [WorkingStatusEnum.BreakEnd]: EmployeeTimestampService.BREAK_END
+  }
   constructor(
     private _sharedService: SharedService,
     private pluginService: PluginService,
@@ -47,7 +47,8 @@ export class ClockInOutPage {
     private loading: LoadingController,
     private zone: NgZone,
     private syncContext: SyncContext
-  ) { }
+  ) {
+  }
 
   /**
    * @AuthGuard
@@ -74,7 +75,7 @@ export class ClockInOutPage {
 
     this.employee = await this.zone.runOutsideAngular(async () => {
       let employee: Employee = await this.employeeService.findByPin(pin);
-
+      !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
       let toast = this.toastCtrl.create({duration: 3000});
 
       if (!employee) {
@@ -89,14 +90,10 @@ export class ClockInOutPage {
         return null;
       }
 
-      var employeeClockedInToOtherStore = await this.employeeClockedInToOtherStore(this.syncContext.currentPos.storeId, employee._id);
-
-      if (employeeClockedInToOtherStore) {
-        let toast = this.toastCtrl.create({
-          message: `You already logged in to Store '${employeeClockedInToOtherStore.name}'. Please clock out first from there and then clock back in here.`,
-          duration: 3000
-        }).present();
-        
+      if (employee.workingStatus && employee.workingStatus.storeId && employee.workingStatus.storeId !== this.syncContext.currentStore._id) {
+        let store = await this.storeService.get(employee.workingStatus.storeId);
+        toast.setMessage(`You already logged in to Store '${store.name}'. Please clock out first from there and then clock back in here.`);
+        toast.present();
         return null;
       }
 
@@ -112,16 +109,6 @@ export class ClockInOutPage {
 
     loader.dismiss();
     return true;
-  }
-
-  private async employeeClockedInToOtherStore(currentStoreId: string, employeeId: string): Promise<Store> {
-    var allStoresExceptCurrent = _.reject(await this.storeService.getAll(), ["_id", currentStoreId]);
-    for (let otherStore of allStoresExceptCurrent) {
-      var employeesOtherStore = await this.employeeService.getClockedInEmployeesOfStore(otherStore._id);
-      if (_.find(employeesOtherStore, ["_id", employeeId])) {
-        return otherStore;
-      }
-    }
   }
 
   /**
@@ -141,58 +128,46 @@ export class ClockInOutPage {
     await loader.present();
 
     let clockInBtn: any = {
-      next: EmployeeTimestampService.CLOCK_IN,
+      next: WorkingStatusEnum.ClockedIn,
       enabled: true,
       text: 'Clock IN',
       message: `You Clocked-IN at`
     };
 
     let clockOutBtn: any = {
-      next: EmployeeTimestampService.CLOCK_OUT,
+      next: WorkingStatusEnum.ClockedOut,
       enabled: true,
       text: 'Clock OUT',
       message: 'You Clocked-OUT at'
     };
 
     let breakStartBtn = {
-      next: EmployeeTimestampService.BREAK_START,
+      next: WorkingStatusEnum.BreakStart,
       enabled: true,
       text: 'Break Start',
       message: 'You have started your break at'
     };
 
     let breakEndBtn = {
-      next: EmployeeTimestampService.BREAK_END,
+      next: WorkingStatusEnum.BreakEnd,
       enabled: true,
       text: 'Break End',
       message: 'You have ended your break at'
     };
 
     this.buttons = {
-      [EmployeeTimestampService.CLOCK_IN]: [breakStartBtn, clockOutBtn],
-      [EmployeeTimestampService.CLOCK_OUT]: [clockInBtn],
-      [EmployeeTimestampService.BREAK_START]: [breakEndBtn, clockOutBtn],
-      [EmployeeTimestampService.BREAK_END]: [breakStartBtn, clockOutBtn]
+      [WorkingStatusEnum.ClockedIn]: [breakStartBtn, clockOutBtn],
+      [WorkingStatusEnum.ClockedOut]: [clockInBtn],
+      [WorkingStatusEnum.BreakStart]: [breakEndBtn, clockOutBtn],
+      [WorkingStatusEnum.BreakEnd]: [breakStartBtn, clockOutBtn]
     };
 
-    this.zone.runOutsideAngular(async () => {
+    if (this.employee.workingStatus.status) {
+      this.activeButtons = this.buttons[this.employee.workingStatus.status];
+    }else{
+      this.activeButtons = this.buttons[WorkingStatusEnum.ClockedOut];
+    }
 
-
-      let result = await this.employeeTimestampService
-        .getEmployeeLastTwoTimestamps(this.employee._id, this.syncContext.currentStore._id);
-
-      if (result) {
-        result.beforeLatest && (this.previousTimestamp = <EmployeeTimestamp>result.beforeLatest);
-        this.timestamp = <EmployeeTimestamp>result.latest;
-        this.activeButtons = this.buttons[this.timestamp.type];
-
-      } else {
-        this.timestamp = new EmployeeTimestamp();
-        this.timestamp.employeeId = this.employee._id;
-        this.timestamp.storeId = this.syncContext.currentStore._id;
-        this.activeButtons = this.buttons[EmployeeTimestampService.CLOCK_OUT];
-      }
-    });
     this.dataLoaded = true;
     await loader.dismiss();
   }
@@ -204,7 +179,7 @@ export class ClockInOutPage {
    */
   public async markTime(button: any, time?: Date): Promise<any> {
     try {
-      await this.prepareAndInsertTimeStamp(time, button);
+      const type = await this.prepareAndInsertTimeStamp(time, button);
       this.dismiss();
       let toast = this.toastCtrl.create({
         message: this.messagePlaceholder,
@@ -213,7 +188,7 @@ export class ClockInOutPage {
       toast.present();
       this._sharedService.publish('clockInOut', {
         employee: this.employee,
-        type: this.timestamp.type
+        type
       });
     } catch (err) {
       throw new Error();
@@ -221,31 +196,31 @@ export class ClockInOutPage {
   }
 
   private async prepareAndInsertTimeStamp(time: Date, button: any) {
-    time = time || new Date();
-    this.timestamp.type = button.next;
-    this.timestamp.time = time;
+    let promises = [];
+    let newTimestamp: EmployeeTimestamp = new EmployeeTimestamp();
+    newTimestamp.employeeId = this.employee._id;
+    newTimestamp.storeId = this.syncContext.currentStore._id;
+    newTimestamp.time = time || new Date();
+    newTimestamp.type = this.mappingTimestamp[button.next];
 
-    if (!this.timestamp.hasOwnProperty('_rev')) {
-      // is new
-      this.timestamp = await this.employeeTimestampService.add(this.timestamp);
+    if (button.next == WorkingStatusEnum.ClockedOut && this.employee.workingStatus.status ===  WorkingStatusEnum.BreakStart) {
+      let breakEnd = new EmployeeTimestamp();
+      breakEnd.employeeId = this.employee._id;
+      breakEnd.storeId = this.syncContext.currentStore._id;
+      breakEnd.time = time;
+      breakEnd.type = EmployeeTimestampService.BREAK_END;
+      promises.push(this.employeeTimestampService.add(breakEnd));
     }
-    else {
-      // is existing
-      let newTimestamp: EmployeeTimestamp;
-      if (button.next == EmployeeTimestampService.CLOCK_OUT && this.previousTimestamp && this.previousTimestamp.type == EmployeeTimestampService.BREAK_START) {
-        let breakEnd = new EmployeeTimestamp();
-        breakEnd.employeeId = this.employee._id;
-        breakEnd.storeId = this.syncContext.currentStore._id;
-        breakEnd.time = time;
-        breakEnd.type = EmployeeTimestampService.BREAK_END;
-        await this.employeeTimestampService.add(breakEnd);
-      }
 
-      newTimestamp = _.cloneDeep(this.timestamp);
-      newTimestamp._id = "";
-      newTimestamp._rev = "";
-      await this.employeeTimestampService.add(newTimestamp);
-    }
+    this.employee.workingStatus.status = button.next;
+    this.employee.workingStatus.posId = this.syncContext.currentPos._id;
+    this.employee.workingStatus.storeId = this.syncContext.currentStore._id;
+    this.employee.workingStatus.time = new Date();
+
+    promises.push(this.employeeTimestampService.add(newTimestamp));
+    promises.push(this.employeeService.update(this.employee));
+    await Promise.all(promises);
+    return newTimestamp.type;
   }
 
   public dismiss(data?: any) {

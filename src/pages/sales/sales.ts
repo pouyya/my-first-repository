@@ -18,7 +18,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
-import { Employee } from '../../model/employee';
+import { Employee, WorkingStatusEnum } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
 
@@ -185,6 +185,7 @@ export class Sales implements OnDestroy {
     if (this.employees && this.employees.length > 0) {
       this.employees = this.employees.map(employee => {
         employee.selected = false;
+        employee.disabled = employee.workingStatus.status == WorkingStatusEnum.BreakStart; 
         return employee;
       });
     }
