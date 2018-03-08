@@ -261,10 +261,7 @@ import { LanguageServiceProvider } from '../providers/language-service/language-
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
     SearchableIonSelectModule,
-    IonicProDeployModule.forRoot({
-      appId: ConfigService.ionicDeployAppId(),
-      channel: ConfigService.ionicDeployAppChannel()
-    }),
+    IonicProDeployModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [

@@ -104,12 +104,12 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return this.findBy(selector);
 	}
 
-	public async getCurrentSaleIfAny() {
+	public isSalePresent(): boolean {
 		let saleId = localStorage.getItem('sale_id');
 		if (saleId) {
-			return await this.get(saleId);
+			return true;
 		}
-		return Promise.resolve(null);
+		return false;
 	}
 
 	public async searchSales(posID: string, limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<Array<Sale>> {

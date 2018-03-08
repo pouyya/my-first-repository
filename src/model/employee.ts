@@ -5,6 +5,21 @@ export interface EmployeeRolePerStore {
   role: string;
 }
 
+
+export enum WorkingStatusEnum {
+  ClockedIn = 1,
+  ClockedOut,
+  BreakStart,
+  BreakEnd
+}
+
+export interface WorkingStatus {
+  status: WorkingStatusEnum;
+  posId: string;
+  storeId: string;
+  time: Date
+}
+
 export class Employee extends DBBasedEntity {
   public firstName: string;
   public lastName: string;
@@ -15,6 +30,7 @@ export class Employee extends DBBasedEntity {
   public pin: number;
   public isActive: boolean;
   public fullname: string;
+  public workingStatus: WorkingStatus;
 
   constructor() {
     super();

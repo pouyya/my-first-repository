@@ -24,35 +24,6 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     }
   }
 
-  /**
-   * @param employeeId 
-   * @param storeId 
-   * @returns {Promise<any>}
-   */
-  public async getEmployeeLastTwoTimestamps(employeeId: string, storeId: string): Promise<any> {
-    let currentStoreStartPeriod = await this.storeService.getCurrentStartPeriod(storeId);
-
-    if (!currentStoreStartPeriod) {
-      return new Array<EmployeeTimestamp>();
-    }
-
-    let timestamps: EmployeeTimestamp[] = await this.findBy({
-      selector: {
-        employeeId,
-        storeId,
-        time: {
-          $gte: currentStoreStartPeriod
-        }
-      },
-      sort: [{ _id: 'desc' }]
-    });
-    
-    return timestamps.length > 0 ? {
-      latest: timestamps[0],
-      beforeLatest: timestamps[1] || null
-    } : null;
-  }
-
   public async getNonCheckOuts(raw: boolean = true) {
     try {
       let view = "non_logged_out_employees/for_yesterday";
@@ -94,24 +65,5 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     } catch (err) {
       return Promise.reject(err);
     }
-  }
-
-  public async getAllTimeStampOfCurrentPeriodOfStore(storeId: string): Promise<Array<EmployeeTimestamp>> {
-
-    let currentStoreStartPeriod = await this.storeService.getCurrentStartPeriod(storeId);
-
-    if (!currentStoreStartPeriod) {
-      return new Array<EmployeeTimestamp>();
-    }
-
-    return await this.findBy({
-      sort: [{ _id: 'desc' }],
-      selector: {
-        storeId,
-        time: {
-          $gte: currentStoreStartPeriod
-        }
-      }
-    });
   }
 }
