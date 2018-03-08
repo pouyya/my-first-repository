@@ -14,8 +14,11 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar debounce="500" animated="true" placeholder="Search by Supplier Name" (ionInput)="search($event)">
-  </ion-searchbar>
+  <ion-row *ngIf="searchFilters.length">
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    </ion-col>
+  </ion-row>
   <ion-list>
     <ion-item>
       <ion-grid>
