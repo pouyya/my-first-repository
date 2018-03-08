@@ -7,7 +7,9 @@ import { PageModule } from '../../metadata/pageModule';
 import * as _ from 'lodash';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { Category as CategoryModel} from '../../model/Category';
 import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import {SearchableListing} from "../../modules/searchableListing";
 
 @SecurityModule(SecurityAccessRightRepo.InventoryCategory)
 @PageModule(() => InventoryModule)
@@ -15,28 +17,40 @@ import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@sim
   selector: 'categories',
   templateUrl: 'category.html'
 })
-export class Category {
-  public items = [];
-  public itemsBackup = [];
-  private readonly defaultLimit = 10;
-  private readonly defaultOffset = 0;
-  private limit: number;
-  private offset: number;
-  private filter: any = {};
+export class Category extends SearchableListing<CategoryModel> {
+  public items: CategoryModel[] = [];
+  // public itemsBackup = [];
+  // private readonly defaultLimit = 10;
+  // private readonly defaultOffset = 0;
+  // private limit: number;
+  // private offset: number;
+  // private filter: any = {};
 
   constructor(public navCtrl: NavController,
     private alertCtrl: AlertController,
     private categoryService: CategoryService,
     private loading: LoadingController,
-    private zone: NgZone) {
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
+    protected zone: NgZone) {
+
+    super(categoryService, zone, 'Category');
+    // this.limit = this.defaultLimit;
+    // this.offset = this.defaultOffset;
   }
 
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Categories...' });
     await loader.present();
     try {
+      this.options = {
+          sort: [
+              { order: SortOptions.ASC }
+          ],
+          conditionalSelectors: {
+              order: {
+                  $gt: true
+              }
+          }
+      }
       await this.fetchMore();
       loader.dismiss();
     } catch (err) {
@@ -50,7 +64,7 @@ export class Category {
     this.navCtrl.push(CategoryDetails, { category: category });
   }
 
-  delete(category: any, idx) {
+  /*delete(category: any, idx) {
     let confirm = this.alertCtrl.create({
       title: 'Confirm Delete Category?',
       message: 'This Category using in Products or Services. Do you want to delete this Category?',
@@ -90,10 +104,10 @@ export class Category {
       }
     }
     return await this.categoryService.search(this.limit, this.offset, selectors, options);
-  }
+  }*/
 
   public async fetchMore(infiniteScroll?: any) {
-    let categories = await this.loadCategories();
+    let categories: any = await this.loadData();
     if (categories.length > 0) {
       let piItems = await this.categoryService.getPurchasableItems();
       categories.forEach((category, index, array) => {
@@ -108,12 +122,12 @@ export class Category {
     });
   }
 
-  public async searchByName(event) {
+ /* public async searchByName(event) {
     let val = event.target.value;
     this.filter['name'] = (val && val.trim() != '') ? val : "";
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.items = [];
     await this.fetchMore();
-  }
+  }*/
 }
