@@ -4,7 +4,7 @@ import { ServiceLocator } from "../../services/serviceLocator";
 import { SecurityService } from "../../services/securityService";
 import { ToastController } from "ionic-angular";
 
-export function SecurityModule(accessRights: AccessRightItem, persistsCurrentEmployee: boolean = true): Function {
+export function SecurityModule(accessRights?: AccessRightItem, persistsCurrentEmployee: boolean = true): Function {
 	return function (target: Function): any {
 		Object.defineProperty(target.prototype, "PageAccessRightItems", {
 			get: function () {
