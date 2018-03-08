@@ -12,7 +12,7 @@ import { SharedService } from "../../../services/_sharedService";
 import { SecurityAccessRightRepo } from "../../../model/securityAccessRightRepo";
 import { SecurityModule } from "../../../infra/security/securityModule";
 
-@SecurityModule(SecurityAccessRightRepo.SwitchPos, true, false)
+@SecurityModule(SecurityAccessRightRepo.SwitchPos, false)
 @Component({
   selector: "switch-pos",
   templateUrl: "switch-pos.html"

@@ -4,10 +4,9 @@ import { ServiceLocator } from "../../services/serviceLocator";
 import { SecurityService } from "../../services/securityService";
 import { ToastController } from "ionic-angular";
 
-export function SecurityModule(accessRights: AccessRightItem, isModal: boolean = false, persistsCurrentEmployee: boolean = true): Function {
+export function SecurityModule(accessRights: AccessRightItem, persistsCurrentEmployee: boolean = true): Function {
 	return function (target: Function): any {
-		const property = isModal && "ModalAccessRightItems" || "PageAccessRightItems";
-		Object.defineProperty(target.prototype, property, {
+		Object.defineProperty(target.prototype, "PageAccessRightItems", {
 			get: function () {
         return accessRights ? [accessRights] : [];
 			},
@@ -20,7 +19,7 @@ export function SecurityModule(accessRights: AccessRightItem, isModal: boolean =
 			let securityService = ServiceLocator.injector.get<SecurityService>(SecurityService);
 			let toastController = ServiceLocator.injector.get<ToastController>(ToastController);
 
-			let securityResult: SecurityResult = await securityService.canAccess(<AccessRightItem[]>target.prototype[property],
+			let securityResult: SecurityResult = await securityService.canAccess(<AccessRightItem[]>target.prototype["PageAccessRightItems"],
 				persistsCurrentEmployee);
 			if (securityResult.isValid) {
 				return true;
