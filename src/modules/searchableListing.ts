@@ -39,7 +39,13 @@ export class SearchableListing<T extends DBBasedEntity> {
     this.searchFilters = ListingInfo.getFilterList( this.type );
   }
 
-  public async loadData(): Promise<Array<T>> {
+  private setDefaultSettings(){
+    this.limit = this.defaultLimit;
+    this.offset = this.defaultOffset;
+    this.items = [];
+  }
+
+  protected async loadData(): Promise<Array<T>> {
     let selectors: QuerySelectorInterface = {};
 
     if (Object.keys(this.filter).length > 0) {
@@ -51,18 +57,13 @@ export class SearchableListing<T extends DBBasedEntity> {
     return await this.service.search(this.limit, this.offset, selectors, this.options);
   }
 
-  public async fetchMore(infiniteScroll?: InfiniteScroll) {
+  protected async fetchMore(infiniteScroll?: InfiniteScroll) {
     let data = await this.loadData();
     this.offset += data ? data.length : 0;
     this.zone.run(() => {
       this.items = this.items.concat(data);
       infiniteScroll && infiniteScroll.complete();
     });
-  }
-  private setDefaultSettings(){
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.items = [];
   }
   protected async filterList(filterItem: Item, value){
     if(filterItem.type === FilterType.Boolean){
