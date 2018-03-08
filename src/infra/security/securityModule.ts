@@ -4,7 +4,7 @@ import { ServiceLocator } from "../../services/serviceLocator";
 import { SecurityService } from "../../services/securityService";
 import { ToastController } from "ionic-angular";
 
-export function SecurityModule(accessRights: AccessRightItem, isModal?: boolean, persistsCurrentEmployee: boolean = true): Function {
+export function SecurityModule(accessRights: AccessRightItem, isModal: boolean = false, persistsCurrentEmployee: boolean = true): Function {
 	return function (target: Function): any {
 		const property = isModal && "ModalAccessRightItems" || "PageAccessRightItems";
 		Object.defineProperty(target.prototype, property, {
