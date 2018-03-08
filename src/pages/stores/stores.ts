@@ -6,35 +6,28 @@ import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { SearchableListing } from "../../modules/searchableListing";
+import { Store } from "../../model/store";
 
 @SecurityModule(SecurityAccessRightRepo.StoreListing)
 @PageModule(() => BackOfficeModule)
 @Component({
   templateUrl: 'stores.html'
 })
-export class Stores {
+export class Stores extends SearchableListing<Store>{
 
-public stores = [];
-public storesBackup = [];
+public items: Store[] = [];
 
   constructor(public navCtrl: NavController,
           private storeService:StoreService,
           private platform:Platform,
-          private zone: NgZone) {
+          protected zone: NgZone) {
+      super(storeService, zone, 'Store');
   }
 
-  ionViewDidEnter(){
-     this.platform.ready().then(() => {
-
-            this.storeService.getAll()
-                .then(data => {
-                    this.zone.run(() => {
-                        this.stores = data;
-                        this.storesBackup = data;
-                    });
-                })
-                .catch(console.error.bind(console));
-      });
+  async ionViewDidEnter(){
+     await this.platform.ready();
+     await this.fetchMore();
 
   } 
 
@@ -42,20 +35,4 @@ public storesBackup = [];
     this.navCtrl.push(StoreDetailsPage, {store:store}); 
   } 
 
-  getItems(event){
-    this.stores = this.storesBackup;
-    var val = event.target.value;
-    
-    if(val && val.trim() != ''){
-       this.stores = this.stores.filter((store)=>{
-         return((store.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
-       })
-    }
-  }
-
-delete(item, idx){
-    this.storeService.delete(item)
-            .catch(console.error.bind(console)); 
-    this.stores.splice(idx, 1);
-  }
 }
