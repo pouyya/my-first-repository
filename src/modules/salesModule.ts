@@ -10,12 +10,10 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
-//import { SyncContext } from "../services/SyncContext";
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
   private posService: PosService;
-  //private syncContext: SyncContext
 
   constructor() {
   }
@@ -38,7 +36,6 @@ export class SalesModule implements ModuleBase {
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut },
     { title: 'Closures', icon: 'bookmarks', component: Closures },
-    //    { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, disableFunc: this.moneyInOut_disableFunc },
     { title: 'Back Office', icon: 'build', component: HomePage },
     { title: 'Logout', icon: 'log-out', component: LogOut }
   ];
