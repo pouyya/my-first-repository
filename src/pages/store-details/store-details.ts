@@ -107,33 +107,6 @@ export class StoreDetailsPage {
   this.navCtrl.pop();
 }
 
-//  async onSubmit() {
-//     let loader = this.loading.create({ content: 'Saving store...' });
-//     let addPos = async (storeId) => {
-//       if (this.posToAdd.length > 0) {
-//         let promises: any[] = [];
-//         this.posToAdd.forEach(pos => {
-//           pos.storeId = storeId;
-//           promises.push(async () => await this.posService.add(pos));
-//         });
-//         return await Promise.all(promises.map(p => p()));
-//       }
-//       return;
-//     };
-//     await loader.present();
-//     if (this.isNew) {
-//       let info = await this.storeService.add(this.item);
-//       loader.setContent('Saving Registers...');
-//       await addPos(info._id);
-//     } else {
-//       await this.storeService.update(this.item);
-//       loader.setContent('Saving Registers...');
-//       await addPos(this.item._id);
-//     }
-//     loader.dismiss();
-//     this.navCtrl.pop();
-//   }
-
   public showPos(pos: POS) {
     this.navCtrl.push(PosDetailsPage, {
       pos: pos,

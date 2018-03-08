@@ -48,7 +48,7 @@ export class PosDetailsPage {
   }
 
   public async remove() {
-    let user = await this.userService.getUser();
+    //saberlet user = await this.userService.getUser();
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this POS ?',
       message: 'Deleting this POS, will delete all associated Sales and any Current Sale!',

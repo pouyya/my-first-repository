@@ -4,7 +4,7 @@ import { Store } from '../model/store'
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { PosService } from './posService';
 import * as _ from 'lodash';
-import { UserService } from '../modules/dataSync/services/userService';
+//import { UserService } from '../modules/dataSync/services/userService';
 import { SyncContext } from "./SyncContext";
 import { SharedService } from "./_sharedService";
 
@@ -12,7 +12,7 @@ import { SharedService } from "./_sharedService";
 export class StoreService extends BaseEntityService<Store> {
 
   constructor(
-    private userService: UserService,
+    //private userService: UserService,
     private appService: AppService,
     private posService: PosService,
     private syncContext: SyncContext,
@@ -28,7 +28,7 @@ export class StoreService extends BaseEntityService<Store> {
    * @returns {Promise<any>}
    */
   public async delete(store: Store, associated: boolean = false): Promise<any> {
-    let user = await this.userService.getUser();
+    //saberlet user = await this.userService.getUser();
     if (this.syncContext.currentStore._id == store._id) {
       return await Promise.reject({
         error: 'DEFAULT_STORE_EXISTS',
