@@ -101,7 +101,7 @@ export class ConfigService {
     }
 
     static apiServerBaseUrl(): string {
-        return 'https://simpleposapp-dev.azurewebsites.net/api';
+        return ENV.security.serverApiUrl;
     }
 
     static securityClientId(): string {

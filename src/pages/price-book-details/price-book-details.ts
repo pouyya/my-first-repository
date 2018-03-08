@@ -34,8 +34,7 @@ interface CritieriaView {
 @SecurityModule(SecurityAccessRightRepo.PriceBookAddEdit)
 @Component({
   selector: 'pricebook-details',
-  templateUrl: 'price-book-details.html',
-  styleUrls: ['/pages/price-book-details/price-book-details.scss']
+  templateUrl: 'price-book-details.html'
 })
 export class PriceBookDetails {
 
