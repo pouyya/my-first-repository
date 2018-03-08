@@ -54,8 +54,8 @@ export class SimplePOSApp implements OnInit {
     this.initializeApp();    
     
     
-    translate.setDefaultLang('en');
-    translate.use('en');
+    translate.setDefaultLang('au');
+    translate.use('au');
   }
 
   ngOnDestroy() {

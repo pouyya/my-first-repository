@@ -15,10 +15,7 @@ export class LanguageServiceProvider {
   constructor() {
     console.log('LanguageServiceProvider Provider');
     this.languages.push(
-      {name: "England", code: "en"},
-      {name: "Australia", code: "au"},
-      {name: "Soudi Arabia", code: "ar"},
-      {name: "Iran", code: "fa"}
+      {name: "Australia", code: "au"}
     );
   }
 
