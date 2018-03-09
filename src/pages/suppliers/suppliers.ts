@@ -8,7 +8,7 @@ import { PageModule } from "../../metadata/pageModule";
 import { InventoryModule } from "../../modules/inventoryModule";
 import { SecurityModule } from "../../infra/security/securityModule";
 import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
-import {SearchableListing} from "../../modules/searchableListing";
+import { SearchableListing } from "../../modules/searchableListing";
 
 interface SupplierList extends Supplier {
 	associatedProducts: number;
@@ -43,28 +43,4 @@ export class Suppliers extends SearchableListing<Supplier>{
 	public view(supplier?: SupplierList) {
 		this.navCtrl.push(SupplierDetails, { supplier: supplier || null });
 	}
-
-	/*public async search(event) {
-		let val = event.target.value;
-		this.filter = (val && val.trim() != '') ? val : '';
-		this.limit = this.defaultLimit;
-		this.offset = this.defaultOffset;
-		this.suppliers = [];
-		await this.fetchMore();
-	}
-
-	public async fetchMore(infiniteScroll?: any) {
-		let suppliers = await this.loadSuppliers();
-		this.offset += suppliers ? suppliers.length : 0;
-		this.zone.run(() => {
-			this.suppliers = this.suppliers.concat(suppliers);
-			infiniteScroll && infiniteScroll.complete();
-		});
-	}
-
-	private async loadSuppliers(): Promise<SupplierList[]> {
-		let options: any = {};
-		this.filter && (options['name'] = this.filter);
-		return <SupplierList[]>await this.supplierService.search(this.limit, this.offset, options);
-	}*/
 }

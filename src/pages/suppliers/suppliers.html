@@ -40,12 +40,10 @@
     </ion-item>
   </ion-list>
   <ion-list>
-    <ion-item *ngFor="let supplier of suppliers; let i = index;" (click)="view(supplier)">
+    <ion-item *ngFor="let supplier of items; let i = index;" (click)="view(supplier)">
       <ion-grid>
         <ion-row>
-          <ion-col col-md-3>{{ supplier.name }}</ion-col>
-          <ion-col col-md-3>{{ supplier.cellphone || supplier.telephone }}</ion-col>
-          <ion-col col-md-2>{{ supplier.email }}</ion-col>
+          <ion-col col-md-3 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{supplier[column.variableName]}}</h2></ion-col>
           <ion-col col-md-2>{{ supplier.associateProducts }}</ion-col>
         </ion-row>
       </ion-grid>
