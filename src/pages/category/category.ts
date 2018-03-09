@@ -64,47 +64,23 @@ export class Category extends SearchableListing<CategoryModel> {
     this.navCtrl.push(CategoryDetails, { category: category });
   }
 
-  /*delete(category: any, idx) {
-    let confirm = this.alertCtrl.create({
-      title: 'Confirm Delete Category?',
-      message: 'This Category using in Products or Services. Do you want to delete this Category?',
-      buttons: [
-        {
-          text: 'YES',
-          handler: () => {
-            this.categoryService.delete(category).catch(console.error.bind(console));
-            this.items.splice(idx, 1);
-          }
-        },
-        'NO'
-      ]
-    });
-    confirm.present()
-  }
-
-  private async loadCategories(): Promise<any> {
-    let selectors: QuerySelectorInterface = { };
-
-    if (Object.keys(this.filter).length > 0) {
-      _.each(this.filter, (value, key) => {
-        if (value) {
-          selectors[key] = value;
-        }
-      });
+  public async remove(category: any, index) {
+        let confirm = this.alertCtrl.create({
+            title: 'Confirm Delete Category?',
+            message: 'This Category using in Products or Services. Do you want to delete this Category?',
+            buttons: [
+                {
+                    text: 'YES',
+                    handler: () => {
+                        super.remove(category, index);
+                    }
+                },
+                'NO'
+            ]
+        });
+        confirm.present()
     }
 
-    let options: QueryOptionsInterface = {
-      sort: [
-        { order: SortOptions.ASC }
-      ],
-      conditionalSelectors: {
-        order: {
-          $gt: true
-        }
-      }
-    }
-    return await this.categoryService.search(this.limit, this.offset, selectors, options);
-  }*/
 
   public async fetchMore(infiniteScroll?: any) {
     let categories: any = await this.loadData();
@@ -121,13 +97,4 @@ export class Category extends SearchableListing<CategoryModel> {
       infiniteScroll && infiniteScroll.complete();
     });
   }
-
- /* public async searchByName(event) {
-    let val = event.target.value;
-    this.filter['name'] = (val && val.trim() != '') ? val : "";
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.items = [];
-    await this.fetchMore();
-  }*/
 }

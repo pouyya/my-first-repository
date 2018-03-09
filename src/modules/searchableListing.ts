@@ -39,7 +39,7 @@ export class SearchableListing<T extends DBBasedEntity> {
     this.searchFilters = ListingInfo.getFilterList( this.type );
   }
 
-  private setDefaultSettings(){
+  protected setDefaultSettings(){
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.items = [];
