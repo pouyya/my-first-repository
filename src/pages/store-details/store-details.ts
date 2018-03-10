@@ -27,7 +27,6 @@ export class StoreDetailsPage {
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
   languageSelected : any = 'au';
-  languages : Array<LanguageModel>;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
@@ -40,7 +39,6 @@ export class StoreDetailsPage {
     private resourceService: ResourceService,
     public languageService: LanguageServiceProvider) {
 
-      this.languages = this.languageService.getLanguages();
   }
 
   ionViewDidEnter() {

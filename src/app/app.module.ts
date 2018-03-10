@@ -4,7 +4,6 @@ import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-//https://stackoverflow.com/a/45383455
 import {HttpClientModule, HttpClient} from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';

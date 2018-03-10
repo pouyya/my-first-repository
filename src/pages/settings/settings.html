@@ -65,13 +65,7 @@
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>{{ 'SELECT_COUNTRY' | translate }}</ion-label>
-      <ion-select [(ngModel)]="languageSelected" (ionChange)='setLanguage()' [cancelText]="'CANCEL' | translate">
-        <ion-option *ngFor="let item of languages" [value]="item.code">{{item.name}}</ion-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label class="item-name">as tax file number in store details:</ion-label>
+      <ion-label class="item-name">as tax file number</ion-label>
       <ion-label class="item-name">{{ 'BussinesNumber' | translate }}</ion-label>
     </ion-item>
   </ion-list>
