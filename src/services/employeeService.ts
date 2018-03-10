@@ -3,8 +3,9 @@ import * as moment from "moment";
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { EmployeeTimestampService } from './employeeTimestampService';
 import { Injectable } from "@angular/core";
-import { Employee } from "../model/employee";
+import { Employee, WorkingStatusEnum } from "../model/employee";
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { SyncContext } from "./SyncContext";
 
 @Injectable()
 export class EmployeeService extends BaseEntityService<Employee> {
@@ -20,7 +21,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
   }
 
   constructor(
-    private employeeTimestampService: EmployeeTimestampService) {
+    private employeeTimestampService: EmployeeTimestampService, private syncContext: SyncContext) {
     super(Employee);
   }
 
@@ -66,33 +67,13 @@ export class EmployeeService extends BaseEntityService<Employee> {
   }
 
   public async getClockedInEmployeesOfStore(storeId: string): Promise<Array<Employee>> {
+    let employees: Employee[] = await this.getAll();
 
-    var currentStorePeriodTimeStamps = await this.employeeTimestampService.getAllTimeStampOfCurrentPeriodOfStore(storeId);
-
-    let clockedInEmployees: Array<Employee> = [];
-
-    if (currentStorePeriodTimeStamps.length > 0) {
-
-      var employees = await this.getAll();
-
-      employees.forEach(employee => {
-        var currentEmployeeTimeStamps = _.filter(
-          currentStorePeriodTimeStamps,
-          (timeStamp) => timeStamp.employeeId == employee._id);
-
-        if (currentEmployeeTimeStamps.length > 0) {
-          let currentEmployeetimeStamp: EmployeeTimestamp = currentEmployeeTimeStamps[0];
-          let e: any = employee;
-          e.disabled = false;
-          if (currentEmployeetimeStamp.type !== EmployeeTimestampService.CLOCK_OUT) {
-            e.disabled = currentEmployeetimeStamp.type == EmployeeTimestampService.BREAK_START;
-            clockedInEmployees.push(e);
-          }
-        }
-      });
-    }
-
-    return clockedInEmployees;
+    return employees.filter(employee => employee.workingStatus &&
+      employee.workingStatus.storeId == storeId &&
+      (employee.workingStatus.status == WorkingStatusEnum.ClockedIn ||
+        employee.workingStatus.status == WorkingStatusEnum.BreakStart ||
+        employee.workingStatus.status == WorkingStatusEnum.BreakEnd));
   }
 
   public async findByStore(storeId: string) {
@@ -136,20 +117,31 @@ export class EmployeeService extends BaseEntityService<Employee> {
     }
   }
 
-  public async clockOutClockedInOfStore(currentStoreId: string, checkOutTime?: Date | string): Promise<any> {
-    let employees = await this.getClockedInEmployeesOfStore(currentStoreId);
-    if (employees.length > 0) {
-      checkOutTime = checkOutTime || new Date();
-      let creations: Promise<any>[] = _.map(employees, (employee) => {
+  private clockOutEmployee(employee: Employee, currentStoreId: string, checkOutTime: Date | string) {
+    return new Promise((resolve, reject) => {
+      setTimeout(async () => {
         let newTimestamp = new EmployeeTimestamp();
         newTimestamp.employeeId = employee._id;
         newTimestamp.storeId = currentStoreId;
         newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
         newTimestamp.time = moment(checkOutTime).utc().toDate();
 
-        return this.employeeTimestampService.add(newTimestamp);
-      });
+        employee.workingStatus.status = WorkingStatusEnum.ClockedOut;
+        employee.workingStatus.posId = this.syncContext.currentPos._id;
+        employee.workingStatus.storeId = currentStoreId;
+        employee.workingStatus.time = new Date();
 
+        await Promise.all([this.employeeTimestampService.add(newTimestamp), this.update(employee)]);
+        resolve();
+      })
+    });
+  }
+
+  public async clockOutClockedInOfStore(currentStoreId: string, checkOutTime?: Date | string): Promise<any> {
+    const employees = await this.getClockedInEmployeesOfStore(currentStoreId);
+    if (employees.length > 0) {
+      checkOutTime = checkOutTime || new Date();
+      let creations: Promise<any>[] = employees.map(employee => this.clockOutEmployee(employee, currentStoreId, checkOutTime));
       return await Promise.all(creations);
     }
 

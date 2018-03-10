@@ -6,6 +6,21 @@ export interface EmployeeRolePerStore {
   role: string;
 }
 
+
+export enum WorkingStatusEnum {
+  ClockedIn = 1,
+  ClockedOut,
+  BreakStart,
+  BreakEnd
+}
+
+export interface WorkingStatus {
+  status: WorkingStatusEnum;
+  posId: string;
+  storeId: string;
+  time: Date
+}
+
 export class Employee extends DBBasedEntity {
   @DisplayColumn(1)
   public firstName: string;
@@ -17,8 +32,12 @@ export class Employee extends DBBasedEntity {
   public pin: number;
   @SearchFilter(FilterType.Text, 1, 'Search by name')
   public fullname: string;
+<<<<<<< HEAD
   @SearchFilter(FilterType.Boolean, 2)
   public isActive: boolean;
+=======
+  public workingStatus: WorkingStatus;
+>>>>>>> develop
 
   constructor() {
     super();
