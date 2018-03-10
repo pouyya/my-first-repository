@@ -32,12 +32,9 @@ export class Employee extends DBBasedEntity {
   public pin: number;
   @SearchFilter(FilterType.Text, 1, 'Search by name')
   public fullname: string;
-<<<<<<< HEAD
   @SearchFilter(FilterType.Boolean, 2)
   public isActive: boolean;
-=======
   public workingStatus: WorkingStatus;
->>>>>>> develop
 
   constructor() {
     super();
