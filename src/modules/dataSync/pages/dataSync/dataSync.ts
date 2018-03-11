@@ -44,9 +44,9 @@ export class DataSync {
 			ConfigService.currentAuditDBUrl,
 			ConfigService.internalAuditDBName,
 			user.access_token,
+			['order', 'name', 'entityTypeName', 'entityTypeNames'],
 			['order', 'entityTypeName', 'entityTypeNames'],
-			['order', 'entityTypeName', 'entityTypeNames'],
-			['entityTypeName', 'entityTypeNames']); 
+			['entityTypeName', 'entityTypeNames']);
 
 		DBService.criticalDBSyncProgress.subscribe(
 			async (data: DBEvent) => {
