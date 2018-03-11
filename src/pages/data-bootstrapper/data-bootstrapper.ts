@@ -57,7 +57,7 @@ export class DataBootstrapper {
   /** @AuthGuard */
   async ionViewCanEnter() {
     this._user = await this.userService.getDeviceUser();
-    if(this._user.currentStore) {
+    if (this._user.currentStore) {
       let store = await this.storeService.get(this._user.currentStore);
       this.securityMessage = `To open the app for store ${store.name}, please provide your PIN number`
     }
@@ -74,17 +74,17 @@ export class DataBootstrapper {
       { ok: 'OK', cancel: 'Cancel' });
 
     let employee: Employee;
-    if (pin===undefined) 
+    if (pin === undefined)
       return true;
-    if (pin){
+    if (pin) {
       employee = await this.employeeService.findByPin(pin);
-      if (employee && employee.isAdmin || (employee &&(employee.isActive && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined))) {
+      if (employee && employee.isAdmin || (employee && (employee.isActive && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined))) {
         this.haveAccess = true;
       }
-    
-      if(!this.haveAccess){
-        
-        if(employee && !employee.isActive)
+
+      if (!this.haveAccess) {
+
+        if (employee && !employee.isActive)
           this.toastCtrl.create({ message: 'Employee is not active', duration: 5000 }).present();
         else
           this.toastCtrl.create({ message: 'Invalid Access', duration: 5000 }).present();
