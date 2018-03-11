@@ -16,8 +16,6 @@ import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
 import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
-import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-
 
 @Component({
   selector: 'app',
@@ -29,7 +27,6 @@ export class SimplePOSApp implements OnInit {
   public currentModule: ModuleBase;
   public moduleName: string;
   private alive: boolean = true;
-  textDir: string = "ltr";
 
   constructor(
     public platform: Platform,
@@ -46,16 +43,11 @@ export class SimplePOSApp implements OnInit {
     private userService: UserService,
     private printService: PrintService,
     private securityService: SecurityService,
-    private syncContext: SyncContext, // used in view,
-    public translate: TranslateService
+    private syncContext: SyncContext // used in view
   ) {
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
-
-
-    translate.setDefaultLang('au');
-    translate.use('au');
   }
 
   ngOnDestroy() {
@@ -83,11 +75,6 @@ export class SimplePOSApp implements OnInit {
 
       this.statusBar.styleDefault();
       this.hideSplashScreen();
-
-      //this is to determine the text direction depending on the selected language
-      this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
-        this.textDir = event.lang == 'ar' ? 'rtl' : 'ltr';
-      });
     });
   }
 

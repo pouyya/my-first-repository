@@ -15,6 +15,7 @@ import { PosService } from '../../services/posService';
 import { StoreService } from '../../services/storeService';
 import { SharedService } from '../../services/_sharedService';
 import { POS } from '../../model/pos';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'data-bootstrapper',
@@ -44,7 +45,8 @@ export class DataBootstrapper {
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
     private loading: LoadingController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translateService: TranslateService
   ) {
     this.cdr.detach();
     this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`
@@ -56,6 +58,10 @@ export class DataBootstrapper {
 
   /** @AuthGuard */
   async ionViewCanEnter() {
+
+    this.translateService.setDefaultLang('au');
+    this.translateService.use('au');
+    
     this._user = await this.userService.getDeviceUser();
     if (this._user.currentStore) {
       let store = await this.storeService.get(this._user.currentStore);
@@ -74,7 +80,7 @@ export class DataBootstrapper {
       { ok: 'OK', cancel: 'Cancel' });
 
     let employee: Employee;
-    
+
     if (!pin) {
       return true;
     }
