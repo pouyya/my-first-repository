@@ -51,9 +51,9 @@ export class SimplePOSApp implements OnInit {
   ) {
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
-    this.initializeApp();    
-    
-    
+    this.initializeApp();
+
+
     translate.setDefaultLang('au');
     translate.use('au');
   }
@@ -85,17 +85,9 @@ export class SimplePOSApp implements OnInit {
       this.hideSplashScreen();
 
       //this is to determine the text direction depending on the selected language
-      this.translate.onLangChange.subscribe((event: LangChangeEvent) =>
-      {
-        this.textDir = event.lang == 'ar'? 'rtl' : 'ltr';
+      this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+        this.textDir = event.lang == 'ar' ? 'rtl' : 'ltr';
       });
-
-      // call translation method when with another parameter
-      this.translate.get('HELLO', {value: 'Dayana'}).subscribe((res: string) => {
-        console.log(res);
-        //=> 'Hello Dayana'
-      });
-
     });
   }
 
@@ -168,18 +160,18 @@ export class SimplePOSApp implements OnInit {
       message,
       duration: 3000
     });
-    
+
     toast.present();
   }
 
-  async updatePrintReceiptSetting(){
+  async updatePrintReceiptSetting() {
     const message: string = "Settings saved";
-      await this.storeService.update(this.syncContext.currentStore);
-      this.toastController.create({
-          message,
-          duration: 3000,
-          position: 'top'
-      }).present();
+    await this.storeService.update(this.syncContext.currentStore);
+    this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'top'
+    }).present();
   }
 
 
