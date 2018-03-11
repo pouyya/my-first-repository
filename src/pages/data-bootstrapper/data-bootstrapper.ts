@@ -74,21 +74,22 @@ export class DataBootstrapper {
       { ok: 'OK', cancel: 'Cancel' });
 
     let employee: Employee;
-    if (pin === undefined)
+    
+    if (!pin) {
       return true;
-    if (pin) {
-      employee = await this.employeeService.findByPin(pin);
-      if (employee && employee.isAdmin || (employee && (employee.isActive && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined))) {
-        this.haveAccess = true;
-      }
+    }
 
-      if (!this.haveAccess) {
+    employee = await this.employeeService.findByPin(pin);
+    if (employee && employee.isAdmin || (employee && (employee.isActive && employee.store && _.find(employee.store, { id: this._user.currentStore }) != undefined))) {
+      this.haveAccess = true;
+    }
 
-        if (employee && !employee.isActive)
-          this.toastCtrl.create({ message: 'Employee is not active', duration: 5000 }).present();
-        else
-          this.toastCtrl.create({ message: 'Invalid Access', duration: 5000 }).present();
-      }
+    if (!this.haveAccess) {
+
+      if (employee && !employee.isActive)
+        this.toastCtrl.create({ message: 'Employee is not active', duration: 5000 }).present();
+      else
+        this.toastCtrl.create({ message: 'Invalid Access', duration: 5000 }).present();
     }
 
     return true;
