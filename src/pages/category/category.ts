@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { Category as CategoryModel} from '../../model/Category';
-import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import {SearchableListing} from "../../modules/searchableListing";
 
 @SecurityModule(SecurityAccessRightRepo.InventoryCategory)
@@ -19,12 +19,6 @@ import {SearchableListing} from "../../modules/searchableListing";
 })
 export class Category extends SearchableListing<CategoryModel> {
   public items: CategoryModel[] = [];
-  // public itemsBackup = [];
-  // private readonly defaultLimit = 10;
-  // private readonly defaultOffset = 0;
-  // private limit: number;
-  // private offset: number;
-  // private filter: any = {};
 
   constructor(public navCtrl: NavController,
     private alertCtrl: AlertController,
@@ -33,8 +27,6 @@ export class Category extends SearchableListing<CategoryModel> {
     protected zone: NgZone) {
 
     super(categoryService, zone, 'Category');
-    // this.limit = this.defaultLimit;
-    // this.offset = this.defaultOffset;
   }
 
   async ionViewDidEnter() {

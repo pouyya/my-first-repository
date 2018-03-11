@@ -12,7 +12,7 @@ import { Product } from '../../model/product';
 import { PriceBook } from '../../model/priceBook';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import {SearchableListing} from "../../modules/searchableListing";
 import {Item} from "../../metadata/listingModule";
 
@@ -73,38 +73,6 @@ export class Products extends SearchableListing<Product>{
   public async remove(product: ProductsList, index) {
     await super.remove(<Product>_.omit(product, ['stockInHand']), index);
   }
-
-  /*private async loadProducts(): Promise<ProductsList[]> {
-    let selectors: QuerySelectorInterface = {};
-    var options: QueryOptionsInterface = {
-      sort: [
-        { order: SortOptions.ASC }
-      ],
-      conditionalSelectors: {
-        order: {
-          $gt: true
-        }
-      }
-    };
-
-    if (this.filter) {
-      selectors = {
-        name: this.filter
-      }
-    }
-
-    let products = await this.productService.search(this.limit, this.offset, selectors, options);
-
-    products.forEach((product) => {
-      var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
-      product["stockInHand"] = stockValue ? stockValue.value : 0;
-
-      let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
-      product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
-    });
-
-    return <ProductsList[]>products;
-  }*/
 
   public async fetchMore(infiniteScroll?: any) {
     let products: ProductsList[] = <ProductsList[]>await this.loadData();

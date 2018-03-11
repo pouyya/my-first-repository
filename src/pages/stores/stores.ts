@@ -28,7 +28,6 @@ public items: Store[] = [];
   async ionViewDidEnter(){
      await this.platform.ready();
      await this.fetchMore();
-
   } 
 
   showDetail(store){

@@ -22,12 +22,6 @@
       </ion-select>
     </ion-col>
   </ion-row>
-  <!--<ion-searchbar
-    debounce="500"
-    animated="true"
-    placeholder="Search by name"
-    (ionInput)="searchByName($event)">
-  </ion-searchbar>-->
   <ion-list inset *ngFor="let service of items ; let idx=index">
     <ion-item-sliding class="sliding">
       <ion-item (click)="showDetail(service)">
