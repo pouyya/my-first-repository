@@ -9,7 +9,7 @@
   },
   "scripts": {
     "clean": "ionic-app-scripts clean",
-    "build": "cross-env SP_ENV=stage ionic-app-scripts build",
+    "build": "cross-env SP_ENV=stage ionic-app-scripts build --prod",
     "serve:prod": "cross-env SP_ENV=prod ionic-app-scripts serve",
     "serve:dev": "cross-env SP_ENV=dev ionic-app-scripts serve",
     "electron": "ionic-app-scripts build && .\\node_modules\\.bin\\electron ."
