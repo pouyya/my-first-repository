@@ -97,6 +97,7 @@ import { SearchableIonSelectModule } from './../components/searchable-ion-select
 import { KeysPipe } from './../pipes/keys.pipe';
 import { GroupByPipe } from './../pipes/group-by.pipe';
 import { LocalDatePipe } from '../pipes/local-date.pipe';
+import { TranslatorPipe } from '../pipes/translator.pipe';
 
 // directives
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
@@ -149,6 +150,7 @@ import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 import { LanguageServiceProvider } from '../providers/language-service/language-service';
+import {TranslateService} from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -209,7 +211,8 @@ import { LanguageServiceProvider } from '../providers/language-service/language-
     AddSupplierAndStore,
     CreateSupplier,
     ProductsSelector,
-    Closures
+    Closures,
+    TranslatorPipe
   ],
   imports: [
     FormsModule,
@@ -370,6 +373,8 @@ import { LanguageServiceProvider } from '../providers/language-service/language-
     KeysPipe,
     GroupByPipe,
     LocalDatePipe,
+    TranslateService,
+    TranslatorPipe,
     authProvider,
     PlatformService,
     AccountSettingService,

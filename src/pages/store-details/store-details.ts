@@ -11,13 +11,12 @@ import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { TranslateService } from '@ngx-translate/core';
 import { LanguageServiceProvider } from "../../providers/language-service/language-service";
 import { LanguageModel } from "../../model/language.model";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
-  templateUrl: 'store-details.html',
+  templateUrl: 'store-details.html'
 })
 export class StoreDetailsPage {
   public item: Store = new Store();
