@@ -89,6 +89,8 @@ import { GroupEmployeeTimeLogModule } from './../components/group-employee-timel
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
+import { ColorPickerModule } from "../components/color-picker/color-picker.module";
+import { SelectColorModal } from "../components/color-picker/modal/select-color/select-color";
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -190,6 +192,7 @@ import { SyncContext } from "../services/SyncContext";
     Customers,
     CustomerDetails,
     CreateCustomerModal,
+    SelectColorModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -237,6 +240,7 @@ import { SyncContext } from "../services/SyncContext";
     // custom
     SharedModule,
     NetworkMonitorModule,
+    ColorPickerModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -295,6 +299,7 @@ import { SyncContext } from "../services/SyncContext";
     Customers,
     CustomerDetails,
     CreateCustomerModal,
+    SelectColorModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,

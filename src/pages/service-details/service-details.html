@@ -34,6 +34,9 @@
       </ion-select>
     </ion-item>
     <ion-item>
+      <color-picker [selectedColor]="serviceItem.color" (selectedColorUpdated)="serviceItem.color = $event"></color-picker>
+    </ion-item>
+    <ion-item>
       <button ion-button (click)="selectIcon()">Select Icon</button>
       <span *ngIf="selectedIcon"><sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
     </ion-item>

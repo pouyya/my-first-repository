@@ -8,6 +8,7 @@ export class Product extends PurchasableItem {
   public brandId: string; // Brand Model
   public supplierId?: string; // Supplier
   public tag: string;
+  public color: string;
 
   constructor() {
     super();
