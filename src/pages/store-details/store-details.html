@@ -89,10 +89,12 @@
         <ion-label class="item-name">Email</ion-label>
         <ion-input type="text" [(ngModel)]="item.email" name="email"></ion-input>
       </ion-item>
-      <ion-item>
+      <phone-number-mask></phone-number-mask>
+      <!--<ion-item>
         <ion-label class="item-name">Phone</ion-label>
+
         <ion-input type="text" [(ngModel)]="item.phone" name="phone"></ion-input>
-      </ion-item>
+      </ion-item>-->
       <ion-item>
         <ion-label class="item-name">Twitter</ion-label>
         <ion-input type="text" [(ngModel)]="item.twitter" name="twitter"></ion-input>

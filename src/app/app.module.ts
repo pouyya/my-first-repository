@@ -89,6 +89,7 @@ import { GroupEmployeeTimeLogModule } from './../components/group-employee-timel
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
+import { PhoneNumberMaskModule } from '../components/phone-number-mask/phone-number-mask.module';
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -249,6 +250,7 @@ import { SyncContext } from "../services/SyncContext";
     BarcodeScannerModule,
     SearchableIonSelectModule,
     IonicProDeployModule.forRoot(),
+    PhoneNumberMaskModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
