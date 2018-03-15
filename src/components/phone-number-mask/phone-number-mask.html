@@ -1,9 +1,16 @@
+<ion-item>
+    <ion-label float-left>Phone</ion-label>
+    <ion-select [(ngModel)]="selectedCountryCode" (ionChange)="onCountrySelect()" float-left>
+        <ion-option *ngFor="let country of countries" value="{{ country.countryCode }}">
+            <div style="display: inline-block" class='flag-icon flag-icon-{{ country.countryCode}}'></div>
+            {{ country.countryCode.toUpperCase() }}
+        </ion-option>
+    </ion-select>
+    <ion-input type="text" [(ngModel)]="phoneNumber" name="phone" [brmasker]="{mask: selectedMask || '00/00/0000', len: selectedMask.length || 10 , type:'num'}"></ion-input>
+</ion-item>
 
-  <ion-label float-left>Phone</ion-label>
-  <ion-select float-left>
-    <ion-option *ngFor="let country of countries" value="{{ country.countryCode }}">
-      <div style="display: inline-block" class='flag-icon flag-icon-{{ country.countryCode}}'></div>
-      +{{ country.dialCode }}
-    </ion-option>
-  </ion-select>
-  <ion-input type="text" [(ngModel)]="phoneNumber" name="phone"></ion-input>
+
+
+
+
+  <!---->

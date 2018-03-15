@@ -6,10 +6,12 @@ interface Country {
   countryCode: string,
 }
 
-
 @Injectable()
 export class CountryService {
   private countries: Country[];
+  private countriesMask: Object = {
+      pk : '+92 000-0000000'
+  };
 
   public getCountries(): Country[] {
     if (!this.countries || this.countries.length == 0)
@@ -477,5 +479,9 @@ export class CountryService {
       "countryCode": "zw"
     }, {"name": "Aaland Islands", "dialCode": "358", "countryCode": "ax"}];
     return countries;
+  }
+
+  public getCountriesMask () {
+    return this.countriesMask;
   }
 }
