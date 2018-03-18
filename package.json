@@ -80,6 +80,7 @@
     "pouchdb": "^6.3.4",
     "pouchdb-adapter-cordova-sqlite": "2.0.2",
     "pouchdb-find": "^6.3.4",
+    "reflect-metadata": "^0.1.12",
     "rxjs": "5.5.2",
     "stream-browserify": "^2.0.1",
     "sw-toolbox": "^3.4.0",

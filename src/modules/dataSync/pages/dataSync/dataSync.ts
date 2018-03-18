@@ -45,7 +45,9 @@ export class DataSync {
 			ConfigService.currentAuditDBUrl,
 			ConfigService.internalAuditDBName,
 			user.access_token,
-			[<DBIndex>{ fields: ['order', 'entityTypeName', 'entityTypeNames'] }],
+			[
+				<DBIndex>{ fields: ['order', 'entityTypeName', 'entityTypeNames'] },
+				<DBIndex>{ fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
 			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }],
 			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }]);
 
