@@ -8,7 +8,6 @@ import { Orders } from '../pages/orders/orders';
 
 export class InventoryModule implements ModuleBase {
   public setInjector() {
-
   }
 
   public pages: Array<PageSettingsInterface | ModalPageInterface> = [
@@ -22,5 +21,4 @@ export class InventoryModule implements ModuleBase {
   ];
 
   public pinTheMenu: boolean = true;
-
 }
