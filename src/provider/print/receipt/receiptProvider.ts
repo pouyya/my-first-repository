@@ -2,26 +2,26 @@ import { EscPrinterProvider } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ReceiptProviderContext } from "./receiptProviderContext";
 import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
+import { TranslateService } from "@ngx-translate/core";
 
 export class ReceiptProvider {
 
     printer: EscPrinterProvider;
     htmlPrinterProvider: HtmlPrinterProvider;
 
-    constructor(public receiptProviderContext: ReceiptProviderContext) {
+    constructor(
+        public receiptProviderContext: ReceiptProviderContext,
+        private translateService: TranslateService) {
         this.printer = new EscPrinterProvider();
         this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
     setHeader(): ReceiptProvider {
-
-        var taxFileNumber = 'ABN';
-
         var headerHtml = `
         <center>
             <h2><b>${this.receiptProviderContext.invoiceTitle}</b></h2>${this.receiptProviderContext.shopName}
 Ph: ${this.receiptProviderContext.phoneNumber}
-${taxFileNumber}: ${this.receiptProviderContext.taxFileNumber}
+${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext.taxFileNumber}
         </center>
         <table cols="left-24,right-24">
             <tr>

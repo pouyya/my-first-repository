@@ -4,7 +4,7 @@ import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-import {HttpClientModule, HttpClient} from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,8 +19,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
-import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import { TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -149,8 +149,7 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
-import { LanguageServiceProvider } from '../providers/language-service/language-service';
-import {TranslateService} from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -328,7 +327,6 @@ import {TranslateService} from "@ngx-translate/core";
     Closures
   ],
   providers: [
-    LanguageServiceProvider,
     IonicErrorHandler,
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
@@ -384,8 +382,7 @@ import {TranslateService} from "@ngx-translate/core";
     ResourceService,
     PaymentService,
     AuditService,
-    SyncContext,
-    LanguageServiceProvider
+    SyncContext
   ]
 })
 export class AppModule {
@@ -399,4 +396,3 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/language/', '.json');
 }
 
-  
