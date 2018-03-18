@@ -10,21 +10,10 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
-import { SyncContext } from "../services/SyncContext";
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
   private posService: PosService;
-  private syncContext: SyncContext
-
-  constructor() {
-  }
-
-  public moneyInOut_disableFunc(data: any): Promise<boolean> {
-    return new Promise((resolve, reject) =>{
-      resolve(this.syncContext.currentPos.status);
-    });
-  }
 
   public setInjector(injector: Injector): void {
     this.toastCtrl = injector.get(ToastController);
@@ -36,7 +25,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Open/Close', icon: 'bookmarks', component: OpenCloseRegister },
     { title: 'Sales History', icon: 'list', component: SalesHistoryPage },
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
-    { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, disableFunc: this.moneyInOut_disableFunc },
+    { title: 'Money In/Out', icon: 'cash', component: MoneyInOut },
     { title: 'Closures', icon: 'bookmarks', component: Closures },
     { title: 'Back Office', icon: 'build', component: HomePage },
     { title: 'Logout', icon: 'log-out', component: LogOut }
