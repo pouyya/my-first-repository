@@ -15,15 +15,6 @@ export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
   private posService: PosService;
 
-  constructor() {
-  }
-
-  // public moneyInOut_disableFunc(data: any): Promise<boolean> {
-  //   return new Promise((resolve, reject) =>{
-  //     resolve(this.syncContext.currentPos.status);
-  //   });
-  // }
-
   public setInjector(injector: Injector): void {
     this.toastCtrl = injector.get(ToastController);
     this.posService = injector.get(PosService);
