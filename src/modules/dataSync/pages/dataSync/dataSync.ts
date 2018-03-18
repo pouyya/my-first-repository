@@ -5,6 +5,7 @@ import { NavController } from 'ionic-angular';
 import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
 import { DataBootstrapper } from '../../../../pages/data-bootstrapper/data-bootstrapper';
+import { DBIndex } from '@simpleidea/simplepos-core/dist/db/dbIndex';
 
 @Component({
 	selector: 'datasync',
@@ -44,9 +45,9 @@ export class DataSync {
 			ConfigService.currentAuditDBUrl,
 			ConfigService.internalAuditDBName,
 			user.access_token,
-			['order', 'entityTypeName', 'entityTypeNames'],
-			['entityTypeName', 'entityTypeNames'],
-			['entityTypeName', 'entityTypeNames']);
+			[<DBIndex>{ fields: ['order', 'entityTypeName', 'entityTypeNames'] }],
+			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }],
+			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }]);
 
 		DBService.criticalDBSyncProgress.subscribe(
 			async (data: DBEvent) => {
