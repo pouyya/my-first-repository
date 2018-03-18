@@ -11,7 +11,6 @@ import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { LanguageModel } from "../../model/language.model";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
