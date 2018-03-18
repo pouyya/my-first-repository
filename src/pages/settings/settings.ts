@@ -14,8 +14,6 @@ import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
 import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
-import { TranslateService } from '@ngx-translate/core';
-
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -36,7 +34,6 @@ export class Settings {
   private newTax: any;
   private setting: AppSettingsInterface;
 
-
   constructor(
     private userService: UserService,
     private appService: AppService,
@@ -46,8 +43,7 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
-    private datetimeService: DateTimeService,
-    public translate: TranslateService
+    private datetimeService: DateTimeService
   ) {
     this.cdr.detach();
     this.taxTypes = [
