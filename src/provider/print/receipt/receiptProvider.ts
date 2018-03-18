@@ -14,11 +14,14 @@ export class ReceiptProvider {
     }
 
     setHeader(): ReceiptProvider {
+
+        var taxFileNumber = 'ABN';
+
         var headerHtml = `
         <center>
             <h2><b>${this.receiptProviderContext.invoiceTitle}</b></h2>${this.receiptProviderContext.shopName}
 Ph: ${this.receiptProviderContext.phoneNumber}
-ABN: ${this.receiptProviderContext.taxFileNumber}
+${taxFileNumber}: ${this.receiptProviderContext.taxFileNumber}
         </center>
         <table cols="left-24,right-24">
             <tr>

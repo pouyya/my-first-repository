@@ -11,10 +11,12 @@ import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
+import { LanguageServiceProvider } from "../../providers/language-service/language-service";
+import { LanguageModel } from "../../model/language.model";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
-  templateUrl: 'store-details.html',
+  templateUrl: 'store-details.html'
 })
 export class StoreDetailsPage {
   public item: Store = new Store();
@@ -23,6 +25,7 @@ export class StoreDetailsPage {
   public registers: Array<POS> = [];
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
+  languageSelected : any = 'au';
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
@@ -32,7 +35,9 @@ export class StoreDetailsPage {
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private resourceService: ResourceService) {
+    private resourceService: ResourceService,
+    public languageService: LanguageServiceProvider) {
+
   }
 
   ionViewDidEnter() {
