@@ -40,6 +40,7 @@ export class Brands extends SearchableListing<Brand> {
 
     async ionViewDidEnter() {
         try {
+            this.setDefaultSettings();
             let loader = this.loading.create({content: 'Loading Brands...'});
             await loader.present();
             await this.fetchMore();
