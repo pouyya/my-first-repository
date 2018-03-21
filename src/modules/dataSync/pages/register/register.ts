@@ -5,8 +5,7 @@ import { DataSync } from '../dataSync/dataSync';
 
 @Component({
   selector: 'page-register',
-  templateUrl: 'register.html',
-  styleUrls: ['/pages/register/register.scss'],
+  templateUrl: 'register.html'
 })
 export class RegisterPage {
 

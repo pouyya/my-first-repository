@@ -10,9 +10,8 @@ import { PaymentService } from '../../services/paymentService';
 import { SyncContext } from "../../services/SyncContext";
 
 @Component({
-  selector: 'payments-page',
+  selector: 'payment',
   templateUrl: 'payment.html',
-  styleUrls: ['/pages/payment/payment.scss'],
   providers: [SalesServices]
 })
 export class PaymentsPage {

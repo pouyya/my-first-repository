@@ -14,14 +14,27 @@
   </ion-navbar>
 </ion-header>
 <ion-content >
-  <ion-searchbar (ionInput)="search($event)"></ion-searchbar>
-  <ion-list inset *ngFor="let customer of customers ; let i=index">
+  <ion-row *ngIf="searchFilters.length">
+    <ion-col [attr.col-md-10]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+      <ion-select *ngIf="filter.type =='Boolean'" [(ngModel)]="models[filter['variableName']]" (ngModelChange)="filterList(filter, models[filter['variableName']] )">
+        <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+  <ion-list inset *ngFor="let customer of items ; let i=index">
     <ion-item-sliding class="sliding" >
       <ion-item (click)="view(customer)">
-        <ion-avatar class="item-avatar" item-left>
-          <img src="assets/img/avatar-han.png">
-        </ion-avatar>
-        <h2 class="item-title">{{customer.firstName}} {{customer.lastName}}</h2>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-1>
+              <ion-avatar class="item-avatar" item-left>
+                <img src="assets/img/avatar-han.png">
+              </ion-avatar>
+            </ion-col>
+            <ion-col col-md-2 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{customer[column.variableName]}}</h2></ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item-options>
         <button ion-button color='danger' (click)="remove(customer, i)" icon=left>
