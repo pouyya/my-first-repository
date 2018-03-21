@@ -27,7 +27,7 @@ import { SimplePOSApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Products } from '../pages/products/products';
 import { ProductDetails } from '../pages/product-details/product-details';
-import { Category } from '../pages/category/category';
+import { Categories } from '../pages/categories/categories';
 import { CategoryDetails } from '../pages/category-details/category-details';
 import { Services } from '../pages/service/service';
 import { ServiceDetails } from '../pages/service-details/service-details';
@@ -159,7 +159,7 @@ import { TranslateService } from "@ngx-translate/core";
     ProductDetails,
     Services,
     ServiceDetails,
-    Category,
+    Categories,
     CategoryDetails,
     Sales,
     Settings,
@@ -272,7 +272,7 @@ import { TranslateService } from "@ngx-translate/core";
     ProductDetails,
     Services,
     ServiceDetails,
-    Category,
+    Categories,
     CategoryDetails,
     Sales,
     Settings,

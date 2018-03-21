@@ -7,18 +7,18 @@ import { PageModule } from '../../metadata/pageModule';
 import * as _ from 'lodash';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { Category as CategoryModel} from '../../model/Category';
+import { Category } from '../../model/Category';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
-import {SearchableListing} from "../../modules/searchableListing";
+import { SearchableListing } from "../../modules/searchableListing";
 
 @SecurityModule(SecurityAccessRightRepo.InventoryCategory)
 @PageModule(() => InventoryModule)
 @Component({
   selector: 'categories',
-  templateUrl: 'category.html'
+  templateUrl: 'categories.html'
 })
-export class Category extends SearchableListing<CategoryModel> {
-  public items: CategoryModel[] = [];
+export class Categories extends SearchableListing<Category> {
+  public items: Category[] = [];
 
   constructor(public navCtrl: NavController,
     private alertCtrl: AlertController,
@@ -34,14 +34,14 @@ export class Category extends SearchableListing<CategoryModel> {
     await loader.present();
     try {
       this.options = {
-          sort: [
-              { order: SortOptions.ASC }
-          ],
-          conditionalSelectors: {
-              order: {
-                  $gt: true
-              }
+        sort: [
+          { order: SortOptions.ASC }
+        ],
+        conditionalSelectors: {
+          order: {
+            $gt: true
           }
+        }
       }
       await this.fetchMore();
       loader.dismiss();
