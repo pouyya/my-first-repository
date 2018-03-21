@@ -5,6 +5,10 @@
             <ion-icon name='cash' item-left></ion-icon>
             <label padding-left item-left>Open Cash Drawer</label>
           </button>
+          <ion-item *ngIf="syncContext.currentStore">
+            <ion-toggle item-left [(ngModel)]="syncContext.currentStore.printReceiptAtEndOfSale" (ngModelChange)="updatePrintReceiptSetting()" name="printReceiptAtEndOfSale"></ion-toggle>
+            <label padding-left item-left>Print at end of sale</label>
+          </ion-item>
         </ion-list>
       </ion-content>
   </ion-menu>

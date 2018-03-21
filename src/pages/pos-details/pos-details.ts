@@ -3,7 +3,6 @@ import { NavParams, NavController, ToastController, AlertController, LoadingCont
 import { PosService } from './../../services/posService';
 import { POS } from './../../model/pos';
 import { Component } from '@angular/core';
-import { UserService } from '../../modules/dataSync/services/userService';
 import { SyncContext } from "../../services/SyncContext";
 @Component({
   selector: "pos-details",
@@ -22,7 +21,6 @@ export class PosDetailsPage {
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private loading: LoadingController,
-    private userService: UserService,
     private appService: AppService,
     private syncContext: SyncContext
   ) { }
@@ -48,7 +46,6 @@ export class PosDetailsPage {
   }
 
   public async remove() {
-    let user = await this.userService.getUser();
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this POS ?',
       message: 'Deleting this POS, will delete all associated Sales and any Current Sale!',

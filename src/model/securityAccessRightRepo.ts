@@ -110,9 +110,13 @@ export class SecurityAccessRightRepo {
     "SaleTax",
     "Sale Tax");
 
-    public static readonly OpenCashDrawer: AccessRightItem = new AccessRightItem(
-      "OpenCashDrawer",
-      "Open Cash Drawer");
+  public static readonly OpenCashDrawer: AccessRightItem = new AccessRightItem(
+    "OpenCashDrawer",
+    "Open Cash Drawer");
+
+  public static readonly SwitchPos: AccessRightItem = new AccessRightItem(
+    "SwitchPos",
+    "Switch Pos");
   
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
@@ -142,7 +146,8 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.GroupSaleTax,
     SecurityAccessRightRepo.MoneyInOut,
     SecurityAccessRightRepo.SaleTax,    
-    SecurityAccessRightRepo.OpenCashDrawer    
+    SecurityAccessRightRepo.OpenCashDrawer,
+    SecurityAccessRightRepo.SwitchPos
   ];
 
 }

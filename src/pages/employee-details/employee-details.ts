@@ -25,9 +25,8 @@ interface SelectableStore extends Store {
 
 @SecurityModule(SecurityAccessRightRepo.EmployeeAddEdit)
 @Component({
-  selector: 'employee-detail',
-  templateUrl: 'employee-details.html',
-  styleUrls: ['/pages/employee-details/employee-details.scss']
+  selector: 'employee-details',
+  templateUrl: 'employee-details.html'
 })
 export class EmployeeDetails {
 

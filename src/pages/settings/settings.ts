@@ -49,7 +49,7 @@ export class Settings {
     this.taxTypes = [
       { _id: 0, type: 'Tax Exclusive' },
       { _id: 1, type: 'Tax Inclusive' }
-    ]
+    ];
   }
 
   ionViewDidLoad() {
@@ -94,7 +94,7 @@ export class Settings {
     var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
     this.salesTaxes = taxes;
 
-    this._sharedService.publish('storeOrPosChanged', { screenAwake: this.accountSetting.screenAwake });
+    this._sharedService.publish('screenAwake', { screenAwake: this.accountSetting.screenAwake });
 
     this.accountSetting.taxType = this.selectedType == 0 ? false : true;
     this.accountSetting.defaultTax = this.newTax._id;

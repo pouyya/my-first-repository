@@ -15,6 +15,7 @@ import { CategoryService } from './categoryService';
 import { BasketItem } from '../model/basketItem';
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 import { SyncContext } from "./SyncContext";
+import { TranslateService } from '@ngx-translate/core';
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -49,7 +50,8 @@ export class PrintService {
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
-    private syncContext: SyncContext) {
+    private syncContext: SyncContext,
+    private translateService: TranslateService) {
   }
 
   public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
@@ -170,7 +172,7 @@ export class PrintService {
       receiptProviderContext.taxFileNumber = store.taxFileNumber;
       receiptProviderContext.footerMessage = currentAccountsetting.receiptFooterMessage;
 
-      var receiptProvider = new ReceiptProvider(receiptProviderContext)
+      var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService)
         .setHeader()
         .setBody()
         .setFooter()
@@ -182,7 +184,7 @@ export class PrintService {
   }
 
   public async openCashDrawer() {
-    
+
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
@@ -193,7 +195,7 @@ export class PrintService {
     if (!TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerPort)) {
 
       await new EscPrinterConnectorProvider(this.syncContext.currentStore.printerIP, this.syncContext.currentStore.printerPort)
-        .write(new ReceiptProvider(null).openCashDrawer().getResult());
+        .write(new ReceiptProvider(null, this.translateService).openCashDrawer().getResult());
     }
   }
 }

@@ -4,6 +4,7 @@ import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,6 +19,8 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // pages
 import { SimplePOSApp } from './app.component';
@@ -94,6 +97,7 @@ import { SearchableIonSelectModule } from './../components/searchable-ion-select
 import { KeysPipe } from './../pipes/keys.pipe';
 import { GroupByPipe } from './../pipes/group-by.pipe';
 import { LocalDatePipe } from '../pipes/local-date.pipe';
+import { TranslatorPipe } from '../pipes/translator.pipe';
 
 // directives
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
@@ -143,7 +147,9 @@ import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
 import { ConfigService } from '../modules/dataSync/services/configService';
 import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
 import { PaymentService } from '../services/paymentService';
+import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
+import { TranslateService } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -204,11 +210,13 @@ import { SyncContext } from "../services/SyncContext";
     AddSupplierAndStore,
     CreateSupplier,
     ProductsSelector,
-    Closures
+    Closures,
+    TranslatorPipe
   ],
   imports: [
     FormsModule,
     HttpModule,
+    HttpClientModule,
     IonicModule.forRoot(SimplePOSApp,
       {
         mode: 'md',
@@ -232,6 +240,13 @@ import { SyncContext } from "../services/SyncContext";
     DndModule.forRoot(),
     ReactiveFormsModule,
     DataSyncModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    }),
 
     // custom
     SharedModule,
@@ -247,10 +262,7 @@ import { SyncContext } from "../services/SyncContext";
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
     SearchableIonSelectModule,
-    IonicProDeployModule.forRoot({
-      appId: ConfigService.ionicDeployAppId(),
-      channel: ConfigService.ionicDeployAppChannel()
-    }),
+    IonicProDeployModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -359,6 +371,8 @@ import { SyncContext } from "../services/SyncContext";
     KeysPipe,
     GroupByPipe,
     LocalDatePipe,
+    TranslateService,
+    TranslatorPipe,
     authProvider,
     PlatformService,
     AccountSettingService,
@@ -367,6 +381,7 @@ import { SyncContext } from "../services/SyncContext";
     OrderService,
     ResourceService,
     PaymentService,
+    AuditService,
     SyncContext
   ]
 })
@@ -376,3 +391,8 @@ export class AppModule {
     this.syncContext.initSubscribe();
   }
 }
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/language/', '.json');
+}
+

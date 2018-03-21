@@ -36,7 +36,11 @@
       </ion-item>
       <ion-item>
         <ion-label>Is Admin</ion-label>
-        <ion-checkbox [(ngModel)]="employee.isAdmin" name="isAdmin"></ion-checkbox>
+        <ion-toggle [(ngModel)]="employee.isAdmin" name="isAdmin" (ionChange)="employee.isAdmin && (employee.isActive = true)"></ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="!employee.isAdmin">
+        <ion-label>Status</ion-label>
+        <ion-toggle [(ngModel)]="employee.isActive" name="isActive"></ion-toggle>
       </ion-item>
       <ion-item>
         <button ion-button type="button" (click)="setPin()" color="{{ !employee.pin ? 'default' : 'primary' }}">{{ !employee.pin ? 'Set PIN' : 'Reset PIN' }}</button>
