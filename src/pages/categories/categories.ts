@@ -7,7 +7,7 @@ import { PageModule } from '../../metadata/pageModule';
 import * as _ from 'lodash';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { Category } from '../../model/Category';
+import { Category } from '../../model/category';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { SearchableListing } from "../../modules/searchableListing";
 
