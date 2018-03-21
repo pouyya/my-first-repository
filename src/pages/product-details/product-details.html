@@ -86,7 +86,7 @@
         <ion-textarea class="item-text" [(ngModel)]="productItem.description" name="description"></ion-textarea>
       </ion-item>
       <ion-item>
-        <color-picker [selectedColor]="productItem.color" (selectedColorUpdated)="productItem.color = $event"></color-picker>
+        <color-picker [selectedColor$]="color"></color-picker>
       </ion-item>
       <ion-item>
         <button ion-button type="button" (click)="selectIcon()">Select Icon</button>

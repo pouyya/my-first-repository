@@ -14,6 +14,7 @@ import { AppService } from "../../services/appService";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { UserService } from '../../modules/dataSync/services/userService';
+import { Subject } from "rxjs/Subject";
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -51,6 +52,7 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
+  private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,
@@ -87,6 +89,11 @@ export class ServiceDetails {
 			this.serviceItem.icon = user.settings.defaultIcon;
 			this.selectedIcon = this.serviceItem.icon.name;
 		}
+
+    this.color.asObservable().subscribe( color => {
+      this.serviceItem.color = color;
+    });
+    this.color.next(this.serviceItem.color);
 
 		var promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),

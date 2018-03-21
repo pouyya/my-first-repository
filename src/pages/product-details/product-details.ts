@@ -23,6 +23,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
+import { Subject } from "rxjs/Subject";
 
 interface InteractableStoreStock {
 	storeId: string,
@@ -74,6 +75,7 @@ export class ProductDetails {
 	};
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
+  private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -118,7 +120,14 @@ export class ProductDetails {
 			this.selectedIcon = this.productItem.icon.name;
 		}
 
-		let promises: Array<Promise<any>> = [
+
+    this.color.asObservable().subscribe( color => {
+      this.productItem.color = color;
+    });
+    this.color.next(this.productItem.color);
+
+
+    let promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
 			new Promise(async (_resolve, _reject) => {
 				this.salesTaxService.get(_user.settings.defaultTax).then((salesTax: any) => {
