@@ -56,24 +56,6 @@ export class Category extends SearchableListing<CategoryModel> {
     this.navCtrl.push(CategoryDetails, { category: category });
   }
 
-  public async remove(category: any, index) {
-        let confirm = this.alertCtrl.create({
-            title: 'Confirm Delete Category?',
-            message: 'This Category using in Products or Services. Do you want to delete this Category?',
-            buttons: [
-                {
-                    text: 'YES',
-                    handler: () => {
-                        super.remove(category, index);
-                    }
-                },
-                'NO'
-            ]
-        });
-        confirm.present()
-    }
-
-
   public async fetchMore(infiniteScroll?: any) {
     let categories: any = await this.loadData();
     if (categories.length > 0) {
