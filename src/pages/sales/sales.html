@@ -39,7 +39,13 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
+  <ion-grid *ngIf="!activeCategory">
+    <ion-row>
+      <ion-col col-md-12 text-center>
+    Please use back office to add new categories, products and services.
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-grid *ngIf="syncContext.currentPos.status && activeCategory" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
