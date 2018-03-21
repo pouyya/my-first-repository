@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController, Modal } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes } from './../../model/sale';
