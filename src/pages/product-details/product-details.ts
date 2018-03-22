@@ -338,7 +338,7 @@ export class ProductDetails {
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
 			this._defaultPriceBook.purchasableItems.push({
-				id: res.id,
+				id: res._id,
 				retailPrice: Number(this.defaultPriceBook.item.retailPrice),
 				inclusivePrice: Number(this.defaultPriceBook.item.inclusivePrice),
 				supplyPrice: Number(this.defaultPriceBook.item.supplyPrice),

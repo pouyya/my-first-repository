@@ -72,6 +72,7 @@ export class Sales implements OnDestroy {
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
+    this.activeCategory = {};
   }
 
   ngOnDestroy() {
@@ -168,7 +169,7 @@ export class Sales implements OnDestroy {
     });
 
     this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
-    this.activeCategory = _.head(this.categories);
+    this.activeCategory = _.head(this.categories) || { purchasableItems : []};
   }
 
   private async initiateSales(trackEmployeeSales: boolean) {

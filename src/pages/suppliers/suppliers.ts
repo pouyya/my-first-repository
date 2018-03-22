@@ -34,6 +34,7 @@ export class Suppliers extends SearchableListing<Supplier>{
 	}
 
 	async ionViewDidEnter() {
+        this.setDefaultSettings();
 		let loader = this.loadingCtrl.create({ content: 'Loading Suppliers' });
 		await loader.present();
 		await this.fetchMore();

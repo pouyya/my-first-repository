@@ -72,6 +72,7 @@ export class Orders extends SearchableListing<Order>{
       }
     ];
 
+    this.setDefaultSettings();
     let [stores, suppliers] = await Promise.all(loadEssentials.map(p => p()));
     this.stores = stores;
     this.suppliers = suppliers;
