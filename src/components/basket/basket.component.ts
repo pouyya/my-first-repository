@@ -227,7 +227,6 @@ export class BasketComponent {
         this.sale.appliedValues = response.values;
         response.data && this.sale.appliedValues.push(response.data);
         this.calculateAndSync();
-        this.calculateTotalExternalValues();
       }
     });
 
@@ -477,6 +476,7 @@ export class BasketComponent {
         this.customer = null;
       }
     }
+    this.calculateTotalExternalValues();
   }
 
 

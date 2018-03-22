@@ -98,7 +98,7 @@
 
 
     <ion-col col-md-3 (click) = "externalValue().applyDiscount()">{{ totalExternalValue > 0 ? "Total Surcharge": "Total Discount" }}</ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">{{totalExternalValue | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{totalExternalValue | number : '1.2-2'}}</ion-col>
 
     <ion-col col-md-3 [ngPlural]="sale.items.length">
       <ng-template ngPluralCase="=0">Total
