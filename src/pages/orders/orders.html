@@ -15,9 +15,9 @@
 </ion-header>
 <ion-content>
   <ion-grid>
-    <ion-row>
-      <ion-col col-md-8 class="customer-search-container">
-        <ion-searchbar debounce="500" animated="true" placeholder="Search by order number" (ionInput)="searchByOrderNumber($event)"></ion-searchbar>
+    <ion-row *ngIf="searchFilters.length">
+      <ion-col [attr.col-md-8]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+        <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
       </ion-col>
       <ion-col col-md-4>
         <ion-select [(ngModel)]="selectedOrderStatus" (ionChange)="searchByOrderStatus()">
@@ -53,12 +53,10 @@
     </ion-item>
   </ion-list>
   <ion-list>
-    <ion-item *ngFor="let order of orders;" (click)="view(order)">
+    <ion-item *ngFor="let order of items;" (click)="view(order)">
       <ion-grid>
         <ion-row>
-          <ion-col col-md-2>
-            {{ order.orderNumber }}
-          </ion-col>
+          <ion-col col-md-2 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{order[column.variableName]}}</h2></ion-col>
           <ion-col col-md-2>
             {{ order.createdAt | localDate:'MMM d, YYYY, h:mm a' }}
           </ion-col>

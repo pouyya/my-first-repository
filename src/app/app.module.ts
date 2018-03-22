@@ -4,6 +4,7 @@ import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,13 +19,15 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 // pages
 import { SimplePOSApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { Products } from '../pages/products/products';
 import { ProductDetails } from '../pages/product-details/product-details';
-import { Category } from '../pages/category/category';
+import { Categories } from '../pages/categories/categories';
 import { CategoryDetails } from '../pages/category-details/category-details';
 import { Services } from '../pages/service/service';
 import { ServiceDetails } from '../pages/service-details/service-details';
@@ -89,11 +92,14 @@ import { GroupEmployeeTimeLogModule } from './../components/group-employee-timel
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
+import { ColorPickerModule } from "../components/color-picker/color-picker.module";
+import { SelectColorModal } from "../components/color-picker/modal/select-color/select-color";
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
 import { GroupByPipe } from './../pipes/group-by.pipe';
 import { LocalDatePipe } from '../pipes/local-date.pipe';
+import { TranslatorPipe } from '../pipes/translator.pipe';
 
 // directives
 import { ClickStopPropagation } from './../directives/clickStopPropagation.directive';
@@ -145,6 +151,7 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
+import { TranslateService } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [
@@ -154,7 +161,7 @@ import { SyncContext } from "../services/SyncContext";
     ProductDetails,
     Services,
     ServiceDetails,
-    Category,
+    Categories,
     CategoryDetails,
     Sales,
     Settings,
@@ -190,6 +197,7 @@ import { SyncContext } from "../services/SyncContext";
     Customers,
     CustomerDetails,
     CreateCustomerModal,
+    SelectColorModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -205,11 +213,13 @@ import { SyncContext } from "../services/SyncContext";
     AddSupplierAndStore,
     CreateSupplier,
     ProductsSelector,
-    Closures
+    Closures,
+    TranslatorPipe
   ],
   imports: [
     FormsModule,
     HttpModule,
+    HttpClientModule,
     IonicModule.forRoot(SimplePOSApp,
       {
         mode: 'md',
@@ -233,10 +243,18 @@ import { SyncContext } from "../services/SyncContext";
     DndModule.forRoot(),
     ReactiveFormsModule,
     DataSyncModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    }),
 
     // custom
     SharedModule,
     NetworkMonitorModule,
+    ColorPickerModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -258,7 +276,7 @@ import { SyncContext } from "../services/SyncContext";
     ProductDetails,
     Services,
     ServiceDetails,
-    Category,
+    Categories,
     CategoryDetails,
     Sales,
     Settings,
@@ -295,6 +313,7 @@ import { SyncContext } from "../services/SyncContext";
     Customers,
     CustomerDetails,
     CreateCustomerModal,
+    SelectColorModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -357,6 +376,8 @@ import { SyncContext } from "../services/SyncContext";
     KeysPipe,
     GroupByPipe,
     LocalDatePipe,
+    TranslateService,
+    TranslatorPipe,
     authProvider,
     PlatformService,
     AccountSettingService,
@@ -375,3 +396,8 @@ export class AppModule {
     this.syncContext.initSubscribe();
   }
 }
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, '../assets/language/', '.json');
+}
+

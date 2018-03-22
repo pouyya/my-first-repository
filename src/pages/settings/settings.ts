@@ -49,7 +49,7 @@ export class Settings {
     this.taxTypes = [
       { _id: 0, type: 'Tax Exclusive' },
       { _id: 1, type: 'Tax Inclusive' }
-    ]
+    ];
   }
 
   ionViewDidLoad() {

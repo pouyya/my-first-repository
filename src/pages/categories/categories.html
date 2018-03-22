@@ -14,26 +14,25 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar
-    debounce="500"
-    animated="true"
-    placeholder="Search by name"
-    (ionInput)="searchByName($event)">
-  </ion-searchbar>
+  <ion-row *ngIf="searchFilters.length">
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    </ion-col>
+  </ion-row>
   <ion-list inset>
     <ion-item>
       <h1 item-start>Category Name</h1>
       <h1 item-end>Products Associated</h1>
     </ion-item>
   </ion-list>
-  <ion-list inset *ngFor="let item of items ; let idx = index">
+  <ion-list inset *ngFor="let category of items ; let idx = index">
     <ion-item-sliding class="sliding" cancelable=true>
-      <ion-item (click)="showDetail(item)">
-        <h2 class="item-title" item-start>{{item.name}}</h2>
-        <h2 item-end>{{item.associated}}</h2>
+      <ion-item *ngFor="let column of displayColumns;" (click)="showDetail(category)">
+        <h2 class="item-title" item-start>{{category[column.variableName]}}</h2>
+        <h2 item-end>{{category.associated}}</h2>
       </ion-item>
       <ion-item-options>
-        <button ion-button color='danger' (click)="delete(item, idx)" icon=left>
+        <button ion-button color='danger' (click)="delete(category, idx)" icon=left>
           <ion-icon name="trash"></ion-icon>
           Delete
         </button>

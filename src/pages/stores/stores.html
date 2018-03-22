@@ -14,17 +14,27 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
-  <ion-list inset *ngFor="let item of stores ; let idx=index">
+  <ion-row *ngIf="searchFilters.length">
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    </ion-col>
+  </ion-row>
+  <ion-list inset *ngFor="let store of items ; let idx=index">
     <ion-item-sliding class="sliding">
-      <ion-item (click)="showDetail(item)">
-        <ion-avatar class="item-avatar" item-left>
-          <img src="assets/img/avatar-han.png">
-        </ion-avatar>
-        <h2 class="item-title">{{item.name}}</h2>
+      <ion-item (click)="showDetail(store)">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-1>
+              <ion-avatar class="item-avatar" item-left>
+                <img src="assets/img/avatar-han.png">
+              </ion-avatar>
+            </ion-col>
+            <ion-col col-md-2 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{store[column.variableName]}}</h2></ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
       <ion-item-options>
-        <button ion-button color='danger' (click)="delete(item, idx)" icon=left>
+        <button ion-button color='danger' (click)="remove(store, idx)" icon=left>
           <ion-icon name="trash"></ion-icon>
           Delete
         </button>
