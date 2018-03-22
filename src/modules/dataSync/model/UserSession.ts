@@ -9,17 +9,16 @@ export interface AppSettingsInterface {
   db_critical_local_name?: string;  
   db_name?: string;
   db_local_name?: string;
+  db_audit_name?: string;
+  db_audit_local_name?: string;
   defaultIcon?: any;
-  
 }
 
 export class UserSession {
-  
   public access_token: string;
   public expires_in: number;
   public token_type: string;
   public settings: AppSettingsInterface;
   public currentStore?: string;
   public currentPos?: string;
-
 }

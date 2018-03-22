@@ -40,12 +40,13 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid *ngIf="syncContext.currentPos.status && activeCategory" class="full-height">
+  <ion-grid *ngIf="syncContext.currentPos.status" class="full-height">
     <ion-row class="full-height">
       <ion-col col-2>
         <ion-scroll scrollY="true" class="category-scroll">
           <ion-list no-lines class="full-height no-margin sales-category">
-            <button ion-item *ngFor="let category of categories" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
+            <ion-item text-wrap *ngIf="!categories && categories.length == 0">Please use back office to add new categories.</ion-item>
+            <button ion-item *ngFor="let category of categories" [style.background-color]="category.color" kclass="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
               (click)="selectCategory(category)">
               <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
               {{ category.name }}

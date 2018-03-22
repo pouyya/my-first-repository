@@ -27,9 +27,8 @@ import { SyncContext } from "../../services/SyncContext";
 @SecurityModule(SecurityAccessRightRepo.OpenCloseRegister)
 @PageModule(() => SalesModule)
 @Component({
-  selector: 'open-close-pos',
+  selector: 'open-close-register',
   templateUrl: 'open-close-register.html',
-  styleUrls: ['/pages/open-close-register.scss'],
   providers: [SalesServices, ClosureService, PosService, StoreService]
 })
 export class OpenCloseRegister {
@@ -64,7 +63,7 @@ export class OpenCloseRegister {
     private salesService: SalesServices,
     private alertCtrl: AlertController,
     private navCtrl: NavController,
-    private prinService: PrintService,
+    private printService: PrintService,
     private fountainService: FountainService) {
     this.cdr.detach();
     this.showReport = false;
@@ -85,8 +84,8 @@ export class OpenCloseRegister {
     this.calculateExpectedCounts(sales);
 
     this.populateClosure(sales, this.employeeService.getEmployee());
-    
-    this.prinService.openCashDrawer();
+
+    this.printService.openCashDrawer();
 
     this.cdr.reattach();
     loader.dismiss();
@@ -146,8 +145,7 @@ export class OpenCloseRegister {
   }
 
   public async closeRegister() {
-    let sale = await this.salesService.getCurrentSaleIfAny();
-    if (sale) {
+    if (this.salesService.isSalePresent()) {
       let confirm = this.alertCtrl.create({
         title: 'Alert!',
         message: 'There is a sale already exists in your memory. What do you want with it ?',
@@ -180,10 +178,6 @@ export class OpenCloseRegister {
       await loader.present();
 
       loader.setContent("Checking other POS closure status..");
-      if (await this.posService.isThisLastPosClosingInStore(this.syncContext.currentPos._id)) {
-        loader.setContent("Clocking out current staff..");
-        await this.employeeService.clockOutClockedInOfStore(this.syncContext.currentStore._id, this.closure.closeTime);
-      }
 
       loader.setContent("Saving and Printing Closure..");
 
@@ -191,7 +185,7 @@ export class OpenCloseRegister {
       this.closure.closureNumber = await this.fountainService.getClosureNumber();
       await this.closureService.add(this.closure);
 
-      this.prinService.printEndOfDayReport(this.closure, EndOfDayReportType.PerCategory);
+      this.printService.printEndOfDayReport(this.closure, EndOfDayReportType.PerCategory);
 
       this.syncContext.currentPos.status = false;
       this.syncContext.currentPos.cashMovements = [];
@@ -201,6 +195,7 @@ export class OpenCloseRegister {
       this.showReport = true;
       await this.posService.update(this.syncContext.currentPos);
 
+      await this.clockOutEmployeesIfRequired();
       loader.dismiss();
 
       let toast = this.toastCtrl.create({
@@ -208,6 +203,16 @@ export class OpenCloseRegister {
         duration: 3000
       });
       toast.present();
+    }
+  }
+
+  private async clockOutEmployeesIfRequired() {
+    try {
+      if (await this.posService.isThisLastPosClosingInStore(this.syncContext.currentPos._id)) {
+        await this.employeeService.clockOutClockedInOfStore(this.syncContext.currentStore._id, this.closure.closeTime);
+      }
+    } catch (ex) {
+
     }
   }
 

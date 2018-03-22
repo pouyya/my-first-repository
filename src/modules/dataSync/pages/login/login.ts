@@ -9,8 +9,7 @@ import { DataSync } from '../dataSync/dataSync';
 
 @Component({
   selector: 'login',
-  templateUrl: 'login.html',
-  styleUrls: ['/pages/login/login.scss'],
+  templateUrl: 'login.html'
 })
 export class LoginPage {
 

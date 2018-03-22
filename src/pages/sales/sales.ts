@@ -18,7 +18,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
 import { BasketComponent } from './../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
-import { Employee } from '../../model/employee';
+import { Employee, WorkingStatusEnum } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
 
@@ -26,9 +26,8 @@ import { SyncContext } from "../../services/SyncContext";
 @SecurityModule()
 @PageModule(() => SalesModule)
 @Component({
-  selector: 'page-variables',
+  selector: 'sales',
   templateUrl: 'sales.html',
-  styleUrls: ['/pages/sales/sales.scss'],
   providers: [SalesServices]
 })
 export class Sales implements OnDestroy {
@@ -73,6 +72,7 @@ export class Sales implements OnDestroy {
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
+    this.activeCategory = {};
   }
 
   ngOnDestroy() {
@@ -169,7 +169,7 @@ export class Sales implements OnDestroy {
     });
 
     this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
-    this.activeCategory = _.head(this.categories);
+    this.activeCategory = _.head(this.categories) || { purchasableItems : []};
   }
 
   private async initiateSales(trackEmployeeSales: boolean) {
@@ -186,6 +186,7 @@ export class Sales implements OnDestroy {
     if (this.employees && this.employees.length > 0) {
       this.employees = this.employees.map(employee => {
         employee.selected = false;
+        employee.disabled = employee.workingStatus.status == WorkingStatusEnum.BreakStart; 
         return employee;
       });
     }

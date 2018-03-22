@@ -44,12 +44,32 @@ export class ConfigService {
         ConfigService._externalDBName = currentExternalDBName;
     }
 
+    static _externalAuditDBName: string = "";
+    static get externalAuditDBName(): string {
+        return this._externalAuditDBName;
+    }
+    static set externalAuditDBName(v: string) {
+        this._externalAuditDBName = v;
+    }
+
+    static _internalAuditDBName: string = "";
+    static get internalAuditDBName(): string {
+        return this._internalAuditDBName;
+    }
+    static set internalAuditDBName(v: string) {
+        this._internalAuditDBName = v;
+    }
+
     static get currentFullExternalDBUrl(): string {
         return ConfigService.externalDBUrl + "/" + ConfigService.externalDBName;
     }
 
     static get currentCriticalFullExternalDBUrl(): string {
         return ConfigService.externalDBUrl + "/" + ConfigService.externalCriticalDBName;
+    }
+
+    static get currentAuditDBUrl(): string {
+        return ConfigService.externalDBUrl + "/" + ConfigService.externalAuditDBName;
     }
 
     static isDevelopment(): boolean {
@@ -81,7 +101,7 @@ export class ConfigService {
     }
 
     static apiServerBaseUrl(): string {
-        return 'https://simpleposapp-dev.azurewebsites.net/api';
+        return ENV.security.serverApiUrl;
     }
 
     static securityClientId(): string {

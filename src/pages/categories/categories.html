@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Categories</ion-title>
+    <button ion-button icon-only menuToggle="leftMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showDetail()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-row *ngIf="searchFilters.length">
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    </ion-col>
+  </ion-row>
+  <ion-list inset>
+    <ion-item>
+      <h1 item-start>Category Name</h1>
+      <h1 item-end>Products Associated</h1>
+    </ion-item>
+  </ion-list>
+  <ion-list inset *ngFor="let category of items ; let idx = index">
+    <ion-item-sliding class="sliding" cancelable=true>
+      <ion-item *ngFor="let column of displayColumns;" (click)="showDetail(category)">
+        <h2 class="item-title" item-start>{{category[column.variableName]}}</h2>
+        <h2 item-end>{{category.associated}}</h2>
+      </ion-item>
+      <ion-item-options>
+        <button ion-button color='danger' (click)="delete(category, idx)" icon=left>
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

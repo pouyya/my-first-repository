@@ -9,7 +9,11 @@ import { GlobalConstants } from './../../../metadata/globalConstants';
 import { UserSession } from '../../../modules/dataSync/model/UserSession';
 import { UserService } from '../../../modules/dataSync/services/userService';
 import { SharedService } from "../../../services/_sharedService";
+import { SecurityAccessRightRepo } from "../../../model/securityAccessRightRepo";
+import { SecurityModule } from "../../../infra/security/securityModule";
+import { SyncContext } from '../../../services/SyncContext';
 
+@SecurityModule(SecurityAccessRightRepo.SwitchPos, false)
 @Component({
   selector: "switch-pos",
   templateUrl: "switch-pos.html"
@@ -21,7 +25,6 @@ export class SwitchPosModal {
   public posId: string;
   public currentStore: any;
   public registers: Array<any> = [];
-  private user: UserSession;
 
   constructor(
     private viewCtrl: ViewController,
@@ -29,33 +32,34 @@ export class SwitchPosModal {
     private posService: PosService,
     private loading: LoadingController,
     private userService: UserService,
-    private _sharedService: SharedService
+    private _sharedService: SharedService,
+    private syncContext: SyncContext
   ) {
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
+
     let loader = this.loading.create({
       content: 'Loading Stores...',
     });
 
-    loader.present().then(async () => {
-      this.user = await this.userService.getUser();
-      this.posId = this.user.currentPos;
-      this.storeId = this.user.currentStore;
+    await loader.present();
 
-      let stores = await this.storeService.getAll();
-      var allPos = await this.posService.getAll();
-      stores.forEach((store: Store) => {
-        var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
-        if (registers.length > 0) {
-          this.stores.push({ ...store, registers });
-          if (store._id === this.user.currentStore) {
-            this.currentStore = { ...store, registers };
-          }
+    this.posId = this.syncContext.currentPos._id;
+    this.storeId = this.syncContext.currentStore._id;
+
+    let [stores, allPos] = await Promise.all([this.storeService.getAll(), this.posService.getAll()]);
+
+    stores.forEach((store: Store) => {
+      var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
+      if (registers.length > 0) {
+        this.stores.push({ ...store, registers });
+        if (store._id === this.storeId) {
+          this.currentStore = { ...store, registers };
         }
-      });
-      loader.dismiss();
+      }
     });
+    await loader.dismiss();
   }
 
   public selectStore(storeId, index) {
@@ -63,13 +67,14 @@ export class SwitchPosModal {
     this.currentStore = { ...this.stores[index] };
   }
 
-  public switchRegister(register: POS) {
-    this.user.currentStore = register.storeId;
-    this.user.currentPos = register._id;
-    this._sharedService.publish('storeOrPosChanged', { currentStore: this.currentStore, currentPos: register});
+  public async switchRegister(register: POS) {
+    var user = await this.userService.getUser();
+    user.currentStore = register.storeId;
+    user.currentPos = register._id;
+    this._sharedService.publish('storeOrPosChanged', { currentStore: this.currentStore, currentPos: register });
     let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
     let currentStore = _.pick(this.stores.find((store) => store._id == register.storeId), GlobalConstants.STORE_SESSION_PROPS);
-    this.userService.setSession(this.user);
+    this.userService.setSession(user);
     this.viewCtrl.dismiss({ currentStore, currentPos });
   }
 

@@ -12,7 +12,9 @@ import { Product } from '../../model/product';
 import { PriceBook } from '../../model/priceBook';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { QuerySelectorInterface, QueryOptionsInterface, SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import {SearchableListing} from "../../modules/searchableListing";
+import {Item} from "../../metadata/listingModule";
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -22,18 +24,12 @@ interface ProductsList extends Product {
 @SecurityModule(SecurityAccessRightRepo.ProductListing)
 @PageModule(() => InventoryModule)
 @Component({
-  templateUrl: 'products.html',
-  styleUrls: ['/pages/products/products.scss']
+  templateUrl: 'products.html'
 })
-export class Products {
-  public items: ProductsList[];
-  private readonly defaultLimit = 10;
-  private readonly defaultOffset = 0;
-  private limit: number;
-  private offset: number;
+export class Products extends SearchableListing<Product>{
+  public items: ProductsList[] = [];
   private priceBook: PriceBook;
   private stockValues: any;
-  private filter: string;
 
   constructor(
     private navCtrl: NavController,
@@ -42,19 +38,28 @@ export class Products {
     private priceBookService: PriceBookService,
     private platform: Platform,
     private loading: LoadingController,
-    private zone: NgZone) {
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.items = [];
+    protected zone: NgZone) {
+    super(productService, zone, 'Product');
   }
 
   async ionViewDidEnter() {
     await this.platform.ready();
+    this.setDefaultSettings();
     let loader = this.loading.create({ content: 'Loading Products...' });
     await loader.present();
     try {
       this.priceBook = await this.priceBookService.getDefault();
       this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
+      this.options = {
+          sort: [
+              { order: SortOptions.ASC }
+          ],
+          conditionalSelectors: {
+              order: {
+                  $gt: true
+              }
+          }
+      }
       await this.fetchMore();
       loader.dismiss();
     } catch (err) {
@@ -66,46 +71,19 @@ export class Products {
     this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null });
   }
 
-  async delete(product: ProductsList, index) {
-    await this.productService.delete(<Product>_.omit(product, ['stockInHand']));
-    this.items.splice(index, 1);
-  }
-
-  private async loadProducts(): Promise<ProductsList[]> {
-    let selectors: QuerySelectorInterface = {};
-    var options: QueryOptionsInterface = {
-      sort: [
-        { order: SortOptions.ASC }
-      ],
-      conditionalSelectors: {
-        order: {
-          $gt: true
-        }
-      }
-    };
-
-    if (this.filter) {
-      selectors = {
-        name: this.filter
-      }
-    }
-
-    let products = await this.productService.search(this.limit, this.offset, selectors, options);
-
-    products.forEach((product) => {
-      var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
-      product["stockInHand"] = stockValue ? stockValue.value : 0;
-
-      let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
-      product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
-    });
-
-    return <ProductsList[]>products;
+  public async remove(product: ProductsList, index) {
+    await super.remove(<Product>_.omit(product, ['stockInHand']), index);
   }
 
   public async fetchMore(infiniteScroll?: any) {
+    let products: ProductsList[] = <ProductsList[]>await this.loadData();
+    products.forEach((product) => {
+        var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
+        product["stockInHand"] = stockValue ? stockValue.value : 0;
 
-    var products = await this.loadProducts();
+        let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
+        product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
+    });
 
     this.offset += products ? products.length : 0;
 
@@ -115,23 +93,9 @@ export class Products {
     });
   }
 
-  public async searchProducts(event) {
-    let val = event.target.value;
-
-    if (val && val.trim() != '') {
-      this.filter = val;
-    }
-    else {
-      this.filter = '';
-    }
-
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.items = [];
-
+  public async searchByText(filterItem: Item, value) {
     this.priceBook = await this.priceBookService.getDefault();
     this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
-
-    await this.fetchMore();
+    await super.searchByText(filterItem, value);
   }
 }

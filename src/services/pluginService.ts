@@ -3,16 +3,17 @@ import { PinDialog } from '@ionic-native/pin-dialog';
 import { Dialogs } from '@ionic-native/dialogs';
 import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
+import { AuditService } from './auditService';
+import { AuditAction } from '../model/audit';
 
 @Injectable()
 export class PluginService {
-
   constructor(
     private platform: Platform,
     private pinDialog: PinDialog,
     private dialog: Dialogs,
-    private alertCtrl: AlertController) {
-
+    private alertCtrl: AlertController,
+    private auditService: AuditService) {
   }
 
   /**
@@ -30,7 +31,9 @@ export class PluginService {
           buttons.ok || 'OK', buttons.cancel || 'Cancel'
         ]).then((result: any) => {
           if (result.buttonIndex == 1) {
-            resolve(Number(result.input1));
+            const pin = Number(result.input1);
+            this.auditService.addAuditInfo(AuditAction.PIN, pin.toString());
+            resolve(pin);
           } else if (result.buttonIndex == 2) {
             resolve(null);
           }
@@ -39,6 +42,7 @@ export class PluginService {
         });
       } else {
         inputs.length == 0 && (inputs = [{ name: 'pin', placeholder: 'xxxx', type: 'number' }]);
+        let self = this;
         let prompt = this.alertCtrl.create({
           title,
           message,
@@ -47,7 +51,9 @@ export class PluginService {
             {
               text: buttons.ok || 'OK',
               handler(data: any) {
-                resolve(Number(data[inputs[0].name || 'pin']));
+                const pin = Number(data[inputs[0].name || 'pin']);
+                self.auditService.addAuditInfo(AuditAction.PIN, pin.toString());
+                resolve(pin);
               }
             },
             {
