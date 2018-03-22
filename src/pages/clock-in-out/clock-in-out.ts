@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/Rx';
 import { POS } from '../../model/pos';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
+import _ from "lodash";
 
 @PageModule(() => SalesModule)
 @Component({
@@ -75,7 +76,6 @@ export class ClockInOutPage {
 
     this.employee = await this.zone.runOutsideAngular(async () => {
       let employee: Employee = await this.employeeService.findByPin(pin);
-      !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
       let toast = this.toastCtrl.create({duration: 3000});
 
       if (!employee) {
@@ -84,13 +84,23 @@ export class ClockInOutPage {
         return null;
       }
 
+      !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
+
       if(!employee.isActive) {
         toast.setMessage('Employee not Active!');
         toast.present();
         return null;
       }
 
-      if (employee.workingStatus && employee.workingStatus.storeId && employee.workingStatus.storeId !== this.syncContext.currentStore._id) {
+      if(!employee.isAdmin && !_.find(employee.store || [], {id : this.syncContext.currentStore._id})){
+        toast.setMessage(`You dont have access for '${this.syncContext.currentStore.name}'.`);
+        toast.present();
+        return null;
+      }
+
+      if (employee.workingStatus && employee.workingStatus.storeId
+          && employee.workingStatus.storeId !== this.syncContext.currentStore._id
+          && employee.workingStatus.status !== WorkingStatusEnum.ClockedOut) {
         let store = await this.storeService.get(employee.workingStatus.storeId);
         toast.setMessage(`You already logged in to Store '${store.name}'. Please clock out first from there and then clock back in here.`);
         toast.present();
@@ -101,9 +111,7 @@ export class ClockInOutPage {
     });
 
     if (this.employee == null) {
-
       await loader.dismiss();
-
       return false;
     }
 

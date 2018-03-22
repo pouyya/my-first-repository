@@ -59,8 +59,7 @@ export class SwitchPosModal {
         }
       }
     });
-
-    loader.dismiss();
+    await loader.dismiss();
   }
 
   public selectStore(storeId, index) {
