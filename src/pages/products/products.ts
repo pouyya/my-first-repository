@@ -44,6 +44,7 @@ export class Products extends SearchableListing<Product>{
 
   async ionViewDidEnter() {
     await this.platform.ready();
+    this.setDefaultSettings();
     let loader = this.loading.create({ content: 'Loading Products...' });
     await loader.present();
     try {
