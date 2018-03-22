@@ -84,7 +84,9 @@ export class PaymentsPage {
 
     this.amount = sale.taxTotal - totalPayments;
 
-    totalPayments == sale.taxTotal && (await this.completeSale(totalPayments));
+    if(totalPayments >= sale.taxTotal){
+      await this.completeSale(totalPayments)
+    }
 
     loader.dismiss();
   }
