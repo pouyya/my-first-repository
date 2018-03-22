@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Select Colors
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col col-1 *ngFor="let color of colors">
+                <button float-left margin-left="10px" [style.background-color]="color" ion-button type="button" (click)="selectColor(color)"></button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <button ion-button type="button" (click)="selectColor(null)">Clear Color</button>
+
+</ion-content>

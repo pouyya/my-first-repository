@@ -5,6 +5,7 @@ import { NavController, NavParams, ModalController, ToastController } from 'ioni
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { UserService } from '../../modules/dataSync/services/userService';
+import { Subject } from "rxjs/Subject";
 
 @Component({
   selector: 'page-variables',
@@ -15,6 +16,7 @@ export class CategoryDetails {
   public isNew = true;
   public action = 'Add';
   public icons: any;
+  private color: Subject<string> = new Subject<string>();
   public selectedIcon: string = "";
 
   constructor(public navCtrl: NavController,
@@ -40,6 +42,11 @@ export class CategoryDetails {
 			this.categoryItem.icon = user.settings.defaultIcon;
 			this.selectedIcon = this.categoryItem.icon.name;
     }
+
+    this.color.asObservable().subscribe( color => {
+      this.categoryItem.color = color;
+    });
+    this.color.next(this.categoryItem.color);
   }
 
   public async onSubmit() {
