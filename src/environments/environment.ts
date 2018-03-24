@@ -12,7 +12,7 @@ export const ENV = {
   },
   ionicDeploy: {
     appId: "22d41469",
-    appChannel: "Development"
+    appChannel: "Master"
   },
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
