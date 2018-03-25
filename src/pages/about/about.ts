@@ -7,6 +7,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
 import { SyncContext } from "../../services/SyncContext";
+import { Pro } from '@ionic/pro';
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)
@@ -25,22 +26,13 @@ export class AboutPage {
   public serverBaseURL: string;
   public deployInfo: IonicDeployInfo;
 
-  /*
-  1) Current POS
-  2) Current Store
-  3) Ionic Deploy version
-  4) DB Local and external name (configservice)
-  5) DB server url (configservice)
-  6) IDS Url (configService)
-  */
-
   constructor(
-    private ionicProDeployService: IonicProDeployService,
     private syncContext: SyncContext // Used in view
   ) { }
 
   async ionViewDidLoad() {
     try {
+
       this.dbInternalName = ConfigService.internalDBName;
       this.dbExternalName = ConfigService.externalDBName;
       this.dbInternalName_Critical = ConfigService.internalCriticalDBName;
@@ -48,12 +40,13 @@ export class AboutPage {
       this.dbServerURL = ConfigService.currentFullExternalDBUrl;
       this.dbServerURL_Critical = ConfigService.currentCriticalFullExternalDBUrl;
       this.serverBaseURL = ConfigService.securityServerBaseUrl();
-      this.deployInfo = this.ionicProDeployService.currentInfo;
+      this.deployInfo = await Pro.deploy.info();
 
+      console.log(this.deployInfo);
+      
       return;
     } catch (e) {
       throw new Error(e);
     }
   }
-
 }
