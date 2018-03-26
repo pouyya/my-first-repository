@@ -144,6 +144,49 @@
           </ion-list>
         </ion-col>
       </ion-row>
+      <ion-row>
+
+        <ion-col col-md-6>
+          <h2>Devices</h2>
+        </ion-col>
+        <ion-col col-md-6 class="pull-right">
+          <button ion-button color="primary" (click)="addDevice()">Add Device</button>
+        </ion-col>
+
+        <ion-col col-md-12 *ngIf="registers && registers.length > 0">
+          <ion-list inset *ngFor="let pos of registers ; let idx=index">
+            <ion-item-sliding class="sliding">
+              <ion-item (click)="showPos(pos)">
+                <h2 class="item-title">{{pos.name}}
+                  <span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span>
+                </h2>
+              </ion-item>
+              <ion-item-options>
+                <button ion-button color='danger' icon=left>
+                  <ion-icon name="trash"></ion-icon>
+                  Delete
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+        </ion-col>
+        <ion-col col-md-12 *ngIf="posToAdd && posToAdd.length > 0">
+          <ion-list inset *ngFor="let pos of posToAdd ; let idx=index">
+            <ion-item-sliding class="sliding">
+              <ion-item (click)="showPos(pos)">
+                <h2 class="item-title">{{pos.name}}
+                  <span class="pull-right">Closed</span>
+                </h2>
+              </ion-item>
+              <ion-item-options>
+                <button ion-button color='danger' icon=left (click)="removeAddedRegister(idx)">
+                  <ion-icon name="trash"></ion-icon>
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+        </ion-col>
+      </ion-row>
     </ion-grid>
 
   </ion-content>

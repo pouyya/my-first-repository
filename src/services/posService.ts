@@ -14,6 +14,17 @@ export class PosService extends BaseEntityService<POS> {
     super(POS);
   }
 
+  public async getCurrentStorePos(): Promise<any> {
+    let POS = await this.getAll();
+    const currentStorePos = POS.reduce((data: any, pos) =>{
+      if(pos.storeId === this.syncContext.currentStore._id){
+        data[pos._id] = pos;
+      }
+      return data;
+    }, {});
+    return currentStorePos;
+  }
+
   public async update(pos: POS): Promise<any> {
     if(this.syncContext.currentPos._id == pos._id){
       this._sharedService.publish('storeOrPosChanged', {currentPos: pos, currentStore : this.syncContext.currentStore});
