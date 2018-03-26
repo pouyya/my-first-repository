@@ -15,13 +15,7 @@ export class PosService extends BaseEntityService<POS> {
   }
 
   public async getCurrentStorePos(): Promise<any> {
-    let POS = await this.getAll();
-    const currentStorePos = POS.reduce((data: any, pos) =>{
-      if(pos.storeId === this.syncContext.currentStore._id){
-        data[pos._id] = pos;
-      }
-      return data;
-    }, {});
+    const currentStorePos = await this.findBy({selector : { storeId: this.syncContext.currentPos.storeId}});
     return currentStorePos;
   }
 

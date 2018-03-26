@@ -11,6 +11,9 @@ import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
+import { Device } from "../../model/device";
+import { DeviceDetailsPage } from "../device-details/device-details";
+import { DeviceService } from "../../services/deviceService";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -21,14 +24,17 @@ export class StoreDetailsPage {
   public isNew: boolean = true;
   public action: string = 'Add';
   public registers: Array<POS> = [];
+  public devices: Device[] = [];
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
-  
+  public devicesToAdd: Device[] = [];
+
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private posService: PosService,
+    private deviceService: DeviceService,
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
@@ -67,20 +73,19 @@ export class StoreDetailsPage {
         new Promise(async (resolve, reject) => {
           this.countries = await this.resourceService.getCountries();
           resolve();
-        })
+        }),
+        this.deviceService.getCurrentStoreDevices()
       ];
-      this.onSubmitAndReturn(false);
-      Promise.all(promises).then(function () {
+
+      Promise.all(promises).then((data) => {
         loader.dismiss();
+        this.devices = data[2];
       });
       
     });
   }
 
-  
- public async onSubmitAndReturn(isReturn) {
-  let loader = this.loading.create({ content: 'Saving store...' });
-  let addPos = async (storeId) => {
+  private async addPos(storeId){
     if (this.posToAdd.length > 0) {
       let promises: any[] = [];
       this.posToAdd.forEach(pos => {
@@ -91,15 +96,31 @@ export class StoreDetailsPage {
     }
     return;
   };
+
+  private async addDevices(){
+    if (this.devicesToAdd.length > 0) {
+      let promises: any[] = [];
+      this.devicesToAdd.forEach(device => {
+        promises.push(async () => await this.deviceService.add(device));
+      });
+      return await Promise.all(promises.map(p => p()));
+    }
+    return;
+  }
+ public async onSubmitAndReturn(isReturn) {
+  let loader = this.loading.create({ content: 'Saving store...' });
+
   await loader.present();
   if (this.isNew) {
     let info = await this.storeService.add(this.item);
     loader.setContent('Saving Registers...');
-    await addPos(info._id);
+    await this.addPos(info._id);
+    await this.addDevices();
   } else {
     await this.storeService.update(this.item);
     loader.setContent('Saving Registers...');
-    await addPos(this.item._id);
+    await this.addPos(this.item._id);
+    await this.addDevices();
   }
   loader.dismiss();
 
@@ -128,6 +149,60 @@ export class StoreDetailsPage {
     this.posToAdd.splice(index, 1);
   }
 
+
+  // Device
+  public showDevice(device: Device) {
+    this.navCtrl.push(DeviceDetailsPage, {
+      device,
+      storeId: this.item._id,
+      pushCallback: null
+    });
+  }
+
+  public addDevice() {
+    let pushCallback = async (device: Device) => device && this.devicesToAdd.push(device);
+    this.navCtrl.push(DeviceDetailsPage, {
+      pos: null,
+      storeId: this.item._id,
+      pushCallback: pushCallback
+    });
+  }
+
+  public removeAddedDevice(index: number) {
+    this.devicesToAdd.splice(index, 1);
+  }
+
+  public async removeDevice(device: Device){
+      let confirm = this.alertCtrl.create({
+        title: 'Are you sure you want to delete this Device ?',
+        message: 'Deleting this device!',
+        buttons: [
+          {
+            text: 'Yes',
+            handler: () => {
+              let loader = this.loading.create({
+                content: 'Deleting. Please Wait!',
+              });
+
+              loader.present().then(() => {
+                this.deviceService.delete(device).then(() => {
+                  let toast = this.toastCtrl.create({
+                    message: 'Device has been deleted successfully',
+                    duration: 3000
+                  });
+                  toast.present();
+                }).catch(error => {
+                  throw new Error(error);
+                }).then(() => loader.dismiss());
+              });
+            }
+          }, 'No'
+        ]
+      });
+      confirm.present();
+  }
+
+  // Device
   public remove() {
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this store ?',

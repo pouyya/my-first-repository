@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Device</ion-title>
     <ion-buttons end>
-      <button type="button" ion-button icon-only (click)="save()">
+      <button type="submit" ion-button icon-only (click)="deviceForm.ngSubmit.emit()" [disabled]="!deviceForm.form.valid">
         Save
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
@@ -14,41 +14,32 @@
 </ion-header>
 
 <ion-content>
-  <ion-list-header>Details</ion-list-header>
+  <form (ngSubmit)="onSubmit()" #deviceForm="ngForm">
   <ion-list>
     <ion-item>
       <ion-label class="item-name">Name </ion-label>
       <ion-input type="text" [(ngModel)]="device.name" name="name" required></ion-input>
     </ion-item>
-  </ion-list>
 
-  <ion-list-header>POS</ion-list-header>
-  <ion-list>
     <ion-item>
-      <ion-grid>
-        <ion-row>
-          <ion-col col-md-12 *ngIf="registers && registers.length > 0">
-            <ion-list inset *ngFor="let pos of registers ; let idx=index">
-              <ion-item-sliding class="sliding">
-                <ion-item (click)="showPos(pos)">
-                  <h2 class="item-title">{{pos.name}}
-                    <span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span>
-                  </h2>
-                </ion-item>
-                <ion-item-options>
-                  <button ion-button color='danger' icon=left>
-                    <ion-icon name="trash"></ion-icon>
-                    Delete
-                  </button>
-                </ion-item-options>
-              </ion-item-sliding>
-            </ion-list>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <ion-label>POS</ion-label>
+      <ion-select [(ngModel)]="device.posIds" multiple="true" name="posId">
+        <ion-option *ngFor="let pos of posList" value={{pos._id}}>{{pos.name}}</ion-option>
+      </ion-select>
     </ion-item>
 
-    <ion-label class="item-name">Type </ion-label>
-    <ion-input type="text" [(ngModel)]="device.type" name="name" required></ion-input>
+    <ion-item>
+      <ion-label>Type</ion-label>
+      <ion-select [(ngModel)]="device.type" multiple="true" name="type" required>
+        <ion-option *ngFor="let type of typeList" value={{type.value}}>{{type.text}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <searchable-ion-select multiple="true" name="purchasableItems" [(ngModel)]="associatedPurchasableItems"
+                             title="Products and Services" valueField="_id" textField="name" [items]="purchasableItems">
+      </searchable-ion-select>
+    </ion-item>
   </ion-list>
+  </form>
 </ion-content>

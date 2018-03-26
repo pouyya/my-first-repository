@@ -135,7 +135,9 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
     if (this.isNullOrWhiteSpace(value)) {
       return null;
     }
-
+    if(value.map){
+      return this.textField ? value.map(val => val[this.textField]) : value.toString()
+    }
     return this.textField ? value[this.textField] : value.toString();
   }
 

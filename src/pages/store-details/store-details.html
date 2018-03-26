@@ -153,16 +153,15 @@
           <button ion-button color="primary" (click)="addDevice()">Add Device</button>
         </ion-col>
 
-        <ion-col col-md-12 *ngIf="registers && registers.length > 0">
-          <ion-list inset *ngFor="let pos of registers ; let idx=index">
+        <ion-col col-md-12 *ngIf="devices && devices.length > 0">
+          <ion-list inset *ngFor="let device of devices ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showPos(pos)">
-                <h2 class="item-title">{{pos.name}}
-                  <span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span>
+              <ion-item (click)="showDevice(device)">
+                <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>
               <ion-item-options>
-                <button ion-button color='danger' icon=left>
+                <button ion-button color='danger' icon=left (click)="removeDevice(device)">
                   <ion-icon name="trash"></ion-icon>
                   Delete
                 </button>
@@ -170,16 +169,16 @@
             </ion-item-sliding>
           </ion-list>
         </ion-col>
-        <ion-col col-md-12 *ngIf="posToAdd && posToAdd.length > 0">
-          <ion-list inset *ngFor="let pos of posToAdd ; let idx=index">
+        <ion-col col-md-12 *ngIf="devicesToAdd && devicesToAdd.length > 0">
+          <ion-list inset *ngFor="let device of devicesToAdd ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showPos(pos)">
-                <h2 class="item-title">{{pos.name}}
-                  <span class="pull-right">Closed</span>
+              <ion-item (click)="showDevice(device)">
+                <h2 class="item-title">{{device.name}}
+                  Delete
                 </h2>
               </ion-item>
               <ion-item-options>
-                <button ion-button color='danger' icon=left (click)="removeAddedRegister(idx)">
+                <button ion-button color='danger' icon=left (click)="removeAddedDevice(idx)">
                   <ion-icon name="trash"></ion-icon>
                 </button>
               </ion-item-options>

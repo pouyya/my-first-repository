@@ -8,9 +8,9 @@ export enum DeviceType {
 
 @DBMode(DBModeEnum.Current)
 export class Device extends DBBasedEntity {
-    name: string;//mandatory
-    storeId: string; //madnatory - current store
-    posIds: string[]; //optional
-    type: DeviceType; //mandatory
+    name: string;
+    storeId: string;
+    posIds: string[];
+    type: DeviceType;
     associatedPurchasableItemIds: string[]
 }
