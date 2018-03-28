@@ -161,7 +161,7 @@ export class Sales implements OnDestroy {
     let [categories, purchasableItems] = await Promise.all([this.categoryService.getAll(), this.categoryService.getPurchasableItems()]);
 
     (<SalesCategory[]>categories).forEach((category, index, catArray) => {
-      let items = _.filter(purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
+      let items = _.filter(<PurchasableItem[]>purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
       if (items.length === 0) {
         category.purchasableItems = [];
       } else {
