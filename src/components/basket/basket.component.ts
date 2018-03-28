@@ -489,6 +489,8 @@ export class BasketComponent {
     basketItem.categoryId = categoryId;
     basketItem.employeeId = employeeId;
     basketItem.stockControl = stockControl;
+    basketItem.isBumped = false;
+
     this.salesService.calculateAndSetBasketPriceAndTax(basketItem, this.salesTaxes, this.defaultTax, itemPrice, isTaxIncl);
     return basketItem;
   }

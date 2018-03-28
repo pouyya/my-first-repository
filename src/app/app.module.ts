@@ -60,7 +60,9 @@ import { PriceBookDetails } from './../pages/price-book-details/price-book-detai
 import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
-import { Customers } from './../pages/customers/customers';;
+import { Customers } from './../pages/customers/customers';
+import { Bumps } from "../pages/bumps/bumps";
+import { BumpDetails } from "../pages/bump-details/bump-details";
 import { CreateCustomerModal } from './../components/basket/modals/create-customer/create-customer';
 import { AboutPage } from './../pages/about/about';
 import { CustomerDetails } from '../pages/customer-details/customer-details';
@@ -164,6 +166,8 @@ import { TranslateService } from "@ngx-translate/core";
     Categories,
     CategoryDetails,
     Sales,
+    Bumps,
+    BumpDetails,
     Settings,
     Stores,
     StoreDetailsPage,
@@ -279,6 +283,8 @@ import { TranslateService } from "@ngx-translate/core";
     Categories,
     CategoryDetails,
     Sales,
+    Bumps,
+    BumpDetails,
     Settings,
     Stores,
     StoreDetailsPage,

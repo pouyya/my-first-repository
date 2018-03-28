@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Bumps Sales</ion-title>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+  <div>
+    <button *ngIf="showPrevious " (click)="showSales('prev')" class="btn-color" float-left ion-button icon-left>
+      <ion-icon name="arrow-back"></ion-icon> Back
+
+    </button>
+    <div text-center>
+      <button ion-button color="dark" outline (click)="showView('BUMPED')">Completed Orders</button>
+      <button ion-button color="dark" outline (click)="showView()">Current Orders</button>
+      <button *ngIf="showNext" (click)="showSales('next')" class="btn-color" float-right ion-button icon-right>
+        Next
+        <ion-icon name="arrow-forward"></ion-icon>
+      </button>
+    </div>
+
+  </div>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let sale of sales; let i = index" class="tile-col">
+        <ion-card tappable class="bump-sale-card">
+          <ion-card-header>
+            <span float-left>{{sale.receiptNo}}</span>
+            <span float-right>{{ sale.elapsedTime}} min</span>
+          </ion-card-header>
+          <hr/>
+
+          <ion-card-content class="content">
+            <ion-list >
+              <ion-item *ngFor="let item of sale.items" class="content-item">
+                  <ion-label>{{item.name}}</ion-label>
+                  <ion-checkbox [(ngModel)]="item.isBumped" item-right secondary (click)="bumpItem(sale, item)"></ion-checkbox>
+                <hr/>
+                <!--<button ion-button icon-only item-end ><ion-icon name="checkmark"></ion-icon></button>-->
+              </ion-item>
+            </ion-list>
+            <!--<div >
+              <span text-left>{{item.name}}</span>
+              <span float-right>
+
+              </span>
+              <hr margin-top="5px"/>
+            </div>-->
+          </ion-card-content>
+
+          <ion-row >
+            <ion-col>
+              <button ion-button full class="bump-btn" (click)="bump(sale, i)">Bump</button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col text-center *ngIf="sales && sales.length === 0">Please use back office to add new products and services.</ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
