@@ -1,26 +1,27 @@
 import _ from 'lodash';
-import { EvaluationContext } from './../../services/EvaluationContext';
+import { EvaluationContext } from '../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
 import { LoadingController, NavParams } from 'ionic-angular';
 
-import { SharedService } from './../../services/_sharedService';
+import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
 import { PosService } from "../../services/posService";
-import { EmployeeService } from './../../services/employeeService';
-import { CacheService } from './../../services/cacheService';
+import { EmployeeService } from '../../services/employeeService';
+import { CacheService } from '../../services/cacheService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 
-import { POS } from './../../model/pos';
+import { POS } from '../../model/pos';
 
 import { SalesModule } from "../../modules/salesModule";
-import { PageModule } from './../../metadata/pageModule';
-import { BasketComponent } from './../../components/basket/basket.component';
+import { PageModule } from '../../metadata/pageModule';
+import { BasketComponent } from '../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee, WorkingStatusEnum } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
+import { Category } from '../../model/category';
 
 
 @SecurityModule()
@@ -49,8 +50,8 @@ export class Sales implements OnDestroy {
 
   private _basketComponent: BasketComponent;
 
-  public categories: any[];
-  public activeCategory: any;
+  public categories: SalesCategory[];
+  public activeCategory: SalesCategory;
   public register: POS;
 
   public employees: any[] = [];
@@ -72,7 +73,6 @@ export class Sales implements OnDestroy {
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
-    this.activeCategory = {};
   }
 
   ngOnDestroy() {
@@ -157,19 +157,20 @@ export class Sales implements OnDestroy {
   }
 
   private async loadCategoriesAndAssociations() {
-    let categories = await this.categoryService.getAll();
-    let purchasableItems = await this.categoryService.getPurchasableItems();
-    categories.forEach((category, index, catArray) => {
+
+    let [categories, purchasableItems] = await Promise.all([this.categoryService.getAll(), this.categoryService.getPurchasableItems()]);
+
+    (<SalesCategory[]>categories).forEach((category, index, catArray) => {
       let items = _.filter(purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
-      if(items.length === 0){
-          category["purchasableItems"] = [];
-          return;
+      if (items.length === 0) {
+        category.purchasableItems = [];
+      } else {
+        category.purchasableItems = _.sortBy(items, [item => parseInt(item.order) || 0]);
       }
-      category["purchasableItems"] = _.sortBy(items, [item => parseInt(item.order) || 0]);
     });
 
     this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
-    this.activeCategory = _.head(this.categories) || { purchasableItems : []};
+    this.activeCategory = _.head(this.categories) || new SalesCategory();
   }
 
   private async initiateSales(trackEmployeeSales: boolean) {
@@ -186,7 +187,7 @@ export class Sales implements OnDestroy {
     if (this.employees && this.employees.length > 0) {
       this.employees = this.employees.map(employee => {
         employee.selected = false;
-        employee.disabled = employee.workingStatus.status == WorkingStatusEnum.BreakStart; 
+        employee.disabled = employee.workingStatus.status == WorkingStatusEnum.BreakStart;
         return employee;
       });
     }
@@ -214,4 +215,14 @@ export class Sales implements OnDestroy {
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
   }
+}
+
+export class SalesCategory extends Category {
+
+  constructor() {
+    super();
+    this.purchasableItems = [];
+  }
+
+  purchasableItems: PurchasableItem[];
 }
