@@ -35,23 +35,15 @@
             <ion-list >
               <ion-item *ngFor="let item of sale.items" class="content-item">
                   <ion-label>{{item.name}}</ion-label>
-                  <ion-checkbox [(ngModel)]="item.isBumped" item-right secondary (click)="bumpItem(sale, item)"></ion-checkbox>
+                  <ion-checkbox [disabled]="isBumpedViewSelected" [(ngModel)]="item.isBumped" item-right secondary (click)="bumpItem(sale, item)"></ion-checkbox>
                 <hr/>
-                <!--<button ion-button icon-only item-end ><ion-icon name="checkmark"></ion-icon></button>-->
               </ion-item>
             </ion-list>
-            <!--<div >
-              <span text-left>{{item.name}}</span>
-              <span float-right>
-
-              </span>
-              <hr margin-top="5px"/>
-            </div>-->
           </ion-card-content>
 
           <ion-row >
             <ion-col>
-              <button ion-button full class="bump-btn" (click)="bump(sale, i)">Bump</button>
+              <button [disabled]="isBumpedViewSelected" ion-button full class="bump-btn" (click)="bump(sale, i)">Bump</button>
             </ion-col>
           </ion-row>
         </ion-card>

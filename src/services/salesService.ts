@@ -112,7 +112,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return false;
 	}
 
-	public async searchSales(posID: string, limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<Array<Sale>> {
+	public async searchSales(posID: string, limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string, sort?: SortOptions): Promise<Array<Sale>> {
 		let query: any = {
 			selector: {
 				$and: [
@@ -171,7 +171,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 
 		query.sort = [{
-			_id: SortOptions.DESC
+			_id: sort || SortOptions.DESC
 		}];
 
 		query.limit = limit;
