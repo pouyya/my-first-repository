@@ -153,15 +153,15 @@
           <button ion-button color="primary" (click)="addDevice()">Add Device</button>
         </ion-col>
 
-        <ion-col col-md-12 *ngIf="devices && devices.length > 0">
-          <ion-list inset *ngFor="let device of devices ; let idx=index">
+        <ion-col col-md-12 *ngIf="item.devices && item.devices.length > 0">
+          <ion-list inset *ngFor="let device of item.devices ; let idx=index">
             <ion-item-sliding class="sliding">
               <ion-item (click)="showDevice(device)">
                 <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>
               <ion-item-options>
-                <button ion-button color='danger' icon=left (click)="removeDevice(device)">
+                <button ion-button color='danger' icon=left (click)="removeDevice(idx)">
                   <ion-icon name="trash"></ion-icon>
                   Delete
                 </button>
@@ -174,12 +174,12 @@
             <ion-item-sliding class="sliding">
               <ion-item (click)="showDevice(device)">
                 <h2 class="item-title">{{device.name}}
-                  Delete
                 </h2>
               </ion-item>
               <ion-item-options>
                 <button ion-button color='danger' icon=left (click)="removeAddedDevice(idx)">
                   <ion-icon name="trash"></ion-icon>
+                  Delete
                 </button>
               </ion-item-options>
             </ion-item-sliding>

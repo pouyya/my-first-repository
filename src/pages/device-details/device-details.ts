@@ -3,17 +3,17 @@ import { PosService } from './../../services/posService';
 import { POS } from './../../model/pos';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../services/SyncContext";
-import { DeviceService } from "../../services/deviceService";
-import { Device, DeviceType } from './../../model/device';
+import { Device, DeviceType } from './../../model/store';
 import { ProductService } from "../../services/productService";
 import { ServiceService } from "../../services/serviceService";
+
 
 @Component({
   selector: "device-details",
   templateUrl: 'device-details.html'
 })
 export class DeviceDetailsPage {
-  public device: Device = new Device();
+  public device: any = {};
   public posList: POS[] = [];
   public associatedPurchasableItems = [];
   public isNew: boolean = true;
@@ -27,7 +27,6 @@ export class DeviceDetailsPage {
   constructor(
     private navParams: NavParams,
     private posService: PosService,
-    private deviceService: DeviceService,
     private productService: ProductService,
     private serviceService: ServiceService,
     private navCtrl: NavController,
@@ -69,11 +68,8 @@ export class DeviceDetailsPage {
     this.device.storeId = this.syncContext.currentStore._id;
     if (this.isNew) {
       await this.navPopCallback(this.device);
-      this.navCtrl.pop();
-    } else {
-      await this.deviceService.update(this.device);
-      this.navCtrl.pop();
     }
+    this.navCtrl.pop();
   }
 
   public async remove( ) {
@@ -87,8 +83,9 @@ export class DeviceDetailsPage {
               let loader = this.loading.create({
                 content: 'Deleting. Please Wait!',
               });
-
-              loader.present().then(() => {
+              this.navPopCallback("DELETE");
+              this.navCtrl.pop();
+              /*loader.present().then(() => {
                 this.deviceService.delete(this.device).then(() => {
                   let toast = this.toastCtrl.create({
                     message: 'Device has been deleted successfully',
@@ -99,7 +96,7 @@ export class DeviceDetailsPage {
                 }).catch(error => {
                   throw new Error(error);
                 }).then(() => loader.dismiss());
-              });
+              });*/
           }
         }, 'No'
       ]

@@ -4,16 +4,14 @@ import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
 import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
-import { Store } from './../../model/store';
+import { Store, Device } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { Device } from "../../model/device";
 import { DeviceDetailsPage } from "../device-details/device-details";
-import { DeviceService } from "../../services/deviceService";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -34,7 +32,6 @@ export class StoreDetailsPage {
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private posService: PosService,
-    private deviceService: DeviceService,
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
@@ -73,13 +70,11 @@ export class StoreDetailsPage {
         new Promise(async (resolve, reject) => {
           this.countries = await this.resourceService.getCountries();
           resolve();
-        }),
-        this.deviceService.getCurrentStoreDevices()
+        })
       ];
 
       Promise.all(promises).then((data) => {
         loader.dismiss();
-        this.devices = data[2];
       });
       
     });
@@ -97,30 +92,26 @@ export class StoreDetailsPage {
     return;
   };
 
-  private async addDevices(){
+  private addDevices(){
+    this.item.devices = this.item.devices || [];
     if (this.devicesToAdd.length > 0) {
-      let promises: any[] = [];
-      this.devicesToAdd.forEach(device => {
-        promises.push(async () => await this.deviceService.add(device));
-      });
-      return await Promise.all(promises.map(p => p()));
+      this.item.devices = [...this.item.devices, ...this.devicesToAdd];
     }
-    return;
   }
+
  public async onSubmitAndReturn(isReturn) {
   let loader = this.loading.create({ content: 'Saving store...' });
 
   await loader.present();
+  this.addDevices();
   if (this.isNew) {
     let info = await this.storeService.add(this.item);
     loader.setContent('Saving Registers...');
     await this.addPos(info._id);
-    await this.addDevices();
   } else {
     await this.storeService.update(this.item);
     loader.setContent('Saving Registers...');
     await this.addPos(this.item._id);
-    await this.addDevices();
   }
   loader.dismiss();
 
@@ -151,18 +142,18 @@ export class StoreDetailsPage {
 
 
   // Device
-  public showDevice(device: Device) {
+  public showDevice(device: Device, index: number) {
+    let pushCallback = (type) => type === "DELETE" && this.item.devices.splice(index, 1);
     this.navCtrl.push(DeviceDetailsPage, {
       device,
       storeId: this.item._id,
-      pushCallback: null
+      pushCallback
     });
   }
 
   public addDevice() {
     let pushCallback = async (device: Device) => device && this.devicesToAdd.push(device);
     this.navCtrl.push(DeviceDetailsPage, {
-      pos: null,
       storeId: this.item._id,
       pushCallback: pushCallback
     });
@@ -172,7 +163,7 @@ export class StoreDetailsPage {
     this.devicesToAdd.splice(index, 1);
   }
 
-  public async removeDevice(device: Device){
+  public async removeDevice(index: number){
       let confirm = this.alertCtrl.create({
         title: 'Are you sure you want to delete this Device ?',
         message: 'Deleting this device!',
@@ -185,15 +176,18 @@ export class StoreDetailsPage {
               });
 
               loader.present().then(() => {
-                this.deviceService.delete(device).then(() => {
+                this.item.devices.splice(index, 1);
                   let toast = this.toastCtrl.create({
-                    message: 'Device has been deleted successfully',
-                    duration: 3000
+                      message: 'Device has been deleted successfully',
+                      duration: 3000
                   });
                   toast.present();
+                  loader.dismiss();
+                /*this.deviceService.delete(device).then(() => {
+
                 }).catch(error => {
                   throw new Error(error);
-                }).then(() => loader.dismiss());
+                }).then(() => loader.dismiss());*/
               });
             }
           }, 'No'

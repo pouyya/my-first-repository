@@ -153,7 +153,6 @@ import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 import { TranslateService } from "@ngx-translate/core";
-import { DeviceService } from "../services/deviceService";
 
 @NgModule({
   declarations: [
@@ -356,7 +355,6 @@ import { DeviceService } from "../services/deviceService";
     TaxService,
     CalculatorService,
     PosService,
-    DeviceService,
     HelperService,
     ModuleService,
     ClosureService,

@@ -1,6 +1,18 @@
 import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 import {DisplayColumn, FilterType, SearchFilter} from "../metadata/listingModule";
 
+export enum DeviceType {
+    Bump
+}
+
+export interface Device {
+    name: string;
+    storeId: string;
+    posIds: string[];
+    type: DeviceType;
+    associatedPurchasableItemIds: string[]
+}
+
 export class Store extends DBBasedEntity {
   @DisplayColumn(1) @SearchFilter(FilterType.Text, 1, 'Search')
   public name: string;
@@ -25,4 +37,5 @@ export class Store extends DBBasedEntity {
   public defaultSaleTaxId: string;
   public trackEmployeeSales: boolean;
   public printReceiptAtEndOfSale: boolean;
+  public devices: Device[];
 }
