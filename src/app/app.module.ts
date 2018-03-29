@@ -117,6 +117,7 @@ import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
 import { PosService } from "../services/posService";
 import { PosDetailsPage } from './../pages/pos-details/pos-details';
+import { DeviceDetailsPage } from './../pages/device-details/device-details';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
@@ -178,6 +179,7 @@ import { TranslateService } from "@ngx-translate/core";
     CreditCardModal,
     ParkSale,
     PosDetailsPage,
+    DeviceDetailsPage,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -295,6 +297,7 @@ import { TranslateService } from "@ngx-translate/core";
     CreditCardModal,
     ParkSale,
     PosDetailsPage,
+    DeviceDetailsPage,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,

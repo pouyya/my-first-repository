@@ -86,6 +86,10 @@ export class SearchableIonSelectView {
     }
   }
 
+  public selectMultiple(){
+    this.searchableIonSelect.select(this.selectedItems);
+    this.close();
+  }
   public ok() {
     this.searchableIonSelect.select(this.selectedItems.length ? this.selectedItems : null);
     this.close();

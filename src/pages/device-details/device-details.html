@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Device</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="deviceForm.ngSubmit.emit()" [disabled]="!deviceForm.form.valid">
+        Save
+      </button>
+      <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #deviceForm="ngForm">
+  <ion-list>
+    <ion-item>
+      <ion-label class="item-name">Name </ion-label>
+      <ion-input type="text" [(ngModel)]="device.name" name="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>POS</ion-label>
+      <ion-select [(ngModel)]="device.posIds" multiple="true" name="posId">
+        <ion-option *ngFor="let pos of posList" value={{pos._id}}>{{pos.name}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Type</ion-label>
+      <ion-select [(ngModel)]="device.type" multiple="true" name="type" required>
+        <ion-option *ngFor="let type of typeList" value={{type.value}}>{{type.text}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <searchable-ion-select multiple="true" name="purchasableItems" [(ngModel)]="associatedPurchasableItems"
+                             title="Products and Services" valueField="_id" textField="name" [items]="purchasableItems">
+      </searchable-ion-select>
+    </ion-item>
+  </ion-list>
+  </form>
+</ion-content>

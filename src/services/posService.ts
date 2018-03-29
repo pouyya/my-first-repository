@@ -14,6 +14,11 @@ export class PosService extends BaseEntityService<POS> {
     super(POS);
   }
 
+  public async getCurrentStorePos(): Promise<any> {
+    const currentStorePos = await this.findBy({selector : { storeId: this.syncContext.currentPos.storeId}});
+    return currentStorePos;
+  }
+
   public async update(pos: POS): Promise<any> {
     if(this.syncContext.currentPos._id == pos._id){
       this._sharedService.publish('storeOrPosChanged', {currentPos: pos, currentStore : this.syncContext.currentStore});
