@@ -1,12 +1,11 @@
 import _ from 'lodash';
-import { ViewDiscountSurchargesModal } from './modals/view-discount-surcharge/view-discount-surcharge';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController } from 'ionic-angular';
+import { AlertController, ModalController, ToastController, NavController, Modal } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
-import { Sale, DiscountSurchargeInterface } from './../../model/sale';
+import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes } from './../../model/sale';
 import { BasketItem } from './../../model/basketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
@@ -42,6 +41,7 @@ export class BasketComponent {
   public showSearchCancel: boolean = false;
   public searchInput: string = "";
   public searchedCustomers: any[] = [];
+  public totalExternalValue: number = 0;
   private salesTaxes: BaseTaxIterface[];
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
@@ -100,6 +100,7 @@ export class BasketComponent {
     this.setBalance();
     this.sale.completed = false;
     this.generatePaymentBtnText();
+    this.calculateTotalExternalValues();
 
     return;
   }
@@ -201,26 +202,45 @@ export class BasketComponent {
     modal.present();
   }
 
-  public openDiscountSurchargeModal() {
-    let modal = this.modalCtrl.create(DiscountSurchargeModal);
-    modal.onDidDismiss(data => {
-      if (data) {
-        this.sale.appliedValues.push(<DiscountSurchargeInterface>data);
-        this.calculateAndSync();
+  private calculateTotalExternalValues(){
+    let taxTotal = this.salesService.getTaxTotalSaleValue(this.sale);
+    this.totalExternalValue = this.sale.appliedValues.reduce((initialVal, nextVal: DiscountSurchargeInterface) => {
+      let value = nextVal.value;
+      if(nextVal.format === 'percentage'){
+        value = taxTotal * value / 100;
       }
-    });
-    modal.present();
+
+      if(nextVal.type === DiscountSurchargeTypes.Surcharge){
+        initialVal += value;
+      }else{
+        initialVal -= value;
+      }
+      return initialVal;
+    }, 0);
   }
 
-  public viewAppliedValues() {
-    let modal = this.modalCtrl.create(ViewDiscountSurchargesModal, { values: this.sale.appliedValues });
-    modal.onDidDismiss(data => {
-      if (data) {
-        this.sale.appliedValues = <DiscountSurchargeInterface[]>data;
+  public externalValue(): { applyDiscount: Function, applySurcharge: Function } {
+    let modal: Modal;
+    let modalOptions: any = { values: this.sale.appliedValues }
+    let onDismiss = ((response: { values: DiscountSurchargeInterface[], data: DiscountSurchargeInterface }) => {
+      if (response) {
+        this.sale.appliedValues = response.values;
+        response.data && this.sale.appliedValues.push(response.data);
         this.calculateAndSync();
       }
     });
-    modal.present();
+
+    let exec = (action) => {
+      modalOptions.action = action;
+      modal = this.modalCtrl.create(DiscountSurchargeModal, modalOptions);
+      modal.onDidDismiss(onDismiss);
+      modal.present();
+    }
+
+    return {
+      applyDiscount: () => exec('discount'),
+      applySurcharge: () => exec('surcharge')
+    }
   }
 
   public gotoPayment() {
@@ -456,6 +476,7 @@ export class BasketComponent {
         this.customer = null;
       }
     }
+    this.calculateTotalExternalValues();
   }
 
 
