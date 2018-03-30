@@ -156,7 +156,7 @@
         <ion-col col-md-12 *ngIf="item.devices && item.devices.length > 0">
           <ion-list inset *ngFor="let device of item.devices ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showDevice(device)">
+              <ion-item (click)="showDevice('previous', device, idx)">
                 <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>
@@ -172,7 +172,7 @@
         <ion-col col-md-12 *ngIf="devicesToAdd && devicesToAdd.length > 0">
           <ion-list inset *ngFor="let device of devicesToAdd ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showDevice(device)">
+              <ion-item (click)="showDevice('current', device, idx)">
                 <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>

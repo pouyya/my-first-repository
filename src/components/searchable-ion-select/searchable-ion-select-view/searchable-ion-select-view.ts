@@ -1,4 +1,4 @@
-import { NavController, Searchbar, NavParams } from 'ionic-angular';
+import {NavController, Searchbar, NavParams, ViewController} from 'ionic-angular';
 import { SearchableIonSelectComponent } from './../searchable-ion-select.component';
 import { Component, ViewChild } from '@angular/core';
 
@@ -14,7 +14,7 @@ export class SearchableIonSelectView {
   public navCtrl: NavController;
   @ViewChild('searchBar') searchBar: Searchbar;
 
-  constructor(private navParams: NavParams) {
+  constructor(private navParams: NavParams, private viewCtrl: ViewController) {
     this.searchableIonSelect = <SearchableIonSelectComponent>this.navParams.get('selectComponent');
     this.navCtrl = <NavController>this.navParams.get('navController');
     this.filteredItems = this.searchableIonSelect.items;
@@ -101,7 +101,11 @@ export class SearchableIonSelectView {
     }
 
     setTimeout(() => {
-      this.navCtrl.pop();
+      if(this.navCtrl){
+        this.navCtrl.pop();
+      }else{
+        this.viewCtrl.dismiss();
+      }
 
       if (!this.searchableIonSelect.hasSearchEvent) {
         this.searchableIonSelect.filterText = '';

@@ -2,7 +2,10 @@ import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import {
+    AlertController, LoadingController, ModalController, NavController, NavParams,
+    ToastController
+} from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
 import { Store, Device } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
@@ -12,6 +15,7 @@ import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsPage } from "../device-details/device-details";
+import { DeviceDetailsModal } from "./modals/device-details";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -29,6 +33,7 @@ export class StoreDetailsPage {
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
+    private modalCtrl: ModalController,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private posService: PosService,
@@ -142,21 +147,28 @@ export class StoreDetailsPage {
 
 
   // Device
-  public showDevice(device: Device, index: number) {
-    let pushCallback = (type) => type === "DELETE" && this.item.devices.splice(index, 1);
-    this.navCtrl.push(DeviceDetailsPage, {
-      device,
-      storeId: this.item._id,
-      pushCallback
-    });
+  public showDevice(type, device: Device, index: number) {
+      let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
+      modal.onDidDismiss((data : {status : string, device: Device}) => {
+          if(data && data.status == "remove"){
+              if(type === "current"){
+                  this.devicesToAdd.splice(index, 1);
+              }else{
+                  this.item.devices.splice(index, 1)
+              }
+          }
+      });
+      modal.present();
   }
 
   public addDevice() {
-    let pushCallback = async (device: Device) => device && this.devicesToAdd.push(device);
-    this.navCtrl.push(DeviceDetailsPage, {
-      storeId: this.item._id,
-      pushCallback: pushCallback
-    });
+      let modal = this.modalCtrl.create(DeviceDetailsModal);
+      modal.onDidDismiss((data : {status : string, device: Device}) => {
+          if (data.status === "add") {
+              this.devicesToAdd.push(data.device)
+          }
+      });
+      modal.present();
   }
 
   public removeAddedDevice(index: number) {

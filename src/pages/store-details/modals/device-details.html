@@ -1,6 +1,11 @@
 <ion-header>
   <ion-navbar>
     <ion-title>{{action}} Device</ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
     <ion-buttons end>
       <button type="submit" ion-button icon-only (click)="deviceForm.ngSubmit.emit()" [disabled]="!deviceForm.form.valid">
         Save
@@ -9,7 +14,6 @@
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -36,7 +40,7 @@
     </ion-item>
 
     <ion-item>
-      <searchable-ion-select multiple="true" name="purchasableItems" [(ngModel)]="associatedPurchasableItems"
+      <searchable-ion-select isModal="true" multiple="true" name="purchasableItems" [(ngModel)]="associatedPurchasableItems"
                              title="Products and Services" valueField="_id" textField="name" [items]="purchasableItems">
       </searchable-ion-select>
     </ion-item>
