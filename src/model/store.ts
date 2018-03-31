@@ -7,7 +7,6 @@ export enum DeviceType {
 
 export interface Device {
     name: string;
-    storeId: string;
     posIds: string[];
     type: DeviceType;
     associatedPurchasableItemIds: string[]

@@ -1,18 +1,21 @@
-import { NavParams, NavController, ToastController, AlertController, LoadingController } from 'ionic-angular';
-import { PosService } from './../../services/posService';
-import { POS } from './../../model/pos';
+import {
+    NavParams, NavController, ToastController, AlertController, LoadingController,
+    ViewController
+} from 'ionic-angular';
+import { PosService } from './../../../services/posService';
+import { POS } from './../../../model/pos';
 import { Component } from '@angular/core';
-import { SyncContext } from "../../services/SyncContext";
-import { Device, DeviceType } from './../../model/store';
-import { ProductService } from "../../services/productService";
-import { ServiceService } from "../../services/serviceService";
+import { SyncContext } from "../../../services/SyncContext";
+import { Device, DeviceType } from './../../../model/store';
+import { ProductService } from "../../../services/productService";
+import { ServiceService } from "../../../services/serviceService";
 
 
 @Component({
-  selector: "device-details",
+  selector: "device-details-modal",
   templateUrl: 'device-details.html'
 })
-export class DeviceDetailsPage {
+export class DeviceDetailsModal {
   public device: any = {};
   public posList: POS[] = [];
   public associatedPurchasableItems = [];
@@ -26,6 +29,7 @@ export class DeviceDetailsPage {
 
   constructor(
     private navParams: NavParams,
+    private viewCtrl: ViewController,
     private posService: PosService,
     private productService: ProductService,
     private serviceService: ServiceService,
@@ -63,13 +67,13 @@ export class DeviceDetailsPage {
     loader.dismiss();
   }
 
+  public dismiss() {
+      this.viewCtrl.dismiss(null);
+  }
+
   public async onSubmit() {
     this.device.associatedPurchasableItemIds = this.associatedPurchasableItems.map(data => data._id);
-    this.device.storeId = this.syncContext.currentStore._id;
-    if (this.isNew) {
-      await this.navPopCallback(this.device);
-    }
-    this.navCtrl.pop();
+    this.viewCtrl.dismiss({ status : 'add', device: this.device});
   }
 
   public async remove( ) {
@@ -83,20 +87,7 @@ export class DeviceDetailsPage {
               let loader = this.loading.create({
                 content: 'Deleting. Please Wait!',
               });
-              this.navPopCallback("DELETE");
-              this.navCtrl.pop();
-              /*loader.present().then(() => {
-                this.deviceService.delete(this.device).then(() => {
-                  let toast = this.toastCtrl.create({
-                    message: 'Device has been deleted successfully',
-                    duration: 3000
-                  });
-                  toast.present();
-                  this.navCtrl.pop();
-                }).catch(error => {
-                  throw new Error(error);
-                }).then(() => loader.dismiss());
-              });*/
+              this.viewCtrl.dismiss({ status : 'remove', device: this.device});
           }
         }, 'No'
       ]

@@ -1,4 +1,4 @@
-import { NavController, Item } from 'ionic-angular';
+import {NavController, Item, ModalController} from 'ionic-angular';
 import { Component, OnDestroy, OnChanges, OnInit, Input, Output, EventEmitter, HostListener, SimpleChanges, Optional, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SearchableIonSelectView } from './searchable-ion-select-view/searchable-ion-select-view';
@@ -63,12 +63,14 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
   @Input() textField: string;
   @Input() searchPlaceholder: string = 'Search';
   @Input() multiple: boolean;
+  @Input() isModal: boolean;
 
   @Output() onChange: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private navCtrl: NavController,
+    private modalCtrl: ModalController,
     private ionForm: Form,
     @Optional() private ionItem: Item
   ) {
@@ -150,10 +152,15 @@ export class SearchableIonSelectComponent implements ControlValueAccessor, OnDes
   }
 
   private open() {
-    this.navCtrl.push(SearchableIonSelectView, {
-      selectComponent: this,
-      navController: this.navCtrl
-    });
+    if(this.isModal){
+        let modal = this.modalCtrl.create(SearchableIonSelectView, {selectComponent: this});
+        modal.present();
+    }else{
+        this.navCtrl.push(SearchableIonSelectView, {
+          selectComponent: this,
+          navController: this.navCtrl
+        });
+    }
   }
 
   private propagateChange = (_: any) => { }
