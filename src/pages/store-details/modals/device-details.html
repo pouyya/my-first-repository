@@ -8,7 +8,7 @@
     </ion-buttons>
     <ion-buttons end>
       <button type="submit" ion-button icon-only (click)="deviceForm.ngSubmit.emit()" [disabled]="!deviceForm.form.valid">
-        Save
+        Done
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
         <ion-icon name="trash"></ion-icon>
@@ -34,7 +34,7 @@
 
     <ion-item>
       <ion-label>Type</ion-label>
-      <ion-select [(ngModel)]="device.type" multiple="true" name="type" required>
+      <ion-select [(ngModel)]="device.type" multiple="false" name="type" required>
         <ion-option *ngFor="let type of typeList" value={{type.value}}>{{type.text}}</ion-option>
       </ion-select>
     </ion-item>

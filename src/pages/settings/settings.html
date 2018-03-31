@@ -25,23 +25,18 @@
     <ion-item>
       <ion-label class="item-name">Sale Number Prefix</ion-label>
       <ion-input type="text" [(ngModel)]="accountSetting.saleNumberPrefix" name="saleNumberPrefix"></ion-input>
-    </ion-item>    
+    </ion-item>
     <ion-item>
       <ion-label class="item-name">Closure Number Prefix</ion-label>
       <ion-input type="text" [(ngModel)]="accountSetting.closureNumberPrefix" name="saleNumberPrefix"></ion-input>
-    </ion-item>        
+    </ion-item>
     <ion-item>
       <ion-label class="item-name">Receipt Footer Message</ion-label>
       <ion-textarea type="text" [(ngModel)]="accountSetting.receiptFooterMessage"></ion-textarea>
     </ion-item>
     <ion-item>
-      <searchable-ion-select
-        name="timeOffset" 
-        [(ngModel)]="accountSetting.timeOffset"
-        title="Time Offset"
-        valueField="code"
-        textField="name"
-        [items]="timezones">
+      <searchable-ion-select isModal="true" name="timeOffset" [(ngModel)]="accountSetting.timeOffset" title="Time Offset" valueField="code"
+        textField="name" [items]="timezones">
       </searchable-ion-select>
     </ion-item>
   </ion-list>

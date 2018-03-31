@@ -25,10 +25,11 @@
         <ion-label class="item-name">Last Name</ion-label>
         <ion-input type="text" [formControl]="lastName"></ion-input>
       </ion-item>
-      <ion-item *ngIf="(firstName.errors && (firstName.dirty || firstName.touched) && firstName.oneRequired) || (lastName.errors && (lastName.dirty || lastName.touched) && lastName.oneRequired)" class="alert alert-danger">
+      <ion-item *ngIf="(firstName.errors && (firstName.dirty || firstName.touched) && firstName.oneRequired) || (lastName.errors && (lastName.dirty || lastName.touched) && lastName.oneRequired)"
+        class="alert alert-danger">
         Must be either first name or last name
       </ion-item>
-      <ion-item>        
+      <ion-item>
         <ion-label class="item-name">Date of Birth</ion-label>
         <ion-datetime displayFormat="MM-DD-YYYY" min="1900" pickerFormat="MM-DD-YYYY" [formControl]="dob">
         </ion-datetime>
@@ -46,7 +47,7 @@
       </ion-item>
       <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
         Invalid email address
-      </ion-item>      
+      </ion-item>
       <ion-item>
         <ion-label class="item-name">Suburb</ion-label>
         <ion-input type="text" [formControl]="suburb"></ion-input>
@@ -56,12 +57,7 @@
         <ion-input type="text" [formControl]="postcode"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select
-          name="country" 
-          [formControl]="country"
-          title="Country"
-          valueField="code"
-          textField="name"
+        <searchable-ion-select isModal="true" name="country" [formControl]="country" title="Country" valueField="code" textField="name"
           [items]="countries">
         </searchable-ion-select>
       </ion-item>

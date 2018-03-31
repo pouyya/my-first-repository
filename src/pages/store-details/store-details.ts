@@ -3,8 +3,8 @@ import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
 import {
-    AlertController, LoadingController, ModalController, NavController, NavParams,
-    ToastController
+  AlertController, LoadingController, ModalController, NavController, NavParams,
+  ToastController
 } from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
 import { Store, Device } from './../../model/store';
@@ -14,7 +14,6 @@ import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { DeviceDetailsPage } from "../device-details/device-details";
 import { DeviceDetailsModal } from "./modals/device-details";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
@@ -81,11 +80,11 @@ export class StoreDetailsPage {
       Promise.all(promises).then((data) => {
         loader.dismiss();
       });
-      
+
     });
   }
 
-  private async addPos(storeId){
+  private async addPos(storeId) {
     if (this.posToAdd.length > 0) {
       let promises: any[] = [];
       this.posToAdd.forEach(pos => {
@@ -97,32 +96,32 @@ export class StoreDetailsPage {
     return;
   };
 
-  private addDevices(){
+  private addDevices() {
     this.item.devices = this.item.devices || [];
     if (this.devicesToAdd.length > 0) {
       this.item.devices = [...this.item.devices, ...this.devicesToAdd];
     }
   }
 
- public async onSubmitAndReturn(isReturn) {
-  let loader = this.loading.create({ content: 'Saving store...' });
+  public async onSubmitAndReturn(isReturn) {
+    let loader = this.loading.create({ content: 'Saving store...' });
 
-  await loader.present();
-  this.addDevices();
-  if (this.isNew) {
-    let info = await this.storeService.add(this.item);
-    loader.setContent('Saving Registers...');
-    await this.addPos(info._id);
-  } else {
-    await this.storeService.update(this.item);
-    loader.setContent('Saving Registers...');
-    await this.addPos(this.item._id);
+    await loader.present();
+    this.addDevices();
+    if (this.isNew) {
+      let info = await this.storeService.add(this.item);
+      loader.setContent('Saving Registers...');
+      await this.addPos(info._id);
+    } else {
+      await this.storeService.update(this.item);
+      loader.setContent('Saving Registers...');
+      await this.addPos(this.item._id);
+    }
+    loader.dismiss();
+
+    if (isReturn == true)
+      this.navCtrl.pop();
   }
-  loader.dismiss();
-
-  if(isReturn==true)
-  this.navCtrl.pop();
-}
 
   public showPos(pos: POS) {
     this.navCtrl.push(PosDetailsPage, {
@@ -148,64 +147,64 @@ export class StoreDetailsPage {
 
   // Device
   public showDevice(type, device: Device, index: number) {
-      let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
-      modal.onDidDismiss((data : {status : string, device: Device}) => {
-          if(data && data.status == "remove"){
-              if(type === "current"){
-                  this.devicesToAdd.splice(index, 1);
-              }else{
-                  this.item.devices.splice(index, 1)
-              }
-          }
-      });
-      modal.present();
+    let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
+    modal.onDidDismiss((data: { status: string, device: Device }) => {
+      if (data && data.status == "remove") {
+        if (type === "current") {
+          this.devicesToAdd.splice(index, 1);
+        } else {
+          this.item.devices.splice(index, 1)
+        }
+      }
+    });
+    modal.present();
   }
 
   public addDevice() {
-      let modal = this.modalCtrl.create(DeviceDetailsModal);
-      modal.onDidDismiss((data : {status : string, device: Device}) => {
-          if (data.status === "add") {
-              this.devicesToAdd.push(data.device)
-          }
-      });
-      modal.present();
+    let modal = this.modalCtrl.create(DeviceDetailsModal);
+    modal.onDidDismiss((data: { status: string, device: Device }) => {
+      if (data && data.status === "add") {
+        this.devicesToAdd.push(data.device)
+      }
+    });
+    modal.present();
   }
 
   public removeAddedDevice(index: number) {
     this.devicesToAdd.splice(index, 1);
   }
 
-  public async removeDevice(index: number){
-      let confirm = this.alertCtrl.create({
-        title: 'Are you sure you want to delete this Device ?',
-        message: 'Deleting this device!',
-        buttons: [
-          {
-            text: 'Yes',
-            handler: () => {
-              let loader = this.loading.create({
-                content: 'Deleting. Please Wait!',
-              });
+  public async removeDevice(index: number) {
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this Device ?',
+      message: 'Deleting this device!',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            let loader = this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
 
-              loader.present().then(() => {
-                this.item.devices.splice(index, 1);
-                  let toast = this.toastCtrl.create({
-                      message: 'Device has been deleted successfully',
-                      duration: 3000
-                  });
-                  toast.present();
-                  loader.dismiss();
-                /*this.deviceService.delete(device).then(() => {
-
-                }).catch(error => {
-                  throw new Error(error);
-                }).then(() => loader.dismiss());*/
+            loader.present().then(() => {
+              this.item.devices.splice(index, 1);
+              let toast = this.toastCtrl.create({
+                message: 'Device has been deleted successfully',
+                duration: 3000
               });
-            }
-          }, 'No'
-        ]
-      });
-      confirm.present();
+              toast.present();
+              loader.dismiss();
+              /*this.deviceService.delete(device).then(() => {
+
+              }).catch(error => {
+                throw new Error(error);
+              }).then(() => loader.dismiss());*/
+            });
+          }
+        }, 'No'
+      ]
+    });
+    confirm.present();
   }
 
   // Device
