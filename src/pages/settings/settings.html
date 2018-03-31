@@ -35,7 +35,7 @@
       <ion-textarea type="text" [(ngModel)]="accountSetting.receiptFooterMessage"></ion-textarea>
     </ion-item>
     <ion-item>
-      <searchable-ion-select isModal="true" name="timeOffset" [(ngModel)]="accountSetting.timeOffset" title="Time Offset" valueField="code"
+      <searchable-ion-select [isModal]="true" name="timeOffset" [(ngModel)]="accountSetting.timeOffset" title="Time Offset" valueField="code"
         textField="name" [items]="timezones">
       </searchable-ion-select>
     </ion-item>

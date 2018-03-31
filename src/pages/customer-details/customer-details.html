@@ -57,7 +57,7 @@
         <ion-input type="text" [formControl]="postcode"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select isModal="true" name="country" [formControl]="country" title="Country" valueField="code" textField="name"
+        <searchable-ion-select [isModal]="true" name="country" [formControl]="country" title="Country" valueField="code" textField="name"
           [items]="countries">
         </searchable-ion-select>
       </ion-item>
