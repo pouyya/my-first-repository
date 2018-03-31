@@ -2,15 +2,19 @@ import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import {
+  AlertController, LoadingController, ModalController, NavController, NavParams,
+  ToastController
+} from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
-import { Store } from './../../model/store';
+import { Store, Device } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
+import { DeviceDetailsModal } from "./modals/device-details";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -21,11 +25,14 @@ export class StoreDetailsPage {
   public isNew: boolean = true;
   public action: string = 'Add';
   public registers: Array<POS> = [];
+  public devices: Device[] = [];
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
-  
+  public devicesToAdd: Device[] = [];
+
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
+    private modalCtrl: ModalController,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private posService: PosService,
@@ -69,18 +76,15 @@ export class StoreDetailsPage {
           resolve();
         })
       ];
-      this.onSubmitAndReturn(false);
-      Promise.all(promises).then(function () {
+
+      Promise.all(promises).then((data) => {
         loader.dismiss();
       });
-      
+
     });
   }
 
-  
- public async onSubmitAndReturn(isReturn) {
-  let loader = this.loading.create({ content: 'Saving store...' });
-  let addPos = async (storeId) => {
+  private async addPos(storeId) {
     if (this.posToAdd.length > 0) {
       let promises: any[] = [];
       this.posToAdd.forEach(pos => {
@@ -91,21 +95,33 @@ export class StoreDetailsPage {
     }
     return;
   };
-  await loader.present();
-  if (this.isNew) {
-    let info = await this.storeService.add(this.item);
-    loader.setContent('Saving Registers...');
-    await addPos(info._id);
-  } else {
-    await this.storeService.update(this.item);
-    loader.setContent('Saving Registers...');
-    await addPos(this.item._id);
-  }
-  loader.dismiss();
 
-  if(isReturn==true)
-  this.navCtrl.pop();
-}
+  private addDevices() {
+    this.item.devices = this.item.devices || [];
+    if (this.devicesToAdd.length > 0) {
+      this.item.devices = [...this.item.devices, ...this.devicesToAdd];
+    }
+  }
+
+  public async onSubmitAndReturn(isReturn) {
+    let loader = this.loading.create({ content: 'Saving store...' });
+
+    await loader.present();
+    this.addDevices();
+    if (this.isNew) {
+      let info = await this.storeService.add(this.item);
+      loader.setContent('Saving Registers...');
+      await this.addPos(info._id);
+    } else {
+      await this.storeService.update(this.item);
+      loader.setContent('Saving Registers...');
+      await this.addPos(this.item._id);
+    }
+    loader.dismiss();
+
+    if (isReturn == true)
+      this.navCtrl.pop();
+  }
 
   public showPos(pos: POS) {
     this.navCtrl.push(PosDetailsPage, {
@@ -128,6 +144,70 @@ export class StoreDetailsPage {
     this.posToAdd.splice(index, 1);
   }
 
+
+  // Device
+  public showDevice(type, device: Device, index: number) {
+    let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
+    modal.onDidDismiss((data: { status: string, device: Device }) => {
+      if (data && data.status == "remove") {
+        if (type === "current") {
+          this.devicesToAdd.splice(index, 1);
+        } else {
+          this.item.devices.splice(index, 1)
+        }
+      }
+    });
+    modal.present();
+  }
+
+  public addDevice() {
+    let modal = this.modalCtrl.create(DeviceDetailsModal);
+    modal.onDidDismiss((data: { status: string, device: Device }) => {
+      if (data && data.status === "add") {
+        this.devicesToAdd.push(data.device)
+      }
+    });
+    modal.present();
+  }
+
+  public removeAddedDevice(index: number) {
+    this.devicesToAdd.splice(index, 1);
+  }
+
+  public async removeDevice(index: number) {
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this Device ?',
+      message: 'Deleting this device!',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            let loader = this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
+
+            loader.present().then(() => {
+              this.item.devices.splice(index, 1);
+              let toast = this.toastCtrl.create({
+                message: 'Device has been deleted successfully',
+                duration: 3000
+              });
+              toast.present();
+              loader.dismiss();
+              /*this.deviceService.delete(device).then(() => {
+
+              }).catch(error => {
+                throw new Error(error);
+              }).then(() => loader.dismiss());*/
+            });
+          }
+        }, 'No'
+      ]
+    });
+    confirm.present();
+  }
+
+  // Device
   public remove() {
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this store ?',

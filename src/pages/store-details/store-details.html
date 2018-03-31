@@ -78,7 +78,8 @@
         <ion-input type="text" [(ngModel)]="item.state" name="state"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name" [items]="countries">
+        <searchable-ion-select [isModal]="true" name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name"
+          [items]="countries">
         </searchable-ion-select>
       </ion-item>
       <ion-item>
@@ -138,6 +139,48 @@
               <ion-item-options>
                 <button ion-button color='danger' icon=left (click)="removeAddedRegister(idx)">
                   <ion-icon name="trash"></ion-icon>
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+
+        <ion-col col-md-6>
+          <h2>Devices</h2>
+        </ion-col>
+        <ion-col col-md-6 class="pull-right">
+          <button ion-button color="primary" (click)="addDevice()">Add Device</button>
+        </ion-col>
+
+        <ion-col col-md-12 *ngIf="item.devices && item.devices.length > 0">
+          <ion-list inset *ngFor="let device of item.devices ; let idx=index">
+            <ion-item-sliding class="sliding">
+              <ion-item (click)="showDevice('previous', device, idx)">
+                <h2 class="item-title">{{device.name}}
+                </h2>
+              </ion-item>
+              <ion-item-options>
+                <button ion-button color='danger' icon=left (click)="removeDevice(idx)">
+                  <ion-icon name="trash"></ion-icon>
+                  Delete
+                </button>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+        </ion-col>
+        <ion-col col-md-12 *ngIf="devicesToAdd && devicesToAdd.length > 0">
+          <ion-list inset *ngFor="let device of devicesToAdd ; let idx=index">
+            <ion-item-sliding class="sliding">
+              <ion-item (click)="showDevice('current', device, idx)">
+                <h2 class="item-title">{{device.name}}
+                </h2>
+              </ion-item>
+              <ion-item-options>
+                <button ion-button color='danger' icon=left (click)="removeAddedDevice(idx)">
+                  <ion-icon name="trash"></ion-icon>
+                  Delete
                 </button>
               </ion-item-options>
             </ion-item-sliding>

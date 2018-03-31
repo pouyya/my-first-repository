@@ -152,6 +152,7 @@ import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 import { TranslateService } from "@ngx-translate/core";
+import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
 
 @NgModule({
   declarations: [
@@ -186,6 +187,7 @@ import { TranslateService } from "@ngx-translate/core";
     ClockInOutPage,
     MoneyInOut,
     MoveCashModal,
+    DeviceDetailsModal,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
@@ -286,6 +288,7 @@ import { TranslateService } from "@ngx-translate/core";
     Employees,
     PaymentsPage,
     CashModal,
+    DeviceDetailsModal,
     CreditCardModal,
     ParkSale,
     PosDetailsPage,

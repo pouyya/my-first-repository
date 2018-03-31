@@ -1,6 +1,7 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{searchableIonSelect.title || 'Select'}}</ion-title>
+    <ion-title float-left>{{searchableIonSelect.title || 'Select'}}</ion-title>
+    <ion-buttons *ngIf="searchableIonSelect.multiple" end> <button ion-button (click)="selectMultiple()"> Done </button> </ion-buttons>
   </ion-navbar>
   <ion-toolbar>
     <ion-searchbar #searchBar [(ngModel)]="searchableIonSelect.filterText" (ionInput)="filterItems()" [placeholder]="searchableIonSelect.searchPlaceholder || 'Search'">
