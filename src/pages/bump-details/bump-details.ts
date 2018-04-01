@@ -66,12 +66,12 @@ export class BumpDetails {
         this.sales = this.sales.filter(sale => {
 
             if (this.device.associatedPurchasableItemIds && this.device.associatedPurchasableItemIds.length > 0) {
-                sale.items = sale.items.filter(item => {
+                sale.filteredItems = sale.items.filter(item => {
                     return (this.device.associatedPurchasableItemIds as any).includes(item.purchsableItemId)
                 });
             }
 
-            if (sale.items.length) {
+            if (sale.filteredItems.length) {
                 sale.elapsedTime = Math.round((<any>currentDate - <any>new Date(sale.completedAt)) / (1000 * 60));
                 return sale;
             }
@@ -88,7 +88,7 @@ export class BumpDetails {
                 if (!sale) {
 
                     if (this.device.associatedPurchasableItemIds && this.device.associatedPurchasableItemIds.length > 0) {
-                        newSale.items = newSale.items.filter(item => {
+                        newSale.filteredItems = newSale.items.filter(item => {
                             return (this.device.associatedPurchasableItemIds as any).includes(item.purchsableItemId)
                         });
                     }
@@ -97,7 +97,7 @@ export class BumpDetails {
                         newSale = null;
                     }
 
-                    if (newSale && newSale.items.length) {
+                    if (newSale && newSale.filteredItems.length) {
                         if ((this.isBumpedViewSelected && !newSale.isBumped) || (!this.isBumpedViewSelected && newSale.isBumped)) {
                             return;
                         }
@@ -134,6 +134,7 @@ export class BumpDetails {
             item.isBumped = true;
         });
         sale.isBumped = true;
+        delete sale.filteredItems;
         await this.salesService.update(sale);
         this.sales.splice(index, 1);
 
@@ -146,6 +147,7 @@ export class BumpDetails {
     }
 
     public async bumpItem(sale: Sale) {
+        delete ((<any>sale).filteredItems);
         await this.salesService.update(sale);
     }
 
