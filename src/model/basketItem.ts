@@ -18,4 +18,5 @@ export class BasketItem {
   employeeId?: string | null;
   cssClass: string | null;
   stockControl: boolean;
+  isBumped: boolean;
 }

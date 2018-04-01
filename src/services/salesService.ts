@@ -112,18 +112,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return false;
 	}
 
-	public async searchSales(posID: string, limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<Array<Sale>> {
+	public async searchSales(posIDs: string[], limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string, sort?: SortOptions): Promise<Array<Sale>> {
 		let query: any = {
 			selector: {
-				$and: [
-					{ posID }
-				]
+				$and: []
 			}
 		};
 
+		if (posIDs && posIDs.length > 0) {
+			query.selector.$and.posID = { $in: posIDs }
+		}
+
 		if (options) {
 			_.each(options, (value, key) => {
-				if (value) {
+				if (value !== undefined) {
 					query.selector.$and.push({ [key]: _.isArray(value) ? { $in: value } : value });
 				}
 			});
@@ -134,16 +136,22 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 		if (timeFrame) {
 			query.selector.$and.push({ created: { $exists: true } });
-			query.selector.$and.push({
-				created: {
-					$lte: timeFrame.endDate
-				}
-			});
-			query.selector.$and.push({
-				created: {
-					$gte: timeFrame.startDate
-				}
-			});
+
+			if (timeFrame.endDate) {
+				query.selector.$and.push({
+					created: {
+						$lte: timeFrame.endDate
+					}
+				});
+			}
+
+			if (timeFrame.startDate) {
+				query.selector.$and.push({
+					created: {
+						$gte: timeFrame.startDate
+					}
+				});
+			}
 		}
 
 		if (employeeId) {
@@ -171,7 +179,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 
 		query.sort = [{
-			_id: SortOptions.DESC
+			_id: sort || SortOptions.DESC
 		}];
 
 		query.limit = limit;
@@ -367,20 +375,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return stockErrors;
 	}
 
-  public getTaxTotalSaleValue(sale: Sale): number {
-    let taxTotal = 0;
-    if (sale.items.length > 0) {
-      for (let item of sale.items) {
-        taxTotal += item.finalPrice * item.quantity;
-      }
-      /** Rounding Starts */
-      taxTotal = this.helperService.round10(taxTotal, -2);
-      let roundedTotal = this.helperService.round10(taxTotal, -2);
-      taxTotal = roundedTotal;
-      /** Rounding Ends */
-    }
-    return taxTotal;
-  }
+	public getTaxTotalSaleValue(sale: Sale): number {
+		let taxTotal = 0;
+		if (sale.items.length > 0) {
+			for (let item of sale.items) {
+				taxTotal += item.finalPrice * item.quantity;
+			}
+			/** Rounding Starts */
+			taxTotal = this.helperService.round10(taxTotal, -2);
+			let roundedTotal = this.helperService.round10(taxTotal, -2);
+			taxTotal = roundedTotal;
+			/** Rounding Ends */
+		}
+		return taxTotal;
+	}
 
 	public calculateSale(sale: Sale) {
 		sale.subTotal = 0;
