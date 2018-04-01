@@ -49,11 +49,7 @@ export class SalesHistoryPage {
   private shownItem: any = null;
   private customersSearchHash: any = {};
   private salesBackup: any[];
-  private filters: any = {
-    customerName: false,
-    receiptNo: false,
-    state: false
-  };
+  private filters: any = {};
   private timeFrame: any = null;
   private employeeId: string = null;
 
@@ -165,7 +161,13 @@ export class SalesHistoryPage {
 
   public async searchBy(event: any, key: string) {
     this.sales = this.salesBackup;
-    this.filters[key] = event.target.value || false;
+
+    if (event.target.value) {
+      this.filters[key] = event.target.value;
+    } else if (this.filters.hasOwnProperty(key)) {
+      delete this.filters[key];
+    }
+
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.sales = [];
@@ -345,7 +347,7 @@ export class SalesHistoryPage {
   public async fetchMoreSales(infiniteScroll?: any) {
     try {
       let sales = await await this.salesService.searchSales(
-        this.syncContext.currentPos._id,
+        [this.syncContext.currentPos._id],
         this.limit,
         this.offset,
         this.filters,

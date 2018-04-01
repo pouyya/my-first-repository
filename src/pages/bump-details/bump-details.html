@@ -35,6 +35,7 @@
             <ion-list >
               <ion-item *ngFor="let item of sale.items" class="content-item">
                   <ion-label>{{item.name}}</ion-label>
+                  <ion-label item-right>{{item.quantity}}X</ion-label>
                   <ion-checkbox [disabled]="isBumpedViewSelected" [(ngModel)]="item.isBumped" item-right secondary (click)="bumpItem(sale, item)"></ion-checkbox>
                 <hr/>
               </ion-item>
