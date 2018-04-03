@@ -313,6 +313,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {
 			item.quantity > 0 && (item.quantity *= -1);
+            item.modifierItems && item.modifierItems.forEach(modifierItem => {
+                modifierItem.quantity > 0 && (modifierItem.quantity *= -1);
+            });
 			return item;
 		});
 		sale.completed = false;
