@@ -218,8 +218,7 @@ export class ServiceDetails {
 		this.serviceItem.order = Number(this.serviceItem.order);
 		if (this.isNew) {
 			var res = await this.serviceService.add(this.serviceItem);
-			this._defaultPriceBook.purchasableItems.push(createPurchsableItem(res.id));
-
+			this._defaultPriceBook.purchasableItems.push(createPurchsableItem(res._id));
 		} else {
 			await this.serviceService.update(this.serviceItem);
 			let index = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });

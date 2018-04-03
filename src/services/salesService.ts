@@ -400,7 +400,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 			for (let item of sale.items) {
 				sale.tax += item.taxAmount * item.quantity;
 				sale.taxTotal += item.finalPrice * item.quantity;
-			};
+                item.modifierItems && item.modifierItems.forEach(modifierItem => {
+                    sale.tax += modifierItem.taxAmount * modifierItem.quantity;
+                    sale.taxTotal += modifierItem.finalPrice * modifierItem.quantity;
+				});
+            };
 			sale.subTotal = sale.taxTotal - sale.tax;
 
 			/** Apply externalValues if any */

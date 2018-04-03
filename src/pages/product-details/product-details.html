@@ -46,6 +46,10 @@
         <ion-input type="number" [(ngModel)]="productItem.order" name="order"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label>Is Modifier?</ion-label>
+        <ion-checkbox [checked]="productItem.isModifier" name="isModifier" [(ngModel)]="productItem.isModifier" ></ion-checkbox>
+      </ion-item>
+      <ion-item>
         <ion-label>Categories</ion-label>
         <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true" name="category">
           <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
