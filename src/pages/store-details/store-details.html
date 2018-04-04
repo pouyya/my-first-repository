@@ -158,6 +158,8 @@
           <ion-list inset *ngFor="let device of item.devices ; let idx=index">
             <ion-item-sliding class="sliding">
               <ion-item (click)="showDevice('previous', device, idx)">
+                <ion-icon *ngIf="device.type == deviceType.ProductionLinePrinter" name="print" item-left></ion-icon>
+                <ion-icon *ngIf="device.type == deviceType.Bump" name="basket" item-left></ion-icon>
                 <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>
@@ -174,6 +176,8 @@
           <ion-list inset *ngFor="let device of devicesToAdd ; let idx=index">
             <ion-item-sliding class="sliding">
               <ion-item (click)="showDevice('current', device, idx)">
+                <ion-icon *ngIf="device.type == deviceType.ProductionLinePrinter" name="print" item-left></ion-icon>
+                <ion-icon *ngIf="device.type == deviceType.Bump" name="basket" item-left></ion-icon>
                 <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>
