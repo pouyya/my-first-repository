@@ -129,6 +129,19 @@
                   <ion-col col-md-2>
                     ${{item.finalPrice}}
                   </ion-col>
+                  <ion-grid *ngIf="item.modifierItems">
+                    <ion-row *ngFor="let modifierItem of item.modifierItems">
+                      <ion-col col-md-5>
+                        {{modifierItem.quantity}}&nbsp;&nbsp;{{modifierItem.name}}
+                      </ion-col>
+                      <ion-col col-md-5>
+                        @ ${{modifierItem.systemPrice}}
+                      </ion-col>
+                      <ion-col col-md-2>
+                        ${{modifierItem.finalPrice}}
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
                 </ion-row>
               </ion-grid>
             </ion-col>
@@ -165,6 +178,19 @@
                   <ion-col col-md-2>
                     ${{item.finalPrice}}
                   </ion-col>
+                  <ion-grid *ngIf="item.modifierItems">
+                    <ion-row *ngFor="let modifierItem of item.modifierItems">
+                      <ion-col col-md-5>
+                        {{modifierItem.quantity}}&nbsp;&nbsp;{{modifierItem.name}}
+                      </ion-col>
+                      <ion-col col-md-5>
+                        @ ${{modifierItem.systemPrice}}
+                      </ion-col>
+                      <ion-col col-md-2>
+                        ${{modifierItem.finalPrice}}
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
                 </ion-row>
               </ion-grid>
             </ion-col>

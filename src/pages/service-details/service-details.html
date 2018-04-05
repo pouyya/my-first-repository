@@ -26,7 +26,11 @@
     <ion-item>
       <ion-label class="item-name">Display Order</ion-label>
       <ion-input type="number" [(ngModel)]="serviceItem.order"></ion-input>
-    </ion-item>      
+    </ion-item>
+    <ion-item>
+      <ion-label>Is Modifier?</ion-label>
+      <ion-checkbox [checked]="serviceItem.isModifier" name="isModifier" [(ngModel)]="serviceItem.isModifier" ></ion-checkbox>
+    </ion-item>
     <ion-item>
       <ion-label>Categories</ion-label>
       <ion-select [(ngModel)]="serviceItem.categoryIDs" multiple="true">

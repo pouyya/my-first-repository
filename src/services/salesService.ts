@@ -313,6 +313,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {
 			item.quantity > 0 && (item.quantity *= -1);
+			item.modifierItems && item.modifierItems.forEach(modifierItem => {
+				modifierItem.quantity > 0 && (modifierItem.quantity *= -1);
+			});
 			return item;
 		});
 		sale.completed = false;
@@ -345,21 +348,43 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public async updateStock(sale: Sale, storeId: string) {
-		let stock: StockHistory;
-		let stockUpdates: Promise<any>[] = sale.items.map(item => {
-			stock = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
-			return this.stockHistoryService.add(stock);
+
+		let stockUpdates: Promise<any>[] = [];
+
+		sale.items.forEach(item => {
+			if (item) {
+
+				if (item.modifierItems && item.modifierItems.length > 0) {
+					item.modifierItems.forEach(modifierItem => {
+						if (modifierItem.stockControl) {
+							var stockHistory = StockHistoryService.createStockForSale(modifierItem.purchsableItemId, storeId, modifierItem.quantity);
+							stockUpdates.push(this.stockHistoryService.add(stockHistory));
+						}
+					});
+				}
+
+				if (item.stockControl) {
+					var stockHistory = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
+					stockUpdates.push(this.stockHistoryService.add(stockHistory));
+				}
+			}
 		});
-		await Promise.all(stockUpdates);
-		return;
+
+		return Promise.all(stockUpdates);
 	}
 
 	public async checkForStockInHand(sale: Sale, storeId: string): Promise<string[]> {
 		let stockErrors: string[] = [];
 		let productsInStock: { [id: string]: number } = {};
-		let allProducts = sale.items
-			.filter(item => item.stockControl)
-			.map(item => item.purchsableItemId);
+		let allProducts: string[] = [];
+		sale.items.forEach(item => {
+			item.stockControl && allProducts.push(item.purchsableItemId);
+
+			item.modifierItems && item.modifierItems.forEach(modifierItem => {
+				modifierItem.stockControl && allProducts.push(modifierItem.purchsableItemId);
+			});
+		});
+
 		if (allProducts.length > 0) {
 			productsInStock = await this.stockHistoryService
 				.getProductsTotalStockValueByStore(allProducts, storeId);
@@ -400,6 +425,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 			for (let item of sale.items) {
 				sale.tax += item.taxAmount * item.quantity;
 				sale.taxTotal += item.finalPrice * item.quantity;
+				item.modifierItems && item.modifierItems.forEach(modifierItem => {
+					sale.tax += modifierItem.taxAmount * modifierItem.quantity;
+					sale.taxTotal += modifierItem.finalPrice * modifierItem.quantity;
+				});
 			};
 			sale.subTotal = sale.taxTotal - sale.tax;
 

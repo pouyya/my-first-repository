@@ -132,34 +132,46 @@ export class BasketComponent {
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
 
-    let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
+    const isFirstModifier = !this.sale.items.length && purchasableItem.isModifier;
+    if(!isFirstModifier){
+        let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
+        if (itemPrice) {
+            var basketItem = this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
+            if(purchasableItem.isModifier){
+                !this.sale.items[this.sale.items.length - 1].modifierItems && (this.sale.items[this.sale.items.length - 1].modifierItems = []);
+                this.updateQuantity(basketItem, this.sale.items[this.sale.items.length - 1].modifierItems);
+            }else{
+                this.updateQuantity(basketItem);
+            }
+            this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
+            this.calculateAndSync();
 
-    if (itemPrice) {
-      var basketItem = this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
-
-      this.updateQuantity(basketItem);
-
-      this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
-
-      this.calculateAndSync();
-
-    } else {
-      let toast = this.toastCtrl.create({
-        message: `${purchasableItem.name} does not have any price`,
-        duration: 3000
-      });
-      await toast.present();
+        } else {
+            let toast = this.toastCtrl.create({
+                message: `${purchasableItem.name} does not have any price`,
+                duration: 3000
+            });
+            await toast.present();
+        }
+    }else{
+        let toast = this.toastCtrl.create({
+            message: `${purchasableItem.name} is a modifier and cannot be added directly`,
+            duration: 3000
+        });
+        await toast.present();
     }
+
   }
 
 
-  private updateQuantity(basketItem: BasketItem) {
-    var index = _.findIndex(this.sale.items, (currentSaleItem: BasketItem) => {
+  private updateQuantity(basketItem: BasketItem, items?) {
+    const saleItems = items || this.sale.items;
+    var index = _.findIndex(saleItems, (currentSaleItem: BasketItem) => {
       return (currentSaleItem.purchsableItemId == basketItem.purchsableItemId &&
         currentSaleItem.finalPrice == basketItem.finalPrice &&
         currentSaleItem.employeeId == basketItem.employeeId);
     });
-    index === -1 ? this.sale.items.push(basketItem) : this.sale.items[index].quantity++;
+    index === -1 ? saleItems.push(basketItem) : saleItems[index].quantity++;
   }
 
   public removeItem($index) {
@@ -321,11 +333,11 @@ export class BasketComponent {
   }
 
   private generatePaymentBtnText() {
-    this.payBtnText = GlobalConstants.PAY_BTN
+    this.payBtnText = GlobalConstants.PAY_BTN;
     if (this.sale.items && this.sale.items.length > 0) {
       this.disablePaymentBtn = false;
       if (this.balance == 0) {
-        this.payBtnText = GlobalConstants.DONE_BTN
+        this.payBtnText = GlobalConstants.DONE_BTN;
       } else if (this.balance < 0) {
         this.payBtnText = GlobalConstants.RETURN_BTN;
       }
