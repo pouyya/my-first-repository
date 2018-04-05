@@ -2,13 +2,15 @@ import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEnti
 import {DisplayColumn, FilterType, SearchFilter} from "../metadata/listingModule";
 
 export enum DeviceType {
-    Bump
+    Bump,
+    ProductionLinePrinter
 }
 
 export interface Device {
     name: string;
     posIds: string[];
     type: DeviceType;
+    ipAddress: string;
     associatedPurchasableItemIds: string[]
 }
 

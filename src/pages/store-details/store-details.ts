@@ -7,7 +7,7 @@ import {
   ToastController
 } from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
-import { Store, Device } from './../../model/store';
+import { Store, Device, DeviceType } from './../../model/store';
 import { PosDetailsPage } from './../pos-details/pos-details';
 import { POS } from './../../model/pos';
 import { PosService } from './../../services/posService';
@@ -29,6 +29,7 @@ export class StoreDetailsPage {
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
   public devicesToAdd: Device[] = [];
+  public deviceType = DeviceType;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,

@@ -22,8 +22,10 @@ export class DeviceDetailsModal {
   public isNew: boolean = true;
   public action: string = 'Add';
   private navPopCallback: any;
+  public deviceType = DeviceType;
   public typeList: any = [
-    { value: DeviceType.Bump, text: 'Bump' }
+    { value: DeviceType.Bump, text: 'Bump' },
+    { value: DeviceType.ProductionLinePrinter, text: 'Production Line Printer' },
   ];
   public purchasableItems = [];
 
