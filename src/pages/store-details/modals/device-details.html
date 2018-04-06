@@ -39,7 +39,7 @@
       </ion-select>
     </ion-item>
 
-    <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter">
+    <ion-item *ngIf="device .type == deviceType.ProductionLinePrinter">
       <ion-label class="item-name">IP Address </ion-label>
       <ion-input type="text" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
     </ion-item>
