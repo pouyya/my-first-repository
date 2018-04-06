@@ -1,6 +1,6 @@
 import { EscPrinterProvider } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
-import { DeviceReceiptProviderContext } from "./deviceReceiptProviderContext";
+import { DeviceReceiptProviderContext } from "./productionLinePrinterProviderContext";
 import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
 import { TranslateService } from "@ngx-translate/core";
 

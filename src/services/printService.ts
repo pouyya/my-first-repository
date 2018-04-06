@@ -18,8 +18,8 @@ import { SyncContext } from "./SyncContext";
 import { TranslateService } from '@ngx-translate/core';
 import _ from 'lodash';
 import { DeviceType } from "../model/store";
-import {DeviceReceiptProviderContext} from "../provider/print/deviceReceipt/deviceReceiptProviderContext";
-import {DeviceReceiptProvider} from "../provider/print/deviceReceipt/deviceReceiptProvider";
+import { DeviceReceiptProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
+import { DeviceReceiptProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -212,7 +212,7 @@ export class PrintService {
     return printerSales;
   }
 
-  public async printDeviceReceipt(sale: Sale) {
+  private async printDeviceReceipt(sale: Sale) {
     if (!this.platformService.isMobileDevice()) {
         console.warn("can't print on dekstop");
         return;
