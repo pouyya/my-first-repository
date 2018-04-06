@@ -192,7 +192,7 @@ export class PrintService {
     let printers = this.syncContext.currentStore.devices.filter(device => device.type == DeviceType.ProductionLinePrinter);
     const printerSales = [];
     printers.forEach(printer => {
-        if(TypeHelper.isNullOrWhitespace(printer.ipAddress) ||
+        if(TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
             (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos._id) == -1)) {
           return;
         }
@@ -217,10 +217,7 @@ export class PrintService {
         console.warn("can't print on dekstop");
         return;
     }
-    if(TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerPort)){
-      console.warn("Printer port not present");
-      return;
-    }
+
     const currentAccountsettings = await this.accountSettingService.getCurrentSetting();
     const printerSales = this.getPrinterSales(sale);
     printerSales.forEach( printerSale => {
@@ -238,7 +235,7 @@ export class PrintService {
           .setFooter()
           .cutPaper();
 
-      new EscPrinterConnectorProvider(printerSale.printer.ipAddress, this.syncContext.currentStore.printerPort)
+      new EscPrinterConnectorProvider(printerSale.printer.ipAddress, printerSale.printer.printerPort)
           .write(deviceReceiptProvider.getResult());
     });
   }
