@@ -157,7 +157,7 @@
         <ion-col col-md-12 *ngIf="item.devices && item.devices.length > 0">
           <ion-list inset *ngFor="let device of item.devices ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showDevice('previous', device, idx)">
+              <ion-item (click)="showDevice(device, idx)">
                 <ion-icon *ngIf="device.type == deviceType.ProductionLinePrinter" name="print" item-left></ion-icon>
                 <ion-icon *ngIf="device.type == deviceType.Bump" name="basket" item-left></ion-icon>
                 <h2 class="item-title">{{device.name}}
@@ -165,24 +165,6 @@
               </ion-item>
               <ion-item-options>
                 <button ion-button color='danger' icon=left (click)="removeDevice(idx)">
-                  <ion-icon name="trash"></ion-icon>
-                  Delete
-                </button>
-              </ion-item-options>
-            </ion-item-sliding>
-          </ion-list>
-        </ion-col>
-        <ion-col col-md-12 *ngIf="devicesToAdd && devicesToAdd.length > 0">
-          <ion-list inset *ngFor="let device of devicesToAdd ; let idx=index">
-            <ion-item-sliding class="sliding">
-              <ion-item (click)="showDevice('current', device, idx)">
-                <ion-icon *ngIf="device.type == deviceType.ProductionLinePrinter" name="print" item-left></ion-icon>
-                <ion-icon *ngIf="device.type == deviceType.Bump" name="basket" item-left></ion-icon>
-                <h2 class="item-title">{{device.name}}
-                </h2>
-              </ion-item>
-              <ion-item-options>
-                <button ion-button color='danger' icon=left (click)="removeAddedDevice(idx)">
                   <ion-icon name="trash"></ion-icon>
                   Delete
                 </button>
