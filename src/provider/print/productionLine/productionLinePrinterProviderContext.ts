@@ -1,6 +1,6 @@
 import { Sale } from "../../../model/sale";
 
-export class DeviceReceiptProviderContext {
+export class ProductionLinePrinterProviderContext {
 
     public sale: Sale;
     public invoiceTitle: string;

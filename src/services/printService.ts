@@ -18,8 +18,8 @@ import { SyncContext } from "./SyncContext";
 import { TranslateService } from '@ngx-translate/core';
 import _ from 'lodash';
 import { DeviceType } from "../model/store";
-import { DeviceReceiptProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
-import { DeviceReceiptProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
+import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
+import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -159,7 +159,7 @@ export class PrintService {
       console.warn("can't print on dekstop");
       return;
     }
-    this.printDeviceReceipt(sale);
+    this.printProductionLinePrinter(sale);
 
     var currentStore = this.syncContext.currentStore;
 
@@ -212,7 +212,7 @@ export class PrintService {
     return printerSales;
   }
 
-  private async printDeviceReceipt(sale: Sale) {
+  private async printProductionLinePrinter(sale: Sale) {
     if (!this.platformService.isMobileDevice()) {
         console.warn("can't print on dekstop");
         return;
@@ -221,22 +221,22 @@ export class PrintService {
     const currentAccountsettings = await this.accountSettingService.getCurrentSetting();
     const printerSales = this.getPrinterSales(sale);
     printerSales.forEach( printerSale => {
-      const deviceReceiptProviderContext = new DeviceReceiptProviderContext();
-      deviceReceiptProviderContext.sale = printerSale.sale;
-      deviceReceiptProviderContext.invoiceTitle = currentAccountsettings.name;
-      deviceReceiptProviderContext.shopName = this.syncContext.currentStore.name;
-      deviceReceiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
-      deviceReceiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
-      deviceReceiptProviderContext.footerMessage = currentAccountsettings.receiptFooterMessage;
+      const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
+      productionLinePrinterProviderContext.sale = printerSale.sale;
+      productionLinePrinterProviderContext.invoiceTitle = currentAccountsettings.name;
+      productionLinePrinterProviderContext.shopName = this.syncContext.currentStore.name;
+      productionLinePrinterProviderContext.phoneNumber = this.syncContext.currentStore.phone;
+      productionLinePrinterProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
+      productionLinePrinterProviderContext.footerMessage = currentAccountsettings.receiptFooterMessage;
 
-      var deviceReceiptProvider = new DeviceReceiptProvider(deviceReceiptProviderContext, this.translateService)
+      var productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, this.translateService)
           .setHeader()
           .setBody()
           .setFooter()
           .cutPaper();
 
       new EscPrinterConnectorProvider(printerSale.printer.ipAddress, printerSale.printer.printerPort)
-          .write(deviceReceiptProvider.getResult());
+          .write(productionLinePrinterProvider.getResult());
     });
   }
 
