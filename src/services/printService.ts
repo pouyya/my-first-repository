@@ -159,7 +159,6 @@ export class PrintService {
       console.warn("can't print on dekstop");
       return;
     }
-    this.printProductionLinePrinter(sale);
 
     var currentStore = this.syncContext.currentStore;
 
@@ -212,7 +211,7 @@ export class PrintService {
     return printerSales;
   }
 
-  private async printProductionLinePrinter(sale: Sale) {
+  public async printProductionLinePrinter(sale: Sale) {
     if (!this.platformService.isMobileDevice()) {
         console.warn("can't print on dekstop");
         return;
