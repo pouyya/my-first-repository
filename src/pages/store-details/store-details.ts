@@ -28,7 +28,6 @@ export class StoreDetailsPage {
   public devices: Device[] = [];
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
-  public devicesToAdd: Device[] = [];
   public deviceType = DeviceType;
 
   constructor(private navCtrl: NavController,
@@ -97,18 +96,10 @@ export class StoreDetailsPage {
     return;
   };
 
-  private addDevices() {
-    this.item.devices = this.item.devices || [];
-    if (this.devicesToAdd.length > 0) {
-      this.item.devices = [...this.item.devices, ...this.devicesToAdd];
-    }
-  }
-
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
 
     await loader.present();
-    this.addDevices();
     if (this.isNew) {
       let info = await this.storeService.add(this.item);
       loader.setContent('Saving Registers...');
@@ -147,15 +138,11 @@ export class StoreDetailsPage {
 
 
   // Device
-  public showDevice(type, device: Device, index: number) {
+  public showDevice(device: Device, index: number) {
     let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
     modal.onDidDismiss((data: { status: string, device: Device }) => {
       if (data && data.status == "remove") {
-        if (type === "current") {
-          this.devicesToAdd.splice(index, 1);
-        } else {
-          this.item.devices.splice(index, 1)
-        }
+          this.item.devices.splice(index, 1);
       }
     });
     modal.present();
@@ -165,14 +152,10 @@ export class StoreDetailsPage {
     let modal = this.modalCtrl.create(DeviceDetailsModal);
     modal.onDidDismiss((data: { status: string, device: Device }) => {
       if (data && data.status === "add") {
-        this.devicesToAdd.push(data.device)
+        this.item.devices.push(data.device);
       }
     });
     modal.present();
-  }
-
-  public removeAddedDevice(index: number) {
-    this.devicesToAdd.splice(index, 1);
   }
 
   public async removeDevice(index: number) {
@@ -195,11 +178,6 @@ export class StoreDetailsPage {
               });
               toast.present();
               loader.dismiss();
-              /*this.deviceService.delete(device).then(() => {
-
-              }).catch(error => {
-                throw new Error(error);
-              }).then(() => loader.dismiss());*/
             });
           }
         }, 'No'
