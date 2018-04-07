@@ -11,6 +11,7 @@ export interface Device {
     posIds: string[];
     type: DeviceType;
     ipAddress: string;
+    printerPort: string;
     associatedPurchasableItemIds: string[]
 }
 

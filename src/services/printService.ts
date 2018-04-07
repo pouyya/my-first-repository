@@ -16,6 +16,10 @@ import { BasketItem } from '../model/basketItem';
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 import { SyncContext } from "./SyncContext";
 import { TranslateService } from '@ngx-translate/core';
+import _ from 'lodash';
+import { DeviceType } from "../model/store";
+import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
+import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -183,15 +187,64 @@ export class PrintService {
     }
   }
 
+  private getPrinterSales(sale: Sale){
+    let printers = this.syncContext.currentStore.devices.filter(device => device.type == DeviceType.ProductionLinePrinter);
+    const printerSales = [];
+    printers.forEach(printer => {
+        if(TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
+            (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos._id) == -1)) {
+          return;
+        }
+        let items;
+        if(!printer.associatedPurchasableItemIds || !printer.associatedPurchasableItemIds.length){
+          items = sale.items;
+        }else{
+          items = sale.items.filter(item => printer.associatedPurchasableItemIds.indexOf(item.purchsableItemId) !== -1);
+        }
+
+        if(items.length){
+            const newSale = _.cloneDeep(sale);
+            newSale.items = items;
+            printerSales.push({printer, sale: newSale});
+        }
+    });
+    return printerSales;
+  }
+
+  public async printProductionLinePrinter(sale: Sale) {
+    if (!this.platformService.isMobileDevice()) {
+        console.warn("can't print on dekstop");
+        return;
+    }
+
+    const currentAccountsettings = await this.accountSettingService.getCurrentSetting();
+    const printerSales = this.getPrinterSales(sale);
+    printerSales.forEach( printerSale => {
+      const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
+      productionLinePrinterProviderContext.sale = printerSale.sale;
+      productionLinePrinterProviderContext.invoiceTitle = currentAccountsettings.name;
+      productionLinePrinterProviderContext.shopName = this.syncContext.currentStore.name;
+      productionLinePrinterProviderContext.phoneNumber = this.syncContext.currentStore.phone;
+      productionLinePrinterProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
+      productionLinePrinterProviderContext.footerMessage = currentAccountsettings.receiptFooterMessage;
+
+      var productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, this.translateService)
+          .setHeader()
+          .setBody()
+          .setFooter()
+          .cutPaper();
+
+      new EscPrinterConnectorProvider(printerSale.printer.ipAddress, printerSale.printer.printerPort)
+          .write(productionLinePrinterProvider.getResult());
+    });
+  }
+
   public async openCashDrawer() {
 
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
     }
-
-    var currentStore = this.syncContext.currentStore;
-
     if (!TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerPort)) {
 
       await new EscPrinterConnectorProvider(this.syncContext.currentStore.printerIP, this.syncContext.currentStore.printerPort)

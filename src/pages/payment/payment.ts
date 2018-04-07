@@ -84,7 +84,7 @@ export class PaymentsPage {
 
     this.amount = sale.taxTotal - totalPayments;
 
-    if(totalPayments >= sale.taxTotal){
+    if (totalPayments >= sale.taxTotal) {
       await this.completeSale(totalPayments)
     }
 
@@ -130,7 +130,8 @@ export class PaymentsPage {
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
       this.printSale(false);
-    } catch(error)  { }
+      await this.printService.printProductionLinePrinter(this.sale);
+    } catch (error) { }
   }
 
   public clearSale() {

@@ -6,7 +6,7 @@ import { PosService } from './../../../services/posService';
 import { POS } from './../../../model/pos';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
-import { Device, DeviceType } from './../../../model/store';
+import { DeviceType } from './../../../model/store';
 import { ProductService } from "../../../services/productService";
 import { ServiceService } from "../../../services/serviceService";
 

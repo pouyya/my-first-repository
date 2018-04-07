@@ -1,6 +1,6 @@
 import { BumpDetails } from './../bump-details/bump-details';
 import { Component, NgZone } from '@angular/core';
-import { Device } from "../../model/store";
+import { Device, DeviceType } from "../../model/store";
 import { NavController, LoadingController } from 'ionic-angular';
 import { SyncContext } from "../../services/SyncContext";
 
@@ -21,7 +21,8 @@ export class Bumps {
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Employees...' });
     await loader.present();
-    this.items = await this.syncContext.currentStore.devices || [];
+    const devices = this.syncContext.currentStore.devices || [];
+    this.items = devices.filter(device => device.type == DeviceType.Bump);
     loader.dismiss();
   }
 
