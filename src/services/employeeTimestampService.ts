@@ -24,20 +24,6 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
     }
   }
 
-  public async getNonCheckOuts(raw: boolean = true) {
-    try {
-      let view = "non_logged_out_employees/for_yesterday";
-      let record = await this.getDB().query(view);
-      if (raw) {
-        return record;
-      }
-
-      return record.rows.map(row => row.value);
-    } catch (err) {
-      return Promise.reject(err);
-    }
-  }
-
   /**
    * Retrieve time logs by time frame
    * @param frame {Array<String>}
