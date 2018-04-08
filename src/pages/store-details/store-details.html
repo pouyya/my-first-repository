@@ -38,14 +38,6 @@
         <ion-input type="text" [(ngModel)]="item.supplierReturnNum" name="supplierReturnNum"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Printer IP</ion-label>
-        <ion-input type="text" [(ngModel)]="item.printerIP" name="printerIP"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Printer Port</ion-label>
-        <ion-input type="number" [(ngModel)]="item.printerPort" name="printerPort"></ion-input>
-      </ion-item>
-      <ion-item>
         <ion-label class="item-name">Printer At End of Sale</ion-label>
         <ion-toggle [(ngModel)]="item.printReceiptAtEndOfSale" name="printReceiptAtEndOfSale"></ion-toggle>
       </ion-item>
@@ -158,6 +150,7 @@
           <ion-list inset *ngFor="let device of item.devices ; let idx=index">
             <ion-item-sliding class="sliding">
               <ion-item (click)="showDevice(device, idx)">
+                <ion-icon *ngIf="device.type == deviceType.ReceiptPrinter" name="print" item-left></ion-icon>
                 <ion-icon *ngIf="device.type == deviceType.ProductionLinePrinter" name="print" item-left></ion-icon>
                 <ion-icon *ngIf="device.type == deviceType.Bump" name="basket" item-left></ion-icon>
                 <h2 class="item-title">{{device.name}}
