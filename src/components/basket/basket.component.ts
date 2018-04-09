@@ -277,9 +277,7 @@ export class BasketComponent {
 
     let stockErrors;
 
-    this.ngZone.runOutsideAngular(async () => {
-      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
-    });
+    stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
 
     if (stockErrors && stockErrors.length > 0) {
       let alert = this.alertController.create(
