@@ -3,7 +3,8 @@ import {DisplayColumn, FilterType, SearchFilter} from "../metadata/listingModule
 
 export enum DeviceType {
     Bump,
-    ProductionLinePrinter
+    ProductionLinePrinter,
+    ReceiptPrinter
 }
 
 export interface Device {
@@ -11,7 +12,7 @@ export interface Device {
     posIds: string[];
     type: DeviceType;
     ipAddress: string;
-    printerPort: string;
+    printerPort: number;
     associatedPurchasableItemIds: string[]
 }
 
