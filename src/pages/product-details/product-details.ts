@@ -12,7 +12,7 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NavController, ToastController, NavParams, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, AlertController, NavParams, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons'; 
@@ -78,7 +78,7 @@ export class ProductDetails {
   private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
-		private toastCtrl: ToastController,
+		private alertCtrl: AlertController,
 		private productService: ProductService,
 		private categoryService: CategoryService,
 		private storeService: StoreService,
@@ -397,11 +397,12 @@ export class ProductDetails {
 		return;
 	}
 
-	public toastifblank(){
-		let toast = this.toastCtrl.create({
-			message: 'There is no brand. Please add brand first',
-			duration: 3000
+	public alertifblank(titl,msg){
+		let alert = this.alertCtrl.create({
+			title: titl,
+			subTitle: msg,
+			buttons: ['OK']
 		  });
-		  toast.present();
+		  alert.present();
 	}
 }

@@ -74,4 +74,21 @@ export class CategoryDetails {
     });
     modal.present();    
   }
+
+  
+  public async delete() {
+    try {
+      await this.categoryService.delete(this.categoryItem);
+      let toast = this.toastCtrl.create({
+        message: `Category '${this.categoryItem.name}' has been deleted successfully!`,
+        duration: 3000
+      });
+      toast.present();
+      this.navCtrl.pop();
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+
 }

@@ -5,7 +5,7 @@
       <button type="submit" ion-button icon-only (click)="categoryForm.ngSubmit.emit()" [disabled]="!categoryForm.form.valid">
         Save
       </button>
-      <button ion-button icon-only>
+      <button ion-button icon-only *ngIf="!isNew" (click)="delete()">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
