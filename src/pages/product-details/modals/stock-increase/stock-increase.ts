@@ -24,6 +24,7 @@ export class StockIncreaseModal {
     private employeeService: EmployeeService
   ) {
     let increaseReasons: string[] = [
+      Reason.InitialValue,
       Reason.NewStock,
       Reason.Return,
       Reason.Transfer,

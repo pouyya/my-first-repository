@@ -9,6 +9,7 @@ import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEnti
   InternalUse = 'InternalUse',
   Damaged = 'Damaged',
   OutOfDate = 'OutOfDate',
+  InitialValue = 'InitialValue',
   Other = 'Other'
 }
 
