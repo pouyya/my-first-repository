@@ -142,7 +142,7 @@ export class StoreDetailsPage {
     let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
     modal.onDidDismiss((data: { status: string, device: Device }) => {
       if (data && data.status == "remove") {
-          this.item.devices.splice(index, 1);
+        this.item.devices.splice(index, 1);
       }
     });
     modal.present();
@@ -152,6 +152,7 @@ export class StoreDetailsPage {
     let modal = this.modalCtrl.create(DeviceDetailsModal);
     modal.onDidDismiss((data: { status: string, device: Device }) => {
       if (data && data.status === "add") {
+        !this.item.devices && (this.item.devices = []);
         this.item.devices.push(data.device);
       }
     });
