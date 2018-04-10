@@ -2,6 +2,7 @@ import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEnti
 
  export enum Reason {
   Purchase = 'Purchase',
+  InitialValue = 'InitialValue',
   NewStock = 'NewStock',
   Return = 'Return',
   Transfer = 'Transfer',
@@ -9,7 +10,6 @@ import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEnti
   InternalUse = 'InternalUse',
   Damaged = 'Damaged',
   OutOfDate = 'OutOfDate',
-  InitialValue = 'InitialValue',
   Other = 'Other'
 }
 
