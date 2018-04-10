@@ -69,7 +69,7 @@
       </ion-item>
       <ion-item>
         <ion-label>Supplier</ion-label>
-        <ion-select [(ngModel)]="productItem.supplierId" name="supplierId">
+        <ion-select [(ngModel)]="productItem.supplierId" name="supplierId" *ngIf="this.suppliers.length>0">
           <ion-option *ngFor="let supplier of suppliers" value={{supplier._id}}>{{supplier.name}}</ion-option>
         </ion-select>
         <ion-input type="text" disabled="true" *ngIf="this.suppliers.length==0" (click)="alertifblank('no supplier','There is no supplier. Please add supplier first')">
