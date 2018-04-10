@@ -26,6 +26,7 @@ export class DeviceDetailsModal {
   public typeList: any = [
     { value: DeviceType.Bump, text: 'Bump' },
     { value: DeviceType.ProductionLinePrinter, text: 'Production Line Printer' },
+    { value: DeviceType.ReceiptPrinter, text: 'Receipt Printer' }
   ];
   public purchasableItems = [];
 
