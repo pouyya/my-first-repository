@@ -39,7 +39,7 @@
     <ion-col col-12>
       <ion-list *ngIf="sale">
         <!-- Items in the basket [start] -->
-        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''" tappable>
+        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'selected' || '']" tappable>
 
           <ion-grid>
             <ion-row (click)="viewInfo(item, $index)">
