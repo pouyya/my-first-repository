@@ -24,6 +24,14 @@ export class ProductService extends BaseEntityService<Product> {
 		});
 	}
 
+	public async getAllByStockEnabled(): Promise<Array<Product>>{
+		return this.findBy({
+			selector: {
+                stockControl: true
+			}
+		});
+	}
+
 	public async getByCategoryIds(categoryIds: string[]) {
 		return this.findBy({
 			selector: {

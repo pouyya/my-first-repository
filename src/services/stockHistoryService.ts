@@ -56,7 +56,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
   public async getProductsTotalStockValueByStore(productIds: string[], storeId: string): Promise<{ [id: string]: number }> {
 
     if (productIds.length > 0) {
-      let stockPromises: Promise<any>[] = productIds.map(id => this.getByStoreAndProductId(storeId, id));
+      let stockPromises: Promise<any>[] = productIds.map( id => this.getByStoreAndProductId(storeId, id));
       let productStocks: any[] = await Promise.all(stockPromises);
       return <{ [id: string]: number }> _.zipObject(productIds, productStocks.map(stocks => {
         let value: number = stocks.length > 0 ? stocks.map(stock => stock.value)

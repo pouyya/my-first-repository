@@ -374,8 +374,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public async checkForStockInHand(sale: Sale, storeId: string): Promise<string[]> {
+
+
 		let stockErrors: string[] = [];
-		let productsInStock: { [id: string]: number } = {};
 		let allProducts: string[] = [];
 		sale.items.forEach(item => {
 			item.stockControl && allProducts.push(item.purchsableItemId);
@@ -386,13 +387,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		});
 
 		if (allProducts.length > 0) {
-			productsInStock = await this.stockHistoryService
-				.getProductsTotalStockValueByStore(allProducts, storeId);
-			if (productsInStock && Object.keys(productsInStock).length > 0) {
+            const productsInStock = await this.stockHistoryService.getAllProductsTotalStockValue();
+
+			if (productsInStock && productsInStock.length > 0) {
 				sale.items.forEach(item => {
-					if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
-						stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
+					if (!productsInStock[item.purchsableItemId] || productsInStock[item.purchsableItemId] < item.quantity) {
+						stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId] || 0}`);
 					}
+                    item.modifierItems && item.modifierItems.forEach(modifierItem => {
+                        if (!productsInStock[modifierItem.purchsableItemId] ||
+							productsInStock[modifierItem.purchsableItemId] < item.quantity) {
+                            stockErrors.push(`${modifierItem.name} not enough in stock. Total Stock Available: 
+                            ${productsInStock[item.purchsableItemId]}`);
+                        }
+                    });
 				});
 			}
 		}

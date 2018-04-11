@@ -2,7 +2,10 @@ import _ from 'lodash';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController, Modal } from 'ionic-angular';
+import {
+    AlertController, ModalController, ToastController, NavController, Modal,
+    LoadingController
+} from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes } from './../../model/sale';
@@ -23,6 +26,8 @@ import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
+import {ProductService} from "../../services/productService";
+import {Product} from "../../model/product";
 
 @Component({
   selector: 'basket',
@@ -72,7 +77,9 @@ export class BasketComponent {
     private printService: PrintService,
     private paymentService: PaymentService,
     private navCtrl: NavController,
+    private loading: LoadingController,
     private syncContext: SyncContext,
+    private productService: ProductService,
     private ngZone: NgZone) {
   }
 
@@ -131,7 +138,6 @@ export class BasketComponent {
   }
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
-
     const isFirstModifier = !this.sale.items.length && purchasableItem.isModifier;
     if (!isFirstModifier) {
       let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
@@ -145,7 +151,6 @@ export class BasketComponent {
         }
         this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
         this.calculateAndSync();
-
       } else {
         let toast = this.toastCtrl.create({
           message: `${purchasableItem.name} does not have any price`,
@@ -160,7 +165,6 @@ export class BasketComponent {
       });
       await toast.present();
     }
-
   }
 
 
@@ -273,7 +277,40 @@ export class BasketComponent {
     });
   }
 
+  private async checkIfItemsHaveStockEnabled() : Promise<boolean> {
+    let isEnabled = false;
+    const stockEnabledProducts = await this.productService.getAllByStockEnabled();
+    const stockEnabledProductsMapping = stockEnabledProducts.reduce((obj, data) => {
+      obj[data._id] = true;
+      return obj;
+    }, {});
+
+    this.sale.items.some( item => {
+      if(stockEnabledProductsMapping[item.purchsableItemId]){
+        isEnabled = true;
+      }
+      item.modifierItems && item.modifierItems.some( modifierItem => {
+          if(stockEnabledProductsMapping[modifierItem.purchsableItemId]){
+              isEnabled = true;
+              return true;
+          }
+      });
+
+      if(isEnabled){
+        return true;
+      }
+    });
+
+    return isEnabled;
+  }
   public async fastPayment() {
+
+    const isStockEnabled = await this.checkIfItemsHaveStockEnabled();
+    let loader;
+    if(isStockEnabled){
+        loader = this.loading.create({ content: 'Checking Stocks...' });
+        await loader.present();
+    }
 
     let stockErrors;
 
@@ -289,6 +326,7 @@ export class BasketComponent {
         }
       );
       alert.present();
+      loader && loader.dismiss();
       return;
     } else {
 
@@ -322,7 +360,10 @@ export class BasketComponent {
       this.paymentCompleted.emit();
       this.customer = null;
       this.calculateAndSync();
+      loader && loader.dismiss();
     }
+
+
   }
 
   private async printSale(forcePrint: boolean, sale: Sale) {
