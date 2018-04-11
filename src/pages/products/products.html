@@ -47,7 +47,7 @@
       <ion-grid>
         <ion-row>
           <ion-col *ngFor="let column of displayColumns;" col-md-3>{{product[column.variableName]}}</ion-col>
-          <ion-col col-md-2>{{ product.retailPrice }}</ion-col>
+          <ion-col col-md-2>{{ isTaxInclusive && product.inclusivePrice || product.retailPrice }}</ion-col>
           <ion-col col-md-2>{{ product.stockInHand }}</ion-col>
           <ion-col col-md-2>{{ product._id | localDate }}</ion-col>
         </ion-row>
