@@ -27,24 +27,22 @@ export class ProductService extends BaseEntityService<Product> {
 	}
 
 	public getStockEnabledItems(basketItems: BasketItem[]): BasketItem[] {
-		let stockedEnabledItems = this.getAllByStockEnabled(basketItems);
-		if (!stockedEnabledItems.length) {
-			basketItems.forEach(item => {
-				const modifierItemsStockEnabled = this.getAllByStockEnabled(item.modifierItems);
-				if (modifierItemsStockEnabled.length) {
-					stockedEnabledItems = [...stockedEnabledItems, ...modifierItemsStockEnabled];
-				}
-			});
-		}
 
-		return stockedEnabledItems;
-	}
-
-	private getAllByStockEnabled(basketItems: BasketItem[]): BasketItem[] {
 		if (!basketItems) {
 			return [];
 		}
-		const stockEnabledItems = basketItems.filter(item => item.stockControl == true);
+
+		let stockEnabledItems = basketItems.filter(item => item.stockControl == true);
+
+		basketItems && basketItems.forEach(item => {
+			if (item) {
+				const modifierItemsStockEnabled = this.getStockEnabledItems(item.modifierItems);
+				if (modifierItemsStockEnabled && modifierItemsStockEnabled.length) {
+					stockEnabledItems = [...stockEnabledItems, ...modifierItemsStockEnabled];
+				}
+			}
+		});
+
 		return stockEnabledItems;
 	}
 

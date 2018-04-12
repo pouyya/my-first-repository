@@ -159,7 +159,7 @@ export class PaymentsPage {
     this.stockErrors = [];
     let loader = this.loading.create({ content: 'Checking for stock...' });
     await loader.present();
-    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale);
+    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale.items);
     this.stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems);
     loader.dismiss();
   }

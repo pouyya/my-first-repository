@@ -278,7 +278,7 @@ export class BasketComponent {
   }
 
   public async fastPayment() {
-    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale);
+    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale.items);
     let loader, stockErrors;
     if (stockEnabledItems.length) {
       loader = this.loading.create({ content: 'Checking Stocks...' });
