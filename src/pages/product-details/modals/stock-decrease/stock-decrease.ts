@@ -33,7 +33,7 @@ export class StockDecreaseModal {
     this.storesStock = this.navParams.get('storesStock');
     let reasons = TypeHelper.enumToObject(Reason, 'string');
     Object.keys(reasons).forEach(reason => {
-      if (decreaseReasons.indexOf(reason) >= 0) {
+      if (decreaseReasons.indexOf(reason)!= -1 ) {
         this.reasons[reason] = reasons[reason];
       }
     });

@@ -34,7 +34,7 @@ export class StockIncreaseModal {
     this.storesStock = this.navParams.get('storesStock');
     let reasons = TypeHelper.enumToObject(Reason, 'string');
     Object.keys(reasons).forEach(reason => {
-      if(increaseReasons.indexOf(reason) >= 0) {
+      if(increaseReasons.indexOf(reason)!= -1 ) {
         this.reasons[reason] = reasons[reason];
       }
     });
@@ -52,7 +52,7 @@ export class StockIncreaseModal {
     this.stock.createdAt = moment().utc().format();
     this.stock.value = Number(this.stock.value);
     this.stock.createdBy = this.employeeService.getEmployee()._id;
-    this.stock.supplyPrice = (this.stock.supplyPrice>=0?Number(this.stock.supplyPrice):1);
+    this.stock.supplyPrice = (this.stock.supplyPrice >= 0 ? Number(this.stock.supplyPrice) : 1 );
     if(this.stock.value > 0 && this.stock.supplyPrice > 0) {
       this.viewCtrl.dismiss(this.stock);
     }

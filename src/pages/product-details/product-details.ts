@@ -397,10 +397,10 @@ export class ProductDetails {
 		return;
 	}
 
-	public alertifblank(titl,msg){
+	public alert(title: string, message: string){
 		let alert = this.alertCtrl.create({
-			title: titl,
-			subTitle: msg,
+			title,
+			subTitle: message,
 			buttons: ['OK']
 		  });
 		  alert.present();
