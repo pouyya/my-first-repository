@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../model/product';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BasketItem } from "../model/basketItem";
+import { Sale } from "../model/sale";
 
 @Injectable()
 export class ProductService extends BaseEntityService<Product> {
@@ -24,12 +26,22 @@ export class ProductService extends BaseEntityService<Product> {
 		});
 	}
 
-	public async getAllByStockEnabled(): Promise<Array<Product>>{
-		return this.findBy({
-			selector: {
-                stockControl: true
-			}
-		});
+    public getStockEnabledItems(sale: Sale): BasketItem[] {
+        let items = this.getAllByStockEnabled(sale.items);
+        if(!items.length){
+            sale.items.forEach( item => {
+                const modifierItemsStockEnabled = item.modifierItems && this.getAllByStockEnabled(item.modifierItems);
+                if(modifierItemsStockEnabled.length){
+                    items = [...items, ...modifierItemsStockEnabled];
+                }
+            });
+        }
+        return items;
+    }
+
+	private getAllByStockEnabled(items: BasketItem[]): BasketItem[]{
+		const stockEnabledItems = items.filter( item => item.stockControl == true);
+		return stockEnabledItems;
 	}
 
 	public async getByCategoryIds(categoryIds: string[]) {

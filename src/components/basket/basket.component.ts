@@ -277,44 +277,14 @@ export class BasketComponent {
     });
   }
 
-  private async checkIfItemsHaveStockEnabled() : Promise<boolean> {
-    let isEnabled = false;
-    const stockEnabledProducts = await this.productService.getAllByStockEnabled();
-    const stockEnabledProductsMapping = stockEnabledProducts.reduce((obj, data) => {
-      obj[data._id] = true;
-      return obj;
-    }, {});
-
-    this.sale.items.some( item => {
-      if(stockEnabledProductsMapping[item.purchsableItemId]){
-        isEnabled = true;
-      }
-      item.modifierItems && item.modifierItems.some( modifierItem => {
-          if(stockEnabledProductsMapping[modifierItem.purchsableItemId]){
-              isEnabled = true;
-              return true;
-          }
-      });
-
-      if(isEnabled){
-        return true;
-      }
-    });
-
-    return isEnabled;
-  }
   public async fastPayment() {
-
-    const isStockEnabled = await this.checkIfItemsHaveStockEnabled();
-    let loader;
-    if(isStockEnabled){
+    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale);
+    let loader, stockErrors;
+    if(stockEnabledItems.length){
         loader = this.loading.create({ content: 'Checking Stocks...' });
         await loader.present();
+        stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems);
     }
-
-    let stockErrors;
-
-    stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
 
     if (stockErrors && stockErrors.length > 0) {
       let alert = this.alertController.create(
