@@ -46,6 +46,7 @@ export class BasketComponent {
   private defaultTax: BaseTaxIterface;
   private priceBooks: PriceBook[];
   private sale: Sale;
+  private selectedItem;
   private evaluationContext: EvaluationContext;
 
   private get refund(): boolean {
@@ -101,7 +102,12 @@ export class BasketComponent {
     this.sale.completed = false;
     this.generatePaymentBtnText();
     this.calculateTotalExternalValues();
-
+    this.sale.items.some( (item: any) => {
+      if(item.isSelected){
+        this.selectItem(item);
+        return true;
+      }
+    })
     return;
   }
 
@@ -138,8 +144,9 @@ export class BasketComponent {
       if (itemPrice) {
         var basketItem = this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
         if (purchasableItem.isModifier) {
-          !this.sale.items[this.sale.items.length - 1].modifierItems && (this.sale.items[this.sale.items.length - 1].modifierItems = []);
-          this.updateQuantity(basketItem, this.sale.items[this.sale.items.length - 1].modifierItems);
+          const item = this.selectedItem || this.sale.items[this.sale.items.length - 1];
+          !item.modifierItems && (item.modifierItems = []);
+          this.updateQuantity(basketItem, item.modifierItems);
         } else {
           this.updateQuantity(basketItem);
         }
@@ -164,14 +171,23 @@ export class BasketComponent {
   }
 
 
-  private updateQuantity(basketItem: BasketItem, items?) {
+  private updateQuantity(basketItem: BasketItem, items?: [BasketItem]) {
     const saleItems = items || this.sale.items;
     var index = _.findIndex(saleItems, (currentSaleItem: BasketItem) => {
       return (currentSaleItem.purchsableItemId == basketItem.purchsableItemId &&
         currentSaleItem.finalPrice == basketItem.finalPrice &&
         currentSaleItem.employeeId == basketItem.employeeId);
     });
-    index === -1 ? saleItems.push(basketItem) : saleItems[index].quantity++;
+    let item;
+    if(index !== -1){
+      item = saleItems[index];
+      item.quantity++;
+    }else{
+      item = basketItem;
+      saleItems.push(item);
+    }
+
+    !items && this.selectItem(item);
   }
 
   public removeItem($index) {
@@ -186,7 +202,15 @@ export class BasketComponent {
     ).catch(error => console.error(error));
   }
 
+  private selectItem(item: BasketItem){
+    this.selectedItem && delete this.selectedItem.isSelected;
+    this.selectedItem = item;
+    this.selectedItem.isSelected = true;
+  }
+
   public viewInfo(item: BasketItem, $index) {
+    this.selectItem(item);
+
     let modal = this.modalCtrl.create(ItemInfoModal, {
       purchaseableItem: item,
       employeeHash: this.employeesHash,
