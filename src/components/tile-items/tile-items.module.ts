@@ -10,7 +10,7 @@ import { DndModule } from 'ng2-dnd';
   declarations: [ TileItemsComponent ],
   imports: [ 
     CommonModule, 
-    IonicPageModule.forChild( ItemsComponent),
+    IonicPageModule.forChild( TileItemsComponent),
     SPIconModule,
     DndModule,
     SharedModule

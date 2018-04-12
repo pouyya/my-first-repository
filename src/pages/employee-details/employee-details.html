@@ -49,18 +49,20 @@
   </form>
 
   <!-- Roles Selectables [start] -->
-  <ion-list *ngIf="!employee.isAdmin">
-    <ion-item *ngFor="let store of stores; let i = index">
-      <ion-card col-3 class="clickable" (click)="selectRoles(store, i)" [ngClass]="{ 'store-tile': !store.selected, 'store-tile-selected': store.selected }" >
-        <ion-card-header text-center>
-          {{store.name}}
-        </ion-card-header>
-        <ion-card-content text-center>
-          <span>{{store.name}} </span>
-        </ion-card-content>
-      </ion-card>
-    </ion-item>
-  </ion-list>
+  <ion-grid *ngIf="!employee.isAdmin">
+    <ion-row> 
+      <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let store of stores; let i = index" class="tile-col">
+        <ion-card tappable class="tile" (click)="selectRoles(store, i)" [ngClass]="{ 'store-tile': !store.selected, 'store-tile-selected': store.selected }">
+            <ion-card-content class="tile-content">
+            </ion-card-content>
+            <ion-row>
+                <ion-col center text-center>
+                      <h2>{{ store.name }}</h2>
+                  </ion-col>            
+              </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <!-- Roles Selectables [end] -->
-
 </ion-content>
