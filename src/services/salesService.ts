@@ -373,10 +373,11 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Promise.all(stockUpdates);
 	}
 
-	public async checkForStockInHand(items: BasketItem[]): Promise<string[]> {
+	public async checkForStockInHand(items: BasketItem[], storeId): Promise<string[]> {
 		let stockErrors: string[] = [];
 
-        const productsInStock = await this.stockHistoryService.getAllProductsTotalStockValue();
+        const productsInStock = await
+			this.stockHistoryService.getAllProductsTotalStockValueByIds(items.map(item => item.purchsableItemId), storeId);
         const productsInStockMap = productsInStock.reduce((obj, data) => {
             obj[data.productId] = data.value;
             return obj;

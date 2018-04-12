@@ -280,10 +280,10 @@ export class BasketComponent {
   public async fastPayment() {
     const stockEnabledItems = this.productService.getStockEnabledItems(this.sale.items);
     let loader, stockErrors;
-    if (stockEnabledItems.length) {
-      loader = this.loading.create({ content: 'Checking Stocks...' });
-      await loader.present();
-      stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems);
+    if(stockEnabledItems.length){
+        loader = this.loading.create({ content: 'Checking Stocks...' });
+        await loader.present();
+        stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems, this.syncContext.currentStore._id);
     }
 
     if (stockErrors && stockErrors.length > 0) {

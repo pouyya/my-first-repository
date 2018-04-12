@@ -39,6 +39,19 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     }) : null;
   }
 
+  public async getAllProductsTotalStockValueByIds(productIds, storeId) {
+
+      var param = { key: storeId, reduce: true, group: true, group_level: 1 };
+
+      var result = await this.getDB().query(this.view_stock_per_store, param);
+
+      return result ? result.rows.map(row => {
+          return {
+              productId: row.key[0],
+              value: row.value
+          }
+      }) : null;
+  }
   public async getProductTotalStockValue(productId: string) {
 
     var param = { reduce: true, group: true, startkey: [productId], endkey: [productId, {}] };
