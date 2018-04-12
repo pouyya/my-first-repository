@@ -3,8 +3,8 @@ import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-sur
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
 import {
-    AlertController, ModalController, ToastController, NavController, Modal,
-    LoadingController
+  AlertController, ModalController, ToastController, NavController, Modal,
+  LoadingController
 } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
@@ -26,8 +26,8 @@ import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
-import {ProductService} from "../../services/productService";
-import {Product} from "../../model/product";
+import { ProductService } from "../../services/productService";
+import { Product } from "../../model/product";
 
 @Component({
   selector: 'basket',
@@ -280,10 +280,10 @@ export class BasketComponent {
   public async fastPayment() {
     const stockEnabledItems = this.productService.getStockEnabledItems(this.sale);
     let loader, stockErrors;
-    if(stockEnabledItems.length){
-        loader = this.loading.create({ content: 'Checking Stocks...' });
-        await loader.present();
-        stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems);
+    if (stockEnabledItems.length) {
+      loader = this.loading.create({ content: 'Checking Stocks...' });
+      await loader.present();
+      stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems);
     }
 
     if (stockErrors && stockErrors.length > 0) {

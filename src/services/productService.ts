@@ -18,7 +18,7 @@ export class ProductService extends BaseEntityService<Product> {
 		});
 	}
 
-	public async getAllBySupplier(supplierId: string): Promise<Array<Product>>{
+	public async getAllBySupplier(supplierId: string): Promise<Array<Product>> {
 		return this.findBy({
 			selector: {
 				supplierId
@@ -26,21 +26,25 @@ export class ProductService extends BaseEntityService<Product> {
 		});
 	}
 
-    public getStockEnabledItems(sale: Sale): BasketItem[] {
-        let items = this.getAllByStockEnabled(sale.items);
-        if(!items.length){
-            sale.items.forEach( item => {
-                const modifierItemsStockEnabled = item.modifierItems && this.getAllByStockEnabled(item.modifierItems);
-                if(modifierItemsStockEnabled.length){
-                    items = [...items, ...modifierItemsStockEnabled];
-                }
-            });
-        }
-        return items;
-    }
+	public getStockEnabledItems(basketItems: BasketItem[]): BasketItem[] {
+		let stockedEnabledItems = this.getAllByStockEnabled(basketItems);
+		if (!stockedEnabledItems.length) {
+			basketItems.forEach(item => {
+				const modifierItemsStockEnabled = this.getAllByStockEnabled(item.modifierItems);
+				if (modifierItemsStockEnabled.length) {
+					stockedEnabledItems = [...stockedEnabledItems, ...modifierItemsStockEnabled];
+				}
+			});
+		}
 
-	private getAllByStockEnabled(items: BasketItem[]): BasketItem[]{
-		const stockEnabledItems = items.filter( item => item.stockControl == true);
+		return stockedEnabledItems;
+	}
+
+	private getAllByStockEnabled(basketItems: BasketItem[]): BasketItem[] {
+		if (!basketItems) {
+			return [];
+		}
+		const stockEnabledItems = basketItems.filter(item => item.stockControl == true);
 		return stockEnabledItems;
 	}
 
