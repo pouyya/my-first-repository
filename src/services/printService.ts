@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
 import { StoreService } from './storeService';
-import { PosService } from './posService';
+// import { PosService } from './posService';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
@@ -50,7 +50,7 @@ export class PrintService {
   constructor(
     private platformService: PlatformService,
     private storeService: StoreService,
-    private posService: PosService,
+    // private posService: PosService,
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
@@ -170,8 +170,8 @@ export class PrintService {
 
     const receiptPrinters = this.getPrinterSales(sale, DeviceType.ReceiptPrinter);
     if (receiptPrinters.length) {
-      var pos = await this.posService.get(sale.posID);
-      var store = await this.storeService.get(pos.storeId);
+      const pos = this.storeService.getPosById(sale.posID);
+      // var store = this.syncContext.currentStore; // NEED TO CONFIRM
       var currentAccountsetting = await this.accountSettingService.getCurrentSetting();
 
       const promises = [];
@@ -179,9 +179,9 @@ export class PrintService {
         var receiptProviderContext = new ReceiptProviderContext();
         receiptProviderContext.sale = receiptPrinter.sale;
         receiptProviderContext.invoiceTitle = currentAccountsetting.name;
-        receiptProviderContext.shopName = store.name;
-        receiptProviderContext.phoneNumber = store.phone;
-        receiptProviderContext.taxFileNumber = store.taxFileNumber;
+        receiptProviderContext.shopName = this.syncContext.currentStore.name;
+        receiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
+        receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
         receiptProviderContext.footerMessage = currentAccountsetting.receiptFooterMessage;
 
         var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService)

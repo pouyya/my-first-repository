@@ -9,7 +9,7 @@ import { EmployeeTimestampService } from './../../services/employeeTimestampServ
 import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
-import { POS } from '../../model/pos';
+import { POS } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
 import _ from "lodash";

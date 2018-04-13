@@ -1,6 +1,7 @@
+/*
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
-import { POS } from './../model/pos';
+import { POS } from './../model/store';
 import * as moment from 'moment-timezone';
 import { SyncContext } from "./SyncContext";
 import { SharedService } from "./_sharedService";
@@ -47,4 +48,4 @@ export class PosService extends BaseEntityService<POS> {
     return this.update(register);
   }
 
-}
+}*/

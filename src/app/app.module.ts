@@ -115,8 +115,6 @@ import { StoreService } from "../services/storeService";
 import { EmployeeService } from "../services/employeeService";
 import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
-import { PosService } from "../services/posService";
-import { PosDetailsPage } from './../pages/pos-details/pos-details';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
@@ -178,7 +176,6 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     CashModal,
     CreditCardModal,
     ParkSale,
-    PosDetailsPage,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -297,7 +294,6 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     DeviceDetailsModal,
     CreditCardModal,
     ParkSale,
-    PosDetailsPage,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -360,7 +356,6 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     EmployeeService,
     TaxService,
     CalculatorService,
-    PosService,
     HelperService,
     ModuleService,
     ClosureService,

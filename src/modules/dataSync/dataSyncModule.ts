@@ -1,6 +1,6 @@
 import { SharedService } from './../../services/_sharedService';
 import { StoreService } from './../../services/storeService';
-import { PosService } from './../../services/posService';
+// import { PosService } from './../../services/posService';
 import { DateTimeService } from './../../services/dateTimeService';
 import { IonicPageModule } from 'ionic-angular';
 import { NgModule, ModuleWithProviders } from '@angular/core';
@@ -44,7 +44,7 @@ export class DataSyncModule {
 				AuthService,
 				UserService,
 				DateTimeService,
-				PosService,
+				// PosService,
 				StoreService,
 				SharedService
 			]

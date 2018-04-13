@@ -1,7 +1,7 @@
 import { ModalController } from 'ionic-angular';
 import { MoveCashModal } from './modals/move-cash';
-import { CashMovement } from './../../model/pos';
-import { PosService } from './../../services/posService';
+import { CashMovement } from './../../model/store';
+// import { PosService } from './../../services/posService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -23,7 +23,7 @@ export class MoneyInOut {
   constructor(
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
-    private posService: PosService,
+    // private posService: PosService,
     private printService: PrintService,
     private syncContext: SyncContext) {
     this.cdr.detach();

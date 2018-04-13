@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { POS } from './../../../model/pos';
-import { PosService } from './../../../services/posService';
+import { POS } from './../../../model/store';
+// import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
 import { Store } from './../../../model/store';
 import { ViewController, LoadingController } from 'ionic-angular';
@@ -29,7 +29,6 @@ export class SwitchPosModal {
   constructor(
     private viewCtrl: ViewController,
     private storeService: StoreService,
-    private posService: PosService,
     private loading: LoadingController,
     private userService: UserService,
     private _sharedService: SharedService,
@@ -48,14 +47,16 @@ export class SwitchPosModal {
     this.posId = this.syncContext.currentPos._id;
     this.storeId = this.syncContext.currentStore._id;
 
-    let [stores, allPos] = await Promise.all([this.storeService.getAll(), this.posService.getAll()]);
+    let stores = await this.storeService.getAll();
+    // Promise.all([this.storeService.getAll(), this.posService.getAll()]);
 
-    stores.forEach((store: Store) => {
-      var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
-      if (registers.length > 0) {
-        this.stores.push({ ...store, registers });
+    stores.some((store: Store) => {
+      // var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
+      if (store.POS.length > 0) {
+        // this.stores.push({ ...store, registers });
         if (store._id === this.storeId) {
-          this.currentStore = { ...store, registers };
+          this.currentStore = store;
+          return true;
         }
       }
     });
@@ -67,13 +68,13 @@ export class SwitchPosModal {
     this.currentStore = { ...this.stores[index] };
   }
 
-  public async switchRegister(register: POS) {
+  public async switchRegister(register: POS, storeId: string) {
     var user = await this.userService.getUser();
-    user.currentStore = register.storeId;
+    user.currentStore = storeId;
     user.currentPos = register._id;
     this._sharedService.publish('storeOrPosChanged', { currentStore: this.currentStore, currentPos: register });
     let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
-    let currentStore = _.pick(this.stores.find((store) => store._id == register.storeId), GlobalConstants.STORE_SESSION_PROPS);
+    let currentStore = _.pick(this.stores.find((store) => store._id == storeId), GlobalConstants.STORE_SESSION_PROPS);
     this.userService.setSession(user);
     this.viewCtrl.dismiss({ currentStore, currentPos });
   }
