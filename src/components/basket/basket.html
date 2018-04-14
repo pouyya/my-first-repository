@@ -39,10 +39,10 @@
     <ion-col col-12>
       <ion-list *ngIf="sale">
         <!-- Items in the basket [start] -->
-        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''" tappable>
+        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'selected' || '']" tappable>
 
-          <ion-grid>
-            <ion-row (click)="viewInfo(item, $index)">
+          <ion-grid (click)="viewInfo(item, $index)">
+            <ion-row>
               <ion-col col-md-11 offset-md-1 *ngIf="item.employeeId && employeesHash[item.employeeId] && (item.cssClass && (item.cssClass == 'group-item' || item.cssClass == 'group-item-start'))">
                 <h1>{{employeesHash[item.employeeId].firstName}}</h1>
               </ion-col>

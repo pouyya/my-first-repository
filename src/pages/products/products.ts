@@ -15,6 +15,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import {SearchableListing} from "../../modules/searchableListing";
 import {Item} from "../../metadata/listingModule";
+import {AccountSettingService} from "../../modules/dataSync/services/accountSettingService";
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -30,6 +31,7 @@ export class Products extends SearchableListing<Product>{
   public items: ProductsList[] = [];
   private priceBook: PriceBook;
   private stockValues: any;
+  public isTaxInclusive: boolean = false;
 
   constructor(
     private navCtrl: NavController,
@@ -38,6 +40,7 @@ export class Products extends SearchableListing<Product>{
     private priceBookService: PriceBookService,
     private platform: Platform,
     private loading: LoadingController,
+    private accountSettingService: AccountSettingService,
     protected zone: NgZone) {
     super(productService, zone, 'Product');
   }
@@ -60,6 +63,8 @@ export class Products extends SearchableListing<Product>{
               }
           }
       }
+      var currentAccount = await this.accountSettingService.getCurrentSetting();
+      this.isTaxInclusive = currentAccount.taxType;
       await this.fetchMore();
       loader.dismiss();
     } catch (err) {
@@ -83,6 +88,7 @@ export class Products extends SearchableListing<Product>{
 
         let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
         product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
+        product["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
     });
 
     this.offset += products ? products.length : 0;
