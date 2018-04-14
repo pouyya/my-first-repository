@@ -39,7 +39,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     }) : null;
   }
 
-  public async getAllProductsTotalStockValueByIds(productIds: string[], storeId) {
+  public async getAvailableStock(productIds: string[], storeId) {
 
     var param = { keys: productIds.map(productId => [productId, storeId]), reduce: true, group: true };
 

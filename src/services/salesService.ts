@@ -377,7 +377,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		let stockErrors: string[] = [];
 
         const productsInStock = await
-			this.stockHistoryService.getAllProductsTotalStockValueByIds(items.map(item => item.purchsableItemId), storeId);
+			this.stockHistoryService.getAvailableStock(items.map(item => item.purchsableItemId), storeId);
         const productsInStockMap = productsInStock.reduce((obj, data) => {
             obj[data.productId] = data.value;
             return obj;
