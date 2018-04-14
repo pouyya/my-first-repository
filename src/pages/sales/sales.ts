@@ -6,13 +6,11 @@ import { LoadingController, NavParams } from 'ionic-angular';
 import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
 import { CategoryService } from '../../services/categoryService';
-import { PosService } from "../../services/posService";
 import { EmployeeService } from '../../services/employeeService';
 import { CacheService } from '../../services/cacheService';
 import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 
-import { POS } from '../../model/pos';
 
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from '../../metadata/pageModule';
@@ -22,6 +20,8 @@ import { Employee, WorkingStatusEnum } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
 import { Category } from '../../model/category';
+import { StoreService } from "../../services/storeService";
+import { POS } from "../../model/store";
 
 
 @SecurityModule()
@@ -67,7 +67,7 @@ export class Sales implements OnDestroy {
     private categoryService: CategoryService,
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
-    private posService: PosService,
+    private storeService: StoreService,
     private navParams: NavParams,
     private cacheService: CacheService,
     private syncContext: SyncContext
@@ -107,7 +107,7 @@ export class Sales implements OnDestroy {
     if (!this.syncContext.currentPos.status) {
       let openingAmount = Number(this.navParams.get('openingAmount'));
       if (openingAmount >= 0) {
-        this.syncContext.currentPos = await this.posService.openRegister(this.syncContext.currentPos, openingAmount, this.navParams.get('openingNotes'));
+        this.syncContext.currentPos = await this.storeService.openRegister(this.syncContext.currentPos, openingAmount, this.navParams.get('openingNotes'));
         await this.loadRegister();
       }
     } else {
@@ -210,7 +210,7 @@ export class Sales implements OnDestroy {
   public async openRegister() {
     let loader = this.loading.create({ content: 'Opening Register...' });
     await loader.present();
-    this.syncContext.currentPos = await this.posService.openRegister(this.syncContext.currentPos,
+    this.syncContext.currentPos = await this.storeService.openRegister(this.syncContext.currentPos,
       this.syncContext.currentPos.openingAmount, this.syncContext.currentPos.openingNote);
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();

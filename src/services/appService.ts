@@ -3,31 +3,35 @@ import { ProductService } from './productService';
 import { PluginService } from './pluginService';
 import { Sale } from './../model/sale';
 import { SalesServices } from './salesService';
-import { POS } from './../model/pos';
-import { Store } from './../model/store';
-import { PosService } from './posService';
-import { Injectable, Inject, forwardRef } from "@angular/core";
+import { Store, POS } from './../model/store';
+import { Injectable, Inject, forwardRef, Injector } from "@angular/core";
 import { SalesTaxService } from "./salesTaxService";
 import { GroupSalesTaxService } from "./groupSalesTaxService";
 import { SalesTax } from "../model/salesTax";
 import { GroupSaleTax } from "../model/groupSalesTax";
+import { StoreService } from "./../services/storeService";
 
 @Injectable()
 export class AppService {
+  private storeService: StoreService;
   constructor(
     private salesTaxService: SalesTaxService,
     private groupSalesTaxService: GroupSalesTaxService,
-    private posService: PosService,
     private pluginService: PluginService,
     private productService: ProductService,
     private serviceService: ServiceService,
+    private injector: Injector,
     @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
+      setTimeout(() => {
+          this.storeService = this.injector.get(StoreService);
+      });
   }
 
   /**
    * Get list of all salesTax and GroupSalesTaxes combined
    * @returns {Promise<T>}
    */
+
   public async loadSalesAndGroupTaxes(): Promise<any> {
     try {
       let taxes: Array<any> = [];
@@ -50,27 +54,29 @@ export class AppService {
       let assocDeletions: any[] = [
         async () => {
           let saleId = localStorage.getItem('sale_id');
-          let registers: POS[] = await this.posService.findBy({ selector: { storeId: store._id } });
+          let registers: POS[] = store.POS;
           if (registers.length > 0) {
             let posDeletions: Promise<any>[] = [];
-            registers.forEach((register) => {
-              this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Sale[]) => {
+            registers.forEach((register, index) => {
+              this.salesService.findBy({ selector: { posId: register.id } }).then((sales: Sale[]) => {
                 if (sales.length > 0) {
                   let salesDeletion: Promise<any>[] = [];
                   sales.forEach(sale => {
                     if (saleId && saleId == sale._id) localStorage.removeItem('sale_id');
                     salesDeletion.push(this.salesService.delete(sale));
                   });
+
+
                   Promise.all(salesDeletion).then(() => {
-                    posDeletions.push(this.posService.delete(register));
+                    store.POS.splice(index, 1);
                   });
                 } else {
-                  posDeletions.push(this.posService.delete(register));
+                    store.POS.splice(index, 1);
                 }
               }).catch(error => posDeletions.push(Promise.resolve()));
             });
 
-            return await Promise.all(posDeletions);
+            return await this.storeService.update(store);
           }
           return;
         },
@@ -86,32 +92,29 @@ export class AppService {
   public deleteStoreAssociations(store: Store) {
     return new Promise((resolve, reject) => {
       let saleId = localStorage.getItem('sale_id');
-      this.posService.findBy({ selector: { storeId: store._id } }).then((registers: Array<POS>) => {
-        if (registers.length > 0) {
-          let posDeletions: Array<Promise<any>> = [];
-          registers.forEach((register) => {
-            this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Array<Sale>) => {
-              if (sales.length > 0) {
-                let salesDeletion: Array<Promise<any>> = [];
-                sales.forEach(sale => {
-                  if (saleId && saleId == sale._id) localStorage.removeItem('sale_id');
-                  salesDeletion.push(this.salesService.delete(sale));
-                });
-                Promise.all(salesDeletion).then(() => {
-                  // transfer control back to outer loop
-                  posDeletions.push(this.posService.delete(register));
-                });
-              } else {
-                posDeletions.push(this.posService.delete(register));
-              }
-            }).catch(error => posDeletions.push(Promise.resolve()));
-          });
+      if (store.POS.length > 0) {
+        let posDeletions: Array<Promise<any>> = [];
+          store.POS.forEach((register, index) => {
+          this.salesService.findBy({ selector: { posId: register.id } }).then((sales: Array<Sale>) => {
+            if (sales.length > 0) {
+              let salesDeletion: Array<Promise<any>> = [];
+              sales.forEach(sale => {
+                if (saleId && saleId == sale._id) localStorage.removeItem('sale_id');
+                salesDeletion.push(this.salesService.delete(sale));
+              });
+              Promise.all(salesDeletion).then(() => {
+                  store.POS.splice(index, 1);
+              });
+            } else {
+                store.POS.splice(index, 1);
+            }
+          }).catch(error => posDeletions.push(Promise.resolve()));
+        });
 
-          Promise.all(posDeletions).then(() => resolve()).catch(error => reject(error));
-        } else {
-          resolve();
-        }
-      }).catch(error => reject(error));
+        this.storeService.update(store).then(() => resolve()).catch(error => reject(error));
+      } else {
+        resolve();
+      }
     });
   }
 
@@ -121,16 +124,15 @@ export class AppService {
    */
   public async deletePos(pos: POS): Promise<any> {
     try {
-      let sales = await this.salesService.findBy({ selector: { posId: pos._id } });
+      let sales = await this.salesService.findBy({ selector: { posId: pos.id } });
       if(sales.length > 0) {
         let salesDeletion: Promise<any>[] = [];
         sales.forEach(sale => salesDeletion.push(this.salesService.delete(sale)));
         await Promise.all(salesDeletion);
-        await this.posService.delete(pos);
-      } else {
-        await this.posService.delete(pos);
       }
-    } catch (err) {
+      await this.storeService.removePOS(pos);
+
+      } catch (err) {
       throw new Error(err);
     }
   }

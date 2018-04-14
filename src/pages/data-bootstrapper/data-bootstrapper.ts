@@ -5,16 +5,14 @@ import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
-import { Store } from './../../model/store';
+import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
 import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { DateTimeService } from '../../services/dateTimeService';
-import { PosService } from '../../services/posService';
 import { StoreService } from '../../services/storeService';
 import { SharedService } from '../../services/_sharedService';
-import { POS } from '../../model/pos';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -31,11 +29,11 @@ export class DataBootstrapper {
 
   private _initialPage: any;
   private _user: UserSession;
+  private store: Store;
 
   constructor(
     private accountSettingService: AccountSettingService,
     private dateTimeService: DateTimeService,
-    private posService: PosService,
     private storeService: StoreService,
     private _sharedService: SharedService,
     private userService: UserService,
@@ -58,21 +56,20 @@ export class DataBootstrapper {
 
   /** @AuthGuard */
   async ionViewCanEnter() {
-
     this.translateService.setDefaultLang('au');
     this.translateService.use('au');
     
     this._user = await this.userService.getDeviceUser();
     if (this._user.currentStore) {
-      let store = await this.storeService.get(this._user.currentStore);
-      this.securityMessage = `To open the app for store ${store.name}, please provide your PIN number`
+      this.store = await this.storeService.get(this._user.currentStore);
+      this.securityMessage = `To open the app for store ${this.store.name}, please provide your PIN number`
     }
     return this.enterPin();
   }
 
   async ionViewDidLoad() {
     this.cdr.reattach();
-    this.haveAccess && await this.loadData();
+    this.haveAccess && await this.loadData(this.store);
   }
 
   public async enterPin(): Promise<boolean> {
@@ -109,7 +106,7 @@ export class DataBootstrapper {
         await loader.present();
         this._user = await this.userService.getDeviceUser();
         let store = await this.storeService.get(this._user.currentStore);
-        this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`
+        this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`;
         loader.dismiss();
         await this.openNextPage();
       }
@@ -117,7 +114,7 @@ export class DataBootstrapper {
     modal.present();
   }
 
-  private async loadData() {
+  private async loadData(store?: Store) {
     let accountSettings = await this.accountSettingService.getCurrentSetting();
     let currentPos: POS;
     let currentStore: Store;
@@ -125,23 +122,28 @@ export class DataBootstrapper {
     this.dateTimeService.timezone = accountSettings.timeOffset || null;
 
     if (!this._user.currentPos || !this._user.currentStore) {
-      let allPos: POS[] = await this.posService.getAll();
 
-      if (!allPos || allPos.length == 0) {
-        this.hideSpinner = true;
-        this.headerTitle = "Error connecting to server!";
-        this.message = "There is a problem in syncing data. Seems like the app is offline. Please make sure the app is connected to internet and close and open the app again.";
-        return;
+      if(!store){
+        let allStores =  await this.storeService.getAll();
+        currentStore = allStores[0];
+      }else{
+        currentStore = store;
       }
-      currentPos = allPos[0];
-      currentStore = await this.storeService.get(currentPos.storeId);
-      this._user.currentPos = currentPos._id;
+
+      currentPos = currentStore.POS[0];
+
+      this._user.currentPos = currentPos.id;
       this._user.currentStore = currentStore._id;
       this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });
       this.userService.setSession(this._user);
     } else {
-      currentPos = await this.posService.get(this._user.currentPos);
-      currentStore = await this.storeService.get(this._user.currentStore);
+        currentStore = await this.storeService.get(this._user.currentStore);
+        currentStore.POS.some( pos => {
+          if(pos.id === this._user.currentPos){
+            currentPos = pos;
+            return true;
+          }
+        });
     }
 
     this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });

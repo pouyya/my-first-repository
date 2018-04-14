@@ -1,5 +1,5 @@
 import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
-import {DisplayColumn, FilterType, SearchFilter} from "../metadata/listingModule";
+import { DisplayColumn, FilterType, SearchFilter } from "../metadata/listingModule";
 
 export enum DeviceType {
     Bump,
@@ -14,6 +14,38 @@ export interface Device {
     ipAddress: string;
     printerPort: number;
     associatedPurchasableItemIds: string[]
+}
+
+export interface CashMovement {
+    amount: number,
+    type: string,
+    employeeId: string,
+    note?: string,
+    datetime: Date
+}
+
+export class POS {
+    public id: string;
+    public name: string;
+    public receiptTemplate: string;
+    public number: number;
+    public prefix: string;
+    public suffix: string;
+    public emailReceipt: boolean = true;
+    public printReceipt: boolean = true;
+    public askForNote: string;
+    public printNoteOnReceipt: boolean = true;
+    public showDiscount: boolean = true;
+    public selectUserForNextSale: boolean = false;
+    public status: boolean = false;
+    public openTime: string;
+    public openingAmount: number = 0;
+    public openingNote: string;
+    public cashMovements: Array<CashMovement>;
+
+    constructor() {
+        this.cashMovements = [];
+    }
 }
 
 export class Store extends DBBasedEntity {
@@ -41,4 +73,11 @@ export class Store extends DBBasedEntity {
   public trackEmployeeSales: boolean;
   public printReceiptAtEndOfSale: boolean;
   public devices: Device[];
+  public POS: POS[];
+
+  constructor() {
+    super();
+    this.POS = [];
+  }
+
 }

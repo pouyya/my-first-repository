@@ -1,5 +1,4 @@
-import { Store } from "../model/store";
-import { POS } from "../model/pos";
+import { Store, POS } from "../model/store";
 import { Injectable } from "@angular/core";
 import { SharedService } from "./_sharedService";
 
