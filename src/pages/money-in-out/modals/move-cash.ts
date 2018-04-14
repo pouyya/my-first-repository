@@ -1,4 +1,4 @@
-import { CashMovement } from './../../../model/pos';
+import { CashMovement } from './../../../model/store';
 import { ViewController, NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { EmployeeService } from '../../../services/employeeService';

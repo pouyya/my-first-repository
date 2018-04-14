@@ -28,7 +28,7 @@
     <ion-item>
       <ion-label>POS</ion-label>
       <ion-select [(ngModel)]="device.posIds" multiple="true" name="posId">
-        <ion-option *ngFor="let pos of posList" value={{pos._id}}>{{pos.name}}</ion-option>
+        <ion-option *ngFor="let pos of posList" value={{pos.id}}>{{pos.name}}</ion-option>
       </ion-select>
     </ion-item>
 

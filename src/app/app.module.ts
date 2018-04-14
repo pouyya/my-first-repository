@@ -115,8 +115,6 @@ import { StoreService } from "../services/storeService";
 import { EmployeeService } from "../services/employeeService";
 import { TaxService } from '../services/taxService';
 import { CalculatorService } from './../services/calculatorService';
-import { PosService } from "../services/posService";
-import { PosDetailsPage } from './../pages/pos-details/pos-details';
 import { ClosureService } from './../services/closureService';
 import { ModuleService } from './../services/moduleService';
 import { HelperService } from './../services/helperService';
@@ -154,7 +152,8 @@ import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 import { TranslateService } from "@ngx-translate/core";
-import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
+import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
+import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
 
 @NgModule({
   declarations: [
@@ -178,7 +177,6 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     CashModal,
     CreditCardModal,
     ParkSale,
-    PosDetailsPage,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -192,6 +190,7 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     MoneyInOut,
     MoveCashModal,
     DeviceDetailsModal,
+    PosDetailsModal,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
@@ -295,9 +294,9 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     PaymentsPage,
     CashModal,
     DeviceDetailsModal,
+    PosDetailsModal,
     CreditCardModal,
     ParkSale,
-    PosDetailsPage,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -360,7 +359,6 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     EmployeeService,
     TaxService,
     CalculatorService,
-    PosService,
     HelperService,
     ModuleService,
     ClosureService,

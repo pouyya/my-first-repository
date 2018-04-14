@@ -347,7 +347,7 @@ export class SalesHistoryPage {
   public async fetchMoreSales(infiniteScroll?: any) {
     try {
       let sales = await await this.salesService.searchSales(
-        [this.syncContext.currentPos._id],
+        [this.syncContext.currentPos.id],
         this.limit,
         this.offset,
         this.filters,

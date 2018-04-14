@@ -30,6 +30,44 @@
       </ion-item>
     </ion-col>
 
+
+
+    <!-- Quantity -->
+    <ion-grid *ngIf="item.modifierItems">
+      <ion-item class="item-divider">
+        Modifier Items
+      </ion-item>
+      <ion-row *ngFor="let modifierItem of item.modifierItems; let $index=index">
+        <ion-col class="vertical-center" col-md-3>
+          <span margin-left="12px">{{modifierItem.name}}</span>
+        </ion-col>
+
+        <ion-col col-md-4>
+          <ion-item item-content>
+            <ion-label color="primary" stacked>Quantity</ion-label>
+            <ion-input type="number" [(ngModel)]="modifierItem.quantity" (change)="addQuantity(modifierItem)">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+
+        <!-- Price -->
+        <ion-col col-md-4>
+          <ion-item item-content>
+            <ion-label color="primary" stacked>Price
+              <small *ngIf="modifierItem.priceBook && modifierItem.priceBook.isTaxIncl">({{modifierItem.tax.rate}}% Tax Incl.)</small>
+            </ion-label>
+            <ion-input type="text" [disabled]="modifierItem.quantity < 0" [(ngModel)]="modifierItem.finalPrice" (change)="updatePrice(modifierItem)">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+
+        <ion-col class="pull-right vertical-center" col-md-1>
+          <ion-icon class="clickable icon icon-md ion-md-trash" click-stop-propagation="" name="trash" role="img" aria-label="trash" ng-reflect-name="trash" (click)="removeModifier($index)"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+
     <ion-col col-md-12>
       <ion-item item-content>
         <ion-label color="primary" stacked>Notes</ion-label>

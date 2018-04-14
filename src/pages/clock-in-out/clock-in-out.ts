@@ -9,7 +9,7 @@ import { EmployeeTimestampService } from './../../services/employeeTimestampServ
 import { EmployeeTimestamp } from './../../model/employeeTimestamp';
 import { SharedService } from './../../services/_sharedService';
 import { Observable } from 'rxjs/Rx';
-import { POS } from '../../model/pos';
+import { POS } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
 import _ from "lodash";
@@ -221,7 +221,7 @@ export class ClockInOutPage {
     }
 
     this.employee.workingStatus.status = button.next;
-    this.employee.workingStatus.posId = this.syncContext.currentPos._id;
+    this.employee.workingStatus.posId = this.syncContext.currentPos.id;
     this.employee.workingStatus.storeId = this.syncContext.currentStore._id;
     this.employee.workingStatus.time = new Date();
 

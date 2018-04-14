@@ -1,4 +1,5 @@
 import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBMode, DBModeEnum } from "@simpleidea/simplepos-core/dist/metadata/dbMode";
 
  export enum Reason {
   Purchase = 'Purchase',
@@ -13,6 +14,7 @@ import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEnti
   Other = 'Other'
 }
 
+@DBMode(DBModeEnum.Current)
 export class StockHistory extends DBBasedEntity {
   public createdAt: string;
   public createdBy: string;

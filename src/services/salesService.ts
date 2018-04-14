@@ -39,7 +39,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async instantiateSale(posId?: string): Promise<Sale> {
 
 		if (!posId) {
-			posId = this.syncContext.currentPos._id;
+			posId = this.syncContext.currentPos.id;
 		}
 
 		try {
@@ -373,29 +373,20 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return Promise.all(stockUpdates);
 	}
 
-	public async checkForStockInHand(sale: Sale, storeId: string): Promise<string[]> {
+	public async checkForStockInHand(items: BasketItem[], storeId): Promise<string[]> {
 		let stockErrors: string[] = [];
-		let productsInStock: { [id: string]: number } = {};
-		let allProducts: string[] = [];
-		sale.items.forEach(item => {
-			item.stockControl && allProducts.push(item.purchsableItemId);
 
-			item.modifierItems && item.modifierItems.forEach(modifierItem => {
-				modifierItem.stockControl && allProducts.push(modifierItem.purchsableItemId);
-			});
+        const productsInStock = await
+			this.stockHistoryService.getAvailableStock(items.map(item => item.purchsableItemId), storeId);
+        const productsInStockMap = productsInStock.reduce((obj, data) => {
+            obj[data.productId] = data.value;
+            return obj;
+		}, {});
+		items.forEach(item => {
+            if (!productsInStockMap[item.purchsableItemId] || productsInStockMap[item.purchsableItemId] < item.quantity) {
+                stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStockMap[item.purchsableItemId] || 0}`);
+            }
 		});
-
-		if (allProducts.length > 0) {
-			productsInStock = await this.stockHistoryService
-				.getProductsTotalStockValueByStore(allProducts, storeId);
-			if (productsInStock && Object.keys(productsInStock).length > 0) {
-				sale.items.forEach(item => {
-					if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
-						stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
-					}
-				});
-			}
-		}
 
 		return stockErrors;
 	}

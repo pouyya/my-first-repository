@@ -1,0 +1,13 @@
+MAP
+
+function(doc) {
+    if (doc.entityTypeName == 'StockHistory') {
+        emit([doc.productId, doc.storeId], doc.value);
+    }
+}
+
+REDUCE
+
+function(keys, values, rereduce) {
+    return sum(values);
+}
