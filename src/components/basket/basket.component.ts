@@ -2,7 +2,10 @@ import _ from 'lodash';
 import { DiscountSurchargeModal } from './modals/discount-surcharge/discount-surcharge';
 import { GroupByPipe } from './../../pipes/group-by.pipe';
 import { Component, EventEmitter, Input, Output, NgZone } from '@angular/core';
-import { AlertController, ModalController, ToastController, NavController, Modal } from 'ionic-angular';
+import {
+  AlertController, ModalController, ToastController, NavController, Modal,
+  LoadingController
+} from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
 import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes } from './../../model/sale';
@@ -23,6 +26,8 @@ import { UserSession } from '../../modules/dataSync/model/UserSession';
 import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
+import { ProductService } from "../../services/productService";
+import { Product } from "../../model/product";
 
 @Component({
   selector: 'basket',
@@ -73,7 +78,9 @@ export class BasketComponent {
     private printService: PrintService,
     private paymentService: PaymentService,
     private navCtrl: NavController,
+    private loading: LoadingController,
     private syncContext: SyncContext,
+    private productService: ProductService,
     private ngZone: NgZone) {
   }
 
@@ -137,7 +144,6 @@ export class BasketComponent {
   }
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
-
     const isFirstModifier = !this.sale.items.length && purchasableItem.isModifier;
     if (!isFirstModifier) {
       let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
@@ -152,7 +158,6 @@ export class BasketComponent {
         }
         this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
         this.calculateAndSync();
-
       } else {
         let toast = this.toastCtrl.create({
           message: `${purchasableItem.name} does not have any price`,
@@ -167,7 +172,6 @@ export class BasketComponent {
       });
       await toast.present();
     }
-
   }
 
 
@@ -298,57 +302,59 @@ export class BasketComponent {
   }
 
   public async fastPayment() {
+    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale.items);
+    if (stockEnabledItems.length) {
 
-    let stockErrors;
+      let loader = this.loading.create({ content: 'Checking Stocks...' });
+      await loader.present();
+
+      var stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems, this.syncContext.currentStore._id);
+      loader.dismiss();
+
+      if (stockErrors && stockErrors.length > 0) {
+        let alert = this.alertController.create(
+          {
+            title: 'Out of Stock',
+            subTitle: 'Please make changes to sale and continue',
+            message: `${stockErrors.join('\n')}`,
+            buttons: ['Ok'],
+          }
+        );
+        alert.present();
+        return;
+      }
+    }
 
     this.ngZone.runOutsideAngular(async () => {
-      stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
+      let sale = { ...this.sale }
+
+      sale.payments = [
+        {
+          type: 'cash',
+          amount: Number(sale.items.length > 0 ? _.sumBy(sale.items, item => item.finalPrice * item.quantity) : 0)
+        }
+      ];
+
+      await this.paymentService.completePayment(sale, this.syncContext.currentStore._id, this.refund);
+
+      await this.salesService.update(sale);
+
+      try {
+
+        this.printSale(false, sale);
+        await this.printService.printProductionLinePrinter(this.sale);
+
+      } catch (error) {
+        console.log(error);
+      }
     });
 
-    if (stockErrors && stockErrors.length > 0) {
-      let alert = this.alertController.create(
-        {
-          title: 'Out of Stock',
-          subTitle: 'Please make changes to sale and continue',
-          message: `${stockErrors.join('\n')}`,
-          buttons: ['Ok'],
-        }
-      );
-      alert.present();
-      return;
-    } else {
+    localStorage.removeItem('sale_id');
 
-      this.ngZone.runOutsideAngular(async () => {
-        let sale = { ...this.sale }
-
-        sale.payments = [
-          {
-            type: 'cash',
-            amount: Number(sale.items.length > 0 ? _.sumBy(sale.items, item => item.finalPrice * item.quantity) : 0)
-          }
-        ];
-
-        await this.paymentService.completePayment(sale, this.syncContext.currentStore._id, this.refund);
-
-        await this.salesService.update(sale);
-
-        try {
-
-          this.printSale(false, sale);
-          await this.printService.printProductionLinePrinter(this.sale);
-
-        } catch (error) {
-          console.log(error);
-        }
-      });
-
-      localStorage.removeItem('sale_id');
-
-      this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos._id);
-      this.paymentCompleted.emit();
-      this.customer = null;
-      this.calculateAndSync();
-    }
+    this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos._id);
+    this.paymentCompleted.emit();
+    this.customer = null;
+    this.calculateAndSync();
   }
 
   private async printSale(forcePrint: boolean, sale: Sale) {
