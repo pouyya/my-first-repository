@@ -44,7 +44,7 @@ export class SwitchPosModal {
 
     await loader.present();
 
-    this.posId = this.syncContext.currentPos._id;
+    this.posId = this.syncContext.currentPos.id;
     this.storeId = this.syncContext.currentStore._id;
 
     let stores = await this.storeService.getAll();
@@ -71,7 +71,7 @@ export class SwitchPosModal {
   public async switchRegister(register: POS, storeId: string) {
     var user = await this.userService.getUser();
     user.currentStore = storeId;
-    user.currentPos = register._id;
+    user.currentPos = register.id;
     this._sharedService.publish('storeOrPosChanged', { currentStore: this.currentStore, currentPos: register });
     let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
     let currentStore = _.pick(this.stores.find((store) => store._id == storeId), GlobalConstants.STORE_SESSION_PROPS);

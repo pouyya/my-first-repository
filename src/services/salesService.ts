@@ -39,7 +39,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async instantiateSale(posId?: string): Promise<Sale> {
 
 		if (!posId) {
-			posId = this.syncContext.currentPos._id;
+			posId = this.syncContext.currentPos.id;
 		}
 
 		try {

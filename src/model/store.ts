@@ -25,7 +25,7 @@ export interface CashMovement {
 }
 
 export class POS {
-    public _id: string;
+    public id: string;
     public name: string;
     public receiptTemplate: string;
     public number: number;
@@ -73,5 +73,11 @@ export class Store extends DBBasedEntity {
   public trackEmployeeSales: boolean;
   public printReceiptAtEndOfSale: boolean;
   public devices: Device[];
-  public POS: POS[]
+  public POS: POS[];
+
+  constructor() {
+    super();
+    this.POS = [];
+  }
+
 }

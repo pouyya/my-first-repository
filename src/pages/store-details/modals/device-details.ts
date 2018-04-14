@@ -1,12 +1,10 @@
 import {
-    NavParams, NavController, ToastController, AlertController, LoadingController,
+    NavParams, AlertController, LoadingController,
     ViewController
 } from 'ionic-angular';
-import { PosService } from './../../../services/posService';
-import { POS } from './../../../model/pos';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
-import { DeviceType } from './../../../model/store';
+import { DeviceType, POS } from './../../../model/store';
 import { ProductService } from "../../../services/productService";
 import { ServiceService } from "../../../services/serviceService";
 
@@ -33,11 +31,8 @@ export class DeviceDetailsModal {
   constructor(
     private navParams: NavParams,
     private viewCtrl: ViewController,
-    private posService: PosService,
     private productService: ProductService,
     private serviceService: ServiceService,
-    private navCtrl: NavController,
-    private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private syncContext: SyncContext,
     private loading: LoadingController
@@ -51,7 +46,7 @@ export class DeviceDetailsModal {
     await loader.present();
 
     let device = this.navParams.get('device');
-    this.posList = await this.posService.getCurrentStorePos();
+    this.posList = this.syncContext.currentStore.POS || [];
     let data = await Promise.all([this.productService.getAll(), this.serviceService.getAll()]);
     this.purchasableItems = [...data[0], ...data[1]];
 
@@ -90,7 +85,7 @@ export class DeviceDetailsModal {
               let loader = this.loading.create({
                 content: 'Deleting. Please Wait!',
               });
-              this.viewCtrl.dismiss({ status : 'remove', device: this.device});
+
           }
         }, 'No'
       ]

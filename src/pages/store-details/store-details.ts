@@ -7,14 +7,12 @@ import {
   ToastController
 } from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
-import { Store, Device, DeviceType } from './../../model/store';
-import { PosDetailsPage } from './../pos-details/pos-details';
-import { POS } from './../../model/pos';
-import { PosService } from './../../services/posService';
+import { Store, POS, Device, DeviceType } from './../../model/store';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
+import { PosDetailsModal } from "./modals/pos-details";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -35,63 +33,32 @@ export class StoreDetailsPage {
     private modalCtrl: ModalController,
     private storeService: StoreService,
     private employeeService: EmployeeService,
-    private posService: PosService,
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private resourceService: ResourceService) {
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     let loader = this.loading.create({
       content: 'Loading Store...'
     });
+    let store = this.navParams.get('store');
+    if (store) {
+        this.item = store;
+        this.isNew = false;
+        this.action = 'Edit';
+    }
 
-    loader.present().then(() => {
-      let promises: Array<Promise<any>> = [
-        // load store data
-        new Promise((resolve, reject) => {
-          let store = this.navParams.get('store');
-          if (store) {
-            this.item = store;
-            this.isNew = false;
-            this.action = 'Edit';
-
-            // load registers/POS
-            this.posService.findBy({ selector: { storeId: this.item._id } }).then((registers) => {
-              if (registers && registers.length) {
-                this.registers = registers;
-              }
-              resolve();
-            }).catch((error) => {
-              reject(new Error(error));
-            });
-          } else {
-            resolve();
-          }
-        }),
-        // load countries list
-        new Promise(async (resolve, reject) => {
-          this.countries = await this.resourceService.getCountries();
-          resolve();
-        })
-      ];
-
-      Promise.all(promises).then((data) => {
-        loader.dismiss();
-      });
-
-    });
+    await loader.present();
+    this.countries = await this.resourceService.getCountries();
+    await loader.dismiss();
   }
 
-  private async addPos(storeId) {
+  private async addPos(store: Store) {
     if (this.posToAdd.length > 0) {
-      let promises: any[] = [];
-      this.posToAdd.forEach(pos => {
-        pos.storeId = storeId;
-        promises.push(async () => await this.posService.add(pos));
-      });
-      return await Promise.all(promises.map(p => p()));
+      const pos: POS[] = this.posToAdd;
+      store.POS = store.POS
     }
     return;
   };
@@ -101,13 +68,9 @@ export class StoreDetailsPage {
 
     await loader.present();
     if (this.isNew) {
-      let info = await this.storeService.add(this.item);
-      loader.setContent('Saving Registers...');
-      await this.addPos(info._id);
+      await this.storeService.add(this.item);
     } else {
       await this.storeService.update(this.item);
-      loader.setContent('Saving Registers...');
-      await this.addPos(this.item._id);
     }
     loader.dismiss();
 
@@ -115,25 +78,34 @@ export class StoreDetailsPage {
       this.navCtrl.pop();
   }
 
-  public showPos(pos: POS) {
-    this.navCtrl.push(PosDetailsPage, {
-      pos: pos,
-      storeId: this.item._id,
-      pushCallback: null
+  public showPos(pos: POS, index: number) {
+    const newPos = _.clone(pos);
+    let modal = this.modalCtrl.create(PosDetailsModal, { pos : newPos });
+    modal.onDidDismiss((data: { status: string,  pos: POS }) => {
+        if (data) {
+          if(data.status == "remove"){
+            this.item.POS.splice(index, 1);
+          } else {
+              this.item.POS[index] = data.pos;
+          }
+        }
     });
+    modal.present();
   }
 
   public addRegister() {
-    let pushCallback = async (pos: POS) => pos && this.posToAdd.push(pos);
-    this.navCtrl.push(PosDetailsPage, {
-      pos: null,
-      storeId: this.item._id,
-      pushCallback: pushCallback
+    let modal = this.modalCtrl.create(PosDetailsModal);
+    modal.onDidDismiss((data: { status: string, pos: POS }) => {
+        if (data && data.status === "add") {
+            !this.item.POS && (this.item.POS = []);
+            this.item.POS.push(data.pos);
+        }
     });
+    modal.present();
   }
 
   public removeAddedRegister(index: number) {
-    this.posToAdd.splice(index, 1);
+    this.item.POS.splice(index, 1);
   }
 
 

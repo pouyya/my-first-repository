@@ -61,28 +61,47 @@ export class StoreService extends BaseEntityService<Store> {
 
   public getPosById(posId: string, store?: Store){
     const currentStore = store || this.syncContext.currentStore;
-    const pos = currentStore.POS.filter( pos => pos._id === posId);
+    const pos = currentStore.POS.filter( pos => pos.id === posId);
     return pos.length && pos[0] || null;
   }
 
+  public async addPOS(pos: POS[], store?: Store){
+    const currentStore = store || this.syncContext.currentStore;
+    currentStore.POS = [...currentStore.POS, ...pos];
+    await this.update(currentStore);
+  }
   public async updatePOS(pos: POS, store?: Store){
     const currentStore = store || this.syncContext.currentStore;
     currentStore.POS.some( ( register, index ) => {
-      if(register._id === pos._id){
-        this.syncContext.currentStore.POS.splice(index, 1);
+      if(register.id === pos.id){
+        currentStore.POS[index] = pos;
         return true;
       }
     });
-    await this.update(this.syncContext.currentStore);
+    await this.update(currentStore);
+    if(currentStore._id === this.syncContext.currentStore._id && pos.id == this.syncContext.currentPos.id){
+        this._sharedService.publish('storeOrPosChanged', {currentPos: pos, currentStore : this.syncContext.currentStore});
+    }
   }
 
   public async removePOS(pos: POS){
       this.syncContext.currentStore.POS.some( ( register, index ) => {
-          if(register._id === pos._id){
+          if(register.id === pos.id){
               this.syncContext.currentStore.POS.splice(index, 1);
               return true;
           }
       });
       await this.update(this.syncContext.currentStore);
+  }
+
+  public isThisLastPosClosingInStore(posId: string): boolean {
+    let isLastPos = true;
+    this.syncContext.currentStore.POS.some( pos => {
+        if(pos.openTime && pos.id !== posId){
+            isLastPos = false;
+            return true;
+        }
+    });
+    return isLastPos;
   }
 }

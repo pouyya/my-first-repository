@@ -1,7 +1,6 @@
 import { ModalController } from 'ionic-angular';
 import { MoveCashModal } from './modals/move-cash';
 import { CashMovement } from './../../model/store';
-// import { PosService } from './../../services/posService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { SalesModule } from "../../modules/salesModule";
 import { PageModule } from './../../metadata/pageModule';
@@ -9,6 +8,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { PrintService } from '../../services/printService';
 import { SyncContext } from "../../services/SyncContext";
+import { StoreService } from "../../services/storeService";
 
 @SecurityModule(SecurityAccessRightRepo.MoneyInOut)
 @PageModule(() => SalesModule)
@@ -23,7 +23,7 @@ export class MoneyInOut {
   constructor(
     private cdr: ChangeDetectorRef,
     private modalCtrl: ModalController,
-    // private posService: PosService,
+    private storeService: StoreService,
     private printService: PrintService,
     private syncContext: SyncContext) {
     this.cdr.detach();
@@ -50,7 +50,7 @@ export class MoneyInOut {
         this.printService.openCashDrawer();
 
         this.syncContext.currentPos.cashMovements.push(cash);
-        this.posService.update(this.syncContext.currentPos).catch(error => {
+        this.storeService.updatePOS(this.syncContext.currentPos).catch(error => {
           throw new Error(error);
         }).then(() => this.btnDisabled = false);
       }

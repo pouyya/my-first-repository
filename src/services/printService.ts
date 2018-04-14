@@ -203,7 +203,7 @@ export class PrintService {
     const printerSales = [];
     printers.forEach(printer => {
       if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
-        (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos._id) == -1)) {
+        (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
         return;
       }
       let items = [];

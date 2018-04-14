@@ -132,14 +132,14 @@ export class DataBootstrapper {
 
       currentPos = currentStore.POS[0];
 
-      this._user.currentPos = currentPos._id;
+      this._user.currentPos = currentPos.id;
       this._user.currentStore = currentStore._id;
       this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });
       this.userService.setSession(this._user);
     } else {
         currentStore = await this.storeService.get(this._user.currentStore);
         currentStore.POS.some( pos => {
-          if(pos._id === this._user.currentPos){
+          if(pos.id === this._user.currentPos){
             currentPos = pos;
             return true;
           }

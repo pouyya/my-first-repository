@@ -221,7 +221,7 @@ export class ClockInOutPage {
     }
 
     this.employee.workingStatus.status = button.next;
-    this.employee.workingStatus.posId = this.syncContext.currentPos._id;
+    this.employee.workingStatus.posId = this.syncContext.currentPos.id;
     this.employee.workingStatus.storeId = this.syncContext.currentStore._id;
     this.employee.workingStatus.time = new Date();
 

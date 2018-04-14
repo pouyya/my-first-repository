@@ -152,7 +152,8 @@ import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 import { TranslateService } from "@ngx-translate/core";
-import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
+import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
+import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
 
 @NgModule({
   declarations: [
@@ -189,6 +190,7 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     MoneyInOut,
     MoveCashModal,
     DeviceDetailsModal,
+    PosDetailsModal,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
     PriceBooksPage,
@@ -292,6 +294,7 @@ import {DeviceDetailsModal} from "../pages/store-details/modals/device-details";
     PaymentsPage,
     CashModal,
     DeviceDetailsModal,
+    PosDetailsModal,
     CreditCardModal,
     ParkSale,
     OpenCloseRegister,

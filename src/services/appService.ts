@@ -4,32 +4,34 @@ import { PluginService } from './pluginService';
 import { Sale } from './../model/sale';
 import { SalesServices } from './salesService';
 import { Store, POS } from './../model/store';
-// import { PosService } from './posService';
-import { Injectable, Inject, forwardRef } from "@angular/core";
+import { Injectable, Inject, forwardRef, Injector } from "@angular/core";
 import { SalesTaxService } from "./salesTaxService";
 import { GroupSalesTaxService } from "./groupSalesTaxService";
 import { SalesTax } from "../model/salesTax";
 import { GroupSaleTax } from "../model/groupSalesTax";
-import {StoreService} from "./storeService";
-import {SyncContext} from "./SyncContext";
+import { StoreService } from "./../services/storeService";
 
 @Injectable()
 export class AppService {
+  private storeService: StoreService;
   constructor(
     private salesTaxService: SalesTaxService,
     private groupSalesTaxService: GroupSalesTaxService,
-    private storeService: StoreService,
     private pluginService: PluginService,
     private productService: ProductService,
     private serviceService: ServiceService,
-    private syncContext: SyncContext,
+    private injector: Injector,
     @Inject(forwardRef(() => SalesServices)) private salesService: SalesServices) {
+      setTimeout(() => {
+          this.storeService = this.injector.get(StoreService);
+      });
   }
 
   /**
    * Get list of all salesTax and GroupSalesTaxes combined
    * @returns {Promise<T>}
    */
+
   public async loadSalesAndGroupTaxes(): Promise<any> {
     try {
       let taxes: Array<any> = [];
@@ -56,7 +58,7 @@ export class AppService {
           if (registers.length > 0) {
             let posDeletions: Promise<any>[] = [];
             registers.forEach((register, index) => {
-              this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Sale[]) => {
+              this.salesService.findBy({ selector: { posId: register.id } }).then((sales: Sale[]) => {
                 if (sales.length > 0) {
                   let salesDeletion: Promise<any>[] = [];
                   sales.forEach(sale => {
@@ -93,7 +95,7 @@ export class AppService {
       if (store.POS.length > 0) {
         let posDeletions: Array<Promise<any>> = [];
           store.POS.forEach((register, index) => {
-          this.salesService.findBy({ selector: { posId: register._id } }).then((sales: Array<Sale>) => {
+          this.salesService.findBy({ selector: { posId: register.id } }).then((sales: Array<Sale>) => {
             if (sales.length > 0) {
               let salesDeletion: Array<Promise<any>> = [];
               sales.forEach(sale => {
@@ -125,7 +127,7 @@ export class AppService {
    */
   public async deletePos(pos: POS): Promise<any> {
     try {
-      let sales = await this.salesService.findBy({ selector: { posId: pos._id } });
+      let sales = await this.salesService.findBy({ selector: { posId: pos.id } });
       if(sales.length > 0) {
         let salesDeletion: Promise<any>[] = [];
         sales.forEach(sale => salesDeletion.push(this.salesService.delete(sale)));
