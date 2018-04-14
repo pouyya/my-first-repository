@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
 import { StoreService } from './storeService';
-// import { PosService } from './posService';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
@@ -50,7 +49,6 @@ export class PrintService {
   constructor(
     private platformService: PlatformService,
     private storeService: StoreService,
-    // private posService: PosService,
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
@@ -170,8 +168,6 @@ export class PrintService {
 
     const receiptPrinters = this.getPrinterSales(sale, DeviceType.ReceiptPrinter);
     if (receiptPrinters.length) {
-      const pos = this.storeService.getPosById(sale.posID);
-      // var store = this.syncContext.currentStore; // NEED TO CONFIRM
       var currentAccountsetting = await this.accountSettingService.getCurrentSetting();
 
       const promises = [];

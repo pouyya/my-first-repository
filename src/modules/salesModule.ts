@@ -1,6 +1,5 @@
 import { LogOut } from './dataSync/pages/logout/logout';
 import { Closures } from './../pages/closures/closures';
-// import { PosService } from './../services/posService';
 import { Injector } from '@angular/core';
 import { ToastController } from 'ionic-angular';
 import { ClockInOutPage } from './../pages/clock-in-out/clock-in-out';
@@ -14,11 +13,9 @@ import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
-  // private posService: PosService;
 
   public setInjector(injector: Injector): void {
     this.toastCtrl = injector.get(ToastController);
-    // this.posService = injector.get(PosService);
   }
 
   public pages: Array<PageSettingsInterface | ModalPageInterface> = [

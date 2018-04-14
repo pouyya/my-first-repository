@@ -22,7 +22,6 @@ export class StoreDetailsPage {
   public item: Store = new Store();
   public isNew: boolean = true;
   public action: string = 'Add';
-  public registers: Array<POS> = [];
   public devices: Device[] = [];
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];

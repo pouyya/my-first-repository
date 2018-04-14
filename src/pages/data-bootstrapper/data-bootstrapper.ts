@@ -106,7 +106,7 @@ export class DataBootstrapper {
         await loader.present();
         this._user = await this.userService.getDeviceUser();
         let store = await this.storeService.get(this._user.currentStore);
-        this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`
+        this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`;
         loader.dismiss();
         await this.openNextPage();
       }

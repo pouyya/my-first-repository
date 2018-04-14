@@ -1,12 +1,10 @@
 import _ from 'lodash';
 import { POS } from './../../../model/store';
-// import { PosService } from './../../../services/posService';
 import { StoreService } from './../../../services/storeService';
 import { Store } from './../../../model/store';
 import { ViewController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
-import { UserSession } from '../../../modules/dataSync/model/UserSession';
 import { UserService } from '../../../modules/dataSync/services/userService';
 import { SharedService } from "../../../services/_sharedService";
 import { SecurityAccessRightRepo } from "../../../model/securityAccessRightRepo";
@@ -24,7 +22,6 @@ export class SwitchPosModal {
   public storeId: string;
   public posId: string;
   public currentStore: any;
-  public registers: Array<any> = [];
 
   constructor(
     private viewCtrl: ViewController,
@@ -44,22 +41,26 @@ export class SwitchPosModal {
 
     await loader.present();
 
-    this.posId = this.syncContext.currentPos.id;
-    this.storeId = this.syncContext.currentStore._id;
+    this.posId = this.syncContext.currentPos && this.syncContext.currentPos.id;
+    this.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
 
-    let stores = await this.storeService.getAll();
-    // Promise.all([this.storeService.getAll(), this.posService.getAll()]);
+    this.stores = await this.storeService.getAll();
 
-    stores.some((store: Store) => {
-      // var registers = _.filter(allPos, (pos) => pos.storeId === store._id);
-      if (store.POS.length > 0) {
-        // this.stores.push({ ...store, registers });
-        if (store._id === this.storeId) {
-          this.currentStore = store;
-          return true;
+    if(!this.storeId){
+      this.currentStore = this.stores[0];
+      this.storeId = this.currentStore._id;
+      this.posId = this.currentStore.POS.length && this.currentStore.POS[0].id;
+    }else{
+      this.stores.some((store: Store) => {
+        if (store.POS.length > 0) {
+          if (store._id === this.storeId) {
+              this.currentStore = store;
+              return true;
+          }
         }
-      }
-    });
+      });
+    }
+
     await loader.dismiss();
   }
 

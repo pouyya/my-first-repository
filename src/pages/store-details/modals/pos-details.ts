@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { AppService } from './../../../services/appService';
 import { NavParams, ViewController, ToastController, AlertController, LoadingController } from 'ionic-angular';
 import { POS } from './../../../model/store';
@@ -12,7 +13,6 @@ export class PosDetailsModal {
   public pos: POS = new POS();
   public isNew: boolean = true;
   public action: string = 'Add';
-  private navPopCallback: any;
   private appService: AppService;
 
   constructor(
@@ -37,6 +37,7 @@ export class PosDetailsModal {
 
   public async save() {
     if (this.isNew) {
+      this.pos.id = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSSS');
       this.viewCtrl.dismiss({ status : 'add', pos: this.pos});
     } else {
       this.viewCtrl.dismiss({ status : 'edit', pos: this.pos});

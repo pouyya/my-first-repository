@@ -103,12 +103,9 @@ export class AppService {
                 salesDeletion.push(this.salesService.delete(sale));
               });
               Promise.all(salesDeletion).then(() => {
-                // transfer control back to outer loop
-                // posDeletions.push(this.posService.delete(register));
                   store.POS.splice(index, 1);
               });
             } else {
-              // posDeletions.push(this.posService.delete(register));
                 store.POS.splice(index, 1);
             }
           }).catch(error => posDeletions.push(Promise.resolve()));
