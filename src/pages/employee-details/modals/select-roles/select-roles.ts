@@ -45,6 +45,7 @@ export class SelectRolesModal {
   }
 
   public applypermissionlevel() {
+    this.store.role=this.selectedRole._id;
     if(this.selectedRole._id)
     {
       if(!this.store.selected){
