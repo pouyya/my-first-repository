@@ -12,10 +12,10 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, NavParams, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
-import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons'; 
+import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
@@ -78,7 +78,6 @@ export class ProductDetails {
   private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
-		private alertCtrl: AlertController,
 		private productService: ProductService,
 		private categoryService: CategoryService,
 		private storeService: StoreService,
@@ -397,12 +396,5 @@ export class ProductDetails {
 		return;
 	}
 
-	public alert(title: string, message: string){
-		let alert = this.alertCtrl.create({
-			title,
-			subTitle: message,
-			buttons: ['OK']
-		  });
-		  alert.present();
-	}
+
 }
