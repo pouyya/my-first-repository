@@ -395,6 +395,4 @@ export class ProductDetails {
 		this.navCtrl.pop();
 		return;
 	}
-
-
 }
