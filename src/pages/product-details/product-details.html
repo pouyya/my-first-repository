@@ -54,7 +54,8 @@
         <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true" name="category" *ngIf="this.categories.length>0">
           <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
         </ion-select>
-        <ion-input type="text" disabled="true" *ngIf="this.categories.length==0" (click)="alertifblank('no category','There is no category. Please add category first')">
+        <ion-input type="text" disabled="true" *ngIf="this.categories.length==0" >
+            no category. There is no category. Please add category first
         </ion-input>
       </ion-item>
       <ion-item>
@@ -62,7 +63,8 @@
         <ion-select [(ngModel)]="productItem.brandId" name="brandId" *ngIf="this.brands.length>0">
           <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
         </ion-select>
-        <ion-input type="text" disabled="true" *ngIf="this.brands.length==0" (click)="alertifblank('no brand','There is no brand. Please add brand first')">
+        <ion-input type="text" disabled="true" *ngIf="this.brands.length==0" >
+            no brand.There is no brand. Please add brand first
         </ion-input>
       </ion-item>
       <ion-item>
@@ -70,7 +72,8 @@
         <ion-select [(ngModel)]="productItem.supplierId" name="supplierId" *ngIf="this.suppliers.length>0">
           <ion-option *ngFor="let supplier of suppliers" value={{supplier._id}}>{{supplier.name}}</ion-option>
         </ion-select>
-        <ion-input type="text" disabled="true" *ngIf="this.suppliers.length==0" (click)="alertifblank('no supplier','There is no supplier. Please add supplier first')">
+        <ion-input type="text" disabled="true" *ngIf="this.suppliers.length==0" >
+            no supplier. There is no supplier. Please add supplier first        
         </ion-input>
       </ion-item>
     </ion-list>
