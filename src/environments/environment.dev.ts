@@ -13,6 +13,9 @@ export const ENV = {
     appId: "22d41469",
     appChannel: "Master"
   },
+  mail: {
+    baseUrl: "https://simpleposapp-dev.azurewebsites.net/"
+  },
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
   }

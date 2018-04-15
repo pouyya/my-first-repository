@@ -17,6 +17,8 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
+import { RestProvider } from '../../provider/rest/rest';
+import { UserService } from '../../modules/dataSync/services/userService';
 import {
   NavController,
   NavParams,
@@ -36,6 +38,7 @@ import {
 @Component({
   selector: 'order-details',
   templateUrl: 'order-details.html',
+  providers: [RestProvider],
   styles: [`
     .center-message {
       text-align: center;
@@ -75,7 +78,9 @@ export class OrderDetails {
     private orderService: OrderService,
     private stockHistoryService: StockHistoryService,
     private fountainService: FountainService,
-    private priceBookService: PriceBookService
+    private priceBookService: PriceBookService,
+    private emailProvider:RestProvider,
+    private userService: UserService
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');
@@ -347,5 +352,14 @@ export class OrderDetails {
     }).present();
     console.error(err);
     this.navCtrl.pop();
+  }
+
+  async sendEmail()
+  {
+    let token = await this.userService.getUserToken();
+    //let token2="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL3NpbXBsZXBvc2FwcC1kZXYuYXp1cmV3ZWJzaXRlcy5uZXQvaWRlbnRpdHkiLCJhdWQiOiJodHRwczovL3NpbXBsZXBvc2FwcC1kZXYuYXp1cmV3ZWJzaXRlcy5uZXQvaWRlbnRpdHkvcmVzb3VyY2VzIiwiZXhwIjoxNTIzNTI0NTY4LCJuYmYiOjE1MjM1MjA5NjgsImNsaWVudF9pZCI6InNpbXBsZXBvcyIsInNjb3BlIjoib3BlbmlkIiwic3ViIjoiNzQ5M2I1MmEtZTA3OC00ZDFmLTg0MTctYjNlNjRlM2U0YzNmIiwiYXV0aF90aW1lIjoxNTIzNTIwOTY4LCJpZHAiOiJpZHNydiIsImFtciI6WyJwYXNzd29yZCJdfQ.QAOxGPgtY8LrQhqub8zP8NankwA2pnjb5mEKX6kf1kbwTXC-2iLu_-48NDErR04tyTbxVSGlx2m0XsGKZGV3gBwdI1ihRV3M74aENcTVGCEk027zg-79X4_9T7gjqo-X8isxUYC3OhMTI28TNN6stMIatlorydQz01TOhlBboppeXFl_bX28PfOduZxI6fotQFYLQzwTWKn_Yv-vynbsUMdnhVuleKFN24KiQWYNsczDKOZjx6ixgquL1JSVcYal63AOl4BEicUj8ljhVfTVqsptXobU3ouEx7LFRdTVPWZXna8fLEzVRK34rX_TZahXLpHFQiILJqpCI2AWpkb2kw";
+    let data ={ "To":"saber.tabatabaee@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":"[]" };
+    this.emailProvider.sendEmail(data,token).subscribe(res => res);
+
   }
 }

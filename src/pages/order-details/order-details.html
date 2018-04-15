@@ -83,7 +83,7 @@ p<ion-header>
             <h5>Ordered placed on {{ order.createdAt | localDate:'MMM d, YYYY, h:mm a' }}</h5>
           </ion-col>
           <ion-col col-md-12>
-            <button ion-button>Email Order</button>
+            <button ion-button (click)="sendEmail()">Email Order</button>
             <button ion-button>Download PDF</button>
           </ion-col>
         </ion-row>

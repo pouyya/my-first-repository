@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Response } from '@angular/http';
-
+import { ConfigService } from '../../modules/dataSync/services/configService';
 
 
 
@@ -15,13 +15,9 @@ export class RestProvider {
   constructor(public http: HttpClient) {
     console.log('Hello RestProvider Provider');
   }
-    
-  apiUrl = 'https://simpleposapp-dev.azurewebsites.net/api/common/';
-  apiAction = 'SendEmail';
-
 
   public sendEmail(data,token) {
-    let URL =this.apiUrl+this.apiAction;
+    let URL =ConfigService.mailServerUrl();
 
     return  this.http.post(URL, JSON.stringify(data), {
       headers: new HttpHeaders().set('Authorization', token)
