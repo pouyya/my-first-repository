@@ -3,6 +3,7 @@ import { DBMode, DBModeEnum } from "@simpleidea/simplepos-core/dist/metadata/dbM
 
  export enum Reason {
   Purchase = 'Purchase',
+  InitialValue = 'InitialValue',
   NewStock = 'NewStock',
   Return = 'Return',
   Transfer = 'Transfer',

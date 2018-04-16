@@ -351,10 +351,10 @@ export class BasketComponent {
 
     localStorage.removeItem('sale_id');
 
-    this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos._id);
-    this.paymentCompleted.emit();
-    this.customer = null;
-    this.calculateAndSync();
+      this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
+      this.paymentCompleted.emit();
+      this.customer = null;
+      this.calculateAndSync();
   }
 
   private async printSale(forcePrint: boolean, sale: Sale) {
