@@ -3,10 +3,7 @@
     <ion-title>
       {{ store.name }}
     </ion-title>
-    <ion-buttons start>
-      <ion-toggle [(ngModel)]="store.selected"></ion-toggle>
-    </ion-buttons>
-    <ion-buttons end>
+    <ion-buttons>
       <button ion-button (click)="dismiss()">
         <ion-icon name="close"></ion-icon>
       </button>
@@ -21,7 +18,7 @@
     </ion-list-header>
     <ion-item *ngFor="let role of roles">
       <ion-label>{{role.name}}</ion-label>
-      <ion-radio [value]="role"></ion-radio>
+      <ion-radio [value]="role" (click)="applypermissionlevel()" ></ion-radio>
     </ion-item>
   </ion-list>
 </ion-content>

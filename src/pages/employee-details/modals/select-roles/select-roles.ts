@@ -43,4 +43,20 @@ export class SelectRolesModal {
   public dismiss() {
     this.viewCtrl.dismiss({ selectedRole: this.selectedRole._id });
   }
+
+  public applypermissionlevel() {
+    if(this.selectedRole._id)
+    {
+      if(!this.store.selected){
+        this.store.selected=true;
+      }
+    }
+    else
+    {
+      this.store.selected=false;
+    }
+
+
+  }
+  
 }

@@ -49,18 +49,21 @@
   </form>
 
   <!-- Roles Selectables [start] -->
-  <ion-grid *ngIf="!employee.isAdmin">
-    <ion-row>
-      <ion-col col-md-12>
-        <mat-grid-list cols="12" rowHeight="1:1" gutterSize="10px">
-          <mat-grid-tile [ngClass]="{ 'store-tile': !store.selected, 'store-tile-selected': store.selected }" *ngFor="let store of stores; let i = index"
-            (tap)="selectRoles(store, i)" [colspan]="1" [rowspan]="1" tapabble>
-            {{store.name}}
-          </mat-grid-tile>
-        </mat-grid-list>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list *ngIf="!employee.isAdmin">
+    <ion-item *ngFor="let store of stores; let i = index">
+      <ion-card class="clickable" (click)="selectRoles(store, i)" [ngClass]="{ 'store-tile': !store.selected, 'store-tile-selected': store.selected }" >
+        <ion-card-header text-center>
+          {{store.name}}
+        </ion-card-header>
+        <ion-card-content text-center>
+          <span>{{store.name}} description</span>
+        </ion-card-content>
+        <ion-card-content text-center>
+          {{store.name}} other employees can appear here
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
   <!-- Roles Selectables [end] -->
-
+  
 </ion-content>
