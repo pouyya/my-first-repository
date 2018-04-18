@@ -4,6 +4,7 @@ export class EscPrinterConnectorProvider {
     static socket: any;
 
     constructor(private ip: string, private port: number) {
+        this.port = Number(this.port);
         if ((<any>window).Socket && !EscPrinterConnectorProvider.socket) {
             EscPrinterConnectorProvider.socket = new (<any>window).Socket();
             EscPrinterConnectorProvider.socket.onClose = this.onClose;
