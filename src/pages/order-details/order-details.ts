@@ -17,7 +17,7 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { MailService } from '../../modules/dataSync/services/mailservice'
+import { MailService } from '../../modules/dataSync/services/mailService'
 import { UserService } from '../../modules/dataSync/services/userService';
 import {
   NavController,
@@ -361,24 +361,27 @@ export class OrderDetails {
 
     await loader.present();
 
-    const attachments = {
+    let data :Object = {
         FileName: "Code.txt", 
         FileContent: "amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=" 
       };
+      
+    let attachments=Object.keys(data).map(key=>data[key]).map(x => x.substr(0, x.length - 4));
+      //attachments=Object.values(Array(attachments));
 
     let mailOptions = {
       //from: "Me", 
-      //To: this.userService.getUser.name, 
-      To: "saber.tabatabaee@gmail.com",
+      To: "berimbasket@gmail.com",
       Subject: "An email with attachments",
       Body: "someText",
-      //html: "",
       Attachments: attachments
     };
 
     let token = await this.userService.getUserToken();
-    //mailOptions ={ "To":"saber.tabatabaee@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":"[{ \"FileName\":\"Code.txt\", \"FileContent\":\"amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=\" }]" };
-    this.mailService.sendEmail(mailOptions,token).subscribe(
+    //let mailOptionsOrginal ={ "To":"berimbasket@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":[{ "FileName":"Code.txt", "FileContent":"amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=" }] };
+    let mailOptionsOrginal ={ "To":"berimbasket@gmail.com", "Subject":"Hi", "Body":"asdasdasd"};
+    //this.mailService.sendEmail(mailOptions,token).subscribe(
+    this.mailService.sendEmail(mailOptionsOrginal,token).subscribe(
       async data => {
         loader.dismiss();
       },

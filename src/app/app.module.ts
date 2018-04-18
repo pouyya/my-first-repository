@@ -125,7 +125,7 @@ import { SharedService } from './../services/_sharedService';
 import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
-import { MailService } from '../modules/dataSync/services/mailservice'
+import { MailService } from '../modules/dataSync/services/mailService'
 import { CustomerService } from './../services/customerService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
