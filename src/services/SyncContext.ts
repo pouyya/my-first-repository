@@ -1,6 +1,5 @@
 import { Store, POS } from "../model/store";
 import { Injectable } from "@angular/core";
-import { SharedService } from "./_sharedService";
 import { DBService } from "@simpleidea/simplepos-core/dist/services/dBService";
 import { DBDataEvent } from "@simpleidea/simplepos-core/dist/db/dbDataEvent";
 
@@ -15,7 +14,7 @@ export class SyncContext implements ISyncContext {
   private _currentStore: Store = null;
   private _currentPos: POS = null;
 
-  constructor(private _sharedService: SharedService){}
+  constructor(){}
 
   private initDBChange() {
     DBService.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
@@ -38,7 +37,6 @@ export class SyncContext implements ISyncContext {
 
   public set currentStore(store: Store){
     this._currentStore = store;
-    this._sharedService.publish('storeOrPosChanged', { currentStore: store, currentPos: this.currentPos });
   }
 
   public get currentPos(): POS {
@@ -52,6 +50,5 @@ export class SyncContext implements ISyncContext {
           return true;
       }
     });
-    this._sharedService.publish('storeOrPosChanged', { currentStore: this._currentStore, currentPos: this._currentPos });
   }
 }
