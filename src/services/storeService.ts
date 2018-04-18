@@ -41,12 +41,7 @@ export class StoreService extends BaseEntityService<Store> {
     }
   }
 
-  public async update(store: Store): Promise<any> {
-    return await super.update(store);
-  }
-
-
-  public openRegister(register: POS, openingAmount: number, openingNote: string): Promise<POS> {
+  public openRegister(register: POS, openingAmount: number, openingNote: string): Promise<Store> {
       register.openTime = moment().utc().format();
       register.status = true;
       register.openingAmount = Number(openingAmount);
