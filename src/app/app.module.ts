@@ -4,7 +4,6 @@ import { ErrorHandler, NgModule, Injector } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -146,7 +145,7 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
-import { RestProvider } from '../provider/rest/rest';
+import { MailService } from '../modules/dataSync/services/mailservice'
 
 @NgModule({
   declarations: [
@@ -211,7 +210,6 @@ import { RestProvider } from '../provider/rest/rest';
   ],
   imports: [
     FormsModule,
-    HttpClientModule,
     HttpModule,
     IonicModule.forRoot(SimplePOSApp,
       {
@@ -318,7 +316,6 @@ import { RestProvider } from '../provider/rest/rest';
   providers: [
     IonicErrorHandler,
     { provide: ErrorHandler, useClass: AppErrorHandler },
-    HttpClientModule,
     StatusBar,
     SplashScreen,
     Network,
@@ -371,7 +368,7 @@ import { RestProvider } from '../provider/rest/rest';
     PaymentService,
     AuditService,
     SyncContext,
-    RestProvider
+    MailService
   ]
 })
 export class AppModule {

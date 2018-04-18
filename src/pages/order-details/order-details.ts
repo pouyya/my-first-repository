@@ -17,7 +17,7 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { RestProvider } from '../../provider/rest/rest';
+import { MailService } from '../../modules/dataSync/services/mailservice'
 import { UserService } from '../../modules/dataSync/services/userService';
 import {
   NavController,
@@ -38,7 +38,6 @@ import {
 @Component({
   selector: 'order-details',
   templateUrl: 'order-details.html',
-  providers: [RestProvider],
   styles: [`
     .center-message {
       text-align: center;
@@ -79,7 +78,7 @@ export class OrderDetails {
     private stockHistoryService: StockHistoryService,
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
-    private emailProvider:RestProvider,
+    private mailService: MailService,
     private userService: UserService
   ) {
     this.cdr.detach();
@@ -354,8 +353,14 @@ export class OrderDetails {
     this.navCtrl.pop();
   }
 
-  async sendEmail()
+  public async sendEmail()
   {
+    let loader = this.loadingCtrl.create({
+      content: 'Sending Email...'
+    });
+
+    await loader.present();
+
     const attachments = {
         FileName: "Code.txt", 
         FileContent: "amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=" 
@@ -363,10 +368,8 @@ export class OrderDetails {
 
     let mailOptions = {
       //from: "Me", 
-      //    sender address
       //To: this.userService.getUser.name, 
       To: "saber.tabatabaee@gmail.com",
-      // list of receivers
       Subject: "An email with attachments",
       Body: "someText",
       //html: "",
@@ -375,7 +378,18 @@ export class OrderDetails {
 
     let token = await this.userService.getUserToken();
     //mailOptions ={ "To":"saber.tabatabaee@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":"[{ \"FileName\":\"Code.txt\", \"FileContent\":\"amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=\" }]" };
-    let res= this.emailProvider.sendEmail(mailOptions,token).subscribe(res => {return res});
+    this.mailService.sendEmail(mailOptions,token).subscribe(
+      async data => {
+        loader.dismiss();
+      },
+      error => {
+        let toast = this.toastCtrl.create({
+          message: 'Error Sending Email!',
+          duration: 3000
+        });
+        toast.present();
+        loader.dismiss();
+      });
 
   }
 }
