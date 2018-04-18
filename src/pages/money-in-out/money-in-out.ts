@@ -38,6 +38,7 @@ export class MoneyInOut {
   }
 
   public openMoveCashModal(reason: string): void {
+    this.printService.openCashDrawer();
     let modal = this.modalCtrl.create(MoveCashModal, { reason });
     modal.onDidDismiss((cash: CashMovement) => {
       if (cash) {
@@ -46,8 +47,6 @@ export class MoneyInOut {
         if (!this.syncContext.currentPos.cashMovements) {
           this.syncContext.currentPos.cashMovements = new Array<CashMovement>();
         }
-
-        this.printService.openCashDrawer();
 
         this.syncContext.currentPos.cashMovements.push(cash);
         this.storeService.updatePOS(this.syncContext.currentPos).catch(error => {
