@@ -21,7 +21,6 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee } from '../../model/employee';
 import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
-import { RestProvider } from '../../provider/rest/rest';
 
 
 @SecurityModule()
@@ -60,6 +59,7 @@ export class Sales implements OnDestroy {
   private alive: boolean = true;
 
   constructor(
+    private userService: UserService,
     private _sharedService: SharedService,
     private employeeService: EmployeeService,
     private salesService: SalesServices,
@@ -69,8 +69,7 @@ export class Sales implements OnDestroy {
     private posService: PosService,
     private navParams: NavParams,
     private cacheService: CacheService,
-    private syncContext: SyncContext,
-    private userService: UserService
+    private syncContext: SyncContext
   ) {
     this.cdr.detach();
   }
