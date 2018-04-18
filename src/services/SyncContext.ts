@@ -1,6 +1,8 @@
 import { Store, POS } from "../model/store";
 import { Injectable } from "@angular/core";
 import { SharedService } from "./_sharedService";
+import { DBService } from "@simpleidea/simplepos-core/dist/services/dBService";
+import { DBDataEvent } from "@simpleidea/simplepos-core/dist/db/dbDataEvent";
 
 export interface ISyncContext {
   currentStore: Store;
@@ -15,17 +17,19 @@ export class SyncContext implements ISyncContext {
 
   constructor(private _sharedService: SharedService){}
 
-  public initSubscribe(){
-    this._sharedService
-      .getSubscribe('storeOrPosChanged')
-      .subscribe((data) => {
-        if (data.hasOwnProperty('currentStore')) {
-          this.currentStore = data.currentStore;
+  private initDBChange() {
+    DBService.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
+        if (data.isValid && data.entityTypeName == "Store" && data.data._id === this.currentStore._id) {
+            this._currentStore = data.data;
+            this.setCurrentPos(this._currentPos.id);
         }
-        if (data.hasOwnProperty('currentPos')){
-          this.currentPos = data.currentPos;
-        }
-      });
+    });
+  }
+
+  public initialize(currentStore: Store, currentPosId: string, reInit: boolean = false){
+    this._currentStore = currentStore;
+    this.setCurrentPos(currentPosId);
+    !reInit && this.initDBChange();
   }
 
   public get currentStore(): Store {
@@ -34,14 +38,20 @@ export class SyncContext implements ISyncContext {
 
   public set currentStore(store: Store){
     this._currentStore = store;
+    this._sharedService.publish('storeOrPosChanged', { currentStore: store, currentPos: this.currentPos });
   }
 
   public get currentPos(): POS {
     return this._currentPos;
   }
 
-  public set currentPos(pos: POS){
-    this._currentPos = pos;
+  public setCurrentPos(posId: string){
+    this._currentStore.POS && this._currentStore.POS.some( pos => {
+      if(pos.id === posId){
+          this._currentPos = pos;
+          return true;
+      }
+    });
+    this._sharedService.publish('storeOrPosChanged', { currentStore: this._currentStore, currentPos: this._currentPos });
   }
-
 }

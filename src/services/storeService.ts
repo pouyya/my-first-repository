@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Store, POS } from '../model/store'
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { SyncContext } from "./SyncContext";
-import { SharedService } from "./_sharedService";
 import * as moment from "moment-timezone";
 
 @Injectable()
@@ -11,8 +10,7 @@ export class StoreService extends BaseEntityService<Store> {
 
   constructor(
     private appService: AppService,
-    private syncContext: SyncContext,
-    private _sharedService: SharedService) {
+    private syncContext: SyncContext) {
     super(Store);
   }
 
@@ -44,9 +42,6 @@ export class StoreService extends BaseEntityService<Store> {
   }
 
   public async update(store: Store): Promise<any> {
-    if (this.syncContext.currentStore._id == store._id) {
-      this._sharedService.publish('storeOrPosChanged', { currentStore: store, currentPos: this.syncContext.currentPos });
-    }
     return await super.update(store);
   }
 
@@ -79,9 +74,6 @@ export class StoreService extends BaseEntityService<Store> {
       }
     });
     await this.update(currentStore);
-    if(currentStore._id === this.syncContext.currentStore._id && pos.id == this.syncContext.currentPos.id){
-        this._sharedService.publish('storeOrPosChanged', {currentPos: pos, currentStore : this.syncContext.currentStore});
-    }
   }
 
   public async removePOS(pos: POS){
