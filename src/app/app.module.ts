@@ -125,6 +125,7 @@ import { SharedService } from './../services/_sharedService';
 import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
+import { MailService } from '../modules/dataSync/services/mailservice'
 import { CustomerService } from './../services/customerService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
@@ -145,7 +146,6 @@ import { AccountSettingService } from './../modules/dataSync/services/accountSet
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
-import { MailService } from '../modules/dataSync/services/mailservice'
 
 @NgModule({
   declarations: [
@@ -367,8 +367,8 @@ import { MailService } from '../modules/dataSync/services/mailservice'
     ResourceService,
     PaymentService,
     AuditService,
-    SyncContext,
-    MailService
+    MailService,
+    SyncContext
   ]
 })
 export class AppModule {
