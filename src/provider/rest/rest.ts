@@ -17,7 +17,7 @@ export class RestProvider {
   }
 
   public sendEmail(data,token) {
-    let URL =ConfigService.mailServerUrl();
+    let URL =ConfigService.mailServer();
 
     return  this.http.post(URL, JSON.stringify(data), {
       headers: new HttpHeaders().set('Authorization', token)

@@ -356,10 +356,26 @@ export class OrderDetails {
 
   async sendEmail()
   {
+    const attachments = {
+        FileName: "Code.txt", 
+        FileContent: "amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=" 
+      };
+
+    let mailOptions = {
+      //from: "Me", 
+      //    sender address
+      //To: this.userService.getUser.name, 
+      To: "saber.tabatabaee@gmail.com",
+      // list of receivers
+      Subject: "An email with attachments",
+      Body: "someText",
+      //html: "",
+      Attachments: attachments
+    };
+
     let token = await this.userService.getUserToken();
-    //let token2="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSIsImtpZCI6ImEzck1VZ01Gdjl0UGNsTGE2eUYzekFrZnF1RSJ9.eyJpc3MiOiJodHRwczovL3NpbXBsZXBvc2FwcC1kZXYuYXp1cmV3ZWJzaXRlcy5uZXQvaWRlbnRpdHkiLCJhdWQiOiJodHRwczovL3NpbXBsZXBvc2FwcC1kZXYuYXp1cmV3ZWJzaXRlcy5uZXQvaWRlbnRpdHkvcmVzb3VyY2VzIiwiZXhwIjoxNTIzNTI0NTY4LCJuYmYiOjE1MjM1MjA5NjgsImNsaWVudF9pZCI6InNpbXBsZXBvcyIsInNjb3BlIjoib3BlbmlkIiwic3ViIjoiNzQ5M2I1MmEtZTA3OC00ZDFmLTg0MTctYjNlNjRlM2U0YzNmIiwiYXV0aF90aW1lIjoxNTIzNTIwOTY4LCJpZHAiOiJpZHNydiIsImFtciI6WyJwYXNzd29yZCJdfQ.QAOxGPgtY8LrQhqub8zP8NankwA2pnjb5mEKX6kf1kbwTXC-2iLu_-48NDErR04tyTbxVSGlx2m0XsGKZGV3gBwdI1ihRV3M74aENcTVGCEk027zg-79X4_9T7gjqo-X8isxUYC3OhMTI28TNN6stMIatlorydQz01TOhlBboppeXFl_bX28PfOduZxI6fotQFYLQzwTWKn_Yv-vynbsUMdnhVuleKFN24KiQWYNsczDKOZjx6ixgquL1JSVcYal63AOl4BEicUj8ljhVfTVqsptXobU3ouEx7LFRdTVPWZXna8fLEzVRK34rX_TZahXLpHFQiILJqpCI2AWpkb2kw";
-    let data ={ "To":"saber.tabatabaee@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":"[]" };
-    this.emailProvider.sendEmail(data,token).subscribe(res => res);
+    //mailOptions ={ "To":"saber.tabatabaee@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":"[{ \"FileName\":\"Code.txt\", \"FileContent\":\"amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=\" }]" };
+    let res= this.emailProvider.sendEmail(mailOptions,token).subscribe(res => {return res});
 
   }
 }

@@ -96,13 +96,11 @@ export class ConfigService {
         return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
     }
 
-    static mailServerUrl(): string {
-        return ConfigService.serverBaseUrl() + "/api/common/SendEmail";
+    static mailServer(): string {
+        return ConfigService.apiServerBaseUrl() + "/common/SendEmail";
     }
 
-    static serverBaseUrl(): string {
-        return ENV.mail.baseUrl;
-    }
+    
     static securityServerBaseUrl(): string {
         return ENV.security.serverBaseUrl;
     }
