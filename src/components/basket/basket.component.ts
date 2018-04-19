@@ -84,9 +84,9 @@ export class BasketComponent {
     private ngZone: NgZone) {
   }
 
-  public async initializeSale(sale: Sale, evaluationContext: EvaluationContext) {
+  public async initializeSale(sale: Sale, evaluationContext: EvaluationContext, shouldLoadBaseData: boolean = true) {
 
-    await this.loadBaseData();
+    shouldLoadBaseData && await this.loadBaseData();
 
     this.evaluationContext = evaluationContext;
 
