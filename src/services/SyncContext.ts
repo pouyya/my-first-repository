@@ -10,27 +10,27 @@ export interface ISyncContext {
 
 @Injectable()
 export class SyncContext implements ISyncContext {
-  private isInitialized: boolean = false;
+  private isSubscribed: boolean = false;
   private _currentStore: Store = null;
   private _currentPos: POS = null;
 
   constructor(){}
 
-  private initDBChange() {
+  private subscribeCriticalDBLiveProgress() {
     DBService.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
         if (data.isValid && data.entityTypeName == "Store" && data.data._id === this.currentStore._id) {
-            this._currentStore = data.data;
-            this.setCurrentPos(this._currentPos.id);
+            this.currentStore = data.data;
+            this.setCurrentPos(this.currentPos.id);
         }
     });
   }
 
   public initialize(currentStore: Store, currentPosId: string){
-    this._currentStore = currentStore;
+    this.currentStore = currentStore;
     this.setCurrentPos(currentPosId);
-    if(!this.isInitialized){
-        this.isInitialized = true;
-        this.initDBChange();
+    if(!this.isSubscribed){
+      this.subscribeCriticalDBLiveProgress();
+      this.isSubscribed = true;
     }
   }
 
@@ -47,7 +47,7 @@ export class SyncContext implements ISyncContext {
   }
 
   public setCurrentPos(posId: string){
-    this._currentStore.POS && this._currentStore.POS.some( pos => {
+    this.currentStore.POS && this.currentStore.POS.some( pos => {
       if(pos.id === posId){
           this._currentPos = pos;
           return true;
