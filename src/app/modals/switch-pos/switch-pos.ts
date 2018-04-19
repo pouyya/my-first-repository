@@ -6,7 +6,6 @@ import { ViewController, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { GlobalConstants } from './../../../metadata/globalConstants';
 import { UserService } from '../../../modules/dataSync/services/userService';
-import { SharedService } from "../../../services/_sharedService";
 import { SecurityAccessRightRepo } from "../../../model/securityAccessRightRepo";
 import { SecurityModule } from "../../../infra/security/securityModule";
 import { SyncContext } from '../../../services/SyncContext';
@@ -28,7 +27,6 @@ export class SwitchPosModal {
     private storeService: StoreService,
     private loading: LoadingController,
     private userService: UserService,
-    private _sharedService: SharedService,
     private syncContext: SyncContext
   ) {
   }
@@ -73,7 +71,7 @@ export class SwitchPosModal {
     var user = await this.userService.getUser();
     user.currentStore = storeId;
     user.currentPos = register.id;
-    this._sharedService.publish('storeOrPosChanged', { currentStore: this.currentStore, currentPos: register });
+    this.syncContext.initialize(this.currentStore, register.id);
     let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
     let currentStore = _.pick(this.stores.find((store) => store._id == storeId), GlobalConstants.STORE_SESSION_PROPS);
     this.userService.setSession(user);

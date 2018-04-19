@@ -119,7 +119,7 @@ export class Sales implements OnDestroy {
     if (!this.syncContext.currentPos.status) {
       let openingAmount = Number(this.navParams.get('openingAmount'));
       if (openingAmount >= 0) {
-        this.syncContext.currentPos = await this.storeService.openRegister(this.syncContext.currentPos, openingAmount, this.navParams.get('openingNotes'));
+        await this.storeService.openRegister(this.syncContext.currentPos, openingAmount, this.navParams.get('openingNotes'));
         await this.loadRegister();
       }
     } else {
@@ -222,7 +222,7 @@ export class Sales implements OnDestroy {
   public async openRegister() {
     let loader = this.loading.create({ content: 'Opening Register...' });
     await loader.present();
-    this.syncContext.currentPos = await this.storeService.openRegister(this.syncContext.currentPos,
+    await this.storeService.openRegister(this.syncContext.currentPos,
       this.syncContext.currentPos.openingAmount, this.syncContext.currentPos.openingNote);
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
