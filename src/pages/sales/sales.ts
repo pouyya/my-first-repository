@@ -103,15 +103,10 @@ export class Sales implements OnDestroy {
       });
     this._sharedService
       .getSubscribe('updateSale')
-      .subscribe( (data) => {
-          setTimeout(async ()=> {
-              let loader = this.loading.create({
-                  content: 'Loading Sales..',
-              });
-              await loader.present();
-              await this._basketComponent.initializeSale(data.sale, this.evaluationContext, false);
-              await loader.dismiss();
-          }, 1000);
+      .subscribe((data) => {
+        setTimeout(async () => {
+          await this._basketComponent.initializeSale(data.sale, this.evaluationContext, false);
+        }, 100);
       });
 
     this.user = await this.userService.getUser();
