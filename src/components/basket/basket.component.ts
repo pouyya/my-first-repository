@@ -53,6 +53,7 @@ export class BasketComponent {
   private sale: Sale;
   private selectedItem;
   private evaluationContext: EvaluationContext;
+  private baseDataLoaded: boolean = false;
 
   private get refund(): boolean {
     return this.balance < 0
@@ -86,7 +87,10 @@ export class BasketComponent {
 
   public async initializeSale(sale: Sale, evaluationContext: EvaluationContext) {
 
-    await this.loadBaseData();
+    if (!this.baseDataLoaded) {
+      await this.loadBaseData();
+      this.baseDataLoaded = true;
+    }
 
     this.evaluationContext = evaluationContext;
 
@@ -109,8 +113,8 @@ export class BasketComponent {
     this.sale.completed = false;
     this.generatePaymentBtnText();
     this.calculateTotalExternalValues();
-    this.sale.items.some( (item: any) => {
-      if(item.isSelected){
+    this.sale.items.some((item: any) => {
+      if (item.isSelected) {
         this.selectItem(item);
         return true;
       }
@@ -183,10 +187,10 @@ export class BasketComponent {
         currentSaleItem.employeeId == basketItem.employeeId);
     });
     let item;
-    if(index !== -1){
+    if (index !== -1) {
       item = saleItems[index];
       item.quantity++;
-    }else{
+    } else {
       item = basketItem;
       saleItems.push(item);
     }
@@ -206,7 +210,7 @@ export class BasketComponent {
     ).catch(error => console.error(error));
   }
 
-  private selectItem(item: BasketItem){
+  private selectItem(item: BasketItem) {
     this.selectedItem && delete this.selectedItem.isSelected;
     this.selectedItem = item;
     this.selectedItem.isSelected = true;
@@ -351,10 +355,10 @@ export class BasketComponent {
 
     localStorage.removeItem('sale_id');
 
-      this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
-      this.paymentCompleted.emit();
-      this.customer = null;
-      this.calculateAndSync();
+    this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
+    this.paymentCompleted.emit();
+    this.customer = null;
+    this.calculateAndSync();
   }
 
   private async printSale(forcePrint: boolean, sale: Sale) {

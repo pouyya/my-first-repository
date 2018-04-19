@@ -21,7 +21,7 @@ export class SalesModule implements ModuleBase {
   public pages: Array<PageSettingsInterface | ModalPageInterface> = [
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Open/Close', icon: 'bookmarks', component: OpenCloseRegister },
-    { title: 'Sales History', icon: 'list', component: SalesHistoryPage },
+    { title: 'Sales History', icon: 'list', component: SalesHistoryPage, pushNavigation: true },
     { title: 'Bumps', icon: 'list', component: Bumps },
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut },
