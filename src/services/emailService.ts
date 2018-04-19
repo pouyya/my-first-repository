@@ -1,7 +1,7 @@
-import { ConfigService } from './configService';
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
-import { UserService } from './userService';
+import { UserService } from '../modules/dataSync/services/userService';
+import { ConfigService } from '../modules/dataSync/services/configService';
 
 @Injectable()
 export class EmailService {

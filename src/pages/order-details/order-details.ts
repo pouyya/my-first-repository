@@ -17,8 +17,8 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { EmailService } from '../../modules/dataSync/services/emailService'
 import { UserService } from '../../modules/dataSync/services/userService';
+import { EmailService } from '../../services/emailService';
 import {
   NavController,
   NavParams,
