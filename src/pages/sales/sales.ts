@@ -105,7 +105,7 @@ export class Sales implements OnDestroy {
       .getSubscribe('updateSale')
       .subscribe((data) => {
         setTimeout(async () => {
-          await this._basketComponent.initializeSale(data.sale, this.evaluationContext, false);
+          await this._basketComponent.initializeSale(data.sale, this.evaluationContext);
         }, 100);
       });
 
