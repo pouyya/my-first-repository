@@ -131,7 +131,7 @@ import { SharedService } from './../services/_sharedService';
 import { StoreEvaluationProvider } from './../services/StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './../services/DaysOfWeekEvaluationProvider';
 import { AppErrorHandler } from './../services/AppErrorHandler';
-import { MailService } from '../modules/dataSync/services/mailService'
+import { EmailService } from '../modules/dataSync/services/emailService'
 import { CustomerService } from './../services/customerService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
@@ -395,7 +395,7 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
     ResourceService,
     PaymentService,
     AuditService,
-    MailService,
+    EmailService,
     SyncContext
   ]
 })

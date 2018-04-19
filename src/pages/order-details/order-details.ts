@@ -17,7 +17,7 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { MailService } from '../../modules/dataSync/services/mailService'
+import { EmailService } from '../../modules/dataSync/services/emailService'
 import { UserService } from '../../modules/dataSync/services/userService';
 import {
   NavController,
@@ -78,7 +78,7 @@ export class OrderDetails {
     private stockHistoryService: StockHistoryService,
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
-    private mailService: MailService,
+    private emailService: EmailService,
     private userService: UserService
   ) {
     this.cdr.detach();
@@ -201,7 +201,7 @@ export class OrderDetails {
         quantity: Number(product.quantity)
       };
     });
-    await this.orderService.add(<Order> _.omit(this.order, [ 'UIState' ]));
+    await this.orderService.add(<Order>_.omit(this.order, ['UIState']));
     this.navCtrl.pop();
     return;
   }
@@ -353,46 +353,16 @@ export class OrderDetails {
     this.navCtrl.pop();
   }
 
-  public async sendEmail()
-  {
+  public async sendEmail() {
+
     let loader = this.loadingCtrl.create({
       content: 'Sending Email...'
     });
 
     await loader.present();
 
-    let data :Object = {
-        FileName: "Code.txt", 
-        FileContent: "amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=" 
-      };
-      
-    let attachments=Object.keys(data).map(key=>data[key]).map(x => x.substr(0, x.length - 4));
-      //attachments=Object.values(Array(attachments));
+    await this.emailService.sendEmail(this.supplier.email, 'Order :' + this.order.orderNumber, 'Content Of Order HERE');
 
-    let mailOptions = {
-      //from: "Me", 
-      To: "berimbasket@gmail.com",
-      Subject: "An email with attachments",
-      Body: "someText",
-      Attachments: attachments
-    };
-
-    let token = await this.userService.getUserToken();
-    //let mailOptionsOrginal ={ "To":"berimbasket@gmail.com", "Subject":"Hi", "Body":"asdasdasd", "Attachments":[{ "FileName":"Code.txt", "FileContent":"amptcGVnIC1pIENhcmEubXA0IC12ZiBmcHM9MjkuOTcgImIlMDRkLnBuZyINCg0KQlMJMTYNClNQCTEwMA0KTFkJMg0KTkRTCTk2DQo=" }] };
-    let mailOptionsOrginal ={ "To":"berimbasket@gmail.com", "Subject":"Hi", "Body":"asdasdasd"};
-    //this.mailService.sendEmail(mailOptions,token).subscribe(
-    this.mailService.sendEmail(mailOptionsOrginal,token).subscribe(
-      async data => {
-        loader.dismiss();
-      },
-      error => {
-        let toast = this.toastCtrl.create({
-          message: 'Error Sending Email!',
-          duration: 3000
-        });
-        toast.present();
-        loader.dismiss();
-      });
-
+    await loader.dismiss();
   }
 }

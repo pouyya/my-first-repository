@@ -96,7 +96,7 @@ export class ConfigService {
         return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
     }
 
-    static mailServer(): string {
+    static mailSenderAPI(): string {
         return ConfigService.apiServerBaseUrl() + "/common/SendEmail";
     }
 
