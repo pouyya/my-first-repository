@@ -71,7 +71,7 @@ export class SwitchPosModal {
     var user = await this.userService.getUser();
     user.currentStore = storeId;
     user.currentPos = register.id;
-    this.syncContext.initialize(this.currentStore, register.id, true);
+    this.syncContext.initialize(this.currentStore, register.id);
     let currentPos = _.pick(register, GlobalConstants.POS_SESSION_PROPS);
     let currentStore = _.pick(this.stores.find((store) => store._id == storeId), GlobalConstants.STORE_SESSION_PROPS);
     this.userService.setSession(user);

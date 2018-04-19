@@ -10,7 +10,7 @@ export interface ISyncContext {
 
 @Injectable()
 export class SyncContext implements ISyncContext {
-
+  private isInitialized: boolean = false;
   private _currentStore: Store = null;
   private _currentPos: POS = null;
 
@@ -25,10 +25,13 @@ export class SyncContext implements ISyncContext {
     });
   }
 
-  public initialize(currentStore: Store, currentPosId: string, reInit: boolean = false){
+  public initialize(currentStore: Store, currentPosId: string){
     this._currentStore = currentStore;
     this.setCurrentPos(currentPosId);
-    !reInit && this.initDBChange();
+    if(!this.isInitialized){
+        this.isInitialized = true;
+        this.initDBChange();
+    }
   }
 
   public get currentStore(): Store {
