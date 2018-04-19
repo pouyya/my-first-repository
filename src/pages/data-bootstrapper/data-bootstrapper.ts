@@ -12,8 +12,8 @@ import { AccountSettingService } from './../../modules/dataSync/services/account
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { DateTimeService } from '../../services/dateTimeService';
 import { StoreService } from '../../services/storeService';
-import { SharedService } from '../../services/_sharedService';
 import { TranslateService } from '@ngx-translate/core';
+import { SyncContext } from "../../services/SyncContext";
 
 @Component({
   selector: 'data-bootstrapper',
@@ -35,7 +35,6 @@ export class DataBootstrapper {
     private accountSettingService: AccountSettingService,
     private dateTimeService: DateTimeService,
     private storeService: StoreService,
-    private _sharedService: SharedService,
     private userService: UserService,
     private employeeService: EmployeeService,
     private pluginService: PluginService,
@@ -44,7 +43,8 @@ export class DataBootstrapper {
     private toastCtrl: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private syncContext: SyncContext
   ) {
     this.cdr.detach();
     this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`
@@ -134,7 +134,6 @@ export class DataBootstrapper {
 
       this._user.currentPos = currentPos.id;
       this._user.currentStore = currentStore._id;
-      this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });
       this.userService.setSession(this._user);
     } else {
         currentStore = await this.storeService.get(this._user.currentStore);
@@ -145,8 +144,7 @@ export class DataBootstrapper {
           }
         });
     }
-
-    this._sharedService.publish('storeOrPosChanged', { currentStore, currentPos });
+    this.syncContext.initialize(currentStore, currentPos.id);
     this.navCtrl.setRoot(this._initialPage);
   }
 

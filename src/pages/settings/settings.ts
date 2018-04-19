@@ -5,7 +5,6 @@ import { ToastController, LoadingController } from 'ionic-angular';
 import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
-import { SharedService } from './../../services/_sharedService';
 import { AppService } from "../../services/appService";
 import { DateTimeService } from './../../services/dateTimeService';
 import { SecurityModule } from '../../infra/security/securityModule';
@@ -37,7 +36,6 @@ export class Settings {
   constructor(
     private userService: UserService,
     private appService: AppService,
-    private _sharedService: SharedService,
     private zone: NgZone,
     private toast: ToastController,
     private loading: LoadingController,
@@ -93,8 +91,6 @@ export class Settings {
     this.currentTax = this.newTax
     var taxes: Array<any> = await this.appService.loadSalesAndGroupTaxes();
     this.salesTaxes = taxes;
-
-    this._sharedService.publish('screenAwake', { screenAwake: this.accountSetting.screenAwake });
 
     this.accountSetting.taxType = this.selectedType == 0 ? false : true;
     this.accountSetting.defaultTax = this.newTax._id;

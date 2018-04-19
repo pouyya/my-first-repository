@@ -400,7 +400,6 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
 export class AppModule {
   constructor(private syncContext: SyncContext, injector: Injector) {
     ServiceLocator.injector = injector;
-    this.syncContext.initSubscribe();
   }
 }
 
