@@ -14,21 +14,21 @@ export class SyncContext implements ISyncContext {
   private _currentStore: Store = null;
   private _currentPos: POS = null;
 
-  constructor(){}
+  constructor() { }
 
   private subscribeCriticalDBLiveProgress() {
     DBService.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
-        if (data.isValid && data.entityTypeName == "Store" && data.data._id === this.currentStore._id) {
-            this.currentStore = data.data;
-            this.setCurrentPos(this.currentPos.id);
-        }
+      if (data.isValid && data.entityTypeName == "Store" && data.data._id === this.currentStore._id) {
+        this.currentStore = data.data;
+        this.setCurrentPos(this.currentPos.id);
+      }
     });
   }
 
-  public initialize(currentStore: Store, currentPosId: string){
+  public initialize(currentStore: Store, currentPosId: string) {
     this.currentStore = currentStore;
     this.setCurrentPos(currentPosId);
-    if(!this.isSubscribed){
+    if (!this.isSubscribed) {
       this.subscribeCriticalDBLiveProgress();
       this.isSubscribed = true;
     }
@@ -38,7 +38,7 @@ export class SyncContext implements ISyncContext {
     return this._currentStore;
   }
 
-  public set currentStore(store: Store){
+  public set currentStore(store: Store) {
     this._currentStore = store;
   }
 
@@ -46,12 +46,18 @@ export class SyncContext implements ISyncContext {
     return this._currentPos;
   }
 
-  public setCurrentPos(posId: string){
-    this.currentStore.POS && this.currentStore.POS.some( pos => {
-      if(pos.id === posId){
+  public setCurrentPos(posId: string) {
+    if (this.currentStore.POS && this.currentStore.POS.length > 0) {
+      if (!this.currentStore.POS.some(pos => {
+        if (pos.id === posId) {
           this._currentPos = pos;
           return true;
+        }
+      })) {
+        this._currentPos = this.currentStore.POS[0];
       }
-    });
+    } else {
+      this._currentPos = null;
+    }
   }
 }
