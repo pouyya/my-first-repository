@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
 import { StoreService } from './storeService';
-import { PosService } from './posService';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
@@ -15,6 +14,11 @@ import { CategoryService } from './categoryService';
 import { BasketItem } from '../model/basketItem';
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 import { SyncContext } from "./SyncContext";
+import { TranslateService } from '@ngx-translate/core';
+import _ from 'lodash';
+import { DeviceType } from "../model/store";
+import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
+import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -45,16 +49,18 @@ export class PrintService {
   constructor(
     private platformService: PlatformService,
     private storeService: StoreService,
-    private posService: PosService,
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
-    private syncContext: SyncContext) {
+    private syncContext: SyncContext,
+    private translateService: TranslateService) {
   }
 
   public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
-    var currentStore = this.syncContext.currentStore;
-
+    const receiptPrinters = this.getPrinterSales(null, DeviceType.ReceiptPrinter);
+    if (!receiptPrinters.length) {
+      return false;
+    }
     var context = new EndOfDayProviderContext();
     context.openFloat = closure.openingAmount;
     context.posName = closure.posName;
@@ -107,8 +113,13 @@ export class PrintService {
       .setFooter()
       .cutPaper();
 
-    await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
-      .write(provider.getResult());
+    const promises = [];
+    receiptPrinters.forEach(receiptPrinter => {
+      promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
+        .write(provider.getResult()));
+    });
+
+    await Promise.all(promises);
   }
 
   private getPerProduct(saleItem: BasketItem) {
@@ -148,52 +159,112 @@ export class PrintService {
     return { id, name };
   }
 
+
   public async printReceipt(sale: Sale) {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
     }
 
-    var currentStore = this.syncContext.currentStore;
-
-    if (!TypeHelper.isNullOrWhitespace(currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(currentStore.printerPort)) {
-
-      var pos = await this.posService.get(sale.posID);
-      var store = await this.storeService.get(pos.storeId);
+    const receiptPrinters = this.getPrinterSales(sale, DeviceType.ReceiptPrinter);
+    if (receiptPrinters.length) {
       var currentAccountsetting = await this.accountSettingService.getCurrentSetting();
 
-      var receiptProviderContext = new ReceiptProviderContext();
-      receiptProviderContext.sale = sale;
-      receiptProviderContext.invoiceTitle = currentAccountsetting.name;
-      receiptProviderContext.shopName = store.name;
-      receiptProviderContext.phoneNumber = store.phone;
-      receiptProviderContext.taxFileNumber = store.taxFileNumber;
-      receiptProviderContext.footerMessage = currentAccountsetting.receiptFooterMessage;
+      const promises = [];
+      receiptPrinters.forEach(receiptPrinter => {
+        var receiptProviderContext = new ReceiptProviderContext();
+        receiptProviderContext.sale = receiptPrinter.sale;
+        receiptProviderContext.invoiceTitle = currentAccountsetting.name;
+        receiptProviderContext.shopName = this.syncContext.currentStore.name;
+        receiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
+        receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
+        receiptProviderContext.footerMessage = currentAccountsetting.receiptFooterMessage;
 
-      var receiptProvider = new ReceiptProvider(receiptProviderContext)
-        .setHeader()
-        .setBody()
-        .setFooter()
-        .cutPaper();
+        var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService)
+          .setHeader()
+          .setBody()
+          .setFooter()
+          .cutPaper();
 
-      await new EscPrinterConnectorProvider(currentStore.printerIP, currentStore.printerPort)
-        .write(receiptProvider.getResult());
+        promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
+          .write(receiptProvider.getResult()));
+      });
+
+      await Promise.all(promises);
     }
   }
 
-  public async openCashDrawer() {
-    
+  private getPrinterSales(sale: Sale, deviceType: DeviceType) {
+    const printers = this.syncContext.currentStore.devices.filter(device => device.type == deviceType);
+    const printerSales = [];
+    printers.forEach(printer => {
+      if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
+        (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
+        return;
+      }
+      let items = [];
+      if (sale) {
+        if (!printer.associatedPurchasableItemIds || !printer.associatedPurchasableItemIds.length) {
+          items = sale.items;
+        } else {
+          items = sale.items.filter(item => printer.associatedPurchasableItemIds.indexOf(item.purchsableItemId) !== -1);
+        }
+      }
+      if (items.length) {
+        const newSale = _.cloneDeep(sale);
+        newSale.items = items;
+        printerSales.push({ printer, sale: newSale });
+      } else if (!sale) {
+        printerSales.push({ printer });
+      }
+    });
+    return printerSales;
+  }
+
+  public async printProductionLinePrinter(sale: Sale) {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
     }
 
-    var currentStore = this.syncContext.currentStore;
+    const currentAccountsettings = await this.accountSettingService.getCurrentSetting();
+    const printerSales = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
+    printerSales.forEach(printerSale => {
+      const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
+      productionLinePrinterProviderContext.sale = printerSale.sale;
+      productionLinePrinterProviderContext.invoiceTitle = currentAccountsettings.name;
+      productionLinePrinterProviderContext.shopName = this.syncContext.currentStore.name;
+      productionLinePrinterProviderContext.phoneNumber = this.syncContext.currentStore.phone;
+      productionLinePrinterProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
+      productionLinePrinterProviderContext.footerMessage = currentAccountsettings.receiptFooterMessage;
 
-    if (!TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerIP) && !TypeHelper.isNullOrWhitespace(this.syncContext.currentStore.printerPort)) {
+      var productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, this.translateService)
+        .setHeader()
+        .setBody()
+        .setFooter()
+        .cutPaper();
 
-      await new EscPrinterConnectorProvider(this.syncContext.currentStore.printerIP, this.syncContext.currentStore.printerPort)
-        .write(new ReceiptProvider(null).openCashDrawer().getResult());
+      new EscPrinterConnectorProvider(printerSale.printer.ipAddress, printerSale.printer.printerPort)
+        .write(productionLinePrinterProvider.getResult());
+    });
+  }
+
+  public async openCashDrawer() {
+
+    if (!this.platformService.isMobileDevice()) {
+      console.warn("can't print on dekstop");
+      return;
+    }
+
+    const receiptPrinters = this.getPrinterSales(null, DeviceType.ReceiptPrinter);
+
+    if (receiptPrinters.length) {
+      const promises = [];
+      receiptPrinters.forEach(receiptPrinter => {
+        promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
+          .write(new ReceiptProvider(null, this.translateService).openCashDrawer().getResult()));
+      });
+      await Promise.all(promises);
     }
   }
 }

@@ -90,7 +90,7 @@
         <ion-input type="text" [formControl]="phyZipCode" name="phyZipCode"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select [formControl]="phyCountry" title="Country" valueField="code" textField="name" [items]="countries">
+        <searchable-ion-select [isModal]="true" [formControl]="phyCountry" title="Country" valueField="code" textField="name" [items]="countries">
         </searchable-ion-select>
       </ion-item>
     </ion-list>
@@ -123,15 +123,10 @@
           <ion-input type="text" [formControl]="posZipCode" name="posZipCode"></ion-input>
         </ion-item>
         <ion-item>
-          <searchable-ion-select
-            [(ngModel)]="posCountry"
-            title="Country"
-            valueField="code"
-            textField="name"
-            [items]="countries">
+          <searchable-ion-select [isModal]="true" [formControl]="posCountry" title="Country" valueField="code" textField="name" [items]="countries">
           </searchable-ion-select>
         </ion-item>
       </ion-list>
     </div>
   </form>
-  </ion-content>
+</ion-content>

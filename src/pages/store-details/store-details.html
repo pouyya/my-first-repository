@@ -14,7 +14,7 @@
 </ion-header>
 
 <ion-content>
-  <form (ngSubmit)="onSubmit()" #storeForm="ngForm">
+  <form (ngSubmit)="onSubmitAndReturn(true)" #storeForm="ngForm">
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
@@ -38,19 +38,11 @@
         <ion-input type="text" [(ngModel)]="item.supplierReturnNum" name="supplierReturnNum"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Printer IP</ion-label>
-        <ion-input type="text" [(ngModel)]="item.printerIP" name="printerIP"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Printer Port</ion-label>
-        <ion-input type="number" [(ngModel)]="item.printerPort" name="printerPort"></ion-input>
-      </ion-item>
-      <ion-item>
         <ion-label class="item-name">Printer At End of Sale</ion-label>
         <ion-toggle [(ngModel)]="item.printReceiptAtEndOfSale" name="printReceiptAtEndOfSale"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Tax File Number</ion-label>
+        <ion-label class="item-name">{{ 'TaxFileNumber' | translator }}</ion-label>
         <ion-input type="number" [(ngModel)]="item.taxFileNumber" name="taxFileNumber"></ion-input>
       </ion-item>
     </ion-list>
@@ -78,7 +70,8 @@
         <ion-input type="text" [(ngModel)]="item.state" name="state"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name" [items]="countries">
+        <searchable-ion-select [isModal]="true" name="country" [(ngModel)]="item.country" title="Country" valueField="code" textField="name"
+          [items]="countries">
         </searchable-ion-select>
       </ion-item>
       <ion-item>
@@ -110,16 +103,16 @@
           <button ion-button color="primary" (click)="addRegister()">Add Register</button>
         </ion-col>
 
-        <ion-col col-md-12 *ngIf="registers && registers.length > 0">
-          <ion-list inset *ngFor="let pos of registers ; let idx=index">
+        <ion-col col-md-12 *ngIf="item.POS && item.POS.length > 0">
+          <ion-list inset *ngFor="let pos of item.POS ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showPos(pos)">
+              <ion-item (click)="showPos(pos, idx)">
                 <h2 class="item-title">{{pos.name}}
                   <span class="pull-right">{{pos.status ? 'Opened' : 'Closed'}}</span>
                 </h2>
               </ion-item>
               <ion-item-options>
-                <button ion-button color='danger' icon=left>
+                <button ion-button color='danger' icon=left (click)="removeAddedRegister(idx)">
                   <ion-icon name="trash"></ion-icon>
                   Delete
                 </button>
@@ -127,17 +120,30 @@
             </ion-item-sliding>
           </ion-list>
         </ion-col>
-        <ion-col col-md-12 *ngIf="posToAdd && posToAdd.length > 0">
-          <ion-list inset *ngFor="let pos of posToAdd ; let idx=index">
+      </ion-row>
+      <ion-row>
+
+        <ion-col col-md-6>
+          <h2>Devices</h2>
+        </ion-col>
+        <ion-col col-md-6 class="pull-right">
+          <button ion-button color="primary" (click)="addDevice()">Add Device</button>
+        </ion-col>
+
+        <ion-col col-md-12 *ngIf="item.devices && item.devices.length > 0">
+          <ion-list inset *ngFor="let device of item.devices ; let idx=index">
             <ion-item-sliding class="sliding">
-              <ion-item (click)="showPos(pos)">
-                <h2 class="item-title">{{pos.name}}
-                  <span class="pull-right">Closed</span>
+              <ion-item (click)="showDevice(device, idx)">
+                <ion-icon *ngIf="device.type == deviceType.ReceiptPrinter" name="print" item-left></ion-icon>
+                <ion-icon *ngIf="device.type == deviceType.ProductionLinePrinter" name="print" item-left></ion-icon>
+                <ion-icon *ngIf="device.type == deviceType.Bump" name="basket" item-left></ion-icon>
+                <h2 class="item-title">{{device.name}}
                 </h2>
               </ion-item>
               <ion-item-options>
-                <button ion-button color='danger' icon=left (click)="removeAddedRegister(idx)">
+                <button ion-button color='danger' icon=left (click)="removeDevice(idx)">
                   <ion-icon name="trash"></ion-icon>
+                  Delete
                 </button>
               </ion-item-options>
             </ion-item-sliding>

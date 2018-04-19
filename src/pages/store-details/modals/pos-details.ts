@@ -1,36 +1,34 @@
-import { AppService } from './../../services/appService';
-import { NavParams, NavController, ToastController, AlertController, LoadingController } from 'ionic-angular';
-import { PosService } from './../../services/posService';
-import { POS } from './../../model/pos';
-import { Component } from '@angular/core';
-import { UserService } from '../../modules/dataSync/services/userService';
-import { SyncContext } from "../../services/SyncContext";
+import * as moment from 'moment';
+import { AppService } from './../../../services/appService';
+import { NavParams, ViewController, ToastController, AlertController, LoadingController } from 'ionic-angular';
+import { POS } from './../../../model/store';
+import { Component, Injector } from '@angular/core';
+import { SyncContext } from "../../../services/SyncContext";
+import { StoreService } from "../../../services/storeService";
 @Component({
-  selector: "pos-details",
+  selector: "pos-details-modal",
   templateUrl: 'pos-details.html'
 })
-export class PosDetailsPage {
+export class PosDetailsModal {
   public pos: POS = new POS();
   public isNew: boolean = true;
   public action: string = 'Add';
-  private navPopCallback: any;
+  private appService: AppService;
 
   constructor(
     private navParams: NavParams,
-    private posService: PosService,
-    private navCtrl: NavController,
+    private storeService: StoreService,
+    private viewCtrl: ViewController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private loading: LoadingController,
-    private userService: UserService,
-    private appService: AppService,
-    private syncContext: SyncContext
+    private syncContext: SyncContext,
+    private injector: Injector
   ) { }
 
   ionViewDidEnter() {
     let pos = this.navParams.get('pos');
-    this.navPopCallback = this.navParams.get("pushCallback")
-    if (pos && pos._id !== "") {
+    if (pos && pos.id !== "") {
       this.pos = pos;
       this.isNew = false;
       this.action = 'Edit';
@@ -39,16 +37,19 @@ export class PosDetailsPage {
 
   public async save() {
     if (this.isNew) {
-      await this.navPopCallback(this.pos);
-      this.navCtrl.pop();
+      this.pos.id = moment().utc().format('YYYY-MM-DDTHH:mm:ss.SSSSSSS');
+      this.viewCtrl.dismiss({ status : 'add', pos: this.pos});
     } else {
-      await this.posService.update(this.pos);
-      this.navCtrl.pop();
+      this.viewCtrl.dismiss({ status : 'edit', pos: this.pos});
     }
   }
 
+  public dismiss() {
+      this.viewCtrl.dismiss(null);
+  }
+
   public async remove() {
-    let user = await this.userService.getUser();
+    this.appService = this.appService || this.injector.get(AppService);
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this POS ?',
       message: 'Deleting this POS, will delete all associated Sales and any Current Sale!',
@@ -56,7 +57,7 @@ export class PosDetailsPage {
         {
           text: 'Yes',
           handler: () => {
-            if (this.syncContext.currentPos._id == this.pos._id) {
+            if (this.syncContext.currentPos.id == this.pos.id) {
               let toast = this.toastCtrl.create({
                 message: 'ERROR: This is your current POS. Please switch to other one before deleting it.',
                 duration: 3000
@@ -74,7 +75,7 @@ export class PosDetailsPage {
                     duration: 3000
                   });
                   toast.present();
-                  this.navCtrl.pop();
+                  this.viewCtrl.dismiss({ status : 'remove', pos: this.pos});
                 }).catch(error => {
                   throw new Error(error);
                 }).then(() => loader.dismiss());

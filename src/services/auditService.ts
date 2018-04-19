@@ -17,7 +17,7 @@ export class AuditService extends BaseEntityService<Audit> {
   public async addAuditInfo(action: AuditAction, message: string): Promise<void> {
     let audit = new Audit();
     audit.storeId = this.syncContext.currentStore != null ? this.syncContext.currentStore._id : null;
-    audit.posId = this.syncContext.currentPos ? this.syncContext.currentPos._id : null;
+    audit.posId = this.syncContext.currentPos ? this.syncContext.currentPos.id : null;
     audit.action = action;
     audit.message = message;
     this.add(audit);

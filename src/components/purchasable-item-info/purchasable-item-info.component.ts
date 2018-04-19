@@ -6,10 +6,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'purchasable-item-info',
   templateUrl: 'purchasable-item-info.html',
-  styles: [`.scrollable-component {
-    overflow-y: auto;
-    height: 200px;
-  }`]
+  styleUrls : ['/component/purchasable-item-info/purchasable-item-info.scss']
 })
 export class PurchasableItemInfoComponent {
 
@@ -34,5 +31,9 @@ export class PurchasableItemInfoComponent {
 
   public addQuantity(item: BasketItem) {
     item.quantity = Number(item.quantity);
+  }
+
+  public removeModifier(index){
+    this.item.modifierItems.splice(index, 1);
   }
 }

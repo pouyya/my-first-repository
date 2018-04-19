@@ -46,22 +46,35 @@
         <ion-input type="number" [(ngModel)]="productItem.order" name="order"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label>Is Modifier?</ion-label>
+        <ion-checkbox [checked]="productItem.isModifier" name="isModifier" [(ngModel)]="productItem.isModifier" ></ion-checkbox>
+      </ion-item>
+      <ion-item> 
         <ion-label>Categories</ion-label>
-        <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true" name="category">
+        <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true" name="category" *ngIf="this.categories.length>0">
           <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
         </ion-select>
+        <ion-input type="text" disabled="true" *ngIf="this.categories.length==0" >
+            no category. There is no category. Please add category first
+        </ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Brand</ion-label>
-        <ion-select [(ngModel)]="productItem.brandId" name="brandId">
+        <ion-select [(ngModel)]="productItem.brandId" name="brandId" *ngIf="this.brands.length>0">
           <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
         </ion-select>
+        <ion-input type="text" disabled="true" *ngIf="this.brands.length==0" >
+            no brand.There is no brand. Please add brand first
+        </ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Supplier</ion-label>
-        <ion-select [(ngModel)]="productItem.supplierId" name="supplierId">
+        <ion-select [(ngModel)]="productItem.supplierId" name="supplierId" *ngIf="this.suppliers.length>0">
           <ion-option *ngFor="let supplier of suppliers" value={{supplier._id}}>{{supplier.name}}</ion-option>
         </ion-select>
+        <ion-input type="text" disabled="true" *ngIf="this.suppliers.length==0" >
+            no supplier. There is no supplier. Please add supplier first        
+        </ion-input>
       </ion-item>
     </ion-list>
     <div class="insert-image">
@@ -84,6 +97,9 @@
       <ion-item>
         <ion-label class="item-name">Description</ion-label>
         <ion-textarea class="item-text" [(ngModel)]="productItem.description" name="description"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <color-picker [selectedColor$]="color"></color-picker>
       </ion-item>
       <ion-item>
         <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
@@ -206,7 +222,7 @@
       <ion-col col-md-2><strong>Stock at hand</strong></ion-col>
     </ion-row>
     <ion-row *ngFor="let history of stockHistory[selectedStore]">
-      <ion-col col-md-2>{{ history.createdAt | localDate:'d MMM YYYY h:mm:ss a' }}</ion-col>
+      <ion-col col-md-2>{{ history.createdAt | localDate:'MMM DD, YYYY h:mm:ss a' }}</ion-col>
       <ion-col col-md-2>{{ history.createdBy }}</ion-col>
       <ion-col col-md-2>{{ history.reason }}</ion-col>
       <ion-col col-md-2>{{ history.value > 0 ? '+'+history.value : history.value }}</ion-col>

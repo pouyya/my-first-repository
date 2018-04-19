@@ -39,10 +39,10 @@
     <ion-col col-12>
       <ion-list *ngIf="sale">
         <!-- Items in the basket [start] -->
-        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="item.cssClass || ''" tappable>
+        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'selected' || '']" tappable>
 
-          <ion-grid>
-            <ion-row (click)="viewInfo(item, $index)">
+          <ion-grid (click)="viewInfo(item, $index)">
+            <ion-row>
               <ion-col col-md-11 offset-md-1 *ngIf="item.employeeId && employeesHash[item.employeeId] && (item.cssClass && (item.cssClass == 'group-item' || item.cssClass == 'group-item-start'))">
                 <h1>{{employeesHash[item.employeeId].firstName}}</h1>
               </ion-col>
@@ -65,6 +65,23 @@
                 <ion-icon click-stop-propagation name="trash" class="clickable" (click)="removeItem($index)"></ion-icon>
               </ion-col>
             </ion-row>
+            <ion-row class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
+              <ion-col col-md-1>
+                {{modifierItem.quantity}}
+              </ion-col>
+              <ion-col col-md-7 class="name">
+                {{modifierItem.name}}
+              </ion-col>
+              <ion-col col-md-3 class="pull-right">
+                <span>${{modifierItem.finalPrice * modifierItem.quantity | number : '1.2-2'}}</span>
+                <br/>
+                <span *ngIf="modifierItem.systemPrice != modifierItem.finalPrice">
+                  <small>
+                    <s>${{modifierItem.systemPrice * modifierItem.quantity | number : '1.2-2'}}</s>
+                  </small>
+                </span>
+              </ion-col>
+            </ion-row>
           </ion-grid>
         </ion-item>
         <!-- Items in the basket [end] -->
@@ -80,14 +97,7 @@
       <ion-textarea [(ngModel)]="sale.notes" rows="1" (change)="syncSale()" placeholder="Add Sale Notes...">
       </ion-textarea>
     </ion-col>
-    <ion-col col-md-3>
-      <button ion-button small color="primary" [disabled]="disablePaymentBtn" (click)="openDiscountSurchargeModal()">Discount/Surcharge</button>
-    </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">
-      <button ion-button small color="light" [disabled]="disablePaymentBtn || sale.appliedValues.length <= 0" (click)="viewAppliedValues()">
-        <ion-icon name="eye"></ion-icon>
-      </button>
-    </ion-col>
+    
 
     <ion-col col-md-3>Subtotal</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
@@ -102,6 +112,10 @@
       </ng-template>
     </ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.tax | number : '1.2-2'}}</ion-col>
+
+
+    <ion-col col-md-3 (click) = "externalValue().applyDiscount()">{{ totalExternalValue > 0 ? "Total Surcharge": "Total Discount" }}</ion-col>
+    <ion-col col-md-3 offset-md-6 class="pull-right">${{totalExternalValue | number : '1.2-2'}}</ion-col>
 
     <ion-col col-md-3 [ngPlural]="sale.items.length">
       <ng-template ngPluralCase="=0">Total

@@ -3,6 +3,7 @@ import { BaseTaxIterface } from './baseTaxIterface';
 
 export class BasketItem {
   purchsableItemId: string;
+  modifierItems: Array<BasketItem>;
   name: string;
   categoryId: string;
   quantity: number;
@@ -18,4 +19,5 @@ export class BasketItem {
   employeeId?: string | null;
   cssClass: string | null;
   stockControl: boolean;
+  isBumped: boolean;
 }

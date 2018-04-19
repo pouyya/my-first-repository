@@ -2,129 +2,163 @@ import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import { Component } from '@angular/core';
-import { AlertController, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import {
+  AlertController, LoadingController, ModalController, NavController, NavParams,
+  ToastController
+} from 'ionic-angular';
 import { StoreService } from "../../services/storeService";
-import { Store } from './../../model/store';
-import { PosDetailsPage } from './../pos-details/pos-details';
-import { POS } from './../../model/pos';
-import { PosService } from './../../services/posService';
+import { Store, POS, Device, DeviceType } from './../../model/store';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
+import { DeviceDetailsModal } from "./modals/device-details";
+import { PosDetailsModal } from "./modals/pos-details";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
-  templateUrl: 'store-details.html',
+  templateUrl: 'store-details.html'
 })
 export class StoreDetailsPage {
   public item: Store = new Store();
   public isNew: boolean = true;
   public action: string = 'Add';
-  public registers: Array<POS> = [];
+  public devices: Device[] = [];
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
+  public deviceType = DeviceType;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
+    private modalCtrl: ModalController,
     private storeService: StoreService,
     private employeeService: EmployeeService,
-    private posService: PosService,
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private resourceService: ResourceService) {
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     let loader = this.loading.create({
       content: 'Loading Store...'
     });
+    let store = this.navParams.get('store');
+    if (store) {
+        this.item = store;
+        this.isNew = false;
+        this.action = 'Edit';
+    }
 
-    loader.present().then(() => {
-      let promises: Array<Promise<any>> = [
-        // load store data
-        new Promise((resolve, reject) => {
-          let store = this.navParams.get('store');
-          if (store) {
-            this.item = store;
-            this.isNew = false;
-            this.action = 'Edit';
-
-            // load registers/POS
-            this.posService.findBy({ selector: { storeId: this.item._id } }).then((registers) => {
-              if (registers && registers.length) {
-                this.registers = registers;
-              }
-              resolve();
-            }).catch((error) => {
-              reject(new Error(error));
-            });
-          } else {
-            resolve();
-          }
-        }),
-        // load countries list
-        new Promise(async (resolve, reject) => {
-          this.countries = await this.resourceService.getCountries();
-          resolve();
-        })
-      ];
-
-      Promise.all(promises).then(function () {
-        loader.dismiss();
-      });
-
-    });
+    await loader.present();
+    this.countries = await this.resourceService.getCountries();
+    await loader.dismiss();
   }
 
-  async onSubmit() {
+  private async addPos(store: Store) {
+    if (this.posToAdd.length > 0) {
+      const pos: POS[] = this.posToAdd;
+      store.POS = store.POS
+    }
+    return;
+  };
+
+  public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
-    let addPos = async (storeId) => {
-      if (this.posToAdd.length > 0) {
-        let promises: any[] = [];
-        this.posToAdd.forEach(pos => {
-          pos.storeId = storeId;
-          promises.push(async () => await this.posService.add(pos));
-        });
-        return await Promise.all(promises.map(p => p()));
-      }
-      return;
-    };
+
     await loader.present();
     if (this.isNew) {
-      let info = await this.storeService.add(this.item);
-      loader.setContent('Saving Registers...');
-      await addPos(info._id);
+      await this.storeService.add(this.item);
     } else {
       await this.storeService.update(this.item);
-      loader.setContent('Saving Registers...');
-      await addPos(this.item._id);
     }
     loader.dismiss();
-    this.navCtrl.pop();
+
+    if (isReturn == true)
+      this.navCtrl.pop();
   }
 
-  public showPos(pos: POS) {
-    this.navCtrl.push(PosDetailsPage, {
-      pos: pos,
-      storeId: this.item._id,
-      pushCallback: null
+  public showPos(pos: POS, index: number) {
+    const newPos = _.clone(pos);
+    let modal = this.modalCtrl.create(PosDetailsModal, { pos : newPos });
+    modal.onDidDismiss((data: { status: string,  pos: POS }) => {
+        if (data) {
+          if(data.status == "remove"){
+            this.item.POS.splice(index, 1);
+          } else {
+              this.item.POS[index] = data.pos;
+          }
+        }
     });
+    modal.present();
   }
 
   public addRegister() {
-    let pushCallback = async (pos: POS) => pos && this.posToAdd.push(pos);
-    this.navCtrl.push(PosDetailsPage, {
-      pos: null,
-      storeId: this.item._id,
-      pushCallback: pushCallback
+    let modal = this.modalCtrl.create(PosDetailsModal);
+    modal.onDidDismiss((data: { status: string, pos: POS }) => {
+        if (data && data.status === "add") {
+            !this.item.POS && (this.item.POS = []);
+            this.item.POS.push(data.pos);
+        }
     });
+    modal.present();
   }
 
   public removeAddedRegister(index: number) {
-    this.posToAdd.splice(index, 1);
+    this.item.POS.splice(index, 1);
   }
 
+
+  // Device
+  public showDevice(device: Device, index: number) {
+    let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
+    modal.onDidDismiss((data: { status: string, device: Device }) => {
+      if (data && data.status == "remove") {
+        this.item.devices.splice(index, 1);
+      }
+    });
+    modal.present();
+  }
+
+  public addDevice() {
+    let modal = this.modalCtrl.create(DeviceDetailsModal);
+    modal.onDidDismiss((data: { status: string, device: Device }) => {
+      if (data && data.status === "add") {
+        !this.item.devices && (this.item.devices = []);
+        this.item.devices.push(data.device);
+      }
+    });
+    modal.present();
+  }
+
+  public async removeDevice(index: number) {
+    let confirm = this.alertCtrl.create({
+      title: 'Are you sure you want to delete this Device ?',
+      message: 'Deleting this device!',
+      buttons: [
+        {
+          text: 'Yes',
+          handler: () => {
+            let loader = this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
+
+            loader.present().then(() => {
+              this.item.devices.splice(index, 1);
+              let toast = this.toastCtrl.create({
+                message: 'Device has been deleted successfully',
+                duration: 3000
+              });
+              toast.present();
+              loader.dismiss();
+            });
+          }
+        }, 'No'
+      ]
+    });
+    confirm.present();
+  }
+
+  // Device
   public remove() {
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this store ?',

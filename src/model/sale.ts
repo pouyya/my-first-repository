@@ -8,6 +8,11 @@ interface PaymentsInterface {
   amount: number
 }
 
+export enum DiscountSurchargeTypes {
+  Surcharge = 'surcharge',
+  Discount = 'discount'
+}
+
 export interface DiscountSurchargeInterface {
   value: number;
   type: string;
@@ -38,6 +43,7 @@ export class Sale extends DBBasedEntity {
   public saleAppliedValue?: number;
   public saleAppliedType?: string;
   public appliedValues: DiscountSurchargeInterface[];
+  public isBumped: boolean;
 
   constructor() {
     super();
@@ -55,5 +61,6 @@ export class Sale extends DBBasedEntity {
     this.saleAppliedValue = 0;
     this.saleAppliedType = null;
     this.appliedValues = [];
+    this.isBumped = false;
   }
 }

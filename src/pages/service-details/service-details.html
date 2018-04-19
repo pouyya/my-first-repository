@@ -26,12 +26,19 @@
     <ion-item>
       <ion-label class="item-name">Display Order</ion-label>
       <ion-input type="number" [(ngModel)]="serviceItem.order"></ion-input>
-    </ion-item>      
+    </ion-item>
+    <ion-item>
+      <ion-label>Is Modifier?</ion-label>
+      <ion-checkbox [checked]="serviceItem.isModifier" name="isModifier" [(ngModel)]="serviceItem.isModifier" ></ion-checkbox>
+    </ion-item>
     <ion-item>
       <ion-label>Categories</ion-label>
       <ion-select [(ngModel)]="serviceItem.categoryIDs" multiple="true">
         <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
       </ion-select>
+    </ion-item>
+    <ion-item>
+      <color-picker [selectedColor$]="color"></color-picker>
     </ion-item>
     <ion-item>
       <button ion-button (click)="selectIcon()">Select Icon</button>

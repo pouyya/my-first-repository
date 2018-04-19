@@ -9,6 +9,8 @@ import { Component, NgZone } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { SupplierService } from '../../services/supplierService';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import {SearchableListing} from "../../modules/searchableListing";
+import {Order} from "../../model/order";
 
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;
@@ -20,10 +22,9 @@ interface RenderableOrder extends BaseOrder<OrderStatus> {
   selector: 'orders',
   templateUrl: 'orders.html'
 })
-export class Orders {
+export class Orders extends SearchableListing<Order>{
 
-  public orders: RenderableOrder[] = [];
-  public ordersBackup: RenderableOrder[] = [];
+  public items: RenderableOrder[] = [];
   public selectedOrderStatus: string = '';
   public orderStatuses: { value: string, text: string }[] = [
     { value: '', text: 'All' },
@@ -36,12 +37,6 @@ export class Orders {
     [OrderStatus.Cancelled]: { text: 'CANCELLED', color: 'danger' },
     [OrderStatus.Received]: { text: 'RECEIVED', color: 'secondary' }
   }
-
-  private readonly defaultLimit = 10;
-  private readonly defaultOffset = 0;
-  private limit: number;
-  private offset: number;
-  private filter: { orderNumber: string, status: OrderStatus };
   private stores: any;
   private suppliers: any;
 
@@ -50,14 +45,11 @@ export class Orders {
     private supplierService: SupplierService,
     private orderService: OrderService,
     private navCtrl: NavController,
-    private zone: NgZone
+    protected zone: NgZone
   ) {
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.filter = {
-      orderNumber: null,
-      status: null
-    };
+    super(orderService, zone, 'Order');
+    this.filter['status'] = null;
+    this.options = { sort: [{ _id: SortOptions.DESC }] }
   }
 
   async ionViewDidEnter() {
@@ -80,6 +72,7 @@ export class Orders {
       }
     ];
 
+    this.setDefaultSettings();
     let [stores, suppliers] = await Promise.all(loadEssentials.map(p => p()));
     this.stores = stores;
     this.suppliers = suppliers;
@@ -96,47 +89,33 @@ export class Orders {
     });
   }
 
-  public async searchByOrderNumber(event) {
-    this.orders = this.ordersBackup;
-    let val = event.target.value;
-    this.filter.orderNumber = val && val.trim() != '' ? val : null;
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.orders = [];
-    await this.fetchMore();
-  }
-
   public async searchByOrderStatus() {
-    this.orders = this.ordersBackup;
     this.filter.status = <OrderStatus>this.selectedOrderStatus || null;
-    this.limit = this.defaultLimit;
-    this.offset = this.defaultOffset;
-    this.orders = [];
+    this.setDefaultSettings();
     await this.fetchMore();
   }
 
   public async fetchMore(infiniteScroll?: InfiniteScroll) {
-    let orders = await this.loadOrders();
+    let orders : RenderableOrder[] = <RenderableOrder[]> await this.loadData();
+    orders = this.updateOrderProps(orders);
     this.offset += orders ? orders.length : 0;
     this.zone.run(() => {
-      this.orders = this.orders.concat(orders);
-      this.ordersBackup = this.orders;
+      this.items = this.items.concat(orders);
+      // this.ordersBackup = this.orders;
       infiniteScroll && infiniteScroll.complete();
     });
   }
 
-  private async loadOrders(): Promise<RenderableOrder[]> {
-    let orders = (<RenderableOrder[]>await this.orderService.search(
-      this.limit, this.offset, this.filter, { sort: [{ _id: SortOptions.DESC }] }))
-      .map(order => {
+  private updateOrderProps(orders){
+    orders.map(order => {
         order.totalCost = (order.status == OrderStatus.Received) ?
-          order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
-          order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
+            order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
+            order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
 
         order.storeId && (order.storeName = this.stores[order.storeId].name);
         order.supplierId && (order.supplierName = this.suppliers[order.supplierId].name);
         return order;
-      });
+    });
     return orders;
   }
 }

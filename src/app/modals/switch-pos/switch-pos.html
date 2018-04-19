@@ -20,8 +20,8 @@
   </ion-segment>
 
   <ion-list *ngIf="currentStore">
-    <ion-item *ngFor="let register of currentStore.registers">
-      <ion-card class="clickable" (click)="switchRegister(register)">
+    <ion-item *ngFor="let register of currentStore.POS">
+      <ion-card class="clickable" (click)="switchRegister(register, currentStore._id)">
         <ion-card-header text-center>
           {{register.name}}
         </ion-card-header>

@@ -98,7 +98,7 @@ export class Closures {
     let options: QueryOptionsInterface = {
       sort: [{ _id: SortOptions.DESC }],
       conditionalSelectors: {
-        posId: this.syncContext.currentPos._id
+        posId: this.syncContext.currentPos.id
       }
     };
     let closures = await this.closureService.search(this.limit, this.offset, this.filter, options)

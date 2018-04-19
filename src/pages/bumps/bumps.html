@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Bumps</ion-title>
+    <button ion-button icon-only menuToggle="leftMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showDetail()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div align-items-center>
+    <tile-items [items]="items" (onSelect)="showDetail($event)">
+    </tile-items>
+  </div>
+
+</ion-content>

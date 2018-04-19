@@ -8,6 +8,7 @@ import { CreditCardModal } from './modals/credit-card/credit-card';
 import { PrintService } from '../../services/printService';
 import { PaymentService } from '../../services/paymentService';
 import { SyncContext } from "../../services/SyncContext";
+import { ProductService } from "../../services/productService";
 
 @Component({
   selector: 'payment',
@@ -30,6 +31,7 @@ export class PaymentsPage {
   constructor(
     private salesService: SalesServices,
     private paymentService: PaymentService,
+    private productService: ProductService,
     private navCtrl: NavController,
     private alertCtrl: AlertController,
     private navParams: NavParams,
@@ -84,7 +86,9 @@ export class PaymentsPage {
 
     this.amount = sale.taxTotal - totalPayments;
 
-    totalPayments == sale.taxTotal && (await this.completeSale(totalPayments));
+    if (totalPayments >= sale.taxTotal) {
+      await this.completeSale(totalPayments)
+    }
 
     loader.dismiss();
   }
@@ -128,7 +132,8 @@ export class PaymentsPage {
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
       this.printSale(false);
-    } catch(error)  { }
+      await this.printService.printProductionLinePrinter(this.sale);
+    } catch (error) { }
   }
 
   public clearSale() {
@@ -154,7 +159,8 @@ export class PaymentsPage {
     this.stockErrors = [];
     let loader = this.loading.create({ content: 'Checking for stock...' });
     await loader.present();
-    this.stockErrors = await this.salesService.checkForStockInHand(this.sale, this.syncContext.currentStore._id);
+    const stockEnabledItems = this.productService.getStockEnabledItems(this.sale.items);
+    this.stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems, this.syncContext.currentStore._id);
     loader.dismiss();
   }
 }

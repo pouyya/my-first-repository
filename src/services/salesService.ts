@@ -39,7 +39,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async instantiateSale(posId?: string): Promise<Sale> {
 
 		if (!posId) {
-			posId = this.syncContext.currentPos._id;
+			posId = this.syncContext.currentPos.id;
 		}
 
 		try {
@@ -104,26 +104,28 @@ export class SalesServices extends BaseEntityService<Sale> {
 		return this.findBy(selector);
 	}
 
-	public async getCurrentSaleIfAny() {
+	public isSalePresent(): boolean {
 		let saleId = localStorage.getItem('sale_id');
 		if (saleId) {
-			return await this.get(saleId);
+			return true;
 		}
-		return Promise.resolve(null);
+		return false;
 	}
 
-	public async searchSales(posID: string, limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string): Promise<Array<Sale>> {
+	public async searchSales(posIDs: string[], limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string, sort?: SortOptions): Promise<Array<Sale>> {
 		let query: any = {
 			selector: {
-				$and: [
-					{ posID }
-				]
+				$and: []
 			}
 		};
 
+		if (posIDs && posIDs.length > 0) {
+			query.selector.$and.posID = { $in: posIDs }
+		}
+
 		if (options) {
 			_.each(options, (value, key) => {
-				if (value) {
+				if (value !== undefined) {
 					query.selector.$and.push({ [key]: _.isArray(value) ? { $in: value } : value });
 				}
 			});
@@ -134,16 +136,22 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 		if (timeFrame) {
 			query.selector.$and.push({ created: { $exists: true } });
-			query.selector.$and.push({
-				created: {
-					$lte: timeFrame.endDate
-				}
-			});
-			query.selector.$and.push({
-				created: {
-					$gte: timeFrame.startDate
-				}
-			});
+
+			if (timeFrame.endDate) {
+				query.selector.$and.push({
+					created: {
+						$lte: timeFrame.endDate
+					}
+				});
+			}
+
+			if (timeFrame.startDate) {
+				query.selector.$and.push({
+					created: {
+						$gte: timeFrame.startDate
+					}
+				});
+			}
 		}
 
 		if (employeeId) {
@@ -171,7 +179,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 
 		query.sort = [{
-			_id: SortOptions.DESC
+			_id: sort || SortOptions.DESC
 		}];
 
 		query.limit = limit;
@@ -305,6 +313,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		sale.originalSalesId = originalSale._id;
 		sale.items = originalSale.items.map((item) => {
 			item.quantity > 0 && (item.quantity *= -1);
+			item.modifierItems && item.modifierItems.forEach(modifierItem => {
+				modifierItem.quantity > 0 && (modifierItem.quantity *= -1);
+			});
 			return item;
 		});
 		sale.completed = false;
@@ -337,34 +348,62 @@ export class SalesServices extends BaseEntityService<Sale> {
 	}
 
 	public async updateStock(sale: Sale, storeId: string) {
-		let stock: StockHistory;
-		let stockUpdates: Promise<any>[] = sale.items.map(item => {
-			stock = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
-			return this.stockHistoryService.add(stock);
+
+		let stockUpdates: Promise<any>[] = [];
+
+		sale.items.forEach(item => {
+			if (item) {
+
+				if (item.modifierItems && item.modifierItems.length > 0) {
+					item.modifierItems.forEach(modifierItem => {
+						if (modifierItem.stockControl) {
+							var stockHistory = StockHistoryService.createStockForSale(modifierItem.purchsableItemId, storeId, modifierItem.quantity);
+							stockUpdates.push(this.stockHistoryService.add(stockHistory));
+						}
+					});
+				}
+
+				if (item.stockControl) {
+					var stockHistory = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
+					stockUpdates.push(this.stockHistoryService.add(stockHistory));
+				}
+			}
 		});
-		await Promise.all(stockUpdates);
-		return;
+
+		return Promise.all(stockUpdates);
 	}
 
-	public async checkForStockInHand(sale: Sale, storeId: string): Promise<string[]> {
+	public async checkForStockInHand(items: BasketItem[], storeId): Promise<string[]> {
 		let stockErrors: string[] = [];
-		let productsInStock: { [id: string]: number } = {};
-		let allProducts = sale.items
-			.filter(item => item.stockControl)
-			.map(item => item.purchsableItemId);
-		if (allProducts.length > 0) {
-			productsInStock = await this.stockHistoryService
-				.getProductsTotalStockValueByStore(allProducts, storeId);
-			if (productsInStock && Object.keys(productsInStock).length > 0) {
-				sale.items.forEach(item => {
-					if (productsInStock.hasOwnProperty(item.purchsableItemId) && productsInStock[item.purchsableItemId] < item.quantity) {
-						stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStock[item.purchsableItemId]}`);
-					}
-				});
-			}
-		}
+
+        const productsInStock = await
+			this.stockHistoryService.getAvailableStock(items.map(item => item.purchsableItemId), storeId);
+        const productsInStockMap = productsInStock.reduce((obj, data) => {
+            obj[data.productId] = data.value;
+            return obj;
+		}, {});
+		items.forEach(item => {
+            if (!productsInStockMap[item.purchsableItemId] || productsInStockMap[item.purchsableItemId] < item.quantity) {
+                stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStockMap[item.purchsableItemId] || 0}`);
+            }
+		});
 
 		return stockErrors;
+	}
+
+	public getTaxTotalSaleValue(sale: Sale): number {
+		let taxTotal = 0;
+		if (sale.items.length > 0) {
+			for (let item of sale.items) {
+				taxTotal += item.finalPrice * item.quantity;
+			}
+			/** Rounding Starts */
+			taxTotal = this.helperService.round10(taxTotal, -2);
+			let roundedTotal = this.helperService.round10(taxTotal, -2);
+			taxTotal = roundedTotal;
+			/** Rounding Ends */
+		}
+		return taxTotal;
 	}
 
 	public calculateSale(sale: Sale) {
@@ -377,6 +416,10 @@ export class SalesServices extends BaseEntityService<Sale> {
 			for (let item of sale.items) {
 				sale.tax += item.taxAmount * item.quantity;
 				sale.taxTotal += item.finalPrice * item.quantity;
+				item.modifierItems && item.modifierItems.forEach(modifierItem => {
+					sale.tax += modifierItem.taxAmount * modifierItem.quantity;
+					sale.taxTotal += modifierItem.finalPrice * modifierItem.quantity;
+				});
 			};
 			sale.subTotal = sale.taxTotal - sale.tax;
 

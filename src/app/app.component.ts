@@ -17,7 +17,6 @@ import { SecurityResultReason } from '../infra/security/model/securityResult';
 import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
 
-
 @Component({
   selector: 'app',
   templateUrl: 'app.html'
@@ -148,17 +147,19 @@ export class SimplePOSApp implements OnInit {
       message,
       duration: 3000
     });
-    
+
     toast.present();
   }
 
-  async updatePrintReceiptSetting(){
+  async updatePrintReceiptSetting() {
     const message: string = "Settings saved";
-      await this.storeService.update(this.syncContext.currentStore);
-      this.toastController.create({
-          message,
-          duration: 3000,
-          position: 'top'
-      }).present();
+    await this.storeService.update(this.syncContext.currentStore);
+    this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'top'
+    }).present();
   }
+
+
 }

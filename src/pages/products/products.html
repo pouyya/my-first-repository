@@ -14,12 +14,11 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-searchbar
-    debounce="500"
-    animated="true"
-    placeholder="Search by name or SKU/Barcode"
-    (ionInput)="searchProducts($event)">
-  </ion-searchbar>
+  <ion-row *ngIf="searchFilters.length">
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
+      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    </ion-col>
+  </ion-row>
   <ion-list>
     <ion-item>
       <ion-grid>
@@ -47,9 +46,8 @@
     <ion-item *ngFor="let product of items; let i = index;" (click)="showDetail(product)">
       <ion-grid>
         <ion-row>
-          <ion-col col-md-3>{{ product.name }}</ion-col>
-          <ion-col col-md-3>{{ product.barcode }}</ion-col>
-          <ion-col col-md-2>{{ product.retailPrice }}</ion-col>
+          <ion-col *ngFor="let column of displayColumns;" col-md-3>{{product[column.variableName]}}</ion-col>
+          <ion-col col-md-2>{{ isTaxInclusive && product.inclusivePrice || product.retailPrice }}</ion-col>
           <ion-col col-md-2>{{ product.stockInHand }}</ion-col>
           <ion-col col-md-2>{{ product._id | localDate }}</ion-col>
         </ion-row>

@@ -5,7 +5,7 @@
       <button type="submit" ion-button icon-only (click)="categoryForm.ngSubmit.emit()" [disabled]="!categoryForm.form.valid">
         Save
       </button>
-      <button ion-button icon-only>
+      <button ion-button icon-only *ngIf="!isNew" (click)="delete()">
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
@@ -23,6 +23,9 @@
       <ion-item>
         <ion-label class="item-name">Display Order</ion-label>
         <ion-input type="number" [(ngModel)]="categoryItem.order" name="order"></ion-input>
+      </ion-item>
+      <ion-item>
+        <color-picker [selectedColor$]="color"></color-picker>
       </ion-item>
       <ion-item>
         <button ion-button type="button" (click)="selectIcon()">Select Icon</button>

@@ -1,115 +1,104 @@
-import { ProductService } from './../../services/productService';
+import {ProductService} from './../../services/productService';
 import _ from 'lodash';
-import { NgZone } from '@angular/core';
-import { LoadingController, Platform, NavController, AlertController } from 'ionic-angular';
-import { BrandService } from './../../services/brandService';
-import { Component } from '@angular/core';
-import { InventoryModule } from '../../modules/inventoryModule';
-import { PageModule } from '../../metadata/pageModule';
-import { Brand } from '../../model/brand';
-import { AlertOptions } from 'ionic-angular/components/alert/alert-options';
-import { BrandDetails } from '../brand-details/brand-details';
-import { SecurityModule } from '../../infra/security/securityModule';
-import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import {NgZone} from '@angular/core';
+import {LoadingController, Platform, NavController, AlertController, InfiniteScroll} from 'ionic-angular';
+import {BrandService} from './../../services/brandService';
+import {Component} from '@angular/core';
+import {InventoryModule} from '../../modules/inventoryModule';
+import {PageModule} from '../../metadata/pageModule';
+import {Brand} from '../../model/brand';
+import {AlertOptions} from 'ionic-angular/components/alert/alert-options';
+import {BrandDetails} from '../brand-details/brand-details';
+import {SecurityModule} from '../../infra/security/securityModule';
+import {SecurityAccessRightRepo} from '../../model/securityAccessRightRepo';
+import {SearchableListing} from "../../modules/searchableListing";
 
 interface PageBrand extends Brand {
-  associatedProducts: number;
+    associatedProducts: number;
 }
 
 @SecurityModule(SecurityAccessRightRepo.BrandListing)
 @PageModule(() => InventoryModule)
 @Component({
-  selector: 'brands',
-  templateUrl: 'brands.html'
+    selector: 'brands',
+    templateUrl: 'brands.html'
 })
-export class Brands {
+export class Brands extends SearchableListing<Brand> {
 
-  public brands: PageBrand[];
-  public brandsBackup: PageBrand[];
+    public items: PageBrand[] = [];
 
-  constructor(
-    private brandService: BrandService,
-    private productService: ProductService,
-    private loading: LoadingController,
-    private navCtrl: NavController,
-    private alertCtrl: AlertController,
-    private platform: Platform,
-    private zone: NgZone) {
+    constructor(private brandService: BrandService,
+                private productService: ProductService,
+                private loading: LoadingController,
+                private navCtrl: NavController,
+                private alertCtrl: AlertController,
+                private platform: Platform,
+                protected zone: NgZone) {
 
-  }
+        super(brandService, zone, 'Brand');
+    }
 
-  async ionViewDidEnter() {
-    try {
-      let loader = this.loading.create({ content: 'Loading Brands...' });
-      await loader.present();
-      this.brands = [];
-      this.brandsBackup = [];
-      let brands: Brand[] = await this.brandService.getAll();
-      if (brands.length > 0) {
+    async ionViewDidEnter() {
+        try {
+            this.setDefaultSettings();
+            let loader = this.loading.create({content: 'Loading Brands...'});
+            await loader.present();
+            await this.fetchMore();
+            loader.dismiss();
+        } catch (err) {
+            console.error(err);
+            return;
+        }
+    }
+
+    public view(brand?: PageBrand) {
+        this.navCtrl.push(BrandDetails, {
+            brand: brand ? <Brand>_.omit(brand, ['associatedProducts']) : null
+        });
+    }
+
+    public async fetchMore(infiniteScroll?: InfiniteScroll) {
+        let brands: Brand[] = await this.loadData();
+        let pageBrands: PageBrand[] = [];
         let associations: any[] = [];
         brands.forEach((brand, index, array) => {
-          associations.push(async () => {
-            let products = await this.productService.getAllByBrand(brand._id);
-            this.brands.push({
-              ...array[index],
-              associatedProducts: products.length
+            associations.push(async () => {
+                let products = await this.productService.getAllByBrand(brand._id);
+                pageBrands.push({
+                    ...array[index],
+                    associatedProducts: products.length
+                });
+                return;
             });
-            return;
-          });
         });
-
         await Promise.all(associations.map(assoc => assoc()));
         await this.platform.ready();
+        this.offset += pageBrands ? pageBrands.length : 0;
         this.zone.run(() => {
-          this.brandsBackup = this.brands;
-          loader.dismiss();
+            this.items = this.items.concat(pageBrands);
+            infiniteScroll && infiniteScroll.complete();
         });
-      } else {
-        loader.dismiss();
-      }
-    } catch (err) {
-      console.error(err);
-      return;
     }
-  }
 
-  public view(brand?: PageBrand) {
-    this.navCtrl.push(BrandDetails, { 
-      brand: brand ? <Brand>_.omit(brand, ['associatedProducts']) : null
-    });
-  }
+    public async remove(brand: PageBrand, index: number) {
+        let message: string = 'This Brand using in Products or Services. Do you want to delete this Category?';
+        let confirmOptions: any = {
+            title: 'Confirm Delete Brand?',
+            buttons: [
+                {
+                    text: 'Yes',
+                    handler: async () => {
+                        await super.remove(<Brand>brand, index);
+                    }
+                },
+                'No'
+            ]
+        };
 
-  public delete(brand: PageBrand, index: number) {
-    let message: string = 'This Brand using in Products or Services. Do you want to delete this Category?';
-    let confirmOptions: any = {
-      title: 'Confirm Delete Brand?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: async () => {
-            await this.brandService.delete(<Brand>_.omit(brand, ['associatedProducts']))
-            this.brands.splice(index, 1);
-          }
-        },
-        'No'
-      ]
-    };
+        brand.associatedProducts > 0 && (confirmOptions['message'] = message);
 
-    brand.associatedProducts > 0 && (confirmOptions['message'] = message);
-
-    let confirm = this.alertCtrl.create(<AlertOptions>confirmOptions);
-    confirm.present();
-  }
-
-  public search(event) {
-    this.brands = this.brandsBackup;
-    let val = event.target.value;
-
-    if (val && val.trim() != '') {
-      this.brands = this.brands.filter(brand => {
-        return ((brand.name).toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+        let confirm = this.alertCtrl.create(<AlertOptions>confirmOptions);
+        confirm.present();
     }
-  }
 
 }
