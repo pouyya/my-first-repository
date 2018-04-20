@@ -13,9 +13,19 @@ export class ModuleService {
   }
 
   public getCurrentModule(currentPage: any = null): ModuleBase {
-    if (currentPage && currentPage.component && currentPage.component.prototype && currentPage.component.prototype.Module) {
-      currentPage.component.prototype.Module.setInjector(this.injector);
-      return currentPage.component.prototype.Module;
+    if (currentPage) {
+      var currentModule: any;
+      if (currentPage.Module) {
+        currentModule = currentPage.Module
+      }
+      else if (currentPage.component && currentPage.component.prototype && currentPage.component.prototype.Module) {
+        currentModule = currentPage.component.prototype.Module;
+      }
+
+      if (currentModule) {
+        currentModule.setInjector(this.injector);
+        return currentModule;
+      }
     }
     return this.defaultModule;
   }

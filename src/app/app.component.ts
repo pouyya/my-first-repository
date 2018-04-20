@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -62,6 +62,12 @@ export class SimplePOSApp implements OnInit {
       user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
     }
 
+    this.nav.viewDidLoad.subscribe((viewController: ViewController) => {
+      if (viewController && viewController.instance) {
+        this.currentModule = this.moduleService.getCurrentModule(viewController.instance);
+        this.moduleName = this.currentModule.constructor.name;
+      }
+    })
     var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
     this.rootPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
   }
@@ -113,12 +119,7 @@ export class SimplePOSApp implements OnInit {
       await modal.present();
 
     } else {
-      var canEnter = await this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
-
-      if (canEnter) {
-        this.currentModule = this.moduleService.getCurrentModule(page);
-        this.moduleName = this.currentModule.constructor.name;
-      }
+      await this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
     }
   }
 
