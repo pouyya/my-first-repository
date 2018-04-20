@@ -153,6 +153,7 @@ import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
 import { TranslateService } from "@ngx-translate/core";
 import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
+import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
 
 @NgModule({
@@ -394,6 +395,7 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
     ResourceService,
     PaymentService,
     AuditService,
+    EmailService,
     SyncContext
   ]
 })

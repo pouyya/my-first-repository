@@ -17,6 +17,8 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
+import { UserService } from '../../modules/dataSync/services/userService';
+import { EmailService } from '../../services/emailService';
 import {
   NavController,
   NavParams,
@@ -75,7 +77,9 @@ export class OrderDetails {
     private orderService: OrderService,
     private stockHistoryService: StockHistoryService,
     private fountainService: FountainService,
-    private priceBookService: PriceBookService
+    private priceBookService: PriceBookService,
+    private emailService: EmailService,
+    private userService: UserService
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');
@@ -197,7 +201,7 @@ export class OrderDetails {
         quantity: Number(product.quantity)
       };
     });
-    await this.orderService.add(<Order> _.omit(this.order, [ 'UIState' ]));
+    await this.orderService.add(<Order>_.omit(this.order, ['UIState']));
     this.navCtrl.pop();
     return;
   }
@@ -347,5 +351,18 @@ export class OrderDetails {
     }).present();
     console.error(err);
     this.navCtrl.pop();
+  }
+
+  public async sendEmail() {
+
+    let loader = this.loadingCtrl.create({
+      content: 'Sending Email...'
+    });
+
+    await loader.present();
+
+    await this.emailService.sendEmail(this.supplier.email, 'Order :' + this.order.orderNumber, 'Content Of Order HERE');
+
+    await loader.dismiss();
   }
 }

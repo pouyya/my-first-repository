@@ -53,7 +53,7 @@ export class Sales implements OnDestroy {
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
-
+  
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
   public user: UserSession;
@@ -222,6 +222,7 @@ export class Sales implements OnDestroy {
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
   }
+
 }
 
 export class SalesCategory extends Category {
