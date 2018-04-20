@@ -125,7 +125,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 
 		if (options) {
 			_.each(options, (value, key) => {
-				if (value !== undefined) {
+				if (value != undefined) {
 					query.selector.$and.push({ [key]: _.isArray(value) ? { $in: value } : value });
 				}
 			});
