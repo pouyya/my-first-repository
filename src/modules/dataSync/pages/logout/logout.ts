@@ -1,6 +1,6 @@
 import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Component } from "@angular/core";
-import { LoadingController, NavController, AlertController } from "ionic-angular";
+import { LoadingController, NavController, AlertController, MenuController } from "ionic-angular";
 import { Storage } from '@ionic/storage';
 import { LoginPage } from "../login/login";
 
@@ -14,7 +14,8 @@ export class LogOut {
     private loading: LoadingController,
     private navCtrl: NavController,
     private storage: Storage,
-    private alertCtrl: AlertController) {
+    private alertCtrl: AlertController,
+    private menuController: MenuController) {
   }
 
   async ionViewCanEnter(): Promise<boolean> {
@@ -33,7 +34,7 @@ export class LogOut {
           }
         ]
       });
-      
+
       await confirm.present();
 
     });
@@ -45,6 +46,7 @@ export class LogOut {
     });
     try {
       await loader.present();
+      await this.menuController.close();
       await this.storage.clear();
       await DBService.destroyInternals();
       localStorage.clear();
