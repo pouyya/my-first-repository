@@ -289,7 +289,7 @@ export class SalesHistoryPage {
         this.filters.completed = false;
         break;
       default:
-        this.filters.state = false;
+        this.filters.state = null;
         this.filters.completed = null;
         break;
     }
