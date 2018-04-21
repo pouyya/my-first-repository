@@ -14,7 +14,10 @@ import { DateTimeService } from '../../services/dateTimeService';
 import { StoreService } from '../../services/storeService';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncContext } from "../../services/SyncContext";
+import { BoostraperModule } from '../../modules/bootstraperModule';
+import { PageModule } from '../../metadata/pageModule';
 
+@PageModule(() => BoostraperModule)
 @Component({
   selector: 'data-bootstrapper',
   templateUrl: 'data-bootstrapper.html'
