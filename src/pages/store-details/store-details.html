@@ -2,8 +2,11 @@
   <ion-navbar>
     <ion-title>{{action}} Store</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
+      <button type="submit" *ngIf="!isDataChanged" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
         Save
+      </button>
+      <button class="save-bold" type="submit" *ngIf="isDataChanged" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
+        Save*
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
         <ion-icon name="trash"></ion-icon>

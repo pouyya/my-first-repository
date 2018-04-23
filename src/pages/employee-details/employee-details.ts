@@ -7,16 +7,17 @@ import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee, EmployeeRolePerStore } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
-import { Component, ChangeDetectorRef } from "@angular/core";
+import {Component, ChangeDetectorRef, ViewChild} from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
 import {
-  NavParams,
-  NavController,
-  ToastController,
-  ModalController,
-  LoadingController
+    NavParams,
+    NavController,
+    ToastController,
+    ModalController,
+    LoadingController, AlertController
 } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
+import {AlertHelper} from "../../utility/alertHelper";
 
 interface SelectableStore extends Store {
   selected: boolean;
@@ -34,6 +35,8 @@ export class EmployeeDetails {
   public isNew = true;
   public action = 'Add';
   public stores: SelectableStore[] = [];
+  public isDataChanged = false;
+  @ViewChild('employeeForm') employeeForm;
 
   constructor(
     private employeeService: EmployeeService,
@@ -41,6 +44,7 @@ export class EmployeeDetails {
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,
+    private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private pluginService: PluginService,
     private modalCtrl: ModalController,
@@ -77,9 +81,17 @@ export class EmployeeDetails {
     }
 
     this.cdr.reattach();
-    loader.dismiss();
+    await loader.dismiss();
+    this.onFormChange();
   }
-
+  private ionViewCanLeave(): Promise<boolean> {
+      return AlertHelper.checkUnsavedChanges(this.alertCtrl, this.toastCtrl, this.isDataChanged);
+  }
+  private onFormChange(){
+      this.employeeForm.valueChanges.subscribe(val => {
+          this.isDataChanged = true;
+      });
+  }
   public async save(): Promise<any> {
     try {
       this.employee.store = _.filter(this.stores, { selected: true })
@@ -115,6 +127,7 @@ export class EmployeeDetails {
     modal.onDidDismiss((res) => {
       if (store.selected && res.selectedRole) {
         store.role = res.selectedRole;
+        this.isDataChanged = true;
       }
     });
     modal.present();

@@ -2,10 +2,13 @@
   <ion-navbar>
     <ion-title>{{action}} Employee</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="employeeForm.ngSubmit.emit()" [disabled]="!employeeForm.form.valid">
-        save
+      <button type="submit" ion-button icon-only *ngIf="!isDataChanged" (click)="employeeForm.ngSubmit.emit()" [disabled]="!employeeForm.form.valid">
+        Save
       </button>
-      &nbsp;
+	  <button type="submit" class="save-bold" ion-button icon-only *ngIf="isDataChanged" (click)="employeeForm.ngSubmit.emit()" [disabled]="!employeeForm.form.valid">
+        Save*
+      </button>
+      &nbsp; 
       <button ion-button icon-only (click)="remove()">
         <ion-icon name="trash"></ion-icon>
       </button>

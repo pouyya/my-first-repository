@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
-import { Component } from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {
   AlertController, LoadingController, ModalController, NavController, NavParams,
   ToastController
@@ -13,6 +13,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
+import { AlertHelper } from "../../utility/alertHelper";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -26,6 +27,8 @@ export class StoreDetailsPage {
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
   public deviceType = DeviceType;
+  public isDataChanged = false;
+  @ViewChild('storeForm') storeForm;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
@@ -52,15 +55,18 @@ export class StoreDetailsPage {
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();
+    this.onFormChange();
   }
 
-  private async addPos(store: Store) {
-    if (this.posToAdd.length > 0) {
-      const pos: POS[] = this.posToAdd;
-      store.POS = store.POS
-    }
-    return;
-  };
+  private ionViewCanLeave(): Promise<boolean> {
+    return AlertHelper.checkUnsavedChanges(this.alertCtrl, this.toastCtrl, this.isDataChanged);
+  }
+
+  private onFormChange(){
+    this.storeForm.valueChanges.subscribe(val => {
+        this.isDataChanged = true;
+    });
+  }
 
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
@@ -72,7 +78,7 @@ export class StoreDetailsPage {
       await this.storeService.update(this.item);
     }
     loader.dismiss();
-
+    this.isDataChanged = false;
     if (isReturn == true)
       this.navCtrl.pop();
   }
@@ -87,6 +93,7 @@ export class StoreDetailsPage {
           } else {
               this.item.POS[index] = data.pos;
           }
+          this.isDataChanged = true;
         }
     });
     modal.present();
@@ -98,6 +105,7 @@ export class StoreDetailsPage {
         if (data && data.status === "add") {
             !this.item.POS && (this.item.POS = []);
             this.item.POS.push(data.pos);
+            this.isDataChanged = true;
         }
     });
     modal.present();
@@ -105,6 +113,7 @@ export class StoreDetailsPage {
 
   public removeAddedRegister(index: number) {
     this.item.POS.splice(index, 1);
+    this.isDataChanged = true;
   }
 
 
@@ -114,6 +123,7 @@ export class StoreDetailsPage {
     modal.onDidDismiss((data: { status: string, device: Device }) => {
       if (data && data.status == "remove") {
         this.item.devices.splice(index, 1);
+        this.isDataChanged = true;
       }
     });
     modal.present();
@@ -125,6 +135,7 @@ export class StoreDetailsPage {
       if (data && data.status === "add") {
         !this.item.devices && (this.item.devices = []);
         this.item.devices.push(data.device);
+        this.isDataChanged = true;
       }
     });
     modal.present();
@@ -150,6 +161,7 @@ export class StoreDetailsPage {
               });
               toast.present();
               loader.dismiss();
+              this.isDataChanged = true;
             });
           }
         }, 'No'
