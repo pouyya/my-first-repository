@@ -6,7 +6,7 @@ import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Platform, ModalController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
@@ -65,6 +65,7 @@ export class ServiceDetails {
 		private zone: NgZone,
 		private platform: Platform,
 		private modalCtrl: ModalController,
+		private toastCtrl: ToastController,
 		private loading: LoadingController) {
 		this.icons = icons;
 	}
@@ -231,4 +232,19 @@ export class ServiceDetails {
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
 	}
+	  
+	public async delete() {
+		try {
+			await this.categoryService.delete(this.serviceItem);
+			let toast = this.toastCtrl.create({
+			message: `Service '${this.serviceItem.name}' has been deleted successfully!`,
+			duration: 3000
+			});
+			toast.present();
+			this.navCtrl.pop();
+		} catch (err) {
+			throw new Error(err);
+		}
+	}
+
 }
