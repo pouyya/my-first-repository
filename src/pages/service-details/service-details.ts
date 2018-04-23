@@ -6,7 +6,7 @@ import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Platform, ModalController, LoadingController } from 'ionic-angular';
+import { AlertController, NavController, NavParams, Platform, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
@@ -65,6 +65,8 @@ export class ServiceDetails {
 		private zone: NgZone,
 		private platform: Platform,
 		private modalCtrl: ModalController,
+		private alertCtrl: AlertController,
+		private toastCtrl: ToastController,
 		private loading: LoadingController) {
 		this.icons = icons;
 	}
@@ -231,4 +233,66 @@ export class ServiceDetails {
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
 	}
+
+	  
+	public async delete() {
+		try {
+		  await this.serviceService.delete(this.serviceItem);
+		  let toast = this.toastCtrl.create({
+			message: `Service '${this.serviceItem.name}' has been deleted successfully!`,
+			duration: 3000
+		  });
+		  toast.present();
+		  this.navCtrl.pop();
+		} catch (err) {
+		  throw new Error(err);
+		}
+	  }
+
+	  
+
+	public async remove(): Promise<any> {
+		try {
+		  // delete employee associations
+		  //await this.timestampService.getEmployeeTimestamps(this.employee._id);
+		  await this.serviceService.delete(this.serviceItem);
+		  this.navCtrl.pop();
+		  return;
+		} catch (err) {
+		  throw new Error(err);
+		}
+	  }
+
+
+	public remove2() {
+		let confirm = this.alertCtrl.create({
+		  title: 'Are you sure you want to delete this service ?',
+		  message: 'Deleting this service?',
+		  buttons: [
+			{
+			  text: 'Yes',
+			  handler: () => {
+				let loader = this.loading.create({
+				  content: 'Deleting. Please Wait!',
+				});
+	
+				loader.present().then(() => {
+				  this.serviceService.delete(this.serviceItem).then(() => this.navCtrl.pop())
+				  .catch(error => {
+					let errorMsg = error.hasOwnProperty('error_msg') ? error.error_msg : 'Error while deleting service. Please try again!';
+					let alert = this.alertCtrl.create({
+					  title: 'Error',
+					  subTitle: errorMsg,
+					  buttons: ['OK']
+					});
+					alert.present();
+				  }).then(() => loader.dismiss());
+				});
+			  }
+			}, 'No'
+		  ]
+		});
+	}
+
+
 }
