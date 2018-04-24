@@ -1,7 +1,7 @@
 import { LoadingController } from 'ionic-angular';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { Component, NgZone } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Events } from 'ionic-angular';
 import { ServiceService } from '../../services/serviceService';
 import { ServiceDetails } from '../service-details/service-details';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
@@ -22,10 +22,20 @@ export class Services extends SearchableListing<Service>{
 
 
   constructor(public navCtrl: NavController,
+    public events:Events,
     private serviceService: ServiceService,
     private loading: LoadingController,
     protected zone: NgZone) {
-    super(serviceService, zone, 'Service');
+      super(serviceService, zone, 'Service');
+      this.listenEvents();
+  }
+
+  async listenEvents(){
+    this.events.subscribe('reloadServicePage',(nav) => {
+      this.navCtrl.pop();
+      this.navCtrl.push(Service);
+    });
+  
   }
 
   async ionViewDidEnter() {
@@ -46,9 +56,29 @@ export class Services extends SearchableListing<Service>{
       loader.dismiss();
       return;
     }
+  }  
+  
+  public async refreshS() {
+    let loader = this.loading.create({ content: 'Loading Services...' });
+    await loader.present();
+    try {
+      this.options = {
+          sort: [{order: SortOptions.ASC}], conditionalSelectors: {
+              order: {
+                  $gt: true
+              }
+          }
+      };
+      await this.fetchMore();
+      loader.dismiss();
+    } catch (err) {
+      console.error(err);
+      loader.dismiss();
+      return;
+    }
   }
 
   showDetail(service) {
-    this.navCtrl.push(ServiceDetails, { service: service });
+    this.navCtrl.push(ServiceDetails, { service: service ,  "Service": this });
   }
 }
