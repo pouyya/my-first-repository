@@ -155,6 +155,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
 import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
+import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 
 @NgModule({
   declarations: [
@@ -178,6 +179,7 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
     CashModal,
     CreditCardModal,
     ParkSale,
+    AddNotes,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -298,6 +300,7 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
     PosDetailsModal,
     CreditCardModal,
     ParkSale,
+    AddNotes,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,

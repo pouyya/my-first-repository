@@ -24,6 +24,9 @@
       </ion-list>
     </ion-col>
     <ion-col col-md-4 class="pull-right">
+      <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
+        <ion-icon name="paper"></ion-icon><span class="change-large" *ngIf="sale && sale.notes">*</span>
+      </button>
       <button ion-button clear (click)="parkSale()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="pause"></ion-icon>
       </button>
@@ -34,12 +37,12 @@
   </ion-row>
 </ion-grid>
 
-<ion-grid class="top-component basket">
+  <ion-grid class="top-component basket">
   <ion-row>
     <ion-col col-12>
       <ion-list *ngIf="sale">
         <!-- Items in the basket [start] -->
-        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'selected' || '']" tappable>
+        <ion-item [id]="item.purchsableItemId" *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'selected' || '']" tappable>
 
           <ion-grid (click)="viewInfo(item, $index)">
             <ion-row>
@@ -65,7 +68,7 @@
                 <ion-icon click-stop-propagation name="trash" class="clickable" (click)="removeItem($index)"></ion-icon>
               </ion-col>
             </ion-row>
-            <ion-row class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
+            <ion-row [id]="modifierItem.purchsableItemId" class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
               <ion-col col-md-1>
                 {{modifierItem.quantity}}
               </ion-col>
@@ -92,13 +95,6 @@
 </ion-grid>
 <ion-grid class="bottom-component basket" *ngIf="sale">
   <ion-row>
-    <ion-col col-md-12>
-      <hr/>
-      <ion-textarea [(ngModel)]="sale.notes" rows="1" (change)="syncSale()" placeholder="Add Sale Notes...">
-      </ion-textarea>
-    </ion-col>
-    
-
     <ion-col col-md-3>Subtotal</ion-col>
     <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
 
