@@ -62,7 +62,7 @@ export class SimplePOSApp implements OnInit {
       user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
     }
 
-    this.nav.viewDidLoad.subscribe((viewController: ViewController) => {
+    this.nav.viewDidEnter.subscribe((viewController: ViewController) => {
       if (viewController && viewController.instance) {
         this.currentModule = this.moduleService.getCurrentModule(viewController.instance);
         this.moduleName = this.currentModule.constructor.name;
