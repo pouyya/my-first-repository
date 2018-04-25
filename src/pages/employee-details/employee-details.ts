@@ -7,17 +7,17 @@ import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee, EmployeeRolePerStore } from './../../model/employee';
 import { StoreService } from './../../services/storeService';
-import {Component, ChangeDetectorRef, ViewChild} from "@angular/core";
+import { Component, ChangeDetectorRef, ViewChild } from "@angular/core";
 import { EmployeeService } from "../../services/employeeService";
 import {
     NavParams,
     NavController,
     ToastController,
     ModalController,
-    LoadingController, AlertController
+    LoadingController
 } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
-import {AlertHelper} from "../../utility/alertHelper";
+import { Utilities } from "../../utility";
 
 interface SelectableStore extends Store {
   selected: boolean;
@@ -44,12 +44,12 @@ export class EmployeeDetails {
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,
-    private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private pluginService: PluginService,
     private modalCtrl: ModalController,
     private loading: LoadingController,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private utils: Utilities) {
   }
 
   async ionViewDidLoad() {
@@ -85,7 +85,7 @@ export class EmployeeDetails {
     this.onFormChange();
   }
   private ionViewCanLeave(): Promise<boolean> {
-      return AlertHelper.checkUnsavedChanges(this.alertCtrl, this.toastCtrl, this.isDataChanged);
+      return this.utils.checkUnsavedChanges(this.isDataChanged);
   }
   private onFormChange(){
       this.employeeForm.valueChanges.subscribe(val => {

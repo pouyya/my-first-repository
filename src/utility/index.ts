@@ -1,9 +1,14 @@
-export class AlertHelper {
+import { Injectable } from "@angular/core";
+import { AlertController, ToastController } from "ionic-angular";
 
-    public static checkUnsavedChanges(alertCtrl, toastCtrl, isDataChanged) {
+@Injectable()
+export class Utilities {
+    constructor(private alertCtrl: AlertController, private toastCtrl:ToastController){}
+
+    public checkUnsavedChanges(isDataChanged) {
         return new Promise<boolean>((resolve) => {
             if (isDataChanged) {
-                let confirm = alertCtrl.create({
+                let confirm = this.alertCtrl.create({
                     title: 'Warning!',
                     message: 'There is unsaved data. Do you want to discard it?',
                     buttons: [
@@ -11,7 +16,7 @@ export class AlertHelper {
                             text: 'Discard It!',
                             handler: async () => {
                                 resolve(true);
-                                let toast = toastCtrl.create({
+                                let toast = this.toastCtrl.create({
                                     message: 'The unsaved changes are now discarded.',
                                     duration: 5000
                                 });

@@ -146,7 +146,6 @@ import { SupplierService } from '../services/supplierService';
 import { OrderService } from './../services/orderService';
 import { ResourceService } from '../services/resourceService';
 import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
-import { ConfigService } from '../modules/dataSync/services/configService';
 import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
@@ -155,6 +154,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
 import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
+import { Utilities } from "../utility/index";
 
 @NgModule({
   declarations: [
@@ -376,6 +376,7 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
+    Utilities,
     PrintService,
     BrandService,
     StoreService,

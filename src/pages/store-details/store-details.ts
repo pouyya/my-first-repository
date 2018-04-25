@@ -13,7 +13,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
-import { AlertHelper } from "../../utility/alertHelper";
+import { Utilities } from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -38,7 +38,8 @@ export class StoreDetailsPage {
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private resourceService: ResourceService) {
+    private resourceService: ResourceService,
+    private utils: Utilities) {
   }
 
   async ionViewDidEnter() {
@@ -59,7 +60,7 @@ export class StoreDetailsPage {
   }
 
   private ionViewCanLeave(): Promise<boolean> {
-    return AlertHelper.checkUnsavedChanges(this.alertCtrl, this.toastCtrl, this.isDataChanged);
+    return this.utils.checkUnsavedChanges(this.isDataChanged);
   }
 
   private onFormChange(){
