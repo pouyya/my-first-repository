@@ -6,7 +6,10 @@ import { Component } from '@angular/core';
 import { RegisterPage } from '../register/register';
 import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
+import { BoostraperModule } from '../../../bootstraperModule';
+import { PageModule } from '../../../../metadata/pageModule';
 
+@PageModule(() => BoostraperModule)
 @Component({
   selector: 'login',
   templateUrl: 'login.html'
