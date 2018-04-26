@@ -65,7 +65,7 @@ export class Closures {
       return false;
     }
 
-    if(!employee.isActive) {
+    if(!employee.isAdmin && !employee.isActive) {
       toast.setMessage('Employee not Active!');
       toast.present();
       return false;
