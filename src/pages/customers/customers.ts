@@ -20,7 +20,7 @@ export class Customers extends SearchableListing<Customer>{
   public items: Customer[] = [];
 
   constructor(
-    private customerService: CustomerService,
+    private customerService: CustomerService, // used in constructor
     private platform: Platform,
     private navCtrl: NavController,
     private loading: LoadingController,

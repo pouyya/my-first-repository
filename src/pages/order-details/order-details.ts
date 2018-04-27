@@ -79,7 +79,6 @@ export class OrderDetails {
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
     private emailService: EmailService,
-    private userService: UserService
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');

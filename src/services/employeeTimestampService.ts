@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { Injectable } from '@angular/core';
-import { StoreService } from './storeService';
 
 @Injectable()
 export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestamp> {
@@ -12,7 +11,7 @@ export class EmployeeTimestampService extends BaseEntityService<EmployeeTimestam
   public static readonly BREAK_START: string = "break_start";
   public static readonly BREAK_END: string = "break_end";
 
-  constructor(private storeService: StoreService) {
+  constructor() {
     super(EmployeeTimestamp);
   }
 

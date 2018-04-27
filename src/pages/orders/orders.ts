@@ -43,7 +43,7 @@ export class Orders extends SearchableListing<Order>{
   constructor(
     private storeService: StoreService,
     private supplierService: SupplierService,
-    private orderService: OrderService,
+    private orderService: OrderService, //used in constructor
     private navCtrl: NavController,
     protected zone: NgZone
   ) {

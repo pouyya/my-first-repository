@@ -19,7 +19,7 @@ export class Stores extends SearchableListing<Store>{
 public items: Store[] = [];
 
   constructor(public navCtrl: NavController,
-          private storeService:StoreService,
+          private storeService:StoreService, // used in constructor
           private platform:Platform,
           protected zone: NgZone) {
       super(storeService, zone, 'Store');

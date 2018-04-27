@@ -74,7 +74,7 @@ export class DeviceDetailsModal {
     this.viewCtrl.dismiss({ status : 'add', device: this.device});
   }
 
-  public async remove( ) {
+  public async remove() {
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this Device ?',
       message: 'Deleting this device!',
@@ -85,7 +85,21 @@ export class DeviceDetailsModal {
               let loader = this.loading.create({
                 content: 'Deleting. Please Wait!',
               });
-
+              loader.present();
+              //deleting? not happened here !!!
+              loader.dismiss();
+              // loader.present().then(() => {
+              //   this.appService.deletePos(this.pos).then(() => {
+              //     let toast = this.toastCtrl.create({
+              //       message: 'Pos has been deleted successfully',
+              //       duration: 3000
+              //     });
+              //     toast.present();
+              //     this.viewCtrl.dismiss({ status : 'remove', pos: this.pos});
+              //   }).catch(error => {
+              //     throw new Error(error);
+              //   }).then(() => loader.dismiss());
+              // });
           }
         }, 'No'
       ]

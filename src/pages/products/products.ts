@@ -35,7 +35,7 @@ export class Products extends SearchableListing<Product>{
 
   constructor(
     private navCtrl: NavController,
-    private productService: ProductService,
+    private productService: ProductService, //used in constructor
     private stockHistoryService: StockHistoryService,
     private priceBookService: PriceBookService,
     private platform: Platform,

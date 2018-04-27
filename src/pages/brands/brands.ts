@@ -27,7 +27,7 @@ export class Brands extends SearchableListing<Brand> {
 
     public items: PageBrand[] = [];
 
-    constructor(private brandService: BrandService,
+    constructor(private brandService: BrandService, //used in constructor
                 private productService: ProductService,
                 private loading: LoadingController,
                 private navCtrl: NavController,

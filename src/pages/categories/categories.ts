@@ -21,8 +21,7 @@ export class Categories extends SearchableListing<Category> {
   public items: Category[] = [];
 
   constructor(public navCtrl: NavController,
-    private alertCtrl: AlertController,
-    private categoryService: CategoryService,
+let loader = this.loading.create({    private categoryService: CategoryService,
     private loading: LoadingController,
     protected zone: NgZone) {
 

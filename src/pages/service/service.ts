@@ -22,10 +22,10 @@ export class Services extends SearchableListing<Service>{
 
 
   constructor(public navCtrl: NavController,
-    private serviceService: ServiceService,
+    private serviceService: ServiceService, //used in  constructor
     private loading: LoadingController,
     protected zone: NgZone) {
-    super(serviceService, zone, 'Service');
+    super(serviceService, zone, 'Service'); // i cant add sth that compiler (this.serviceService) or 
   }
 
   async ionViewDidEnter() {
