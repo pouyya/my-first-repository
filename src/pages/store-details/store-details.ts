@@ -54,9 +54,9 @@ export class StoreDetailsPage {
     await loader.dismiss();
   }
 
-  private async addPos(store: Store) { //deleted? nowhere used this function not in view not anywhere
+  private async addPos(store: Store) { //
     if (this.posToAdd.length > 0) {
-      const pos: POS[] = this.posToAdd; //also this line
+      const pos: POS[] = this.posToAdd; //delete?
       store.POS = store.POS
     }
     return;
