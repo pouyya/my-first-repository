@@ -25,7 +25,7 @@ export class Services extends SearchableListing<Service>{
     private serviceService: ServiceService, //used in  constructor
     private loading: LoadingController,
     protected zone: NgZone) {
-    super(serviceService, zone, 'Service'); // i cant add sth that compiler (this.serviceService) or 
+    super(serviceService, zone, 'Service');
   }
 
   async ionViewDidEnter() {
