@@ -13,6 +13,8 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
+import {ValidationInfo, ValidationMeta} from "../../metadata/validationModule";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -26,6 +28,8 @@ export class StoreDetailsPage {
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
   public deviceType = DeviceType;
+  private validationMapping;
+  private form: FormGroup;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
@@ -35,7 +39,9 @@ export class StoreDetailsPage {
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private resourceService: ResourceService) {
+    private resourceService: ResourceService,
+    private formBuilder: FormBuilder) {
+      this.createForm();
   }
 
   async ionViewDidEnter() {
@@ -48,10 +54,24 @@ export class StoreDetailsPage {
         this.isNew = false;
         this.action = 'Edit';
     }
-
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();
+  }
+
+  private createForm(){
+    const fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
+        'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
+        'timezone', 'email', 'phone', 'twitter'];
+    const store = this.navParams.get('store') || {};
+    const validationMapping = ValidationInfo.getAllValidations('Store');
+    const groupValidation = {};
+    fields.forEach(field => {
+      groupValidation[field] = [];
+      store[field] && groupValidation[field].push(store[field]);
+      validationMapping[field] && groupValidation[field].push(Validators.compose(validationMapping[field]));
+    })
+    this.form = this.formBuilder.group(groupValidation);
   }
 
   private async addPos(store: Store) {

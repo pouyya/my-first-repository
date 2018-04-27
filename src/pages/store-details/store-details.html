@@ -14,6 +14,85 @@
 </ion-header>
 
 <ion-content>
+  <form [formGroup]="form">
+    <ion-list-header>Details</ion-list-header>
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Store Name*</ion-label>
+        <ion-input type="text" formControlName="name" name="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Order Number Prefix</ion-label>
+        <ion-input type="text" formControlName="orderNumPrefix" name="orderNumPrefix"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Order Number</ion-label>
+        <ion-input type="text" formControlName="orderNum" name="orderNum"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Supplier Return Prefix</ion-label>
+        <ion-input type="text" formControlName="supplierReturnPrefix" name="supplierReturnPrefix"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Supplier Return Number</ion-label>
+        <ion-input type="text" formControlName="supplierReturnNum" name="supplierReturnNum"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Printer At End of Sale</ion-label>
+        <ion-toggle formControlName="printReceiptAtEndOfSale" name="printReceiptAtEndOfSale"></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">{{ 'TaxFileNumber' | translator }}</ion-label>
+        <ion-input type="number" formControlName="taxFileNumber" name="taxFileNumber"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-list-header>Physical Address and Contact Details</ion-list-header>
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name">Street</ion-label>
+        <ion-input type="text" formControlName="street" name="street"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Suburb</ion-label>
+        <ion-input type="text" formControlName="suburb" name="suburb"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">City</ion-label>
+        <ion-input type="text" formControlName="city" name="city"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Postcode</ion-label>
+        <ion-input type="text" formControlName="postCode" name="postCode"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">State</ion-label>
+        <ion-input type="text" formControlName="state" name="state"></ion-input>
+      </ion-item>
+      <ion-item>
+        <searchable-ion-select [isModal]="true" name="country" formControlName="country" title="Country" valueField="code" textField="name"
+                               [items]="countries">
+        </searchable-ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Timezone</ion-label>
+        <ion-input type="text" formControlName="timezone" name="timezone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Email</ion-label>
+        <ion-input type="text" formControlName="email" name="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Phone</ion-label>
+        <ion-input type="text" formControlName="phone" name="phone"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name">Twitter</ion-label>
+        <ion-input type="text" formControlName="twitter" name="twitter"></ion-input>
+      </ion-item>
+    </ion-list>
+
+  </form>
   <form (ngSubmit)="onSubmitAndReturn(true)" #storeForm="ngForm">
     <ion-list-header>Details</ion-list-header>
     <ion-list>
