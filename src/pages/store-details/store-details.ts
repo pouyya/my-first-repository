@@ -54,14 +54,6 @@ export class StoreDetailsPage {
     await loader.dismiss();
   }
 
-  private async addPos(store: Store) { //
-    if (this.posToAdd.length > 0) {
-      const pos: POS[] = this.posToAdd; //delete?
-      store.POS = store.POS
-    }
-    return;
-  };
-
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
 

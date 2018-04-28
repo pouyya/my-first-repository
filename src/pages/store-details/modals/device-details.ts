@@ -86,18 +86,6 @@ export class DeviceDetailsModal {
               let loader = this.loading.create({
                 content: 'Deleting. Please Wait!',
               });
-              loader.present().then(() => {
-                this.device.deletePos(this.device).then(() => {
-                  let toast = this.toastCtrl.create({
-                    message: 'Device has been deleted successfully',
-                    duration: 3000
-                  });
-                  toast.present();
-                  this.viewCtrl.dismiss({ status : 'remove', device: this.device});
-                }).catch(error => {
-                  throw new Error(error);
-                }).then(() => loader.dismiss());
-              });
           }
         }, 'No'
       ]
