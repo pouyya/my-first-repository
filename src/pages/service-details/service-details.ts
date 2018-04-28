@@ -6,7 +6,7 @@ import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Platform, ModalController, LoadingController, ToastController , Events  } from 'ionic-angular';
+import { NavController, NavParams, Platform, ModalController, LoadingController, ToastController , AlertController , Events  } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
@@ -67,6 +67,7 @@ export class ServiceDetails {
 		private platform: Platform,
 		private modalCtrl: ModalController,
 		private toastCtrl: ToastController,
+		private alertCtrl: AlertController,
 		private loading: LoadingController) {
 		this.icons = icons;
 	}
@@ -235,21 +236,30 @@ export class ServiceDetails {
 		this.navCtrl.pop();
 	}
 	  
-	public async delete() {
-		try {
-			await this.categoryService.delete(this.serviceItem);
-			let toast = this.toastCtrl.create({
-			message: `Service '${this.serviceItem.name}' has been deleted successfully!`,
-			duration: 3000
-			});
-			toast.present();
-			// this.events.publish('reloadServicePage');
-			this.navParams.get("Service").refreshS();
-			this.navCtrl.pop();
+	public  delete() {
+        let message: string = 'Do you want to delete this service?';
+        let confirmOptions: any = {
+            title: 'Confirm Delete service?',
+            buttons: [
+                {
+                    text: 'Yes',
+                    handler: async () => {
+						let toast = this.toastCtrl.create({
+						message: `Service '${this.serviceItem.name}' has been deleted successfully!`,
+						duration: 3000
+						});
+						toast.present();
+						await this.categoryService.delete(this.serviceItem);
+						this.navCtrl.pop();
+                    }
+                },
+                'No'
+            ]
+        };
 
-		} catch (err) {
-			throw new Error(err);
-		}
+        let confirm = this.alertCtrl.create(confirmOptions);
+        confirm.present();
 	}
+	
 
 }
