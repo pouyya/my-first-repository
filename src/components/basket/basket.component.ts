@@ -328,12 +328,6 @@ export class BasketComponent {
         return;
       }
     }
-    else
-    {
-      this.searchBarEnabled=true;
-      this.searchedCustomers = [];
-      this.searchInput="";
-    }
 
     this.ngZone.runOutsideAngular(async () => {
       let sale = { ...this.sale }
