@@ -5,7 +5,7 @@ import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
-import { SyncContext } from "../../services/SyncContext";
+import { SyncContext } from "../../services/SyncContext"; // used in view
 import { Pro } from '@ionic/pro';
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
@@ -15,7 +15,6 @@ import { Pro } from '@ionic/pro';
   templateUrl: 'about.html'
 })
 
-let syncCntxt:SyncContext;
 export class AboutPage {
 
   public dbInternalName: string;
@@ -30,7 +29,6 @@ export class AboutPage {
   constructor(
     private syncContext: SyncContext // Used in view
   ) {
-    syncCntxt=this.syncContext;
    }
 
   async ionViewDidLoad() {

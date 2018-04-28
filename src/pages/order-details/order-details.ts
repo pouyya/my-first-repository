@@ -37,17 +37,7 @@ import {
 
 @Component({
   selector: 'order-details',
-  templateUrl: 'order-details.html',
-  styles: [`
-    .center-message {
-      text-align: center;
-      font-size: 40px;
-      font-weight: bold;
-    }
-    #cancel-order {
-      color: red;
-    }
-  `]
+  templateUrl: 'order-details.html'
 })
 export class OrderDetails {
 

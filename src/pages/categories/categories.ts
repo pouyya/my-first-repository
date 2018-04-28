@@ -21,12 +21,12 @@ export class Categories extends SearchableListing<Category> {
   public items: Category[] = [];
 
   constructor(public navCtrl: NavController,
-let loader = this.loading.create({    private categoryService: CategoryService,
+    private categoryService: CategoryService,
     private loading: LoadingController,
-    protected zone: NgZone) {
-
-    super(categoryService, zone, 'Category');
-  }
+    protected zone: NgZone) 
+    {
+      super(categoryService, zone, 'Category');
+    }
 
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Categories...' });
