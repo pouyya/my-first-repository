@@ -232,7 +232,6 @@ export class ServiceDetails {
 		}
 
 		await this.priceBookService.update(this._defaultPriceBook);
-		this.navParams.get("Service").refreshS();
 		this.navCtrl.pop();
 	}
 	  
