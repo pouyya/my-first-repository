@@ -328,12 +328,6 @@ export class BasketComponent {
         return;
       }
     }
-    else
-    {
-      this.searchBarEnabled=true;
-      this.searchedCustomers = [];
-      this.searchInput="";
-    }
 
     this.ngZone.runOutsideAngular(async () => {
       let sale = { ...this.sale }
@@ -364,6 +358,9 @@ export class BasketComponent {
     this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
     this.paymentCompleted.emit();
     this.customer = null;
+    this.searchBarEnabled=true;
+    this.searchedCustomers = [];
+    this.searchInput="";
     this.calculateAndSync();
   }
 
