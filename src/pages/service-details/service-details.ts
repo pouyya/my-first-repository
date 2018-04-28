@@ -6,7 +6,7 @@ import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Platform, ModalController, LoadingController, ToastController , AlertController , Events  } from 'ionic-angular';
+import { NavController, NavParams, Platform, ModalController, LoadingController, ToastController , AlertController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
@@ -55,7 +55,6 @@ export class ServiceDetails {
   private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
-		public events:Events,
 		private serviceService: ServiceService,
 		private categoryService: CategoryService,
 		private priceBookService: PriceBookService,

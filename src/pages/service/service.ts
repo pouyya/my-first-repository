@@ -46,7 +46,7 @@ export class Services extends SearchableListing<Service>{
       loader.dismiss();
       return;
     }
-  }  
+  }
 
   showDetail(service) {
     this.navCtrl.push(ServiceDetails, { service: service });
