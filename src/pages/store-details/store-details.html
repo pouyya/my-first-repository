@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Store</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
+      <button type="submit" ion-button icon-only form="storeForm" [disabled]="!storeForm.valid">
         Save
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
@@ -14,13 +14,14 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="form">
+  <form id="storeForm" [formGroup]="storeForm" (ngSubmit)="onSubmitAndReturn(true)" >
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
         <ion-label class="item-name">Store Name*</ion-label>
         <ion-input type="text" formControlName="name" name="name"></ion-input>
       </ion-item>
+      <p ion-text *ngIf="storeForm.controls['name'].errors && storeForm.controls['name'].dirty" color="danger" padding-left="">Name should not be empty.</p>
       <ion-item>
         <ion-label class="item-name">Order Number Prefix</ion-label>
         <ion-input type="text" formControlName="orderNumPrefix" name="orderNumPrefix"></ion-input>
@@ -82,6 +83,7 @@
         <ion-label class="item-name">Email</ion-label>
         <ion-input type="text" formControlName="email" name="email"></ion-input>
       </ion-item>
+      <p ion-text *ngIf="storeForm.controls['email'].errors && storeForm.controls['email'].dirty" color="danger" padding-left>Email is invalid.</p>
       <ion-item>
         <ion-label class="item-name">Phone</ion-label>
         <ion-input type="text" formControlName="phone" name="phone"></ion-input>
@@ -93,7 +95,8 @@
     </ion-list>
 
   </form>
-  <form (ngSubmit)="onSubmitAndReturn(true)" #storeForm="ngForm">
+
+  <!--<form (ngSubmit)="onSubmitAndReturn(true)" #storeForm="ngForm">
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
@@ -170,7 +173,7 @@
         <ion-input type="text" [(ngModel)]="item.twitter" name="twitter"></ion-input>
       </ion-item>
     </ion-list>
-  </form>
+  </form>-->
 
     <ion-grid>
       <ion-row>
