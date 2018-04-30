@@ -17,16 +17,15 @@
 
 .top-component {
   overflow-y: auto;
-  height: calc(100% - 220px);
+  min-height: 320px;
+  height: 75%;
 }
 
 .bottom-component {
   width: 100%;
-  height: 220px;
+  min-height: 130px;
   position: relative;
-  ion-row {
-    height: 100%;
-  }
+  height: 25%;
 }
 
 .pay-button {
