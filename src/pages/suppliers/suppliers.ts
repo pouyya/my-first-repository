@@ -25,7 +25,7 @@ export class Suppliers extends SearchableListing<Supplier>{
 	public items: SupplierList[] = [];
 
 	constructor(
-		private supplierService: SupplierService, //used in constructor
+		supplierService: SupplierService,
 		private loadingCtrl: LoadingController,
 		private navCtrl: NavController,
 		protected zone: NgZone

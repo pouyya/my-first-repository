@@ -16,22 +16,22 @@ import { Store } from "../../model/store";
 })
 export class Stores extends SearchableListing<Store>{
 
-public items: Store[] = [];
+  public items: Store[] = [];
 
   constructor(public navCtrl: NavController,
-          private storeService:StoreService, // used in constructor
-          private platform:Platform,
-          protected zone: NgZone) {
-      super(storeService, zone, 'Store');
+    storeService: StoreService,
+    private platform: Platform,
+    protected zone: NgZone) {
+    super(storeService, zone, 'Store');
   }
 
-  async ionViewDidEnter(){
-     await this.platform.ready();
-     await this.fetchMore();
-  } 
+  async ionViewDidEnter() {
+    await this.platform.ready();
+    await this.fetchMore();
+  }
 
-  showDetail(store){
-    this.navCtrl.push(StoreDetailsPage, {store:store}); 
-  } 
+  showDetail(store) {
+    this.navCtrl.push(StoreDetailsPage, { store: store });
+  }
 
 }

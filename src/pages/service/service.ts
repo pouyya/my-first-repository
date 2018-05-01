@@ -8,8 +8,8 @@ import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import {SearchableListing} from "../../modules/searchableListing";
-import {Service} from "../../model/service";
+import { SearchableListing } from "../../modules/searchableListing";
+import { Service } from "../../model/service";
 
 @SecurityModule(SecurityAccessRightRepo.ServiceListing)
 @PageModule(() => BackOfficeModule)
@@ -22,7 +22,7 @@ export class Services extends SearchableListing<Service>{
 
 
   constructor(public navCtrl: NavController,
-    private serviceService: ServiceService, //used in  constructor
+    serviceService: ServiceService,
     private loading: LoadingController,
     protected zone: NgZone) {
     super(serviceService, zone, 'Service');
@@ -33,11 +33,11 @@ export class Services extends SearchableListing<Service>{
     await loader.present();
     try {
       this.options = {
-          sort: [{order: SortOptions.ASC}], conditionalSelectors: {
-              order: {
-                  $gt: true
-              }
+        sort: [{ order: SortOptions.ASC }], conditionalSelectors: {
+          order: {
+            $gt: true
           }
+        }
       };
       await this.fetchMore();
       loader.dismiss();

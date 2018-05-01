@@ -1,6 +1,6 @@
 import {
-    NavParams, AlertController, LoadingController,
-    ViewController , ToastController
+  NavParams, AlertController, LoadingController,
+  ViewController
 } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
@@ -35,7 +35,6 @@ export class DeviceDetailsModal {
     private serviceService: ServiceService,
     private alertCtrl: AlertController,
     private syncContext: SyncContext,
-    private toastCtrl: ToastController,
     private loading: LoadingController
   ) { }
 
@@ -57,8 +56,8 @@ export class DeviceDetailsModal {
       this.isNew = false;
       this.action = 'Edit';
       this.device = device;
-      this.associatedPurchasableItems = this.purchasableItems.filter( item => {
-        if((this.device.associatedPurchasableItemIds as any).includes(item._id)){
+      this.associatedPurchasableItems = this.purchasableItems.filter(item => {
+        if ((this.device.associatedPurchasableItemIds as any).includes(item._id)) {
           return item;
         }
       })
@@ -67,12 +66,12 @@ export class DeviceDetailsModal {
   }
 
   public dismiss() {
-      this.viewCtrl.dismiss(null);
+    this.viewCtrl.dismiss(null);
   }
 
   public async onSubmit() {
     this.device.associatedPurchasableItemIds = this.associatedPurchasableItems.map(data => data._id);
-    this.viewCtrl.dismiss({ status : 'add', device: this.device});
+    this.viewCtrl.dismiss({ status: 'add', device: this.device });
   }
 
   public async remove() {
@@ -83,9 +82,9 @@ export class DeviceDetailsModal {
         {
           text: 'Yes',
           handler: () => {
-              let loader = this.loading.create({
-                content: 'Deleting. Please Wait!',
-              });
+            this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
           }
         }, 'No'
       ]

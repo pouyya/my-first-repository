@@ -27,7 +27,7 @@ export class AboutPage {
   public deployInfo: IonicDeployInfo;
 
   constructor(
-    private syncContext: SyncContext // Used in view
+    public syncContext: SyncContext
   ) {
    }
 

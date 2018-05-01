@@ -401,7 +401,7 @@ import { Utilities } from "../utility/index";
   ]
 })
 export class AppModule {
-  constructor(private syncContext: SyncContext, injector: Injector) { //used in view app.html
+  constructor(public syncContext: SyncContext, injector: Injector) {
     ServiceLocator.injector = injector;
   }
 }

@@ -13,8 +13,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
-import {ValidationInfo, ValidationMeta} from "../../metadata/validationModule";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { FormBuilder, FormGroup } from "@angular/forms";
 import { Utilities } from "../../utility/index";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
@@ -44,7 +43,7 @@ export class StoreDetailsPage {
     private resourceService: ResourceService,
     private formBuilder: FormBuilder,
     private utils: Utilities) {
-      this.createForm();
+    this.createForm();
   }
 
   async ionViewDidEnter() {
@@ -53,28 +52,20 @@ export class StoreDetailsPage {
     });
     let store = this.navParams.get('store');
     if (store) {
-        this.item = store;
-        this.isNew = false;
-        this.action = 'Edit';
+      this.item = store;
+      this.isNew = false;
+      this.action = 'Edit';
     }
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();
   }
 
-  private createForm(){
+  private createForm() {
     const store = this.navParams.get('store') || {};
     const groupValidation = this.utils.createGroupValidation('Store', this.fields, store);
     this.storeForm = this.formBuilder.group(groupValidation);
   }
-
-  private async addPos(store: Store) {
-    if (this.posToAdd.length > 0) {
-      const pos: POS[]  = this.posToAdd;
-      store.POS = store.POS
-    }
-    return;
-  };
 
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
@@ -93,15 +84,15 @@ export class StoreDetailsPage {
 
   public showPos(pos: POS, index: number) {
     const newPos = _.clone(pos);
-    let modal = this.modalCtrl.create(PosDetailsModal, { pos : newPos });
-    modal.onDidDismiss((data: { status: string,  pos: POS }) => {
-        if (data) {
-          if(data.status == "remove"){
-            this.item.POS.splice(index, 1);
-          } else {
-              this.item.POS[index] = data.pos;
-          }
+    let modal = this.modalCtrl.create(PosDetailsModal, { pos: newPos });
+    modal.onDidDismiss((data: { status: string, pos: POS }) => {
+      if (data) {
+        if (data.status == "remove") {
+          this.item.POS.splice(index, 1);
+        } else {
+          this.item.POS[index] = data.pos;
         }
+      }
     });
     modal.present();
   }
@@ -109,10 +100,10 @@ export class StoreDetailsPage {
   public addRegister() {
     let modal = this.modalCtrl.create(PosDetailsModal);
     modal.onDidDismiss((data: { status: string, pos: POS }) => {
-        if (data && data.status === "add") {
-            !this.item.POS && (this.item.POS = []);
-            this.item.POS.push(data.pos);
-        }
+      if (data && data.status === "add") {
+        !this.item.POS && (this.item.POS = []);
+        this.item.POS.push(data.pos);
+      }
     });
     modal.present();
   }
