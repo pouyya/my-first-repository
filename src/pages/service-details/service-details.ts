@@ -235,9 +235,8 @@ export class ServiceDetails {
 	}
 	  
 	public  delete() {
-        let message: string = 'Do you want to delete this service?';
         let confirmOptions: any = {
-            title: 'Confirm Delete service?',
+            title: `Are you sure you want to delete service '${this.serviceItem.name}'?`,
             buttons: [
                 {
                     text: 'Yes',
