@@ -37,7 +37,8 @@ import {
 
 @Component({
   selector: 'order-details',
-  templateUrl: 'order-details.html'
+  templateUrl: 'order-details.html',
+  styleUrls: ['/pages/order-details/order-details.scss'],
 })
 export class OrderDetails {
 
