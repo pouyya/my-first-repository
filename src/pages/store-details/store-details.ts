@@ -13,6 +13,9 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
+import {ValidationInfo, ValidationMeta} from "../../metadata/validationModule";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { Utilities } from "../../utility/index";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -26,7 +29,10 @@ export class StoreDetailsPage {
   public countries: Array<any> = [];
   public posToAdd: POS[] = [];
   public deviceType = DeviceType;
-
+  private storeForm: FormGroup;
+  private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
+    'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
+    'timezone', 'email', 'phone', 'twitter'];
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
@@ -35,7 +41,10 @@ export class StoreDetailsPage {
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private resourceService: ResourceService) {
+    private resourceService: ResourceService,
+    private formBuilder: FormBuilder,
+    private utils: Utilities) {
+      this.createForm();
   }
 
   async ionViewDidEnter() {
@@ -48,15 +57,28 @@ export class StoreDetailsPage {
         this.isNew = false;
         this.action = 'Edit';
     }
-
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();
   }
 
+  private createForm(){
+    const store = this.navParams.get('store') || {};
+    const groupValidation = this.utils.createGroupValidation('Store', this.fields, store);
+    this.storeForm = this.formBuilder.group(groupValidation);
+  }
+
+  private async addPos(store: Store) {
+    if (this.posToAdd.length > 0) {
+      const pos: POS[]  = this.posToAdd;
+      store.POS = store.POS
+    }
+    return;
+  };
+
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
-
+    this.utils.setFormFields(this.storeForm, this.fields, this.item);
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);

@@ -154,6 +154,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
 import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
+import { Utilities } from "../utility/index";
 
 @NgModule({
   declarations: [
@@ -375,6 +376,7 @@ import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
+    Utilities,
     PrintService,
     BrandService,
     StoreService,

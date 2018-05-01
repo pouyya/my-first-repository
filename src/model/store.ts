@@ -1,5 +1,6 @@
 import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
 import { DisplayColumn, FilterType, SearchFilter } from "../metadata/listingModule";
+import { Required, Regex } from "../metadata/validationModule";
 
 export enum DeviceType {
     Bump,
@@ -50,6 +51,7 @@ export class POS {
 
 export class Store extends DBBasedEntity {
   @DisplayColumn(1) @SearchFilter(FilterType.Text, 1, 'Search')
+  @Required()
   public name: string;
   public address: string;
   public orderNumPrefix: string;
@@ -60,6 +62,7 @@ export class Store extends DBBasedEntity {
   public postCode?: string;
   public state: string;
   public country: string;
+  @Regex('^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$')
   public email: string;
   public phone: string;
   public printerIP: string;
