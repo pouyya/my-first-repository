@@ -1,7 +1,6 @@
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
-import { Store } from './../../model/store';
 import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
@@ -33,7 +32,6 @@ export class PaymentsPage {
     private paymentService: PaymentService,
     private productService: ProductService,
     private navCtrl: NavController,
-    private alertCtrl: AlertController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
     private loading: LoadingController,

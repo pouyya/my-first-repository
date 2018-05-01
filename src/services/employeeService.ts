@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as moment from "moment";
 import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { EmployeeTimestampService } from './employeeTimestampService';

@@ -4,12 +4,13 @@ import { NavParams, ViewController, ToastController, AlertController, LoadingCon
 import { POS } from './../../../model/store';
 import { Component, Injector } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
-import { StoreService } from "../../../services/storeService";
+
 @Component({
   selector: "pos-details-modal",
   templateUrl: 'pos-details.html'
 })
 export class PosDetailsModal {
+  
   public pos: POS = new POS();
   public isNew: boolean = true;
   public action: string = 'Add';
@@ -17,7 +18,6 @@ export class PosDetailsModal {
 
   constructor(
     private navParams: NavParams,
-    private storeService: StoreService,
     private viewCtrl: ViewController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
