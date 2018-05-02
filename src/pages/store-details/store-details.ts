@@ -15,6 +15,7 @@ import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Utilities } from "../../utility/index";
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -35,6 +36,7 @@ export class StoreDetailsPage {
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
+    private syncContext: SyncContext,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private loading: LoadingController,
@@ -69,6 +71,15 @@ export class StoreDetailsPage {
 
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
+    if(!this.item.POS || this.item.POS.length === 0){
+      const toast = this.toastCtrl.create({
+        message: 'Current POS cannot be removed',
+        duration: 3000
+      });
+      toast.present();
+      return;
+    }
+
     this.utils.setFormFields(this.storeForm, this.fields, this.item);
     await loader.present();
     if (this.isNew) {
@@ -78,8 +89,9 @@ export class StoreDetailsPage {
     }
     loader.dismiss();
 
-    if (isReturn == true)
+    if (isReturn == true){
       this.navCtrl.pop();
+    }
   }
 
   public showPos(pos: POS, index: number) {
@@ -109,6 +121,15 @@ export class StoreDetailsPage {
   }
 
   public removeAddedRegister(index: number) {
+    const register = this.item.POS[index];
+    if(this.syncContext.currentPos.id === register.id){
+      const toast = this.toastCtrl.create({
+        message: 'Current POS cannot be removed',
+        duration: 3000
+      });
+      toast.present();
+      return;
+    }
     this.item.POS.splice(index, 1);
   }
 
