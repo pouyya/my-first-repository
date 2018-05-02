@@ -242,7 +242,7 @@ export class ServiceDetails {
                     text: 'Yes',
                     handler: async () => {
 						let toast = this.toastCtrl.create({
-						message: `Service '${this.serviceItem.name}' has been deleted successfully!`,
+						message: `Service '${this.serviceItem.name}' and all associated price book has been deleted successfully!`,
 						duration: 3000
 						});
 						toast.present();
