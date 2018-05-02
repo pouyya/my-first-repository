@@ -134,7 +134,8 @@
       },
       "cordova-plugin-appsee": {}
     },
-    "platforms": [
+    "platforms": [      
+      "android",
       "ios"
     ]
   },
