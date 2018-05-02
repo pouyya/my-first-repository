@@ -231,5 +231,4 @@ export class ServiceDetails {
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
 	}
-
 }
