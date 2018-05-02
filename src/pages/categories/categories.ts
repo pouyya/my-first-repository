@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, AlertController, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { CategoryDetails } from '../category-details/category-details';
 import { InventoryModule } from '../../modules/inventoryModule';
@@ -21,11 +21,9 @@ export class Categories extends SearchableListing<Category> {
   public items: Category[] = [];
 
   constructor(public navCtrl: NavController,
-    private alertCtrl: AlertController,
     private categoryService: CategoryService,
     private loading: LoadingController,
     protected zone: NgZone) {
-
     super(categoryService, zone, 'Category');
   }
 
