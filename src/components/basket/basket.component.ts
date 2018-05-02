@@ -297,11 +297,19 @@ export class BasketComponent {
       this.calculateAndSync();
     }
 
+    this.initializeSearchBar();
+
     this.navCtrl.push(PaymentsPage, {
       sale: this.sale,
       doRefund: this.refund,
       callback: pushCallback
     });
+  }
+
+  private initializeSearchBar() {
+    this.searchBarEnabled = true;
+    this.searchedCustomers = [];
+    this.searchInput = "";
   }
 
   public async fastPayment() {
@@ -327,6 +335,8 @@ export class BasketComponent {
         return;
       }
     }
+
+    this.initializeSearchBar();
 
     this.ngZone.runOutsideAngular(async () => {
       let sale = { ...this.sale }
@@ -397,6 +407,7 @@ export class BasketComponent {
                   this.customer = null;
                   this.sale = sale;
                   this.calculateAndSync();
+                  this.initializeSearchBar();
                 });
               }
             }
@@ -428,6 +439,7 @@ export class BasketComponent {
               this.customer = null;
               this.sale = await this.salesService.instantiateSale();
               this.calculateAndSync();
+              this.initializeSearchBar();
             });
           }
         },
