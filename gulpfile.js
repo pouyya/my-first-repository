@@ -19,6 +19,7 @@ gulp.task('bump', function () {
     var type = args.type;
     var version = args.version;
     var options = {};
+    var msg="";
     if (version) {
         options.version = version;
         msg += ' to ' + version;
@@ -29,46 +30,16 @@ gulp.task('bump', function () {
 
 
     return gulp
-        .src(['Path to your package.json', 'path to your bower.json'])
+        .src(['package.json', 'bower.json'])
         .pipe(bump(options))
-        .pipe(gulp.dest('path to your root directory'));
+        .pipe(gulp.dest('/'));
 });
 
 
 gulp.task('increment-version', function(){
-    //docString is the file from which you will get your constant string
-    var docString = fs.readFileSync('./someFolder/constants.js', 'utf8');
-
-    //The code below gets your semantic v# from docString
-    var versionNumPattern=/'someTextPreceedingVNumber', '(.*)'/; //This is just a regEx with a capture group for version number
-    var vNumRexEx = new RegExp(versionNumPattern);
-    var oldVersionNumber = (vNumRexEx.exec(docString))[1]; //This gets the captured group
-
-    //...Split the version number string into elements so you can bump the one you want
-    var versionParts = oldVersionNumber.split('.');
-    var vArray = {
-        vMajor : versionParts[0],
-        vMinor : versionParts[1],
-        vPatch : versionParts[2]
-    };
-
-    vArray.vPatch = parseFloat(vArray.vPatch) + 1;
-    var periodString = ".";
-
-    var newVersionNumber = vArray.vMajor + periodString +
-                           vArray.vMinor+ periodString +
-                           vArray.vPatch;
-
-    gulp.src(['./someFolder/constants.js'])
-        .pipe(replace(/'someTextPreceedingVNumber', '(.*)'/g, newVersionNumber))
-        .pipe(gulp.dest('./someFolder/'));
-});
-
-
-gulp.task('version', function(){
     var fs = require('fs');
       //docString is the file from which you will get your constant string
-      var docString = fs.readFileSync('app/scripts/version/version.js', 'utf8'); //type of docString i an object here.
+      var docString = fs.readFileSync('version.js', 'utf8'); //type of docString i an object here.
   
       var versionParts = docString.split('.');
   
@@ -78,15 +49,41 @@ gulp.task('version', function(){
           vPatch : versionParts[2]
       };
   
-      vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+    vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+    var periodString = ".";
+
+    var newVersionNumber = vArray.vMajor + periodString +
+                           vArray.vMinor+ periodString +
+                           vArray.vPatch;
+
+    require('fs').writeFileSync('version.js', newVersionNumber+"'");
+    return gulp.src(['version.js'])
+        .pipe(gulp.dest('/'));//creates version.js file in the directory
+});
+
+
+gulp.task('version', function(){
+    var fs = require('fs');
+      //docString is the file from which you will get your constant string
+      var docString = fs.readFileSync('version.js', 'utf8'); //type of docString i an object here.
+  
+      var versionParts = docString.split('.');
+  
+      var vArray = {
+          vMajor : versionParts[0],
+          vMinor : versionParts[1],
+          vPatch : versionParts[2]
+      };
+  
+      vArray.vPatch = parseFloat(vArray.vPatch);
       var periodString = ".";
       var newVersionNumber = vArray.vMajor + periodString +
                              vArray.vMinor+ periodString +
-                             vArray.vPatch;
+                             (vArray.vPatch+1);
   
   
   
-      require('fs').writeFileSync('app/scripts/version/version.js', newVersionNumber);
-          return gulp.src(['app/scripts/version/version.js'])
-              .pipe(gulp.dest('app/scripts/version/new_version'));//creates version.js file in the directory
+      require('fs').writeFileSync('version.js', newVersionNumber+"'");
+          return gulp.src(['version.js'])
+              .pipe(gulp.dest('/'));//creates version.js file in the directory
       });
