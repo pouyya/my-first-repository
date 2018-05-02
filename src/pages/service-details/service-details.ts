@@ -234,9 +234,9 @@ export class ServiceDetails {
 		this.navCtrl.pop();
 	}
 	  
-	public  delete() {
+	public async delete() {
         let confirmOptions: any = {
-            title: `Are you sure you want to delete service '${this.serviceItem.name}'?`,
+            title: `Are you sure you want to delete service '${this.serviceItem.name}'? , will delete all associated price book`,
             buttons: [
                 {
                     text: 'Yes',
@@ -254,6 +254,20 @@ export class ServiceDetails {
             ]
         };
 
+		
+		// delete associations
+		let deleteAssocs: any[] = [
+			async () => {
+				// delete pricebook entries
+				let pbIndex = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
+				if (pbIndex > -1) {
+					this._defaultPriceBook.purchasableItems.splice(pbIndex, 1);
+					return await this.priceBookService.update(this._defaultPriceBook);
+				}
+			}
+		];
+
+		await Promise.all(deleteAssocs);
         let confirm = this.alertCtrl.create(confirmOptions);
         confirm.present();
 	}
