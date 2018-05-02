@@ -14,7 +14,6 @@ import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.i
 import { BaseEntityService, SortOptions } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 import { StockHistoryService } from './stockHistoryService';
-import { StockHistory } from './../model/stockHistory';
 import { SyncContext } from "./SyncContext";
 
 @Injectable()

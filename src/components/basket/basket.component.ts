@@ -27,7 +27,6 @@ import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
-import { Product } from "../../model/product";
 
 @Component({
   selector: 'basket',

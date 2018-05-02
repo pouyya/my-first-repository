@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ModalController } from "ionic-angular";
 import { SelectColorModal } from "./modal/select-color/select-color";
 import { Subject } from "rxjs/Subject";

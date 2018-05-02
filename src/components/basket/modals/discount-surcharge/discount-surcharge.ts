@@ -27,8 +27,8 @@ export class DiscountSurchargeModal {
     private toastCtrl: ToastController,
     private navParams: NavParams
   ) {
-    this.action = <string>navParams.get('action');
-    this.values = <DiscountSurchargeInterface[]>navParams.get('values');
+    this.action = <string>this.navParams.get('action');
+    this.values = <DiscountSurchargeInterface[]>this.navParams.get('values');
     this.valuesBackup = _.map(this.values, value => value);
   }
 

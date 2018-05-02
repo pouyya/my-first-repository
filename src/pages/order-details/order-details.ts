@@ -17,7 +17,6 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { UserService } from '../../modules/dataSync/services/userService';
 import { EmailService } from '../../services/emailService';
 import {
   NavController,
@@ -38,16 +37,7 @@ import {
 @Component({
   selector: 'order-details',
   templateUrl: 'order-details.html',
-  styles: [`
-    .center-message {
-      text-align: center;
-      font-size: 40px;
-      font-weight: bold;
-    }
-    #cancel-order {
-      color: red;
-    }
-  `]
+  styleUrls: ['/pages/order-details/order-details.scss'],
 })
 export class OrderDetails {
 
@@ -79,7 +69,6 @@ export class OrderDetails {
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
     private emailService: EmailService,
-    private userService: UserService
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');

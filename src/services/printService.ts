@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
-import { StoreService } from './storeService';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
@@ -48,7 +47,6 @@ export class PrintService {
 
   constructor(
     private platformService: PlatformService,
-    private storeService: StoreService,
     private accountSettingService: AccountSettingService,
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
