@@ -5,7 +5,8 @@ import { IonicErrorHandler } from 'ionic-angular';
 
 
 const IonicPro = Pro.init(ConfigService.ionicDeployAppId(), {
-  appVersion: "0.0.3"
+  appVersion: "0.0.0",
+  version: JSON.parse('../../../package.json');
 });
 
 @Injectable()
