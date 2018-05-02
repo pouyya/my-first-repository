@@ -15,6 +15,7 @@ import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Utilities } from "../../utility/index";
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -26,15 +27,16 @@ export class StoreDetailsPage {
   public action: string = 'Add';
   public devices: Device[] = [];
   public countries: Array<any> = [];
-  public posToAdd: POS[] = [];
   public deviceType = DeviceType;
   private storeForm: FormGroup;
   private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
     'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
     'timezone', 'email', 'phone', 'twitter'];
+
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
+    private syncContext: SyncContext,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private loading: LoadingController,
@@ -165,6 +167,16 @@ export class StoreDetailsPage {
 
   // Device
   public remove() {
+    if(this.item._id === this.syncContext.currentStore._id){
+      const toast = this.toastCtrl.create({
+        message: 'Selected store cannot be deleted',
+        duration: 3000
+      });
+      toast.present();
+      this.navCtrl.pop();
+      return;
+    }
+
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this store ?',
       message: 'Deleting this store, will delete all associated Registers, Sales and any Current Sale!',
