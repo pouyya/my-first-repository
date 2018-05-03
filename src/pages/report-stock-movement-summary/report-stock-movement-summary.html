@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle="lefMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Inventory</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-select class="white-bg" [(ngModel)]="selectedTimeframe" (ionChange)="loadStockReport()">
+          <ion-option *ngFor="let timeframe of timeframes" [value]="timeframe.value">{{ timeframe.text }}</ion-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}} </span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-grid>
+    <ion-row class="stock-header">
+      <ion-col>
+        PRODUCT
+      </ion-col>
+      <ion-col>
+        START STOCK
+      </ion-col>
+      <ion-col>
+        RECEIVED
+      </ion-col>
+      <ion-col>
+        SOLD
+      </ion-col>
+      <ion-col>
+        DEDUCTED
+      </ion-col>
+      <ion-col>
+        END STOCK
+      </ion-col>
+      <ion-col>
+        END VALUE
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let stockMovement of stockMovementList" padding-top>
+      <ion-col>
+        {{stockMovement.productName}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.startStock}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.received}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.sold}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.deducted}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.endStock}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.endValue}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

@@ -10,6 +10,7 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
+import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
@@ -27,6 +28,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut },
     { title: 'Closures', icon: 'bookmarks', component: Closures },
     { title: 'Back Office', icon: 'build', component: HomePage },
+    { title: 'Report', icon: 'build', component: ReportsDashboard },
     { title: 'Logout', icon: 'log-out', component: LogOut }
   ];
 
