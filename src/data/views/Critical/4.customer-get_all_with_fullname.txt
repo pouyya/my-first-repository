@@ -1,0 +1,14 @@
+MAP
+
+function (doc) {
+    if (doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'Customer') {
+        var newDoc = {};
+        Object.keys(doc).forEach(function (key) {
+            newDoc[key] = doc[key];
+        });
+        newDoc['fullname'] = (doc.firstName + " " + doc.lastName).trim();
+        emit(doc._id, newDoc);
+    }
+}
+
+REDUCE: None

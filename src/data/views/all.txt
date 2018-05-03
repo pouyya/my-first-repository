@@ -1,0 +1,82 @@
+MAP
+
+function (doc) {
+    if (doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'Customer') {
+        var newDoc = {};
+        Object.keys(doc).forEach(function (key) {
+            newDoc[key] = doc[key];
+        });
+        newDoc['fullname'] = (doc.firstName + " " + doc.lastName).trim();
+        emit(doc._id, newDoc);
+    }
+}
+
+REDUCE: None
+MAP
+
+function (doc) {
+  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'EmployeeTimestamp') {
+    var time = new Date(doc.time);
+    var timeString = [time.getFullYear(), time.getMonth() + 1, time.getDate()].join('-');
+    emit(timeString, doc);
+  }
+}
+
+REDUCE: None
+MAP
+
+function (doc) {
+  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'EmployeeTimestamp') {
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    var yesterdayString = [yesterday.getUTCFullYear(), yesterday.getUTCMonth() + 1, yesterday.getUTCDate()].join('-');    
+    var time = new Date(doc.time);
+    var timeString = [time.getUTCFullYear(), time.getUTCMonth() + 1, time.getUTCDate()].join('-');    
+    if(timeString == yesterdayString) {
+      emit(timeString, [yesterdayString, timeString, doc]);
+    }
+  }
+}
+
+REDUCE: None
+MAP
+
+function(doc) {
+    if (doc.entityTypeName == 'StockHistory') {
+        emit([doc.productId, doc.storeId], doc.value);
+    }
+}
+
+REDUCE
+
+function(keys, values, rereduce) {
+    return sum(values);
+}
+
+MAP
+
+function (doc) {
+  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'EmployeeTimestamp') {
+    var yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    var yesterdayString = [yesterday.getUTCFullYear(), yesterday.getUTCMonth() + 1, yesterday.getUTCDate()].join('-');    
+    var time = new Date(doc.time);
+    var timeString = [time.getUTCFullYear(), time.getUTCMonth() + 1, time.getUTCDate()].join('-');    
+    if(timeString == yesterdayString) {
+      emit(timeString, [yesterdayString, timeString, doc]);
+    }
+  }
+}
+
+REDUCE: None
+MAP
+
+function (doc) {
+  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'EmployeeTimestamp') {
+    var time = new Date(doc.time);
+    var timeString = [time.getFullYear(), time.getMonth() + 1, time.getDate()].join('-');
+    emit(timeString, doc);
+  }
+}
+
+REDUCE: None
