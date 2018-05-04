@@ -18,14 +18,13 @@
 .top-component {
   overflow-y: auto;
   min-height: 320px;
-  height: 75%;
+  height: calc(75% - 65px);
 }
 
 .bottom-component {
   width: 100%;
   min-height: 130px;
   position: relative;
-  height: 25%;
 }
 
 .pay-button {
