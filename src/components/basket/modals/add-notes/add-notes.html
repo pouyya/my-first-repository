@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Add Notes
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-12>
+        <hr/>
+        <ion-textarea [(ngModel)]="notes" rows="1"  placeholder="Add Sale Notes...">
+        </ion-textarea>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  </ion-content>
+
+  <ion-footer>
+    <button ion-button class="pull-right" (click)="confirmChanges()">Done</button>
+  </ion-footer>

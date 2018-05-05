@@ -42,7 +42,7 @@
 
   <ion-grid *ngIf="syncContext.currentPos.status && categories && activeCategory" class="full-height">
     <ion-row class="full-height">
-      <ion-col col-2>
+      <ion-col class="min-height" col-2>
         <ion-scroll scrollY="true" class="category-scroll">
           <ion-list no-lines class="full-height no-margin sales-category">
             <ion-item text-wrap *ngIf="categories.length == 0">Please use back office to add new categories.</ion-item>
