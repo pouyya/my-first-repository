@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { SalesServices } from './../../services/salesService';
 import { Device } from './../../model/store';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { SyncContext } from "../../services/SyncContext";
 import { Sale } from "../../model/sale";
 import { DBService } from "@simpleidea/simplepos-core/dist/services/dBService";
@@ -27,6 +27,8 @@ export class BumpDetails {
         private salesService: SalesServices,
         private navParams: NavParams,
         private ngZone: NgZone,
+        private loading: LoadingController,
+        private toastController: ToastController,
         private syncContext: SyncContext) {
     }
 
@@ -37,6 +39,9 @@ export class BumpDetails {
     }
 
     public async showSales(type?: string) {
+        let loader = this.loading.create();
+        loader.present();
+
         switch (type) {
             case "next":
                 this.skip += this.limit;
@@ -53,17 +58,10 @@ export class BumpDetails {
         if (this.isBumpedViewSelected) {
             options['isBumped'] = true;
         }
-        this.sales = await this.salesService.searchSales(this.device.posIds, this.limit + 1, this.skip, options,
+        const sales: any = await this.salesService.searchSales(this.device.posIds, this.limit + 1, this.skip, options,
             timeFrame, null, null, SortOptions.ASC);
 
-        if (this.sales.length > this.limit) {
-            this.showNext = true;
-            this.sales.splice(this.limit);
-        } else {
-            this.showNext = false;
-        }
-
-        this.sales = this.sales.filter(sale => {
+        this.sales = sales.filter(sale => {
 
             if (this.device.associatedPurchasableItemIds && this.device.associatedPurchasableItemIds.length > 0) {
                 sale.filteredItems = sale.items.filter(item => {
@@ -76,6 +74,8 @@ export class BumpDetails {
                 return sale;
             }
         });
+        loader.dismiss();
+
     }
 
 
@@ -146,9 +146,20 @@ export class BumpDetails {
 
     }
 
-    public async bumpItem(sale: Sale) {
-        delete ((<any>sale).filteredItems);
-        await this.salesService.update(sale);
-    }
+    public async bumpItem(sale: Sale, item, index) {
 
+        if (((<any>sale).filteredItems).length === ((<any>sale).filteredItems).filter(item => item.isBumped).length) {
+            //if ( ((<any>sale).filteredItems).filter(item => item.isBumped).length=0) {
+            let toast = this.toastController.create({
+                message: 'Bumped...',
+                duration: 3000
+            });
+            toast.present();
+            this.bump(sale, index)
+        }
+        else {
+            delete ((<any>sale).filteredItems);
+            await this.salesService.update(sale);
+        }
+    }
 }
