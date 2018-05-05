@@ -113,7 +113,7 @@ export class EmployeeDetails {
   public selectRoles(store: SelectableStore, index: number) {
     let modal = this.modalCtrl.create(SelectRolesModal, { store });
     modal.onDidDismiss((res) => {
-      if (store.selected && res.selectedRole) {
+      if (store.selected && res && res.selectedRole) {
         store.role = res.selectedRole;
       }
     });

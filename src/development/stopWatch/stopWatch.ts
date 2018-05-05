@@ -1,5 +1,3 @@
-import { DateTime } from "ionic-angular";
-
 export class Stopwatch {
 
 	time: number;

@@ -9,8 +9,8 @@ import { Component, NgZone } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { SupplierService } from '../../services/supplierService';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
-import {SearchableListing} from "../../modules/searchableListing";
-import {Order} from "../../model/order";
+import { SearchableListing } from "../../modules/searchableListing";
+import { Order } from "../../model/order";
 
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;
@@ -43,7 +43,7 @@ export class Orders extends SearchableListing<Order>{
   constructor(
     private storeService: StoreService,
     private supplierService: SupplierService,
-    private orderService: OrderService,
+    orderService: OrderService,
     private navCtrl: NavController,
     protected zone: NgZone
   ) {
@@ -96,7 +96,7 @@ export class Orders extends SearchableListing<Order>{
   }
 
   public async fetchMore(infiniteScroll?: InfiniteScroll) {
-    let orders : RenderableOrder[] = <RenderableOrder[]> await this.loadData();
+    let orders: RenderableOrder[] = <RenderableOrder[]>await this.loadData();
     orders = this.updateOrderProps(orders);
     this.offset += orders ? orders.length : 0;
     this.zone.run(() => {
@@ -106,15 +106,15 @@ export class Orders extends SearchableListing<Order>{
     });
   }
 
-  private updateOrderProps(orders){
+  private updateOrderProps(orders) {
     orders.map(order => {
-        order.totalCost = (order.status == OrderStatus.Received) ?
-            order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
-            order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
+      order.totalCost = (order.status == OrderStatus.Received) ?
+        order.items.map(product => product.receivedQty * product.receivedQty).reduce((a, b) => a + b) :
+        order.items.map(product => product.quantity * product.price).reduce((a, b) => a + b);
 
-        order.storeId && (order.storeName = this.stores[order.storeId].name);
-        order.supplierId && (order.supplierName = this.suppliers[order.supplierId].name);
-        return order;
+      order.storeId && (order.storeName = this.stores[order.storeId].name);
+      order.supplierId && (order.supplierName = this.suppliers[order.supplierId].name);
+      return order;
     });
     return orders;
   }

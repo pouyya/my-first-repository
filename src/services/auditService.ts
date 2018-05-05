@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { Audit, AuditAction } from "../model/audit";
-import { UserService } from "../modules/dataSync/services/userService";
 import { SyncContext } from "./SyncContext";
 
 @Injectable()

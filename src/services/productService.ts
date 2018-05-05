@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Product } from '../model/product';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
 import { BasketItem } from "../model/basketItem";
-import { Sale } from "../model/sale";
 
 @Injectable()
 export class ProductService extends BaseEntityService<Product> {

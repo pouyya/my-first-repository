@@ -146,7 +146,6 @@ import { SupplierService } from '../services/supplierService';
 import { OrderService } from './../services/orderService';
 import { ResourceService } from '../services/resourceService';
 import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
-import { ConfigService } from '../modules/dataSync/services/configService';
 import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
@@ -156,6 +155,7 @@ import { DeviceDetailsModal } from "../pages/store-details/modals/device-details
 import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
 import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
+import { Utilities } from "../utility/index";
 
 @NgModule({
   declarations: [
@@ -379,6 +379,7 @@ import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
+    Utilities,
     PrintService,
     BrandService,
     StoreService,
@@ -403,7 +404,7 @@ import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
   ]
 })
 export class AppModule {
-  constructor(private syncContext: SyncContext, injector: Injector) {
+  constructor(public syncContext: SyncContext, injector: Injector) {
     ServiceLocator.injector = injector;
   }
 }
