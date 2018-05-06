@@ -63,7 +63,6 @@ export class SearchableListing<T extends DBBasedEntity> {
   }
 
   protected async fetchMore(infiniteScroll?: InfiniteScroll) {
-    //this.setDefaultSettings();
     let data = await this.loadData();
     this.offset += data ? data.length : 0;
     this.zone.run(() => {
