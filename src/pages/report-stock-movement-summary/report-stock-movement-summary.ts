@@ -5,6 +5,8 @@ import { ProductService } from "../../services/productService";
 import { StockHistoryService } from "../../services/stockHistoryService";
 import { SyncContext } from "../../services/SyncContext";
 import { LoadingController } from "ionic-angular";
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 
 interface StockMovement {
   productName: string,
@@ -16,6 +18,7 @@ interface StockMovement {
   endValue: string
 }
 
+@SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
 @PageModule(() => ReportModule)
 @Component({
   selector: 'report-stock-movement-summary',
