@@ -39,7 +39,7 @@ export class Services extends SearchableListing<Service>{
           }
         }
       };
-      await this.fetchMore();
+      await this.fetchMore2();
       loader.dismiss();
     } catch (err) {
       console.error(err);
