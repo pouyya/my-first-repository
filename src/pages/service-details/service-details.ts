@@ -246,6 +246,7 @@ export class ServiceDetails {
 						duration: 3000
 						});
 						toast.present();
+						await Promise.all(deleteAssocs);
 						await this.categoryService.delete(this.serviceItem);
 						this.navCtrl.pop();
                     }
@@ -267,7 +268,6 @@ export class ServiceDetails {
 			}
 		];
 
-		await Promise.all(deleteAssocs);
         let confirm = this.alertCtrl.create(confirmOptions);
         confirm.present();
 	}
