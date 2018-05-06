@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
-import { Product } from "../../model/product";
 import { ProductService } from "../../services/productService";
 import { StockHistoryService } from "../../services/stockHistoryService";
 import { SyncContext } from "../../services/SyncContext";
