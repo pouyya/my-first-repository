@@ -25,6 +25,18 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     }
   }
 
+  public async getByProductId(productId: string): Promise<StockHistory[]> {
+    try {
+      return await this.findBy({
+        selector: { productId },
+        sort: [{ _id: 'desc' }],
+        limit: 50
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   public async getAllProductsTotalStockValue() {
 
     var param = { reduce: true, group: true, group_level: 1 };

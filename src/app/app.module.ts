@@ -154,6 +154,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
 import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
+import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
@@ -182,6 +183,7 @@ import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-s
     CashModal,
     CreditCardModal,
     ParkSale,
+    AddNotes,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -304,6 +306,7 @@ import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-s
     PosDetailsModal,
     CreditCardModal,
     ParkSale,
+    AddNotes,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
