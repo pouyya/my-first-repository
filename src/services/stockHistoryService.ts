@@ -102,4 +102,15 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     stock.reason = stock.value <= 0 ? Reason.Purchase : Reason.Return;
     return stock;
   }
+
+  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]>{
+    try {
+      return await this.findBy({
+        selector: { storeId, createdAt:{$gte : fromDate, $lt: toDate} },
+        sort: [{ _id: 'desc' }]
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
 }

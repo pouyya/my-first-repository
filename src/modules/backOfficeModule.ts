@@ -12,6 +12,7 @@ import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
 import { Customers } from '../pages/customers/customers';
 import { LogOut } from './dataSync/pages/logout/logout';
+import { ReportsDashboard } from '../pages/report-dashboard/report-dashboard';
 
 @Injectable()
 export class BackOfficeModule implements ModuleBase {
@@ -28,6 +29,7 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
+    { title: 'Report', icon: 'print', component: ReportsDashboard },
     { title: 'Settings', icon: 'cog', component: Settings },
     { title: 'About', icon: 'information-circle', component: AboutPage },
     { title: 'Logout', icon: 'log-out', component: LogOut }

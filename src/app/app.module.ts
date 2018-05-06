@@ -156,6 +156,8 @@ import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
 import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
+import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
+import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
 
 @NgModule({
   declarations: [
@@ -163,6 +165,8 @@ import { Utilities } from "../utility/index";
     HomePage,
     Products,
     ProductDetails,
+    ReportsDashboard,
+    ReportStockMovementSummaryPage,
     Services,
     ServiceDetails,
     Categories,
@@ -282,6 +286,8 @@ import { Utilities } from "../utility/index";
     HomePage,
     Products,
     ProductDetails,
+    ReportsDashboard,
+    ReportStockMovementSummaryPage,
     Services,
     ServiceDetails,
     Categories,
