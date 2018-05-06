@@ -165,7 +165,6 @@ export class StoreDetailsPage {
     confirm.present();
   }
 
-  // Device
   public remove() {
     if(this.item._id === this.syncContext.currentStore._id){
       const toast = this.toastCtrl.create({
@@ -173,7 +172,6 @@ export class StoreDetailsPage {
         duration: 3000
       });
       toast.present();
-      this.navCtrl.pop();
       return;
     }
 
