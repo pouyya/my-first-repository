@@ -31,7 +31,7 @@ export class Stores extends SearchableListing<Store>{
   }
 
   showDetail(store) {
-    this.navCtrl.push(StoreDetailsPage, { store: store });
+    this.navCtrl.push(StoreDetailsPage, { store });
   }
 
 }
