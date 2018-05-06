@@ -42,8 +42,7 @@ export class Categories extends SearchableListing<Category> {
         }
       }
 
-      this.setDefaultSettings();
-      await this.fetchMore();
+      await this.fetch();
       loader.dismiss();
     } catch (err) {
       console.error(new Error(err));

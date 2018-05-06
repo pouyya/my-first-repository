@@ -37,7 +37,7 @@ export class Suppliers extends SearchableListing<Supplier>{
         this.setDefaultSettings();
 		let loader = this.loadingCtrl.create({ content: 'Loading Suppliers' });
 		await loader.present();
-		await this.fetchMore();
+		await this.fetch();
 		loader.dismiss();
 	}
 

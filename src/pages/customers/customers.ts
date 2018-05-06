@@ -35,7 +35,7 @@ export class Customers extends SearchableListing<Customer>{
         content: 'Fetching Customers...'
       });
       await loader.present();
-      await this.fetchMore();
+      await this.fetch();
       await this.platform.ready();
       loader.dismiss();
     } catch (err) {

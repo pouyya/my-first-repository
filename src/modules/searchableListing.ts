@@ -34,7 +34,7 @@ export class SearchableListing<T extends DBBasedEntity> {
     this.initData();
   }
 
-  public initData() {
+  private initData() {
     this.displayColumns = ListingInfo.getDisplayList(this.type);
     this.searchFilters = ListingInfo.getFilterList(this.type);
   }

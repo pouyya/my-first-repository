@@ -47,7 +47,6 @@ export class Products extends SearchableListing<Product>{
 
   async ionViewDidEnter() {
     await this.platform.ready();
-    this.setDefaultSettings();
     let loader = this.loading.create({ content: 'Loading Products...' });
     await loader.present();
     try {
@@ -65,7 +64,7 @@ export class Products extends SearchableListing<Product>{
       }
       var currentAccount = await this.accountSettingService.getCurrentSetting();
       this.isTaxInclusive = currentAccount.taxType;
-      await this.fetchMore();
+      await this.fetch();
       loader.dismiss();
     } catch (err) {
       throw new Error(err);
