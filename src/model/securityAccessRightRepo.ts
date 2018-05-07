@@ -117,7 +117,15 @@ export class SecurityAccessRightRepo {
   public static readonly SwitchPos: AccessRightItem = new AccessRightItem(
     "SwitchPos",
     "Switch Pos");
-  
+
+    public static ReportsDashboard : AccessRightItem = new AccessRightItem(
+      'ReportsDashboard',
+      'Reports Dashboard');
+
+    public static ReportStockMovementSummary : AccessRightItem = new AccessRightItem(
+      'ReportStockMovementSummary',
+      'Report Stock Movement Summary');      
+      
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
     SecurityAccessRightRepo.ServiceListing,
@@ -147,7 +155,9 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.MoneyInOut,
     SecurityAccessRightRepo.SaleTax,    
     SecurityAccessRightRepo.OpenCashDrawer,
-    SecurityAccessRightRepo.SwitchPos
+    SecurityAccessRightRepo.SwitchPos,
+    SecurityAccessRightRepo.ReportsDashboard,
+    SecurityAccessRightRepo.ReportStockMovementSummary
   ];
 
 }

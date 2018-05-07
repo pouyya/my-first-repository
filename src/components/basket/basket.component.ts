@@ -27,6 +27,7 @@ import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
+import { AddNotes } from "./modals/add-notes/add-notes";
 
 @Component({
   selector: 'basket',
@@ -66,7 +67,6 @@ export class BasketComponent {
   }
 
   @Output() paymentCompleted = new EventEmitter<any>();
-
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
@@ -147,6 +147,10 @@ export class BasketComponent {
   }
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
+    if(!this.sale){
+      return;
+    }
+
     const isFirstModifier = !this.sale.items.length && purchasableItem.isModifier;
     if (!isFirstModifier) {
       let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
@@ -161,6 +165,7 @@ export class BasketComponent {
         }
         this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
         this.calculateAndSync();
+        this.scrollIntoView(basketItem.purchsableItemId);
       } else {
         let toast = this.toastCtrl.create({
           message: `${purchasableItem.name} does not have any price`,
@@ -193,10 +198,14 @@ export class BasketComponent {
       item = basketItem;
       saleItems.push(item);
     }
-
     !items && this.selectItem(item);
   }
 
+  private scrollIntoView(purchsableItemId: string){
+    setTimeout(() =>{
+      document.getElementById(purchsableItemId).scrollIntoView();
+    },0);
+  }
   public removeItem($index) {
     this.sale.items.splice($index, 1);
     this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
@@ -447,6 +456,16 @@ export class BasketComponent {
       ]
     });
     confirm.present();
+  }
+
+  public addNote(){
+      let modal = this.modalCtrl.create(AddNotes, { notes: this.sale.notes || '' });
+      modal.onDidDismiss(notes => {
+          if (notes) {
+              this.sale.notes = notes;
+          }
+      });
+      modal.present();
   }
 
   public cancelSearch($event) {

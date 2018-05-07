@@ -27,11 +27,11 @@ export class Stores extends SearchableListing<Store>{
 
   async ionViewDidEnter() {
     await this.platform.ready();
-    await this.fetchMore();
+    await this.fetch();
   }
 
   showDetail(store) {
-    this.navCtrl.push(StoreDetailsPage, { store: store });
+    this.navCtrl.push(StoreDetailsPage, { store });
   }
 
 }

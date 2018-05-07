@@ -166,22 +166,6 @@ export class ProductDetails {
 					resolve(storesStock);
 				});
 			}));
-			promises.push(new Promise((resolve, reject) => {
-				let stockHistories: { [id: string]: StockHistory[] } = {};
-				let promises: any[] = [];
-				stores.forEach(store => {
-					promises.push(async () => {
-						stockHistories[store._id] = await this.stockHistoryService.getByStoreAndProductId(
-							store._id, this.productItem._id
-						);
-						return;
-					});
-				});
-
-				Promise.all(promises.map(promise => promise())).then(() => {
-					resolve(stockHistories);
-				}).catch(err => reject(err));
-			}))
 		} else {
 			promises.push(new Promise((resolve, reject) => {
 				let storesStock: InteractableStoreStock[] = stores.map(store => {
@@ -209,8 +193,7 @@ export class ProductDetails {
 			defaultPB,
 			brands,
 			suppliers,
-			storesStock,
-			stockHistory
+			storesStock
 		] = await Promise.all(promises);
 
 		this.zone.run(() => {
@@ -221,7 +204,6 @@ export class ProductDetails {
 			this.brands = brands;
 			this.suppliers = suppliers;
 			this.storesStock = storesStock;
-			this.stockHistory = _.cloneDeep(stockHistory);
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
@@ -247,12 +229,27 @@ export class ProductDetails {
 					item: productPriceBook
 				};
 			}
-			this.cdr.reattach();
 			loader.dismiss();
-
+			this.getAllStoreStockHistory();
 		});
 	}
 
+	private async getAllStoreStockHistory(){
+		try{
+            const allStocks = await this.stockHistoryService.getByProductId(
+                this.productItem._id
+            );
+            this.stockHistory = allStocks.reduce((obj, data) => {
+                !obj[data.storeId] && ( obj[data.storeId] = [] );
+                obj[data.storeId].push(data);
+                return obj;
+            }, {});
+		}catch (ex){
+
+		} finally {
+            this.cdr.reattach();
+		}
+	}
 	public selectIcon() {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
