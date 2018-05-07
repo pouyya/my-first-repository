@@ -80,6 +80,7 @@ export class SimplePOSApp implements OnInit {
       // }
 
       this.statusBar.styleDefault();
+      this.statusBar.overlaysWebView(false);
       this.hideSplashScreen();
     });
   }
