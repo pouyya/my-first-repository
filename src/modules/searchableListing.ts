@@ -57,6 +57,11 @@ export class SearchableListing<T extends DBBasedEntity> {
     return await this.service.search(this.limit, this.offset, selectors, this.options);
   }
 
+  protected async fetch() {
+    this.setDefaultSettings();
+    await this.fetchMore();
+  }
+
   protected async fetchMore(infiniteScroll?: InfiniteScroll) {
     let data = await this.loadData();
     this.offset += data ? data.length : 0;
@@ -65,6 +70,7 @@ export class SearchableListing<T extends DBBasedEntity> {
       infiniteScroll && infiniteScroll.complete();
     });
   }
+  
   protected async filterList(filterItem: Item, value){
     if(filterItem.type === FilterType.Boolean){
       if(value){

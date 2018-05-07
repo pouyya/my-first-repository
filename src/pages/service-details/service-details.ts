@@ -6,7 +6,7 @@ import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, Platform, ModalController, LoadingController, ToastController , AlertController } from 'ionic-angular';
+import { NavController, NavParams, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
@@ -52,7 +52,7 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-  private color: Subject<string> = new Subject<string>();
+	private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,
@@ -65,8 +65,6 @@ export class ServiceDetails {
 		private zone: NgZone,
 		private platform: Platform,
 		private modalCtrl: ModalController,
-		private toastCtrl: ToastController,
-		private alertCtrl: AlertController,
 		private loading: LoadingController) {
 		this.icons = icons;
 	}
@@ -92,10 +90,10 @@ export class ServiceDetails {
 			this.selectedIcon = this.serviceItem.icon.name;
 		}
 
-    this.color.asObservable().subscribe( color => {
-      this.serviceItem.color = color;
-    });
-    this.color.next(this.serviceItem.color);
+		this.color.asObservable().subscribe(color => {
+			this.serviceItem.color = color;
+		});
+		this.color.next(this.serviceItem.color);
 
 		var promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
@@ -233,29 +231,8 @@ export class ServiceDetails {
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
 	}
-	  
-	public async delete() {
-        let confirmOptions: any = {
-            title: `Are you sure you want to delete service '${this.serviceItem.name}'? , will delete all associated price book`,
-            buttons: [
-                {
-                    text: 'Yes',
-                    handler: async () => {
-						let toast = this.toastCtrl.create({
-						message: `Service '${this.serviceItem.name}' and all associated price book has been deleted successfully!`,
-						duration: 3000
-						});
-						toast.present();
-						await Promise.all(deleteAssocs);
-						await this.categoryService.delete(this.serviceItem);
-						this.navCtrl.pop();
-                    }
-                },
-                'No'
-            ]
-        };
 
-		
+	public async delete() {
 		// delete associations
 		let deleteAssocs: any[] = [
 			async () => {
@@ -268,9 +245,9 @@ export class ServiceDetails {
 			}
 		];
 
-        let confirm = this.alertCtrl.create(confirmOptions);
-        confirm.present();
+		await Promise.all(deleteAssocs);
+		await this.serviceService.delete(this.serviceItem);
+		this.navCtrl.pop();
+		return;
 	}
-	
-
 }
