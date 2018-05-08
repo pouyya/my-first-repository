@@ -98,7 +98,7 @@
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
     "htmlparser2": "^3.9.2",
-    "ionic": "3.20.0",
+    "ionic": "^3.20.0",
     "typescript": "2.4.2"
   },
   "cordovaPlugins": [
