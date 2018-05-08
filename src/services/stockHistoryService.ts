@@ -25,6 +25,18 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     }
   }
 
+  public async getByProductId(productId: string): Promise<StockHistory[]> {
+    try {
+      return await this.findBy({
+        selector: { productId },
+        sort: [{ _id: 'desc' }],
+        limit: 50
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   public async getAllProductsTotalStockValue() {
 
     var param = { reduce: true, group: true, group_level: 1 };
@@ -89,5 +101,16 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     stock.value = value * -1;
     stock.reason = stock.value <= 0 ? Reason.Purchase : Reason.Return;
     return stock;
+  }
+
+  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]>{
+    try {
+      return await this.findBy({
+        selector: { storeId, createdAt:{$gte : fromDate, $lt: toDate} },
+        sort: [{ _id: 'desc' }]
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
   }
 }

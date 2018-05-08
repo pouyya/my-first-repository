@@ -25,7 +25,7 @@ export class Services extends SearchableListing<Service>{
     serviceService: ServiceService,
     private loading: LoadingController,
     protected zone: NgZone) {
-    super(serviceService, zone, 'Service');
+      super(serviceService, zone, 'Service');
   }
 
   async ionViewDidEnter() {
@@ -39,7 +39,7 @@ export class Services extends SearchableListing<Service>{
           }
         }
       };
-      await this.fetchMore();
+      await this.fetch();
       loader.dismiss();
     } catch (err) {
       console.error(err);

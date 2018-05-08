@@ -37,7 +37,11 @@
         <ion-title>Inventory</ion-title>
       </ion-toolbar>
     </ion-header>
-
+    <ion-header *ngIf="moduleName == 'ReportModule'">
+      <ion-toolbar>
+        <ion-title>Reports</ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-header *ngIf="moduleName == 'SalesModule'">
       <ion-toolbar *ngIf="syncContext.currentPos && syncContext.currentStore">
         <ion-title>{{syncContext.currentStore.name}}</ion-title>
