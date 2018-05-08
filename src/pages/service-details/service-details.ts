@@ -52,7 +52,7 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-  private color: Subject<string> = new Subject<string>();
+	private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,
@@ -90,10 +90,10 @@ export class ServiceDetails {
 			this.selectedIcon = this.serviceItem.icon.name;
 		}
 
-    this.color.asObservable().subscribe( color => {
-      this.serviceItem.color = color;
-    });
-    this.color.next(this.serviceItem.color);
+		this.color.asObservable().subscribe(color => {
+			this.serviceItem.color = color;
+		});
+		this.color.next(this.serviceItem.color);
 
 		var promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
@@ -230,5 +230,24 @@ export class ServiceDetails {
 
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
+	}
+
+	public async delete() {
+		// delete associations
+		let deleteAssocs: any[] = [
+			async () => {
+				// delete pricebook entries
+				let pbIndex = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
+				if (pbIndex > -1) {
+					this._defaultPriceBook.purchasableItems.splice(pbIndex, 1);
+					return await this.priceBookService.update(this._defaultPriceBook);
+				}
+			}
+		];
+
+		await Promise.all(deleteAssocs);
+		await this.serviceService.delete(this.serviceItem);
+		this.navCtrl.pop();
+		return;
 	}
 }
