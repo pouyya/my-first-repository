@@ -12,7 +12,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-select class="white-bg" [(ngModel)]="selectedTimeframe" (ionChange)="loadStockReport()">
+        <ion-select class="white-bg" [(ngModel)]="selectedTimeframe" (ngModelChange)="loadStockReport()">
           <ion-option *ngFor="let timeframe of timeframes" [value]="timeframe.value">{{ timeframe.text }}</ion-option>
         </ion-select>
       </ion-col>
