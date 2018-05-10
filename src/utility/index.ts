@@ -57,4 +57,10 @@ export class Utilities {
       data[field] = form.controls[field].value;
     });
   }
+
+  public sort(items: any[], sortList: string[]){
+      items.sort( (itemA, itemB) => {
+          return sortList.indexOf(itemA._id) - sortList.indexOf(itemB._id);
+      });
+  }
 }

@@ -21,7 +21,7 @@ import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
+import { SortablejsModule } from 'angular-sortablejs';
 // pages
 import { SimplePOSApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -158,6 +158,8 @@ import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
+import {Preferences} from "../pages/preferences/preferences";
+
 
 @NgModule({
   declarations: [
@@ -166,6 +168,7 @@ import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-s
     Products,
     ProductDetails,
     ReportsDashboard,
+    Preferences,
     ReportStockMovementSummaryPage,
     Services,
     ServiceDetails,
@@ -255,6 +258,9 @@ import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-s
     DndModule.forRoot(),
     ReactiveFormsModule,
     DataSyncModule.forRoot(),
+    SortablejsModule.forRoot({
+      animation: 100
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -288,6 +294,7 @@ import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-s
     ProductDetails,
     ReportsDashboard,
     ReportStockMovementSummaryPage,
+    Preferences,
     Services,
     ServiceDetails,
     Categories,
