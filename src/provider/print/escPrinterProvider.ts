@@ -252,6 +252,7 @@ export class EscPrinterProvider {
     constructor() {
         this.buffer = "";
         this.initialize();
+        this.setFont();
     }
 
     /**
@@ -282,6 +283,11 @@ export class EscPrinterProvider {
    */
     public initialize() {
         this.buffer += EscPrinterProvider.ESC + "@";
+    }
+
+    //Set font type
+    public setFont(font = EscPrinterProvider.FONT_A) {
+        this.buffer += EscPrinterProvider.ESC + "M" +  String.fromCharCode(font);
     }
 
     /**
