@@ -60,7 +60,10 @@ export class Utilities {
 
   public sort(items: any[], sortList: string[]){
       items.sort( (itemA, itemB) => {
-          return sortList.indexOf(itemA._id) - sortList.indexOf(itemB._id);
+        if(sortList.indexOf(itemB._id) === -1){
+          return 0;
+        }
+        return sortList.indexOf(itemA._id) - sortList.indexOf(itemB._id);
       });
   }
 }
