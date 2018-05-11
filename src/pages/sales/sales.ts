@@ -22,6 +22,7 @@ import { SyncContext } from "../../services/SyncContext";
 import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
+import {Utilities} from "../../utility";
 
 
 @SecurityModule()
@@ -70,6 +71,7 @@ export class Sales implements OnDestroy {
     private storeService: StoreService,
     private navParams: NavParams,
     private cacheService: CacheService,
+    private utils: Utilities,
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
@@ -85,7 +87,8 @@ export class Sales implements OnDestroy {
 
 
   async ionViewDidLoad() {
-
+    this.syncContext.currentPos.categorySort = this.syncContext.currentPos.categorySort || [];
+    this.syncContext.currentPos.productCategorySort = this.syncContext.currentPos.productCategorySort || {};
     this._sharedService
       .getSubscribe('clockInOut') //move it it's own module!
       .takeWhile(() => this.alive)
@@ -172,11 +175,16 @@ export class Sales implements OnDestroy {
       if (items.length === 0) {
         category.purchasableItems = [];
       } else {
-        category.purchasableItems = _.sortBy(items, [item => parseInt(item.order) || 0]);
+        category.purchasableItems = items;
+        if(this.syncContext.currentPos.productCategorySort && this.syncContext.currentPos.productCategorySort[category._id]){
+            this.utils.sort(category.purchasableItems, this.syncContext.currentPos.productCategorySort[category._id]);
+        }
       }
     });
-
-    this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
+    if(this.syncContext.currentPos.categorySort && this.syncContext.currentPos.categorySort.length){
+        this.utils.sort(categories, this.syncContext.currentPos.categorySort);
+    }
+    this.categories = <SalesCategory[]> categories;
     this.activeCategory = _.head(this.categories) || new SalesCategory();
   }
 

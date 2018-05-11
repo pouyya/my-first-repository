@@ -25,6 +25,10 @@ export interface CashMovement {
     datetime: Date
 }
 
+interface IProductCategorySort{
+    [id: string]: string[];
+}
+
 export class POS {
     public id: string;
     public name: string;
@@ -42,10 +46,14 @@ export class POS {
     public openTime: string;
     public openingAmount: number = 0;
     public openingNote: string;
+    public categorySort: string[];
+    public productCategorySort: IProductCategorySort;
     public cashMovements: Array<CashMovement>;
 
     constructor() {
         this.cashMovements = [];
+        this.categorySort = [];
+        this.productCategorySort = {};
     }
 }
 
