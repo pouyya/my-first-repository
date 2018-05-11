@@ -8,6 +8,8 @@ import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/base
 export class StockHistoryService extends BaseEntityService<StockHistory> {
 
   readonly view_stock_per_store = "inventory/stock_per_store";
+  readonly view_stock_per_day = "inventory/stock_per_day";
+  readonly view_stock_per_day_store = "inventory/stock_per_day_store";
 
   constructor() {
     super(StockHistory);
@@ -64,10 +66,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
       }
     }) : null;
   }
+
   public async getProductTotalStockValue(productId: string) {
 
     var param = { reduce: true, group: true, startkey: [productId], endkey: [productId, {}] };
-
     var result = await this.getDB().query(this.view_stock_per_store, param);
 
     return result ? result.rows.map(row => {
@@ -76,6 +78,25 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
         storeId: row.key[1]
       };
     }) : null;
+  }
+
+  public async getTotalStockValueByDate(storeId, date: Date) {
+    var param = { endkey: [date.getFullYear(),date.getMonth() + 1,date.getDate(), date.getHours()] };
+    let view = this.view_stock_per_day;
+    if(storeId){
+      view = this.view_stock_per_day_store;
+      param.endkey.unshift(storeId);
+    }
+
+    var result = await this.getDB().query(view, param);
+
+    return result ? result.rows.reduce((obj, row) => {
+      if(!obj[row.value[0]]){
+        obj[row.value[0]] = 0;
+      }
+      obj[row.value[0]] += row.value[1];
+      return obj;
+    }, {}) : null;
   }
 
   public async getProductsTotalStockValueByStore(productIds: string[], storeId: string): Promise<{ [id: string]: number }> {
@@ -105,8 +126,12 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 
   public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]>{
     try {
+      const query = {createdAt: {$gte : fromDate, $lt: toDate}};
+      if(storeId){
+        query['storeId'] = storeId;
+      }
       return await this.findBy({
-        selector: { storeId, createdAt:{$gte : fromDate, $lt: toDate} },
+        selector: query,
         sort: [{ _id: 'desc' }]
       });
     } catch (err) {
