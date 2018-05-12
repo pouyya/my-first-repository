@@ -37,8 +37,8 @@ export class ReportStockMovementSummaryPage {
   public selectedStore: string;
   public stockMovementList: StockMovement[] = [];
   public reportGeneratedTime: Date;
-  public fromDate: Date = new Date();
-  public toDate: Date = new Date();
+  public fromDate: string = new Date().toISOString();
+  public toDate: string = new Date().toISOString();
 
   constructor(private productService: ProductService,
               private stockHistoryService: StockHistoryService,
@@ -48,7 +48,9 @@ export class ReportStockMovementSummaryPage {
   }
 
   async ionViewDidLoad() {
-    this.fromDate.setDate(this.fromDate.getDate() - 15);
+    const date = new Date(this.fromDate);
+    date.setDate(date.getDate() - 15);
+    this.fromDate = date.toISOString();
     this.selectedTimeframe = this.timeframes[0].value;
     this.selectedStore = this.locations[0].value;
     const stores = await this.storeService.getAll();
@@ -62,17 +64,14 @@ export class ReportStockMovementSummaryPage {
     const products = await this.productService.getAll();
     let toDate = new Date();
     let fromDate = new Date();
-    let days = 7;
-
     if(this.selectedTimeframe === "MONTH" || this.selectedTimeframe === "WEEK"){
+        let days;
         this.selectedTimeframe === "WEEK" && (days = 7);
         this.selectedTimeframe === "MONTH" && (days = 30);
         fromDate.setDate(fromDate.getDate() - days);
     }else if(this.selectedTimeframe === "CUSTOM"){
-
-            fromDate = new Date(this.fromDate);
-            toDate = new Date(this.toDate);
-
+        fromDate = new Date(this.fromDate);
+        toDate = new Date(this.toDate);
     }
 
     const data = await Promise.all([this.stockHistoryService.getTotalStockValueByDate(this.selectedStore, fromDate),
