@@ -124,7 +124,11 @@ export class SecurityAccessRightRepo {
 
     public static ReportStockMovementSummary : AccessRightItem = new AccessRightItem(
       'ReportStockMovementSummary',
-      'Report Stock Movement Summary');      
+      'Report Stock Movement Summary');
+
+    public static Preferences : AccessRightItem = new AccessRightItem(
+      'Preferences',
+      'Preferences');
       
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
@@ -157,7 +161,8 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.OpenCashDrawer,
     SecurityAccessRightRepo.SwitchPos,
     SecurityAccessRightRepo.ReportsDashboard,
-    SecurityAccessRightRepo.ReportStockMovementSummary
+    SecurityAccessRightRepo.ReportStockMovementSummary,
+    SecurityAccessRightRepo.Preferences
   ];
 
 }
