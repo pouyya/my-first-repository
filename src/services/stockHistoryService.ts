@@ -81,9 +81,9 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
   }
 
   public async getTotalStockValueByDate(storeId, date: Date) {
-    var param = { endkey: [date.getFullYear(),date.getMonth() + 1,date.getDate(), date.getHours()] };
+    var param = { endkey: [date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours()] };
     let view = this.view_stock_per_day;
-    if(storeId){
+    if (storeId) {
       view = this.view_stock_per_day_store;
       param.endkey.unshift(storeId);
     }
@@ -91,7 +91,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     var result = await this.getDB().query(view, param);
 
     return result ? result.rows.reduce((obj, row) => {
-      if(!obj[row.value[0]]){
+      if (!obj[row.value[0]]) {
         obj[row.value[0]] = 0;
       }
       obj[row.value[0]] += row.value[1];
@@ -124,10 +124,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     return stock;
   }
 
-  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]>{
+  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]> {
     try {
-      const query = {createdAt: {$gte : fromDate, $lt: toDate}};
-      if(storeId){
+      const query = { createdAt: { $gte: fromDate, $lt: toDate } };
+      if (storeId) {
         query['storeId'] = storeId;
       }
       return await this.findBy({
