@@ -73,4 +73,10 @@ preferences {
   img {
     margin: 10px;
   }
+  .editItem {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background-color: transparent !important;
+  }
 }

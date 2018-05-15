@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Component } from '@angular/core';
-import { LoadingController, NavParams } from 'ionic-angular';
+import {LoadingController, ModalController, NavParams} from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 
 
@@ -14,6 +14,7 @@ import { SalesModule } from "../../modules/salesModule";
 import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
 import { Utilities } from "../../utility";
 import { SortablejsOptions } from "angular-sortablejs";
+import { SelectColorModal } from "../../components/color-picker/modal/select-color/select-color";
 
 
 @SecurityModule(SecurityAccessRightRepo.Preferences)
@@ -32,6 +33,7 @@ export class Preferences {
     private loading: LoadingController,
     private storeService: StoreService,
     private utils: Utilities,
+    private modalCtrl: ModalController,
     private syncContext: SyncContext
   ) {
       this.options = {
@@ -46,6 +48,8 @@ export class Preferences {
     await loader.present();
     this.syncContext.currentPos.categorySort = this.syncContext.currentPos.categorySort || [];
     this.syncContext.currentPos.productCategorySort = this.syncContext.currentPos.productCategorySort || {};
+    this.syncContext.currentPos.categoryColor = this.syncContext.currentPos.categoryColor || {};
+    this.syncContext.currentPos.productColor = this.syncContext.currentPos.productColor || {};
 
     await this.loadCategoriesAndAssociations();
     await loader.dismiss();
@@ -62,6 +66,13 @@ export class Preferences {
 
   public onProductsPositionChange(sortedPurchasableProducts){
     this.syncContext.currentPos.productCategorySort[this.activeCategory._id] = sortedPurchasableProducts;
+  }
+  public onProductColorSelected(data){
+    if(!data.color){
+        delete this.syncContext.currentPos.productColor[data.id];
+        return;
+    }
+    this.syncContext.currentPos.productColor[data.id] = data.color;
   }
 
   private async loadCategoriesAndAssociations() {
@@ -94,6 +105,20 @@ export class Preferences {
     await loader.present();
     await this.storeService.updatePOS(this.syncContext.currentPos, this.syncContext.currentStore);
     await loader.dismiss();
+  }
+
+  public async selectCategoryColor(categoryId){
+    let modal = this.modalCtrl.create(SelectColorModal);
+    modal.onDidDismiss(data => {
+        if(data && data.status) {
+          if(!data.color){
+            delete this.syncContext.currentPos.categoryColor[categoryId];
+            return;
+          }
+            this.syncContext.currentPos.categoryColor[categoryId] = data.color;
+        }
+    });
+    modal.present();
   }
 }
 
