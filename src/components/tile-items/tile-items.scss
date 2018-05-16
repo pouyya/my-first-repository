@@ -25,3 +25,12 @@
   padding-bottom: 0px;
 }
 
+.tile-editItem {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  background-color: transparent !important;
+  padding: 16px;
+  z-index: 1;
+}
+
