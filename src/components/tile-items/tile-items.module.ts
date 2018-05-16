@@ -6,7 +6,6 @@ import { TileItemsComponent } from './tile-items.component';
 import { IonicPageModule } from 'ionic-angular';
 import { DndModule } from 'ng2-dnd';
 import { SortablejsModule } from 'angular-sortablejs';
-import {SyncContext} from "../../services/SyncContext";
 
 @NgModule({
   declarations: [ TileItemsComponent ],
