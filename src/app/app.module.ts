@@ -159,6 +159,7 @@ import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
 import {Preferences} from "../pages/preferences/preferences";
+import {SplitPaymentPage} from "../pages/split-payment/split-payment";
 
 
 @NgModule({
@@ -183,6 +184,7 @@ import {Preferences} from "../pages/preferences/preferences";
     EmployeeDetails,
     Employees,
     PaymentsPage,
+    SplitPaymentPage,
     CashModal,
     CreditCardModal,
     ParkSale,
@@ -308,6 +310,7 @@ import {Preferences} from "../pages/preferences/preferences";
     EmployeeDetails,
     Employees,
     PaymentsPage,
+    SplitPaymentPage,
     CashModal,
     DeviceDetailsModal,
     PosDetailsModal,

@@ -1,0 +1,16 @@
+@import '../../theme/variables';
+
+split-payment {
+  content-white {
+    background-color: white;
+  }
+  .split-payment-item {
+    border: 1px solid lightgrey;
+    vertical-align: middle;
+    padding: 16px;
+    text-align: right;
+  }
+  .orange {
+    background-color: orange;
+  }
+}

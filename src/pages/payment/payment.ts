@@ -8,6 +8,7 @@ import { PrintService } from '../../services/printService';
 import { PaymentService } from '../../services/paymentService';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
+import {SplitPaymentPage} from "../split-payment/split-payment";
 
 @Component({
   selector: 'payment',
@@ -16,7 +17,7 @@ import { ProductService } from "../../services/productService";
 })
 export class PaymentsPage {
 
-  public sale: Sale
+  public sale: Sale;
   public amount: number;
   public change: number;
   public doRefund: boolean;
@@ -26,6 +27,7 @@ export class PaymentsPage {
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
   };
   private navPopCallback: any;
+  private moneySplit: any[] = [];
 
   constructor(
     private salesService: SalesServices,
@@ -48,6 +50,7 @@ export class PaymentsPage {
     this.amount = 0;
     this.change = 0;
     await this.calculateBalance(this.sale);
+    this.moneySplit = [this.amount];
   }
 
   async ionViewDidEnter() {
@@ -85,6 +88,24 @@ export class PaymentsPage {
 
   public payWithCash() {
     this.openModal(this.payTypes.cash.component, 'cash');
+  }
+
+  public splitPayment() {
+    this.navCtrl.push(SplitPaymentPage, {
+      sale: this.sale, moneySplit: this.moneySplit, splitCallback: this.splitCallback
+    });
+  }
+  private async splitCallback (data) {
+      if (data) {
+          if (data.type === 'PAY') {
+              data.values.forEach(payment => {
+                  this.addPayment('cash', payment.amount);
+              });
+              await this.calculateBalance(this.sale);
+              await this.salesService.update(this.sale);
+          }
+          this.moneySplit = data.moneySplit;
+      }
   }
 
   private openModal(component: Component, type: string) {
