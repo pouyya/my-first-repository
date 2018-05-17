@@ -56,9 +56,9 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content class="menu-list">
       <ion-list>
-        <button menuClose ion-item *ngFor="let p of currentModule.pages" (click)="openPage(p)" large>
+        <button menuClose ion-item *ngFor="let p of currentModule.pages" (click)="openPage(p)" large [ngClass]="isTypeOf(currentPage, p) ? 'menu-item current' : 'menu-item'">
           <ion-icon name='{{p.icon}}' item-left></ion-icon>
           <label padding-left item-left>{{p.title}}</label>
         </button>

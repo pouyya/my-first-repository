@@ -26,6 +26,7 @@ export class SimplePOSApp implements OnInit {
   public rootPage: any;
   public currentModule: ModuleBase;
   public moduleName: string;
+  public currentPage: any;
   private alive: boolean = true;
 
   constructor(
@@ -66,10 +67,11 @@ export class SimplePOSApp implements OnInit {
       if (viewController && viewController.instance) {
         this.currentModule = this.moduleService.getCurrentModule(viewController.instance);
         this.moduleName = this.currentModule.constructor.name;
+        this.currentPage = viewController.instance;
       }
     })
     var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
-    this.rootPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
+    this.rootPage = this.currentPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
   }
 
   initializeApp() {
@@ -122,6 +124,10 @@ export class SimplePOSApp implements OnInit {
     } else {
       await this.nav[page.hasOwnProperty('pushNavigation') && page.pushNavigation ? 'push' : 'setRoot'](page.component);
     }
+  }
+
+  isTypeOf(page: any, pageType: any): boolean {
+    return pageType && (page instanceof pageType.component);
   }
 
   async openCashDrawer() {

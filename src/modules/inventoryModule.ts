@@ -16,7 +16,6 @@ export class InventoryModule implements ModuleBase {
     { title: 'Products', icon: 'pricetags', component: Products },
     { title: 'Suppliers', icon: 'contacts', component: Suppliers },
     { title: 'Orders', icon: 'cash', component: Orders },
-    { title: 'Stock Control', icon: 'cash', component: Categories },
     { title: 'Back Office', icon: 'build', component: HomePage },
   ];
 
