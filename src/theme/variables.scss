@@ -24,7 +24,7 @@ $font-path: "../assets/fonts";
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #DCDCDC,
+  primary:    #488aff,
   secondary:  #DCDCDC,
   danger:     #f53d3d,
   light:      #f4f4f4,
@@ -176,7 +176,7 @@ ion-alert {
 
 ion-input {
   background-color: color($colors, white);
-  border-radius: 15px !important;
+  border-radius: 8px !important;
   border-width: 2px;
   border-color: #CFCFCF;
   border-style: solid;
