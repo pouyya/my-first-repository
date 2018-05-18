@@ -92,12 +92,12 @@ export class PaymentsPage {
 
   public splitPayment() {
     this.navCtrl.push(SplitPaymentPage, {
-      sale: this.sale, moneySplit: this.moneySplit, splitCallback: this.splitCallback
+      sale: this.sale, moneySplit: this.moneySplit, splitCallback: this.splitCallback.bind(this)
     });
   }
   private async splitCallback (data) {
       if (data) {
-          if (data.type === 'PAY') {
+          if (data.type === 'PAY' && data.values.length) {
               data.values.forEach(payment => {
                   this.addPayment('cash', payment.amount);
               });
