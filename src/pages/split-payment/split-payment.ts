@@ -2,8 +2,6 @@ import { SalesServices } from './../../services/salesService';
 import {Component, ViewChild} from "@angular/core";
 import {NavController, NavParams, Navbar} from "ionic-angular";
 import { Sale } from "../../model/sale";
-import { PaymentService } from '../../services/paymentService';
-import { ProductService } from "../../services/productService";
 
 @Component({
   selector: 'split-payment',
@@ -24,9 +22,7 @@ export class SplitPaymentPage {
   @ViewChild(Navbar) navBar: Navbar;
 
   constructor(
-    private salesService: SalesServices,
-    private paymentService: PaymentService,
-    private productService: ProductService,
+    salesService: SalesServices,
     private navCtrl: NavController,
     private navParams: NavParams) {
   }
