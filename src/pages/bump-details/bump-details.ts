@@ -147,9 +147,7 @@ export class BumpDetails {
     }
 
     public async bumpItem(sale: Sale, item, index) {
-
         if (((<any>sale).filteredItems).length === ((<any>sale).filteredItems).filter(item => item.isBumped).length) {
-            //if ( ((<any>sale).filteredItems).filter(item => item.isBumped).length=0) {
             let toast = this.toastController.create({
                 message: 'Bumped...',
                 duration: 3000
@@ -158,8 +156,9 @@ export class BumpDetails {
             this.bump(sale, index)
         }
         else {
-            delete ((<any>sale).filteredItems);
-            await this.salesService.update(sale);
+            const newSale = _.clone(sale);
+            delete ((<any>newSale).filteredItems);
+            await this.salesService.update(newSale);
         }
     }
 }
