@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Select Colors
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-grid>
+        <ion-row *ngIf="savedParentNativeURLs.length">
+            <ion-col>
+                <button ion-button (click)="goUp()">Back</button>
+            </ion-col>
+        </ion-row>
+        <ion-list>
+            <div *ngFor="let file of files">
+                <a class="item item-icon-left" href="#" (click)="goDown(file)">
+                    <i *ngIf="file.isDirectory" class="icon ion-folder"></i>
+                    <i *ngIf="file.isFile" class="icon ion-document"></i>
+                    {{file.name}}
+                </a>
+            </div>
+        </ion-list>
+    </ion-grid>
+
+</ion-content>

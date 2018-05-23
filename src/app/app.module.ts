@@ -96,6 +96,7 @@ import { NetworkMonitorModule } from '../components/network-monitor/network-moni
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 import { ColorPickerModule } from "../components/color-picker/color-picker.module";
 import { SelectColorModal } from "../components/color-picker/modal/select-color/select-color";
+import { ImportExportModule } from "../components/import-export/import-export";
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -160,6 +161,8 @@ import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
 import {Preferences} from "../pages/preferences/preferences";
 import {SplitPaymentPage} from "../pages/split-payment/split-payment";
+import {File} from "@ionic-native/file";
+import {PapaParseModule} from "ngx-papaparse";
 
 
 @NgModule({
@@ -270,11 +273,12 @@ import {SplitPaymentPage} from "../pages/split-payment/split-payment";
         deps: [HttpClient]
       }
     }),
-
+    PapaParseModule,
     // custom
     SharedModule,
     NetworkMonitorModule,
     ColorPickerModule,
+    ImportExportModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -369,6 +373,7 @@ import {SplitPaymentPage} from "../pages/split-payment/split-payment";
     Dialogs,
     Insomnia,
     InAppBrowser,
+    File,
     DatePipe,
     SharedService,
     CacheFactory,

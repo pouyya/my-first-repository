@@ -75,7 +75,7 @@ export class ProductDetails {
 	};
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
-  private color: Subject<string> = new Subject<string>();
+  	private color: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
