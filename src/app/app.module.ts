@@ -159,7 +159,6 @@ import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
 import {Preferences} from "../pages/preferences/preferences";
-import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 
 @NgModule({
@@ -367,7 +366,6 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     PinDialog,
     Dialogs,
     Insomnia,
-    InAppBrowser,
     DatePipe,
     SharedService,
     CacheFactory,
