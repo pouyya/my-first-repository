@@ -1,5 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {SortablejsOptions} from "angular-sortablejs";
+import {SelectColorModal} from "../color-picker/modal/select-color/select-color";
+import {ModalController} from "ionic-angular";
+import {SyncContext} from "../../services/SyncContext";
 
 @Component({
   selector: 'tile-items',
@@ -12,9 +15,10 @@ export class TileItemsComponent {
   @Input() activeEmployee: any | null;
   @Output() onSelect = new EventEmitter<Object>();
   @Output() onPositionChange = new EventEmitter();
+  @Output() onColorSelected = new EventEmitter();
 
   public options: SortablejsOptions;
-  constructor() {
+  constructor(private modalCtrl: ModalController, public syncContext: SyncContext) {
     this.options = {
         onUpdate: this.onItemChange.bind(this)
     };
@@ -27,5 +31,15 @@ export class TileItemsComponent {
   private onItemChange(event: any){
     const sortedIds = this.items.map(item => item._id);
     this.onPositionChange.emit(sortedIds);
+  }
+
+  public async selectColor(id){
+      let modal = this.modalCtrl.create(SelectColorModal);
+      modal.onDidDismiss(data => {
+          if(data && data.status) {
+              this.onColorSelected.emit({ id, color : data.color });
+          }
+      });
+      modal.present();
   }
 }

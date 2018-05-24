@@ -16,8 +16,6 @@ export interface AppSettingsInterface {
 
 export class UserSession {
   public access_token: string;
-  public expires_in: number;
-  public token_type: string;
   public settings: AppSettingsInterface;
   public currentStore?: string;
   public currentPos?: string;

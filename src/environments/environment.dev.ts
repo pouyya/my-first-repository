@@ -3,8 +3,7 @@ export const ENV = {
   production: false,
   turnOnDeployment: false,
   security: {
-    serverApiUrl: "https://simpleposapp-dev.azurewebsites.net/api",
-    serverBaseUrl: "https://simpleposapp-dev.azurewebsites.net/identity",
+    serverUrl: "https://site-dev.pos.app",
     clientId: "simplepos",
     clientSecret: "21B5F798-BE55-42BC-8AA8-0025B903DC3B",
     grantType: "password",

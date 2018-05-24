@@ -61,6 +61,39 @@
   height: 200px;
 }
 
+.menu-list{
+  
+  background-color: #333333;
+
+  .menu-item {
+    border-bottom: 2px solid #20272F !important;
+    background-color: #27313D !important;
+    color: #DCDCDC;
+
+    .item-inner{
+      border: 0 !important;
+    }
+  }
+
+  .current {
+    background-color: #2E7ECD !important;    
+  }
+}
 ion-title.ion-title-center {
   text-Align:center;
+}
+
+ion-icon {
+  &[class*="simpleidea-"] {
+    mask-size: contain;
+    mask-position: 50% 50%;
+    mask-repeat: no-repeat;
+    background: currentColor;
+    width: 1em;
+    height: 1em;
+  }
+  // custom icons
+  &[class*="simpleidea-edit"] {
+    mask-image: url(../assets/img/edit.svg);
+  }
 }

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { StoreService } from './../../services/storeService';
 import { InventoryModule } from './../../modules/inventoryModule';
 import { OrderDetails } from './../order-details/order-details';
-import { NavController, InfiniteScroll } from 'ionic-angular';
+import { NavController, InfiniteScroll, LoadingController, ToastController } from 'ionic-angular';
 import { OrderService } from './../../services/orderService';
 import { OrderStatus, BaseOrder } from './../../model/baseOrder';
 import { Component, NgZone } from '@angular/core';
@@ -43,7 +43,8 @@ export class Orders extends SearchableListing<Order>{
   constructor(
     private storeService: StoreService,
     private supplierService: SupplierService,
-    orderService: OrderService,
+    orderService: OrderService,    
+    private loading: LoadingController,
     private navCtrl: NavController,
     protected zone: NgZone
   ) {
@@ -53,6 +54,8 @@ export class Orders extends SearchableListing<Order>{
   }
 
   async ionViewDidEnter() {
+    let loader = this.loading.create();
+    loader.present();
     let loadEssentials: any[] = [
       async () => {
         let storesHash = {};
@@ -75,7 +78,9 @@ export class Orders extends SearchableListing<Order>{
     let [stores, suppliers] = await Promise.all(loadEssentials.map(p => p()));
     this.stores = stores;
     this.suppliers = suppliers;
+
     await this.fetch();
+    loader.dismiss();
   }
 
   public view(order?: RenderableOrder) {

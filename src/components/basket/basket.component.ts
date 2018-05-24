@@ -269,6 +269,13 @@ export class BasketComponent {
       }
       return initialVal;
     }, 0);
+    
+    this.totalExternalValue -= this.sale.items.reduce((initialVal, item) => {
+      if(item.discount){
+          initialVal += item.quantity * (item.systemPrice * item.discount / 100);
+      }
+      return initialVal;
+    }, 0)
   }
 
   public externalValue(): { applyDiscount: Function, applySurcharge: Function } {

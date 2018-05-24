@@ -28,6 +28,9 @@ export interface CashMovement {
 interface IProductCategorySort{
     [id: string]: string[];
 }
+interface IProductColor{
+    [id: string]: string;
+}
 
 export class POS {
     public id: string;
@@ -47,6 +50,8 @@ export class POS {
     public openingAmount: number = 0;
     public openingNote: string;
     public categorySort: string[];
+    public categoryColor: IProductColor;
+    public productColor: IProductColor;
     public productCategorySort: IProductCategorySort;
     public cashMovements: Array<CashMovement>;
 
