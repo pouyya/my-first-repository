@@ -1,6 +1,6 @@
 import { PriceBookService } from './../../services/priceBookService';
 import _ from 'lodash';
-import { LoadingController } from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { Component, NgZone } from '@angular/core';
 import { NavController, Platform } from 'ionic-angular';
@@ -50,6 +50,7 @@ export class Products extends SearchableListing<Product>{
     private appService: AppService,
     private accountSettingService: AccountSettingService,
     private userService: UserService,
+    private alertCtrl: AlertController,
     protected zone: NgZone,
     private categoryService: CategoryService) {
     super(productService, zone, 'Product');
@@ -129,8 +130,6 @@ export class Products extends SearchableListing<Product>{
       let loader = this.loading.create({ content: 'Starting Import Products...' });
       await loader.present();
       const products = await this.productService.getAll();
-      const user = await this.userService.getUser();
-      const salesTax = await this.appService.loadSalesAndGroupTaxes();
       const productNamesMap = products.reduce((initialObj, product) => {
           initialObj[product.name] = true;
           return initialObj;
@@ -138,54 +137,76 @@ export class Products extends SearchableListing<Product>{
       const errorProducts = [];
       const productsToAdd = [];
       importedProducts.forEach((product: any) => {
-        if(!product.ProductName || productNamesMap[product.ProductName]){
+        if(productNamesMap[product.ProductName]){
             errorProducts.push(product.ProductName);
-        }else{
+        }else if(product.ProductName) {
             productsToAdd.push(product);
         }
       });
 
-      let categoriesToAdd = new Set();
+      if(productsToAdd.length){
+        const user = await this.userService.getUser();
+        const salesTax = await this.appService.loadSalesAndGroupTaxes();
+        let categoriesToAdd = new Set();
         productsToAdd.forEach(product => {
-        if(product.CategoryNames){
-          const categories = product.CategoryNames.split('|');
-          categories.forEach(category => {
-              this.categoryNamesMapping[category] == undefined && categoriesToAdd.add(category);
-          });
-        }
-      });
+            if(product.CategoryNames){
+                const categories = product.CategoryNames.split('|');
+                categories.forEach(category => {
+                    this.categoryNamesMapping[category] == undefined && categoriesToAdd.add(category);
+                });
+            }
+        });
 
-      if(categoriesToAdd.size){
-        loader.setContent('Importing categories');
-        await this.addCategories(Array.from(categoriesToAdd), user);
+        if(categoriesToAdd.size){
+            loader.setContent('Importing categories');
+            await this.addCategories(Array.from(categoriesToAdd), user);
+        }
+
+        const promises = productsToAdd.map( product => {
+            const newProduct = new Product();
+            newProduct.barcode = product.Barcode;
+            newProduct.categoryIDs = product.CategoryNames ?
+                product.CategoryNames.split('|').map(category => this.categoryNamesMapping[category]) : [];
+            newProduct.name = product.ProductName;
+            newProduct.icon = user.settings.defaultIcon;
+            newProduct.isModifier = product.IsModifier === 1;
+            return this.productService.add(newProduct);
+        });
+        loader.setContent('Importing Products');
+        const newProducts = await Promise.all(promises);
+        loader.setContent('Updating Prices');
+        newProducts.forEach(newProduct => {
+            const product: any =  _.find(productsToAdd, {ProductName : newProduct.name});
+            if(!product){
+                return;
+            }
+            const saleTax = _.find(salesTax, { name : product.SellTaxCode }) || _.find(salesTax, { name : 'GST' });
+            this.priceBook.purchasableItems.push({
+                id: newProduct._id,
+                retailPrice: this.priceBookService.calculateRetailPriceTaxExclusive(
+                    Number(product.SellPriceIncTax), Number(saleTax.rate)),
+                inclusivePrice: Number(product.SellPriceIncTax),
+                supplyPrice: 0,
+                markup: 0,
+                salesTaxId: saleTax._id,
+                saleTaxEntity: 'SalesTax'
+            });
+        });
+        await this.priceBookService.update(this.priceBook);
       }
 
-      const promises = productsToAdd.map(async product => {
-          const newProduct = new Product();
-          newProduct.barcode = product.Barcode;
-          newProduct.categoryIDs = product.CategoryNames ?
-              product.CategoryNames.split('|').map(category => this.categoryNamesMapping[category]) : [];
-          newProduct.name = product.ProductName;
-          newProduct.icon = user.settings.defaultIcon;
-          newProduct.isModifier = product.IsModifier === 1;
-          const res = await this.productService.add(newProduct);
-          const saleTax = _.find(salesTax, { name : product.SellTaxCode }) || _.find(salesTax, { name : 'GST' });
-          this.priceBook.purchasableItems.push({
-              id: res._id,
-              retailPrice: this.priceBookService.calculateRetailPriceTaxExclusive(
-                  Number(product.SellPriceIncTax), Number(saleTax.rate)),
-                inclusivePrice: Number(product.SellPriceIncTax),
-              supplyPrice: 0,
-              markup: 0,
-              salesTaxId: saleTax._id,
-              saleTaxEntity: 'SalesTax'
-          });
-      });
-      loader.setContent('Importing Products');
-      await Promise.all(promises);
-      await this.priceBookService.update(this.priceBook);
-
       await loader.dismiss();
+
+      if(errorProducts.length){
+         let confirm = this.alertCtrl.create({
+              title: 'Errors',
+              subTitle: `Following products already present \n ${errorProducts.join(', ')}`,
+              buttons: [
+                  'OK'
+              ]
+          });
+          confirm.present();
+      }
     });
   }
 

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Select Colors
+      File List
     </ion-title>
     <ion-buttons start>
       <button ion-button (click)="dismiss()">
@@ -20,13 +20,11 @@
             </ion-col>
         </ion-row>
         <ion-list>
-            <div *ngFor="let file of files">
-                <a class="item item-icon-left" href="#" (click)="goDown(file)">
-                    <i *ngIf="file.isDirectory" class="icon ion-folder"></i>
-                    <i *ngIf="file.isFile" class="icon ion-document"></i>
-                    {{file.name}}
-                </a>
-            </div>
+            <button ion-item *ngFor="let file of files" (click)="goDown(file)">
+                <ion-icon *ngIf="file.isDirectory" name="folder" item-start></ion-icon>
+                <ion-icon *ngIf="file.isFile" name="document" item-start></ion-icon>
+                {{file.name}}
+            </button>
         </ion-list>
     </ion-grid>
 

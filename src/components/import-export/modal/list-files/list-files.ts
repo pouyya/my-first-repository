@@ -23,8 +23,12 @@ export class ListFilesModal {
   }
 
   public async selectFile(file) {
-    const data = await this.file.readAsText(this.ROOT_DIRECTORY, file.fullPath);
-    this.viewCtrl.dismiss({ status: true, file: data });
+      try {
+          const data = await this.file.readAsBinaryString(this.ROOT_DIRECTORY, file.fullPath.slice(1));
+          this.viewCtrl.dismiss({ status: true, file: data });
+      }catch (ex){
+          alert(JSON.stringify(ex));
+      }
   }
 
   private listDir(path, dirName) {

@@ -5,17 +5,12 @@ import { Subject } from "rxjs/Subject";
 
 @Component({
   selector: 'import-export',
-  template: `<button float-left ion-button small type="button" (click)="import()">Import</button>
-  <button ion-button small type="button" (click)="export()">Export</button>`,
+  template: `<button float-left ion-button small type="button" (click)="import()">Import</button>`,
   styleUrls: ['/components/import-export.scss']
 })
 export class ImportExportComponent {
   @Input() importedRecords: Subject<Object[]>;
   constructor(private modalCtrl: ModalController) {
-  }
-
-  public selectColor() {
-
   }
 
   public import(){
