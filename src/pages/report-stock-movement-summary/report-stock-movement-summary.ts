@@ -64,7 +64,7 @@ export class ReportStockMovementSummaryPage {
     this.url+=this.token;
     }
 
-    this.theInAppBrowser.create(this.url,target,this.options);
+    this.theInAppBrowser.create(this.url,target);
   }
 
 
