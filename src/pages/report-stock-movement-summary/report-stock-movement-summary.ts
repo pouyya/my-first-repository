@@ -8,6 +8,8 @@ import { LoadingController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from "../../services/storeService";
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { UserService } from '../../modules/dataSync/services/userService';
 
 interface StockMovement {
   productName: string,
@@ -29,7 +31,8 @@ interface StockMovement {
 export class ReportStockMovementSummaryPage {
 
 
-
+  public url = 'http://mrmohamadi.com/reports/report5.php';
+  public token = '';
 
   public timeframes = [{ text: "Week", value: "WEEK" }, { text: "Month", value: "MONTH" }, { text: "Custom", value: "CUSTOM" }];
   public locations = [{ text: "All locations", value: "" }];
@@ -40,23 +43,30 @@ export class ReportStockMovementSummaryPage {
   public fromDate: string = new Date().toISOString();
   public toDate: string = new Date().toISOString();
 
-  constructor(private productService: ProductService,
+  constructor(
+    private productService: ProductService,
     private stockHistoryService: StockHistoryService,
     private storeService: StoreService,
     private syncContext: SyncContext,
-    private loading: LoadingController) {
+    private loading: LoadingController,
+    private theInAppBrowser: InAppBrowser,
+    private userService: UserService
+  ) {
   }
 
-  async ionViewDidLoad() {
-    const date = new Date(this.fromDate);
-    date.setDate(date.getDate() - 15);
-    this.fromDate = date.toISOString();
-    this.selectedTimeframe = this.timeframes[0].value;
-    this.selectedStore = this.locations[0].value;
-    const stores = await this.storeService.getAll();
-    stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
-    await this.loadStockReport();
+
+  public async openBrowser(target:string){
+    
+    if(this.token=='')
+    {
+    this.url+='?';
+    this.token = await this.userService.getUserToken();
+    this.url+=this.token;
+    }
+
+    this.theInAppBrowser.create(this.url,target,this.options);
   }
+
 
   public async loadStockReport() {
     let loader = this.loading.create({ content: 'Loading Products...', });
