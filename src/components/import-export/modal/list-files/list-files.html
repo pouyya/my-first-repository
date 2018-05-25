@@ -12,8 +12,19 @@
 </ion-header>
 
 <ion-content>
+    <ion-grid *ngIf="platform.is('ios')">
+        <ion-list>
+            <ion-item>
+                <ion-label class="item-url">File Url</ion-label>
+                <ion-input type="text" [(ngModel)]="csvUrl" name="firstName" required></ion-input>
+            </ion-item>
+            <ion-item>
+                <button ion-button type="button" (click)="loadFile()">Load Csv</button>
+            </ion-item>
+        </ion-list>
+    </ion-grid>
 
-    <ion-grid>
+    <ion-grid *ngIf="!platform.is('ios')">
         <ion-row *ngIf="savedParentNativeURLs.length">
             <ion-col>
                 <button ion-button (click)="goUp()">Back</button>

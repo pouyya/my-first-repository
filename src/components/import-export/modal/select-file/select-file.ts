@@ -1,8 +1,8 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import { ModalController, Platform, ViewController } from "ionic-angular";
-import { Product } from "../../../../model/product";
 import { ListFilesModal } from "../list-files/list-files";
 import { PapaParseService } from "ngx-papaparse";
+import {File} from "@ionic-native/file";
 
 @Component({
   selector: "select-file",
@@ -43,6 +43,8 @@ export class SelectFileModal {
         modal.present();
     }
   }
+
+
 
   public fileSelected(evt){
     if(evt && evt.target.files && evt.target.files.length){

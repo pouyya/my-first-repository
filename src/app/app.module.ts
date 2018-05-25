@@ -163,6 +163,7 @@ import {Preferences} from "../pages/preferences/preferences";
 import {SplitPaymentPage} from "../pages/split-payment/split-payment";
 import {File} from "@ionic-native/file";
 import {PapaParseModule} from "ngx-papaparse";
+import {FileTransfer} from "@ionic-native/file-transfer";
 
 
 @NgModule({
@@ -374,6 +375,7 @@ import {PapaParseModule} from "ngx-papaparse";
     Insomnia,
     InAppBrowser,
     File,
+    FileTransfer,
     DatePipe,
     SharedService,
     CacheFactory,

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import {Platform, ViewController} from "ionic-angular";
+import {LoadingController, Platform, ViewController} from "ionic-angular";
 import {File} from "@ionic-native/file";
+import { FileTransfer, FileTransferObject } from "@ionic-native/file-transfer";
 
 @Component({
   selector: "list-files",
@@ -10,11 +11,17 @@ export class ListFilesModal {
   private files = [];
   private savedParentNativeURLs = [];
   private ROOT_DIRECTORY = 'file:///';
+  public csvUrl: string = "";
+  private fileTransfer: FileTransferObject;
 
   constructor(
-    private viewCtrl: ViewController, private file: File, private platform: Platform) {
+    private viewCtrl: ViewController, private file: File, private platform: Platform, private transfer: FileTransfer,
+    private loading: LoadingController) {
       platform.ready().then(() => {
-          this.listDir(this.ROOT_DIRECTORY, '');
+          this.fileTransfer = this.transfer.create();
+          if(!this.platform.is('ios')){
+            this.listDir(this.ROOT_DIRECTORY, '');
+          }
       });
   }
 
@@ -22,9 +29,22 @@ export class ListFilesModal {
     this.viewCtrl.dismiss({ status: false, file: null });
   }
 
-  public async selectFile(file) {
+  public async loadFile(){
+    if(this.csvUrl) {
+        let loader = this.loading.create({ content: 'Downloading file' });
+        await loader.present();
+        this.fileTransfer.download(this.csvUrl, this.file.dataDirectory + 'file.csv').then((file) => {
+            this.selectFile(file, this.file.dataDirectory);
+            loader.dismiss();
+        }, (error) => {
+            alert('Some Error occured:' + JSON.stringify(error));
+        });
+    }
+  }
+
+  public async selectFile(file, rootDirectory?) {
       try {
-          const data = await this.file.readAsBinaryString(this.ROOT_DIRECTORY, file.fullPath.slice(1));
+          const data = await this.file.readAsBinaryString(rootDirectory || this.ROOT_DIRECTORY, file.fullPath.slice(1));
           this.viewCtrl.dismiss({ status: true, file: data });
       }catch (ex){
           alert(JSON.stringify(ex));
