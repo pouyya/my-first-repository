@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { StoreService } from './../../services/storeService';
 import { InventoryModule } from './../../modules/inventoryModule';
 import { OrderDetails } from './../order-details/order-details';
-import { NavController, InfiniteScroll, LoadingController, ToastController } from 'ionic-angular';
+import { NavController, InfiniteScroll, LoadingController } from 'ionic-angular';
 import { OrderService } from './../../services/orderService';
 import { OrderStatus, BaseOrder } from './../../model/baseOrder';
 import { Component, NgZone } from '@angular/core';
