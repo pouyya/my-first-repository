@@ -115,5 +115,5 @@ ion-item.item-md.item-block .item-inner {
 }
 
 .selected{
-  background-color: lightgrey;
+  background-color: color($colors, selected) !important;
 }

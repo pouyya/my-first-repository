@@ -29,27 +29,31 @@ $colors: (
   danger:     #f53d3d,
   light:      #f4f4f4,
   warning:    yellow,
-  dark:       #222,
+  dark:       #576572,
   white:    #ffffff,
-  black:    #000000
+  black:    #000000,
+  selected: #488aff,  
+  separator: #6E7C89
 );
 
 $colors-md: (
-  primary:    #DCDCDC,
+  primary:    #488aff,
   secondary:  #DCDCDC,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222,
+  dark:       #576572,
   white:    #ffffff,
   warning:    yellow,
-  black:    #000000  
+  black:    #000000,
+  selected: #488aff,
+  separator: #6E7C89
 );
 
 $font-family-base: "Roboto", "LatoWeb", "Helvetica Neue", sans-serif !default;
 $font-family-md-base: "Roboto", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
 $background-color: #DCDCDC;
-$toolbar-background: #3A4953;
+$toolbar-background: color($colors, dark);
 $toolbar-text-color: #CBCFD2;
 $list-background-color: #FFFFFF;
 $list-background-color-border: #a9a9a9;
