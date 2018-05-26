@@ -24,29 +24,29 @@ $font-path: "../assets/fonts";
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
+  primary:    #3DBFD9,
   secondary:  #DCDCDC,
   danger:     #f53d3d,
   light:      #f4f4f4,
   warning:    yellow,
-  dark:       #576572,
+  dark:       #34383C,
   white:    #ffffff,
   black:    #000000,
-  selected: #488aff,  
-  separator: #6E7C89
+  selected: #3DBFD9,  
+  separator: #34383C
 );
 
 $colors-md: (
-  primary:    #488aff,
+  primary:    #3DBFD9,
   secondary:  #DCDCDC,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #576572,
+  dark:       #34383C,
   white:    #ffffff,
   warning:    yellow,
   black:    #000000,
-  selected: #488aff,
-  separator: #6E7C89
+  selected: #3DBFD9,
+  separator: #34383C
 );
 
 $font-family-base: "Roboto", "LatoWeb", "Helvetica Neue", sans-serif !default;

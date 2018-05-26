@@ -30,7 +30,7 @@ sales {
     }
     .activeCategory {
       color: color($colors, dark);
-      background-color: $list-background-color;
+      background-color: color($colors, selected);
       .category-icon {
         color: color($colors, dark);
       }
