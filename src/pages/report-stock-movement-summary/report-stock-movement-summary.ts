@@ -6,16 +6,6 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { UserService } from '../../modules/dataSync/services/userService';
 
-interface StockMovement {
-  productName: string,
-  startStock: number,
-  received: number,
-  sold: number,
-  deducted: number,
-  endStock: number,
-  returned: number
-}
-
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
 @PageModule(() => ReportModule)
 @Component({
