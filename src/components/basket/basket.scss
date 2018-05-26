@@ -13,6 +13,10 @@
 
 .action-buttons {
   height: 65px;
+  button {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
 }
 
 .top-component {
