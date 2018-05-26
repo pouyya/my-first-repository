@@ -142,4 +142,5 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <engine name="android" spec="^6.3.0" />
     <engine name="ios" spec="~4.4.0" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
 </widget>

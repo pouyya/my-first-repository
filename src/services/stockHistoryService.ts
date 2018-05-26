@@ -64,10 +64,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
       }
     }) : null;
   }
+
   public async getProductTotalStockValue(productId: string) {
 
     var param = { reduce: true, group: true, startkey: [productId], endkey: [productId, {}] };
-
     var result = await this.getDB().query(this.view_stock_per_store, param);
 
     return result ? result.rows.map(row => {
@@ -103,10 +103,14 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     return stock;
   }
 
-  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]>{
+  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]> {
     try {
+      const query = { createdAt: { $gte: fromDate, $lt: toDate } };
+      if (storeId) {
+        query['storeId'] = storeId;
+      }
       return await this.findBy({
-        selector: { storeId, createdAt:{$gte : fromDate, $lt: toDate} },
+        selector: query,
         sort: [{ _id: 'desc' }]
       });
     } catch (err) {

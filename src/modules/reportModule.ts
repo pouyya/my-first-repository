@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ModuleBase } from "./moduelBase";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
-import { Sales } from "../pages/sales/sales";
+import { HomePage } from "../pages/home/home";
 
 @Injectable()
 export class ReportModule implements ModuleBase {
@@ -12,7 +12,7 @@ export class ReportModule implements ModuleBase {
   public pages = [
     { title: 'Dashboard', icon: 'home', component: ReportsDashboard },
     { title: 'Inventory', icon: 'cube', component: ReportStockMovementSummaryPage },
-    { title: 'Sales', icon: 'build', component: Sales },
+    { title: 'Back Office', icon: 'build', component: HomePage }
   ];    
 
   public pinTheMenu: boolean = true;
