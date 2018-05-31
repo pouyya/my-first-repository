@@ -57,5 +57,4 @@ export class UserService {
     var currentUser = await this.getUser();
     return currentUser.access_token;
   }
-
 }

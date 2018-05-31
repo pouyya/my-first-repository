@@ -3,13 +3,17 @@ import * as moment from 'moment';
 import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { Http, Response } from '@angular/http';
+import { ENV } from '@app/env';
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
 
   readonly view_stock_per_store = "inventory/stock_per_store";
 
-  constructor() {
+  constructor(private http: Http,
+    private userService: UserService) {
     super(StockHistory);
   }
 
@@ -117,4 +121,20 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
       return Promise.reject(err);
     }
   }
+
+  public async getStockMovement(storeId: string, fromDate: Date, toDate: Date) {
+    return this.http
+      .get(`${ENV.service.baseUrl}/wp-content/plugins/reports/inventory.php?type=json&fromDate=${fromDate.getFullYear()}-${fromDate.getMonth()}-${fromDate.getDate()}&toDate=${toDate.getFullYear()}-${toDate.getMonth()}-${toDate.getDate()}&currentStoreId=${storeId}&Authorization=${await this.userService.getUserToken()}`)
+      .map((response: Response) => <StockMovement[]>response.json());
+  }
+}
+
+export interface StockMovement {
+  productName: string,
+  startStock: number,
+  received: number,
+  sold: number,
+  deducted: number,
+  endStock: number,
+  returned: number
 }

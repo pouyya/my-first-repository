@@ -2,6 +2,9 @@ export const ENV = {
   name: "Production",
   production: true,
   turnOnDeployment: true,
+  service: {
+    baseUrl: "https://site-dev.pos.app"
+  },
   security: {
     serverUrl: "https://site-dev.pos.app",
     clientId: "simplepos",

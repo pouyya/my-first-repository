@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
+import { StockHistoryService, StockMovement } from "../../services/stockHistoryService";
+import { LoadingController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { UserService } from '../../modules/dataSync/services/userService';
+import { StoreService } from "../../services/storeService";
+
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
 @PageModule(() => ReportModule)
@@ -15,21 +17,50 @@ import { UserService } from '../../modules/dataSync/services/userService';
 })
 export class ReportStockMovementSummaryPage {
 
-  public url = 'http://mrmohamadi.com/reports/report5.php';
-  public token = '';
+  public timeframes = [{ text: "Week", value: "WEEK" }, { text: "Month", value: "MONTH" }, { text: "Custom", value: "CUSTOM" }];
+  public locations = [{ text: "All locations", value: "" }];
+  public selectedTimeframe: string;
+  public selectedStore: string;
+  public stockMovementList: StockMovement[] = [];
+  public reportGeneratedTime: Date;
+  public fromDate: Date = new Date();
+  public toDate: Date = new Date();
 
-  constructor(
-    private theInAppBrowser: InAppBrowser,
-    private userService: UserService
-  ) {}
+  constructor(private stockHistoryService: StockHistoryService,
+    private storeService: StoreService,
+    private loading: LoadingController) {
+  }
 
-  public async openBrowser(target: string) {
-    if (this.token == '') {
-      this.url += '?';
-      this.token = await this.userService.getUserToken();
-      this.url += this.token;
+  async ionViewDidLoad() {
+    this.fromDate.setDate(this.fromDate.getDate() - 15);
+    this.selectedTimeframe = this.timeframes[0].value;
+    this.selectedStore = this.locations[0].value;
+    const stores = await this.storeService.getAll();
+    stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
+    await this.loadStockReport();
+  }
+
+  public async loadStockReport() {
+    let loader = this.loading.create({ content: 'Loading Report...', });
+    await loader.present();
+    let toDate = new Date();
+    let fromDate = new Date();
+    let days = 7;
+
+    if (this.selectedTimeframe === "MONTH" || this.selectedTimeframe === "WEEK") {
+      this.selectedTimeframe === "WEEK" && (days = 7);
+      this.selectedTimeframe === "MONTH" && (days = 30);
+      fromDate.setDate(fromDate.getDate() - days);
+    } else if (this.selectedTimeframe === "CUSTOM") {
+
+      fromDate = new Date(this.fromDate);
+      toDate = new Date(this.toDate);
+
     }
 
-    this.theInAppBrowser.create(this.url, target);
+    var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, fromDate, toDate);
+    stockMovement.subscribe(stockMovementList => this.stockMovementList = stockMovementList);
+    this.reportGeneratedTime = new Date();
+    loader.dismiss();
   }
 }
