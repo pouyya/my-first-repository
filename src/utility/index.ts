@@ -66,4 +66,28 @@ export class Utilities {
         return sortList.indexOf(itemA._id) - sortList.indexOf(itemB._id);
       });
   }
+
+  public confirmRemoveItem(message: string){
+    return new Promise((resolve, reject) => {
+        let confirm = this.alertCtrl.create({
+            title: 'Warning!',
+            message,
+            buttons: [
+                {
+                    text: 'Yes',
+                    handler: async () => {
+                        resolve(true);
+                    }
+                },
+                {
+                    text: 'Cancel',
+                    handler: () => {
+                        resolve(false);
+                    }
+                }
+            ]
+        });
+        confirm.present();
+    });
+  }
 }

@@ -120,7 +120,11 @@ export class StoreDetailsPage {
     modal.present();
   }
 
-  public removeAddedRegister(index: number) {
+  public async removeAddedRegister(index: number) {
+    const deleteItem = await this.utils.confirmRemoveItem("Do you really want to delete this register!");
+    if(!deleteItem){
+        return;
+    }
     const register = this.item.POS[index];
     if(this.syncContext.currentPos.id === register.id){
       const toast = this.toastCtrl.create({
@@ -157,31 +161,22 @@ export class StoreDetailsPage {
   }
 
   public async removeDevice(index: number) {
-    let confirm = this.alertCtrl.create({
-      title: 'Are you sure you want to delete this Device ?',
-      message: 'Deleting this device!',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            let loader = this.loading.create({
-              content: 'Deleting. Please Wait!',
-            });
-
-            loader.present().then(() => {
-              this.item.devices.splice(index, 1);
-              let toast = this.toastCtrl.create({
-                message: 'Device has been deleted successfully',
-                duration: 3000
-              });
-              toast.present();
-              loader.dismiss();
-            });
-          }
-        }, 'No'
-      ]
+    const deleteItem = await this.utils.confirmRemoveItem("Do you really want to delete this device!");
+    if(!deleteItem){
+        return;
+    }
+    let loader = this.loading.create({
+        content: 'Deleting. Please Wait!',
     });
-    confirm.present();
+
+    await loader.present();
+    this.item.devices.splice(index, 1);
+    let toast = this.toastCtrl.create({
+        message: 'Device has been deleted successfully',
+        duration: 3000
+    });
+    toast.present();
+    loader.dismiss();
   }
 
   public remove() {

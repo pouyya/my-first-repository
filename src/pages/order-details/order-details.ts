@@ -33,6 +33,7 @@ import {
   OrderPageCurrentSettings,
   OrderPageSettings
 } from './modules/order-details-exportables';
+import {Utilities} from "../../utility";
 
 @Component({
   selector: 'order-details',
@@ -69,6 +70,7 @@ export class OrderDetails {
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
     private emailService: EmailService,
+    private utility: Utilities
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');
@@ -196,30 +198,22 @@ export class OrderDetails {
   }
 
   public async cancelOrder() {
-    let confirm = this.alertCtrl.create({
-      title: 'Do you really wish to cancel this order ?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            let toast = this.toastCtrl.create({ duration: 3000 });
-            this.order.cancelledAt = moment().utc().format();
-            this.order.status = OrderStatus.Cancelled;
-            this.orderService.update(<Order>_.omit(this.order, ['UIState'])).then(() => {
-              toast.setMessage('Order has been cancelled!');
-            }).catch(err => {
-              console.error(new Error(err));
-              toast.setMessage('Error! Unable to cancel order!');
-            }).then(() => {
-              toast.present();
-              this.navCtrl.pop();
-            });
-          }
-        },
-        'No' /** Do not cancel */
-      ]
-    });
-    confirm.present();
+    const isCancel = await this.utility.confirmRemoveItem("Do you really wish to cancel this order!");
+    if(!isCancel){
+        return;
+    }
+    let toast = this.toastCtrl.create({ duration: 3000 });
+    try{
+        this.order.cancelledAt = moment().utc().format();
+        this.order.status = OrderStatus.Cancelled;
+        await this.orderService.update(<Order>_.omit(this.order, ['UIState']));
+        toast.setMessage('Order has been cancelled!');
+    }catch (ex) {
+      toast.setMessage('Error! Unable to cancel order!');
+    } finally {
+      toast.present();
+      this.navCtrl.pop();
+    }
   }
 
   public receiveOrder() {

@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController } from 'ionic-angular';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import {Utilities} from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.BrandAddEdit)
 @Component({
@@ -19,7 +20,9 @@ export class BrandDetails {
   constructor(public navCtrl: NavController,
     private brandService: BrandService,
     private navParams: NavParams,
-    private toastCtrl: ToastController) {
+    private toastCtrl: ToastController,
+    private utility: Utilities
+  ) {
   }
 
   async ionViewDidLoad() {
@@ -47,6 +50,10 @@ export class BrandDetails {
 
   public async delete() {
     try {
+      const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this brand!");
+      if(!deleteItem){
+          return;
+      }
       await this.brandService.delete(this.brand);
       let toast = this.toastCtrl.create({
         message: `Brand '${this.brand.name}' has been deleted successfully!`,

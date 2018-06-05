@@ -6,6 +6,7 @@ import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
+import {Utilities} from "../../utility";
 
 @Component({
   selector: 'page-variables',
@@ -24,7 +25,8 @@ export class CategoryDetails {
     private userService: UserService,
     private navParams: NavParams,
     private toastCtrl: ToastController,
-    private modalCtrl: ModalController) {
+    private modalCtrl: ModalController,
+    private utility: Utilities) {
     this.icons = icons;
   }
 
@@ -78,6 +80,10 @@ export class CategoryDetails {
   
   public async delete() {
     try {
+      const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this category!");
+      if(!deleteItem){
+          return;
+      }
       await this.categoryService.delete(this.categoryItem);
       let toast = this.toastCtrl.create({
         message: `Category '${this.categoryItem.name}' has been deleted successfully!`,

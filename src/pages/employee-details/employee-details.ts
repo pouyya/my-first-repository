@@ -17,6 +17,7 @@ import {
   LoadingController
 } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
+import {Utilities} from "../../utility";
 
 interface SelectableStore extends Store {
   selected: boolean;
@@ -45,7 +46,8 @@ export class EmployeeDetails {
     private pluginService: PluginService,
     private modalCtrl: ModalController,
     private loading: LoadingController,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private utility: Utilities) {
   }
 
   async ionViewDidLoad() {
@@ -100,8 +102,11 @@ export class EmployeeDetails {
 
   public async remove(): Promise<any> {
     try {
+      const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this employee!");
+      if(!deleteItem){
+          return;
+      }
       // delete employee associations
-      await this.timestampService.getEmployeeTimestamps(this.employee._id);
       await this.employeeService.delete(this.employee);
       this.navCtrl.pop();
       return;

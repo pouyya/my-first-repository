@@ -10,6 +10,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { Category } from '../../model/category';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { SearchableListing } from "../../modules/searchableListing";
+import {Utilities} from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.InventoryCategory)
 @PageModule(() => InventoryModule)
@@ -23,7 +24,8 @@ export class Categories extends SearchableListing<Category> {
   constructor(public navCtrl: NavController,
     private categoryService: CategoryService,
     private loading: LoadingController,
-    protected zone: NgZone) {
+    protected zone: NgZone,
+    private utility: Utilities) {
     super(categoryService, zone, 'Category');
   }
 
@@ -69,5 +71,17 @@ export class Categories extends SearchableListing<Category> {
       this.items = this.items.concat(categories);
       infiniteScroll && infiniteScroll.complete();
     });
+  }
+
+  public async delete(item: Category, index: number) {
+      try {
+          const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this category!");
+          if(!deleteItem){
+              return;
+          }
+          await super.remove(item, index);
+      } catch (err) {
+          throw new Error(err);
+      }
   }
 }

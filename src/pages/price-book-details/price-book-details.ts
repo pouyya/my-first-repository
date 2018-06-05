@@ -12,6 +12,7 @@ import { StoreService } from './../../services/storeService';
 import { Component } from '@angular/core';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import {Utilities} from "../../utility";
 
 interface CritieriaView {
   store?: {
@@ -96,7 +97,8 @@ export class PriceBookDetails {
     private navCtrl: NavController,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
-    private zone: NgZone
+    private zone: NgZone,
+    private utility: Utilities
   ) {
     this.days = [
       { value: 'mon', label: 'Monday', selected: false },
@@ -264,23 +266,12 @@ export class PriceBookDetails {
     toast.present();
   }
 
-  public remove() {
-    let confirm = this.alertCtrl.create({
-      title: 'Are you sure you want to delete this Price Book ?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            this.priceBookService.delete(this.priceBook)
-              .then(() => this.navCtrl.pop())
-              .catch(error => {
-                throw new Error(error);
-              })
-          }
-        }, 'No'
-      ]
-    });
-
-    confirm.present();
+  public async remove() {
+    const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this Price Book!");
+    if(!deleteItem){
+        return;
+    }
+    await this.priceBookService.delete(this.priceBook);
+    this.navCtrl.pop();
   }
 }

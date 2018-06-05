@@ -10,6 +10,10 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SearchableListing } from "../../modules/searchableListing";
 import { Service } from "../../model/service";
+import _ from "lodash";
+import {PriceBook} from "../../model/priceBook";
+import {PriceBookService} from "../../services/priceBookService";
+import {Utilities} from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.ServiceListing)
 @PageModule(() => BackOfficeModule)
@@ -19,11 +23,14 @@ import { Service } from "../../model/service";
 })
 export class Services extends SearchableListing<Service>{
   protected items: Service[] = [];
+  private _defaultPriceBook: PriceBook;
 
 
   constructor(public navCtrl: NavController,
-    serviceService: ServiceService,
+    private serviceService: ServiceService,
     private loading: LoadingController,
+    private utility: Utilities,
+    private priceBookService: PriceBookService,
     protected zone: NgZone) {
       super(serviceService, zone, 'Service');
   }
@@ -40,6 +47,8 @@ export class Services extends SearchableListing<Service>{
         }
       };
       await this.fetch();
+      this._defaultPriceBook = await this.priceBookService.getDefault();
+
       loader.dismiss();
     } catch (err) {
       console.error(err);
@@ -50,5 +59,25 @@ export class Services extends SearchableListing<Service>{
 
   showDetail(service) {
     this.navCtrl.push(ServiceDetails, { service: service });
+  }
+
+  public async remove(item: Service, index: number) {
+    const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this service!");
+    if(!deleteItem){
+      return;
+    }
+    let deleteAssocs: any[] = [
+        async () => {
+            // delete pricebook entries
+            let pbIndex = _.findIndex(this._defaultPriceBook.purchasableItems, { id: item._id });
+            if (pbIndex > -1) {
+                this._defaultPriceBook.purchasableItems.splice(pbIndex, 1);
+                return await this.priceBookService.update(this._defaultPriceBook);
+            }
+        }
+    ];
+
+    await Promise.all(deleteAssocs);
+    await super.remove(item, index);
   }
 }

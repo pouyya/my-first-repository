@@ -24,6 +24,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
+import {Utilities} from "../../utility";
 
 interface InteractableStoreStock {
 	storeId: string,
@@ -92,7 +93,8 @@ export class ProductDetails {
 		private loading: LoadingController,
 		private zone: NgZone,
 		private modalCtrl: ModalController,
-		private cdr: ChangeDetectorRef) {
+		private cdr: ChangeDetectorRef,
+		private utility: Utilities) {
 		this.icons = icons;
 	}
 
@@ -376,6 +378,10 @@ export class ProductDetails {
 
 	public async delete() {
 		// delete associations
+        const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this product!");
+        if(!deleteItem){
+            return;
+        }
 		let deleteAssocs: any[] = [
 			async () => {
 				// delete pricebook entries

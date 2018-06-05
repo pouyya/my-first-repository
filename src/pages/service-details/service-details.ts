@@ -15,6 +15,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
+import {Utilities} from "../../utility";
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -65,6 +66,7 @@ export class ServiceDetails {
 		private zone: NgZone,
 		private platform: Platform,
 		private modalCtrl: ModalController,
+		private utility: Utilities,
 		private loading: LoadingController) {
 		this.icons = icons;
 	}
@@ -233,6 +235,10 @@ export class ServiceDetails {
 	}
 
 	public async delete() {
+        const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this service!");
+        if(!deleteItem){
+            return;
+        }
 		// delete associations
 		let deleteAssocs: any[] = [
 			async () => {
