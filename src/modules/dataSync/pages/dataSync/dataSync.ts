@@ -46,11 +46,11 @@ export class DataSync {
 			ConfigService.internalAuditDBName,
 			user.access_token,
 			[
-				<DBIndex>{ fields: ['order', 'entityTypeName', 'entityTypeNames'] },
-				<DBIndex>{ fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
-			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }],
-			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }]);
-
+				<DBIndex>{ name : 'orderEntity', fields: ['order', 'entityTypeName', 'entityTypeNames'] },
+				<DBIndex>{ name : 'orderEntityName', fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
+			[<DBIndex>{ name : 'entity', fields: ['entityTypeName', 'entityTypeNames'] }],
+			[<DBIndex>{ name : 'entity', fields: ['entityTypeName', 'entityTypeNames'] }]);
+   
 		DBService.criticalDBSyncProgress.subscribe(
 			async (data: DBEvent) => {
 				if (data) {
