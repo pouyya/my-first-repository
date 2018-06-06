@@ -1,0 +1,9 @@
+{
+      "_id": "_design/employee_timelog",
+      "views": {
+        "by_time": {
+          "map": "function (doc) {\n  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'EmployeeTimestamp') {\n    var time = new Date(doc.time);\n    var timeString = [time.getFullYear(), time.getMonth() + 1, time.getDate()].join('-');\n    emit(timeString, doc);\n  }\n}"
+        }
+      },
+      "language": "javascript"
+}
