@@ -41,7 +41,7 @@
           </ion-row>
         </ion-grid>
       </ion-item>
-      <ion-item-options>
+      <ion-item-options *ngIf="!priceBook.isDefault">
         <button ion-button color='danger' (click)="delete(priceBook, i)" icon=left>
           <ion-icon name="trash"></ion-icon>
           Delete

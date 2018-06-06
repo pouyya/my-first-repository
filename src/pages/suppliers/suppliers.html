@@ -39,15 +39,23 @@
       </ion-grid>
     </ion-item>
   </ion-list>
-  <ion-list>
-    <ion-item *ngFor="let supplier of items; let i = index;" (click)="view(supplier)">
-      <ion-grid>
-        <ion-row>
-          <ion-col col-md-3 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{supplier[column.variableName]}}</h2></ion-col>
-          <ion-col col-md-2>{{ supplier.associateProducts }}</ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
+  <ion-list *ngFor="let supplier of items; let idx = index;" >
+    <ion-item-sliding class="sliding" cancelable=true>
+      <ion-item (click)="view(supplier)">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-3 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{supplier[column.variableName]}}</h2></ion-col>
+            <ion-col col-md-2>{{ supplier.associateProducts }}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item-options>
+        <button ion-button color='danger' (click)="remove(supplier, idx)" icon=left>
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>

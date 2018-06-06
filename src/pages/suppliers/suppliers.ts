@@ -9,6 +9,7 @@ import { InventoryModule } from "../../modules/inventoryModule";
 import { SecurityModule } from "../../infra/security/securityModule";
 import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
 import { SearchableListing } from "../../modules/searchableListing";
+import {Utilities} from "../../utility";
 
 interface SupplierList extends Supplier {
 	associatedProducts: number;
@@ -28,7 +29,8 @@ export class Suppliers extends SearchableListing<Supplier>{
 		supplierService: SupplierService,
 		private loadingCtrl: LoadingController,
 		private navCtrl: NavController,
-		protected zone: NgZone
+		protected zone: NgZone,
+		private utility: Utilities
 	) {
 		super(supplierService, zone, 'Supplier');
 	}
@@ -44,4 +46,12 @@ export class Suppliers extends SearchableListing<Supplier>{
 	public view(supplier?: SupplierList) {
 		this.navCtrl.push(SupplierDetails, { supplier: supplier || null });
 	}
+
+    public async remove(supplier: Supplier, index: number) {
+		const deleteItem = await this.utility.confirmRemoveItem("Do you wish to delete this supplier!");
+		if(!deleteItem){
+			return;
+		}
+		await super.remove(supplier, index);
+    }
 }

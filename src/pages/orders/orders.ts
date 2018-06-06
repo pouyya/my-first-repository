@@ -11,6 +11,8 @@ import { SupplierService } from '../../services/supplierService';
 import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
 import { SearchableListing } from "../../modules/searchableListing";
 import { Order } from "../../model/order";
+import * as moment from "moment-timezone";
+import {Utilities} from "../../utility";
 
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;
@@ -43,10 +45,11 @@ export class Orders extends SearchableListing<Order>{
   constructor(
     private storeService: StoreService,
     private supplierService: SupplierService,
-    orderService: OrderService,    
+    private orderService: OrderService,
     private loading: LoadingController,
     private navCtrl: NavController,
-    protected zone: NgZone
+    protected zone: NgZone,
+    private utility: Utilities
   ) {
     super(orderService, zone, 'Order');
     this.filter['status'] = null;
@@ -122,4 +125,16 @@ export class Orders extends SearchableListing<Order>{
     });
     return orders;
   }
+
+  public async cancelOrder(order: Order, index: number) {
+    const isCancel = await this.utility.confirmRemoveItem("Do you really wish to cancel this order!");
+    if(!isCancel){
+        return;
+    }
+    order.cancelledAt = moment().utc().format();
+    order.status = OrderStatus.Cancelled;
+    await this.orderService.update(<Order>_.omit(order, ['UIState']));
+    this.items.splice(index, 1);
+  }
+
 }

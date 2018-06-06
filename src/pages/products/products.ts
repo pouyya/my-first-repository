@@ -21,6 +21,7 @@ import {CategoryService} from "../../services/categoryService";
 import {UserService} from "../../modules/dataSync/services/userService";
 import {Category} from "../../model/category";
 import {AppService} from "../../services/appService";
+import {Utilities} from "../../utility";
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -52,7 +53,8 @@ export class Products extends SearchableListing<Product>{
     private userService: UserService,
     private alertCtrl: AlertController,
     protected zone: NgZone,
-    private categoryService: CategoryService) {
+    private categoryService: CategoryService,
+    private utility: Utilities) {
     super(productService, zone, 'Product');
   }
 
@@ -94,6 +96,22 @@ export class Products extends SearchableListing<Product>{
   }
 
   public async remove(product: ProductsList, index) {
+    const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this product!");
+    if(!deleteItem){
+      return;
+    }
+    let deleteAssocs: any[] = [
+        async () => {
+              // delete pricebook entries
+            let pbIndex = _.findIndex(this.priceBook.purchasableItems, { id: product._id });
+            if (pbIndex > -1) {
+                  this.priceBook.purchasableItems.splice(pbIndex, 1);
+                  return await this.priceBookService.update(this.priceBook);
+            }
+          }
+    ];
+
+    await Promise.all(deleteAssocs);
     await super.remove(<Product>_.omit(product, ['stockInHand']), index);
   }
 
