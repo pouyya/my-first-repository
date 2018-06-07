@@ -77,7 +77,8 @@ export class ProductDetails {
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
   	private color: Subject<string> = new Subject<string>();
-  	private image: Subject<Object> = new Subject<Object>();
+  	private image: Subject<string> = new Subject<string>();
+  	private thumbnail: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -129,11 +130,14 @@ export class ProductDetails {
     });
     this.color.next(this.productItem.color);
 
-	this.image.asObservable().subscribe( (data: any) => {
-		this.productItem.image = data.image;
-		this.productItem.thumbnail = data.thumbnail;
+	this.image.asObservable().subscribe( image => {
+		this.productItem.image = image;
 	});
-	this.image.next({ image: this.productItem.image, thumbnail: this.productItem.thumbnail});
+	this.thumbnail.asObservable().subscribe( thumbnail => {
+		this.productItem.thumbnail = thumbnail;
+	});
+	this.image.next(this.productItem.image);
+	this.thumbnail.next(this.productItem.thumbnail);
 
     let promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),

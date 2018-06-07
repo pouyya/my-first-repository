@@ -9,14 +9,13 @@ import {SelectLocationModal} from "./modal/select-color/select-location";
   template: `<ion-label class="item-addImageLabel">Add Image</ion-label>
   <button type="button" ion-button icon-only (click)="selectImage()">
       <ion-icon name="camera"></ion-icon>
-  </button><span float-left><img *ngIf="selectedImage$.thumbnail" [src]="selectedImage$.thumbnail"/></span>`
+  </button><div [style.display]="(selectedThumbnail$ | async )? 'block' : 'none' "><img [src]="selectedThumbnail$ | async"/></div>`
   ,
   styleUrls: ['/components/color-picker.scss']
 })
 export class ImagePickerComponent {
-  private image: string;
-  private thumbnail: string;
-  @Input() selectedImage$: Subject<Object>;
+  @Input() selectedImage$: Subject<String>;
+  @Input() selectedThumbnail$: Subject<String>;
   constructor(private camera: Camera, private modalCtrl: ModalController) {
   }
 
@@ -45,18 +44,17 @@ export class ImagePickerComponent {
       };
       try {
           const imageData = await this.camera.getPicture(options);
-          let base64data = 'data:image/jpeg;base64,' + imageData;
-          this.image = base64data;
-          this.thumbnail = await this.createThumbnail();
-          this.selectedImage$.next({status: true, image: this.image, thumbnail: this.thumbnail});
+          const image = 'data:image/jpeg;base64,' + imageData;
+          this.selectedImage$.next(image);
+          const thumbnail = await this.createThumbnail(image);
+          this.selectedThumbnail$.next(thumbnail);
       }catch (err){
-          this.selectedImage$.next({status: false});
           console.log('gallery error: ', err);
       }
   }
-  private createThumbnail(): Promise<string> {
+  private createThumbnail(image: string): Promise<string> {
       return new Promise((resolve, reject) => {
-          this.generateFromImage(this.image, 200, 200, 0.5, data => {
+          this.generateFromImage(image, 200, 200, 0.5, data => {
               resolve(data);
           });
       });
