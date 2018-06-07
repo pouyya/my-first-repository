@@ -78,6 +78,10 @@ export class SecurityAccessRightRepo {
     'StoreAddEdit',
     'Store Add/Edit');
 
+  public static DeleteAccount: AccessRightItem = new AccessRightItem(
+    'DeleteAccount',
+    'Delete Account');
+
   public static readonly RoleListing: AccessRightItem = new AccessRightItem(
     'RoleListing',
     'Role Add/Edit');
@@ -162,7 +166,8 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.SwitchPos,
     SecurityAccessRightRepo.ReportsDashboard,
     SecurityAccessRightRepo.ReportStockMovementSummary,
-    SecurityAccessRightRepo.Preferences
+    SecurityAccessRightRepo.Preferences,
+    SecurityAccessRightRepo.DeleteAccount,
   ];
 
 }

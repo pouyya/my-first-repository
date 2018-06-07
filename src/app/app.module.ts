@@ -81,6 +81,7 @@ import { ProductsSelector } from '../pages/order-details/modals/products-selecto
 import { Closures } from './../pages/closures/closures';
 import { DeleteAccount } from '../pages/delete-account/delete-account';
 
+
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
@@ -138,7 +139,6 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { StockHistoryService } from './../services/stockHistoryService';
-import { DeleteAccountService } from './../services/deleteAccountService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
@@ -166,6 +166,7 @@ import {SplitPaymentPage} from "../pages/split-payment/split-payment";
 import {File} from "@ionic-native/file";
 import {PapaParseModule} from "ngx-papaparse";
 import {FileTransfer} from "@ionic-native/file-transfer";
+import { DeleteAccountService } from './../services/deleteAccountService';
 
 
 @NgModule({

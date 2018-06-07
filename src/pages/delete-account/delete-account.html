@@ -1,19 +1,19 @@
-<ion-header>
+ <ion-header>
     <ion-navbar>
-      <ion-title>Delete Account</ion-title>
-      <button ion-button icon-only menuToggle="leftMenu">
+    <ion-title>Delete Account</ion-title>
+    <button ion-button icon-only menuToggle="leftMenu">
         <ion-icon name="menu"></ion-icon>
-      </button>
-  
-      <ion-buttons end>
+    </button>
+
+    <ion-buttons end>
         <button ion-button (click)="deleteAccount()">
             <ion-icon name="delete"></ion-icon>
         </button>
-      </ion-buttons>
-      <ion-buttons end network-monitor></ion-buttons>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
     </ion-navbar>
-  </ion-header>
-  <ion-content padding>
+</ion-header>
+<ion-content padding>
         <h1 style="color: #5e9ca0;">Delete your account</h1>
         <p><span style="color: #ff0000;">Are you sure you want to delete your account?</span></p>
         <p><span style="color: #2b2301;">If you want to change your email address, simply do so right here from account settings, and if you want to change your name or shop name, you can do from your profile settings. you can also change your privacy settings or Notificatin settings at any time.</span></p>
@@ -27,4 +27,4 @@
 
         <button  (click)="deleteAccount()">Delete Account</button>
 
-  </ion-content>
+</ion-content>
