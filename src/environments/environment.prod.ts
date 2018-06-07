@@ -1,12 +1,12 @@
 export const ENV = {
   name: "Stage",
   production: true,
-  turnOnDeployment: false,
+  turnOnDeployment: true,
   service: {
-    baseUrl: "https://site-stage.pos.app"
+    baseUrl: "https://site.pos.app"
   },
   security: {
-    serverUrl: "https://site-stage.pos.app",
+    serverUrl: "https://site.pos.app",
     clientId: "simplepos",
     clientSecret: "21B5F798-BE55-42BC-8AA8-0025B903DC3B",
     grantType: "password",
