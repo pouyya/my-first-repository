@@ -79,10 +79,7 @@
     </ion-list>
     <div class="insert-image">
       <p>
-        <ion-label class="item-addImageLabel">Add Image</ion-label>
-        <button ion-button icon-only>
-          <ion-icon name="camera"></ion-icon>
-        </button>
+        <image-picker [selectedImage$]="image"></image-picker>
       </p>
     </div>
     <ion-list inset>

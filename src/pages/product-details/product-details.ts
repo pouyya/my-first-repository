@@ -77,6 +77,7 @@ export class ProductDetails {
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
   	private color: Subject<string> = new Subject<string>();
+  	private image: Subject<Object> = new Subject<Object>();
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -128,6 +129,11 @@ export class ProductDetails {
     });
     this.color.next(this.productItem.color);
 
+	this.image.asObservable().subscribe( (data: any) => {
+		this.productItem.image = data.image;
+		this.productItem.thumbnail = data.thumbnail;
+	});
+	this.image.next({ image: this.productItem.image, thumbnail: this.productItem.thumbnail});
 
     let promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
@@ -361,7 +367,6 @@ export class ProductDetails {
 			index > -1 ? this._defaultPriceBook.purchasableItems[index] = dBuffer :
 				this._defaultPriceBook.purchasableItems.push(dBuffer);
 
-			await this.priceBookService.update(this._defaultPriceBook);
 		}
 
 		// finalize stock updates
