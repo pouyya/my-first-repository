@@ -79,6 +79,8 @@ import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAn
 import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
 import { ProductsSelector } from '../pages/order-details/modals/products-selector/products-selector';
 import { Closures } from './../pages/closures/closures';
+import { DeleteAccount } from '../pages/delete-account/delete-account';
+
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -164,6 +166,7 @@ import {SplitPaymentPage} from "../pages/split-payment/split-payment";
 import {File} from "@ionic-native/file";
 import {PapaParseModule} from "ngx-papaparse";
 import {FileTransfer} from "@ionic-native/file-transfer";
+import { DeleteAccountService } from './../services/deleteAccountService';
 
 
 @NgModule({
@@ -235,7 +238,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     CreateSupplier,
     ProductsSelector,
     Closures,
-    TranslatorPipe
+    TranslatorPipe,
+    DeleteAccount
   ],
   imports: [
     FormsModule,
@@ -362,7 +366,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     AddSupplierAndStore,
     CreateSupplier,
     ProductsSelector,
-    Closures
+    Closures,
+    DeleteAccount
   ],
   providers: [
     IonicErrorHandler,
@@ -423,7 +428,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     PaymentService,
     AuditService,
     EmailService,
-    SyncContext
+    SyncContext,
+    DeleteAccountService
   ]
 })
 export class AppModule {
