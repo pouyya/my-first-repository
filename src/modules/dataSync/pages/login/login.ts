@@ -8,6 +8,7 @@ import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
 import { BoostraperModule } from '../../../bootstraperModule';
 import { PageModule } from '../../../../metadata/pageModule';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -25,7 +26,7 @@ export class LoginPage {
     private authService: AuthService,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-  ) { }
+    private iab: InAppBrowser) { }
 
   public async login(): Promise<any> {
 
@@ -51,7 +52,22 @@ export class LoginPage {
   }
 
   public register(): void {
-    this.navCtrl.push(RegisterPage);
+    const browser = this.iab.create('https://site-dev.pos.app/registration-form/', '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
+    var name;
+    var nameInterval;
+
+    browser.on('loadstop').subscribe(event => {
+      nameInterval = setInterval(async function () {
+        name = await browser.executeScript({ code: "localStorage.getItem('token')" });
+      }, 100)
+    });
+
+    browser.on('exit').subscribe(function () {
+      clearInterval(nameInterval);
+    });
+
+    //  browser.close();
+    // this.navCtrl.push(RegisterPage);
   }
 
   public forgotPassword(): void {

@@ -38,7 +38,7 @@
     "@ionic-native/dialogs": "4.7.0",
     "@ionic-native/file": "^4.7.0",
     "@ionic-native/file-transfer": "^4.7.0",
-    "@ionic-native/in-app-browser": "4.7.0",
+    "@ionic-native/in-app-browser": "^4.7.0",
     "@ionic-native/insomnia": "4.7.0",
     "@ionic-native/network": "4.7.0",
     "@ionic-native/pin-dialog": "4.7.0",
@@ -62,6 +62,7 @@
     "angular2-jwt": "^0.2.3",
     "cachefactory": "^3.0.0",
     "cordova-android": "6.3.0",
+    "cordova-browser": "~5.0.3",
     "cordova-ios": "~4.4.0",
     "cordova-plugin-add-swift-support": "^1.7.1",
     "cordova-plugin-appsee": "^2.3.65",
@@ -150,7 +151,8 @@
     },
     "platforms": [
       "ios",
-      "android"
+      "android",
+      "browser"
     ]
   },
   "ionic:build": "node --max-old-space-size=8192 ./node_modules/@ionic/app-scripts/bin/ionic-app-scripts.js build"
