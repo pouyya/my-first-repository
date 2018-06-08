@@ -15,12 +15,12 @@
     "serve:prod": "cross-env SP_ENV=prod ionic-app-scripts serve",
     "serve:stage": "cross-env SP_ENV=stage ionic-app-scripts serve",
     "serve": "cross-env SP_ENV=dev ionic-app-scripts serve",
-    "ios": "npm run build:dev && cordova build ios",
-    "ios:stage": "npm run build:stage && cordova build ios",
-    "ios:prod": "npm run build && cordova build ios",
-    "android": "npm run build:dev && cordova build android",
-    "android:stage": "npm run build:stage && cordova build android",
-    "android:prod": "npm run build:prod && cordova build android"
+    "ios": "npm run build:dev && cordova run ios",
+    "ios:stage": "npm run build:stage && cordova run ios",
+    "ios:prod": "npm run build && cordova run ios",
+    "android": "npm run build:dev && cordova run android",
+    "android:stage": "npm run build:stage && cordova run android",
+    "android:prod": "npm run build:prod && cordova run android"
   },
   "dependencies": {
     "@angular/animations": "^4.2.4",

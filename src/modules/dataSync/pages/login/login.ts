@@ -9,6 +9,7 @@ import { DataSync } from '../dataSync/dataSync';
 import { BoostraperModule } from '../../../bootstraperModule';
 import { PageModule } from '../../../../metadata/pageModule';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { ENV } from '@app/env';
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -52,22 +53,43 @@ export class LoginPage {
   }
 
   public register(): void {
-    const browser = this.iab.create('https://site-dev.pos.app/registration-form/', '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
-    var name;
-    var nameInterval;
+    const browser = this.iab.create(`${ENV.service.baseUrl}/registration-form/`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
+    var token;
+    var tokenInterval;
 
     browser.on('loadstop').subscribe(event => {
-      nameInterval = setInterval(async function () {
-        name = await browser.executeScript({ code: "localStorage.getItem('token')" });
+      tokenInterval = setInterval(async function () {
+        var tokenElement = await browser.executeScript({ code: "document.getElementsByName('token')" });
+        if (tokenElement && tokenElement[0] && tokenElement[0].value) {
+          token = tokenElement[0].value;
+          browser.close();
+        }
       }, 100)
     });
 
-    browser.on('exit').subscribe(function () {
-      clearInterval(nameInterval);
-    });
+    browser.on('exit').subscribe(async function () {
+      clearInterval(tokenInterval);
 
-    //  browser.close();
-    // this.navCtrl.push(RegisterPage);
+      let loader = this.loading.create({
+        content: 'Logging In...'
+      });
+
+      await loader.present();
+
+      this.authService.getUserProfile(token).subscribe(
+        async data => {
+          await this.navigateToDataSync();
+          loader.dismiss();
+        },
+        error => {
+          let toast = this.toastCtrl.create({
+            message: 'Invalid Email/Password!',
+            duration: 3000
+          });
+          toast.present();
+          loader.dismiss();
+        });
+    });
   }
 
   public forgotPassword(): void {
