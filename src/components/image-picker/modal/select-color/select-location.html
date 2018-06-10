@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Select Location
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-grid padding-vertical>
+        <ion-row>
+            <ion-col>
+                <button ion-button block type="button" (click)="selectLocation('CAMERA')">Camera</button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <button ion-button block type="button" (click)="selectLocation('GALLERY')">Gallery</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+</ion-content>

@@ -97,6 +97,7 @@ import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-sc
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 import { ColorPickerModule } from "../components/color-picker/color-picker.module";
+import { ImagePickerModule } from "../components/image-picker/image-picker.module";
 import { SelectColorModal } from "../components/color-picker/modal/select-color/select-color";
 import { ImportExportModule } from "../components/import-export/import-export";
 
@@ -166,8 +167,9 @@ import {SplitPaymentPage} from "../pages/split-payment/split-payment";
 import {File} from "@ionic-native/file";
 import {PapaParseModule} from "ngx-papaparse";
 import {FileTransfer} from "@ionic-native/file-transfer";
+import {Camera} from "@ionic-native/camera";
+import {SelectLocationModal} from "../components/image-picker/modal/select-color/select-location";
 import { DeleteAccountService } from './../services/deleteAccountService';
-
 
 @NgModule({
   declarations: [
@@ -222,6 +224,7 @@ import { DeleteAccountService } from './../services/deleteAccountService';
     CustomerDetails,
     CreateCustomerModal,
     SelectColorModal,
+    SelectLocationModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -283,6 +286,7 @@ import { DeleteAccountService } from './../services/deleteAccountService';
     SharedModule,
     NetworkMonitorModule,
     ColorPickerModule,
+    ImagePickerModule,
     ImportExportModule,
     TileItemsModule,
     BasketModule,
@@ -351,6 +355,7 @@ import { DeleteAccountService } from './../services/deleteAccountService';
     CustomerDetails,
     CreateCustomerModal,
     SelectColorModal,
+    SelectLocationModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -380,6 +385,7 @@ import { DeleteAccountService } from './../services/deleteAccountService';
     Insomnia,
     InAppBrowser,
     File,
+    Camera,
     FileTransfer,
     DatePipe,
     SharedService,
