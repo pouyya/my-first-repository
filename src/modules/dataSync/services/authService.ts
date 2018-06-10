@@ -37,37 +37,41 @@ export class AuthService {
         let user = response.json();
         await this.userService.setAccessToken(user.token)
 
-        return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
-          .flatMap(async (userProfile: Response) => {
-
-            var serverSettings = userProfile.json();
-            let userSession: UserSession = new UserSession();
-            userSession = {
-              access_token: user.token,
-              settings: {
-                db_url: serverSettings.dburl,
-                db_critical_name: serverSettings.dbcriticalname,
-                db_critical_local_name: serverSettings.dbcriticallocalname,
-                db_name: serverSettings.dbname,
-                db_local_name: serverSettings.dblocalname,
-                db_audit_name: serverSettings.dbauditname,
-                db_audit_local_name: serverSettings.dbauditlocalname,
-              }
-            };
-
-            ConfigService.externalDBUrl = userSession.settings.db_url;
-            ConfigService.externalDBName = userSession.settings.db_name;
-            ConfigService.internalDBName = userSession.settings.db_local_name;
-
-            userSession.settings.defaultIcon = {};
-            var firstIconKey = Object.keys(icons)[0];
-            userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey];
-
-            await this.userService.setSession(userSession);
-
-          })
-          .toPromise();
+        return this.getUserProfile(user.token);
       });
+  }
+
+  public getUserProfile(token: string) {
+    return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
+      .flatMap(async (userProfile: Response) => {
+
+        var serverSettings = userProfile.json();
+        let userSession: UserSession = new UserSession();
+        userSession = {
+          access_token: token,
+          settings: {
+            db_url: serverSettings.dburl,
+            db_critical_name: serverSettings.dbcriticalname,
+            db_critical_local_name: serverSettings.dbcriticallocalname,
+            db_name: serverSettings.dbname,
+            db_local_name: serverSettings.dblocalname,
+            db_audit_name: serverSettings.dbauditname,
+            db_audit_local_name: serverSettings.dbauditlocalname,
+          }
+        };
+
+        ConfigService.externalDBUrl = userSession.settings.db_url;
+        ConfigService.externalDBName = userSession.settings.db_name;
+        ConfigService.internalDBName = userSession.settings.db_local_name;
+
+        userSession.settings.defaultIcon = {};
+        var firstIconKey = Object.keys(icons)[0];
+        userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey];
+
+        await this.userService.setSession(userSession);
+
+      })
+      .toPromise();
   }
 
   public register(firstName: string, lastName: string, phone: string, email: string, password: string, configPassword: string, shopName: string): Observable<any> {
