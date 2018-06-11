@@ -1,9 +1,0 @@
-    {
-      "_id": "_design/customer",
-      "views": {
-        "get_all_with_fullname": {
-          "map": "function (doc) {\n  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'Customer') {\n    var newDoc = {};\n    Object.keys(doc).forEach(function (key) {\n      newDoc[key] = doc[key];\n    });\n    newDoc['fullname'] = (doc.firstName + \" \" + doc.lastName).trim();\n    emit(doc._id, newDoc);\n  }\n}"
-        }
-      },
-      "language": "javascript"
-    }
