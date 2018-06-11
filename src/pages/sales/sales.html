@@ -46,11 +46,17 @@
         <ion-scroll scrollY="true" class="category-scroll">
           <ion-list no-lines class="full-height no-margin sales-category">
             <ion-item text-wrap *ngIf="categories.length == 0">Please use back office to add new categories.</ion-item>
-            <button ion-item *ngFor="let category of categories" [style.background-color]="syncContext.currentPos.categoryColor && syncContext.currentPos.categoryColor[category._id] || category.color" class="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
-              (click)="selectCategory(category)">
-              <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
-              {{ category.name }}
-            </button>
+              <div [ngClass]="{'activeCategory': category._id == activeCategory._id }" *ngFor="let category of categories">
+                  <button *ngIf="!category.thumbnail" ion-item class="sales-category-button text-wrap" [style.background-color]="syncContext.currentPos.categoryColor && syncContext.currentPos.categoryColor[category._id] || category.color"
+                          (click)="selectCategory(category)">
+                      <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
+                      {{ category.name }}
+                  </button>
+                  <div text-center *ngIf="category.thumbnail" ion-item class="sales-category-button text-wrap"  (click)="selectCategory(category)" >
+                      <img [src]="category.thumbnail"  scroll="false" height="50px">
+                      <p>  {{ category.name }}</p>
+                  </div>
+              </div>
           </ion-list>
         </ion-scroll>
       </ion-col>
