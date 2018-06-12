@@ -2,8 +2,6 @@ var gulp = require("gulp");
 var concat = require("gulp-concat");
 var fs = require("fs");
 var path = require("path");
- var filter = require('gulp-filter');
-const size = require('gulp-size');
 
 var scriptsPath = "src/data/";
 
@@ -19,7 +17,7 @@ var business = {
 
 gulp.task("scripts", function() {
   var folders = getFolders(scriptsPath);
-  if (folders.length === 0) return done(); // nothing to do!
+  if (folders.length === 0) return done();
 
   var tasks = folders.map(function(folder) {
     business.types.map(function(type) {
@@ -27,15 +25,18 @@ gulp.task("scripts", function() {
         .src([
           scriptsPath + folder + "/business-data/" + type + "-data.json",
           scriptsPath + folder + "/views/*.json",
-          scriptsPath + folder + "/base-data.json",
-          //"!src/data/temp/**"
+          scriptsPath + folder + "/base-data.json"
         ])
-        .pipe(concat(folder + ".json",  { newLine: "," }))
-        .pipe(gulp.dest(scriptsPath + "temp/" + type + "/"));
+        .pipe(concat(folder + ".json", { newLine: "," }))
+        .pipe(gulp.dest("../spos-plugin/simple-idea-couchdb-integration/json/" + type + "/"))
+        
     });
   });
 });
 
+
+
+
 gulp.task("default", function() {
-  gulp.run("scripts");
+    gulp.run("scripts");
 });
