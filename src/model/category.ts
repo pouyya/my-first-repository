@@ -8,6 +8,8 @@ export class Category extends DBBasedEntity implements OrderableInterface {
   public icon: any;
   public order: number;
   public color: string;
+  public image: string;
+  public thumbnail: string;
 
   constructor() {
     super();

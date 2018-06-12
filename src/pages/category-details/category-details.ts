@@ -18,6 +18,8 @@ export class CategoryDetails {
   public action = 'Add';
   public icons: any;
   private color: Subject<string> = new Subject<string>();
+  private image: Subject<string> = new Subject<string>();
+  private thumbnail: Subject<string> = new Subject<string>();
   public selectedIcon: string = "";
 
   constructor(public navCtrl: NavController,
@@ -48,6 +50,14 @@ export class CategoryDetails {
     this.color.asObservable().subscribe( color => {
       this.categoryItem.color = color;
     });
+    this.image.asObservable().subscribe( image => {
+          this.categoryItem.image = image;
+    });
+    this.thumbnail.asObservable().subscribe( thumbnail => {
+        this.categoryItem.thumbnail = thumbnail;
+    });
+    this.image.next(this.categoryItem.image);
+    this.thumbnail.next(this.categoryItem.thumbnail);
     this.color.next(this.categoryItem.color);
   }
 

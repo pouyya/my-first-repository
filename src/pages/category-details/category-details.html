@@ -33,5 +33,10 @@
         <span *ngIf="selectedIcon">&nbsp;{{ categoryItem.icon.name }}</span>
       </ion-item>
     </ion-list>
+    <div class="insert-image">
+      <p>
+        <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
+      </p>
+    </div>
   </form>
 </ion-content>
