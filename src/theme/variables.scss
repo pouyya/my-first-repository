@@ -29,11 +29,10 @@ $colors: (
   danger:     #f53d3d,
   light:      #f4f4f4,
   warning:    yellow,
-  dark:       #34383C,
+  dark:       #343B48,
   white:    #ffffff,
   black:    #000000,
-  selected: #3DBFD9,  
-  separator: #B7BDC0
+  selected: #495361
 );
 
 $colors-md: (
@@ -41,12 +40,11 @@ $colors-md: (
   secondary:  #DCDCDC,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #34383C,
+  dark:       #343B48,
   white:    #ffffff,
   warning:    yellow,
   black:    #000000,
-  selected: #3DBFD9,
-  separator: #B7BDC0
+  selected: #495361
 );
 
 $font-family-base: "Roboto", "LatoWeb", "Helvetica Neue", sans-serif !default;
@@ -73,6 +71,9 @@ $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
 
 $menu-width: 180px;
+$menu-item-color: #B8B8B8;
+$menu-item-selected-color: color($colors, white);
+
 $category: (active: #FFFFFF);
 
 $text-input-highlight-color-valid: #DCDCDC;
@@ -105,7 +106,6 @@ $text-input-highlight-color-valid: #DCDCDC;
 // default are overridden.
 
 @import "ionic.theme.default";
-
 
 // Ionicons
 // --------------------------------------------------

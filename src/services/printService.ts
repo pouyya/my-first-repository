@@ -18,6 +18,7 @@ import _ from 'lodash';
 import { DeviceType } from "../model/store";
 import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
 import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
+import { EscPrinterProvider, PrinterWidth } from '../provider/print/escPrinterProvider';
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -103,16 +104,18 @@ export class PrintService {
       }
     }
 
-    var provider = new EndOfDayProvider(context);
-
-    provider
-      .setHeader()
-      .setBody()
-      .setFooter()
-      .cutPaper();
-
     const promises = [];
     receiptPrinters.forEach(receiptPrinter => {
+
+      var printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+      var provider = new EndOfDayProvider(context, printerProvider);
+
+      provider
+        .setHeader()
+        .setBody()
+        .setFooter()
+        .cutPaper();
+
       promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
         .write(provider.getResult()));
     });
@@ -178,7 +181,9 @@ export class PrintService {
         receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
         receiptProviderContext.footerMessage = currentAccountsetting.receiptFooterMessage;
 
-        var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService)
+        var printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+
+        var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
           .setHeader()
           .setBody()
           .setFooter()
@@ -236,7 +241,9 @@ export class PrintService {
       productionLinePrinterProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
       productionLinePrinterProviderContext.footerMessage = currentAccountsettings.receiptFooterMessage;
 
-      var productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, this.translateService)
+      var printerProvider = new EscPrinterProvider(printerSale.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+
+      var productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, this.translateService, printerProvider)
         .setHeader()
         .setBody()
         .setFooter()
@@ -260,7 +267,7 @@ export class PrintService {
       const promises = [];
       receiptPrinters.forEach(receiptPrinter => {
         promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
-          .write(new ReceiptProvider(null, this.translateService).openCashDrawer().getResult()));
+          .write(new ReceiptProvider(null, this.translateService, receiptPrinter.printer.characterPerLine ? receiptPrinter.printer.characterPerLine : 48).openCashDrawer().getResult()));
       });
       await Promise.all(promises);
     }

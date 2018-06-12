@@ -1,4 +1,4 @@
-import { EscPrinterProvider } from "./escPrinterProvider";
+import { EscPrinterProvider, PrinterWidth } from "./escPrinterProvider";
 import { Parser } from "htmlparser2";
 import { PrintTable, PrintColumn, ColumnAlign } from "./printTable";
 import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
@@ -47,7 +47,7 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "barcode") {
                     isBarcode = true;
                 } else if (tagName == "hr") {
-                    this.printer.text("-".repeat(48));
+                    this.printer.text("-".repeat(this.printer.printerWidth == PrinterWidth.Narrow ? 42 : 48));
                 } else if (tagName == "cut") {
                     this.printer.cut();
                 } else if (tagName == "pulse") {

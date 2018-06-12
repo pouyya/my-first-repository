@@ -1,4 +1,4 @@
-import { EscPrinterProvider } from "../escPrinterProvider";
+import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ReceiptProviderContext } from "./receiptProviderContext";
 import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
@@ -6,13 +6,12 @@ import { TranslateService } from "@ngx-translate/core";
 
 export class ReceiptProvider {
 
-    printer: EscPrinterProvider;
     htmlPrinterProvider: HtmlPrinterProvider;
 
     constructor(
         public receiptProviderContext: ReceiptProviderContext,
-        private translateService: TranslateService) {
-        this.printer = new EscPrinterProvider();
+        private translateService: TranslateService,
+        private printer: EscPrinterProvider) {
         this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
@@ -23,7 +22,7 @@ export class ReceiptProvider {
 Ph: ${this.receiptProviderContext.phoneNumber}
 ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext.taxFileNumber}
         </center>
-        <table cols="left-24,right-24">
+        <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "24" : "21"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "24" : "21"}">
             <tr>
                 <td>TAX INVOICE</td>
                 <td>${new Date(this.receiptProviderContext.sale.completedAt).toLocaleString()}</td>
@@ -40,7 +39,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
     setBody(): ReceiptProvider {
         var basketItems = "";
         if (this.receiptProviderContext.sale.items) {
-            basketItems += '<table cols="left-4,left-34,right-10">';
+            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "4" : "3"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "34" : "30"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">`;
 
             for (let basketItem of this.receiptProviderContext.sale.items) {
                 basketItems += `<tr>
@@ -57,7 +56,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
         }
 
         var bodyHtml = `${basketItems}
-            <table cols="left-10,right-38">
+            <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"}">
                 <tr>
                     <td>Tax</td>
                     <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.tax)}</td>
@@ -68,7 +67,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
             </tr>                
             </table>                    
             <h3>
-            <table cols="left-5,right-19">
+            <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "5" : "4"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "19" : "16"}">
                 <tr>
                     <td>TOTAL</td>
                     <td>${TypeHelper.toCurrency(this.receiptProviderContext.sale.taxTotal)}</td>
@@ -107,7 +106,7 @@ ${this.receiptProviderContext.footerMessage}
 
         return this;
     }
-    
+
     openCashDrawer(): ReceiptProvider {
 
         this.htmlPrinterProvider.parse('<pulse>');

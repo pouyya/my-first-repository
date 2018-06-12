@@ -1,15 +1,15 @@
-import { EscPrinterProvider } from "../escPrinterProvider";
+import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { EndOfDayProviderContext } from "./endOfDayProviderContext";
 import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
 
 export class EndOfDayProvider {
 
-    printer: EscPrinterProvider;
     htmlPrinterProvider: HtmlPrinterProvider;
 
-    constructor(public endOfDayProviderContext: EndOfDayProviderContext) {
-        this.printer = new EscPrinterProvider();
+    constructor(
+        public endOfDayProviderContext: EndOfDayProviderContext,
+        private printer: EscPrinterProvider) {
         this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
@@ -50,7 +50,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
                 <br>
                 <hr>
                 <br>  
-                <table cols="left-15,right-11,right-11,right-11">
+                <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "15" : "12"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "11" : "10"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "11" : "10"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "11" : "10"}">
                     <tr>
                         <td>Payment type</td>
                         <td>Expected</td>
@@ -72,7 +72,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
                 </table>                
                 <hr>
                 <br>
-                <table cols="left-15,right-11,right-11,right-11">                
+                <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "15" : "12"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "11" : "10"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "11" : "10"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "11" : "10"}">
                     <tr>
                         <td>Total Counts</h2></td>
                         <td>${TypeHelper.toCurrency(this.endOfDayProviderContext.totalCounted + this.endOfDayProviderContext.totalDifference)}</td>
@@ -94,7 +94,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
                 <br>
                 <hr>
                 <br>          
-                <table cols="left-38,right-10">
+                <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">
                     <tr>
                         <td>Open float</td>
                         <td>${TypeHelper.toCurrency(this.endOfDayProviderContext.openFloat)}</td>
@@ -112,7 +112,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
                 <hr>
                 <br>                
                 
-                <table cols="left-38,right-10">
+                <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">
                     <tr>
                         <td>Total Cash Movements</td>
                         <td>${TypeHelper.toCurrency(this.endOfDayProviderContext.openFloat + this.endOfDayProviderContext.cashIn + this.endOfDayProviderContext.cashOut)}</td>
@@ -135,7 +135,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
                         <br>
                         <hr>
                         <br>            
-                        <table cols="left-4,left-34,right-10">`;
+                        <table cols="left-4,left-${this.printer.printerWidth == PrinterWidth.Wide ? "34" : "30"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "8"}">`;
             for (var itemkey in this.endOfDayProviderContext.dayItems) {
                 var dayItem = this.endOfDayProviderContext.dayItems[itemkey];
                 if (dayItem) {
@@ -151,7 +151,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
             bodyHtml += `<br>
             <hr>
             <br>
-            <table cols="left-38,right-10">
+            <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">
                 <tr>
                     <td>Total Sales per Item</td>
                     <td>${TypeHelper.toCurrency(sumOfDay)}</td>

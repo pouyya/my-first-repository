@@ -42,9 +42,8 @@
   background-color: color($colors, dark);
 
   .menu-item {
-    border-bottom: 2px solid color($colors, separator) !important;
     background-color: color($colors, dark) !important;
-    color: $toolbar-md-title-text-color;
+    color: $menu-item-color;
 
     .item-inner{
       border: 0 !important;
@@ -52,7 +51,8 @@
   }
 
   .current {
-    background-color: color($colors, selected) !important;    
+    background-color: color($colors, selected) !important;
+    color: $menu-item-selected-color;
   }
 }
 ion-title.ion-title-center {
