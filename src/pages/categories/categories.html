@@ -29,7 +29,8 @@
     <ion-item-sliding class="sliding" cancelable=true>
       <ion-item *ngFor="let column of displayColumns;" (click)="showDetail(category)">
         <h2 class="item-title" item-start>{{category[column.variableName]}}</h2>
-        <h2 item-end>{{category.associated}}</h2>
+        <h2 *ngIf="category.associated != null" item-end>{{category.associated}}</h2>
+        <ion-spinner *ngIf="category.associated == null" item-end name="dots"></ion-spinner>
       </ion-item>
       <ion-item-options>
         <button ion-button color='danger' (click)="remove(category, idx)" icon=left>
