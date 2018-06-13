@@ -29,12 +29,12 @@ sales {
       }
     }
     .activeCategory {
+      button {
       color: color($colors, dark);
-      background-color: color($colors, selected);
-      border-bottom: solid lightgray 2px;
-      border-top: solid lightgray 2px;
-      .category-icon {
-        color: color($colors, dark);
+      background-color: $sales-category-selected-background-color;
+        .category-icon {
+          color: color($colors, dark);
+        }
       }
     }
   }

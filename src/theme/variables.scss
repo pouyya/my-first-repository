@@ -57,7 +57,6 @@ $list-background-color: #FFFFFF;
 $list-background-color-border: #a9a9a9;
 $list-md-border-color:#FFFFFF;
 $staff-group-border-color: #C1C1C1;
-$sales-category-tile-btn-color: #585858;
 $toolbar-md-text-color: #CBCFD2;
 $button-background-color: #3A4953;
 $tile-background-color: #FFFFFF;
@@ -77,6 +76,9 @@ $menu-item-selected-color: color($colors, white);
 $category: (active: #FFFFFF);
 
 $text-input-highlight-color-valid: #DCDCDC;
+
+$sales-category-tile-btn-color: #585858;
+$sales-category-selected-background-color: #BCBCBC;
   // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
