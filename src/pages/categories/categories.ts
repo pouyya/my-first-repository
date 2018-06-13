@@ -57,14 +57,18 @@ export class Categories extends SearchableListing<Category> {
     this.navCtrl.push(CategoryDetails, { category: category });
   }
 
+  private async fetchAssociatedItems(categories){
+      let piItems = await this.categoryService.getPurchasableItems();
+      categories.forEach((category, index, array) => {
+          let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id);
+          array[index].associated = items.length;
+      });
+  }
+
   public async fetchMore(infiniteScroll?: any) {
     let categories: any = await this.loadData();
     if (categories.length > 0) {
-      let piItems = await this.categoryService.getPurchasableItems();
-      categories.forEach((category, index, array) => {
-        let items = _.filter(piItems, piItem => piItem.categoryIDs == category._id)
-        array[index].associated = items.length;
-      });
+        this.fetchAssociatedItems(categories);
     }
     this.offset += categories ? categories.length : 0;
     this.zone.run(() => {

@@ -69,8 +69,6 @@ export class Products extends SearchableListing<Product>{
         return initialObj;
       }, {});
 
-      this.priceBook = await this.priceBookService.getDefault();
-      this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
       this.options = {
         sort: [
           { order: SortOptions.ASC }
@@ -95,6 +93,22 @@ export class Products extends SearchableListing<Product>{
     this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null });
   }
 
+  private async getStockValues(products){
+    this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
+    products.forEach((product) => {
+      var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
+      product["stockInHand"] = stockValue ? stockValue.value : 0;
+    });
+  }
+
+  private async getPriceBook(products){
+    this.priceBook = await this.priceBookService.getDefault();
+    products.forEach((product) => {
+      let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
+      product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
+      product["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
+    });
+  }
   public async remove(product: ProductsList, index) {
     const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this product!");
     if(!deleteItem){
@@ -117,27 +131,31 @@ export class Products extends SearchableListing<Product>{
 
   public async fetchMore(infiniteScroll?: any) {
     let products: ProductsList[] = <ProductsList[]>await this.loadData();
-    products.forEach((product) => {
-      var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
-      product["stockInHand"] = stockValue ? stockValue.value : 0;
-
-      let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
-      product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
-      product["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
-    });
-
     this.offset += products ? products.length : 0;
 
     this.zone.run(() => {
       this.items = this.items.concat(products);
       infiniteScroll && infiniteScroll.complete();
     });
-  }
 
-  public async searchByText(filterItem: Item, value) {
-    this.priceBook = await this.priceBookService.getDefault();
-    this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
-    await super.searchByText(filterItem, value);
+    if(this.stockValues){
+        products.forEach((product) => {
+            const stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
+            product["stockInHand"] = stockValue ? stockValue.value : 0;
+        });
+    }else{
+        this.getStockValues(products);
+    }
+
+    if(this.priceBook){
+        products.forEach((product) => {
+            const priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
+            product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
+            product["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
+        });
+    }else{
+        this.getPriceBook(products);
+    }
   }
 
   private onImportListener(){
