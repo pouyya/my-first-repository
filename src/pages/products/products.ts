@@ -158,12 +158,6 @@ export class Products extends SearchableListing<Product>{
     }
   }
 
-  public async searchByText(filterItem: Item, value) {
-    this.priceBook = await this.priceBookService.getDefault();
-    this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
-    await super.searchByText(filterItem, value);
-  }
-
   private onImportListener(){
     this.importedProducts.asObservable().subscribe( async importedProducts => {
       if(!importedProducts.length){
