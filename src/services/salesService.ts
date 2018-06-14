@@ -181,8 +181,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 			_id: sort || SortOptions.DESC
 		}];
 
-		query.limit = limit;
-		query.skip = skip;
+		limit && ( query.limit = limit );
+		skip && ( query.skip = skip );
 
 		return await super.findBy(query);
 	}

@@ -170,6 +170,7 @@ import {FileTransfer} from "@ionic-native/file-transfer";
 import {Camera} from "@ionic-native/camera";
 import {SelectLocationModal} from "../components/image-picker/modal/select-color/select-location";
 import { DeleteAccountService } from './../services/deleteAccountService';
+import {DateDurationPickerModule} from "../components/date-duration-picker/date-duration-picker.module";
 
 @NgModule({
   declarations: [
@@ -287,6 +288,7 @@ import { DeleteAccountService } from './../services/deleteAccountService';
     NetworkMonitorModule,
     ColorPickerModule,
     ImagePickerModule,
+    DateDurationPickerModule,
     ImportExportModule,
     TileItemsModule,
     BasketModule,
