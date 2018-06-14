@@ -45,7 +45,11 @@
       <span *ngIf="selectedIcon"><sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
     </ion-item>
   </ion-list>
-
+  <div class="insert-image">
+    <p>
+      <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
+    </p>
+  </div>
   <!-- Default Price Book  -->
   <ion-grid>
     <ion-row>

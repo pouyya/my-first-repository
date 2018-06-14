@@ -24,7 +24,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
-import {Utilities} from "../../utility";
+import { Utilities } from "../../utility";
 
 interface InteractableStoreStock {
 	storeId: string,
@@ -76,7 +76,9 @@ export class ProductDetails {
 	};
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
-  	private color: Subject<string> = new Subject<string>();
+	private color: Subject<string> = new Subject<string>();
+	private image: Subject<string> = new Subject<string>();
+	private thumbnail: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -123,13 +125,21 @@ export class ProductDetails {
 		}
 
 
-    this.color.asObservable().subscribe( color => {
-      this.productItem.color = color;
-    });
-    this.color.next(this.productItem.color);
+		this.color.asObservable().subscribe(color => {
+			this.productItem.color = color;
+		});
+		this.color.next(this.productItem.color);
 
+		this.image.asObservable().subscribe(image => {
+			this.productItem.image = image;
+		});
+		this.thumbnail.asObservable().subscribe(thumbnail => {
+			this.productItem.thumbnail = thumbnail;
+		});
+		this.image.next(this.productItem.image);
+		this.thumbnail.next(this.productItem.thumbnail);
 
-    let promises: Array<Promise<any>> = [
+		let promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
 			new Promise(async (_resolve, _reject) => {
 				this.salesTaxService.get(_user.settings.defaultTax).then((salesTax: any) => {
@@ -236,20 +246,20 @@ export class ProductDetails {
 		});
 	}
 
-	private async getAllStoreStockHistory(){
-		try{
-            const allStocks = await this.stockHistoryService.getByProductId(
-                this.productItem._id
-            );
-            this.stockHistory = allStocks.reduce((obj, data) => {
-                !obj[data.storeId] && ( obj[data.storeId] = [] );
-                obj[data.storeId].push(data);
-                return obj;
-            }, {});
-		}catch (ex){
+	private async getAllStoreStockHistory() {
+		try {
+			const allStocks = await this.stockHistoryService.getByProductId(
+				this.productItem._id
+			);
+			this.stockHistory = allStocks.reduce((obj, data) => {
+				!obj[data.storeId] && (obj[data.storeId] = []);
+				obj[data.storeId].push(data);
+				return obj;
+			}, {});
+		} catch (ex) {
 
 		} finally {
-            this.cdr.reattach();
+			this.cdr.reattach();
 		}
 	}
 	public selectIcon() {
@@ -378,10 +388,10 @@ export class ProductDetails {
 
 	public async delete() {
 		// delete associations
-        const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this product!");
-        if(!deleteItem){
-            return;
-        }
+		const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this product!");
+		if (!deleteItem) {
+			return;
+		}
 		let deleteAssocs: any[] = [
 			async () => {
 				// delete pricebook entries

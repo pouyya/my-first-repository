@@ -79,6 +79,8 @@ import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAn
 import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
 import { ProductsSelector } from '../pages/order-details/modals/products-selector/products-selector';
 import { Closures } from './../pages/closures/closures';
+import { DeleteAccount } from '../pages/delete-account/delete-account';
+
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -95,6 +97,7 @@ import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-sc
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 import { ColorPickerModule } from "../components/color-picker/color-picker.module";
+import { ImagePickerModule } from "../components/image-picker/image-picker.module";
 import { SelectColorModal } from "../components/color-picker/modal/select-color/select-color";
 import { ImportExportModule } from "../components/import-export/import-export";
 
@@ -164,7 +167,9 @@ import {SplitPaymentPage} from "../pages/split-payment/split-payment";
 import {File} from "@ionic-native/file";
 import {PapaParseModule} from "ngx-papaparse";
 import {FileTransfer} from "@ionic-native/file-transfer";
-
+import {Camera} from "@ionic-native/camera";
+import {SelectLocationModal} from "../components/image-picker/modal/select-color/select-location";
+import { DeleteAccountService } from './../services/deleteAccountService';
 
 @NgModule({
   declarations: [
@@ -219,6 +224,7 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     CustomerDetails,
     CreateCustomerModal,
     SelectColorModal,
+    SelectLocationModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -235,7 +241,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     CreateSupplier,
     ProductsSelector,
     Closures,
-    TranslatorPipe
+    TranslatorPipe,
+    DeleteAccount
   ],
   imports: [
     FormsModule,
@@ -279,6 +286,7 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     SharedModule,
     NetworkMonitorModule,
     ColorPickerModule,
+    ImagePickerModule,
     ImportExportModule,
     TileItemsModule,
     BasketModule,
@@ -347,6 +355,7 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     CustomerDetails,
     CreateCustomerModal,
     SelectColorModal,
+    SelectLocationModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
@@ -362,7 +371,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     AddSupplierAndStore,
     CreateSupplier,
     ProductsSelector,
-    Closures
+    Closures,
+    DeleteAccount
   ],
   providers: [
     IonicErrorHandler,
@@ -375,6 +385,7 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     Insomnia,
     InAppBrowser,
     File,
+    Camera,
     FileTransfer,
     DatePipe,
     SharedService,
@@ -423,7 +434,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
     PaymentService,
     AuditService,
     EmailService,
-    SyncContext
+    SyncContext,
+    DeleteAccountService
   ]
 })
 export class AppModule {

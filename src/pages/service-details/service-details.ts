@@ -54,6 +54,8 @@ export class ServiceDetails {
 	};
 	private _defaultPriceBook: PriceBook;
 	private color: Subject<string> = new Subject<string>();
+    private image: Subject<string> = new Subject<string>();
+    private thumbnail: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,
@@ -95,7 +97,15 @@ export class ServiceDetails {
 		this.color.asObservable().subscribe(color => {
 			this.serviceItem.color = color;
 		});
-		this.color.next(this.serviceItem.color);
+        this.image.asObservable().subscribe( image => {
+            this.serviceItem.image = image;
+        });
+        this.thumbnail.asObservable().subscribe( thumbnail => {
+            this.serviceItem.thumbnail = thumbnail;
+        });
+        this.color.next(this.serviceItem.color);
+        this.image.next(this.serviceItem.image);
+        this.thumbnail.next(this.serviceItem.thumbnail);
 
 		var promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
