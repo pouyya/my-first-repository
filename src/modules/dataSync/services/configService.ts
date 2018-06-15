@@ -109,21 +109,6 @@ export class ConfigService {
         return ENV.security.serverUrl + "/wp-json/wp/v2/users";
     }
 
-    static securityClientId(): string {
-        return ENV.security.clientId;
-    }
-    static securityClientSecret(): string {
-        return ENV.security.clientSecret;
-    }
-
-    static securityGrantType(): string {
-        return ENV.security.grantType;
-    }
-
-    static securityScope(): string {
-        return ENV.security.scope;
-    }
-    
     static ionicDeployAppId(): string {
         return ENV.ionicDeploy.appId;
     }
