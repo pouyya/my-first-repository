@@ -8,6 +8,7 @@ import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
 import { BoostraperModule } from '../../../bootstraperModule';
 import { PageModule } from '../../../../metadata/pageModule';
+import { UserService } from '../../services/userService';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { ENV } from '@app/env';
 
@@ -27,7 +28,8 @@ export class LoginPage {
     private authService: AuthService,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
-    private iab: InAppBrowser) { }
+    private iab: InAppBrowser,
+    private userService: UserService) { }
 
   public async login(): Promise<any> {
 
@@ -53,42 +55,44 @@ export class LoginPage {
   }
 
   public register(): void {
-    const browser = this.iab.create(`${ENV.service.baseUrl}/registration-form/`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
+    const browser = this.iab.create(`${ENV.service.baseUrl}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
     var token;
     var tokenInterval;
 
     browser.on('loadstop').subscribe(event => {
       tokenInterval = setInterval(async function () {
-        var tokenElement = await browser.executeScript({ code: "document.getElementsByName('token')" });
-        if (tokenElement && tokenElement[0] && tokenElement[0].value) {
-          token = tokenElement[0].value;
+        var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
+        if (tokenResult && tokenResult[0]) {
+          token = tokenResult[0];
           browser.close();
         }
       }, 100)
     });
 
+    var _this = this;
     browser.on('exit').subscribe(async function () {
       clearInterval(tokenInterval);
 
-      let loader = this.loading.create({
+      let loader = _this.loading.create({
         content: 'Logging In...'
       });
 
       await loader.present();
 
-      this.authService.getUserProfile(token).subscribe(
-        async data => {
-          await this.navigateToDataSync();
-          loader.dismiss();
-        },
-        error => {
-          let toast = this.toastCtrl.create({
-            message: 'Invalid Email/Password!',
-            duration: 3000
-          });
-          toast.present();
-          loader.dismiss();
+      try {
+        await _this.userService.setAccessToken(token)
+        await _this.authService.getUserProfile(token);
+        await _this.navigateToDataSync();
+        loader.dismiss();
+      } catch (error) {
+        let toast = _this.toastCtrl.create({
+          message: 'Invalid Email/Password!',
+          duration: 3000
         });
+        toast.present();
+      } finally {
+        loader.dismiss();
+      }
     });
   }
 

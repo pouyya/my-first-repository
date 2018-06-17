@@ -6,11 +6,7 @@ export const ENV = {
     baseUrl: "https://site.pos.app"
   },
   security: {
-    serverUrl: "https://site.pos.app",
-    clientId: "simplepos",
-    clientSecret: "21B5F798-BE55-42BC-8AA8-0025B903DC3B",
-    grantType: "password",
-    scope: "openid",
+    serverUrl: "https://site.pos.app"
   },
   ionicDeploy: {
     appId: "22d41469",
