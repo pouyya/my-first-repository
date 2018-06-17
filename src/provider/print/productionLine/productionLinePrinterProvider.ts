@@ -1,4 +1,4 @@
-import { EscPrinterProvider } from "../escPrinterProvider";
+import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ProductionLinePrinterProviderContext } from "./productionLinePrinterProviderContext";
 import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
@@ -6,13 +6,12 @@ import { TranslateService } from "@ngx-translate/core";
 
 export class ProductionLinePrinterProvider {
 
-    printer: EscPrinterProvider;
     htmlPrinterProvider: HtmlPrinterProvider;
 
     constructor(
         public productionLinePrinterProviderContext: ProductionLinePrinterProviderContext,
-        private translateService: TranslateService) {
-        this.printer = new EscPrinterProvider();
+        private translateService: TranslateService,
+        private printer: EscPrinterProvider) {
         this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
@@ -23,7 +22,7 @@ export class ProductionLinePrinterProvider {
 Ph: ${this.productionLinePrinterProviderContext.phoneNumber}
 ${this.translateService.instant('TaxFileNumber')}: ${this.productionLinePrinterProviderContext.taxFileNumber}
         </center>
-        <table cols="left-24,right-24">
+        <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "24" : "21"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "24" : "21"}">
             <tr>
                 <td>TAX INVOICE</td>
                 <td>${new Date(this.productionLinePrinterProviderContext.sale.completedAt).toLocaleString()}</td>
@@ -40,7 +39,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.productionLinePrinterP
     setBody(): ProductionLinePrinterProvider {
         var basketItems = "";
         if (this.productionLinePrinterProviderContext.sale.items) {
-            basketItems += '<table cols="left-4,left-34,right-10">';
+            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "4" : "3"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "34" : "30"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">`;
 
             for (let basketItem of this.productionLinePrinterProviderContext.sale.items) {
                 basketItems += `<tr>
@@ -86,7 +85,7 @@ ${this.productionLinePrinterProviderContext.footerMessage}
 
         return this;
     }
-    
+
     openCashDrawer(): ProductionLinePrinterProvider {
 
         this.htmlPrinterProvider.parse('<pulse>');
