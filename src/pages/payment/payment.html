@@ -113,16 +113,16 @@
             </ion-col>
 
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCash()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Cash</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCash()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Cash</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCard()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Credit Card</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCard()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Credit Card</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block disabled>Gift Card</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block disabled>Gift Card</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="secondary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="splitPayment()">Split Payment</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="splitPayment()">Split Payment</button>
             </ion-col>
 
           </ion-row>
@@ -169,7 +169,7 @@
                     <ion-input clearInput placeholder="Enter email..."></ion-input>
                   </ion-col>
                   <ion-col col-md-3>
-                    <button ion-button color="secondary">Email Recipt</button>
+                    <button ion-button color="primary">Email Recipt</button>
                   </ion-col>
                 </ion-row>
               </ion-grid>
@@ -177,7 +177,7 @@
             </ion-col>
 
             <ion-col col-md-12>
-              <button ion-button color="secondary" block large (click)="clearSale()">Done</button>
+              <button ion-button color="primary" block large (click)="clearSale()">Done</button>
             </ion-col>
           </ion-row>
         </ion-grid>

@@ -12,7 +12,6 @@ import { LogOut } from './pages/logout/logout';
 import { ForgotPassword } from './pages/login/modals/forgot-password/forgot-password';
 import { CommonModule } from '@angular/common';
 import { DataBootstrapper } from '../../pages/data-bootstrapper/data-bootstrapper';
-import { RegisterPage } from './pages/register/register';
 
 @NgModule({
 	imports: [CommonModule, IonicPageModule.forChild(DataSync)],
@@ -22,16 +21,14 @@ import { RegisterPage } from './pages/register/register';
 		DataSync, 
 		DataBootstrapper, 
 		LogOut, 
-		ForgotPassword,
-		RegisterPage],
+		ForgotPassword],
 
 	entryComponents: [
 		LoginPage, 
 		DataSync, 
 		DataBootstrapper, 
 		LogOut, 
-		ForgotPassword,
-		RegisterPage]
+		ForgotPassword]
 })
 export class DataSyncModule {
 

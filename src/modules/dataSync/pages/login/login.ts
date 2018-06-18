@@ -3,7 +3,6 @@ import { ModalController, NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { RegisterPage } from '../register/register';
 import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
 import { BoostraperModule } from '../../../bootstraperModule';
@@ -66,7 +65,7 @@ export class LoginPage {
           token = tokenResult[0];
           browser.close();
         }
-      }, 100)
+      }, 2000)
     });
 
     var _this = this;
