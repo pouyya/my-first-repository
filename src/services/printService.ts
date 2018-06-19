@@ -265,8 +265,9 @@ export class PrintService {
     if (receiptPrinters.length) {
       const promises = [];
       receiptPrinters.forEach(receiptPrinter => {
+        const printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
         promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
-          .write(new ReceiptProvider(null, this.translateService, receiptPrinter.printer.characterPerLine ? receiptPrinter.printer.characterPerLine : 48).openCashDrawer().getResult()));
+          .write(new ReceiptProvider(null, this.translateService, printerProvider).openCashDrawer().getResult()));
       });
       await Promise.all(promises);
     }
