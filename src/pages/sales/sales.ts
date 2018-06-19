@@ -105,13 +105,13 @@ export class Sales implements OnDestroy {
         }
       });
 
-      var _this = this;
-      
+      var __this = this;
+
     this._sharedService
       .getSubscribe('updateSale')
       .subscribe((data) => {
         setTimeout(async () => {
-          await _this._basketComponent.initializeSale(data.sale, this.evaluationContext);
+          await __this._basketComponent.initializeSale(data.sale, this.evaluationContext);
         }, 100);
       });
 
