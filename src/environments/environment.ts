@@ -3,10 +3,10 @@ export const ENV = {
   production: true,
   turnOnDeployment: true,
   service: {
-    baseUrl: "https://site-dev.pos.app"
+    baseUrl: "https://site.pos.app"
   },
   security: {
-    serverUrl: "https://site-dev.pos.app"
+    serverUrl: "https://site.pos.app"
   },
   ionicDeploy: {
     appId: "22d41469",
