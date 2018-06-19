@@ -1,5 +1,5 @@
 export const ENV = {
-  name: "Stage",
+  name: "Prod",
   production: true,
   turnOnDeployment: true,
   service: {
