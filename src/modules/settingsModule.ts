@@ -14,7 +14,7 @@ export class SettingsModule  implements ModuleBase {
     { title: 'Sales Tax', icon: 'cash', component: SaleTaxPage, pushNavigation: true },
     { title: 'Group Sales Tax', icon: 'cash', component: GroupSaleTaxPage, pushNavigation: true },
     { title: 'Roles', icon: 'people', component: Roles },
-    { title: 'Delete Account', icon: 'delete', component: DeleteAccount },
+    { title: 'Delete Account', icon: 'trash', component: DeleteAccount },
     { title: 'Back Office', icon: 'build', component: HomePage },
     { title: 'Logout', icon: 'log-out', component: LogOut }
   ];
