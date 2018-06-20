@@ -171,6 +171,7 @@ import {Camera} from "@ionic-native/camera";
 import {SelectLocationModal} from "../components/image-picker/modal/select-color/select-location";
 import { DeleteAccountService } from './../services/deleteAccountService';
 import {DateDurationPickerModule} from "../components/date-duration-picker/date-duration-picker.module";
+import { DeployService } from '../services/deployService';
 
 @NgModule({
   declarations: [
@@ -436,6 +437,7 @@ import {DateDurationPickerModule} from "../components/date-duration-picker/date-
     PaymentService,
     AuditService,
     EmailService,
+    DeployService,
     SyncContext,
     DeleteAccountService
   ]
