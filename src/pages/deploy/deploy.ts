@@ -1,7 +1,8 @@
 import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { IonicProDeployService } from 'ionicpro-deploy';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { DeployService } from '../../services/deployService';
 
 @Component({
   selector: 'page-deploy',
@@ -15,7 +16,8 @@ export class DeployPage {
     private navCtrl: NavController,
     private ionicProDeployService: IonicProDeployService,
     private zone: NgZone,
-    public splashScreen: SplashScreen) {
+    public splashScreen: SplashScreen,
+    private deployService: DeployService) {
   }
 
   async ionViewDidLoad() {
@@ -36,7 +38,7 @@ export class DeployPage {
         }, async error => {
 
           console.error('error in downloading new version');
-          await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
+          await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
         }, () => {
           //download completed 
           this.progressMessage = 'Download new version done.';
@@ -49,7 +51,7 @@ export class DeployPage {
               this.progressMessage = `Extract new version ${extractProgress}%`;
             });
           }, async error => {
-            await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
+            await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
           }, async () => {
             //extract completed
             this.progressMessage = 'Extract new version done.';
@@ -60,10 +62,10 @@ export class DeployPage {
         })
       }
       else {
-        await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
+        await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
       }
     } catch (error) {
-      await this.navCtrl.setRoot(await this.ionicProDeployService.getNextPageAfterDeploy());
+      await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
     }
   }
 }

@@ -1,7 +1,7 @@
 export const ENV = {
   name: "Stage",
   production: true,
-  turnOnDeployment: false,
+  turnOnDeployment: true,
   service: {
     baseUrl: "https://site-stage.pos.app"
   },

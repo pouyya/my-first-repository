@@ -143,7 +143,7 @@ import { StockHistoryService } from './../services/stockHistoryService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
+import { IonicProDeployModule } from 'ionicpro-deploy';
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';

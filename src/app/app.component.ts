@@ -8,7 +8,6 @@ import { ModuleService } from './../services/moduleService';
 import { ModuleBase } from "../modules/moduelBase";
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { UserService } from '../modules/dataSync/services/userService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
@@ -16,6 +15,7 @@ import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
 import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
+import { DeployService } from '../services/deployService';
 
 @Component({
   selector: 'app',
@@ -40,7 +40,7 @@ export class SimplePOSApp implements OnInit {
     private insomnia: Insomnia,
     private toastController: ToastController,
     private platformService: PlatformService,
-    private ionicProDeployService: IonicProDeployService,
+    private deployService: DeployService,
     private userService: UserService,
     private printService: PrintService,
     private securityService: SecurityService,
@@ -70,8 +70,8 @@ export class SimplePOSApp implements OnInit {
         this.currentPage = viewController.instance;
       }
     })
-    var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
-    this.rootPage = this.currentPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
+    var eligibleForDeploy = await this.deployService.eligibleForDeploy();
+    this.rootPage = this.currentPage = eligibleForDeploy ? DeployPage : await this.deployService.getNextPageAfterDeploy();
   }
 
   initializeApp() {

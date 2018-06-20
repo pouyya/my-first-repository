@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
-import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
+import { IonicDeployInfo } from 'ionicpro-deploy';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
