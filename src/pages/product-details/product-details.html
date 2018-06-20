@@ -77,11 +77,7 @@
         </ion-input>
       </ion-item>
     </ion-list>
-    <div class="insert-image">
-      <p>
-        <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
-      </p>
-    </div>
+
     <ion-list inset>
       <ion-item>
         <ion-label class="item-name">Employeer</ion-label>
@@ -159,7 +155,17 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="insert-image">
+          <p>
+            <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
+          </p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-grid>
     <ion-row>
       <ion-col col-md-11 class="pull-left">
