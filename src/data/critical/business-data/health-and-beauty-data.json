@@ -1,0 +1,12 @@
+{
+    "_id": "2017-07-19T21:43:48.073Z",
+    "name": "Default PriceBook",
+    "entityTypeName": "PriceBook",
+    "entityTypeNames": [
+        "PriceBook",
+        "DBBasedEntity"
+    ],
+    "priority": 999999999,
+    "criteria": [],
+    "purchasableItems": []
+}
