@@ -1,0 +1,2001 @@
+{
+ "_id": "2018-01-02T06:01:49.9750000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": 0,
+ "icon": {
+  "name": "icon-barbc-scissors-1",
+  "type": "svg",
+  "noOfPaths": 13
+ },
+ "name": "Cuts",
+ "associated": 9
+}
+,{
+ "_id": "2018-01-02T07:11:35.4570000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": "1",
+ "icon": {
+  "name": "icon-barbc-razor-2",
+  "type": "svg",
+  "noOfPaths": 9
+ },
+ "name": "Shave"
+}
+,{
+ "_id": "2018-01-02T07:12:04.9960000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": "2",
+ "icon": {
+  "name": "icon-barbc-man",
+  "type": "svg",
+  "noOfPaths": 16
+ },
+ "name": "Bundle",
+ "associated": 9
+}
+,{
+ "_id": "2018-01-02T07:14:06.7050000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": "3",
+ "icon": {
+  "name": "icon-barbc-cream-2",
+  "type": "svg",
+  "noOfPaths": 12
+ },
+ "name": "Wax"
+}
+,{
+ "_id": "2018-01-02T07:15:29.9360000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": "4",
+ "icon": {
+  "name": "icon-barbc-gel",
+  "type": "svg",
+  "noOfPaths": 8
+ },
+ "name": "Gel"
+}
+,{
+ "_id": "2018-01-02T07:18:02.0060000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": "5",
+ "icon": {
+  "name": "icon-barbc-brush",
+  "type": "svg",
+  "noOfPaths": 8
+ },
+ "name": "Facial",
+ "associated": 1
+}
+,{
+ "_id": "2018-01-02T07:18:29.6580000",
+ "entityTypeName": "Category",
+ "entityTypeNames": [
+  "Category",
+  "DBBasedEntity"
+ ],
+ "order": "6",
+ "icon": {
+  "name": "icon-barbc-cream",
+  "type": "svg",
+  "noOfPaths": 10
+ },
+ "name": "Shampoo",
+ "associated": 9
+}
+,
+{
+ "_id": "2018-01-02T23:28:12.6900000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 1,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Fiber",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "inclusivePrice": 32,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-02T23:28:42.9720000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 2,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Forming Cream",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "stockControl": true,
+ "inclusivePrice": 32
+}
+,{
+ "_id": "2018-01-02T23:30:00.3550000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 3,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Defining Paste",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "inclusivePrice": 32,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-02T23:30:49.4490000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 10,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Fiber Trio",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 27.27273
+}
+,{
+ "_id": "2018-01-02T23:31:10.5630000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 11,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Forming Trio",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 27.27273
+}
+,{
+ "_id": "2018-01-03T04:29:47.1370000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 4,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Heavy Hold Pomade",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "inclusivePrice": 32,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:30:33.0440000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 5,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Firm Hold Styling Cream",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 24.54545,
+ "inclusivePrice": 27,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:31:24.1220000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 6,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Boost Powder",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 27.27273,
+ "inclusivePrice": 30,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:32:04.7540000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 7,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Grooming Cream",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "inclusivePrice": 32,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:32:40.1010000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 8,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Molding Clay",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "inclusivePrice": 32,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:33:17.5820000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 9,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Pomade",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 29.09091,
+ "inclusivePrice": 32,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:34:49.2520000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 12,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Defining Trio",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 27.27273
+}
+,{
+ "_id": "2018-01-03T04:36:29.6680000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 13,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Liquid Wax",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 24.54545,
+ "inclusivePrice": 27,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:38:21.3200000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 1,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Firm Hold Gel",
+ "categoryIDs": [
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 24.54545,
+ "inclusivePrice": 27,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:39:00.8480000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 6,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Gel Pack",
+ "categoryIDs": [
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 27.27273,
+ "inclusivePrice": 30,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:40:59.0160000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 2,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Super Glue",
+ "categoryIDs": [
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 24.54545,
+ "inclusivePrice": 27,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:41:34.0990000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": "3",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Spray Gel",
+ "categoryIDs": [
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000"
+}
+,{
+ "_id": "2018-01-03T04:42:12.8730000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 4,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Grooming Spray",
+ "categoryIDs": [
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:43:31.8670000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": "5",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Light Texture Hold",
+ "categoryIDs": [
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000"
+}
+,{
+ "_id": "2018-01-03T04:45:38.9070000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 1,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Precision Shave Gel",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 24.54545,
+ "inclusivePrice": 27,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:48:27.9060000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": "2",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Post Shave Lotion",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000"
+}
+,{
+ "_id": "2018-01-03T04:49:11.2680000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 3,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Beard Oil",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-03T04:49:40.9920000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:54:52.1570000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 4,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Revitlazing",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:55:27.3460000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 5,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "After Shave 100m",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:39.3970000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:56:06.6240000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 6,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Crema Pre shave 100m",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:39.3970000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:57:05.3480000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 7,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Shaving soap bowl",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:39.3970000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T04:57:58.9740000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 8,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Shaving soap Tube",
+ "categoryIDs": [
+  "2018-01-02T07:18:02.0060000"
+ ],
+ "brandId": "2018-01-02T07:19:39.3970000",
+ "retailPrice": 27.27273,
+ "inclusivePrice": 30,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:00:45.7250000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 0,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Daily Shampoo",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:01:16.4960000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 2,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Daily Moistrizing",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:02:02.0730000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 3,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Power Cleanser",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:02:54.8550000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 4,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Conditioner",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:03:47.4390000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 6,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Hair Recovery",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:04:20.7970000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 5,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Anti Dandruff",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:05:21.1380000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": "7",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Gray Shampoo",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000"
+}
+,{
+ "_id": "2018-01-03T05:05:51.8250000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 8,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "3 in 1",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 31.81818,
+ "inclusivePrice": 35,
+ "stockControl": true
+}
+,{
+ "_id": "2018-01-03T05:06:24.4340000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 9,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Blend Shampoo",
+ "categoryIDs": [
+  "2018-01-02T07:18:29.6580000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "retailPrice": 22.72727,
+ "inclusivePrice": 25,
+ "stockControl": true
+}
+,{
+ "_id": "2018-02-23T06:52:15.0080000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 0,
+ "stockControl": true,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Fiber Cream",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000",
+  "2018-01-02T07:15:29.9360000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "supplierId": "2018-02-03T00:41:56.0600000",
+ "retailPrice": 24.54545,
+ "inclusivePrice": 27
+}
+,{
+ "_id": "2018-03-10T03:23:00.5470000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 10,
+ "stockControl": true,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Fiber Super Size",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "supplierId": "2018-02-03T00:41:56.0600000",
+ "retailPrice": 36.36364,
+ "inclusivePrice": 40
+}
+,{
+ "_id": "2018-03-10T03:24:23.3980000",
+ "entityTypeName": "Product",
+ "entityTypeNames": [
+  "Product",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "order": 11,
+ "stockControl": true,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "name": "Forming Super Size",
+ "categoryIDs": [
+  "2018-01-02T07:14:06.7050000"
+ ],
+ "brandId": "2018-01-02T07:19:26.7630000",
+ "supplierId": "2018-02-03T00:41:56.0600000",
+ "retailPrice": 36.36364,
+ "inclusivePrice": 40
+}
+,
+{
+ "_id": "2018-01-02T06:02:31.2400000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Mens Cuts",
+ "color": "",
+ "image": "",
+ "order": "1",
+ "icon": {
+  "name": "icon-barbc-scissors",
+  "type": "svg",
+  "noOfPaths": 13
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:22:26.5530000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Crew Cuts",
+ "color": "",
+ "image": "",
+ "order": "2",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:22:43.1750000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Buzz Cuts",
+ "color": "",
+ "image": "",
+ "order": "3",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:23:00.5940000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Boys Cuts",
+ "color": "",
+ "image": "",
+ "order": "4",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:25:16.7920000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Pensioner Cuts",
+ "color": "",
+ "image": "",
+ "order": "5",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:26:18.7580000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Beard Trim",
+ "color": "",
+ "image": "",
+ "order": 6,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000",
+  "2018-01-02T07:11:35.4570000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:29:33.2830000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Fade",
+ "color": "",
+ "image": "",
+ "order": 0,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:30:54.3910000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Wash (shampoo)",
+ "color": "",
+ "image": "",
+ "order": "8",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:31:38.5740000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Ladies Cuts",
+ "color": "",
+ "image": "",
+ "order": "7",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T06:01:49.9750000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:32:11.7310000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Cut & Beard Trim",
+ "color": "",
+ "image": "",
+ "order": 0,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:33:04.9660000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Cut & Line up",
+ "color": "",
+ "image": "",
+ "order": "1",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:33:37.8600000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Cut & Shave",
+ "color": "",
+ "image": "",
+ "order": "2",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:33:59.8170000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Crew & Beard Trim",
+ "color": "",
+ "image": "",
+ "order": "3",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:34:33.5790000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Crew & Line up",
+ "color": "",
+ "image": "",
+ "order": "4",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:35:05.9140000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Crew & Shave",
+ "color": "",
+ "image": "",
+ "order": "5",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:35:34.6320000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Fade & Beard Trim",
+ "color": "",
+ "image": "",
+ "order": "6",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:35:58.7160000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Fade & Line up",
+ "color": "",
+ "image": "",
+ "order": "7",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:36:21.8370000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Fade & Shave",
+ "color": "",
+ "image": "",
+ "order": "8",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:12:04.9960000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:37:03.0550000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Hot T Face S",
+ "color": "",
+ "image": "",
+ "order": 0,
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:11:35.4570000"
+ ]
+}
+,{
+ "_id": "2018-01-02T07:37:39.5990000",
+ "entityTypeName": "Service",
+ "entityTypeNames": [
+  "Service",
+  "PurchasableItem",
+  "DBBasedEntity"
+ ],
+ "name": "Hot T Head S",
+ "color": "",
+ "image": "",
+ "order": "1",
+ "icon": {
+  "name": "icon-barbc-barber-shop-1",
+  "type": "svg",
+  "noOfPaths": 17
+ },
+ "categoryIDs": [
+  "2018-01-02T07:11:35.4570000"
+ ]
+}
+,
+{
+    "_id": "2017-07-19T21:43:48.073Z",
+    "name": "Default PriceBook",
+    "entityTypeName": "PriceBook",
+    "entityTypeNames": [
+      "PriceBook",
+      "DBBasedEntity"
+    ],
+    "priority": 999999999,
+    "criteria": [],
+    "purchasableItems": [
+      {
+        "id": "2018-01-02T06:02:31.2400000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:22:26.5530000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:22:43.1750000",
+        "retailPrice": 20.90909,
+        "inclusivePrice": 23,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:23:00.5940000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:25:16.7920000",
+        "retailPrice": 20.90909,
+        "inclusivePrice": 23,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:26:18.7580000",
+        "retailPrice": 13.63636,
+        "inclusivePrice": 15,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:29:33.2830000",
+        "retailPrice": 27.27273,
+        "inclusivePrice": 30,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:30:54.3910000",
+        "retailPrice": 9.09091,
+        "inclusivePrice": 10,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:31:38.5740000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:32:11.7310000",
+        "retailPrice": 36.36364,
+        "inclusivePrice": 40,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:33:04.9660000",
+        "retailPrice": 40.90909,
+        "inclusivePrice": 45,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:33:37.8600000",
+        "retailPrice": 54.54545,
+        "inclusivePrice": 60,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:33:59.8170000",
+        "retailPrice": 36.36364,
+        "inclusivePrice": 40,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:34:33.5790000",
+        "retailPrice": 40.90909,
+        "inclusivePrice": 45,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:35:05.9140000",
+        "retailPrice": 54.54545,
+        "inclusivePrice": 60,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:35:34.6320000",
+        "retailPrice": 40.90909,
+        "inclusivePrice": 45,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:35:58.7160000",
+        "retailPrice": 45.45455,
+        "inclusivePrice": 50,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:36:21.8370000",
+        "retailPrice": 59.09091,
+        "inclusivePrice": 65,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:37:03.0550000",
+        "retailPrice": 31.81818,
+        "inclusivePrice": 35,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T07:37:39.5990000",
+        "retailPrice": 31.81818,
+        "inclusivePrice": 35,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T23:28:12.6900000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T23:28:42.9720000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T23:30:00.3550000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T23:30:49.4490000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-02T23:31:10.5630000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:29:47.1370000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:30:33.0440000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:31:24.1220000",
+        "retailPrice": 27.27273,
+        "inclusivePrice": 30,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:32:04.7540000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:32:40.1010000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:33:17.5820000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:34:49.2520000",
+        "retailPrice": 29.09091,
+        "inclusivePrice": 32,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:36:29.6680000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:38:21.3200000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:39:00.8480000",
+        "retailPrice": 27.27273,
+        "inclusivePrice": 30,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:40:59.0160000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:41:34.0990000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:42:12.8730000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:43:31.8670000",
+        "retailPrice": 27.27273,
+        "inclusivePrice": 30,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:45:38.9070000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:48:27.9060000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:49:11.2680000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:54:52.1570000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:55:27.3460000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:56:06.6240000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:57:05.3480000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T04:57:58.9740000",
+        "retailPrice": 27.27273,
+        "inclusivePrice": 30,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:00:45.7250000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:01:16.4960000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:02:02.0730000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:02:54.8550000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:03:47.4390000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:04:20.7970000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:05:21.1380000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:05:51.8250000",
+        "retailPrice": 31.81818,
+        "inclusivePrice": 35,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-01-03T05:06:24.4340000",
+        "retailPrice": 22.72727,
+        "inclusivePrice": 25,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "retailPrice": 0,
+        "inclusivePrice": 0,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-02-03T00:44:34.3830000",
+        "retailPrice": 18.18182,
+        "inclusivePrice": 20,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-02-23T06:52:15.0080000",
+        "retailPrice": 24.54545,
+        "inclusivePrice": 27,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "retailPrice": 36.36364,
+        "inclusivePrice": 40,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "retailPrice": 36.36364,
+        "inclusivePrice": 40,
+        "supplyPrice": 0,
+        "markup": null,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-03-10T03:23:00.5470000",
+        "retailPrice": 36.36364,
+        "inclusivePrice": 40,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      },
+      {
+        "id": "2018-03-10T03:24:23.3980000",
+        "retailPrice": 36.36364,
+        "inclusivePrice": 40,
+        "supplyPrice": 0,
+        "markup": 0,
+        "salesTaxId": null,
+        "saleTaxEntity": "SalesTax"
+      }
+    ]
+  }
