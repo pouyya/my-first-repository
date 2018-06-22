@@ -176,6 +176,8 @@ import { Roster } from "../pages/roster/roster";
 import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
 import { CalendarModule } from "angular-calendar";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { AddShiftDirective } from "../directives/shift.directive";
+import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
 
 @NgModule({
   declarations: [
@@ -203,6 +205,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     SplitPaymentPage,
     CashModal,
     CreditCardModal,
+    ShiftModalPage,
     ParkSale,
     AddNotes,
     OpenCloseRegister,
@@ -250,7 +253,8 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     ProductsSelector,
     Closures,
     TranslatorPipe,
-    DeleteAccount
+    DeleteAccount,
+    AddShiftDirective
   ],
   imports: [
     FormsModule,
@@ -340,6 +344,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,
+    ShiftModalPage,
     ParkSale,
     AddNotes,
     OpenCloseRegister,

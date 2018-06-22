@@ -11,9 +11,13 @@
     <ion-grid>
       <ion-row class="first-row">
         <ion-col class="col1">
-          <ion-select placeholder="Stores" interface="popover" [(ngModel)]="selectedStore">
-            <ion-option *ngFor="let store of stores" [value]="store">{{store['name']}}</ion-option>
-          </ion-select>
+          <div class="drop-container">
+            <div class="select-container">
+              <ion-select placeholder="Stores" interface="popover" [(ngModel)]="selectedStore" (ngModelChange)="onStoreChange()">
+                <ion-option *ngFor="let store of stores" [value]="store">{{store['name']}}</ion-option>
+              </ion-select>
+            </div>
+          </div>
         </ion-col>
         <ion-col class="col2">
           <div class="calendar-container">

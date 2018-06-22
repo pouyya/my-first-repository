@@ -1,4 +1,4 @@
-// Angular Library Imports
+ // Angular Library Imports
 import { Component, ChangeDetectionStrategy, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { CalendarEvent, CalendarEventTimesChangedEvent } from 'angular-calendar';
 import { WeekDay } from 'calendar-utils';
@@ -19,6 +19,7 @@ import { PageModule } from "../../metadata/pageModule";
 import { Store } from "../../model/store";
 import { Employee } from "../../model/employee";
 import { EmployeeService } from "../../services/employeeService";
+ import {ShiftModalPage} from "./modals/shift-modal/shift-modal";
 
 const equals = (one: NgbDateStruct, two: NgbDateStruct) =>
   one && two && two.year === one.year && two.month === one.month && two.day === one.day;
@@ -40,7 +41,7 @@ const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Fri
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: 'roster.html',
 })
-export class Roster implements OnInit, OnDestroy{
+export class Roster implements OnDestroy{
 
   // To hold selected store
   public selectedStore: Store;
@@ -79,8 +80,6 @@ export class Roster implements OnInit, OnDestroy{
   public todayDate: Date = new Date();
   // To hold search string
   public search: any;
-  // To hold original employee list as base
-  public employeeListBase:any = [];
   // To hold moment instance
   public moment: any;
   
@@ -111,7 +110,7 @@ export class Roster implements OnInit, OnDestroy{
    * Open Shift Modal
    */
   public openShiftModal(shiftData: any, mode: string) {
-    let shiftModal= this.modalCtrl.create('ShiftModalPage', {'shiftData': shiftData, 'mode': mode});
+    let shiftModal= this.modalCtrl.create(ShiftModalPage, {employees: this.getStoreEmployees(), 'shiftData': shiftData, 'mode': mode});
     shiftModal.onDidDismiss(
       (data) => {
         if (data !== undefined && data !== null && data !== '' && data['isDeleted'] === undefined && mode === 'Edit') {
@@ -204,12 +203,12 @@ export class Roster implements OnInit, OnDestroy{
     if (event['workingDay'] !== undefined && event['workingDay'].day !== undefined) {
       eventId = event['shift']._id;
       event['workingDay'].day = daysOfWeek[moment(newStart).day()];
-      title = '<label>'+ event['shift']['firstName'] +' '+ event['shift']['lastname'] + '</label>' + '<br><label>' + moment(event['workingDay']['openHours']['open']).format("hh:mm a") + ' - ' + moment(event['workingDay']['openHours']['close']).format("hh:mm a") + ' </label>';
+      title = '<label>'+ event['shift']['firstName'] +' '+ event['shift']['lastName'] + '</label>' + '<br><label>' + moment(event['workingDay']['openHours']['open']).format("hh:mm a") + ' - ' + moment(event['workingDay']['openHours']['close']).format("hh:mm a") + ' </label>';
     }
     if (event['other'] !== undefined && event['other']['workingDay'] !== undefined && event['other']['workingDay'].day !== undefined) {
       eventId = event['other']['shift']._id;
       event['other']['workingDay'].day = daysOfWeek[moment(newStart).day()];
-      title = '<label>'+ event['other']['shift']['firstName'] +' '+ event['other']['shift']['lastname'] + '</label>' + '<br><label>' + moment(event['other']['workingDay']['openHours']['open']).format("hh:mm a") + ' - ' + moment(event['other']['workingDay']['openHours']['close']).format("hh:mm a") + ' </label>';
+      title = '<label>'+ event['other']['shift']['firstName'] +' '+ event['other']['shift']['lastName'] + '</label>' + '<br><label>' + moment(event['other']['workingDay']['openHours']['open']).format("hh:mm a") + ' - ' + moment(event['other']['workingDay']['openHours']['close']).format("hh:mm a") + ' </label>';
     }
     let isFound = false;    
     // update in shift array
@@ -327,29 +326,37 @@ export class Roster implements OnInit, OnDestroy{
    */
   public searchEmployee(): void {
     //
-    this.employees = _.filter(this.employeeListBase, (emp)=> {
-      //
-      let tmp = emp.firstName.toLowerCase() + ' ' + emp.lastName.toLowerCase();
-      return tmp.indexOf(this.search.toLowerCase()) > -1;
+    const employeeStoreList = this.getStoreEmployees();
+    this.storeEmployees = _.filter(employeeStoreList, (emp)=> {
+
+      let searchName = `${emp.firstName || ''} ${emp.lastName || ''}`.toLowerCase();
+      return searchName.indexOf(this.search.toLowerCase()) > -1;
     });
   }
 
   /**
    * Angular component life cycle event for component initialization
    */
+  private getStoreEmployees(){
+    return this.employees.filter(employee => {
+        if(_.find(employee.store, {id: this.selectedStore._id})){
+            return employee;
+        }
+    });
+  }
   public async ionViewDidLoad() {
     // Fetch store list from data
     const [stores, employees] = await Promise.all([this.storeService.getAll(), this.employeeService.getAll()]);
     this.stores = stores;
     this.employees = employees;
-    this.employeeListBase = employees;
     this.selectedStore = this.stores[0];
-    this.storeEmployees = this.employees.filter(employee => {
-      if(_.find(employee.store, {id: this.selectedStore._id})){
-        return employee;
-      }
-    });
+    this.onStoreChange();
     this.refresh.next();
+  }
+
+
+  public onStoreChange(){
+    this.storeEmployees = this.getStoreEmployees();
   }
 
   /**
