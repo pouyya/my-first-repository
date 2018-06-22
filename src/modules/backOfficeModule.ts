@@ -24,7 +24,6 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Inventory', icon: 'cube', component: Categories },
     { title: 'Service', icon: 'bowtie', component: Services },
-    { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Customers', icon: 'contacts', component: Customers },
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },

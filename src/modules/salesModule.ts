@@ -11,6 +11,7 @@ import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
 import { Preferences } from "../pages/preferences/preferences";
+import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
@@ -29,6 +30,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Closures', icon: 'bookmarks', component: Closures },
     { title: 'Preferences', icon: 'settings', component: Preferences },
     { title: 'Back Office', icon: 'build', component: HomePage },
+    { title: 'Human Resource', icon: 'build', component: HumanResourceDashboard },
     { title: 'Logout', icon: 'log-out', component: LogOut }
   ];
 
