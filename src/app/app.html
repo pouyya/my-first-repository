@@ -1,18 +1,19 @@
 <ion-menu [content]="content" side="right" id="rightMenu">
-    <ion-content>
-        <ion-list>
-          <button menuClose ion-item (click)="openCashDrawer(p)" large>
-            <ion-icon name='cash' item-left></ion-icon>
-            <label padding-left item-left>Open Cash Drawer</label>
-          </button>
-          <ion-item *ngIf="syncContext.currentStore">
-            <ion-toggle item-left [(ngModel)]="syncContext.currentStore.printReceiptAtEndOfSale" (ngModelChange)="updatePrintReceiptSetting()" name="printReceiptAtEndOfSale"></ion-toggle>
-            <label padding-left item-left>Print at end of sale</label>
-          </ion-item>
-        </ion-list>
-      </ion-content>
-  </ion-menu>
-  
+  <ion-content>
+    <ion-list>
+      <button menuClose ion-item (click)="openCashDrawer(p)" large>
+        <ion-icon name='cash' item-left></ion-icon>
+        <label padding-left item-left>Open Cash Drawer</label>
+      </button>
+      <ion-item *ngIf="syncContext.currentStore">
+        <ion-toggle item-left [(ngModel)]="syncContext.currentStore.printReceiptAtEndOfSale" (ngModelChange)="updatePrintReceiptSetting()"
+          name="printReceiptAtEndOfSale"></ion-toggle>
+        <label padding-left item-left>Print at end of sale</label>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
 <ion-split-pane [when]=(currentModule.pinTheMenu)>
 
   <ion-menu [content]="content" side="left" id="leftMenu" enable-menu-with-back-views="true" style="width: 180px">
@@ -42,18 +43,16 @@
         <ion-title>Reports</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-header *ngIf="moduleName == 'SalesModule'">
-      <ion-toolbar *ngIf="syncContext.currentPos && syncContext.currentStore">
-        <ion-title>{{syncContext.currentStore.name}}</ion-title>
-        <ion-title>
-          <small>{{syncContext.currentPos.name}}</small>
-        </ion-title>
-        <ion-title>
-          <small>
-            <button ion-button full small color="primary" (click)="switchRegister()">Switch</button>
-          </small>
-        </ion-title>
-      </ion-toolbar>
+    <ion-header *ngIf="moduleName == 'SalesModule' && syncContext.currentPos && syncContext.currentStore" class="header-toolbar">
+      <ion-title>{{syncContext.currentStore.name}}</ion-title>
+      <ion-title>
+        <small>{{syncContext.currentPos.name}}</small>
+      </ion-title>
+      <ion-title>
+        <small>
+          <button ion-button full small color="primary" (click)="switchRegister()">Switch</button>
+        </small>
+      </ion-title>
     </ion-header>
 
     <ion-content class="menu-list">

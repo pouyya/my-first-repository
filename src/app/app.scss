@@ -60,6 +60,10 @@ ion-title.ion-title-center {
   text-Align:center;
 }
 
+.header-toolbar {
+  background-color: color($colors, dark);
+}
+
 ion-icon {
   &[class*="simpleidea-"] {
     mask-size: contain;

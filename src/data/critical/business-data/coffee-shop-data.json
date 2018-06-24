@@ -1,0 +1,913 @@
+{
+    "_id": "2018-06-20T16:27:50.7370000",
+    "entityTypeName": "Category",
+    "entityTypeNames": [
+    "Category",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "name": "Coffee",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    }
+    }
+    ,
+    {
+    "_id": "2018-06-20T16:30:50.5200000",
+    "entityTypeName": "Category",
+    "entityTypeNames": [
+    "Category",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "name": "Food",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    }
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5320000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Almond Milk",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5330000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Cappuccino",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5340000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Cream",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5350000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Decaf",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5360000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Extra Hot",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5370000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Extra shot",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5380000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Flat White",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5390000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Latte",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5400000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Long Black",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5410000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Mocha",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5420000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Soy",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5430000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Sweetener",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5440000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Antipasto Plate",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5450000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "BLT",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5460000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Breaky Roll",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5470000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Fruit Danish",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:30:50.5480000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Granola",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:41:21.6700000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Espresso",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:41:21.6710000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Full Cream",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:41:21.6720000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Piccolo",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:41:21.6730000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Sugar",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:41:21.6740000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Fruit Salad",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:54:29.5640000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Large",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:54:29.5660000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Macchiato",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,{
+    "_id": "2018-06-20T16:54:29.5670000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Skim",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:59:42.4560000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+    ],
+    "name": "Warm",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": true
+    }
+    ,{
+    "_id": "2018-06-20T16:59:42.4570000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Bacon and Egg Panini",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    },
+    {
+    "_id": "2018-06-20T16:59:42.4580000",
+    "entityTypeName": "Product",
+    "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+    ],
+    "order": 0,
+    "stockControl": false,
+    "barcode": null,
+    "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+    ],
+    "name": "Chicken Mayo Panini",
+    "icon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+    },
+    "isModifier": false
+    }
+    ,
+    {
+        "_id": "2017-07-19T21:43:48.073Z",
+        "name": "Default PriceBook",
+        "entityTypeName": "PriceBook",
+        "entityTypeNames": [
+          "PriceBook",
+          "DBBasedEntity"
+        ],
+        "priority": 999999999,
+        "criteria": [],
+        "purchasableItems": [
+          {
+            "id": "2018-06-20T16:59:42.4560000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:59:42.4570000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:59:42.4580000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 1,
+            "markup": 263.636,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5330000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5320000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5340000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5350000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5360000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5370000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5380000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5390000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5400000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5410000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5420000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5430000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5440000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5450000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5460000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5470000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:30:50.5480000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:41:21.6700000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:41:21.6710000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:41:21.6720000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:41:21.6730000",
+            "retailPrice": 1.81818,
+            "inclusivePrice": 2,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:41:21.6740000",
+            "retailPrice": 4.54545,
+            "inclusivePrice": 5,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:54:29.5640000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:54:29.5660000",
+            "retailPrice": 3.63636,
+            "inclusivePrice": 4,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          },
+          {
+            "id": "2018-06-20T16:54:29.5670000",
+            "retailPrice": 2.72727,
+            "inclusivePrice": 3,
+            "supplyPrice": 0,
+            "markup": null,
+            "salesTaxId": null,
+            "saleTaxEntity": "SalesTax"
+          }
+        ]
+      }

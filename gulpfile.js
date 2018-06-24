@@ -45,7 +45,7 @@ gulp.task("build-scripts", function () {
   }
 
   return folders.map(function (folder) {
-
+    if(folder!='views'){
     return business.types.map(function (type) {
 
       if (!fs.existsSync(argv.dest + type)) {
@@ -55,15 +55,17 @@ gulp.task("build-scripts", function () {
       fs.writeFileSync(argv.dest + type + "/" + folder + ".json", "");
       return gulp
         .src([
-          scriptsPath + folder + "/business-data/" + type + "-data.json",
           scriptsPath + folder + "/views/*.json",
+          scriptsPath + folder + "/business-data/" + type + "-data.json",
           scriptsPath + folder + "/base-data.json"
         ])
         .pipe(clip())
         .pipe(concat(folder + ".json", { newLine: "," }))
         .pipe(gulp.dest(argv.dest + type + "/"))
     });
+  }
   });
 });
 
+//gulp --dest ../simplepos-web-plugins/simple-idea-couchdb-integration/json/
 gulp.task("default", ["build-scripts"]);

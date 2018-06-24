@@ -1,6 +1,13 @@
 @import '../../theme/variables';
-.basket {
+
+basket {
   background-color: $basket-background-color;
+  -moz-box-shadow:    2px 2px 10px 3px #ccc;
+  -webkit-box-shadow: 2px 2px 10px 3px #ccc;
+  box-shadow:         2px 2px 10px 3px #ccc;
+}
+
+.basket {
   .name {
     overflow:hidden; 
     white-space:normal; 
@@ -14,8 +21,8 @@
 .action-buttons {
   height: 65px;
   button {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
   }
 }
 
@@ -29,6 +36,10 @@
   width: 100%;
   min-height: 130px;
   position: relative;
+  background-color: color($colors, background-light);
+  .bold {
+    font-weight: bold;
+  }
 }
 
 .pay-button {
@@ -55,28 +66,20 @@
 }
 
 .group-item {
-  border-width: 2px 2px 2px 2px;
-  border-style: solid;
-  border-color: $staff-group-border-color;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 3px;
 }
 
 .group-item-start {
-  border-width: 2px 2px 0px 2px;
-  border-style: solid;
-  border-color: $staff-group-border-color;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .group-item-mid {
-  border-width: 0px 2px 0px 2px;
-  border-style: solid;
-  border-color: $staff-group-border-color;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .group-item-end {
-  border-width: 0px 2px 2px 2px;
-  border-style: solid;
-  border-color: $staff-group-border-color;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 3px;
 }
 
@@ -86,7 +89,7 @@
 
 ion-searchbar.searchbar-md {
   background: inherit;
-  padding: 0px 0px 8px 0px;
+  padding: 0;
 }
 
 ion-list.search-list {
@@ -109,7 +112,7 @@ ion-list.search-list>ion-item {
 }
 
 ion-item.item-md.item-block .item-inner {
-  padding-right: 8px;
+  padding-right: 0px;
   border-bottom: 0px;
 }
 
@@ -120,4 +123,9 @@ ion-item.item-md.item-block .item-inner {
 
 .selected{
   background-color: color($colors, lighte-selected) !important;
+}
+
+.delete-line-item {
+  padding-left: 15px !important;
+  padding-right: 15px !important;
 }

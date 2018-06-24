@@ -9,7 +9,7 @@
   "printerIP": "",
   "printerPort": "9100",
   "street": "",
-  "suburb": "{StoreName}",
+  "suburb": "{CityName}",
   "postCode": "0",
   "state": "{StateName}",
   "country": "{CountryName}",
@@ -65,26 +65,14 @@
   "noOfTaxes": 0
 },
 {
-  "_id": "2017-07-19T21:43:48.073Z",
-  "name": "Default PriceBook",
-  "entityTypeName": "PriceBook",
-  "entityTypeNames": [
-    "PriceBook",
-    "DBBasedEntity"
-  ],
-  "priority": 999999999,
-  "criteria": [],
-  "purchasableItems": []
-},
-{
   "_id": "2017-11-29T05:35:15.263Z",
   "entityTypeName": "AccountSetting",
   "entityTypeNames": [
     "AccountSetting",
     "DBBasedEntity"
   ],
-  "name": "Mens Cuts",
-  "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us or goto medihair.com.au",
+  "name": "{StoreName}",
+  "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us",
   "taxType": true,
   "screenAwake": true,
   "trackEmployeeSales": true,
@@ -95,7 +83,7 @@
     "type": "svg",
     "noOfPaths": 17
   },
-  "timeOffset": "Australia/Sydney",
+  "timeOffset": "{TimeZone}",
   "saleLastNumber": 0,
   "saleNumberPrefix": "PS"
 },

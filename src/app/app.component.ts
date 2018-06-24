@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -44,7 +44,8 @@ export class SimplePOSApp implements OnInit {
     private userService: UserService,
     private printService: PrintService,
     private securityService: SecurityService,
-    private syncContext: SyncContext // used in view
+    private syncContext: SyncContext, // used in view
+    private menuController: MenuController
   ) {
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
@@ -63,11 +64,14 @@ export class SimplePOSApp implements OnInit {
       user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
     }
 
-    this.nav.viewDidEnter.subscribe((viewController: ViewController) => {
+    this.nav.viewDidEnter.subscribe(async (viewController: ViewController) => {
       if (viewController && viewController.instance) {
         this.currentModule = this.moduleService.getCurrentModule(viewController.instance);
         this.moduleName = this.currentModule.constructor.name;
         this.currentPage = viewController.instance;
+        if (!this.currentModule.pinTheMenu) {
+          await this.menuController.close();
+        }
       }
     })
     var eligibleForDeploy = await this.deployService.eligibleForDeploy();
@@ -168,6 +172,4 @@ export class SimplePOSApp implements OnInit {
       position: 'top'
     }).present();
   }
-
-
 }
