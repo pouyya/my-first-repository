@@ -25,7 +25,7 @@ $font-path: "../assets/fonts";
 
 $colors: (
   primary:    #3DBFD9,
-  secondary:  #DCDCDC,
+  secondary:  #F8F8F8,
   danger:     #f53d3d,
   light:      #f4f4f4,
   warning:    yellow,
@@ -33,12 +33,13 @@ $colors: (
   white:    #ffffff,
   black:    #000000,
   selected: #495361,
-  lighte-selected: #9197A0
+  lighte-selected: #ecf7fd,
+  background-light: #d2edf6
 );
 
 $colors-md: (
   primary:    #3DBFD9,
-  secondary:  #DCDCDC,
+  secondary:  #F8F8F8,
   danger:     #f53d3d,
   light:      #f4f4f4,
   dark:       #343B48,
@@ -46,19 +47,19 @@ $colors-md: (
   warning:    yellow,
   black:    #000000,
   selected: #495361,
-  lighte-selected: #9197A0
+  lighte-selected: #ecf7fd,
+  background-light: #d2edf6
 );
 
-$font-family-base: "Roboto", "LatoWeb", "Helvetica Neue", sans-serif !default;
-$font-family-md-base: "Roboto", "LatoWeb", "Helvetica Neue", sans-serif !default;
+$font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+$font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
-$background-color: #DCDCDC;
-$toolbar-background: color($colors, dark);
+$background-color: #F8F8F8;
+$toolbar-background: #2E99DB;
 $toolbar-text-color: #CBCFD2;
 $list-background-color: #FFFFFF;
 $list-background-color-border: #a9a9a9;
 $list-md-border-color:#FFFFFF;
-$staff-group-border-color: #C1C1C1;
 $toolbar-md-text-color: #CBCFD2;
 $button-background-color: #3A4953;
 $tile-background-color: #FFFFFF;
@@ -77,10 +78,10 @@ $menu-item-selected-color: color($colors, white);
 
 $category: (active: #FFFFFF);
 
-$text-input-highlight-color-valid: #DCDCDC;
+$text-input-highlight-color-valid: #F8F8F8;
 
 $sales-category-tile-btn-color: #585858;
-$sales-category-selected-background-color: #BCBCBC;
+$sales-category-selected-background-color: color($colors, lighte-selected);
   // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here

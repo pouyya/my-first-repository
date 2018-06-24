@@ -29,9 +29,13 @@ sales {
       }
     }
     .activeCategory {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+      
       button {
       color: color($colors, dark);
       background-color: $sales-category-selected-background-color;
+      
         .category-icon {
           color: color($colors, dark);
         }

@@ -1,6 +1,6 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
-    <ion-col col-xl-7 col-lg-6 class="customer-container pull-left">
+    <ion-col col-xl-8 col-lg-8 class="customer-container pull-left">
       <ion-item item-content *ngIf="customer" (click)="editCustomer()" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
@@ -23,7 +23,7 @@
         </ion-item>
       </ion-list>
     </ion-col>
-    <ion-col col-xl-5 col-lg-6 class="pull-right">
+    <ion-col col-xl-4 col-lg-4 class="pull-right">
       <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="paper"></ion-icon><span class="change-large" *ngIf="sale && sale.notes">*</span>
       </button>
@@ -65,7 +65,7 @@
                 </span>
               </ion-col>
               <ion-col col-md-1 class="pull-right">
-                <ion-icon click-stop-propagation name="trash" class="clickable" (click)="removeItem($index)"></ion-icon>
+                <ion-icon click-stop-propagation name="trash" class="clickable delete-line-item" (click)="removeItem($index)"></ion-icon>
               </ion-col>
             </ion-row>
             <ion-row [id]="modifierItem.purchsableItemId" class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
@@ -113,7 +113,7 @@
     <ion-col col-md-4 (click) = "externalValue().applyDiscount()">{{ totalExternalValue > 0 ? "Total Surcharge": "Total Discount" }}</ion-col>
     <ion-col col-md-4 offset-md-4 class="pull-right">${{totalExternalValue | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-4 [ngPlural]="sale.items.length">
+    <ion-col col-md-4 [ngPlural]="sale.items.length" class="bold">
       <ng-template ngPluralCase="=0">Total
         <small>(no items)</small>
       </ng-template>
@@ -124,7 +124,7 @@
         <small>({{sale.items.length}} items)</small>
       </ng-template>
     </ion-col>
-    <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-4 offset-md-4 class="pull-right bold">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-2 no-padding>
       <button ion-button small block padding (click)="fastPayment()" class="pay-button" color="warning" [disabled]="disablePaymentBtn">
         <span class="button-inner pull-left">
