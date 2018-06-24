@@ -9,7 +9,7 @@
   "printerIP": "",
   "printerPort": "9100",
   "street": "",
-  "suburb": "{StoreName}",
+  "suburb": "{CityName}",
   "postCode": "0",
   "state": "{StateName}",
   "country": "{CountryName}",
@@ -71,8 +71,8 @@
     "AccountSetting",
     "DBBasedEntity"
   ],
-  "name": "Mens Cuts",
-  "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us or goto medihair.com.au",
+  "name": "{StoreName}",
+  "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us",
   "taxType": true,
   "screenAwake": true,
   "trackEmployeeSales": true,
@@ -83,7 +83,7 @@
     "type": "svg",
     "noOfPaths": 17
   },
-  "timeOffset": "Australia/Sydney",
+  "timeOffset": "{TimeZone}",
   "saleLastNumber": 0,
   "saleNumberPrefix": "PS"
 },
