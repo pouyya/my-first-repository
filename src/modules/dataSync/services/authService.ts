@@ -96,7 +96,12 @@ export class AuthService {
    * @returns {Observable<any>}
    */
   public resetPassword(email: string): Observable<any> {
-    var headers = new Headers({ 'Content-Type': ' application/json', 'Accept': 'application/json, text/plain' });
-    return this.http.post(ConfigService.forgotPasswordEndPoint(), JSON.stringify({ "Email": email }), { headers });
+    var headers = new Headers({
+      'Content-Type': 'application/json',
+      'cache-control': 'no-cache',
+      'Accept': '*/*',
+    });
+    let payLoad = JSON.stringify({ 'email': email });
+    return this.http.post(ConfigService.forgotPasswordEndPoint(), payLoad, { headers });
   }
 }
