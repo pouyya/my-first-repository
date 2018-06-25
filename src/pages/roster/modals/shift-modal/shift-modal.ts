@@ -7,7 +7,6 @@ import { StoreService } from "../../../../services/storeService";
 // Other Imports
 import * as moment from 'moment';
 
-@IonicPage()
 @Component({
   selector: 'page-shift-modal',
   templateUrl: 'shift-modal.html',
