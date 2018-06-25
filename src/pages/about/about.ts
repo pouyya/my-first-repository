@@ -6,7 +6,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
 import { SyncContext } from "../../services/SyncContext";
-import { Pro } from '@ionic/pro';
+import { Pro } from '@simpleidea/ionic-pro';
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)
