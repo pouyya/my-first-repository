@@ -33,7 +33,7 @@ export class DeployPage {
 
           this.zone.run(() => {
 
-            this.progressMessage = `Download New version ${downloadProgress}%!`;
+            this.progressMessage = `Download New version ${downloadProgress}%`;
           });
         }, async error => {
 
