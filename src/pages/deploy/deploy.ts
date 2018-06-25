@@ -27,7 +27,7 @@ export class DeployPage {
 
       if (await this.ionicProDeployService.check() === true) {
 
-        this.progressMessage = 'New version available.';
+        this.progressMessage = 'New version available!';
 
         this.ionicProDeployService.download().subscribe(async downloadProgress => {
 
