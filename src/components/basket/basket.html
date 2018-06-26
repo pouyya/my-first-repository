@@ -64,8 +64,8 @@
                   </small>
                 </span>
               </ion-col>
-              <ion-col col-md-1 class="pull-right">
-                <ion-icon click-stop-propagation name="trash" class="clickable delete-line-item" (click)="removeItem($index)"></ion-icon>
+              <ion-col col-md-1 text-center="" (click)="removeItem($index)">
+                <ion-icon click-stop-propagation name="trash" class="clickable"></ion-icon>
               </ion-col>
             </ion-row>
             <ion-row [id]="modifierItem.purchsableItemId" class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
