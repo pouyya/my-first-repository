@@ -124,7 +124,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 
   public async getStockMovement(storeId: string, fromDate: Date, toDate: Date) {
     return this.http
-      .get(`${ENV.service.baseUrl}/wp-content/plugins/reports/inventory.php?type=json&fromDate=${fromDate.getFullYear()}-${fromDate.getMonth()}-${fromDate.getDate()}&toDate=${toDate.getFullYear()}-${toDate.getMonth()}-${toDate.getDate()}&currentStoreId=${storeId}&Authorization=${await this.userService.getUserToken()}`)
+      .get(`${ENV.service.baseUrl}/wp-content/plugins/simplepos-reports/inventory.php?type=json&fromDate=${fromDate.getFullYear()}-${fromDate.getMonth()}-${fromDate.getDate()}&toDate=${toDate.getFullYear()}-${toDate.getMonth()}-${toDate.getDate()}&currentStoreId=${storeId}&Authorization=${await this.userService.getUserToken()}`)
       .map((response: Response) => <StockMovement[]>response.json());
   }
 }

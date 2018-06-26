@@ -147,7 +147,7 @@ export class BasketComponent {
   }
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
-    if(!this.sale){
+    if (!this.sale) {
       return;
     }
 
@@ -201,10 +201,10 @@ export class BasketComponent {
     !items && this.selectItem(item);
   }
 
-  private scrollIntoView(purchsableItemId: string){
-    setTimeout(() =>{
+  private scrollIntoView(purchsableItemId: string) {
+    setTimeout(() => {
       document.getElementById(purchsableItemId).scrollIntoView();
-    },0);
+    }, 0);
   }
   public removeItem($index) {
     this.sale.items.splice($index, 1);
@@ -269,10 +269,10 @@ export class BasketComponent {
       }
       return initialVal;
     }, 0);
-    
+
     this.totalExternalValue -= this.sale.items.reduce((initialVal, item) => {
-      if(item.discount){
-          initialVal += item.quantity * (item.systemPrice * item.discount / 100);
+      if (item.discount) {
+        initialVal += item.quantity * (item.systemPrice * item.discount / 100);
       }
       return initialVal;
     }, 0)
@@ -465,14 +465,14 @@ export class BasketComponent {
     confirm.present();
   }
 
-  public addNote(){
-      let modal = this.modalCtrl.create(AddNotes, { notes: this.sale.notes || '' });
-      modal.onDidDismiss(notes => {
-          if (notes) {
-              this.sale.notes = notes;
-          }
-      });
-      modal.present();
+  public addNote() {
+    let modal = this.modalCtrl.create(AddNotes, { notes: this.sale.notes || '' });
+    modal.onDidDismiss(notes => {
+      if (notes) {
+        this.sale.notes = notes;
+      }
+    });
+    modal.present();
   }
 
   public cancelSearch($event) {
