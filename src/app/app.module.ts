@@ -178,6 +178,7 @@ import { CalendarModule } from "angular-calendar";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddShiftDirective } from "../directives/shift.directive";
 import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
+import {ShiftService} from "../services/shiftService";
 
 @NgModule({
   declarations: [
@@ -436,6 +437,7 @@ import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
     BrandService,
     StoreService,
     SalesServices,
+    ShiftService,
     ClickStopPropagation,
     KeysPipe,
     GroupByPipe,

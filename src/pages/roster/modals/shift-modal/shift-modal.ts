@@ -6,6 +6,8 @@ import { IonicPage, NavParams, ModalController, ViewController } from 'ionic-ang
 import { StoreService } from "../../../../services/storeService";
 // Other Imports
 import * as moment from 'moment';
+import * as _ from 'lodash';
+import {ShiftStatus} from "../../../../model/shift";
 
 @Component({
   selector: 'page-shift-modal',
@@ -18,9 +20,10 @@ export class ShiftModalPage {
   // To hold mode, New or Edit
   public mode: string;
   // To hold Employee Name
+  public empId: string;
   public empName: string;
   // To hold today's date
-  public todayDate: Date = new Date();
+  public todayDate;
   // note
   public note: string;
   // To hold employee list
@@ -36,56 +39,90 @@ export class ShiftModalPage {
     this.employeeList = this.navParams.get('employees');
     this.mode = this.navParams.get('mode');
     this.shiftData = this.navParams.get('shiftData');
-    this.todayDate = this.shiftData.start;
-    if (this.shiftData.other !== undefined && this.shiftData.other.shift !== undefined && this.shiftData.other.shift._id !== undefined) {
-      setTimeout(() => {
-        this.employeeList.filter(
-          (emp) => {
-            if (this.shiftData.other.shift._id === emp._id) {
-              this.empName = emp;
-            }
-          }
-        );
-      }, 700)
+    this.todayDate = this.navParams.get('start');
+    if(this.mode === "Edit"){
+      this.empId = this.shiftData.employeeId;
     }
-    if (this.shiftData.note !== undefined) {
-      this.note = this.shiftData.note;
-    }
-    //
-    if (this.mode === 'Edit') {
-      this.empName = this.shiftData.other.shift.firstname +' '+ this.shiftData.other.shift.lastname;
-    }
+    // if (this.shiftData.other !== undefined && this.shiftData.other.shift !== undefined && this.shiftData.other.shift._id !== undefined) {
+    //   setTimeout(() => {
+    //     this.employeeList.filter(
+    //       (emp) => {
+    //         if (this.shiftData.other.shift._id === emp._id) {
+    //           this.empName = emp;
+    //         }
+    //       }
+    //     );
+    //   }, 700)
+    // }
+    // if (this.shiftData.note !== undefined) {
+    //   this.note = this.shiftData.note;
+    // }
+    // //
+    // if (this.mode === 'Edit') {
+    //   this.empName = this.shiftData.other.shift.firstName +' '+ this.shiftData.other.shift.lastname;
+    // }
   }
   
   /**
    * To close modal
    */
-  public dismiss(shiftData: any) {
+  public dismiss() {
+    this.viewCtrl.dismiss({status: 'Dismiss'});
+  }
+
+    /**
+     * To close modal
+     */
+  public onClose() {
     // add note
+    if(!this.shiftData.startDate || !this.shiftData.endDate || !this.empId) {
+      return;
+    }
+    this.shiftData['employeeId'] = this.empId;
+    this.shiftData['status'] = ShiftStatus.Draft;
+
+    this.shiftData.startDate = moment(this.shiftData.startDate);
+    this.shiftData.startDate.month(this.todayDate.month());
+    this.shiftData.startDate.date(this.todayDate.date());
+    this.shiftData.startDate.year(this.todayDate.year());
+
+    this.shiftData.endDate = moment(this.shiftData.endDate);
+    this.shiftData.endDate.month(this.todayDate.month());
+    this.shiftData.endDate.date(this.todayDate.date());
+    this.shiftData.endDate.year(this.todayDate.year());
+
+    this.shiftData.startDate = this.shiftData.startDate.toISOString();
+    this.shiftData.endDate = this.shiftData.endDate.toISOString();
+
     if (this.note !== undefined && this.note !== '') {
-      this.shiftData['note'] = this.note;
+        this.shiftData['note'] = this.note;
     }
     // Prepare object for new mode
-    if (this.mode === 'New' && this.shiftData.hasOwnProperty('other') === true && this.shiftData.other.shift === undefined) {
-      this.shiftData.other.shift = this.empName;
-    }
-    this.viewCtrl.dismiss(shiftData);
+    // if (this.mode === 'New' && this.shiftData.hasOwnProperty('other') === true && this.shiftData.other.shift === undefined) {
+    //     this.shiftData.other.shift = this.empName;
+    // }
+
+    this.viewCtrl.dismiss({status: this.mode, empName: this.getEmployeeName(this.empId), shift: this.shiftData});
   }
 
   /**
    * Open delete modal
    */
+
+  private getEmployeeName(id: string): string{
+      const employee = _.find(this.employeeList, {_id: id});
+      return `${employee.firstName} ${employee.lastName}`;
+  }
   public deleteShiftModal() {
     if (this.mode === 'New') {
-      this.shiftData['isDeleted'] = true;
-      this.dismiss(this.shiftData);
+      this.dismiss();
     } else {
-      let deleteShift = this.modalCtrl.create('DeleteShiftModalPage', {'empName': this.empName});
+      const empName = this.getEmployeeName(this.empId);
+      let deleteShift = this.modalCtrl.create('DeleteShiftModalPage', {empName});
       deleteShift.onDidDismiss(
         (decision: boolean) => {
           if (decision === true) {
-            this.shiftData['isDeleted'] = true;
-            this.dismiss(this.shiftData);
+            this.viewCtrl.dismiss({status: 'Delete', shift: this.shiftData});
           }
         }
       );
@@ -96,7 +133,7 @@ export class ShiftModalPage {
   /**
    * Trigger when open hours get changed
    */
-  public openHoursChanged(updatedTime: any): void {
+  public onHoursChanged(updatedTime: any, type: string): void {
     // update time in proper format
     const time24 = moment(updatedTime, ["h:mm A"]).format("HH:mm");
     const splitedTime = time24.split(':');
@@ -105,30 +142,15 @@ export class ShiftModalPage {
       minute: +splitedTime[1],
     };
     // Prepare object for new mode
-    if (this.mode === 'New' && this.shiftData.hasOwnProperty('other') === true && this.shiftData.other !== undefined && this.shiftData.other.workingDay === undefined) {
-      this.shiftData.other.workingDay = {};
-      this.shiftData.other.workingDay.day = '';
-      this.shiftData.other.workingDay.openHours = {};
+    switch (type){
+        case "OPEN":
+          this.shiftData.startDate = moment(time).toISOString();
+          break;
+        case "CLOSE":
+          this.shiftData.endDate = moment(time).toISOString();
+          break;
     }
-    this.shiftData.other.workingDay.openHours.open = moment(this.shiftData.other.workingDay.openHours.open).set(time).toISOString();
+
   }
 
-  /**
-   * Trigger when close hours get changed
-   */
-  public closeHoursChanged(updatedTime: any): void {
-    // update time in proper format
-    const time24 = moment(updatedTime, ["h:mm A"]).format("HH:mm");
-    const splitedTime = time24.split(':');
-    let time = {
-      hour:   +splitedTime[0],
-      minute: +splitedTime[1],
-    };
-    // Prepare object for new mode
-    if (this.mode === 'New' && this.shiftData.hasOwnProperty('other') === true && this.shiftData.other !== undefined && this.shiftData.other.workingDay === undefined) {
-      this.shiftData.other.workingDay = {};
-      this.shiftData.other.workingDay.openHours = {};
-    }
-    this.shiftData.other.workingDay.openHours.close = moment(this.shiftData.other.workingDay.openHours.open).set(time).toISOString();
-  }
 }

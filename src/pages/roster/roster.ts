@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { colors } from './components/colors';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 // Ionic Library Imports
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import {NavController, NavParams, ModalController, LoadingController} from 'ionic-angular';
 // Our Custom Imports
 // Other Imports
 import * as moment from 'moment';
@@ -20,6 +20,9 @@ import { Store } from "../../model/store";
 import { Employee } from "../../model/employee";
 import { EmployeeService } from "../../services/employeeService";
  import {ShiftModalPage} from "./modals/shift-modal/shift-modal";
+ import {ShiftService} from "../../services/shiftService";
+ import {Shift, ShiftStatus} from "../../model/shift";
+ import {SyncContext} from "../../services/SyncContext";
 
 const equals = (one: NgbDateStruct, two: NgbDateStruct) =>
   one && two && two.year === one.year && two.month === one.month && two.day === one.day;
@@ -82,10 +85,10 @@ export class Roster implements OnDestroy{
   public search: any;
   // To hold moment instance
   public moment: any;
-  
   constructor(private ngZone: NgZone, private calendar: NgbCalendar, private storeService: StoreService,
               private employeeService: EmployeeService, public modalCtrl: ModalController,
-              public navCtrl: NavController, public navParams: NavParams) {
+              public navCtrl: NavController, public navParams: NavParams, private shiftService: ShiftService,
+              private loading: LoadingController) {
     // Initialize with today's date
     this.fromDate = this.calendar.getToday();
     this.dateRange = moment().format('DD MMM');
@@ -109,60 +112,52 @@ export class Roster implements OnDestroy{
   /**
    * Open Shift Modal
    */
-  public openShiftModal(shiftData: any, mode: string) {
-    let shiftModal= this.modalCtrl.create(ShiftModalPage, {employees: this.getStoreEmployees(), 'shiftData': shiftData, 'mode': mode});
+  public openShiftModal(event: any, mode: string) {
+    let shiftModal= this.modalCtrl.create(ShiftModalPage, {employees: this.getStoreEmployees(), start: event.start, shiftData: event.shift, mode});
     shiftModal.onDidDismiss(
-      (data) => {
-        if (data !== undefined && data !== null && data !== '' && data['isDeleted'] === undefined && mode === 'Edit') {
-          // update in shift array
-          _.find(this.events, (event) => {
-            if (event.other.shift._id === data.other.shift._id) {
-              event.other = data.other;
-              event.isPublished = false;
-              event.color = colors.yellow
-            }
-          });
-        }
-        if (data !== undefined && data !== null && data !== '' && data['isDeleted'] === undefined && mode === 'New') {
-          // Create shift in array
-          data.isPublished = false;
-          data.color = colors.yellow
-          data['other']['workingDay'].day = daysOfWeek[data.start.day()];
-          data.title = '<label>'+ data['other']['shift']['firstName'] +' '+ data['other']['shift']['lastName'] + '</label>' + '<br><label>' + moment(data['other']['workingDay']['openHours']['open']).format("hh:mm a") + ' - ' + moment(data['other']['workingDay']['openHours']['close']).format("hh:mm a") + ' </label>';
-          // update in shift array
-          if (this.events.length === 0) {
-            this.events.push(data);
-            this.viewDate = data.start;
-          } else {
-            for (let obj of this.events) {
-              if (obj.other.shift._id === data.other.shift._id) {
-                this.events = _.remove(this.events, (event) => {
-                  if (event.other.shift._id !== data.other.shift._id) {
-                    return event;
-                  }
-                });
-                this.events.push(data);
-                this.viewDate = data.start;
-              }
-            }
+      async (data) => {
+        if(data){
+          if(data.status === "Dismiss"){
+            return;
           }
+          event.shift = data.shift || {};
+          event.title = '<label>'+ data['empName'] + '</label>' + '<br>' +
+              '<label>' + moment(data.shift['startDate']).format("hh:mm a") + ' - ' +
+              moment(data.shift['endDate']).format("hh:mm a") + ' </label>';
+          await this.createOrUpdateShift(data.status, event.shift);
+          if(data.status === 'New'){
+            this.events.push(event);
+          }else if(data.status === 'Edit'){
+            event.color = colors.yellow;
+            event.isPublished = false;
+            event.shift.status = ShiftStatus.Draft;
+          }else if(data.status === 'Delete') {
+            this.events = this.events.filter(event => event.shift._id !== data.shift._id);
+          }
+          this.viewDate = event.start;
+          this.refresh.next();
+          this.getUnpublishedShiftCount();
         }
-        // if deleted
-        if (data !== undefined && data !== null && data !== '' && data['isDeleted'] === true) {
-          // Delete from shift array
-          this.events = _.remove(this.events, (event) => {
-                          if (event.other.shift._id !== data.other.shift._id) {
-                            return event;
-                          }
-                        });
-        }
-        this.refresh.next();
-        this.getUnpublishedShiftCount();
       }
     );
     shiftModal.present();
   }
-
+  private async createOrUpdateShift(type: string, shift){
+    let shiftData = _.clone(shift);
+    switch(type){
+        case 'New':
+          shiftData = await this.shiftService.add(shiftData);
+          shift = {...shift, ...shiftData};
+          break;
+        case 'Edit':
+          shiftData = await this.shiftService.update(shiftData);
+          shift = {...shift, ...shiftData};
+          break;
+        case 'Delete':
+          shiftData = await this.shiftService.delete(shiftData);
+          break;
+    }
+  }
   /**
    * Get publish and unpublish count for shifts
    */
@@ -174,16 +169,6 @@ export class Roster implements OnDestroy{
   /**
    * Get publish and unpublish count for shifts
    */
-  public publishShifts(): void {
-    this.events.filter(
-      (obj) => {
-        obj.isPublished = true;
-        obj.color = colors.green;
-        this.refresh.next();
-        this.getUnpublishedShiftCount();
-      }
-    );
-  }
 
   /**
    * When shift is droped from employee list
@@ -255,7 +240,7 @@ export class Roster implements OnDestroy{
    * When event is clicked, open it in edit mode
    * @param event pass CalendarEvent
    */
-  public eventClicked({ event }: { event: CalendarEvent }): void {
+  public eventClicked({ event }: { event: CalendarEvent }) {
     this.openShiftModal(event, 'Edit');
   }
 
@@ -344,19 +329,38 @@ export class Roster implements OnDestroy{
         }
     });
   }
+  private getEmployeeName(employeeId){
+    const employee = _.find(this.employees, {_id: employeeId})
+    return `${employee.firstName} ${employee.lastName || ''}`;
+  }
+
   public async ionViewDidLoad() {
+    const loader = this.loading.create({ content: 'Loading Roster...'});
+    await loader.present();
     // Fetch store list from data
-    const [stores, employees] = await Promise.all([this.storeService.getAll(), this.employeeService.getAll()]);
+    const [stores, employees] = await Promise.all([this.storeService.getAll(),
+        this.employeeService.getAll() ]);
     this.stores = stores;
     this.employees = employees;
     this.selectedStore = this.stores[0];
-    this.onStoreChange();
+    // this.events = events;
+    await this.onStoreChange();
     this.refresh.next();
+    await loader.dismiss();
   }
 
 
-  public onStoreChange(){
+  public async onStoreChange(){
+    const loader = this.loading.create({ content: 'Fetching Store Events...'});
+    await loader.present();
     this.storeEmployees = this.getStoreEmployees();
+    const events = await this.shiftService.getAllByStore(this.selectedStore._id);
+    this.ngZone.run(() => {
+      this.createShifts(events || []);
+      this.refresh.next();
+      this.getUnpublishedShiftCount();
+    });
+    await loader.dismiss();
   }
 
   /**
@@ -393,8 +397,8 @@ export class Roster implements OnDestroy{
   public addNewShift(day: number): void {
     let createdOn = moment().day(day);
     let prepareEvent = {
-      title: 'title',
       start: createdOn,
+      title: 'title',
       end: undefined,
       color: colors.yellow,
       draggable: true,
@@ -402,13 +406,52 @@ export class Roster implements OnDestroy{
         beforeStart: true,
         afterEnd: true
       },
-      other: {},
+      shift: {
+        storeId: this.selectedStore._id,
+        start: createdOn
+      },
       isPublished: false
     }
     // open modal
     this.openShiftModal(prepareEvent, 'New');
   }
+  private createShifts(shifts){
+    this.events = shifts.map(shift => {
+      const employeeName = this.getEmployeeName(shift.employeeId);
+      return {
+          start: moment(shift['startDate']),
+          title: '<label>'+ employeeName + '</label>' + '<br>' +
+          '<label>' + moment(shift['startDate']).format("hh:mm a") + ' - ' +
+          moment(shift['endDate']).format("hh:mm a") + ' </label>',
+          end: undefined,
+          color: shift.status == ShiftStatus.Published ? colors.green : colors.yellow,
+          draggable: true,
+          resizable: {
+              beforeStart: true,
+              afterEnd: true
+          },
+          shift,
+          isPublished: shift.status == ShiftStatus.Published
+      }
+    })
 
+  }
+  private async publishAllShifts(){
+      const loader = this.loading.create({ content: 'Publishing shifts...'});
+      await loader.present();
+      const promises = this.events.map(event => {
+          if(event.shift && event.shift._id && event.shift.status === ShiftStatus.Draft){
+              event.isPublished = true;
+              event.color = colors.green;
+              event.shift.status = ShiftStatus.Published;
+              return this.shiftService.update(event.shift);
+          }
+      });
+      await Promise.all(promises);
+      this.refresh.next();
+      this.getUnpublishedShiftCount();
+      loader.dismiss();
+  }
   /**
    * This function will be invoked when date gets changed
    * @param date Provide date from UI

@@ -55,7 +55,7 @@
           <button ion-button *ngIf="unpublishedCount === 0">
             Add new publish
           </button>
-          <button ion-button class="unpublished" *ngIf="unpublishedCount > 0" (click)="publishShifts()">
+          <button ion-button class="unpublished" *ngIf="unpublishedCount > 0" (click)="publishAllShifts()">
               Publish {{unpublishedCount}} Shift
             </button>
         </ion-col>
@@ -104,9 +104,8 @@
         </ion-col>
         <ion-col class="col2" mwlDroppable (drop)="shiftDropped({event: $event, newStart: todayDate})">
             <mwl-calendar-week-view addShift [weekStartsOn]="1" [viewDate]="viewDate" [events]="events" [refresh]="refresh" (eventClicked)="eventClicked($event)"
-              (eventTimesChanged)="shiftDropped($event)">
+            >
             </mwl-calendar-week-view>
-
         </ion-col>
       </ion-row>
       <ion-row class="third-row">

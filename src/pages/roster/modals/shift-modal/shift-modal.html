@@ -27,11 +27,8 @@
     <div class="section2 border">
       <ion-label>WHO IS WORKING?</ion-label>
       <div class="shift-select-container">
-        <div class="avatar">
-          <img src="../assets/imgs/avatar.png" alt="avatar" />
-        </div>
-        <ion-select interface="popover" name="empName" [(ngModel)]="empName">
-          <ion-option [value]="emp" *ngFor="let emp of employeeList">{{emp?.firstName}} {{emp?.lastName}}</ion-option>
+        <ion-select interface="popover" name="empId" [(ngModel)]="empId">
+          <ion-option [value]="emp._id" *ngFor="let emp of employeeList">{{emp?.firstName}} {{emp?.lastName}}</ion-option>
         </ion-select>
       </div>
     </div>
@@ -39,11 +36,11 @@
       <ion-row>
         <ion-col col-4>
           <ion-label>START</ion-label>
-          <input type="text" name="startShift" [ngModel]="shiftData?.other?.workingDay?.openHours?.open | date: 'shortTime'" (ngModelChange)="openHoursChanged($event)">
+          <input type="text" name="startShift" [ngModel]="shiftData?.startDate | date: 'shortTime'" (ngModelChange)="onHoursChanged($event, 'OPEN')">
         </ion-col>
         <ion-col col-4>
           <ion-label>FINISH</ion-label>
-          <input type="text" name="endShift" [ngModel]="shiftData?.other?.workingDay?.openHours?.close | date: 'shortTime'" (ngModelChange)="closeHoursChanged($event)">
+          <input type="text" name="endShift" [ngModel]="shiftData?.endDate | date: 'shortTime'" (ngModelChange)="onHoursChanged($event, 'CLOSE')">
         </ion-col>
         <ion-col col-4>
           <ion-label>BREAK(MIN)</ion-label>
@@ -56,11 +53,6 @@
 
       </ion-textarea>
     </div>
-    <div class="section5">
-      <ion-label text-end>SHIFT STATUS:
-        <span class="shift-value"></span>
-      </ion-label>
-    </div>
   </div>
 </ion-content>
 <ion-footer>
@@ -68,7 +60,7 @@
     <button ion-button clear color="danger" (click)="deleteShiftModal()">
       Delete
     </button>
-    <button ion-button color="primary" (click)="dismiss(shiftData)">
+    <button ion-button color="primary" (click)="onClose()">
       Save
     </button>
   </div>
