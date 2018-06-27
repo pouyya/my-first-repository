@@ -77,3 +77,7 @@ ion-icon {
     mask-image: url(../assets/img/edit.svg);
   }
 }
+
+.no-scroll > .scroll-content{
+  overflow: hidden;
+}
