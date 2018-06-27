@@ -77,3 +77,8 @@ ion-icon {
     mask-image: url(../assets/img/edit.svg);
   }
 }
+
+.item-label-stacked .text-input-md,
+.item-label-floating .text-input-md {
+  margin-left: 8px;
+}
