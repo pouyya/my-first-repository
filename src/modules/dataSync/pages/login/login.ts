@@ -57,12 +57,19 @@ export class LoginPage {
     const browser = this.iab.create(`${ENV.service.baseUrl}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
     var token;
     var tokenInterval;
+    var closeInterval;
 
     browser.on('loadstop').subscribe(event => {
       tokenInterval = setInterval(async function () {
         var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
         if (tokenResult && tokenResult[0]) {
           token = tokenResult[0];
+          browser.close();
+        }
+      }, 2000)
+      closeInterval = setInterval(async function () {
+        var closeInterval = await browser.executeScript({ code: "(function() { var force-to-close = document.getElementsByName('force-to-close'); if(force-to-close && force-to-close[0] && force-to-close[0].value) return force-to-close[0].value; })()" });
+        if (closeInterval && closeInterval[0]) {
           browser.close();
         }
       }, 2000)
