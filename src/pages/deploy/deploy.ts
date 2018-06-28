@@ -27,13 +27,13 @@ export class DeployPage {
 
       if (await this.ionicProDeployService.check() === true) {
 
-        this.progressMessage = 'New version available.';
+        this.progressMessage = 'New version available!';
 
         this.ionicProDeployService.download().subscribe(async downloadProgress => {
 
           this.zone.run(() => {
 
-            this.progressMessage = `Download New version ${downloadProgress}%!`;
+            this.progressMessage = `Download New version ${downloadProgress}%`;
           });
         }, async error => {
 
