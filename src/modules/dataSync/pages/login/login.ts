@@ -61,18 +61,14 @@ export class LoginPage {
 
     browser.on('loadstop').subscribe(event => {
       tokenInterval = setInterval(async function () {
-        var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
+        var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); var force-to-close = document.getElementsByName('force-to-close'); if(token && token[0] && token[0].value) return token[0].value; if(force-to-close && force-to-close[0] && force-to-close[0].value) return 1; })()" });
         if (tokenResult && tokenResult[0]) {
-          token = tokenResult[0];
+          if(token!=1)
+            token = tokenResult[0];
           browser.close();
         }
-      }, 2000)
-      closeInterval = setInterval(async function () {
-        var closeInterval = await browser.executeScript({ code: "(function() { var force-to-close = document.getElementsByName('force-to-close'); if(force-to-close && force-to-close[0] && force-to-close[0].value) return force-to-close[0].value; })()" });
-        if (closeInterval && closeInterval[0]) {
-          browser.close();
-        }
-      }, 2000)
+      }, 2000);
+      
     });
 
     var _this = this;
