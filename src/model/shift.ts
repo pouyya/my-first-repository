@@ -13,5 +13,6 @@ export class Shift extends DBBasedEntity {
     status: ShiftStatus;
     startDate: Date;
     endDate: Date;
+    break: number;
     note: string;
 }

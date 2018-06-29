@@ -17,6 +17,8 @@ export class ShiftModalPage {
 
   // To hold shift data
   public shiftData: any = {};
+  public startDate;
+  public endDate;
   // To hold mode, New or Edit
   public mode: string;
   // To hold Employee Name
@@ -28,7 +30,8 @@ export class ShiftModalPage {
   public note: string;
   // To hold employee list
   public employeeList: Array<any> = [];
-
+  private totalInHours: number = 0;
+  private shiftLength: number = 0;
   constructor(public modalCtrl: ModalController, public viewCtrl: ViewController, public navParams: NavParams, private storeService: StoreService) {
   }
 
@@ -39,6 +42,12 @@ export class ShiftModalPage {
     this.employeeList = this.navParams.get('employees');
     this.mode = this.navParams.get('mode');
     this.shiftData = this.navParams.get('shiftData');
+    this.totalInHours = this.navParams.get('totalInHours');
+    this.shiftLength = this.navParams.get('shiftLength');
+    if(this.shiftData.startDate && this.shiftData.endDate){
+      this.startDate = moment(this.shiftData.startDate).format("HH:mm");
+      this.endDate = moment(this.shiftData.endDate).format("HH:mm");
+    }
     this.todayDate = this.navParams.get('start');
     if(this.mode === "Edit"){
       this.empId = this.shiftData.employeeId;
@@ -75,18 +84,33 @@ export class ShiftModalPage {
      */
   public onClose() {
     // add note
-    if(!this.shiftData.startDate || !this.shiftData.endDate || !this.empId) {
+    if(!this.startDate || !this.endDate || !this.empId) {
       return;
     }
+    let splittedTime = this.startDate.split(':');
+    let time = {
+      hour:   +splittedTime[0],
+      minute: +splittedTime[1],
+    };
+    let dateTime = moment();
+    dateTime.set(time);
     this.shiftData['employeeId'] = this.empId;
     this.shiftData['status'] = ShiftStatus.Draft;
 
-    this.shiftData.startDate = moment(this.shiftData.startDate);
+    this.shiftData.startDate = dateTime;
     this.shiftData.startDate.month(this.todayDate.month());
     this.shiftData.startDate.date(this.todayDate.date());
     this.shiftData.startDate.year(this.todayDate.year());
 
-    this.shiftData.endDate = moment(this.shiftData.endDate);
+    splittedTime = this.endDate.split(':');
+    time = {
+      hour:   +splittedTime[0],
+      minute: +splittedTime[1],
+    };
+    dateTime = moment();
+    dateTime.set(time);
+
+    this.shiftData.endDate = dateTime;
     this.shiftData.endDate.month(this.todayDate.month());
     this.shiftData.endDate.date(this.todayDate.date());
     this.shiftData.endDate.year(this.todayDate.year());
@@ -97,10 +121,7 @@ export class ShiftModalPage {
     if (this.note !== undefined && this.note !== '') {
         this.shiftData['note'] = this.note;
     }
-    // Prepare object for new mode
-    // if (this.mode === 'New' && this.shiftData.hasOwnProperty('other') === true && this.shiftData.other.shift === undefined) {
-    //     this.shiftData.other.shift = this.empName;
-    // }
+    this.shiftData['break'] ? this.shiftData['break'] = Number(this.shiftData['break']) : this.shiftData['break'] = 0 ;
 
     this.viewCtrl.dismiss({status: this.mode, empName: this.getEmployeeName(this.empId), shift: this.shiftData});
   }
@@ -135,19 +156,21 @@ export class ShiftModalPage {
    */
   public onHoursChanged(updatedTime: any, type: string): void {
     // update time in proper format
-    const time24 = moment(updatedTime, ["h:mm A"]).format("HH:mm");
-    const splitedTime = time24.split(':');
+    // const time24 = moment(updatedTime, ["h:mm A"]).format("HH:mm");
+    const splitedTime = updatedTime.split(':');
     let time = {
       hour:   +splitedTime[0],
       minute: +splitedTime[1],
     };
     // Prepare object for new mode
+    const dateTime = moment();
+    dateTime.set(time);
     switch (type){
         case "OPEN":
-          this.shiftData.startDate = moment(time).toISOString();
+          this.shiftData.startDate = updatedTime;
           break;
         case "CLOSE":
-          this.shiftData.endDate = moment(time).toISOString();
+          this.shiftData.endDate = updatedTime;
           break;
     }
 

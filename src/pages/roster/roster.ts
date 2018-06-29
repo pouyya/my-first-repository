@@ -113,7 +113,23 @@ export class Roster implements OnDestroy{
    * Open Shift Modal
    */
   public openShiftModal(event: any, mode: string) {
-    let shiftModal= this.modalCtrl.create(ShiftModalPage, {employees: this.getStoreEmployees(), start: event.start, shiftData: event.shift, mode});
+    let totalInHours = 0;
+    let shiftLength = 0;
+    if(mode === "Edit"){
+      this.events.map(eventData => {
+        if(eventData.shift.employeeId === event.shift.employeeId){
+          const startDate = new Date(eventData.shift.startDate);
+          const endDate = new Date(eventData.shift.endDate);
+          totalInHours += ((<any>endDate - <any>startDate) /(1000*60*60)) - ( eventData.shift.break || 0 ) / 60 ;
+        }
+      });
+      const startDate = new Date(event.shift.startDate);
+      const endDate = new Date(event.shift.endDate);
+      shiftLength = ((<any>endDate - <any>startDate) /(1000*60*60)) - ( event.shift.break || 0 ) / 60 ;
+    }
+    let shiftModal= this.modalCtrl.create(ShiftModalPage, {employees: this.getStoreEmployees(),
+        start: event.start, shiftData: event.shift, totalInHours, shiftLength, mode}
+    , {enableBackdropDismiss: false});
     shiftModal.onDidDismiss(
       async (data) => {
         if(data){
@@ -124,7 +140,6 @@ export class Roster implements OnDestroy{
           event.title = '<label>'+ data['empName'] + '</label>' + '<br>' +
               '<label>' + moment(data.shift['startDate']).format("hh:mm a") + ' - ' +
               moment(data.shift['endDate']).format("hh:mm a") + ' </label>';
-          await this.createOrUpdateShift(data.status, event.shift);
           if(data.status === 'New'){
             this.events.push(event);
           }else if(data.status === 'Edit'){
@@ -134,6 +149,8 @@ export class Roster implements OnDestroy{
           }else if(data.status === 'Delete') {
             this.events = this.events.filter(event => event.shift._id !== data.shift._id);
           }
+
+          await this.createOrUpdateShift(data.status, event.shift);
           this.viewDate = event.start;
           this.refresh.next();
           this.getUnpublishedShiftCount();
@@ -407,8 +424,7 @@ export class Roster implements OnDestroy{
         afterEnd: true
       },
       shift: {
-        storeId: this.selectedStore._id,
-        start: createdOn
+        storeId: this.selectedStore._id
       },
       isPublished: false
     }

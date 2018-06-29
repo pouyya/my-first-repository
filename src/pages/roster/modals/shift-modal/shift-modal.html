@@ -15,12 +15,12 @@
 <ion-content padding>
   <div class="shift-container">
     <div class="section1 border">
-      <div class="block">
-        <ion-label>7.50</ion-label>
+      <div *ngIf="totalInHours" class="block">
+        <ion-label>{{ totalInHours | number : '1.2-2' }}</ion-label>
         <p>Weekly Hours</p>
       </div>
-      <div class="block">
-        <ion-label>7.50</ion-label>
+      <div *ngIf="shiftLength" class="block">
+        <ion-label>{{ shiftLength | number : '1.2-2' }}</ion-label>
         <p>Shift Length</p>
       </div>
     </div>
@@ -36,15 +36,15 @@
       <ion-row>
         <ion-col col-4>
           <ion-label>START</ion-label>
-          <input type="text" name="startShift" [ngModel]="shiftData?.startDate | date: 'shortTime'" (ngModelChange)="onHoursChanged($event, 'OPEN')">
+          <ion-datetime displayFormat="hh:mm A" [(ngModel)]="startDate" (ngModelChange)="onHoursChanged(startDate, 'OPEN')"></ion-datetime>
         </ion-col>
         <ion-col col-4>
           <ion-label>FINISH</ion-label>
-          <input type="text" name="endShift" [ngModel]="shiftData?.endDate | date: 'shortTime'" (ngModelChange)="onHoursChanged($event, 'CLOSE')">
+          <ion-datetime displayFormat="hh:mm A" [(ngModel)]="endDate" (ngModelChange)="onHoursChanged(endDate, 'CLOSE')"></ion-datetime>
         </ion-col>
         <ion-col col-4>
           <ion-label>BREAK(MIN)</ion-label>
-          <input type="text" value="30">
+          <input [(ngModel)]="shiftData.break" class="margin-break" type="text" value="30">
         </ion-col>
       </ion-row>
     </div>
