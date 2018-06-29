@@ -15,6 +15,10 @@ import {PriceBook} from "../../model/priceBook";
 import {PriceBookService} from "../../services/priceBookService";
 import {Utilities} from "../../utility";
 
+interface ServicesList extends Service {
+  retailPrice: number /** From default pricebook */
+}
+
 @SecurityModule(SecurityAccessRightRepo.ServiceListing)
 @PageModule(() => BackOfficeModule)
 @Component({
@@ -22,8 +26,8 @@ import {Utilities} from "../../utility";
   templateUrl: 'service.html'
 })
 export class Services extends SearchableListing<Service>{
-  protected items: Service[] = [];
-  private _defaultPriceBook: PriceBook;
+  protected items: ServicesList[] = [];
+  private priceBook: PriceBook;
 
 
   constructor(public navCtrl: NavController,
@@ -47,7 +51,7 @@ export class Services extends SearchableListing<Service>{
         }
       };
       await this.fetch();
-      this._defaultPriceBook = await this.priceBookService.getDefault();
+      // this._defaultPriceBook = await this.priceBookService.getDefault();
 
       loader.dismiss();
     } catch (err) {
@@ -57,11 +61,41 @@ export class Services extends SearchableListing<Service>{
     }
   }
 
+  private async getPriceBook(services){
+    this.priceBook = await this.priceBookService.getDefault();
+    services.forEach((service) => {
+      let priceBookItem = _.find(this.priceBook.purchasableItems, { id: service._id });
+      service["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
+      service["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
+    });
+  }
+
   showDetail(service) {
     this.navCtrl.push(ServiceDetails, { service: service });
   }
 
+  public async fetchMore(infiniteScroll?: any) {
+    let services: ServicesList[] = <ServicesList[]>await this.loadData();
+    this.offset += services ? services.length : 0;
+
+    this.zone.run(() => {
+      this.items = this.items.concat(services);
+      infiniteScroll && infiniteScroll.complete();
+    });
+    if(this.priceBook){
+      services.forEach((service) => {
+        const priceBookItem = _.find(this.priceBook.purchasableItems, { id: service._id });
+        service["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
+        service["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
+      });
+    }else{
+      this.getPriceBook(services);
+    }
+  }
   public async remove(item: Service, index: number) {
+    if(!this.priceBook){
+      this.priceBook = await this.priceBookService.getDefault();
+    }
     const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this service!");
     if(!deleteItem){
       return;
@@ -69,10 +103,10 @@ export class Services extends SearchableListing<Service>{
     let deleteAssocs: any[] = [
         async () => {
             // delete pricebook entries
-            let pbIndex = _.findIndex(this._defaultPriceBook.purchasableItems, { id: item._id });
+            let pbIndex = _.findIndex(this.priceBook.purchasableItems, { id: item._id });
             if (pbIndex > -1) {
-                this._defaultPriceBook.purchasableItems.splice(pbIndex, 1);
-                return await this.priceBookService.update(this._defaultPriceBook);
+                this.priceBook.purchasableItems.splice(pbIndex, 1);
+                return await this.priceBookService.update(this.priceBook);
             }
         }
     ];
