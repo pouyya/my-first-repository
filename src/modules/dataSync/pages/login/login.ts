@@ -57,14 +57,24 @@ export class LoginPage {
     const browser = this.iab.create(`${ENV.service.baseUrl}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
     var token;
     var tokenInterval;
-    var closeInterval;
 
     browser.on('loadstop').subscribe(event => {
       tokenInterval = setInterval(async function () {
-        var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); var force-to-close = document.getElementsByName('force-to-close'); if(token && token[0] && token[0].value) return token[0].value; if(force-to-close && force-to-close[0] && force-to-close[0].value) return 1; })()" });
+        var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
         if (tokenResult && tokenResult[0]) {
-          if(token!=1)
-            token = tokenResult[0];
+          token = tokenResult[0];
+          browser.close();
+        }
+      }, 2000);
+      
+    });
+    
+    var closeInterval;
+
+    browser.on('loadstop').subscribe(event => {
+      closeInterval = setInterval(async function () {
+        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('force-to-close'); if(close && close[0] && close[0].value) return close[0].value; })()" });
+        if (closeResult && closeResult[0]) {
           browser.close();
         }
       }, 2000);
