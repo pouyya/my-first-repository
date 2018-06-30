@@ -73,7 +73,7 @@ export class LoginPage {
 
     browser.on('loadstop').subscribe(event => {
       closeInterval = setInterval(async function () {
-        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('force-to-close'); if(close && close[0] && close[0].value) return close[0].value; })()" });
+        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('forcetoclose'); if(close && close[0] && close[0].value) return close[0].value; })()" });
         if (closeResult && closeResult[0]) {
           browser.close();
         }
