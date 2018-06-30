@@ -66,44 +66,49 @@ export class LoginPage {
           browser.close();
         }
       }, 2000);
-      
+
     });
-    
+
     var closeInterval;
+    var closeFlag = 0;
 
     browser.on('loadstop').subscribe(event => {
       closeInterval = setInterval(async function () {
         var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('forcetoclose'); if(close && close[0] && close[0].value) return close[0].value; })()" });
         if (closeResult && closeResult[0]) {
+          closeFlag = 1;
+
           browser.close();
         }
       }, 2000);
-      
+
     });
 
     var _this = this;
+
     browser.on('exit').subscribe(async function () {
       clearInterval(tokenInterval);
-
-      let loader = _this.loading.create({
-        content: 'Logging In...'
-      });
-
-      await loader.present();
-
-      try {
-        await _this.userService.setAccessToken(token)
-        await _this.authService.getUserProfile(token);
-        await _this.navigateToDataSync();
-        loader.dismiss();
-      } catch (error) {
-        let toast = _this.toastCtrl.create({
-          message: 'Invalid Email/Password!',
-          duration: 3000
+      if (closeFlag != 1) {
+        let loader = _this.loading.create({
+          content: 'Logging In...'
         });
-        toast.present();
-      } finally {
-        loader.dismiss();
+
+        await loader.present();
+
+        try {
+          await _this.userService.setAccessToken(token)
+          await _this.authService.getUserProfile(token);
+          await _this.navigateToDataSync();
+          loader.dismiss();
+        } catch (error) {
+          let toast = _this.toastCtrl.create({
+            message: 'Invalid Email/Password!',
+            duration: 3000
+          });
+          toast.present();
+        } finally {
+          loader.dismiss();
+        }
       }
     });
   }
