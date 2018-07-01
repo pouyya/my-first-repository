@@ -70,7 +70,7 @@ export class LoginPage {
         if (closeResult && closeResult[0]) {
           browser.close();
         }
-      }, 2000);
+      }, 500);
 
     });
 
