@@ -1,0 +1,482 @@
+.select-popover .popover-content ion-item ion-radio{
+    opacity: 0;
+}
+page-roster {
+    ion-content{
+        background-color: white;
+        button:focus{
+            outline:0 !important;
+        }
+        .scroll-content{
+            padding: 0;
+            .roast-container{
+                padding: 0 5px;
+            }
+        }
+        .first-row{
+            padding: 10px 0;
+            .col1{
+                min-width: 25% !important;
+                max-width: 25% !important;
+            }
+            .col2{
+                min-width: 35% !important;
+                max-width: 35% !important;
+            }
+            .col3{
+                text-align: end;
+                button{
+                    margin: 0;
+                    height: 3.2rem;
+                    font-size: 1.4rem;
+                    text-transform: capitalize;
+                    border-radius: 5px;
+                    background: green !important;
+                    border:1px solid green !important;
+                    &:hover,&:focus{
+                        background: green !important;
+                        border:1px solid green !important;
+                        outline:0;
+                    }
+                }
+                
+                button.unpublished{
+                    background: orange  !important;
+                    border:1px solid orange !important;
+                    color:#000;
+                    &:hover,&:focus{
+                        background: orange !important;
+                        border:1px solid orange !important;
+                        outline:0;
+                    }
+                }
+            }
+            .drop-container{
+                max-height: 3.4rem;
+                display: flex;
+                flex-flow: row nowrap;
+                max-width: 100%;
+                border: 1px solid #e1e1e1;
+                border-radius: 5px;
+                button{
+                    outline: none;
+                }
+                .img-container{
+                    width: 5rem;
+                    border-right: 1px solid #e1e1e1;
+                    img{
+                        width: 100%;
+                        height: 100%;
+                        margin: auto;
+                    }
+                }
+                .select-container{
+                    width: 100%;
+                    ion-select{
+                        max-width: 100%;
+                        padding: 6px 8px;
+                    }
+                }
+            }
+            .calendar-container{
+                display: flex;
+                flex-flow: nowrap;
+                max-width: 100%;
+                border: 1px solid #e1e1e1;
+                border-radius: 5px;
+                max-height: 3.4rem;
+                .custom-date-range{
+                    position: absolute;
+                    width: 100%;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    align-self: baseline;
+                    margin: 4px auto;
+                    z-index: -1;
+                }
+                button{
+                    outline: none;
+                }
+                .prev-btn{
+                    button{
+                        max-height: 2.2rem;
+                    }
+                    border-right:1px solid #e1e1e1;
+                    ion-icon{
+                        color:#000;
+                        font : {
+                            size : 1.4rem;
+                        }
+                    }
+                }
+                .calendar-icon{
+                    width:5rem;
+                    margin:auto;
+                    text-align: center;
+                    ion-icon{
+                        color:#000;
+                        font : {
+                            size : 2rem;
+                        }
+                    }
+                }
+                .calendar-dropdown{
+                    width: 100%;
+                    margin:auto;
+                    input{
+                        border:0;
+                        &:focus{
+                            box-shadow:none;
+                        }
+                        opacity: 0;
+                    }
+                    ion-select{
+                        max-width: 100%;
+                        padding: 6px 8px;
+                    }
+                    ngb-datepicker{
+                        height: 200px;
+                    }
+                    .customBtn{
+                        position: absolute;
+                        bottom: -182px;
+                        left: 76px;
+                        font-size: 1.1rem;
+                        text-align: center;
+                        right: auto;
+                        margin: auto;
+                        z-index: 99999;
+                    }
+                    .custom-day {
+                        text-align: center;
+                        padding: 0.185rem 0.25rem;
+                        display: inline-block;
+                        height: 2rem;
+                        width: 2rem;
+                    }
+                    .custom-day.focused {
+                        background-color: #e6e6e6;
+                    }
+                    .custom-day.range, .custom-day:hover {
+                        background-color: rgb(2, 117, 216);
+                        color: white;
+                    }
+                    .custom-day.faded {
+                        background-color: rgba(2, 117, 216, 0.5);
+                    }
+                    .ngb-dp-week:hover {
+                        border: 1px solid #0baaf7 !important;
+                    }
+                }
+                .next-btn{
+                    button{
+                        max-height: 2.2rem;
+                    }
+                    border-left:1px solid #e1e1e1;
+                    color:#000;
+                    ion-icon{
+                        font : {
+                            size : 1.4rem;
+                        }
+                    }
+                }
+            }
+        }
+        
+        .second-row{
+            .cal-day-number{
+                display: none;
+            }
+            .cal-cell-top,.cal-day-cell{
+                min-height:78px;
+            }
+            .cal-cell-row{
+                border-bottom:0 !important;
+            }
+            .cal-week-view .cal-events-row{
+                min-height: 55px;
+                margin-top:5px;
+            }
+            .cal-week-view .cal-events-row:nth-child(2){
+                margin-top:80px;
+            }
+            .cal-day-headers{
+                margin-left:0;
+                border-top:0;
+                border-left:0;
+                border-right:0;
+                border-bottom:1px solid #e1e1e1;
+            }
+            .cal-week-view .cal-events-row.add-shift-row {
+                position: absolute;
+                width: 100%;
+                top: 90px;
+                margin-bottom: 20px;
+                margin-top: 0px;
+                .add-shift-div{
+                    width: 9.45%;
+                    padding-left: 2.5%;
+                    button{
+                        padding: 8px;
+                        border: 1px dashed #cac0c0;
+                        width: 131%;
+                        background: #fff;
+                        border-radius: 5px;
+                    }                
+                }
+            }
+
+            .cal-week-view .cal-events-row.sales-edit-row {
+                position: absolute;
+                margin-top:0px;
+                top:53px;
+                display: flex;
+                flex-flow: row nowrap;
+                width:100%;
+                justify-content: space-between;
+                padding: 0 10px;
+                min-height: 2.8rem;
+                height: 2.8rem;
+                align-items: center;
+                box-shadow: 0 1px 1px 0px #e1e1e1;
+                label{
+                    margin-bottom: 0;
+                }
+                .sales-button-left{
+                    margin-right: 1rem;
+                    font-size: 1.6rem;
+                }
+                .hide-area-button{
+                    height: 1.8rem;
+                    border-radius: 5px;
+                    width: 10rem;
+                    opacity: 0.5;
+                    line-height: 0.4;                
+                }
+                .sales-button-right{
+                    margin-left: 1rem;
+                    font-size: 1.6rem;
+                }
+            }
+            .cal-week-view .cal-events-row.add-new-area-row{
+                position: absolute;
+                bottom: 0;
+                margin-top: 0;
+                min-height: 2.8rem;
+                height: 2.8rem;
+                width: 100%;
+                border-top: 1px solid #e1e1e1;
+                border-bottom: 1px solid #e1e1e1;
+                align-items: center;
+                display: flex;
+                justify-content: center;
+                label{
+                    margin-bottom:0;
+                }
+            }
+            .cal-week-view .cal-event{
+                min-height: 40px;
+                line-height: 40px;
+                white-space: normal;
+                font-size: 1.0rem;
+                overflow: auto;
+                height: auto;
+                padding: 0.3rem 0.3rem !important;
+                font : {
+                    size:1.0rem;
+                }
+                a{
+                    text-decoration:none;
+                    display: flex;
+                    flex-flow: column nowrap;
+                    width:100%;
+                    opacity: 1;
+                    color:#fff;
+                    br{
+                        display:none;
+                    }
+                    label{
+                        margin:0.3rem 0;
+                    }
+                }
+            }
+            border-top: 1px solid #e1e1e1;
+            ion-col{
+                padding: 0;
+            }
+            .col1{
+                max-width: 22% !important;
+                min-width: 22% !important;
+                position: relative;
+                // min-height: 380px !important;
+            }
+            .col2{
+                max-width: 78% !important;
+                min-width: 78% !important;
+                border-left: 1px solid #e1e1e1;
+                min-height: 380px;
+            }
+            .employee-container{
+                max-height: 5.5rem;
+                display: flex;
+                flex-flow: row nowrap;
+                width: 100%;
+                border-bottom: 1px solid #e1e1e1;
+                padding: 10px 15px;
+                // border-right:1px solid #e1e1e1;
+                justify-content: space-between;
+                ion-label{
+                    min-width: 20px;
+                    max-width: 20px;
+                    margin:6px 0;
+                }
+                input{
+                    border: 0;
+                    max-width: 50%;
+                }
+                .sortable-list{
+                    border: 1px solid #e1e1e1;
+                    border-radius: 5px;
+                    margin-left: 0px;
+                    display: flex;
+                    flex-flow:row nowrap;
+                    .sortable-btn{
+                        display: flex;
+                        align-items: center;
+                        button{
+                            max-width: 3rem;
+                            outline:none;
+                            max-height:2.2rem;
+                            ion-icon{
+                                color:#000;
+                                font: {
+                                    size : 1.4rem;
+                                }
+                            }
+                        }
+                        &:nth-child(1){
+                            border-right:1px solid #e1e1e1;
+                        }
+                    }
+                }
+            }
+            .employee-list{
+                // max-height: 400px;
+                // min-height: 240px;
+                height: auto;
+                // overflow-y: auto;
+                padding: 0;
+                // .drag-items{
+                //     height: 40px;
+                //     position: relative;
+                // }
+                ul{
+                    padding: 0;
+                    list-style: none;
+                }
+                // .drag-items{
+                //     border-bottom: solid 1px #d2dbe0;
+                // }
+                .employee-section{
+                    align-items: center;
+                    
+                    // border-right: solid 1px #d2dbe0;
+                    padding:5px 0 0;
+                    // position:relative; 
+                    z-index: 10000 !important;
+                    display: flex;
+                    flex-flow:row nowrap;
+                    width: 100%;
+                    .avatar{
+                      margin-right: 10px;
+                      img{
+                        width: 5rem;
+                      }
+                    }
+                    .user-details{
+                      margin:0;
+                      p{
+                        margin-bottom: 0;
+                        text-align: left;
+                        margin-top:2px;
+                      }
+                    }
+                }
+                .add-employee{
+                    border-bottom:1px solid #e1e1e1;
+                    border-top:1px solid #e1e1e1;
+                    button{
+                        outline:none;
+                        text-transform:capitalize;
+                        &:hover,&:focus{
+                            background: transparent;
+                        }
+                        ion-icon{
+                            margin-right:0.7rem;
+                        }
+                    }
+                }
+            }
+        }
+        .third-row{
+            border-top:1px solid #e1e1e1;
+            // border-top: 1px solid #e1e1e1;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            // border-left: 1px solid #cccc;
+            // border-bottom: 1px solid #ccc;
+            .horizontal-axis{
+                display: flex;
+                flex-flow: row nowrap;
+                width: 100%;
+                justify-content: center;
+                .axis-value{
+                    display: flex;
+                    flex-flow: row nowrap;
+                    min-width: 9em;
+                    justify-content: center;
+                    align-items: center;
+                    .round{
+                        width: 1rem;
+                        padding: 0.5rem;
+                        border-radius: 50%;
+                    }
+                    .count{
+                        margin-left: 0.7rem;
+                        margin-right: 0.7rem;
+                    }
+                    ion-label{
+                        color:#e1e1e1;
+                    }
+                    .unallocat{
+                        border:1px solid transparent;
+                    }
+                    .publish{
+                        border:1px solid green;
+                        background:green;
+                    }
+                    .unpublish{
+                        border:1px solid yellow;
+                        background:yellow;
+                    }
+                    .shift{
+                        border:1px solid pink;
+                        background:pink;
+                    }
+                    .warning{
+                        border:1px solid red;
+                        background:red;
+                    }
+                }
+            }
+        }
+    }
+    
+}

@@ -1,0 +1,127 @@
+page-shift-modal {
+    ion-header{
+        border-bottom: 1px solid #ccc;
+    }
+    .header:after{
+        position: relative;
+    }
+    ion-content{
+        .shift-container{
+            display: flex;
+            flex-flow: column nowrap;
+            height: 100%;
+            width: 100%;
+            ion-label{
+                margin:3px 8px 5px 0;
+                color:#ccc;
+                font: {
+                    size : 1.2rem;
+                }
+            }
+            .border{
+                padding: 0 5px;
+                border:1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+                input{
+                    border:0;
+                }
+            }
+            .section1{
+                background:#50616f;
+                color:#fff;
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                align-items:center;
+                min-height: 60px;
+                .block{
+                    text-align: center;
+                    min-width: 15rem;
+                    ion-label{
+                        margin:0;
+                    }
+                    p{
+                        margin:0;
+                    }
+                }
+            }
+            .section2{
+                padding: 0 10px;
+                .shift-select-container{
+                    display: flex;
+                    flex-flow: row nowrap;
+                    width: 100%;
+                    .avatar{
+                        img{
+                            width:40px;
+                        }
+                    }
+                    ion-select{
+                        min-width: 92%;
+                        max-width: 92%;
+                        cursor:pointer;
+                        button{
+                            height: auto;
+                        }
+                    }
+                }
+            }
+            .section3{
+                ion-col{
+                    border-right:1px solid #ccc;
+                    &:nth-child(3){
+                        border-right:0;
+                    }
+                }
+                ion-col{
+                    &:nth-child(1){
+                        ion-label{
+                            margin-left: 10px;
+                        }
+                        input{
+                            margin-left: 10px;
+                        }
+                    }
+                }
+                p{
+                    margin:0;
+                }
+                ion-select{
+                    padding: 2px 8px 1px 0;
+                    max-width: 100%;
+                    .select-text{
+                        color:#ccc;
+                    }
+                    cursor:pointer;
+                    button{
+                            height: auto;
+                    }
+                }
+            }
+        }
+    }
+   
+    ion-footer{
+        border-top: 1px solid #ccc;
+        text-align: end;
+        padding: 8px;
+        .action-btn{
+            padding:5px;
+            button{
+                text-transform: capitalize;
+                &:nth-child(2){
+                    border-radius: 5px;
+                    height: 3rem;
+                    border: 1px solid #000;
+                }
+            }
+        }
+    }
+    .footer:before{
+        position: relative;
+    }
+}
+.margin-break {
+    margin-top: 10px;
+}

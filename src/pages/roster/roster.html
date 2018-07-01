@@ -1,0 +1,142 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Roster</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <div class="roast-container">
+    <ion-grid>
+      <ion-row class="first-row">
+        <ion-col class="col1">
+          <div class="drop-container">
+            <div class="select-container">
+              <ion-select placeholder="Stores" interface="popover" [(ngModel)]="selectedStore" (ngModelChange)="onStoreChange()">
+                <ion-option *ngFor="let store of stores" [value]="store">{{store['name']}}</ion-option>
+              </ion-select>
+            </div>
+          </div>
+        </ion-col>
+        <ion-col class="col2">
+          <div class="calendar-container">
+            <div class="prev-btn" (click)="prevWeek()">
+              <button ion-button icon-only clear outline>
+                <ion-icon name="ios-arrow-back"></ion-icon>
+              </button>
+            </div>
+            <ion-label class="custom-date-range">{{dateRange}}</ion-label>
+            <div class="calendar-icon">
+              <ion-icon name="md-calendar"></ion-icon>
+            </div>
+            <div class="calendar-dropdown">
+              <!-- <ngb-datepicker #dp ngModel (ngModelChange)="onDateChange($event)" [displayMonths]="1" [dayTemplate]="t">
+              </ngb-datepicker> -->
+              <!--<input type="button" class="form-control" name="dp" [(ngModel)]="dateRange" (ngModelChange)="onDateChange($event)" ngbDatepicker #dp="ngbDatepicker" [displayMonths]="1" [dayTemplate]="t" (click)="dp.toggle();isJumpToCurrentWeek=!isJumpToCurrentWeek">-->
+              <button class="customBtn btn btn-default" *ngIf="isJumpToCurrentWeek" (click)="jumpToCurrentWeek()">
+                Jump to current week
+              </button>
+              <ng-template #t let-date="date" let-focused="focused">
+                <span class="custom-day" [class.focused]="focused" [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)"
+                  [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                  {{ date.day }}
+                </span>
+              </ng-template>
+            </div>
+            <div class="next-btn" (click)="nextWeek()">
+              <button ion-button icon-only clear outline>
+                <ion-icon name="ios-arrow-forward"></ion-icon>
+              </button>
+            </div>
+          </div>
+        </ion-col>
+        <ion-col class="col3">
+          <button ion-button  [ngClass]="{'unpublished': unpublishedCount > 0, 'second': true, 'third': false}" [disabled]="unpublishedCount === 0" (click)="unpublishedCount > 0 && publishAllShifts()">
+              Publish {{unpublishedCount || ''}} Shift
+            </button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="second-row">
+        <ion-col class="col1">
+          <div class="employee-container">
+            <ion-label fixed>
+              <ion-icon name="ios-search-outline"></ion-icon>
+            </ion-label>
+            <input type="text" name="search" [(ngModel)]="search" (ngModelChange)="searchEmployee()" placeholder="search...">
+            <div class="sortable-list">
+              <div class="sortable-btn">
+                <button ion-button icon-only clear outline>
+                  <ion-icon name="ios-funnel"></ion-icon>
+                </button>
+              </div>
+              <div class="sortable-btn">
+                <button ion-button icon-only clear outline>
+                  <ion-icon name="ios-arrow-down"></ion-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="employee-list">
+            <ul no-lines *ngIf="selectedStore">
+              <div *ngFor="let emp of storeEmployees"  class="drag-items">
+                <li draggable="true"  mwlDraggable [dropData]="{event: {shift: emp, workingDay: selectedStore?.workingDay}}" class="employee-section">
+                  <div class="avatar">
+                    <img src="../assets/imgs/avatar.png" alt="avatar" />
+                  </div>
+                  <div class="user-details">
+                    <p class="employee-label">{{emp.firstName}} {{emp?.lastName}}</p>
+                    <!--<p class="employee-hours">{{getTotalAllocatedTime(selectedStore?.workingDay?.openHours?.open, selectedStore?.workingDay?.openHours?.close)| number:'2.2-2'}}Hrs/$0.00</p>-->
+                  </div>
+                </li>
+              </div>
+              <li class="add-employee" text-center>
+                <button ion-button clear outline>
+                  <ion-icon name="ios-contact"></ion-icon>
+                  <ion-label>Add New Employee</ion-label>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </ion-col>
+        <ion-col class="col2" mwlDroppable>
+            <mwl-calendar-week-view addShift [weekStartsOn]="1" [viewDate]="viewDate" [events]="events" [refresh]="refresh" (eventClicked)="eventClicked($event)"
+            >
+            </mwl-calendar-week-view>
+        </ion-col>
+      </ion-row>
+      <ion-row class="third-row">
+        <ion-col class="horizontal-axis">
+          <div class="axis-value">
+            <div class="round unallocat"></div>
+            <div class="count">0</div>
+            <ion-label>Unallocated</ion-label>
+          </div>
+          <div class="axis-value">
+            <div class="round publish"></div>
+            <div class="count">{{publishedCount}}</div>
+            <ion-label>Published</ion-label>
+          </div>
+          <div class="axis-value">
+            <div class="round unpublish"></div>
+            <div class="count">{{unpublishedCount}}</div>
+            <ion-label>Unpublished</ion-label>
+          </div>
+          <div class="axis-value">
+            <div class="round shift"></div>
+            <div class="count">0</div>
+            <ion-label>Open Shifts</ion-label>
+          </div>
+          <div class="axis-value">
+            <div class="round warning"></div>
+            <div class="count">0</div>
+            <ion-label>Warnings</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
+<ion-footer>
+
+</ion-footer>
