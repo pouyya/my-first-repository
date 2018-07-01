@@ -1,0 +1,36 @@
+page-delete-shift-modal {
+    ion-header{
+        border-bottom:1px solid #ccc;
+        ion-title{
+            text-align: center;
+            text-transform: capitalize;
+        }
+        .bar-buttons{
+            border-radius: 5px;
+            border:1px solid #ccc;
+        }
+    }
+    .header:after{
+        position: relative;
+    }
+    ion-content{
+
+    }
+    ion-footer{
+        padding:5px;
+        border-top:1px solid #ccc;
+        .action-btn{
+            padding: 5px;
+            text-align: end;
+            button{
+                border:1px solid #ccc;
+                border-radius: 5px;
+                text-transform: capitalize;
+                color:#000;
+            }
+        }
+    }
+    .footer:before{
+        position: relative;
+    }
+}

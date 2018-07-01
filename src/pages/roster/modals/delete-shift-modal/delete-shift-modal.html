@@ -1,0 +1,26 @@
+<ion-header>
+
+    <ion-navbar>
+      <ion-title>Delete ?</ion-title>
+      <ion-buttons end>
+        <button ion-button end icon-only (click)="dismiss(false)">
+          <ion-icon name="md-close"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-navbar>
+  
+  </ion-header>
+  <ion-content padding>
+    <ion-label>Are you sure you want remove this shift of {{empName}}?</ion-label>
+  </ion-content>
+  <ion-footer>
+      <div class="action-btn">
+        <button ion-button clear outline (click)="dismiss(false)">
+          Cancel
+        </button>
+        <button ion-button clear outline (click)="dismiss(true)">
+          Ok
+        </button>
+      </div>
+    </ion-footer>
+    
