@@ -56,28 +56,18 @@ export class LoginPage {
   public register(): void {
     const browser = this.iab.create(`${ENV.service.baseUrl}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
     var token;
-    var tokenInterval;
+    var bridgeInterval;
 
     browser.on('loadstop').subscribe(event => {
-      tokenInterval = setInterval(async function () {
+      bridgeInterval = setInterval(async function () {
         var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
         if (tokenResult && tokenResult[0]) {
           token = tokenResult[0];
           browser.close();
         }
-      }, 2000);
 
-    });
-
-    var closeInterval;
-    var closeFlag = 0;
-
-    browser.on('loadstop').subscribe(event => {
-      closeInterval = setInterval(async function () {
-        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('forcetoclose'); if(close && close[0] && close[0].value) return close[0].value; })()" });
+        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('forcetoclose'); if(close && close[0] && close[0].value) return true; })()" });
         if (closeResult && closeResult[0]) {
-          closeFlag = 1;
-
           browser.close();
         }
       }, 2000);
@@ -87,8 +77,8 @@ export class LoginPage {
     var _this = this;
 
     browser.on('exit').subscribe(async function () {
-      clearInterval(tokenInterval);
-      if (closeFlag != 1) {
+      clearInterval(bridgeInterval);
+      if (token) {
         let loader = _this.loading.create({
           content: 'Logging In...'
         });
