@@ -48,8 +48,7 @@ export class DeviceDetailsModal {
     let device = this.navParams.get('device');
     this.posList = this.syncContext.currentStore.POS || [];
     let data = await Promise.all([this.productService.getAll(), this.serviceService.getAll()]);
-    this.purchasableItems = [...data[0], ...data[1]];
-
+    this.purchasableItems = [...data[0], ...data[1]].filter(item => !item.isModifier);
 
     this.navPopCallback = this.navParams.get("pushCallback");
     if (device && device._id !== "") {
