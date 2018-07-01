@@ -1,0 +1,67 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{mode}} Shift on {{todayDate | date: 'EEE, d MMMM, y'}}</ion-title>
+    <ion-buttons end>
+      <button ion-button end icon-only (click)="dismiss()">
+        <ion-icon name="md-close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <div class="shift-container">
+    <div class="section1 border">
+      <div *ngIf="totalInHours" class="block">
+        <ion-label>{{ totalInHours | number : '1.2-2' }}</ion-label>
+        <p>Weekly Hours</p>
+      </div>
+      <div *ngIf="shiftLength" class="block">
+        <ion-label>{{ shiftLength | number : '1.2-2' }}</ion-label>
+        <p>Shift Length</p>
+      </div>
+    </div>
+    <div class="section2 border">
+      <ion-label>WHO IS WORKING?</ion-label>
+      <div class="shift-select-container">
+        <ion-select interface="popover" name="empId" [(ngModel)]="empId">
+          <ion-option [value]="emp._id" *ngFor="let emp of employeeList">{{emp?.firstName}} {{emp?.lastName}}</ion-option>
+        </ion-select>
+      </div>
+    </div>
+    <div class="section3 border">
+      <ion-row>
+        <ion-col col-4>
+          <ion-label>START</ion-label>
+          <ion-datetime displayFormat="hh:mm A" [(ngModel)]="startDate" (ngModelChange)="onHoursChanged(startDate, 'OPEN')"></ion-datetime>
+        </ion-col>
+        <ion-col col-4>
+          <ion-label>FINISH</ion-label>
+          <ion-datetime displayFormat="hh:mm A" [(ngModel)]="endDate" (ngModelChange)="onHoursChanged(endDate, 'CLOSE')"></ion-datetime>
+        </ion-col>
+        <ion-col col-4>
+          <ion-label>BREAK(MIN)</ion-label>
+          <input [(ngModel)]="shiftData.break" class="margin-break" type="text" value="30">
+        </ion-col>
+      </ion-row>
+    </div>
+    <div class="section4 border">
+      <ion-textarea placeholder="Add a note to this shift..." name="note" [(ngModel)]="note">
+
+      </ion-textarea>
+    </div>
+  </div>
+</ion-content>
+<ion-footer>
+  <div class="action-btn">
+    <button ion-button clear color="danger" (click)="deleteShiftModal()">
+      Delete
+    </button>
+    <button ion-button color="primary" (click)="onClose()">
+      Save
+    </button>
+  </div>
+</ion-footer>
