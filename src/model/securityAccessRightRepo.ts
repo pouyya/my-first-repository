@@ -18,6 +18,10 @@ export class SecurityAccessRightRepo {
     'BackOfficeDashboard',
     'BackOffice Dashboard');
 
+  public static HumanResourceDashboard: AccessRightItem = new AccessRightItem(
+    'HumanResourceDashboard',
+    'HumanResource Dashboard');
+
   public static CustomerListing: AccessRightItem = new AccessRightItem(
     'CustomerListing',
     'Customer Listing');
@@ -133,12 +137,17 @@ export class SecurityAccessRightRepo {
     public static Preferences : AccessRightItem = new AccessRightItem(
       'Preferences',
       'Preferences');
+
+    public static Roster: AccessRightItem = new AccessRightItem(
+      'Roster',
+      'Roster');
       
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
     SecurityAccessRightRepo.ServiceListing,
     SecurityAccessRightRepo.InventoryCategory,
     SecurityAccessRightRepo.BackOfficeDashboard,
+    SecurityAccessRightRepo.HumanResourceDashboard,
     SecurityAccessRightRepo.EmployeeAddEdit,
     SecurityAccessRightRepo.EmployeeListing,
     SecurityAccessRightRepo.StoreAddEdit,
@@ -168,6 +177,7 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.ReportStockMovementSummary,
     SecurityAccessRightRepo.Preferences,
     SecurityAccessRightRepo.DeleteAccount,
+    SecurityAccessRightRepo.Roster
   ];
 
 }

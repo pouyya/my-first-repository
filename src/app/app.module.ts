@@ -172,6 +172,13 @@ import {SelectLocationModal} from "../components/image-picker/modal/select-color
 import { DeleteAccountService } from './../services/deleteAccountService';
 import {DateDurationPickerModule} from "../components/date-duration-picker/date-duration-picker.module";
 import { DeployService } from '../services/deployService';
+import { Roster } from "../pages/roster/roster";
+import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
+import { CalendarModule } from "angular-calendar";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { AddShiftDirective } from "../directives/shift.directive";
+import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
+import {ShiftService} from "../services/shiftService";
 
 @NgModule({
   declarations: [
@@ -180,6 +187,7 @@ import { DeployService } from '../services/deployService';
     Products,
     ProductDetails,
     ReportsDashboard,
+    HumanResourceDashboard,
     Preferences,
     ReportStockMovementSummaryPage,
     Services,
@@ -198,6 +206,7 @@ import { DeployService } from '../services/deployService';
     SplitPaymentPage,
     CashModal,
     CreditCardModal,
+    ShiftModalPage,
     ParkSale,
     AddNotes,
     OpenCloseRegister,
@@ -233,6 +242,7 @@ import { DeployService } from '../services/deployService';
     Brands,
     BrandDetails,
     DeployPage,
+    Roster,
     Roles,
     RoleDetails,
     Suppliers,
@@ -244,7 +254,8 @@ import { DeployService } from '../services/deployService';
     ProductsSelector,
     Closures,
     TranslatorPipe,
-    DeleteAccount
+    DeleteAccount,
+    AddShiftDirective
   ],
   imports: [
     FormsModule,
@@ -284,6 +295,8 @@ import { DeployService } from '../services/deployService';
       }
     }),
     PapaParseModule,
+    NgbModule.forRoot(),
+    CalendarModule.forRoot(),
     // custom
     SharedModule,
     NetworkMonitorModule,
@@ -311,6 +324,7 @@ import { DeployService } from '../services/deployService';
     Products,
     ProductDetails,
     ReportsDashboard,
+    HumanResourceDashboard,
     ReportStockMovementSummaryPage,
     Preferences,
     Services,
@@ -331,6 +345,7 @@ import { DeployService } from '../services/deployService';
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,
+    ShiftModalPage,
     ParkSale,
     AddNotes,
     OpenCloseRegister,
@@ -365,6 +380,7 @@ import { DeployService } from '../services/deployService';
     Brands,
     BrandDetails,
     DeployPage,
+    Roster,
     Roles,
     RoleDetails,
     Suppliers,
@@ -421,6 +437,7 @@ import { DeployService } from '../services/deployService';
     BrandService,
     StoreService,
     SalesServices,
+    ShiftService,
     ClickStopPropagation,
     KeysPipe,
     GroupByPipe,

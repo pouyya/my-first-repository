@@ -229,23 +229,16 @@ export class PrintService {
       return;
     }
 
-    const currentAccountsettings = await this.accountSettingService.getCurrentSetting();
     const printerSales = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     printerSales.forEach(printerSale => {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = printerSale.sale;
-      productionLinePrinterProviderContext.invoiceTitle = currentAccountsettings.name;
-      productionLinePrinterProviderContext.shopName = this.syncContext.currentStore.name;
-      productionLinePrinterProviderContext.phoneNumber = this.syncContext.currentStore.phone;
-      productionLinePrinterProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
-      productionLinePrinterProviderContext.footerMessage = currentAccountsettings.receiptFooterMessage;
 
       const printerProvider = new EscPrinterProvider(printerSale.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
 
-      const productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, this.translateService, printerProvider)
+      const productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
         .setHeader()
         .setBody()
-        .setFooter()
         .cutPaper();
 
       new EscPrinterConnectorProvider(printerSale.printer.ipAddress, printerSale.printer.printerPort)
