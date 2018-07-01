@@ -371,7 +371,7 @@ export class BasketComponent {
       try {
 
         this.printSale(false, sale);
-        await this.printService.printProductionLinePrinter(this.sale);
+        await this.printService.printProductionLinePrinter(sale);
 
       } catch (error) {
         console.log(error);

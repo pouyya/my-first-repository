@@ -1,3 +1,4 @@
+@import "../../node_modules/angular-calendar/scss/angular-calendar";
 @import "../theme/variables";
 
 .text-right {
@@ -76,4 +77,8 @@ ion-icon {
   &[class*="simpleidea-edit"] {
     mask-image: url(../assets/img/edit.svg);
   }
+}
+
+.no-scroll > .scroll-content{
+  overflow: hidden;
 }
