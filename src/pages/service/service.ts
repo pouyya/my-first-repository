@@ -51,7 +51,6 @@ export class Services extends SearchableListing<Service>{
         }
       };
       await this.fetch();
-      // this._defaultPriceBook = await this.priceBookService.getDefault();
 
       loader.dismiss();
     } catch (err) {
