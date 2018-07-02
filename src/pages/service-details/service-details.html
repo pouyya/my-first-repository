@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Service</ion-title>
     <ion-buttons end>
-      <button ion-button icon-only (click)="saveService()">
+      <button ion-button icon-only [disabled]="!serviceItem.categoryIDs || serviceItem.categoryIDs.length == 0" (click)="saveService()">
         save
       </button>
       <button ion-button icon-only (click)="delete()">
@@ -24,10 +24,6 @@
       <ion-input type="text" [(ngModel)]="serviceItem.barcode"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Display Order</ion-label>
-      <ion-input type="number" [(ngModel)]="serviceItem.order"></ion-input>
-    </ion-item>
-    <ion-item>
       <ion-label>Is Modifier?</ion-label>
       <ion-checkbox [checked]="serviceItem.isModifier" name="isModifier" [(ngModel)]="serviceItem.isModifier" ></ion-checkbox>
     </ion-item>
@@ -37,19 +33,8 @@
         <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
       </ion-select>
     </ion-item>
-    <ion-item>
-      <color-picker [selectedColor$]="color"></color-picker>
-    </ion-item>
-    <ion-item>
-      <button ion-button (click)="selectIcon()">Select Icon</button>
-      <span *ngIf="selectedIcon"><sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
-    </ion-item>
-  </ion-list>
-  <div class="insert-image">
-    <p>
-      <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
-    </p>
-  </div>
+    </ion-list>
+
   <!-- Default Price Book  -->
   <ion-grid>
     <ion-row>
@@ -100,5 +85,20 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
+  <ion-grid>
+    <ion-list inset>
+      <ion-item>
+        <color-picker [selectedColor$]="color"></color-picker>
+      </ion-item>
+      <ion-item>
+        <button ion-button (click)="selectIcon()">Select Icon</button>
+        <span *ngIf="selectedIcon"><sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
+      </ion-item>
+    </ion-list>
+    <div class="insert-image">
+      <p>
+        <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
+      </p>
+    </div>
+  </ion-grid>
 </ion-content>
