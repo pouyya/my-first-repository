@@ -74,20 +74,7 @@
       </ion-item>
     </ion-list>
 
-    <ion-list inset>
-      <ion-item>
-        <ion-label class="item-name">Description</ion-label>
-        <ion-textarea class="item-text" [(ngModel)]="productItem.description" name="description"></ion-textarea>
-      </ion-item>
-      <ion-item>
-        <color-picker [selectedColor$]="color"></color-picker>
-      </ion-item>
-      <ion-item>
-        <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
-        <span *ngIf="selectedIcon">
-          <sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
-      </ion-item>
-    </ion-list>
+
   </form>
 
 
@@ -142,18 +129,16 @@
         </ion-item>
       </ion-col>
     </ion-row>
-  </ion-grid>
-  <ion-grid>
     <ion-row>
       <ion-col>
-        <div class="insert-image">
-          <p>
-            <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
-          </p>
-        </div>
+        <ion-item>
+          <ion-label class="item-name">Description</ion-label>
+          <ion-textarea class="item-text" [(ngModel)]="productItem.description" name="description"></ion-textarea>
+        </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
+
   <ion-grid>
     <ion-row>
       <ion-col col-md-11 class="pull-left">
@@ -188,6 +173,29 @@
       </ion-item-group>
     </ion-list>
   </div>
+  <ion-grid>
+    <ion-row>
+      <ion-list inset>
+        <ion-item>
+          <color-picker [selectedColor$]="color"></color-picker>
+        </ion-item>
+        <ion-item>
+          <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
+          <span *ngIf="selectedIcon">
+          <sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
+        </ion-item>
+      </ion-list>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div class="insert-image">
+          <p>
+            <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
+          </p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-grid *ngIf="productItem.stockControl">
     <ion-row>
       <ion-col col-md-9 class="pull-left">
