@@ -95,13 +95,16 @@ export class AuthService {
    * @param email
    * @returns {Observable<any>}
    */
-  public resetPassword(email: string): Observable<any> {
+  public async resetPassword(email: string): Promise<Observable<any>>  {
     var headers = new Headers({
       'Content-Type': 'application/json',
       'cache-control': 'no-cache',
       'Accept': '*/*',
     });
     let payLoad = JSON.stringify({ 'email': email });
-    return this.http.post(ConfigService.forgotPasswordEndPoint(), payLoad, { headers });
+    return this.http.post(ConfigService.forgotPasswordEndPoint(), payLoad, { headers })
+    .toPromise()
+    .then(response => response.json().data) 
+    .catch();
   }
 }
