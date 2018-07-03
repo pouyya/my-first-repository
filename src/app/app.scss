@@ -79,6 +79,11 @@ ion-icon {
   }
 }
 
+.item-label-stacked .text-input-md,
+.item-label-floating .text-input-md {
+  margin-left: 8px;
+}
+
 .no-scroll > .scroll-content{
   overflow: hidden;
 }

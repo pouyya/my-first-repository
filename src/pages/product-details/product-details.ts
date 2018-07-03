@@ -270,9 +270,9 @@ export class ProductDetails {
 	public selectIcon() {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
-			if (data.status) {
+			if (data && data.status) {
 				this.selectedIcon = data.selected;
-				this.productItem.icon = this.icons[this.selectedIcon];
+				this.productItem.icon = this.icons[this.selectedIcon] || null;
 			}
 		});
 		modal.present();
@@ -416,7 +416,6 @@ export class ProductDetails {
 	}
 
 	public async saveProducts() {
-		this.productItem.order = Number(this.productItem.order);
 		this.productItem.stockControl = this.isStockEnabled;
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);

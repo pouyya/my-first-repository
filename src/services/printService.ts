@@ -161,7 +161,7 @@ export class PrintService {
   }
 
 
-  public async printReceipt(sale: Sale) {
+  public async printReceipt(sale: Sale): Promise<any> {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
@@ -192,64 +192,70 @@ export class PrintService {
           .write(receiptProvider.getResult()));
       });
 
-      await Promise.all(promises);
+      return Promise.all(promises);
     }
   }
 
   private getPrinterSales(sale: Sale, deviceType: DeviceType) {
-    const printers = this.syncContext.currentStore.devices.filter(device => device.type == deviceType);
     const printerSales = [];
-    printers.forEach(printer => {
-      if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
-        (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
-        return;
-      }
-      let items = [];
-      if (sale) {
-        if (!printer.associatedPurchasableItemIds || !printer.associatedPurchasableItemIds.length) {
-          items = sale.items;
-        } else {
-          items = sale.items.filter(item => printer.associatedPurchasableItemIds.indexOf(item.purchsableItemId) !== -1);
+    if (this.syncContext.currentStore.devices) {
+      const printers = this.syncContext.currentStore.devices.filter(device => device.type == deviceType);
+      printers.forEach(printer => {
+        if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
+          (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
+          return;
         }
-      }
-      if (items.length) {
-        const newSale = _.cloneDeep(sale);
-        newSale.items = items;
-        printerSales.push({ printer, sale: newSale });
-      } else if (!sale) {
-        printerSales.push({ printer });
-      }
-    });
+        let items = [];
+        if (sale) {
+          if (!printer.associatedPurchasableItemIds || !printer.associatedPurchasableItemIds.length) {
+            items = sale.items;
+          } else {
+            items = sale.items.filter(item => printer.associatedPurchasableItemIds.indexOf(item.purchsableItemId) !== -1);
+          }
+        }
+        if (items.length) {
+          const newSale = _.cloneDeep(sale);
+          newSale.items = items;
+          printerSales.push({ printer, sale: newSale });
+        } else if (!sale) {
+          printerSales.push({ printer });
+        }
+      });
+    }
     return printerSales;
   }
 
-  public async printProductionLinePrinter(sale: Sale) {
+  public async printProductionLinePrinter(sale: Sale): Promise<any> {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
     }
 
-    const printerSales = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
-    printerSales.forEach(printerSale => {
+    const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
+    const promises = [];
+    productionLinePrinters.forEach(productionLinePrinter => {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
-      productionLinePrinterProviderContext.sale = printerSale.sale;
+      productionLinePrinterProviderContext.sale = productionLinePrinter.sale;
 
-      const printerProvider = new EscPrinterProvider(printerSale.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+      const printerProvider = new EscPrinterProvider(productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
 
       const productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
         .setHeader()
         .setBody()
         .cutPaper();
 
-      new EscPrinterConnectorProvider(printerSale.printer.ipAddress, printerSale.printer.printerPort)
-        .write(productionLinePrinterProvider.getResult());
+      promises.push(new EscPrinterConnectorProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.printerPort)
+        .write(productionLinePrinterProvider.getResult()));
     });
+
+    return Promise.all(promises);
   }
 
-  public async openCashDrawer() {
+  public async openCashDrawer(): Promise<any> {
 
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
+
       return;
     }
 
@@ -262,7 +268,8 @@ export class PrintService {
         promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
           .write(new ReceiptProvider(null, this.translateService, printerProvider).openCashDrawer().getResult()));
       });
-      await Promise.all(promises);
+
+      return Promise.all(promises);
     }
   }
 }
