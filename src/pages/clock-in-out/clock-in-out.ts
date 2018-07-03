@@ -86,7 +86,7 @@ export class ClockInOutPage {
 
       !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
 
-      if(!employee.isActive) {
+      if(!employee.isAdmin && !employee.isActive) {
         toast.setMessage('Employee not Active!');
         toast.present();
         return null;
