@@ -197,29 +197,31 @@ export class PrintService {
   }
 
   private getPrinterSales(sale: Sale, deviceType: DeviceType) {
-    const printers = this.syncContext.currentStore.devices.filter(device => device.type == deviceType);
     const printerSales = [];
-    printers.forEach(printer => {
-      if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
-        (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
-        return;
-      }
-      let items = [];
-      if (sale) {
-        if (!printer.associatedPurchasableItemIds || !printer.associatedPurchasableItemIds.length) {
-          items = sale.items;
-        } else {
-          items = sale.items.filter(item => printer.associatedPurchasableItemIds.indexOf(item.purchsableItemId) !== -1);
+    if (this.syncContext.currentStore.devices) {
+      const printers = this.syncContext.currentStore.devices.filter(device => device.type == deviceType);
+      printers.forEach(printer => {
+        if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
+          (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
+          return;
         }
-      }
-      if (items.length) {
-        const newSale = _.cloneDeep(sale);
-        newSale.items = items;
-        printerSales.push({ printer, sale: newSale });
-      } else if (!sale) {
-        printerSales.push({ printer });
-      }
-    });
+        let items = [];
+        if (sale) {
+          if (!printer.associatedPurchasableItemIds || !printer.associatedPurchasableItemIds.length) {
+            items = sale.items;
+          } else {
+            items = sale.items.filter(item => printer.associatedPurchasableItemIds.indexOf(item.purchsableItemId) !== -1);
+          }
+        }
+        if (items.length) {
+          const newSale = _.cloneDeep(sale);
+          newSale.items = items;
+          printerSales.push({ printer, sale: newSale });
+        } else if (!sale) {
+          printerSales.push({ printer });
+        }
+      });
+    }
     return printerSales;
   }
 
@@ -266,7 +268,7 @@ export class PrintService {
         promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
           .write(new ReceiptProvider(null, this.translateService, printerProvider).openCashDrawer().getResult()));
       });
-      
+
       return Promise.all(promises);
     }
   }
