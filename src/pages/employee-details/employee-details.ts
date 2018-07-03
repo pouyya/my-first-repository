@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { Store } from './../../model/store';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { SelectRolesModal } from './modals/select-roles/select-roles';
-import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee, EmployeeRolePerStore } from './../../model/employee';
@@ -38,7 +37,6 @@ export class EmployeeDetails {
 
   constructor(
     private employeeService: EmployeeService,
-    private timestampService: EmployeeTimestampService,
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,

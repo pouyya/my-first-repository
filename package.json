@@ -88,7 +88,7 @@
     "cordova-sqlite-storage": "^2.2.1",
     "cz.blocshop.socketsforcordova": "^1.1.0",
     "ionic-angular": "3.9.2",
-    "ionic-plugin-keyboard": "^2.2.1",
+    "cordova-plugin-ionic-keyboard": "^2.1.2",
     "ionicons": "^3.0.0",
     "ionicons-svg": "^3.0.0",
     "ionicpro-deploy": "^1.1.5",
@@ -137,7 +137,7 @@
     "plugins": {
       "cordova-plugin-device": {},
       "cordova-sqlite-storage": {},
-      "ionic-plugin-keyboard": {},
+      "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-dialogs": {},
       "cordova-plugin-insomnia": {},
       "cz.blocshop.socketsforcordova": {},
