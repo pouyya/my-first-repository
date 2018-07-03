@@ -17,11 +17,11 @@
   <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
     <ion-list inset>
       <ion-item>
-        <ion-label class="item-name">Name</ion-label>
+        <ion-label class="item-name" floating>Name</ion-label>
         <ion-input type="text" [(ngModel)]="categoryItem.name" name="name" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Display Order</ion-label>
+        <ion-label class="item-name" floating>Display Order</ion-label>
         <ion-input type="number" [(ngModel)]="categoryItem.order" name="order"></ion-input>
       </ion-item>
       <ion-item>

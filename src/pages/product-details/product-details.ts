@@ -271,8 +271,7 @@ export class ProductDetails {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
 			if (data && data.status) {
-				this.selectedIcon = data.selected;
-				this.productItem.icon = this.icons[this.selectedIcon] || null;
+                this.productItem.icon = this.icons[this.selectedIcon] || null;
 			}
 		});
 		modal.present();
