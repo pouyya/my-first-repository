@@ -56,41 +56,49 @@ export class LoginPage {
   public register(): void {
     const browser = this.iab.create(`${ENV.service.baseUrl}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
     var token;
-    var tokenInterval;
+    var bridgeInterval;
 
     browser.on('loadstop').subscribe(event => {
-      tokenInterval = setInterval(async function () {
+      bridgeInterval = setInterval(async function () {
         var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
         if (tokenResult && tokenResult[0]) {
           token = tokenResult[0];
           browser.close();
         }
-      }, 2000)
+
+        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('forcetoclose'); if(close && close[0] && close[0].value) return true; })()" });
+        if (closeResult && closeResult[0]) {
+          browser.close();
+        }
+      }, 500);
+
     });
 
     var _this = this;
+
     browser.on('exit').subscribe(async function () {
-      clearInterval(tokenInterval);
-
-      let loader = _this.loading.create({
-        content: 'Logging In...'
-      });
-
-      await loader.present();
-
-      try {
-        await _this.userService.setAccessToken(token)
-        await _this.authService.getUserProfile(token);
-        await _this.navigateToDataSync();
-        loader.dismiss();
-      } catch (error) {
-        let toast = _this.toastCtrl.create({
-          message: 'Invalid Email/Password!',
-          duration: 3000
+      clearInterval(bridgeInterval);
+      if (token) {
+        let loader = _this.loading.create({
+          content: 'Logging In...'
         });
-        toast.present();
-      } finally {
-        loader.dismiss();
+
+        await loader.present();
+
+        try {
+          await _this.userService.setAccessToken(token)
+          await _this.authService.getUserProfile(token);
+          await _this.navigateToDataSync();
+          loader.dismiss();
+        } catch (error) {
+          let toast = _this.toastCtrl.create({
+            message: 'Invalid Email/Password!',
+            duration: 3000
+          });
+          toast.present();
+        } finally {
+          loader.dismiss();
+        }
       }
     });
   }

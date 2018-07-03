@@ -39,7 +39,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
     setBody(): ReceiptProvider {
         var basketItems = "";
         if (this.receiptProviderContext.sale.items) {
-            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "4" : "3"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "34" : "30"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">`;
+            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "7" : "6"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "31" : "27"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">`;
 
             for (let basketItem of this.receiptProviderContext.sale.items) {
                 basketItems += `<tr>
@@ -47,6 +47,15 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
                             <td>${TypeHelper.encodeHtml(basketItem.name)}</td>
                             <td>${TypeHelper.toCurrency(basketItem.finalPrice)}</td>
                         </tr>`;
+                if (basketItem.modifierItems) {
+                    for (let basketItemModifier of basketItem.modifierItems) {
+                        basketItems += `<tr>
+                                <td>   ${basketItemModifier.quantity}</td>
+                                <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
+                                <td>${TypeHelper.toCurrency(basketItem.finalPrice)}</td>
+                            </tr>`;
+                    }
+                }
             }
 
             basketItems += `</table>

@@ -25,8 +25,9 @@ export class ForgotPassword {
         });
         toast.present();
     }, error => {
+      console.log(error);
       let toast = this.toastCtrl.create({
-        message: 'Invalid Email!',
+        message: 'Invalid Email! or unknown error',
         duration: 3000
       });
       toast.present();

@@ -4,16 +4,16 @@ import { EmployeeService } from './../../services/employeeService';
 import { Component, NgZone } from '@angular/core';
 import { Employee } from "../../model/employee";
 import { NavController, LoadingController } from 'ionic-angular';
-import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { FilterType, Item } from "../../metadata/listingModule";
 import {EmployeeTimestampService} from "../../services/employeeTimestampService";
 import {Utilities} from "../../utility";
+import { HumanResourceModule } from "../../modules/humanResourceModule";
 
 @SecurityModule(SecurityAccessRightRepo.EmployeeListing)
-@PageModule(() => BackOfficeModule)
+@PageModule(() => HumanResourceModule)
 @Component({
   selector: 'employees',
   templateUrl: 'employees.html',
