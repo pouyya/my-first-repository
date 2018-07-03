@@ -30,15 +30,15 @@
   <form (ngSubmit)="saveProducts()" #productForm="ngForm">
     <ion-list>
       <ion-item>
-        <ion-label class="item-name">Name</ion-label>
+        <ion-label class="item-name" floating>Name</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Barcode</ion-label>
+        <ion-label class="item-name" floating>Barcode</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.barcode" name="barcode"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Tags</ion-label>
+        <ion-label class="item-name" floating>Tags</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.tag" name="tag"></ion-input>
       </ion-item>
       <ion-item>
@@ -55,7 +55,7 @@
         </ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Brand</ion-label>
+        <ion-label floating>Brand</ion-label>
         <ion-select [(ngModel)]="productItem.brandId" name="brandId" *ngIf="this.brands.length>0">
           <ion-option *ngFor="let brand of brands ; let idx=index" value={{brand._id}}>{{brand.name}}</ion-option>
         </ion-select>
@@ -64,7 +64,7 @@
         </ion-input>
       </ion-item>
       <ion-item>
-        <ion-label>Supplier</ion-label>
+        <ion-label floating>Supplier</ion-label>
         <ion-select [(ngModel)]="productItem.supplierId" name="supplierId" *ngIf="this.suppliers.length>0">
           <ion-option *ngFor="let supplier of suppliers" value={{supplier._id}}>{{supplier.name}}</ion-option>
         </ion-select>
@@ -152,19 +152,19 @@
       <ion-item-group>
         <ion-item-divider color="dark">{{storeStock.store.name}}</ion-item-divider>
         <ion-item>
-          <ion-label class="item-name">Available Stock</ion-label>
+          <ion-label class="item-name" floating>Available Stock</ion-label>
           <ion-input type="number" disabled="true" [(ngModel)]="storeStock.value"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name">Supplier</ion-label>
+          <ion-label class="item-name" floating>Supplier</ion-label>
           <ion-input type="text"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name">Reorder Point</ion-label>
+          <ion-label class="item-name" floating>Reorder Point</ion-label>
           <ion-input type="text"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name">Reorder Qty</ion-label>
+          <ion-label class="item-name" floating>Reorder Qty</ion-label>
           <ion-input type="number"></ion-input>
         </ion-item>
       </ion-item-group>

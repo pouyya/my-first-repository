@@ -16,16 +16,16 @@
 <ion-content>
   <ion-list inset>
     <ion-item>
-      <ion-label class="item-name">Name</ion-label>
+      <ion-label class="item-name" floating>Name</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.name"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Barcode</ion-label>
+      <ion-label class="item-name" floating>Barcode</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.barcode"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label>Is Modifier?</ion-label>
-      <ion-checkbox [checked]="serviceItem.isModifier" name="isModifier" [(ngModel)]="serviceItem.isModifier" ></ion-checkbox>
+      <ion-checkbox [checked]="serviceItem.isModifier" name="isModifier" [(ngModel)]="serviceItem.isModifier"></ion-checkbox>
     </ion-item>
     <ion-item>
       <ion-label>Categories</ion-label>
@@ -33,7 +33,7 @@
         <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
       </ion-select>
     </ion-item>
-    </ion-list>
+  </ion-list>
 
   <!-- Default Price Book  -->
   <ion-grid>
@@ -71,7 +71,9 @@
         <ion-item item-content>
           <ion-label color="primary" stacked>+ Sales Tax</ion-label>
           <ion-select [(ngModel)]="defaultPriceBook.tax" (ionChange)="calculate('salesTax', defaultPriceBook)">
-            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }} <small>({{ tax.rate }}%)</small></ion-option>
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
+              <small>({{ tax.rate }}%)</small>
+            </ion-option>
           </ion-select>
         </ion-item>
       </ion-col>
@@ -92,7 +94,8 @@
       </ion-item>
       <ion-item>
         <button ion-button (click)="selectIcon()">Select Icon</button>
-        <span *ngIf="selectedIcon"><sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
+        <span *ngIf="selectedIcon">
+          <sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
       </ion-item>
     </ion-list>
     <div class="insert-image">
