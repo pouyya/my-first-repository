@@ -179,6 +179,8 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddShiftDirective } from "../directives/shift.directive";
 import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
 import {ShiftService} from "../services/shiftService";
+import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
+import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
 
 @NgModule({
   declarations: [
@@ -255,7 +257,9 @@ import {ShiftService} from "../services/shiftService";
     Closures,
     TranslatorPipe,
     DeleteAccount,
-    AddShiftDirective
+    AddShiftDirective,
+    IonSimpleWizard,
+    IonSimpleWizardStep
   ],
   imports: [
     FormsModule,
@@ -315,7 +319,7 @@ import {ShiftService} from "../services/shiftService";
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
     SearchableIonSelectModule,
-    IonicProDeployModule.forRoot(),
+    IonicProDeployModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
