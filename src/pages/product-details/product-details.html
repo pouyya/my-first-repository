@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Product</ion-title>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="productForm.ngSubmit.emit()" [disabled]="!productForm.form.valid">
+      <button type="submit" ion-button icon-only (click)="productForm.ngSubmit.emit()" [disabled]="!productForm.form.valid || !productItem.categoryIDs || productItem.categoryIDs.length == 0">
         Save
       </button>
       <button ion-button icon-only (click)="delete()">
@@ -40,10 +40,6 @@
       <ion-item>
         <ion-label class="item-name">Tags</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.tag" name="tag"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label class="item-name">Display Order</ion-label>
-        <ion-input type="number" [(ngModel)]="productItem.order" name="order"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Is Modifier?</ion-label>
@@ -92,7 +88,7 @@
   <ion-grid>
     <ion-row>
       <ion-col col-md-12 class="pull-left">
-        <h3>Default Price Book</h3>
+        <h3>Pricing</h3>
       </ion-col>
     </ion-row>
     <ion-row>
