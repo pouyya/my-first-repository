@@ -21,15 +21,11 @@
         <ion-input type="text" [(ngModel)]="categoryItem.name" name="name" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Display Order</ion-label>
-        <ion-input type="number" [(ngModel)]="categoryItem.order" name="order"></ion-input>
-      </ion-item>
-      <ion-item>
         <color-picker [selectedColor$]="color"></color-picker>
       </ion-item>
       <ion-item>
         <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
-        <sp-icon *ngIf="selectedIcon" [icon]="categoryItem.icon.name"></sp-icon>
+        <sp-icon *ngIf="selectedIcon" [icon]="icons[categoryItem.icon.name]"></sp-icon>
         <span *ngIf="selectedIcon">&nbsp;{{ categoryItem.icon.name }}</span>
       </ion-item>
     </ion-list>
