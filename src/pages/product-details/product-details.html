@@ -142,12 +142,12 @@
         <h2>Enable Stock Control</h2>
       </ion-col>
       <ion-col col-md-1 class="pull-right">
-        <ion-toggle [(ngModel)]="productItem.stockControl"></ion-toggle>
+        <ion-toggle [(ngModel)]="isStockEnabled" (ngModelChange)="onStockToggle($event)"></ion-toggle>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <div *ngIf="productItem.stockControl">
+  <div *ngIf="isStockEnabled">
     <ion-list *ngFor="let storeStock of storesStock">
       <ion-item-group>
         <ion-item-divider color="dark">{{storeStock.store.name}}</ion-item-divider>
