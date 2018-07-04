@@ -181,6 +181,7 @@ import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
 import {ShiftService} from "../services/shiftService";
 import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
 import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
+import {CreateProductModal} from "../pages/products/modals/create-product/create-product";
 
 @NgModule({
   declarations: [
@@ -207,6 +208,7 @@ import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-
     PaymentsPage,
     SplitPaymentPage,
     CashModal,
+    CreateProductModal,
     CreditCardModal,
     ShiftModalPage,
     ParkSale,
@@ -346,6 +348,7 @@ import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-
     PaymentsPage,
     SplitPaymentPage,
     CashModal,
+    CreateProductModal,
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,

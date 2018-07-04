@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Create Product</ion-title>
+    <ion-buttons end>
+      <button type="button" ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <form (ngSubmit)="createProduct()" #productForm="ngForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name">Name</ion-label>
+        <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Categories</ion-label>
+        <ion-select [(ngModel)]="productItem.categoryIDs" multiple="true" name="category" *ngIf="categories.length>0">
+          <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
+        </ion-select>
+        <ion-input type="text" disabled="true" *ngIf="this.categories.length==0" >
+          no category. There is no category. Please add category first
+        </ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+  <!-- Default Price Book  -->
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-12 class="pull-left">
+        <h3>Pricing</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>Supply price</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.supplyPrice" (change)="calculate('supplyPrice', defaultPriceBook)">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>x Markup (%)</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.markup" (change)="calculate('markup', defaultPriceBook)">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>= Retail Price (Excl.)</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.retailPrice" (change)="calculate('retailPrice', defaultPriceBook)"
+                     required></ion-input>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-3>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>+ Sales Tax</ion-label>
+          <ion-select [(ngModel)]="defaultPriceBook.tax" (ionChange)="calculate('salesTax', defaultPriceBook)">
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
+              <small>({{ tax.rate }}%)</small>
+            </ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col col-md-2>
+        <ion-item item-content>
+          <ion-label color="primary" stacked>= Retail Price (Incl.)</ion-label>
+          <ion-input type="number" [(ngModel)]="defaultPriceBook.item.inclusivePrice" (change)="calculate('inclusivePrice', defaultPriceBook)">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid> 
+</ion-content>
+<ion-footer>
+  <button class="pull-right" type="submit" ion-button (click)="productForm.ngSubmit.emit()"
+          [disabled]="!productForm.form.valid || !productItem.categoryIDs || productItem.categoryIDs.length === 0">Create</button>
+</ion-footer>

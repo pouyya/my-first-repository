@@ -1,6 +1,6 @@
 import { PriceBookService } from './../../services/priceBookService';
 import _ from 'lodash';
-import {AlertController, LoadingController} from 'ionic-angular';
+import {AlertController, LoadingController, ModalController} from 'ionic-angular';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import { Component, NgZone } from '@angular/core';
 import { NavController, Platform } from 'ionic-angular';
@@ -22,6 +22,8 @@ import {UserService} from "../../modules/dataSync/services/userService";
 import {Category} from "../../model/category";
 import {AppService} from "../../services/appService";
 import {Utilities} from "../../utility";
+import {CategoryIconSelectModal} from "../category-details/modals/category-icon-select/category-icon-select";
+import {CreateProductModal} from "./modals/create-product/create-product";
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -40,7 +42,7 @@ export class Products extends SearchableListing<Product>{
   public isTaxInclusive: boolean = false;
   private categoryNamesMapping = {};
   private importedProducts: Subject<Object[]> = new Subject<Object[]>();
-
+  private categories;
   constructor(
     private navCtrl: NavController,
     private productService: ProductService,
@@ -54,6 +56,7 @@ export class Products extends SearchableListing<Product>{
     private alertCtrl: AlertController,
     protected zone: NgZone,
     private categoryService: CategoryService,
+    private modalCtrl: ModalController,
     private utility: Utilities) {
     super(productService, zone, 'Product');
   }
@@ -64,8 +67,8 @@ export class Products extends SearchableListing<Product>{
     let loader = this.loading.create({ content: 'Loading Products...' });
     await loader.present();
     try {
-      const categories = await this.categoryService.getAll();
-      this.categoryNamesMapping = categories.reduce((initialObj, category) => {
+      this.categories = await this.categoryService.getAll();
+      this.categoryNamesMapping = this.categories.reduce((initialObj, category) => {
         initialObj[category.name] = category._id;
         return initialObj;
       }, {});
@@ -88,6 +91,16 @@ export class Products extends SearchableListing<Product>{
     } catch (err) {
       throw new Error(err);
     }
+  }
+
+  public createProduct(){
+      let modal = this.modalCtrl.create(CreateProductModal, { categories: this.categories });
+      modal.onDidDismiss(data => {
+          if (data && data.status) {
+              this.showDetail(data.product);
+          }
+      });
+      modal.present();
   }
 
   showDetail(product?: ProductsList) {

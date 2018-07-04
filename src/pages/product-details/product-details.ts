@@ -57,7 +57,7 @@ export class ProductDetails {
 	public categories = [];
 	public brands: any = [];
 	public isNew = true;
-	public action = 'Add';
+	public action = 'Edit';
 	public selectedIcon: string = "";
 	public icons: any;
 	public disableDropdown: boolean = false;
@@ -74,6 +74,7 @@ export class ProductDetails {
 		},
 		isDefault: false
 	};
+
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
 	private color: Subject<string> = new Subject<string>();
@@ -115,7 +116,6 @@ export class ProductDetails {
 		if (editProduct) {
 			this.productItem = editProduct;
 			this.isNew = false;
-			this.action = 'Edit';
 			if (this.productItem.hasOwnProperty('icon') && this.productItem.icon) {
 				this.selectedIcon = this.productItem.icon.name;
 			}
