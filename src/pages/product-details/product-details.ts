@@ -27,6 +27,7 @@ import { Subject } from "rxjs/Subject";
 import { Utilities } from "../../utility";
 import * as moment from "moment-timezone";
 import {EmployeeService} from "../../services/employeeService";
+import {SyncContext} from "../../services/SyncContext";
 
 interface InteractableStoreStock {
 	storeId: string,
@@ -101,7 +102,8 @@ export class ProductDetails {
 		private alertCtrl: AlertController,
 		private cdr: ChangeDetectorRef,
 		private employeeService: EmployeeService,
-		private utility: Utilities) {
+		private utility: Utilities,
+		private syncContext: SyncContext) {
 		this.icons = icons;
 	}
 
@@ -401,7 +403,7 @@ export class ProductDetails {
             const stock: StockHistory = new StockHistory();
             stock.productId = this.productItem._id;
             stock.reason = Reason.InitialValue;
-            stock.storeId = this.storesStock[0].storeId;
+            stock.storeId = this.syncContext.currentStore._id;
             stock.createdAt = moment().utc().format();
             stock.value = initVal;
             stock.createdBy = this.employeeService.getEmployee()._id;
