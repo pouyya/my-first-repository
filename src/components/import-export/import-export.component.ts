@@ -1,4 +1,4 @@
- import { Component, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ModalController } from "ionic-angular";
 import { SelectFileModal } from "./modal/select-file/select-file";
 import { Subject } from "rxjs/Subject";

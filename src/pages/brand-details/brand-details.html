@@ -17,7 +17,7 @@
   <form (ngSubmit)="onSubmit()" #brandForm="ngForm">
     <ion-list inset>
       <ion-item>
-        <ion-label class="item-name">Name</ion-label>
+        <ion-label class="item-name" floating>Name</ion-label>
         <ion-input type="text" [(ngModel)]="brand.name" name="name" required></ion-input>
       </ion-item>
     </ion-list>

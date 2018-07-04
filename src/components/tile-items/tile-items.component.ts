@@ -24,7 +24,10 @@ export class TileItemsComponent {
     };
   }
 
+  selectedTile: any;
+
   public selectItem(item) {
+    this.selectedTile = item;
     this.onSelect.emit(item);
   }
 
