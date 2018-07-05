@@ -6,6 +6,7 @@ import { LoadingController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from "../../services/storeService";
+import { Network } from '@ionic-native/network';
 
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
@@ -28,7 +29,8 @@ export class ReportStockMovementSummaryPage {
 
   constructor(private stockHistoryService: StockHistoryService,
     private storeService: StoreService,
-    private loading: LoadingController) {
+    private loading: LoadingController,
+    private network: Network) {
   }
 
   async ionViewDidLoad() {
@@ -38,6 +40,22 @@ export class ReportStockMovementSummaryPage {
     const stores = await this.storeService.getAll();
     stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
     await this.loadStockReport();
+
+    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      console.log('network was disconnected :-(');
+    });
+
+    let connectSubscription = this.network.onConnect().subscribe(() => {
+      console.log('network connected!');
+      // We just got a connection but we need to wait briefly
+       // before we determine the connection type. Might need to wait.
+      // prior to doing any api requests as well.
+      setTimeout(() => {
+        if (this.network.type === 'wifi') {
+          console.log('we got a wifi connection, woohoo!');
+        }
+      }, 3000);
+    });
   }
 
   public async loadStockReport() {

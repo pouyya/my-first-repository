@@ -181,6 +181,7 @@ import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
 import {ShiftService} from "../services/shiftService";
 import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
 import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
+import { ConnectivityServiceProvider } from '../providers/connectivity-service/connectivity-service';
 
 @NgModule({
   declarations: [
@@ -460,7 +461,8 @@ import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-
     EmailService,
     DeployService,
     SyncContext,
-    DeleteAccountService
+    DeleteAccountService,
+    ConnectivityServiceProvider
   ]
 })
 export class AppModule {
