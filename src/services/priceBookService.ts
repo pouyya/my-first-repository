@@ -1,4 +1,4 @@
-import firstBy from 'thenby';
+import { firstBy } from "thenby";
 import { Injector } from '@angular/core';
 import { EvaluationContext } from './EvaluationContext';
 import { Injectable } from '@angular/core';
