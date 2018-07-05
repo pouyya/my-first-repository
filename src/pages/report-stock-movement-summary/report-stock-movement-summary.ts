@@ -59,8 +59,11 @@ export class ReportStockMovementSummaryPage {
     }
 
     var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, fromDate, toDate);
-    stockMovement.subscribe(stockMovementList => this.stockMovementList = stockMovementList);
+    stockMovement.subscribe(
+      stockMovementList => this.stockMovementList = stockMovementList,
+      err => console.log(err),
+      () => { loader.dismiss() }
+    );
     this.reportGeneratedTime = new Date();
-    loader.dismiss();
   }
 }

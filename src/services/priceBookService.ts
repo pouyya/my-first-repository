@@ -91,7 +91,8 @@ export class PriceBookService extends BaseEntityService<PriceBook> {
     var priceBooks = await this.getAll();
 
     priceBooks.sort(
-      firstBy("priority").thenBy((book1, book2) => {
+      
+      (firstBy("priority") as any).thenBy((book1, book2) => {
         return new Date(book2._id).getTime() - new Date(book1._id).getTime();
       }));
 
