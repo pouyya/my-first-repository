@@ -5,10 +5,10 @@ import { Component } from "@angular/core";
 
 @Component({
   selector: '[network-monitor]',
-  template: `<button ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
+  template: `<button class="no-cursor bar-button bar-button-md bar-button-default bar-button-default-md" ion-button icon-only clear >
         <ion-icon [name]="networkIcon"></ion-icon>
       </button>
-      <button ion-button icon-only class="bar-button bar-button-md bar-button-default bar-button-default-md">
+      <button class="no-cursor bar-button bar-button-md bar-button-default bar-button-default-md" ion-button icon-only clear >
           <ion-icon [name]="syncIcon"></ion-icon>
         </button>`,
   styles: [
@@ -17,7 +17,12 @@ import { Component } from "@angular/core";
       height: 28px;
       stroke: white;
       fill: white;
-    }`
+    }
+    .no-cursor {
+        pointer-events: none;
+        cursor: default;
+    }
+    `
   ]
 })
 export class NetworkMonitorComponent {
