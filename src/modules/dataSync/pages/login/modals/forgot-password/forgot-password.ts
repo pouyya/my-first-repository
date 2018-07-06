@@ -31,36 +31,25 @@ export class ForgotPassword {
         loader.dismiss();
 
         this.toast();
-
-
-    }
-
-    public dismiss(): void {
-        this.viewCtrl.dismiss();
     }
 
     toast() {
         console.log(this.serverResponse);
-        if(this.serverResponse[0])
-        if (this.serverResponse[0]['Status'] == 200) {
-            let toast = this.toastCtrl.create({
-                message: "An email will be send to you shortly",
-                duration: 3000
-            });
-            toast.present();
-        }
-        else {
-            let toast = this.toastCtrl.create({
-                message: 'Invalid Email!',
-                duration: 3000
-            });
-            toast.present();
-        }
+        if (this.serverResponse[0])
+            if (this.serverResponse[0]['Status'] == 200) {
+                let toast = this.toastCtrl.create({
+                    message: "An email will be send to you shortly",
+                    duration: 3000
+                });
+                toast.present();
+            }
+            else {
+                let toast = this.toastCtrl.create({
+                    message: 'Invalid Email!',
+                    duration: 3000
+                });
+                toast.present();
+            }
         { () => this.viewCtrl.dismiss() };
     }
-    
-    public dismiss(): void {
-        this.viewCtrl.dismiss();
-    }
-
 }
