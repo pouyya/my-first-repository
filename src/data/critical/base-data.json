@@ -8,7 +8,7 @@
   "name": "{StoreName}",
   "street": "",
   "suburb": "",
-  "postCode": "",
+  "postCode": "{PostCode}",
   "state": "{StateName}",
   "country": "{CountryName}",
   "phone": "",
@@ -83,7 +83,7 @@
   },
   "timeOffset": "{TimeZone}",
   "saleLastNumber": 0,
-  "saleNumberPrefix": "PS"
+  "saleNumberPrefix": ""
 },
 {
   "_id": "2017-08-08T06:33:10.955Z",
