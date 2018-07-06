@@ -7,7 +7,7 @@
 
     <ion-buttons end>
       <import-export [importedRecords]="importedProducts"></import-export>
-      <button ion-button icon-only (click)="showDetail()">
+      <button ion-button icon-only (click)="createProduct()">
         <ion-icon name="add"></ion-icon>
       </button>
     </ion-buttons>
@@ -16,8 +16,10 @@
 </ion-header>
 <ion-content>
   <ion-row *ngIf="searchFilters.length">
-    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
-      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined"
+      *ngFor="let filter of searchFilters">
+      <ion-searchbar *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true"
+        placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
     </ion-col>
   </ion-row>
   <ion-list>
@@ -45,27 +47,31 @@
   </ion-list>
   <ion-list *ngFor="let product of items; let idx = index;">
     <ion-item-sliding class="sliding" cancelable=true>
-    <ion-item (click)="showDetail(product)">
-      <ion-grid>
-        <ion-row>
-          <ion-col *ngFor="let column of displayColumns;" col-md-3>{{product[column.variableName]}}</ion-col>
-          <ion-col *ngIf="product.retailPrice != null" col-md-2>{{ isTaxInclusive && product.inclusivePrice || product.retailPrice }}</ion-col>
-          <ion-col *ngIf="product.retailPrice == null" col-md-2><ion-spinner name="dots"></ion-spinner></ion-col>
-          <ion-col *ngIf="product.stockInHand != null" col-md-2>{{ product.stockInHand }}</ion-col>
-          <ion-col *ngIf="product.stockInHand == null" col-md-2><ion-spinner name="dots"></ion-spinner></ion-col>
-          <ion-col col-md-2>{{ product._id | localDate }}</ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
-    <ion-item-options>
-      <button ion-button color='danger' (click)="remove(product, idx)" icon=left>
-        <ion-icon name="trash"></ion-icon>
-        Delete
-      </button>
-    </ion-item-options>
+      <ion-item (click)="showDetail(product)">
+        <ion-grid>
+          <ion-row>
+            <ion-col *ngFor="let column of displayColumns;" col-md-3>{{product[column.variableName]}}</ion-col>
+            <ion-col *ngIf="product.retailPrice != null" col-md-2>{{ isTaxInclusive && product.inclusivePrice || product.retailPrice }}</ion-col>
+            <ion-col *ngIf="product.retailPrice == null" col-md-2>
+              <ion-spinner name="dots"></ion-spinner>
+            </ion-col>
+            <ion-col *ngIf="product.stockInHand != null" col-md-2>{{ product.stockInHand }}</ion-col>
+            <ion-col *ngIf="product.stockInHand == null" col-md-2>
+              <ion-spinner name="dots"></ion-spinner>
+            </ion-col>
+            <ion-col col-md-2>{{ product._id | localDate }}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item-options>
+        <button ion-button color='danger' (click)="remove(product, idx)" icon=left>
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
     </ion-item-sliding>
   </ion-list>
   <ion-infinite-scroll (ionInfinite)="fetchMore($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
- </ion-content>
+</ion-content>
