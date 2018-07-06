@@ -162,25 +162,26 @@ import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
-import {Preferences} from "../pages/preferences/preferences";
-import {SplitPaymentPage} from "../pages/split-payment/split-payment";
-import {File} from "@ionic-native/file";
-import {PapaParseModule} from "ngx-papaparse";
-import {FileTransfer} from "@ionic-native/file-transfer";
-import {Camera} from "@ionic-native/camera";
-import {SelectLocationModal} from "../components/image-picker/modal/select-color/select-location";
+import { Preferences } from "../pages/preferences/preferences";
+import { SplitPaymentPage } from "../pages/split-payment/split-payment";
+import { File } from "@ionic-native/file";
+import { PapaParseModule } from "ngx-papaparse";
+import { FileTransfer } from "@ionic-native/file-transfer";
+import { Camera } from "@ionic-native/camera";
+import { SelectLocationModal } from "../components/image-picker/modal/select-color/select-location";
 import { DeleteAccountService } from './../services/deleteAccountService';
-import {DateDurationPickerModule} from "../components/date-duration-picker/date-duration-picker.module";
+import { DateDurationPickerModule } from "../components/date-duration-picker/date-duration-picker.module";
 import { DeployService } from '../services/deployService';
 import { Roster } from "../pages/roster/roster";
 import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
 import { CalendarModule } from "angular-calendar";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddShiftDirective } from "../directives/shift.directive";
-import {ShiftModalPage} from "../pages/roster/modals/shift-modal/shift-modal";
-import {ShiftService} from "../services/shiftService";
+import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
+import { ShiftService } from "../services/shiftService";
 import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
 import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
+import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
 
 @NgModule({
   declarations: [
@@ -207,6 +208,7 @@ import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-
     PaymentsPage,
     SplitPaymentPage,
     CashModal,
+    CreateProductModal,
     CreditCardModal,
     ShiftModalPage,
     ParkSale,
@@ -346,6 +348,7 @@ import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-
     PaymentsPage,
     SplitPaymentPage,
     CashModal,
+    CreateProductModal,
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,
