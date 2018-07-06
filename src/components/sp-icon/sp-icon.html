@@ -2,7 +2,6 @@
   <ion-icon [name]="spIcon.name"></ion-icon>
 </span>
 <span *ngIf="spIcon && spIcon.type == 'svg'">
-  <span class="{{spIcon.name}}">
-    <span *ngFor="let i of paths" class="path{{i}}"></span>
+  <span class="icon-barbc {{spIcon.name}}">
   </span>        
 </span>
