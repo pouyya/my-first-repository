@@ -6,14 +6,12 @@
     "DBBasedEntity"
   ],
   "name": "{StoreName}",
-  "printerIP": "",
-  "printerPort": "9100",
   "street": "",
-  "suburb": "{CityName}",
-  "postCode": "0",
+  "suburb": "",
+  "postCode": "",
   "state": "{StateName}",
   "country": "{CountryName}",
-  "phone": "{PhoneNumber}",
+  "phone": "",
   "printReceiptAtEndOfSale": null,
   "POS": [
     {
@@ -24,10 +22,10 @@
       "showDiscount": true,
       "selectUserForNextSale": false,
       "status": true,
-      "openingAmount": 1,
+      "openingAmount": 0,
       "cashMovements": [],
       "name": "Main",
-      "openTime": "2018-04-30T07:36:09Z",
+      "openTime": null,
       "openingNote": null,
       "categorySort": [],
       "productCategorySort": {},
@@ -50,7 +48,7 @@
   "city": "{CityName}",
   "timezone": "{TimeZone}",
   "email": "{EmailAddress}",
-  "twitter": "{TwitterAccount}"
+  "twitter": ""
 },
 {
   "_id": "2017-07-25T10:22:51.163Z",
