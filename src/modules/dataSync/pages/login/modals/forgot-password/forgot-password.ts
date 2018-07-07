@@ -37,8 +37,7 @@ export class ForgotPassword {
         err => {
           console.log(err);
           loader.dismiss();
-        },
-        () => this.viewCtrl.dismiss() );
+        } );
     }
 
     private toast() {
@@ -46,14 +45,15 @@ export class ForgotPassword {
             if (this.serverResponse[0]['Status'] == 200) {
                 let toast = this.toastCtrl.create({
                     message: "An email will be send to you shortly",
-                    duration: 3000
+                    duration: 5000
                 });
                 toast.present();
+                this.viewCtrl.dismiss()
             }
             else {
                 let toast = this.toastCtrl.create({
                     message: 'Invalid Email!',
-                    duration: 3000
+                    duration: 5000
                 });
                 toast.present();
             }
