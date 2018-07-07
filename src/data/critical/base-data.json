@@ -101,6 +101,7 @@
     }
   ],
   "roles": [],
+  "isActive": true,
   "isAdmin": true,
   "pin": 1111
 },
