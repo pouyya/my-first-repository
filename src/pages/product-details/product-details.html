@@ -211,7 +211,6 @@
     </ion-row>
     <ion-row>
       <ion-col col-md-2><strong>Time & Date</strong></ion-col>
-      <ion-col col-md-2><strong>Staff</strong></ion-col>
       <ion-col col-md-2><strong>Action</strong></ion-col>
       <ion-col col-md-2><strong>Qty. Adjusted</strong></ion-col>
       <ion-col col-md-2><strong>Cost Price</strong></ion-col>
@@ -219,7 +218,6 @@
     </ion-row>
     <ion-row *ngFor="let history of stockHistory[selectedStore]">
       <ion-col col-md-2>{{ history.createdAt | localDate:'MMM DD, YYYY h:mm:ss a' }}</ion-col>
-      <ion-col col-md-2>{{ history.createdBy }}</ion-col>
       <ion-col col-md-2>{{ history.reason }}</ion-col>
       <ion-col col-md-2>{{ history.value > 0 ? '+'+history.value : history.value }}</ion-col>
       <ion-col col-md-2>{{ history.supplyPrice }}</ion-col>
