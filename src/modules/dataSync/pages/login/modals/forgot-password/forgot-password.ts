@@ -27,14 +27,21 @@ export class ForgotPassword {
         await loader.present();
 
         var serverRes = await this.authService.resetPassword(this.email);
-        serverRes.subscribe(response => this.serverResponse = response);
-        loader.dismiss();
-
-        this.toast();
+        serverRes.subscribe(response => {
+            if(response.length>0){
+            this.serverResponse = response;
+            loader.dismiss();
+            this.toast();
+            }
+        },
+        err => {
+          console.log(err);
+          loader.dismiss();
+        },
+        () => this.viewCtrl.dismiss() );
     }
 
-    toast() {
-        console.log(this.serverResponse);
+    private toast() {
         if (this.serverResponse[0])
             if (this.serverResponse[0]['Status'] == 200) {
                 let toast = this.toastCtrl.create({
@@ -50,6 +57,9 @@ export class ForgotPassword {
                 });
                 toast.present();
             }
-        { () => this.viewCtrl.dismiss() };
+    }
+
+    private dismiss(){
+        this.viewCtrl.dismiss()
     }
 }
