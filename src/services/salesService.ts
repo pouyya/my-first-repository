@@ -181,8 +181,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 			_id: sort || SortOptions.DESC
 		}];
 
-		limit && ( query.limit = limit );
-		skip && ( query.skip = skip );
+		limit && (query.limit = limit);
+		skip && (query.skip = skip);
 
 		return await super.findBy(query);
 	}
@@ -375,16 +375,16 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async checkForStockInHand(items: BasketItem[], storeId): Promise<string[]> {
 		let stockErrors: string[] = [];
 
-        const productsInStock = await
+		const productsInStock = await
 			this.stockHistoryService.getAvailableStock(items.map(item => item.purchsableItemId), storeId);
-        const productsInStockMap = productsInStock.reduce((obj, data) => {
-            obj[data.productId] = data.value;
-            return obj;
+		const productsInStockMap = productsInStock.reduce((obj, data) => {
+			obj[data.productId] = data.value;
+			return obj;
 		}, {});
 		items.forEach(item => {
-            if (!productsInStockMap[item.purchsableItemId] || productsInStockMap[item.purchsableItemId] < item.quantity) {
-                stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStockMap[item.purchsableItemId] || 0}`);
-            }
+			if (!productsInStockMap[item.purchsableItemId] || productsInStockMap[item.purchsableItemId] < item.quantity) {
+				stockErrors.push(`${item.name} not enough in stock. Total Stock Available: ${productsInStockMap[item.purchsableItemId] || 0}`);
+			}
 		});
 
 		return stockErrors;

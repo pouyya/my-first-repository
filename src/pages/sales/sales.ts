@@ -22,7 +22,7 @@ import { SyncContext } from "../../services/SyncContext";
 import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
-import {Utilities} from "../../utility";
+import { Utilities } from "../../utility";
 
 
 @SecurityModule()
@@ -54,7 +54,7 @@ export class Sales implements OnDestroy {
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
-  
+
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
   public user: UserSession;
@@ -82,9 +82,10 @@ export class Sales implements OnDestroy {
   }
 
   ionViewWillUnload() {
+    this._sharedService.unsubscribe('updateSale');
+    this._sharedService.unsubscribe('clockInOut');
     this.cacheService.removeAll();
   }
-
 
   async ionViewDidLoad() {
     this.syncContext.currentPos.categorySort = this.syncContext.currentPos.categorySort || [];
@@ -105,7 +106,7 @@ export class Sales implements OnDestroy {
         }
       });
 
-      var __this = this;
+    var __this = this;
 
     this._sharedService
       .getSubscribe('updateSale')
@@ -179,15 +180,15 @@ export class Sales implements OnDestroy {
         category.purchasableItems = [];
       } else {
         category.purchasableItems = items;
-        if(this.syncContext.currentPos.productCategorySort && this.syncContext.currentPos.productCategorySort[category._id]){
-            this.utils.sort(category.purchasableItems, this.syncContext.currentPos.productCategorySort[category._id]);
+        if (this.syncContext.currentPos.productCategorySort && this.syncContext.currentPos.productCategorySort[category._id]) {
+          this.utils.sort(category.purchasableItems, this.syncContext.currentPos.productCategorySort[category._id]);
         }
       }
     });
-    if(this.syncContext.currentPos.categorySort && this.syncContext.currentPos.categorySort.length){
-        this.utils.sort(categories, this.syncContext.currentPos.categorySort);
+    if (this.syncContext.currentPos.categorySort && this.syncContext.currentPos.categorySort.length) {
+      this.utils.sort(categories, this.syncContext.currentPos.categorySort);
     }
-    this.categories = <SalesCategory[]> categories;
+    this.categories = <SalesCategory[]>categories;
     this.activeCategory = _.head(this.categories) || new SalesCategory();
   }
 
