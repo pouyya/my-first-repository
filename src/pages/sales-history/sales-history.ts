@@ -13,7 +13,7 @@ import { Employee } from '../../model/employee';
 import * as moment from 'moment-timezone';
 import { DateTimeHelper } from '../../infra/helpers/dateTimeHelper';
 import { SyncContext } from "../../services/SyncContext";
-import {SharedService} from "../../services/_sharedService";
+import { SharedService } from "../../services/_sharedService";
 
 enum TimeValues {
   anytime = "1",
@@ -142,11 +142,11 @@ export class SalesHistoryPage {
               toast.present();
               var _sale = await this.loadSale(sale, doRefund);
               localStorage.setItem('sale_id', _sale._id);
-              if(previousView.name === 'Sales'){
-                this._sharedService.publish('updateSale', {sale: _sale});
+              if (previousView.name === 'Sales') {
+                this._sharedService.publish('updateSale', { sale: _sale });
                 this.navCtrl.pop();
-              }else{
-                  this.navCtrl.setRoot(Sales, { sale: _sale });
+              } else {
+                this.navCtrl.setRoot(Sales, { sale: _sale });
               }
 
             }
@@ -163,11 +163,11 @@ export class SalesHistoryPage {
     } else {
       var _sale = await this.loadSale(sale, doRefund)
       localStorage.setItem('sale_id', _sale._id);
-      if(previousView.name === 'Sales'){
-          this._sharedService.publish('updateSale', {sale: _sale});
-          this.navCtrl.pop();
-      }else{
-          this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
+      if (previousView.name === 'Sales') {
+        this._sharedService.publish('updateSale', { sale: _sale });
+        this.navCtrl.pop();
+      } else {
+        this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
       }
 
     }
