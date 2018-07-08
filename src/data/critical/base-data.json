@@ -102,6 +102,7 @@
   ],
   "roles": [],
   "isAdmin": true,
+  "isActive": true,
   "pin": "{PIN}"
 },
 {
