@@ -95,6 +95,7 @@ import { SelectPurchasableItemsModel } from './../components/purchasable-item-pr
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
+import { NetworkMonitorEnablePageModule } from '../components/network-monitor/network-monitor-enable-page.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 import { ColorPickerModule } from "../components/color-picker/color-picker.module";
 import { ImagePickerModule } from "../components/image-picker/image-picker.module";
@@ -306,6 +307,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     // custom
     SharedModule,
     NetworkMonitorModule,
+    NetworkMonitorEnablePageModule,
     ColorPickerModule,
     ImagePickerModule,
     DateDurationPickerModule,
