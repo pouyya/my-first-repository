@@ -5,7 +5,6 @@ import { LoadingController } from "ionic-angular";
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/catch';
 
-
 @Component({
     selector: "forgot-password",
     templateUrl: "forgot-password.html"
@@ -28,27 +27,27 @@ export class ForgotPassword {
 
         var serverRes = await this.authService.resetPassword(this.email);
         serverRes.subscribe(response => {
-            if(response.length>0){
-            this.serverResponse = response;
-            loader.dismiss();
-            this.toast();
+            if (response.length > 0) {
+                this.serverResponse = response;
+                loader.dismiss();
+                this.toast();
             }
         },
-        err => {
-          console.log(err);
-          loader.dismiss();
-        } );
+            err => {
+                console.log(err);
+                loader.dismiss();
+            });
     }
 
     private toast() {
-        if (this.serverResponse[0])
+        if (this.serverResponse && this.serverResponse.length > 0 && this.serverResponse[0])
             if (this.serverResponse[0]['Status'] == 200) {
                 let toast = this.toastCtrl.create({
                     message: "An email will be send to you shortly",
                     duration: 5000
                 });
                 toast.present();
-                this.viewCtrl.dismiss()
+                this.dismiss()
             }
             else {
                 let toast = this.toastCtrl.create({
@@ -59,7 +58,7 @@ export class ForgotPassword {
             }
     }
 
-    private dismiss(){
+    dismiss() {
         this.viewCtrl.dismiss()
     }
 }
