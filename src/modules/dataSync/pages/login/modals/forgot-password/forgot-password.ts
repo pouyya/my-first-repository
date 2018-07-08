@@ -5,7 +5,6 @@ import { LoadingController } from "ionic-angular";
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/catch';
 
-
 @Component({
     selector: "forgot-password",
     templateUrl: "forgot-password.html"
@@ -27,29 +26,39 @@ export class ForgotPassword {
         await loader.present();
 
         var serverRes = await this.authService.resetPassword(this.email);
-        serverRes.subscribe(response => this.serverResponse = response);
-        loader.dismiss();
-
-        this.toast();
+        serverRes.subscribe(response => {
+            if (response.length > 0) {
+                this.serverResponse = response;
+                loader.dismiss();
+                this.toast();
+            }
+        },
+            err => {
+                console.log(err);
+                loader.dismiss();
+            });
     }
 
-    toast() {
-        console.log(this.serverResponse);
-        if (this.serverResponse[0])
+    private toast() {
+        if (this.serverResponse && this.serverResponse.length > 0 && this.serverResponse[0])
             if (this.serverResponse[0]['Status'] == 200) {
                 let toast = this.toastCtrl.create({
                     message: "An email will be send to you shortly",
-                    duration: 3000
+                    duration: 5000
                 });
                 toast.present();
+                this.dismiss()
             }
             else {
                 let toast = this.toastCtrl.create({
                     message: 'Invalid Email!',
-                    duration: 3000
+                    duration: 5000
                 });
                 toast.present();
             }
-        { () => this.viewCtrl.dismiss() };
+    }
+
+    dismiss() {
+        this.viewCtrl.dismiss()
     }
 }
