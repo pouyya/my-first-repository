@@ -128,6 +128,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32,
   
 }
@@ -151,6 +152,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32
 }
 ,{
@@ -173,6 +175,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32,
 }
 ,{
@@ -237,6 +240,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32,
 }
 ,{
@@ -259,6 +263,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 24.54545,
+ "stockControl": false,
  "inclusivePrice": 27,
 }
 ,{
@@ -281,6 +286,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 27.27273,
+ "stockControl": false,
  "inclusivePrice": 30,
 }
 ,{
@@ -303,6 +309,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32,
 }
 ,{
@@ -325,6 +332,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32,
 }
 ,{
@@ -347,6 +355,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 29.09091,
+ "stockControl": false,
  "inclusivePrice": 32,
 }
 ,{
@@ -390,6 +399,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 24.54545,
+ "stockControl": false,
  "inclusivePrice": 27,
 }
 ,{
@@ -412,6 +422,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 24.54545,
+ "stockControl": false,
  "inclusivePrice": 27,
 }
 ,{
@@ -434,6 +445,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 27.27273,
+ "stockControl": false,
  "inclusivePrice": 30,
 }
 ,{
@@ -456,6 +468,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 24.54545,
+ "stockControl": false,
  "inclusivePrice": 27,
 }
 ,{
@@ -498,6 +511,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -540,6 +554,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 24.54545,
+ "stockControl": false,
  "inclusivePrice": 27,
 }
 ,{
@@ -582,6 +597,7 @@
  ],
  "brandId": "2018-01-03T04:49:40.9920000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -604,6 +620,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -626,6 +643,7 @@
  ],
  "brandId": "2018-01-02T07:19:39.3970000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -648,6 +666,7 @@
  ],
  "brandId": "2018-01-02T07:19:39.3970000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -670,6 +689,7 @@
  ],
  "brandId": "2018-01-02T07:19:39.3970000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -692,6 +712,7 @@
  ],
  "brandId": "2018-01-02T07:19:39.3970000",
  "retailPrice": 27.27273,
+ "stockControl": false,
  "inclusivePrice": 30,
 }
 ,{
@@ -714,6 +735,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -736,6 +758,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -758,6 +781,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -780,6 +804,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -802,6 +827,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -824,6 +850,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -866,6 +893,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 31.81818,
+ "stockControl": false,
  "inclusivePrice": 35,
 }
 ,{
@@ -888,6 +916,7 @@
  ],
  "brandId": "2018-01-02T07:19:26.7630000",
  "retailPrice": 22.72727,
+ "stockControl": false,
  "inclusivePrice": 25,
 }
 ,{
@@ -912,6 +941,7 @@
  "brandId": "2018-01-02T07:19:26.7630000",
  "supplierId": "2018-02-03T00:41:56.0600000",
  "retailPrice": 24.54545,
+ "stockControl": false,
  "inclusivePrice": 27
 }
 ,{
@@ -935,6 +965,7 @@
  "brandId": "2018-01-02T07:19:26.7630000",
  "supplierId": "2018-02-03T00:41:56.0600000",
  "retailPrice": 36.36364,
+ "stockControl": false,
  "inclusivePrice": 40
 }
 ,{
@@ -958,6 +989,7 @@
  "brandId": "2018-01-02T07:19:26.7630000",
  "supplierId": "2018-02-03T00:41:56.0600000",
  "retailPrice": 36.36364,
+ "stockControl": false,
  "inclusivePrice": 40
 }
 ,
@@ -1397,6 +1429,7 @@
       {
         "id": "2018-01-02T06:02:31.2400000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": null,
@@ -1406,6 +1439,7 @@
       {
         "id": "2018-01-02T07:22:26.5530000",
         "retailPrice": 22.72727,
+        "stockControl": false,  
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": null,
@@ -1415,6 +1449,7 @@
       {
         "id": "2018-01-02T07:22:43.1750000",
         "retailPrice": 20.90909,
+        "stockControl": false,
         "inclusivePrice": 23,
         "supplyPrice": 0,
         "markup": null,
@@ -1424,6 +1459,7 @@
       {
         "id": "2018-01-02T07:23:00.5940000",
         "retailPrice": 22.72727,
+        "stockControl": false,  
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": null,
@@ -1433,6 +1469,7 @@
       {
         "id": "2018-01-02T07:25:16.7920000",
         "retailPrice": 20.90909,
+        "stockControl": false,
         "inclusivePrice": 23,
         "supplyPrice": 0,
         "markup": null,
@@ -1442,6 +1479,7 @@
       {
         "id": "2018-01-02T07:26:18.7580000",
         "retailPrice": 13.63636,
+        "stockControl": false,
         "inclusivePrice": 15,
         "supplyPrice": 0,
         "markup": 0,
@@ -1451,6 +1489,7 @@
       {
         "id": "2018-01-02T07:29:33.2830000",
         "retailPrice": 27.27273,
+        "stockControl": false,
         "inclusivePrice": 30,
         "supplyPrice": 0,
         "markup": null,
@@ -1460,6 +1499,7 @@
       {
         "id": "2018-01-02T07:30:54.3910000",
         "retailPrice": 9.09091,
+        "stockControl": false,
         "inclusivePrice": 10,
         "supplyPrice": 0,
         "markup": null,
@@ -1469,6 +1509,7 @@
       {
         "id": "2018-01-02T07:31:38.5740000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": null,
@@ -1478,6 +1519,7 @@
       {
         "id": "2018-01-02T07:32:11.7310000",
         "retailPrice": 36.36364,
+        "stockControl": false,
         "inclusivePrice": 40,
         "supplyPrice": 0,
         "markup": 0,
@@ -1487,6 +1529,7 @@
       {
         "id": "2018-01-02T07:33:04.9660000",
         "retailPrice": 40.90909,
+        "stockControl": false,
         "inclusivePrice": 45,
         "supplyPrice": 0,
         "markup": null,
@@ -1496,6 +1539,7 @@
       {
         "id": "2018-01-02T07:33:37.8600000",
         "retailPrice": 54.54545,
+        "stockControl": false,
         "inclusivePrice": 60,
         "supplyPrice": 0,
         "markup": null,
@@ -1505,6 +1549,7 @@
       {
         "id": "2018-01-02T07:33:59.8170000",
         "retailPrice": 36.36364,
+        "stockControl": false,
         "inclusivePrice": 40,
         "supplyPrice": 0,
         "markup": null,
@@ -1514,6 +1559,7 @@
       {
         "id": "2018-01-02T07:34:33.5790000",
         "retailPrice": 40.90909,
+        "stockControl": false,
         "inclusivePrice": 45,
         "supplyPrice": 0,
         "markup": null,
@@ -1523,6 +1569,7 @@
       {
         "id": "2018-01-02T07:35:05.9140000",
         "retailPrice": 54.54545,
+        "stockControl": false,
         "inclusivePrice": 60,
         "supplyPrice": 0,
         "markup": null,
@@ -1532,6 +1579,7 @@
       {
         "id": "2018-01-02T07:35:34.6320000",
         "retailPrice": 40.90909,
+        "stockControl": false,
         "inclusivePrice": 45,
         "supplyPrice": 0,
         "markup": null,
@@ -1541,6 +1589,7 @@
       {
         "id": "2018-01-02T07:35:58.7160000",
         "retailPrice": 45.45455,
+        "stockControl": false,
         "inclusivePrice": 50,
         "supplyPrice": 0,
         "markup": null,
@@ -1550,6 +1599,7 @@
       {
         "id": "2018-01-02T07:36:21.8370000",
         "retailPrice": 59.09091,
+        "stockControl": false,
         "inclusivePrice": 65,
         "supplyPrice": 0,
         "markup": null,
@@ -1559,6 +1609,7 @@
       {
         "id": "2018-01-02T07:37:03.0550000",
         "retailPrice": 31.81818,
+        "stockControl": false,
         "inclusivePrice": 35,
         "supplyPrice": 0,
         "markup": null,
@@ -1568,6 +1619,7 @@
       {
         "id": "2018-01-02T07:37:39.5990000",
         "retailPrice": 31.81818,
+        "stockControl": false,
         "inclusivePrice": 35,
         "supplyPrice": 0,
         "markup": null,
@@ -1577,6 +1629,7 @@
       {
         "id": "2018-01-02T23:28:12.6900000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1586,6 +1639,7 @@
       {
         "id": "2018-01-02T23:28:42.9720000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1595,6 +1649,7 @@
       {
         "id": "2018-01-02T23:30:00.3550000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1604,6 +1659,7 @@
       {
         "id": "2018-01-02T23:30:49.4490000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": null,
@@ -1613,6 +1669,7 @@
       {
         "id": "2018-01-02T23:31:10.5630000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": null,
@@ -1622,6 +1679,7 @@
       {
         "id": "2018-01-03T04:29:47.1370000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1631,6 +1689,7 @@
       {
         "id": "2018-01-03T04:30:33.0440000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": 0,
@@ -1640,6 +1699,7 @@
       {
         "id": "2018-01-03T04:31:24.1220000",
         "retailPrice": 27.27273,
+        "stockControl": false,
         "inclusivePrice": 30,
         "supplyPrice": 0,
         "markup": 0,
@@ -1649,6 +1709,7 @@
       {
         "id": "2018-01-03T04:32:04.7540000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1658,6 +1719,7 @@
       {
         "id": "2018-01-03T04:32:40.1010000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1667,6 +1729,7 @@
       {
         "id": "2018-01-03T04:33:17.5820000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": 0,
@@ -1676,6 +1739,7 @@
       {
         "id": "2018-01-03T04:34:49.2520000",
         "retailPrice": 29.09091,
+        "stockControl": false,
         "inclusivePrice": 32,
         "supplyPrice": 0,
         "markup": null,
@@ -1685,6 +1749,7 @@
       {
         "id": "2018-01-03T04:36:29.6680000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": 0,
@@ -1694,6 +1759,7 @@
       {
         "id": "2018-01-03T04:38:21.3200000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": 0,
@@ -1703,6 +1769,7 @@
       {
         "id": "2018-01-03T04:39:00.8480000",
         "retailPrice": 27.27273,
+        "stockControl": false,
         "inclusivePrice": 30,
         "supplyPrice": 0,
         "markup": 0,
@@ -1712,6 +1779,7 @@
       {
         "id": "2018-01-03T04:40:59.0160000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": 0,
@@ -1721,6 +1789,7 @@
       {
         "id": "2018-01-03T04:41:34.0990000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": null,
@@ -1730,6 +1799,7 @@
       {
         "id": "2018-01-03T04:42:12.8730000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1739,6 +1809,7 @@
       {
         "id": "2018-01-03T04:43:31.8670000",
         "retailPrice": 27.27273,
+        "stockControl": false,
         "inclusivePrice": 30,
         "supplyPrice": 0,
         "markup": null,
@@ -1748,6 +1819,7 @@
       {
         "id": "2018-01-03T04:45:38.9070000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": 0,
@@ -1757,6 +1829,7 @@
       {
         "id": "2018-01-03T04:48:27.9060000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": null,
@@ -1766,6 +1839,7 @@
       {
         "id": "2018-01-03T04:49:11.2680000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1775,6 +1849,7 @@
       {
         "id": "2018-01-03T04:54:52.1570000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1784,6 +1859,7 @@
       {
         "id": "2018-01-03T04:55:27.3460000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1793,6 +1869,7 @@
       {
         "id": "2018-01-03T04:56:06.6240000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1802,6 +1879,7 @@
       {
         "id": "2018-01-03T04:57:05.3480000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1811,6 +1889,7 @@
       {
         "id": "2018-01-03T04:57:58.9740000",
         "retailPrice": 27.27273,
+        "stockControl": false,
         "inclusivePrice": 30,
         "supplyPrice": 0,
         "markup": 0,
@@ -1820,6 +1899,7 @@
       {
         "id": "2018-01-03T05:00:45.7250000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1829,6 +1909,7 @@
       {
         "id": "2018-01-03T05:01:16.4960000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1838,6 +1919,7 @@
       {
         "id": "2018-01-03T05:02:02.0730000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1847,6 +1929,7 @@
       {
         "id": "2018-01-03T05:02:54.8550000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1856,6 +1939,7 @@
       {
         "id": "2018-01-03T05:03:47.4390000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1865,6 +1949,7 @@
       {
         "id": "2018-01-03T05:04:20.7970000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": 0,
@@ -1874,6 +1959,7 @@
       {
         "id": "2018-01-03T05:05:21.1380000",
         "retailPrice": 22.72727,
+        "stockControl": false,
         "inclusivePrice": 25,
         "supplyPrice": 0,
         "markup": null,
@@ -1883,6 +1969,7 @@
       {
         "id": "2018-01-03T05:05:51.8250000",
         "retailPrice": 31.81818,
+        "stockControl": false,
         "inclusivePrice": 35,
         "supplyPrice": 0,
         "markup": 0,
@@ -1900,6 +1987,7 @@
       },
       {
         "retailPrice": 0,
+        "stockControl": false,
         "inclusivePrice": 0,
         "supplyPrice": 0,
         "markup": 0,
@@ -1909,6 +1997,7 @@
       {
         "id": "2018-02-03T00:44:34.3830000",
         "retailPrice": 18.18182,
+        "stockControl": false,
         "inclusivePrice": 20,
         "supplyPrice": 0,
         "markup": null,
@@ -1917,6 +2006,7 @@
       },
       {
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": null,
@@ -1926,6 +2016,7 @@
       {
         "id": "2018-02-23T06:52:15.0080000",
         "retailPrice": 24.54545,
+        "stockControl": false,
         "inclusivePrice": 27,
         "supplyPrice": 0,
         "markup": 0,
@@ -1934,6 +2025,7 @@
       },
       {
         "retailPrice": 36.36364,
+        "stockControl": false,
         "inclusivePrice": 40,
         "supplyPrice": 0,
         "markup": null,
@@ -1942,6 +2034,7 @@
       },
       {
         "retailPrice": 36.36364,
+        "stockControl": false,
         "inclusivePrice": 40,
         "supplyPrice": 0,
         "markup": null,
@@ -1951,6 +2044,7 @@
       {
         "id": "2018-03-10T03:23:00.5470000",
         "retailPrice": 36.36364,
+        "stockControl": false,
         "inclusivePrice": 40,
         "supplyPrice": 0,
         "markup": 0,
@@ -1960,6 +2054,7 @@
       {
         "id": "2018-03-10T03:24:23.3980000",
         "retailPrice": 36.36364,
+        "stockControl": false,
         "inclusivePrice": 40,
         "supplyPrice": 0,
         "markup": 0,
