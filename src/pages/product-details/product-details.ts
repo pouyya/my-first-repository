@@ -327,6 +327,7 @@ export class ProductDetails {
 					this.stockEntities.push(stock);
 					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
 					this.storesStock[index].value += stock.value;
+                    !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
 					this.stockHistory[stock.storeId].push(stock);
 				} catch (err) {
 					throw new Error(err);
@@ -411,8 +412,6 @@ export class ProductDetails {
             this.stockEntities.push(stock);
             let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
             this.storesStock[index].value += stock.value;
-            !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
-            this.stockHistory[stock.storeId].push(stock);
         }
 	}
 
