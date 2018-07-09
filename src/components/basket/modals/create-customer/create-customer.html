@@ -22,13 +22,13 @@
       <ion-row>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>First Name</ion-label>
+            <ion-label stacked>First Name</ion-label>
             <ion-input type="text" [formControl]="firstName"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>Last Name</ion-label>
+            <ion-label stacked>Last Name</ion-label>
             <ion-input type="text" [formControl]="lastName"></ion-input>
           </ion-item>
         </ion-col>
@@ -36,19 +36,19 @@
       <ion-row>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>Suburb</ion-label>
+            <ion-label stacked>Suburb</ion-label>
             <ion-input type="text" [formControl]="suburb"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>Address</ion-label>
+            <ion-label stacked>Address</ion-label>
             <ion-input type="text" [formControl]="address"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>Postcode</ion-label>
+            <ion-label stacked>Postcode</ion-label>
             <ion-input type="text" [formControl]="postcode"></ion-input>
           </ion-item>
         </ion-col>
@@ -64,7 +64,7 @@
       <ion-row>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>Phone</ion-label>
+            <ion-label stacked>Phone</ion-label>
             <ion-input type="text" [formControl]="phone"></ion-input>
           </ion-item>
           <ion-item *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="alert alert-danger">
@@ -73,7 +73,7 @@
         </ion-col>
         <ion-col col-md-6>
           <ion-item>
-            <ion-label>Email</ion-label>
+            <ion-label stacked>Email</ion-label>
             <ion-input type="text" [formControl]="email"></ion-input>
           </ion-item>
           <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">

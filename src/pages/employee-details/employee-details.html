@@ -19,19 +19,19 @@
   <form (ngSubmit)="save()" #employeeForm="ngForm">
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>First Name</ion-label>
+        <ion-label class="item-name" stacked>First Name</ion-label>
         <ion-input type="text" [(ngModel)]="employee.firstName" name="firstName" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Last Name</ion-label>
+        <ion-label class="item-name" stacked>Last Name</ion-label>
         <ion-input type="text" [(ngModel)]="employee.lastName" name="lastName"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Address</ion-label>
+        <ion-label class="item-name" stacked>Address</ion-label>
         <ion-input type="text" [(ngModel)]="employee.address" name="address"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Phone</ion-label>
+        <ion-label class="item-name" stacked>Phone</ion-label>
         <ion-input type="text" [(ngModel)]="employee.phone" name="phone"></ion-input>
       </ion-item>
       <ion-item>

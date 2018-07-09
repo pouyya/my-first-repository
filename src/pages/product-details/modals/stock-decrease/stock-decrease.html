@@ -13,23 +13,23 @@
   <form (ngSubmit)="decrease()" #stockForm="ngForm">
   <ion-list inset>
     <ion-item>
-      <ion-label class="item-name">Decrease Qty.</ion-label>
+      <ion-label class="item-name" stacked>Decrease Qty.</ion-label>
       <ion-input type="number" min="1" [(ngModel)]="stock.value" name="stockValue" required></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label>Store</ion-label>
+      <ion-label stacked>Store</ion-label>
       <ion-select [(ngModel)]="stock.storeId" name="stockStore" (ionChange)="setStore()">
         <ion-option *ngFor="let storeStock of storesStock" value={{storeStock.storeId}}>{{storeStock.store.name}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>Reason</ion-label>
+      <ion-label stacked>Reason</ion-label>
       <ion-select [(ngModel)]="stock.reason" name="stockReason">
         <ion-option *ngFor="let reason of reasons | keys" value={{reason.key}}>{{reason.value}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>Note</ion-label>
+      <ion-label stacked>Note</ion-label>
       <ion-textarea [(ngModel)]="stock.note" name="note">
       </ion-textarea>
     </ion-item>    

@@ -18,14 +18,14 @@
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>Name*</ion-label>
+        <ion-label class="item-name" stacked>Name*</ion-label>
         <ion-input type="text" [formControl]="name" name="name" required></ion-input>
       </ion-item>
       <ion-item *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required" class="alert alert-danger">
         Name is required
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Description</ion-label>
+        <ion-label class="item-name" stacked>Description</ion-label>
         <ion-textarea [formControl]="description" name="description"></ion-textarea>
       </ion-item>
     </ion-list>
@@ -33,36 +33,36 @@
     <ion-list-header>Contact Information</ion-list-header>
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>First name</ion-label>
+        <ion-label class="item-name" stacked>First name</ion-label>
         <ion-input type="text" [formControl]="firstName" name="firstName"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Last name</ion-label>
+        <ion-label class="item-name" stacked>Last name</ion-label>
         <ion-input type="text" [formControl]="lastName" name="lastName"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Email</ion-label>
+        <ion-label class="item-name" stacked>Email</ion-label>
         <ion-input type="email" [formControl]="email" name="email"></ion-input>
       </ion-item>
       <ion-item *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
         Invalid email address
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Mobile number</ion-label>
+        <ion-label class="item-name" stacked>Mobile number</ion-label>
         <ion-input type="text" [formControl]="cellphone" name="cellphone"></ion-input>
       </ion-item>
       <ion-item *ngIf="cellphone.invalid && (cellphone.dirty || cellphone.touched)" class="alert alert-danger">
         Invalid phone number. It should only contain numbers, hiphens and a single + sign
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Telephone number</ion-label>
+        <ion-label class="item-name" stacked>Telephone number</ion-label>
         <ion-input type="text" [formControl]="telephone" name="telephone"></ion-input>
       </ion-item>
       <ion-item *ngIf="telephone.invalid && (telephone.dirty || telephone.touched)" class="alert alert-danger">
         Invalid phone number. It should only contain numbers, hiphens and a single + sign
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Website</ion-label>
+        <ion-label class="item-name" stacked>Website</ion-label>
         <ion-input type="text" [formControl]="website" name="website"></ion-input>
       </ion-item>
     </ion-list>
@@ -70,23 +70,23 @@
     <ion-list-header>Physical Address</ion-list-header>
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>Street</ion-label>
+        <ion-label class="item-name" stacked>Street</ion-label>
         <ion-textarea [formControl]="phyStreetAddr" name="phyStreetAddr"></ion-textarea>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Suburb</ion-label>
+        <ion-label class="item-name" stacked>Suburb</ion-label>
         <ion-input type="text" [formControl]="phySuburb" name="phySuburb"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>City</ion-label>
+        <ion-label class="item-name" stacked>City</ion-label>
         <ion-input type="text" [formControl]="phyCity" name="phyCity"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>State</ion-label>
+        <ion-label class="item-name" stacked>State</ion-label>
         <ion-input type="text" [formControl]="phyState" name="phyState"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Zip/Postal Code</ion-label>
+        <ion-label class="item-name" stacked>Zip/Postal Code</ion-label>
         <ion-input type="text" [formControl]="phyZipCode" name="phyZipCode"></ion-input>
       </ion-item>
       <ion-item>
@@ -103,23 +103,23 @@
       <ion-list-header>Postal Address</ion-list-header>
       <ion-list>
         <ion-item>
-          <ion-label class="item-name" floating>Street</ion-label>
+          <ion-label class="item-name" stacked>Street</ion-label>
           <ion-textarea [formControl]="posStreetAddr" name="posStreetAddr"></ion-textarea>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name" floating>Suburb</ion-label>
+          <ion-label class="item-name" stacked>Suburb</ion-label>
           <ion-input type="text" [formControl]="posSuburb" name="posSuburb"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name" floating>City</ion-label>
+          <ion-label class="item-name" stacked>City</ion-label>
           <ion-input type="text" [formControl]="posCity" name="posCity"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name" floating>State</ion-label>
+          <ion-label class="item-name" stacked>State</ion-label>
           <ion-input type="text" [formControl]="posState" name="posState"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name" floating>Zip/Postal Code</ion-label>
+          <ion-label class="item-name" stacked>Zip/Postal Code</ion-label>
           <ion-input type="text" [formControl]="posZipCode" name="posZipCode"></ion-input>
         </ion-item>
         <ion-item>

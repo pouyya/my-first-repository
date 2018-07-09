@@ -16,11 +16,11 @@
 <ion-content>
   <ion-list inset>
     <ion-item>
-      <ion-label class="item-name" floating>Name</ion-label>
+      <ion-label class="item-name" stacked>Name</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.name"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name" floating>Barcode</ion-label>
+      <ion-label class="item-name" stacked>Barcode</ion-label>
       <ion-input type="text" [(ngModel)]="serviceItem.barcode"></ion-input>
     </ion-item>
     <ion-item>
@@ -28,7 +28,7 @@
       <ion-checkbox [checked]="serviceItem.isModifier" name="isModifier" [(ngModel)]="serviceItem.isModifier"></ion-checkbox>
     </ion-item>
     <ion-item>
-      <ion-label>Categories</ion-label>
+      <ion-label stacked>Categories</ion-label>
       <ion-select [(ngModel)]="serviceItem.categoryIDs" multiple="true">
         <ion-option *ngFor="let item of categories ; let idx=index" value={{item._id}}>{{item.name}}</ion-option>
       </ion-select>
