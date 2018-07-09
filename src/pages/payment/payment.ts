@@ -50,7 +50,6 @@ export class PaymentsPage {
     this.amount = 0;
     this.change = 0;
     await this.calculateBalance(this.sale);
-    this.moneySplit = [this.amount];
   }
 
   async ionViewDidEnter() {
@@ -91,6 +90,7 @@ export class PaymentsPage {
   }
 
   public splitPayment() {
+    this.moneySplit = [this.amount];
     this.navCtrl.push(SplitPaymentPage, {
       sale: this.sale, moneySplit: this.moneySplit, splitCallback: this.splitCallback.bind(this)
     });
