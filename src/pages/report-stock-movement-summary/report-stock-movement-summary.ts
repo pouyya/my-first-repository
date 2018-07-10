@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
 import { StockHistoryService, StockMovement } from "../../services/stockHistoryService";
-import { LoadingController } from "ionic-angular";
+import { LoadingController, ToastController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from "../../services/storeService";
+import { Events } from 'ionic-angular';
 
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
@@ -28,7 +29,29 @@ export class ReportStockMovementSummaryPage {
 
   constructor(private stockHistoryService: StockHistoryService,
     private storeService: StoreService,
-    private loading: LoadingController) {
+    private loading: LoadingController,
+    private eventCtrl: Events,
+    private toastController: ToastController) {
+    // Offline event
+    this.eventCtrl.subscribe('network:offline', () => {
+      let toast = this.toastController.create({
+        message : "offline",
+        duration: 3000
+      });
+  
+      toast.present();         
+    });
+
+    // Online event
+    this.eventCtrl.subscribe('network:online', () => {
+      let toast = this.toastController.create({
+        message : "online",
+        duration: 3000
+      });
+  
+      toast.present();          
+    });
+
   }
 
   async ionViewDidLoad() {
