@@ -54,7 +54,7 @@ export class BasketComponent {
   private selectedItem;
   private evaluationContext: EvaluationContext;
   private baseDataLoaded: boolean = false;
-
+  private isSaleParked: boolean = false;
   private get refund(): boolean {
     return this.balance < 0
   }
@@ -67,6 +67,7 @@ export class BasketComponent {
   }
 
   @Output() paymentCompleted = new EventEmitter<any>();
+  @Output() saleParked = new EventEmitter<any>();
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
@@ -99,7 +100,6 @@ export class BasketComponent {
       await this.recalculateSaleAmounts(sale);
       sale = await this.salesService.update(sale);
     }
-
     let customer: Customer = null;
 
     if (sale.customerKey) {
@@ -107,6 +107,7 @@ export class BasketComponent {
     }
 
     this.sale = sale;
+    this.isSaleParked = this.sale.state === 'parked';
     this.customer = customer || null;
     this.setBalance();
     this.sale.completed = false;
@@ -303,9 +304,10 @@ export class BasketComponent {
   }
 
   public gotoPayment() {
-
     let pushCallback = async params => {
       if (params) {
+        this.isSaleParked && this.saleParked.emit(false);
+        this.isSaleParked = false;
         this.sale = await this.salesService.instantiateSale();
         this.paymentCompleted.emit();
         this.customer = null;
@@ -382,6 +384,8 @@ export class BasketComponent {
 
     this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
     this.paymentCompleted.emit();
+    this.isSaleParked && this.saleParked.emit(false);
+    this.isSaleParked = false;
     this.customer = null;
     this.calculateAndSync();
   }
@@ -412,6 +416,8 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(ParkSale, { sale: this.sale });
     modal.onDidDismiss(data => {
       if (data.status) {
+        this.isSaleParked = true;
+        this.saleParked.emit(true);
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
           subTitle: 'Your sale has successfully been parked',
@@ -451,6 +457,8 @@ export class BasketComponent {
           text: 'Yes',
           handler: () => {
             this.salesService.delete(this.sale).then(async () => {
+              this.isSaleParked && this.saleParked.emit(false);
+              this.isSaleParked = false;
               localStorage.removeItem('sale_id');
               this.customer = null;
               this.sale = await this.salesService.instantiateSale();

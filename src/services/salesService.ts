@@ -266,6 +266,18 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
+	public async getParkedSalesCount(){
+        let query: any = {
+            selector: {
+                $and: []
+            }
+        };
+        query.selector.$and.push({ posID : this.syncContext.currentPos.id});
+        query.selector.$and.push({ state : 'parked'});
+		const data = await super.findBy(query);
+
+		return data.length;
+	}
 	public manageSaleId(sale: Sale) {
 		if (sale.items.length > 0 || sale.customerKey) {
 			let saleId = localStorage.getItem('sale_id');

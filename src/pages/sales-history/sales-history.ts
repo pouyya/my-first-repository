@@ -143,8 +143,8 @@ export class SalesHistoryPage {
               var _sale = await this.loadSale(sale, doRefund);
               localStorage.setItem('sale_id', _sale._id);
               if (previousView.name === 'Sales') {
-                this._sharedService.publish('updateSale', { sale: _sale });
                 this.navCtrl.pop();
+                this._sharedService.publish('updateSale', { sale: _sale });
               } else {
                 this.navCtrl.setRoot(Sales, { sale: _sale });
               }
