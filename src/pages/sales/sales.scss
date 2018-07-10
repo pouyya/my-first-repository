@@ -2,6 +2,24 @@
 
 sales {
 
+  #notification-button {
+    position: relative;
+    width: 42px;
+    top:1px;
+    right: 1px;
+    overflow: visible!important;
+  }
+
+
+  #notifications-badge {
+    background-color: yellow;
+    position: absolute;
+    color: black;
+    top: -3px;
+    right: -3px;
+    border-radius: 100%;
+  }
+
   .full-height {
     height: 100%
   }

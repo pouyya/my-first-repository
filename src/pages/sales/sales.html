@@ -5,7 +5,12 @@
     </button>
     <ion-title class="ion-title-center">Sales</ion-title>
 
-    <ion-buttons right>
+    <ion-buttons style="display: inline-flex;" right>
+      <button id="notification-button" [disabled]="parkedSaleCount == 0" no-margin ion-button clear>
+        <ion-icon name="archive">
+          <ion-badge *ngIf="parkedSaleCount" id="notifications-badge" color="danger">{{parkedSaleCount}}</ion-badge>
+        </ion-icon>
+      </button>
       <button no-margin ion-button menuToggle="rightMenu">
         <ion-icon name="cog"></ion-icon>
       </button>
@@ -78,7 +83,7 @@
       </ion-col>
       <ion-col col-4>
         <basket class="basket-component" [employees]="employees"
-          [user]="user" (paymentCompleted)="paymentCompleted()">
+          [user]="user" (paymentCompleted)="paymentCompleted()" (saleParked)="onParkedSale($event)" >
         </basket>
       </ion-col>
     </ion-row>
