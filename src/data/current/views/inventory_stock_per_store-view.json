@@ -1,10 +1,18 @@
 {
     "_id": "_design/inventory",
     "views": {
-    "stock_per_store": {
-        "reduce": "function(keys, values, rereduce) {\r\n    return sum(values);\r\n}",
-        "map": "function (doc) {\n  if(doc.entityTypeName == 'StockHistory') {\n    emit([ doc.productId, doc.storeId], doc.value );\n  }\n}"
-    }
+        "stock_per_store": {
+            "reduce": "function(keys, values, rereduce) {\r\n    return sum(values);\r\n}",
+            "map": "function (doc) {\n  if(doc.entityTypeName == 'StockHistory') {\n    emit([ doc.productId, doc.storeId], doc.value );\n  }\n}"
+        },
+        "stock_per_day_store": {
+            "map": "  function(doc) {\r\n    if (doc.entityTypeName == 'StockHistory') {\r\n        var d = new Date(doc.createdAt);\r\n        emit([doc.productId, doc.storeId, d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()], {\r\n            reason: doc.reason,\r\n            amount: doc.value\r\n        });\r\n    }\r\n}",
+            "reduce": "function(keys, values, rereduce) {\r\n\r\n    function sumField(arr, field) {\r\n        return arr.reduce(function(prev, cur) {\r\n            return prev + cur[field];\r\n        }, 0);\r\n    }\r\n\r\n    if (rereduce) {\r\n        return {\r\n            received: sumField(values, \"received\"),\r\n            sold: sumField(values, \"sold\"),\r\n            returned: sumField(values, \"returned\"),\r\n            deducted: sumField(values, \"deducted\")\r\n        };\r\n    } else {\r\n        var result = {\r\n            received: 0,\r\n            sold: 0,\r\n            returned: 0,\r\n            deducted: 0\r\n        };\r\n        var map = {\r\n            'Purchase': 'sold',\r\n            'InitialValue': 'received',\r\n            'NewStock': 'received',\r\n            'Return': 'returned'\r\n        };\r\n        if (values) {\r\n            for (var idx in values) {\r\n                var value = values[idx];\r\n                if (value) {\r\n                    var property = map[value.reason];\r\n                    if (property) {\r\n                        result[property] = result[property] + value.amount;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return result;\r\n    }\r\n}"
+        },
+        "stock_per_day": {
+            "map": "  function(doc) {\r\n    if (doc.entityTypeName == 'StockHistory') {\r\n        var d = new Date(doc.createdAt);\r\n        emit([doc.productId, d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()], {\r\n            reason: doc.reason,\r\n            amount: doc.value\r\n        });\r\n    }\r\n}",
+            "reduce": "function(keys, values, rereduce) {\r\n\r\n    function sumField(arr, field) {\r\n        return arr.reduce(function(prev, cur) {\r\n            return prev + cur[field];\r\n        }, 0);\r\n    }\r\n\r\n    if (rereduce) {\r\n        return {\r\n            received: sumField(values, \"received\"),\r\n            sold: sumField(values, \"sold\"),\r\n            returned: sumField(values, \"returned\"),\r\n            deducted: sumField(values, \"deducted\")\r\n        };\r\n    } else {\r\n        var result = {\r\n            received: 0,\r\n            sold: 0,\r\n            returned: 0,\r\n            deducted: 0\r\n        };\r\n        var map = {\r\n            'Purchase': 'sold',\r\n            'InitialValue': 'received',\r\n            'NewStock': 'received',\r\n            'Return': 'returned'\r\n        };\r\n        if (values) {\r\n            for (var idx in values) {\r\n                var value = values[idx];\r\n                if (value) {\r\n                    var property = map[value.reason];\r\n                    if (property) {\r\n                        result[property] = result[property] + value.amount;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return result;\r\n    }\r\n}"
+        }
     },
     "language": "javascript"
 }

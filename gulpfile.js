@@ -67,5 +67,5 @@ gulp.task("build-scripts", function () {
   });
 });
 
-//gulp --dest ../simplepos-web-plugins/simple-idea-couchdb-integration/json/
+//gulp --dest ../simplepos-web-plugins/simplepos-couchdb-integration/json/
 gulp.task("default", ["build-scripts"]);
