@@ -103,7 +103,8 @@
   "roles": [],
   "isActive": true,
   "isAdmin": true,
-  "pin": 1111
+  "isActive": true,
+  "pin": {PIN}
 },
 {
   "_id": "2018-01-31T09:36:48.8240000",
