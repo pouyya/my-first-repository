@@ -73,7 +73,7 @@
   "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us",
   "taxType": true,
   "screenAwake": true,
-  "trackEmployeeSales": true,
+  "trackEmployeeSales": false,
   "defaultTax": "2017-07-25T10:22:51.163Z",
   "taxEntity": "SalesTax",
   "defaultIcon": {
