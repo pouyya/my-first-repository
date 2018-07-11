@@ -56,6 +56,7 @@ export class SelectRolesModal {
     {
       this.store.selected=false;
     }
+    this.dismiss();
   }
   
 }
