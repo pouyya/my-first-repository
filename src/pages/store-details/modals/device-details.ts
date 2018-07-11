@@ -1,6 +1,7 @@
 import {
   NavParams, AlertController, LoadingController,
-  ViewController
+  ViewController,
+  ToastController
 } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
@@ -27,6 +28,7 @@ export class DeviceDetailsModal {
     { value: DeviceType.ReceiptPrinter, text: 'Receipt Printer' }
   ];
   public purchasableItems = [];
+  public IpColor: string = 'black';
 
   constructor(
     private navParams: NavParams,
@@ -35,7 +37,8 @@ export class DeviceDetailsModal {
     private serviceService: ServiceService,
     private alertCtrl: AlertController,
     private syncContext: SyncContext,
-    private loading: LoadingController
+    private loading: LoadingController,
+    private toastController: ToastController,
   ) { }
 
   async ionViewDidLoad() {
@@ -91,4 +94,26 @@ export class DeviceDetailsModal {
 
     confirm.present();
   }
+
+  validateIP(flag) {
+    if (this.ValidateIPaddress(this.device.ipAddress))
+      this.IpColor = "green";
+    else
+      this.IpColor = "red";
+    if (flag == 1 && this.IpColor == "red") {
+      let toast = this.toastController.create({
+        message: "missing any set of digits? for printer ip address",
+        duration: 3000
+      });
+
+      toast.present();
+    }
+  }
+  ValidateIPaddress(ipaddress) {
+    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.device.ipAddress)) {
+      return (true)
+    }
+    return (false)
+  }
+
 }
