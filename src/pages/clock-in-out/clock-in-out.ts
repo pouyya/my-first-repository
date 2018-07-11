@@ -49,6 +49,7 @@ export class ClockInOutPage {
     private zone: NgZone,
     private syncContext: SyncContext
   ) {
+
   }
 
   /**
@@ -85,6 +86,9 @@ export class ClockInOutPage {
       }
 
       !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
+
+      employee.firstName=(employee.firstName?employee.firstName:"-");
+      employee.lastName=(employee.lastName?employee.lastName:"");
 
       if(!employee.isAdmin && !employee.isActive) {
         toast.setMessage('Employee not Active!');
