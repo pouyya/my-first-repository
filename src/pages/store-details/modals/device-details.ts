@@ -1,7 +1,6 @@
 import {
   NavParams, AlertController, LoadingController,
-  ViewController,
-  ToastController
+  ViewController, ToastController
 } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
@@ -105,10 +104,10 @@ export class DeviceDetailsModal {
         message: "missing any set of digits? for printer ip address",
         duration: 3000
       });
-
       toast.present();
     }
   }
+  
   ValidateIPaddress(ipaddress) {
     if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.device.ipAddress)) {
       return (true)
