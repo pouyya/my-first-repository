@@ -59,7 +59,7 @@
           <ion-row>
             <ion-col col-md-2 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{order[column.variableName]}}</h2></ion-col>
             <ion-col col-md-2>
-              {{ order.createdAt | localDate:'MMM d, YYYY, h:mm a' }}
+              {{ order.createdAt }}
             </ion-col>
             <ion-col col-md-2>
               {{ order.supplierName }}

@@ -6,6 +6,7 @@ import { Component } from "@angular/core";
 import { StockHistory } from '../../../../model/stockHistory';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EmployeeService } from '../../../../services/employeeService';
+import { SyncContext } from '../../../../services/SyncContext';
 
 @Component({
   selector: 'stock-increase-modal',
@@ -17,11 +18,13 @@ export class StockIncreaseModal {
   public stock: StockHistory = new StockHistory();
   public currentStore: any = {};
   public reasons: any[] = [];
+  public storeId: string;
 
   constructor(
     private navParams: NavParams,
     private viewCtrl: ViewController,
-    private employeeService: EmployeeService
+    private employeeService: EmployeeService,
+    private syncContext: SyncContext
   ) {
     let increaseReasons: string[] = [
       Reason.NewStock,
@@ -38,7 +41,8 @@ export class StockIncreaseModal {
       }
     });
     this.stock.productId = this.navParams.get('productId');
-    this.stock.storeId = this.storesStock[0].storeId;
+    this.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+    this.stock.storeId = (this.storeId)?this.storeId:this.storesStock[0].storeId;
     this.stock.reason = this.reasons[Object.keys(this.reasons)[0]];
     this.setStore();
   }

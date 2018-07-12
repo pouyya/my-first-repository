@@ -5,6 +5,7 @@ import { NavParams, ModalController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { Store } from '../../../../model/store';
 import { CreateSupplier } from '../createSupplier/createSupplier';
+import { SyncContext } from '../../../../services/SyncContext';
 
 @Component({
   selector: 'add-supplier-and-store',
@@ -19,12 +20,14 @@ export class AddSupplierAndStore {
   public selectedStore: Store = null;
 
   private navPopCallback: any;
+  public storeId: string;
 
   constructor(
     private supplierService: SupplierService,
     private storeService: StoreService,
     private navParams: NavParams,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private syncContext: SyncContext
   ) {
     this.navPopCallback = this.navParams.get('callback');
   }
@@ -34,6 +37,21 @@ export class AddSupplierAndStore {
       await this.supplierService.getAll(),
       await this.storeService.getAll()
     ];
+
+    this.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+    if(!this.storeId){
+      this.selectedStore = this.stores[0];
+      this.storeId = this.selectedStore._id;
+    }else{
+      this.stores.some((store: Store) => {
+        if (store.POS.length > 0) {
+          if (store._id === this.storeId) {
+            this.selectedStore = store;
+              return true;
+          }
+        }
+      });
+    }
   }
 
   ionViewDidLeave() {
