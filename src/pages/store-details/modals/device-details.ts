@@ -28,6 +28,7 @@ export class DeviceDetailsModal {
   ];
   public purchasableItems = [];
   public IpColor: string = 'black';
+  public PortColor: string = 'black';
 
   constructor(
     private navParams: NavParams,
@@ -95,21 +96,42 @@ export class DeviceDetailsModal {
   }
 
   validateIP(flag) {
-    if (this.ValidateIPaddress(this.device.ipAddress))
+    if (this.ValidateIPaddress())
       this.IpColor = "green";
     else
       this.IpColor = "red";
     if (flag == 1 && this.IpColor == "red") {
       let toast = this.toastController.create({
-        message: "missing any set of digits? for printer ip address",
+        message: "Missing any set of digits? for printer IP Address",
         duration: 3000
       });
       toast.present();
     }
   }
   
-  ValidateIPaddress(ipaddress) {
+  ValidateIPaddress() {
     if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(this.device.ipAddress)) {
+      return (true)
+    }
+    return (false)
+  }
+
+  validatePort(flag) {
+    if (this.ValidatePortNumber())
+      this.PortColor = "green";
+    else
+      this.PortColor = "red";
+    if (flag == 1 && this.PortColor == "red") {
+      let toast = this.toastController.create({
+        message: "Please check your printer port number",
+        duration: 3000
+      });
+      toast.present();
+    }
+  }
+  
+  ValidatePortNumber() {
+    if (/^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/.test(this.device.printerPort)) {
       return (true)
     }
     return (false)

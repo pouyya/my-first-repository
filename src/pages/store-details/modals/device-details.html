@@ -41,12 +41,12 @@
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
         <ion-label class="item-name" stacked>IP Address </ion-label>
-        <ion-input type="text" [style.color]="IpColor" (ionChange)="validateIP(0)" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
+        <ion-input type="text" [style.color]="IpColor" (ionChange)="validateIP(0)" (ionBlur)="validateIP(1)" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
         <ion-label class="item-name" stacked>Printer Port</ion-label>
-        <ion-input type="text" (ionFocus)="validateIP(1)" [(ngModel)]="device.printerPort" name="printerPort" required></ion-input>
+        <ion-input type="text" [style.color]="PortColor" (ionChange)="validatePort(0)" (ionBlur)="validatePort(1)" [(ngModel)]="device.printerPort" name="printerPort" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
