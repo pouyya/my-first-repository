@@ -2,12 +2,12 @@
   <ion-navbar>
     <ion-title>{{action}} Device</ion-title>
     <ion-buttons start>
-      <button ion-button (click)="dismiss()">
+      <button ion-button (click)="dismiss()" [disabled]="!(formValidation)">
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
     <ion-buttons end>
-      <button type="submit" ion-button icon-only (click)="deviceForm.ngSubmit.emit()" [disabled]="!deviceForm.form.valid">
+      <button type="submit" ion-button icon-only (click)="deviceForm.ngSubmit.emit()" [disabled]="!(deviceForm.form.valid && formValidation)">
         Done
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
@@ -41,12 +41,12 @@
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
         <ion-label class="item-name" stacked>IP Address </ion-label>
-        <ion-input type="text" [style.color]="IpColor" (ionChange)="validateIP(0)" (ionBlur)="validateIP(1)" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
+        <ion-input type="text" [style.color]="IpColor" (ionChange)="validate(0)" (ionBlur)="validate(1)" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
         <ion-label class="item-name" stacked>Printer Port</ion-label>
-        <ion-input type="text" [style.color]="PortColor" (ionChange)="validatePort(0)" (ionBlur)="validatePort(1)" [(ngModel)]="device.printerPort" name="printerPort" required></ion-input>
+        <ion-input type="text" [style.color]="PortColor" (ionChange)="validate(0)" (ionBlur)="validate(1)" [(ngModel)]="device.printerPort" name="printerPort" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
