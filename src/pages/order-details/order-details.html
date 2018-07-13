@@ -80,7 +80,7 @@ p<ion-header>
           <ion-col col-md-12>
             <h4>Stock Ordered</h4>
             <h5>{{ store.name }}</h5>
-            <h5>Ordered placed on {{ order.createdAt  }}</h5>
+            <h5>Ordered placed on {{ order.createdAt | localDate:'MMM d, YYYY, h:mm a' }}</h5>
           </ion-col>
           <ion-col col-md-12>
             <button ion-button (click)="sendEmail()"  [disabled]="!this.supplier.email">Email Order</button>
@@ -128,7 +128,7 @@ p<ion-header>
           <ion-col col-md-12>
             <h4>Order Cancelled</h4>
             <h5>{{ store.name }}</h5>
-            <h5>No stock received. Order cancelled on {{ order.cancelledAt }}</h5>
+            <h5>No stock received. Order cancelled on {{ order.cancelledAt | localDate:'MMM d, YYYY, h:mm a' }}</h5>
           </ion-col>
         </ion-row>
         <ion-list>
