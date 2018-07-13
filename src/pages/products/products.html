@@ -59,7 +59,7 @@
             <ion-col *ngIf="product.stockInHand == null" col-md-2>
               <ion-spinner name="dots"></ion-spinner>
             </ion-col>
-            <ion-col col-md-2>{{ product._id }}</ion-col>
+            <ion-col col-md-2>{{ product._id  | localDate }}</ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
