@@ -16,6 +16,7 @@ import { PosDetailsModal } from "./modals/pos-details";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Utilities } from "../../utility/index";
 import { SyncContext } from "../../services/SyncContext";
+import * as moment from "moment-timezone";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -27,6 +28,7 @@ export class StoreDetailsPage {
   public action: string = 'Add';
   public devices: Device[] = [];
   public countries: Array<any> = [];
+  public timezones: Array<{ code: string, name: string }> = [];
   public deviceType = DeviceType;
   private storeForm: FormGroup;
   private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
@@ -58,6 +60,12 @@ export class StoreDetailsPage {
       this.isNew = false;
       this.action = 'Edit';
     }
+    this.timezones = moment.tz.names().map(timezone => {
+        return <{ code: string, name: string }> {
+            code: timezone,
+            name: timezone
+        }
+    });
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();

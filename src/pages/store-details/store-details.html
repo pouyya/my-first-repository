@@ -76,8 +76,9 @@
         </searchable-ion-select>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" stacked>Timezone</ion-label>
-        <ion-input type="text" formControlName="timezone" name="timezone"></ion-input>
+        <searchable-ion-select [isModal]="true" name="timezone" formControlName="timezone" title="Timezone" valueField="code"
+                               textField="name" [items]="timezones">
+        </searchable-ion-select>
       </ion-item>
       <ion-item>
         <ion-label class="item-name" stacked>Email</ion-label>

@@ -148,6 +148,7 @@ export class DataBootstrapper {
         });
     }
     this.syncContext.initialize(currentStore, currentPos.id);
+    this.syncContext.appTimezone = accountSettings.timeOffset;
     this.navCtrl.setRoot(this._initialPage);
   }
 

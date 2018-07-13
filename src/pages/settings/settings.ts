@@ -13,6 +13,7 @@ import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
 import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
+import {SyncContext} from "../../services/SyncContext";
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -41,7 +42,8 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
-    private datetimeService: DateTimeService
+    private datetimeService: DateTimeService,
+    private syncContext: SyncContext
   ) {
     this.cdr.detach();
     this.taxTypes = [
@@ -96,7 +98,9 @@ export class Settings {
     this.accountSetting.defaultTax = this.newTax._id;
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
     if (this.accountSetting.timeOffset) {
+      this.accountSetting.timeOffset = this.accountSetting.timeOffset.code;
       this.datetimeService.timezone = this.accountSetting.timeOffset;
+      this.syncContext.appTimezone = this.accountSetting.timeOffset;
     }
 
     this.accountSettingService.update(this.accountSetting);
