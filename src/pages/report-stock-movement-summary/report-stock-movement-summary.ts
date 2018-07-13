@@ -6,6 +6,7 @@ import { LoadingController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from "../../services/storeService";
+import { SyncContext } from '../../services/SyncContext';
 
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
@@ -25,18 +26,24 @@ export class ReportStockMovementSummaryPage {
   public reportGeneratedTime: Date;
   public fromDate: Date = new Date();
   public toDate: Date = new Date();
+  public storeId: string;
 
   constructor(private stockHistoryService: StockHistoryService,
     private storeService: StoreService,
-    private loading: LoadingController) {
+    private loading: LoadingController,
+    private syncContext: SyncContext
+  ) {
   }
 
   async ionViewDidLoad() {
     this.fromDate.setDate(this.fromDate.getDate() - 15);
     this.selectedTimeframe = this.timeframes[0].value;
-    this.selectedStore = this.locations[0].value;
     const stores = await this.storeService.getAll();
     stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
+
+    this.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+    this.selectedStore = (this.storeId)?this.storeId:this.locations[0].value;
+
     await this.loadStockReport();
   }
 
