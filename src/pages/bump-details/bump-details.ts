@@ -80,7 +80,7 @@ export class BumpDetails {
 
 
     private initDBChange() {
-        DBService.currentDBLiveProgress.subscribe((data: DBDataEvent) => {
+        DBService.pouchDBProvider.currentDBLiveProgress.subscribe((data: DBDataEvent) => {
             if (data.isValid && data.entityTypeName == "Sale" && data.data.state == "completed" && this.sales.length < this.limit) {
                 let newSale = data.data;
                 let sale = _.find(this.sales, { receiptNo: data.data.receiptNo });

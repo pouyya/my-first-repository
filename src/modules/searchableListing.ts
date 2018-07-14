@@ -88,12 +88,8 @@ export class SearchableListing<T extends DBBasedEntity> {
     await this.fetchMore();
   }
 
-  protected async remove(item: T, index) {
-    try {
-      await this.service.delete(item);
-      this.items.splice(index, 1);
-    } catch (err) {
-      return Promise.reject(err);
-    }
+  protected async remove(item: T, index: number) {
+    await this.service.delete(item);
+    this.items.splice(index, 1);
   }
 }
