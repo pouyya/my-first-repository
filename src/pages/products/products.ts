@@ -110,7 +110,7 @@ export class Products extends SearchableListing<Product>{
   private async getStockValues(products) {
     this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
     products.forEach((product) => {
-      var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
+      var stockValue = _.find(this.stockValues, stockValue => stockValue.productId == product._id);
       product["stockInHand"] = stockValue ? stockValue.value : 0;
     });
   }
