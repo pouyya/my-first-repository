@@ -33,7 +33,6 @@ export class StoreDetailsPage {
     'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
     'timezone', 'email', 'phone', 'twitter'];
   public isDataChanged = false;
-  @ViewChild('storeForm') storeForm;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
@@ -102,7 +101,7 @@ export class StoreDetailsPage {
     }
     loader.dismiss();
     this.isDataChanged = false;
-    if (isReturn == true)
+    if (isReturn == true){
       this.navCtrl.pop();
     }
   }
@@ -118,8 +117,7 @@ export class StoreDetailsPage {
               this.item.POS[index] = data.pos;
           }
         }
-      }
-    });
+      });
     modal.present();
   }
 
