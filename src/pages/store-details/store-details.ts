@@ -89,6 +89,7 @@ export class StoreDetailsPage {
     }
 
     this.utils.setFormFields(this.storeForm, this.fields, this.item);
+    this.item.timezone = (this.item.timezone as any).code;
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);

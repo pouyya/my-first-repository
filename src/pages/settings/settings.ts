@@ -6,7 +6,6 @@ import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { AppService } from "../../services/appService";
-import { DateTimeService } from './../../services/dateTimeService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
@@ -42,7 +41,6 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
-    private datetimeService: DateTimeService,
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
@@ -99,7 +97,6 @@ export class Settings {
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
     if (this.accountSetting.timeOffset) {
       this.accountSetting.timeOffset = this.accountSetting.timeOffset.code;
-      this.datetimeService.timezone = this.accountSetting.timeOffset;
       this.syncContext.appTimezone = this.accountSetting.timeOffset;
     }
 

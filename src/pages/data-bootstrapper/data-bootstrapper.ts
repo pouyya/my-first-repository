@@ -10,7 +10,6 @@ import { UserService } from './../../modules/dataSync/services/userService';
 import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { DateTimeService } from '../../services/dateTimeService';
 import { StoreService } from '../../services/storeService';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncContext } from "../../services/SyncContext";
@@ -36,7 +35,6 @@ export class DataBootstrapper {
 
   constructor(
     private accountSettingService: AccountSettingService,
-    private dateTimeService: DateTimeService,
     private storeService: StoreService,
     private userService: UserService,
     private employeeService: EmployeeService,
@@ -50,7 +48,7 @@ export class DataBootstrapper {
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
-    this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`
+    this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`;
     this._initialPage = Sales;
     this.headerTitle = "Launching...";
     this.hideSpinner = false;
@@ -121,8 +119,6 @@ export class DataBootstrapper {
     let accountSettings = await this.accountSettingService.getCurrentSetting();
     let currentPos: POS;
     let currentStore: Store;
-
-    this.dateTimeService.timezone = accountSettings.timeOffset || null;
 
     if (!this._user.currentPos || !this._user.currentStore) {
 
