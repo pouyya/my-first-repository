@@ -7,15 +7,17 @@ import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
-import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import { NavController, ModalController, LoadingController, ToastController, AlertController, Events } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef , CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DateTimeService } from '../../services/dateTimeService';
 import { StoreService } from '../../services/storeService';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncContext } from "../../services/SyncContext";
 import { BoostraperModule } from '../../modules/bootstraperModule';
 import { PageModule } from '../../metadata/pageModule';
+import { IonSimpleWizard } from '../../components/ion-simple-wizard/ion-simple-wizard.component';
+import { IonSimpleWizardStep } from '../../components/ion-simple-wizard/ion-simple-wizard.step.component';
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -34,6 +36,11 @@ export class DataBootstrapper {
   private _user: UserSession;
   private store: Store;
 
+  step: any;
+  stepCondition: any;
+  stepDefaultCondition: any;
+  currentStep: any;
+
   constructor(
     private accountSettingService: AccountSettingService,
     private dateTimeService: DateTimeService,
@@ -47,7 +54,9 @@ export class DataBootstrapper {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private translateService: TranslateService,
-    private syncContext: SyncContext
+    private syncContext: SyncContext,
+    public alertCtrl: AlertController,
+    public events: Events
   ) {
     this.cdr.detach();
     this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`
@@ -55,13 +64,71 @@ export class DataBootstrapper {
     this.headerTitle = "Launching...";
     this.hideSpinner = false;
     this.haveAccess = false;
+    /**
+     * Step Wizard Settings
+     */
+    this.step = 1;//The value of the first step, always 1
+    this.stepCondition = false;//Set to true if you don't need condition in every step
+    this.stepDefaultCondition = this.stepCondition;//Save the default condition for every step
+    //You can subscribe to the Event 'step:changed' to handle the current step
+    this.events.subscribe('step:changed', step => {
+      //Handle the current step if you need
+      this.currentStep = step;
+      //Set the step condition to the default value
+      this.stepCondition = this.stepDefaultCondition;
+    });
+    this.events.subscribe('step:next', () => {
+      //Do something if next
+      console.log('Next pressed: ', this.currentStep);
+    });
+    this.events.subscribe('step:back', () => {
+      //Do something if back
+      console.log('Back pressed: ', this.currentStep);
+    });
+  }
+  /**
+   * Demo functions
+   */
+  onFinish() {
+    this.alertCtrl.create({
+      message: 'Wizard Finished!!',
+      title: 'Congrats!!',
+      buttons: [{
+        text: 'Ok'
+      }]
+    }).present();
+  }
+
+  toggle() {
+    this.stepCondition = !this.stepCondition;
+  }
+  getIconStep2() {
+    return this.stepCondition ? 'unlock' : 'lock';
+  }
+
+  getIconStep3() {
+    return this.stepCondition ? 'happy' : 'sad';
+  }
+  getLikeIcon() {
+    return this.stepCondition ? 'thumbs-down' : 'thumbs-up';
+  }
+  goToExample2() {
+    // this.navCtrl.push(DynamicPage);
+  }
+
+  textChange(e) {
+    if (e.target.value && e.target.value.trim() !== '') {
+      this.stepCondition = true;
+    } else {
+      this.stepCondition = false;
+    }
   }
 
   /** @AuthGuard */
   async ionViewCanEnter() {
     this.translateService.setDefaultLang('au');
     this.translateService.use('au');
-    
+
     this._user = await this.userService.getDeviceUser();
     if (this._user.currentStore) {
       this.store = await this.storeService.get(this._user.currentStore);
@@ -126,10 +193,10 @@ export class DataBootstrapper {
 
     if (!this._user.currentPos || !this._user.currentStore) {
 
-      if(!store){
-        let allStores =  await this.storeService.getAll();
+      if (!store) {
+        let allStores = await this.storeService.getAll();
         currentStore = allStores[0];
-      }else{
+      } else {
         currentStore = store;
       }
 
@@ -139,13 +206,13 @@ export class DataBootstrapper {
       this._user.currentStore = currentStore._id;
       this.userService.setSession(this._user);
     } else {
-        currentStore = await this.storeService.get(this._user.currentStore);
-        currentStore.POS.some( pos => {
-          if(pos.id === this._user.currentPos){
-            currentPos = pos;
-            return true;
-          }
-        });
+      currentStore = await this.storeService.get(this._user.currentStore);
+      currentStore.POS.some(pos => {
+        if (pos.id === this._user.currentPos) {
+          currentPos = pos;
+          return true;
+        }
+      });
     }
     this.syncContext.initialize(currentStore, currentPos.id);
     this.navCtrl.setRoot(this._initialPage);

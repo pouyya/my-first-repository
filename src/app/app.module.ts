@@ -7,7 +7,6 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { CacheFactory } from 'cachefactory';
@@ -182,6 +181,8 @@ import { ShiftService } from "../services/shiftService";
 import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
 import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
