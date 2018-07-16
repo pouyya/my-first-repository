@@ -1,6 +1,6 @@
 import {
-    NavParams, AlertController, LoadingController,
-    ViewController
+  NavParams, AlertController, LoadingController,
+  ViewController
 } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { SyncContext } from "../../../services/SyncContext";
@@ -48,16 +48,15 @@ export class DeviceDetailsModal {
     let device = this.navParams.get('device');
     this.posList = this.syncContext.currentStore.POS || [];
     let data = await Promise.all([this.productService.getAll(), this.serviceService.getAll()]);
-    this.purchasableItems = [...data[0], ...data[1]];
-
+    this.purchasableItems = [...data[0], ...data[1]].filter(item => !item.isModifier);
 
     this.navPopCallback = this.navParams.get("pushCallback");
     if (device && device._id !== "") {
       this.isNew = false;
       this.action = 'Edit';
       this.device = device;
-      this.associatedPurchasableItems = this.purchasableItems.filter( item => {
-        if((this.device.associatedPurchasableItemIds as any).includes(item._id)){
+      this.associatedPurchasableItems = this.purchasableItems.filter(item => {
+        if ((this.device.associatedPurchasableItemIds as any).includes(item._id)) {
           return item;
         }
       })
@@ -66,15 +65,15 @@ export class DeviceDetailsModal {
   }
 
   public dismiss() {
-      this.viewCtrl.dismiss(null);
+    this.viewCtrl.dismiss(null);
   }
 
   public async onSubmit() {
     this.device.associatedPurchasableItemIds = this.associatedPurchasableItems.map(data => data._id);
-    this.viewCtrl.dismiss({ status : 'add', device: this.device});
+    this.viewCtrl.dismiss({ status: 'add', device: this.device });
   }
 
-  public async remove( ) {
+  public async remove() {
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this Device ?',
       message: 'Deleting this device!',
@@ -82,10 +81,9 @@ export class DeviceDetailsModal {
         {
           text: 'Yes',
           handler: () => {
-              let loader = this.loading.create({
-                content: 'Deleting. Please Wait!',
-              });
-
+            this.loading.create({
+              content: 'Deleting. Please Wait!',
+            });
           }
         }, 'No'
       ]

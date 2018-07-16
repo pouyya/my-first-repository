@@ -26,17 +26,17 @@
       <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let sale of sales; let i = index" class="tile-col">
         <ion-card tappable class="bump-sale-card">
           <ion-card-header>
-            <span float-left>{{sale.receiptNo}}</span>
-            <span float-right>{{ sale.elapsedTime}} min</span>
+            <span float-left>{{ sale.receiptNo }}</span>
+            <span float-right>{{ sale.elapsedTime }} min</span>
           </ion-card-header>
           <hr/>
 
           <ion-card-content class="content">
             <ion-list>
-              <ion-item *ngFor="let item of sale.filteredItems" class="content-item" >
-                <ion-label>{{item.name}}</ion-label>
-                <ion-label item-right>{{item.quantity}}X</ion-label>
-                <ion-checkbox [disabled]="isBumpedViewSelected" [(ngModel)]="item.isBumped" item-right secondary (click)="bumpItem(sale, item)"></ion-checkbox>
+              <ion-item *ngFor="let item of sale.filteredItems" class="content-item">
+                <ion-label>{{ item.name }}</ion-label>
+                <ion-label item-right>{{ item.quantity }}X</ion-label>
+                <ion-checkbox [disabled]="isBumpedViewSelected" [(ngModel)]="item.isBumped" item-right secondary (click)="bumpItem(sale, item ,i)"></ion-checkbox>
                 <hr/>
               </ion-item>
             </ion-list>

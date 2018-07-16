@@ -23,4 +23,13 @@ export class SharedService {
 
     return subject;
   }
+
+  unsubscribe(name: string) {
+    var subject: Subject<any> = SharedService.subjects[name];
+
+    if(subject){
+      subject.unsubscribe();
+      delete SharedService.subjects[name];
+    }
+  }
 }

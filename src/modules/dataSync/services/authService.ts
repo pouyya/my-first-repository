@@ -27,43 +27,51 @@ export class AuthService {
   public login(email: string, password: string): Observable<any> {
 
     let payLoad = new URLSearchParams();
-    payLoad.append("client_id", ConfigService.securityClientId());
-    payLoad.append("client_secret", ConfigService.securityClientSecret());
-    payLoad.append("grant_type", ConfigService.securityGrantType());
     payLoad.append("username", email);
     payLoad.append("password", password);
-    payLoad.append("scope", ConfigService.securityScope());
 
     var headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
 
     return this.http.post(ConfigService.securityTokenEndPoint(), payLoad.toString(), { headers: headers })
       .flatMap(async (response: Response) => {
         let user = response.json();
-        await this.userService.setAccessToken(user.access_token)
+        await this.userService.setAccessToken(user.token)
 
-        return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
-          .flatMap(async (userProfile: Response) => {
-
-            let userSession: UserSession = new UserSession();
-            userSession = {
-              acess_token: user.access_token,
-              ...user,
-              settings: userProfile.json()
-            };
-
-            ConfigService.externalDBUrl = userSession.settings.db_url;
-            ConfigService.externalDBName = userSession.settings.db_name;
-            ConfigService.internalDBName = userSession.settings.db_local_name;
-
-            userSession.settings.defaultIcon = {};
-            var firstIconKey = Object.keys(icons)[0];
-            userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey]; 
-
-            await this.userService.setSession(userSession);
-    
-          })
-          .toPromise();
+        return this.getUserProfile(user.token);
       });
+  }
+
+  public getUserProfile(token: string) {
+    return this.authHttp.get(ConfigService.securityUserInfoEndPoint())
+      .flatMap(async (userProfile: Response) => {
+
+        var serverSettings = userProfile.json();
+        let userSession: UserSession = new UserSession();
+        userSession = {
+          access_token: token,
+          settings: {
+            db_url: serverSettings.dburl,
+            db_critical_name: serverSettings.dbcriticalname,
+            db_critical_local_name: serverSettings.dbcriticallocalname,
+            db_name: serverSettings.dbname,
+            db_local_name: serverSettings.dblocalname,
+            db_audit_name: serverSettings.dbauditname,
+            db_audit_local_name: serverSettings.dbauditlocalname,
+          }
+        };
+
+        ConfigService.externalDBUrl = userSession.settings.db_url;
+        ConfigService.externalDBName = userSession.settings.db_name;
+        ConfigService.internalDBName = userSession.settings.db_local_name;
+
+        userSession.settings.defaultIcon = {};
+        var firstIconKey = Object.keys(icons)[0];
+        userSession.settings.defaultIcon[firstIconKey] = icons[firstIconKey];
+
+        await this.userService.setSession(userSession);
+
+      })
+      .toPromise();
   }
 
   public register(firstName: string, lastName: string, phone: string, email: string, password: string, configPassword: string, shopName: string): Observable<any> {
@@ -87,8 +95,16 @@ export class AuthService {
    * @param email
    * @returns {Observable<any>}
    */
-  public resetPassword(email: string): Observable<any> {
-      var headers = new Headers({ 'Content-Type': ' application/json', 'Accept': 'application/json, text/plain'});
-      return this.http.post(ConfigService.forgotPasswordEndPoint(), JSON.stringify({"Email" : email}), { headers });
+  public async resetPassword(email: string) {
+    let url = ConfigService.forgotPasswordEndPoint();
+    return this.http
+      .get(`${url}?email=${email}`)
+      .map((response: Response) => <ServerResponse[]>response.json());
   }
+
+}
+
+export interface ServerResponse {
+  msg: string,
+  Status: number,
 }

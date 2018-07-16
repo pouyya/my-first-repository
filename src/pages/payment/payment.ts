@@ -1,7 +1,6 @@
 import { SalesServices } from './../../services/salesService';
 import { Component } from "@angular/core";
 import { NavController, NavParams, ModalController, LoadingController, AlertController } from "ionic-angular";
-import { Store } from './../../model/store';
 import { Sale } from "../../model/sale";
 import { CashModal } from './modals/cash/cash';
 import { CreditCardModal } from './modals/credit-card/credit-card';
@@ -9,6 +8,7 @@ import { PrintService } from '../../services/printService';
 import { PaymentService } from '../../services/paymentService';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
+import {SplitPaymentPage} from "../split-payment/split-payment";
 
 @Component({
   selector: 'payment',
@@ -17,7 +17,7 @@ import { ProductService } from "../../services/productService";
 })
 export class PaymentsPage {
 
-  public sale: Sale
+  public sale: Sale;
   public amount: number;
   public change: number;
   public doRefund: boolean;
@@ -27,18 +27,19 @@ export class PaymentsPage {
     'credit_card': { text: 'Credit Card', component: CreditCardModal }
   };
   private navPopCallback: any;
+  private moneySplit: any[] = [];
 
   constructor(
     private salesService: SalesServices,
     private paymentService: PaymentService,
     private productService: ProductService,
     private navCtrl: NavController,
-    private alertCtrl: AlertController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
     private loading: LoadingController,
     private printService: PrintService,
-    private syncContext: SyncContext) {
+    private syncContext: SyncContext,
+    private alertController: AlertController) {
   }
 
   async ionViewDidLoad() {
@@ -55,20 +56,7 @@ export class PaymentsPage {
     if (!this.sale) {
       this.navCtrl.pop();
     } else {
-      // check stock
-      await this._checkForStockInHand();
-      if (this.stockErrors.length > 0) {
-        // display error message
-        let alert = this.alertCtrl.create(
-          {
-            title: 'Out of Stock',
-            subTitle: 'Please make changes to sale and continue',
-            message: `${this.stockErrors.join('\n')}`,
-            buttons: ['Ok']
-          }
-        );
-        alert.present();
-      }
+      await this.checkForStockInHand();
     }
   }
 
@@ -99,6 +87,25 @@ export class PaymentsPage {
 
   public payWithCash() {
     this.openModal(this.payTypes.cash.component, 'cash');
+  }
+
+  public splitPayment() {
+    this.moneySplit = [this.amount];
+    this.navCtrl.push(SplitPaymentPage, {
+      sale: this.sale, moneySplit: this.moneySplit, splitCallback: this.splitCallback.bind(this)
+    });
+  }
+  private async splitCallback (data) {
+      if (data) {
+          if (data.type === 'PAY' && data.values.length) {
+              data.values.forEach(payment => {
+                  this.addPayment('cash', payment.amount);
+              });
+              await this.calculateBalance(this.sale);
+              await this.salesService.update(this.sale);
+          }
+          this.moneySplit = data.moneySplit;
+      }
   }
 
   private openModal(component: Component, type: string) {
@@ -155,12 +162,29 @@ export class PaymentsPage {
     });
   }
 
-  private async _checkForStockInHand() {
-    this.stockErrors = [];
-    let loader = this.loading.create({ content: 'Checking for stock...' });
-    await loader.present();
+  private async checkForStockInHand() {
+
     const stockEnabledItems = this.productService.getStockEnabledItems(this.sale.items);
-    this.stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems, this.syncContext.currentStore._id);
-    loader.dismiss();
+
+    if (stockEnabledItems.length) {
+
+      let loader = this.loading.create({ content: 'Checking Stocks...' });
+      await loader.present();
+
+      this.stockErrors = await this.salesService.checkForStockInHand(stockEnabledItems, this.syncContext.currentStore._id);
+      loader.dismiss();
+
+      if (this.stockErrors && this.stockErrors.length > 0) {
+        let alert = this.alertController.create(
+          {
+            title: 'Out of Stock',
+            subTitle: 'Please make changes to sale and continue',
+            message: `${this.stockErrors.join('\n')}`,
+            buttons: ['Ok'],
+          }
+        );
+        alert.present();
+      }
+    }
   }
 }

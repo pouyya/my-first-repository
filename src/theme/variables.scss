@@ -24,41 +24,45 @@ $font-path: "../assets/fonts";
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
-  secondary:  #32db64,
+  primary:    #3DBFD9,
+  secondary:  #F8F8F8,
   danger:     #f53d3d,
   light:      #f4f4f4,
   warning:    yellow,
-  dark:       #222,
+  dark:       #343B48,
   white:    #ffffff,
-  black:    #000000
+  black:    #000000,
+  selected: #495361,
+  lighte-selected: #ecf7fd,
+  background-light: #d2edf6
 );
 
 $colors-md: (
-  primary:    #3784C6,
-  secondary:  #32db64,
+  primary:    #3DBFD9,
+  secondary:  #F8F8F8,
   danger:     #f53d3d,
   light:      #f4f4f4,
-  dark:       #222,
+  dark:       #343B48,
   white:    #ffffff,
   warning:    yellow,
-  black:    #000000  
+  black:    #000000,
+  selected: #495361,
+  lighte-selected: #ecf7fd,
+  background-light: #d2edf6
 );
 
-$font-family-base: "LatoWeb", "Helvetica Neue", "Roboto", sans-serif !default;
-$font-family-md-base: "LatoWeb", "Roboto", "Helvetica Neue", sans-serif !default;
+$font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+$font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
-$background-color: #F6F6F6;
-$toolbar-background: #3A4953;
+$background-color: #F8F8F8;
+$toolbar-background: #2E99DB;
 $toolbar-text-color: #CBCFD2;
-$list-background-color: #F7F7F7;
+$list-background-color: #FFFFFF;
 $list-background-color-border: #a9a9a9;
-$staff-group-border-color: #C1C1C1;
-$sales-category-tile-btn-color: #585858;
+$list-md-border-color:#FFFFFF;
 $toolbar-md-text-color: #CBCFD2;
 $button-background-color: #3A4953;
 $tile-background-color: #FFFFFF;
-$tile-background-color-selected: #3A4953;
 $tile-background-color-border: #F1F1F1;
 $tile-hover-background-color: #62676F;
 $tile-hover-color: #FFFFFF;
@@ -68,9 +72,15 @@ $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
 
 $menu-width: 180px;
+$menu-item-color: #B8B8B8;
+$menu-item-selected-color: color($colors, white);
+
 $category: (active: #FFFFFF);
 
+$text-input-highlight-color-valid: #F8F8F8;
 
+$sales-category-tile-btn-color: #585858;
+$sales-category-selected-background-color: color($colors, lighte-selected);
   // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
@@ -101,7 +111,6 @@ $category: (active: #FFFFFF);
 
 @import "ionic.theme.default";
 
-
 // Ionicons
 // --------------------------------------------------
 // The premium icon font for Ionic. For more info, please see:
@@ -117,7 +126,6 @@ $category: (active: #FFFFFF);
 @import "roboto";
 @import "noto-sans";
 @import "flaticon";
-@import "barber-color";
 
 
 // Global Styles
@@ -175,9 +183,22 @@ ion-alert {
 
 ion-input {
   background-color: color($colors, white);
-  border-radius: 10px;
+  border-radius: 8px !important;
+  border-width: 2px;
+  border-color: #CFCFCF;
+  border-style: solid;
+  background-color: white;
+  margin: 5px;
 }
 
+
+ion-list {
+  background-color: transparent !important;
+}
+
+ion-item {
+  background-color: transparent !important;
+}
 
 // App iOS Styles
 // --------------------------------------------------

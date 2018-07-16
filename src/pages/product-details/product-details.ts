@@ -1,7 +1,7 @@
 import { Supplier } from './../../model/supplier';
 import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
-import { StockHistory } from './../../model/stockHistory';
+import {Reason, StockHistory} from './../../model/stockHistory';
 import { StoreService } from './../../services/storeService';
 import { BrandService } from './../../services/brandService';
 import _ from 'lodash';
@@ -12,7 +12,7 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController } from 'ionic-angular';
+import {NavController, NavParams, ModalController, LoadingController, AlertController} from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
@@ -24,6 +24,10 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
+import { Utilities } from "../../utility";
+import * as moment from "moment-timezone";
+import {EmployeeService} from "../../services/employeeService";
+import {SyncContext} from "../../services/SyncContext";
 
 interface InteractableStoreStock {
 	storeId: string,
@@ -56,7 +60,7 @@ export class ProductDetails {
 	public categories = [];
 	public brands: any = [];
 	public isNew = true;
-	public action = 'Add';
+	public action = 'Edit';
 	public selectedIcon: string = "";
 	public icons: any;
 	public disableDropdown: boolean = false;
@@ -73,9 +77,13 @@ export class ProductDetails {
 		},
 		isDefault: false
 	};
+	
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
-  private color: Subject<string> = new Subject<string>();
+	private color: Subject<string> = new Subject<string>();
+	private image: Subject<string> = new Subject<string>();
+	private thumbnail: Subject<string> = new Subject<string>();
+	public isStockEnabled: boolean = false;
 
 	constructor(public navCtrl: NavController,
 		private productService: ProductService,
@@ -92,7 +100,11 @@ export class ProductDetails {
 		private loading: LoadingController,
 		private zone: NgZone,
 		private modalCtrl: ModalController,
-		private cdr: ChangeDetectorRef) {
+		private alertCtrl: AlertController,
+		private cdr: ChangeDetectorRef,
+		private employeeService: EmployeeService,
+		private utility: Utilities,
+		private syncContext: SyncContext) {
 		this.icons = icons;
 	}
 
@@ -111,7 +123,6 @@ export class ProductDetails {
 		if (editProduct) {
 			this.productItem = editProduct;
 			this.isNew = false;
-			this.action = 'Edit';
 			if (this.productItem.hasOwnProperty('icon') && this.productItem.icon) {
 				this.selectedIcon = this.productItem.icon.name;
 			}
@@ -120,14 +131,22 @@ export class ProductDetails {
 			this.selectedIcon = this.productItem.icon.name;
 		}
 
+		this.isStockEnabled = this.productItem.stockControl || false;
+		this.color.asObservable().subscribe(color => {
+			this.productItem.color = color;
+		});
+		this.color.next(this.productItem.color);
 
-    this.color.asObservable().subscribe( color => {
-      this.productItem.color = color;
-    });
-    this.color.next(this.productItem.color);
+		this.image.asObservable().subscribe(image => {
+			this.productItem.image = image;
+		});
+		this.thumbnail.asObservable().subscribe(thumbnail => {
+			this.productItem.thumbnail = thumbnail;
+		});
+		this.image.next(this.productItem.image);
+		this.thumbnail.next(this.productItem.thumbnail);
 
-
-    let promises: Array<Promise<any>> = [
+		let promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
 			new Promise(async (_resolve, _reject) => {
 				this.salesTaxService.get(_user.settings.defaultTax).then((salesTax: any) => {
@@ -166,22 +185,6 @@ export class ProductDetails {
 					resolve(storesStock);
 				});
 			}));
-			promises.push(new Promise((resolve, reject) => {
-				let stockHistories: { [id: string]: StockHistory[] } = {};
-				let promises: any[] = [];
-				stores.forEach(store => {
-					promises.push(async () => {
-						stockHistories[store._id] = await this.stockHistoryService.getByStoreAndProductId(
-							store._id, this.productItem._id
-						);
-						return;
-					});
-				});
-
-				Promise.all(promises.map(promise => promise())).then(() => {
-					resolve(stockHistories);
-				}).catch(err => reject(err));
-			}))
 		} else {
 			promises.push(new Promise((resolve, reject) => {
 				let storesStock: InteractableStoreStock[] = stores.map(store => {
@@ -209,8 +212,7 @@ export class ProductDetails {
 			defaultPB,
 			brands,
 			suppliers,
-			storesStock,
-			stockHistory
+			storesStock
 		] = await Promise.all(promises);
 
 		this.zone.run(() => {
@@ -221,7 +223,6 @@ export class ProductDetails {
 			this.brands = brands;
 			this.suppliers = suppliers;
 			this.storesStock = storesStock;
-			this.stockHistory = _.cloneDeep(stockHistory);
 
 			let productPriceBook = _.find(this._defaultPriceBook.purchasableItems, { id: this.productItem._id });
 
@@ -247,18 +248,32 @@ export class ProductDetails {
 					item: productPriceBook
 				};
 			}
-			this.cdr.reattach();
 			loader.dismiss();
-
+			this.getAllStoreStockHistory();
 		});
 	}
 
+	private async getAllStoreStockHistory() {
+		try {
+			const allStocks = await this.stockHistoryService.getByProductId(
+				this.productItem._id
+			);
+			this.stockHistory = allStocks.reduce((obj, data) => {
+				!obj[data.storeId] && (obj[data.storeId] = []);
+				obj[data.storeId].push(data);
+				return obj;
+			}, {});
+		} catch (ex) {
+
+		} finally {
+			this.cdr.reattach();
+		}
+	}
 	public selectIcon() {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
-			if (data.status) {
-				this.selectedIcon = data.selected;
-				this.productItem.icon = this.icons[this.selectedIcon];
+			if (data && data.status) {
+                this.productItem.icon = this.icons[data.selected] || null;
 			}
 		});
 		modal.present();
@@ -312,6 +327,7 @@ export class ProductDetails {
 					this.stockEntities.push(stock);
 					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
 					this.storesStock[index].value += stock.value;
+                    !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
 					this.stockHistory[stock.storeId].push(stock);
 				} catch (err) {
 					throw new Error(err);
@@ -333,8 +349,74 @@ export class ProductDetails {
 		};
 	}
 
+	public onStockToggle(event){
+		let alert;
+		if(!this.isStockEnabled){
+            alert = this.alertCtrl.create({
+                title: 'You cannot turn off the stock',
+                buttons: [
+                    {
+                        text: 'OK',
+                        role: 'cancel',
+                        handler: data => {
+                            this.isStockEnabled = true
+                        }
+                    }
+                 ]
+            });
+		}else{
+			alert = this.alertCtrl.create({
+				title: 'Initial Value',
+				inputs: [
+					{
+						name: 'initialVal',
+						placeholder: 'Initial Value'
+					}
+				],
+				buttons: [
+					{
+						text: 'Cancel',
+						role: 'cancel',
+						handler: data => {
+							this.isStockEnabled = false
+						}
+					},
+					{
+						text: 'Save',
+						handler: data => {
+							if(data.initialVal){
+								this.isStockEnabled = true;
+								this.addInitialVal(data.initialVal);
+							}else{
+								this.isStockEnabled = false
+							}
+						}
+					}
+				]
+			});
+        }
+        alert.present();
+	}
+
+	public async addInitialVal(initVal){
+		initVal = Number(initVal);
+		if(initVal && initVal > 0) {
+            const stock: StockHistory = new StockHistory();
+            stock.productId = this.productItem._id;
+            stock.reason = Reason.InitialValue;
+            stock.storeId = this.syncContext.currentStore._id;
+            stock.createdAt = moment().utc().format();
+            stock.value = initVal;
+            stock.createdBy = this.employeeService.getEmployee()._id;
+            stock.supplyPrice = stock.supplyPrice ? Number(stock.supplyPrice) : null;
+            this.stockEntities.push(stock);
+            let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
+            this.storesStock[index].value += stock.value;
+        }
+	}
+
 	public async saveProducts() {
-		this.productItem.order = Number(this.productItem.order);
+		this.productItem.stockControl = this.isStockEnabled;
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
 			this._defaultPriceBook.purchasableItems.push({
@@ -379,6 +461,10 @@ export class ProductDetails {
 
 	public async delete() {
 		// delete associations
+		const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this product!");
+		if (!deleteItem) {
+			return;
+		}
 		let deleteAssocs: any[] = [
 			async () => {
 				// delete pricebook entries

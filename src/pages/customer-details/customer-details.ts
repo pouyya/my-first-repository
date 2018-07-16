@@ -7,6 +7,7 @@ import { ValidationHelper } from '../../utility/validationHelper';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import {Utilities} from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.CustomerAddEdit)
 @Component({
@@ -26,7 +27,8 @@ export class CustomerDetails {
     private navParams: NavParams,
     private navCtrl: NavController,
     private resourceService: ResourceService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private utility: Utilities
   ) {
     this.customer = <Customer>this.navParams.get('customer');
     if (!this.customer) {
@@ -83,6 +85,10 @@ export class CustomerDetails {
 
   public async remove() {
     try {
+      const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this employee!");
+      if(!deleteItem){
+          return;
+      }
       await this.customerService.delete(this.customer);
       this.navCtrl.pop();
     } catch (err) {

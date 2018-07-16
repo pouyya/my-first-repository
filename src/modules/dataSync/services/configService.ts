@@ -81,7 +81,7 @@ export class ConfigService {
     }
 
     static securityTokenEndPoint(): string {
-        return ConfigService.securityServerBaseUrl() + "/connect/token";
+        return ConfigService.securityServerBaseUrl() + "/token";
     }
 
     static registeEndPoint(): string {
@@ -89,11 +89,11 @@ export class ConfigService {
     }
 
     static forgotPasswordEndPoint(): string {
-        return ConfigService.apiServerBaseUrl() + "/common/ForgotPassword";
+        return ENV.security.serverUrl + "/wp-content/plugins/simplepos-account-management/forget-password.php";
     }
 
     static securityUserInfoEndPoint(): string {
-        return ConfigService.securityServerBaseUrl() + "/connect/userinfo";
+        return ConfigService.apiServerBaseUrl() + "/me";
     }
 
     static mailSenderAPI(): string {
@@ -102,28 +102,13 @@ export class ConfigService {
 
     
     static securityServerBaseUrl(): string {
-        return ENV.security.serverBaseUrl;
+        return ENV.security.serverUrl + "/wp-json/jwt-auth/v1";
     }
 
     static apiServerBaseUrl(): string {
-        return ENV.security.serverApiUrl;
+        return ENV.security.serverUrl + "/wp-json/wp/v2/users";
     }
 
-    static securityClientId(): string {
-        return ENV.security.clientId;
-    }
-    static securityClientSecret(): string {
-        return ENV.security.clientSecret;
-    }
-
-    static securityGrantType(): string {
-        return ENV.security.grantType;
-    }
-
-    static securityScope(): string {
-        return ENV.security.scope;
-    }
-    
     static ionicDeployAppId(): string {
         return ENV.ionicDeploy.appId;
     }

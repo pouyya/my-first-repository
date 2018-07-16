@@ -22,6 +22,7 @@ import { SyncContext } from "../../services/SyncContext";
 import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
+import { Utilities } from "../../utility";
 
 
 @SecurityModule()
@@ -39,6 +40,7 @@ export class Sales implements OnDestroy {
       this._basketComponent = basketComponent;
       if (this._basketComponent) {
         await this._basketComponent.initializeSale(this.navParams.get('sale'), this.evaluationContext);
+        this.salesService.getParkedSalesCount().then(count => this.parkedSaleCount = count);
       }
     }, 0);
 
@@ -53,7 +55,8 @@ export class Sales implements OnDestroy {
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
-  
+  public parkedSaleCount: number;
+
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
   public user: UserSession;
@@ -70,9 +73,11 @@ export class Sales implements OnDestroy {
     private storeService: StoreService,
     private navParams: NavParams,
     private cacheService: CacheService,
+    private utils: Utilities,
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
+    this.parkedSaleCount = 0;
   }
 
   ngOnDestroy() {
@@ -80,12 +85,14 @@ export class Sales implements OnDestroy {
   }
 
   ionViewWillUnload() {
+    this._sharedService.unsubscribe('updateSale');
+    this._sharedService.unsubscribe('clockInOut');
     this.cacheService.removeAll();
   }
 
-
   async ionViewDidLoad() {
-
+    this.syncContext.currentPos.categorySort = this.syncContext.currentPos.categorySort || [];
+    this.syncContext.currentPos.productCategorySort = this.syncContext.currentPos.productCategorySort || {};
     this._sharedService
       .getSubscribe('clockInOut') //move it it's own module!
       .takeWhile(() => this.alive)
@@ -101,11 +108,14 @@ export class Sales implements OnDestroy {
           loader.dismiss();
         }
       });
+
+    var __this = this;
+
     this._sharedService
       .getSubscribe('updateSale')
       .subscribe((data) => {
         setTimeout(async () => {
-          await this._basketComponent.initializeSale(data.sale, this.evaluationContext);
+          await __this._basketComponent.initializeSale(data.sale, this.evaluationContext);
         }, 100);
       });
 
@@ -120,7 +130,6 @@ export class Sales implements OnDestroy {
     } else {
       await this.loadRegister();
     }
-
     this.cdr.reattach();
   }
 
@@ -163,6 +172,13 @@ export class Sales implements OnDestroy {
     this.selectedEmployee = null;
   }
 
+  public onParkedSale(isParked) {
+      if( !isParked && this.parkedSaleCount == 0 ) {
+        return;
+      }
+      isParked ? this.parkedSaleCount += 1 : this.parkedSaleCount -=1;
+  }
+  // Event
   private async loadCategoriesAndAssociations() {
 
     let [categories, purchasableItems] = await Promise.all([this.categoryService.getAll(), this.categoryService.getPurchasableItems()]);
@@ -172,11 +188,16 @@ export class Sales implements OnDestroy {
       if (items.length === 0) {
         category.purchasableItems = [];
       } else {
-        category.purchasableItems = _.sortBy(items, [item => parseInt(item.order) || 0]);
+        category.purchasableItems = items;
+        if (this.syncContext.currentPos.productCategorySort && this.syncContext.currentPos.productCategorySort[category._id]) {
+          this.utils.sort(category.purchasableItems, this.syncContext.currentPos.productCategorySort[category._id]);
+        }
       }
     });
-
-    this.categories = _.sortBy(_.compact(categories), [category => parseInt(category.order) || 0]);
+    if (this.syncContext.currentPos.categorySort && this.syncContext.currentPos.categorySort.length) {
+      this.utils.sort(categories, this.syncContext.currentPos.categorySort);
+    }
+    this.categories = <SalesCategory[]>categories;
     this.activeCategory = _.head(this.categories) || new SalesCategory();
   }
 

@@ -6,6 +6,7 @@ import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
+import {Utilities} from "../../utility";
 
 @Component({
   selector: 'page-variables',
@@ -17,6 +18,8 @@ export class CategoryDetails {
   public action = 'Add';
   public icons: any;
   private color: Subject<string> = new Subject<string>();
+  private image: Subject<string> = new Subject<string>();
+  private thumbnail: Subject<string> = new Subject<string>();
   public selectedIcon: string = "";
 
   constructor(public navCtrl: NavController,
@@ -24,7 +27,8 @@ export class CategoryDetails {
     private userService: UserService,
     private navParams: NavParams,
     private toastCtrl: ToastController,
-    private modalCtrl: ModalController) {
+    private modalCtrl: ModalController,
+    private utility: Utilities) {
     this.icons = icons;
   }
 
@@ -46,6 +50,14 @@ export class CategoryDetails {
     this.color.asObservable().subscribe( color => {
       this.categoryItem.color = color;
     });
+    this.image.asObservable().subscribe( image => {
+          this.categoryItem.image = image;
+    });
+    this.thumbnail.asObservable().subscribe( thumbnail => {
+        this.categoryItem.thumbnail = thumbnail;
+    });
+    this.image.next(this.categoryItem.image);
+    this.thumbnail.next(this.categoryItem.thumbnail);
     this.color.next(this.categoryItem.color);
   }
 
@@ -78,6 +90,10 @@ export class CategoryDetails {
   
   public async delete() {
     try {
+      const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this category!");
+      if(!deleteItem){
+          return;
+      }
       await this.categoryService.delete(this.categoryItem);
       let toast = this.toastCtrl.create({
         message: `Category '${this.categoryItem.name}' has been deleted successfully!`,

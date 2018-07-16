@@ -27,11 +27,6 @@
       <ion-item (click)="showDetail(item)">
         <ion-grid>
         <ion-row>
-          <ion-col col-md-1>
-            <ion-avatar class="item-avatar" item-left>
-            <img src="assets/img/avatar-han.png">
-          </ion-avatar>
-          </ion-col>
           <ion-col col-md-2 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{item[column.variableName]}}</h2></ion-col>
         </ion-row>
         </ion-grid>

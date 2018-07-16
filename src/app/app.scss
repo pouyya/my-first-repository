@@ -1,20 +1,5 @@
-// http://ionicframework.com/docs/v2/theming/
-
+@import "../../node_modules/angular-calendar/scss/angular-calendar";
 @import "../theme/variables";
-
-// App Global Sass
-// --------------------------------------------------
-// Put style rules here that you want to apply globally. These
-// styles are for the entire app and not just one component.
-// Additionally, this file can be also used as an entry point
-// to import other Sass files to be included in the output CSS.
-//
-// Shared Sass variables, which can be used to adjust Ionic's
-// default Sass variables, belong in "theme/variables.scss".
-//
-// To declare rules for a specific mode, create a child rule
-// for the .md, .ios, or .wp mode classes. The mode class is
-// automatically applied to the <body> element in the app.
 
 .text-right {
   text-align: right
@@ -48,19 +33,57 @@
   color: color($colors, danger);
 }
 
-.pay {
-  background-color: color($colors, primary)
-}
-
-.return {
-  background-color: color($colors, danger);
-}
-
 .scrollable-component {
   overflow-y: auto;
   height: 200px;
 }
 
+.menu-list{
+  
+  background-color: color($colors, dark);
+
+  .menu-item {
+    background-color: color($colors, dark) !important;
+    color: $menu-item-color;
+
+    .item-inner{
+      border: 0 !important;
+    }
+  }
+
+  .current {
+    background-color: color($colors, selected) !important;
+    color: $menu-item-selected-color;
+  }
+}
 ion-title.ion-title-center {
   text-Align:center;
+}
+
+.header-toolbar {
+  background-color: color($colors, dark);
+}
+
+ion-icon {
+  &[class*="simpleidea-"] {
+    mask-size: contain;
+    mask-position: 50% 50%;
+    mask-repeat: no-repeat;
+    background: currentColor;
+    width: 1em;
+    height: 1em;
+  }
+  // custom icons
+  &[class*="simpleidea-edit"] {
+    mask-image: url(../assets/img/edit.svg);
+  }
+}
+
+.item-label-stacked .text-input-md,
+.item-label-floating .text-input-md {
+  margin-left: 8px;
+}
+
+.no-scroll > .scroll-content{
+  overflow: hidden;
 }

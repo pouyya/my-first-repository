@@ -5,13 +5,13 @@ import { NgModule } from '@angular/core';
 import { NetworkMonitorComponent } from './network-monitor.component';
 
 @NgModule({
-  declarations: [ NetworkMonitorComponent ],
-  imports: [ 
-    CommonModule, 
+  declarations: [NetworkMonitorComponent],
+  imports: [
+    CommonModule,
     IonicPageModule.forChild(NetworkMonitorComponent),
     SharedModule
   ],
-  exports: [ NetworkMonitorComponent ]
+  exports: [NetworkMonitorComponent]
 })
 export class NetworkMonitorModule {
 

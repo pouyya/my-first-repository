@@ -15,6 +15,7 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
+import {Utilities} from "../../utility";
 
 interface InteractableItemPriceInterface {
 	id: string;
@@ -52,7 +53,9 @@ export class ServiceDetails {
 		isDefault: false
 	};
 	private _defaultPriceBook: PriceBook;
-  private color: Subject<string> = new Subject<string>();
+	private color: Subject<string> = new Subject<string>();
+    private image: Subject<string> = new Subject<string>();
+    private thumbnail: Subject<string> = new Subject<string>();
 
 	constructor(public navCtrl: NavController,
 		private serviceService: ServiceService,
@@ -65,6 +68,7 @@ export class ServiceDetails {
 		private zone: NgZone,
 		private platform: Platform,
 		private modalCtrl: ModalController,
+		private utility: Utilities,
 		private loading: LoadingController) {
 		this.icons = icons;
 	}
@@ -90,10 +94,18 @@ export class ServiceDetails {
 			this.selectedIcon = this.serviceItem.icon.name;
 		}
 
-    this.color.asObservable().subscribe( color => {
-      this.serviceItem.color = color;
-    });
-    this.color.next(this.serviceItem.color);
+		this.color.asObservable().subscribe(color => {
+			this.serviceItem.color = color;
+		});
+        this.image.asObservable().subscribe( image => {
+            this.serviceItem.image = image;
+        });
+        this.thumbnail.asObservable().subscribe( thumbnail => {
+            this.serviceItem.thumbnail = thumbnail;
+        });
+        this.color.next(this.serviceItem.color);
+        this.image.next(this.serviceItem.image);
+        this.thumbnail.next(this.serviceItem.thumbnail);
 
 		var promises: Array<Promise<any>> = [
 			this.categoryService.getAll(),
@@ -230,5 +242,28 @@ export class ServiceDetails {
 
 		await this.priceBookService.update(this._defaultPriceBook);
 		this.navCtrl.pop();
+	}
+
+	public async delete() {
+        const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this service!");
+        if(!deleteItem){
+            return;
+        }
+		// delete associations
+		let deleteAssocs: any[] = [
+			async () => {
+				// delete pricebook entries
+				let pbIndex = _.findIndex(this._defaultPriceBook.purchasableItems, { id: this.serviceItem._id });
+				if (pbIndex > -1) {
+					this._defaultPriceBook.purchasableItems.splice(pbIndex, 1);
+					return await this.priceBookService.update(this._defaultPriceBook);
+				}
+			}
+		];
+
+		await Promise.all(deleteAssocs);
+		await this.serviceService.delete(this.serviceItem);
+		this.navCtrl.pop();
+		return;
 	}
 }

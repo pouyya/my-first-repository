@@ -17,7 +17,6 @@ import { PriceBookService } from '../../services/priceBookService';
 import { Order } from '../../model/order';
 import { FountainService } from '../../services/fountainService';
 import { StockHistoryService } from '../../services/stockHistoryService';
-import { UserService } from '../../modules/dataSync/services/userService';
 import { EmailService } from '../../services/emailService';
 import {
   NavController,
@@ -34,20 +33,12 @@ import {
   OrderPageCurrentSettings,
   OrderPageSettings
 } from './modules/order-details-exportables';
+import {Utilities} from "../../utility";
 
 @Component({
   selector: 'order-details',
   templateUrl: 'order-details.html',
-  styles: [`
-    .center-message {
-      text-align: center;
-      font-size: 40px;
-      font-weight: bold;
-    }
-    #cancel-order {
-      color: red;
-    }
-  `]
+  styleUrls: ['/pages/order-details/order-details.scss'],
 })
 export class OrderDetails {
 
@@ -79,7 +70,7 @@ export class OrderDetails {
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
     private emailService: EmailService,
-    private userService: UserService
+    private utility: Utilities
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');
@@ -207,30 +198,22 @@ export class OrderDetails {
   }
 
   public async cancelOrder() {
-    let confirm = this.alertCtrl.create({
-      title: 'Do you really wish to cancel this order ?',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            let toast = this.toastCtrl.create({ duration: 3000 });
-            this.order.cancelledAt = moment().utc().format();
-            this.order.status = OrderStatus.Cancelled;
-            this.orderService.update(<Order>_.omit(this.order, ['UIState'])).then(() => {
-              toast.setMessage('Order has been cancelled!');
-            }).catch(err => {
-              console.error(new Error(err));
-              toast.setMessage('Error! Unable to cancel order!');
-            }).then(() => {
-              toast.present();
-              this.navCtrl.pop();
-            });
-          }
-        },
-        'No' /** Do not cancel */
-      ]
-    });
-    confirm.present();
+    const isCancel = await this.utility.confirmRemoveItem("Do you really wish to cancel this order!");
+    if(!isCancel){
+        return;
+    }
+    let toast = this.toastCtrl.create({ duration: 3000 });
+    try{
+        this.order.cancelledAt = moment().utc().format();
+        this.order.status = OrderStatus.Cancelled;
+        await this.orderService.update(<Order>_.omit(this.order, ['UIState']));
+        toast.setMessage('Order has been cancelled!');
+    }catch (ex) {
+      toast.setMessage('Error! Unable to cancel order!');
+    } finally {
+      toast.present();
+      this.navCtrl.pop();
+    }
   }
 
   public receiveOrder() {

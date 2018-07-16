@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle="lefMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Dashboard</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <date-duration-picker [dates$]="dates$"></date-duration-picker>
+  <ion-grid>
+    <div style="margin-top:25px" text-center>
+      <ion-row>
+        <ion-col>Sales Count Total</ion-col>
+        <ion-col></ion-col>
+        <ion-col>Sales Average</ion-col>
+        <ion-col></ion-col>
+        <ion-col>Total({{this.isTaxInclusive ? 'inc' : 'exc'}}. tax)</ion-col>
+      </ion-row>
+      <ion-row style="font-size:25px">
+        <ion-col>{{totalSales}}</ion-col>
+        <ion-col>X</ion-col>
+        <ion-col>${{salesAverage}}</ion-col>
+        <ion-col>=</ion-col>
+        <ion-col>${{totalSales * salesAverage}}</ion-col>
+      </ion-row>
+    </div>
+    <ion-card class="line-graph">
+      <ion-card-header>
+        Sales Summary Chart
+      </ion-card-header>
+      <ion-card-content style="height: 87%">
+        <canvas  #lineCanvas></canvas>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-row class="row-bold-font">
+      <ion-col>Date</ion-col>
+      <ion-col>No of sales</ion-col>
+      <ion-col>Net amount</ion-col>
+      <ion-col>Tax amount</ion-col>
+      <ion-col>Total</ion-col>
+      <ion-col>Sale Average</ion-col>
+    </ion-row>
+    <div>
+      <ion-row class="row-border" *ngFor="let sale of sales">
+        <ion-col>{{sale.date}}</ion-col>
+        <ion-col>{{sale.noOfSales}}</ion-col>
+        <ion-col>{{sale.netAmount}}</ion-col>
+        <ion-col>{{sale.taxAmount}}</ion-col>
+        <ion-col>{{sale.total}}</ion-col>
+        <ion-col>{{sale.saleAverage}}</ion-col>
+      </ion-row>
+    </div>
+  </ion-grid>
+</ion-content>

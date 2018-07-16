@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Select File
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <input type="file" style="display: none" accept="application/vnd.ms-excel, application/pdf,.csv" (change)="fileSelected($event)" #fileInput />
+    <ion-grid>
+        <ion-row>
+            <ion-col>Each product should be on a new line in your import</ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-grid class="drag-drop" *ngIf="!importedRecords.length" (click)="openFileList()">
+                <ion-row>
+                    <ion-col> Click here to import csv</ion-col>
+                </ion-row>
+            </ion-grid>
+            <ion-grid *ngIf="importedRecords.length">
+                <ion-row>
+                    <ion-col *ngFor="let field of displayFields">{{field}}</ion-col>
+                </ion-row>
+                <ion-row *ngFor="let data of importedRecords">
+                    <ion-col *ngFor="let field of displayFields">{{data[field]}}</ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-row>
+        <ion-row>
+            <button ion-button (click)="importAll()">Import Products</button>
+            <button ion-button (click)="dismiss()">Cancel</button>
+        </ion-row>
+    </ion-grid>
+
+</ion-content>

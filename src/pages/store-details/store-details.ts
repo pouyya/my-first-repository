@@ -13,7 +13,9 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { DeviceDetailsModal } from "./modals/device-details";
 import { PosDetailsModal } from "./modals/pos-details";
-import { Utilities } from "../../utility";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { Utilities } from "../../utility/index";
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -25,21 +27,27 @@ export class StoreDetailsPage {
   public action: string = 'Add';
   public devices: Device[] = [];
   public countries: Array<any> = [];
-  public posToAdd: POS[] = [];
   public deviceType = DeviceType;
+  private storeForm: FormGroup;
+  private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
+    'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
+    'timezone', 'email', 'phone', 'twitter'];
   public isDataChanged = false;
   @ViewChild('storeForm') storeForm;
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,
     private modalCtrl: ModalController,
+    private syncContext: SyncContext,
     private storeService: StoreService,
     private employeeService: EmployeeService,
     private loading: LoadingController,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private resourceService: ResourceService,
+    private formBuilder: FormBuilder,
     private utils: Utilities) {
+    this.createForm();
   }
 
   async ionViewDidEnter() {
@@ -48,11 +56,10 @@ export class StoreDetailsPage {
     });
     let store = this.navParams.get('store');
     if (store) {
-        this.item = store;
-        this.isNew = false;
-        this.action = 'Edit';
+      this.item = store;
+      this.isNew = false;
+      this.action = 'Edit';
     }
-
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();
@@ -69,9 +76,24 @@ export class StoreDetailsPage {
     });
   }
 
+  private createForm() {
+    const store = this.navParams.get('store') || {};
+    const groupValidation = this.utils.createGroupValidation('Store', this.fields, store);
+    this.storeForm = this.formBuilder.group(groupValidation);
+  }
+  
   public async onSubmitAndReturn(isReturn) {
     let loader = this.loading.create({ content: 'Saving store...' });
+    if(!this.item.POS || this.item.POS.length === 0){
+      const toast = this.toastCtrl.create({
+        message: 'Current POS cannot be removed',
+        duration: 3000
+      });
+      toast.present();
+      return;
+    }
 
+    this.utils.setFormFields(this.storeForm, this.fields, this.item);
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);
@@ -82,6 +104,7 @@ export class StoreDetailsPage {
     this.isDataChanged = false;
     if (isReturn == true)
       this.navCtrl.pop();
+    }
   }
 
   public showPos(pos: POS, index: number) {
@@ -94,8 +117,8 @@ export class StoreDetailsPage {
           } else {
               this.item.POS[index] = data.pos;
           }
-          this.isDataChanged = true;
         }
+      }
     });
     modal.present();
   }
@@ -112,7 +135,20 @@ export class StoreDetailsPage {
     modal.present();
   }
 
-  public removeAddedRegister(index: number) {
+  public async removeAddedRegister(index: number) {
+    const deleteItem = await this.utils.confirmRemoveItem("Do you really want to delete this register!");
+    if(!deleteItem){
+        return;
+    }
+    const register = this.item.POS[index];
+    if(this.syncContext.currentPos.id === register.id){
+      const toast = this.toastCtrl.create({
+        message: 'Current POS cannot be removed',
+        duration: 3000
+      });
+      toast.present();
+      return;
+    }
     this.item.POS.splice(index, 1);
     this.isDataChanged = true;
   }
@@ -143,36 +179,34 @@ export class StoreDetailsPage {
   }
 
   public async removeDevice(index: number) {
-    let confirm = this.alertCtrl.create({
-      title: 'Are you sure you want to delete this Device ?',
-      message: 'Deleting this device!',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            let loader = this.loading.create({
-              content: 'Deleting. Please Wait!',
-            });
-
-            loader.present().then(() => {
-              this.item.devices.splice(index, 1);
-              let toast = this.toastCtrl.create({
-                message: 'Device has been deleted successfully',
-                duration: 3000
-              });
-              toast.present();
-              loader.dismiss();
-              this.isDataChanged = true;
-            });
-          }
-        }, 'No'
-      ]
+    const deleteItem = await this.utils.confirmRemoveItem("Do you really want to delete this device!");
+    if(!deleteItem){
+        return;
+    }
+    let loader = this.loading.create({
+        content: 'Deleting. Please Wait!',
     });
-    confirm.present();
+
+    await loader.present();
+    this.item.devices.splice(index, 1);
+    let toast = this.toastCtrl.create({
+        message: 'Device has been deleted successfully',
+        duration: 3000
+    });
+    toast.present();
+    loader.dismiss();
   }
 
-  // Device
   public remove() {
+    if(this.item._id === this.syncContext.currentStore._id){
+      const toast = this.toastCtrl.create({
+        message: 'Selected store cannot be deleted',
+        duration: 3000
+      });
+      toast.present();
+      return;
+    }
+
     let confirm = this.alertCtrl.create({
       title: 'Are you sure you want to delete this store ?',
       message: 'Deleting this store, will delete all associated Registers, Sales and any Current Sale!',

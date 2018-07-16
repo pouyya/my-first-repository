@@ -5,13 +5,14 @@ import { Categories } from './../pages/categories/categories';
 import { Injectable } from '@angular/core';
 import { Settings } from './../pages/settings/settings';
 import { Stores } from './../pages/stores/stores';
-import { Employees } from './../pages/employees/employees';
 import { Services } from './../pages/service/service';
 import { Sales } from './../pages/sales/sales';
 import { HomePage } from './../pages/home/home';
 import { ModuleBase } from "./moduelBase";
 import { Customers } from '../pages/customers/customers';
 import { LogOut } from './dataSync/pages/logout/logout';
+import { ReportsDashboard } from '../pages/report-dashboard/report-dashboard';
+import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
 
 @Injectable()
 export class BackOfficeModule implements ModuleBase {
@@ -23,11 +24,12 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'POS', icon: 'cash', component: Sales },
     { title: 'Inventory', icon: 'cube', component: Categories },
     { title: 'Service', icon: 'bowtie', component: Services },
-    { title: 'Employees', icon: 'contacts', component: Employees },
     { title: 'Customers', icon: 'contacts', component: Customers },
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
+    { title: 'Human Resource', icon: 'build', component: HumanResourceDashboard },
     { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
+    { title: 'Report', icon: 'print', component: ReportsDashboard },
     { title: 'Settings', icon: 'cog', component: Settings },
     { title: 'About', icon: 'information-circle', component: AboutPage },
     { title: 'Logout', icon: 'log-out', component: LogOut }

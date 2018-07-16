@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController } from 'ionic-angular';
+import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -8,7 +8,6 @@ import { ModuleService } from './../services/moduleService';
 import { ModuleBase } from "../modules/moduelBase";
 import { PlatformService } from '../services/platformService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployService } from '../modules/ionicpro-deploy/ionic-pro-deploy.service';
 import { UserService } from '../modules/dataSync/services/userService';
 import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
@@ -16,6 +15,7 @@ import { SecurityAccessRightRepo } from '../model/securityAccessRightRepo';
 import { SecurityResultReason } from '../infra/security/model/securityResult';
 import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
+import { DeployService } from '../services/deployService';
 
 @Component({
   selector: 'app',
@@ -26,6 +26,7 @@ export class SimplePOSApp implements OnInit {
   public rootPage: any;
   public currentModule: ModuleBase;
   public moduleName: string;
+  public currentPage: any;
   private alive: boolean = true;
 
   constructor(
@@ -39,11 +40,12 @@ export class SimplePOSApp implements OnInit {
     private insomnia: Insomnia,
     private toastController: ToastController,
     private platformService: PlatformService,
-    private ionicProDeployService: IonicProDeployService,
+    private deployService: DeployService,
     private userService: UserService,
     private printService: PrintService,
     private securityService: SecurityService,
-    private syncContext: SyncContext // used in view
+    private syncContext: SyncContext, // used in view
+    private menuController: MenuController
   ) {
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
@@ -62,14 +64,18 @@ export class SimplePOSApp implements OnInit {
       user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
     }
 
-    this.nav.viewDidLoad.subscribe((viewController: ViewController) => {
+    this.nav.viewDidEnter.subscribe(async (viewController: ViewController) => {
       if (viewController && viewController.instance) {
         this.currentModule = this.moduleService.getCurrentModule(viewController.instance);
         this.moduleName = this.currentModule.constructor.name;
+        this.currentPage = viewController.instance;
+        if (!this.currentModule.pinTheMenu) {
+          await this.menuController.close();
+        }
       }
     })
-    var eligibleForDeploy = await this.ionicProDeployService.eligibleForDeploy();
-    this.rootPage = eligibleForDeploy ? DeployPage : await this.ionicProDeployService.getNextPageAfterDeploy();
+    var eligibleForDeploy = await this.deployService.eligibleForDeploy();
+    this.rootPage = this.currentPage = eligibleForDeploy ? DeployPage : await this.deployService.getNextPageAfterDeploy();
   }
 
   initializeApp() {
@@ -80,6 +86,7 @@ export class SimplePOSApp implements OnInit {
       // }
 
       this.statusBar.styleDefault();
+      this.statusBar.overlaysWebView(false);
       this.hideSplashScreen();
     });
   }
@@ -123,6 +130,10 @@ export class SimplePOSApp implements OnInit {
     }
   }
 
+  isTypeOf(page: any, pageType: any): boolean {
+    return pageType && (page instanceof pageType.component);
+  }
+
   async openCashDrawer() {
 
     var securityResult = await this.securityService.canAccess([SecurityAccessRightRepo.OpenCashDrawer], false);
@@ -161,6 +172,4 @@ export class SimplePOSApp implements OnInit {
       position: 'top'
     }).present();
   }
-
-
 }

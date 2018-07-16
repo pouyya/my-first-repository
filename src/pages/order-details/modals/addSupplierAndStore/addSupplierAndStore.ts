@@ -30,12 +30,10 @@ export class AddSupplierAndStore {
   }
 
   async ionViewDidLoad() {
-    let [ suppliers, stores ] = [
+    [ this.suppliers, this.stores ] = [
       await this.supplierService.getAll(),
       await this.storeService.getAll()
     ];
-    this.suppliers = suppliers;
-    this.stores = stores;
   }
 
   ionViewDidLeave() {

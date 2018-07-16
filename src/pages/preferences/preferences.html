@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle="leftMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end>
+      <button (click)="save()" ion-button icon-only>
+        Save
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Preferences</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid *ngIf="categories && activeCategory" class="full-height">
+    <ion-row class="full-height">
+      <ion-col class="min-height" col-2>
+        <ion-scroll scrollY="true" class="category-scroll">
+          <ion-list dnd-sortable-container [sortablejs]="categories" [sortablejsOptions]="options" no-lines class="full-height no-margin sales-category">
+
+            <ion-item text-wrap *ngIf="categories.length == 0">Please use back office to add new categories.</ion-item>
+            <button ion-item *ngFor="let category of categories" [style.background-color]="syncContext.currentPos.categoryColor[category._id] || category.color" kclass="sales-category-button text-wrap" [ngClass]="{'activeCategory': category._id == activeCategory._id }"
+              (click)="selectCategory(category)">
+              <button class="editItem" item-right clear (click)="selectCategoryColor(category._id)">
+                <ion-icon name="simpleidea-edit"></ion-icon>
+              </button>
+
+              <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
+              {{ category.name }}
+            </button>
+          </ion-list>
+        </ion-scroll>
+      </ion-col>
+      <ion-col col-9>
+        <tile-items [allowDragSupport]="true" (onPositionChange)="onProductsPositionChange($event)" (onColorSelected)="onProductColorSelected($event)" [items]="activeCategory.purchasableItems">
+        </tile-items>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

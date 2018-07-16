@@ -7,6 +7,7 @@ import { ResourceService } from '../../services/resourceService';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import {Utilities} from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.SupplierAddEdit)
 @Component({
@@ -30,7 +31,8 @@ export class SupplierDetails {
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private resourceService: ResourceService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private utility: Utilities
   ) {
     this.pattern.telephone = /^[\+\d]?(?:[\d-.\s()]*)$/
     let supplier = this.navParams.get('supplier');
@@ -113,29 +115,21 @@ export class SupplierDetails {
     });
   }
 
-  public remove() {
+  public async remove() {
     let toast = this.toastCtrl.create({ duration: 3000 });
-    let confirm = this.alertCtrl.create({
-      title: 'Delete Supplier',
-      message: 'Do you wish to delete this supplier',
-      buttons: [
-        {
-          text: 'Yes',
-          handler: () => {
-            this.supplierService.delete(this.supplier).then(() => {
-              toast.setMessage('Supplier successfully delete');
-              toast.present();
-              this.navCtrl.pop();
-            }).catch(err => {
-              toast.setMessage('Unable to delete supplier');
-              toast.present();
-            })
-          }
-        },
-        'No'
-      ]
-    });
-    confirm.present();
+    try{
+      const deleteItem = await this.utility.confirmRemoveItem("Do you wish to delete this supplier!");
+      if(!deleteItem){
+          return;
+      }
+      await this.supplierService.delete(this.supplier);
+      toast.setMessage('Supplier successfully delete');
+      toast.present();
+      this.navCtrl.pop();
+    }catch (ex){
+      toast.setMessage('Unable to delete supplier');
+      toast.present();
+    }
   }
 
   public async save(): Promise<any> {

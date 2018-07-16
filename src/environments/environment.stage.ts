@@ -2,13 +2,11 @@ export const ENV = {
   name: "Stage",
   production: true,
   turnOnDeployment: true,
+  service: {
+    baseUrl: "https://site-stage.pos.app"
+  },
   security: {
-    serverApiUrl: "https://simplepos-app-prod.azurewebsites.net/api",
-    serverBaseUrl: "https://simplepos-app-prod.azurewebsites.net/identity",
-    clientId: "simplepos",
-    clientSecret: "21B5F798-BE55-42BC-8AA8-0025B903DC3B",
-    grantType: "password",
-    scope: "openid",
+    serverUrl: "https://site-stage.pos.app"
   },
   ionicDeploy: {
     appId: "22d41469",

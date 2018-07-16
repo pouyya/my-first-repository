@@ -11,9 +11,15 @@ export class IconSelectComponent {
   @Input() selectedIcon: string;
   @Output() confirmSelection: EventEmitter<any> = new EventEmitter<any>();
   public icons: Array<any>;
+  private noIcon: string = "No icon";
 
   constructor() {
     this.icons = _.values(icons);
+    this.icons.unshift({name: 'No icon', type: ''});
+  }
+
+  public ngAfterViewInit() {
+    !this.selectedIcon && ( this.selectedIcon = this.noIcon );
   }
 
   public select() {

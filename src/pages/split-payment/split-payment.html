@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-navbar>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Split Payment</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="sale" style="background-color: white;">
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-4><h2>Total</h2></ion-col>
+      <ion-col col-md-4 offset-md-4 class="pull-right"><h2>${{sale.taxTotal | number : '1.2-2'}}</h2></ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid style="margin-top: 50px;">
+    <ion-row>
+      <ion-col col-9>To Pay</ion-col>
+      <ion-col col-2><button ion-button outline color="primary" (click)="split()">Split</button></ion-col>
+    </ion-row>
+    <ion-row *ngFor="let amount of moneySplit; let idx = index;">
+      <ion-col class="split-payment-item" col-md-8>${{amount | number : '1.2-2'}} </ion-col>
+      <ion-col col-md-2 class="pull-right"><button ion-button class="orange" (click)="checkout(idx)">Checkout</button></ion-col>
+      <ion-col *ngIf="idx !== 0" col-md-2><button ion-button clear color="primary" (click)="remove(idx)">X</button></ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid style="margin-top: 50px;">
+    <ion-row>
+      <ion-col col-9>Paid</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let payment of sale.payments">
+      <ion-col class="split-payment-item"col-md-4>${{payment.amount | number : '1.2-2'}} </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let payment of paid">
+      <ion-col class="split-payment-item"col-md-4>${{payment.amount | number : '1.2-2'}} </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

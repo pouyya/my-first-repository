@@ -8,6 +8,7 @@ import { CustomerDetails } from '../customer-details/customer-details';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SearchableListing } from "../../modules/searchableListing";
+import {Utilities} from "../../utility";
 
 @SecurityModule(SecurityAccessRightRepo.CustomerListing)
 @PageModule(() => BackOfficeModule)
@@ -24,7 +25,8 @@ export class Customers extends SearchableListing<Customer>{
     private platform: Platform,
     private navCtrl: NavController,
     private loading: LoadingController,
-    protected zone: NgZone
+    protected zone: NgZone,
+    private utility: Utilities
   ) {
     super(customerService, zone, 'Customer');
   }
@@ -35,7 +37,7 @@ export class Customers extends SearchableListing<Customer>{
         content: 'Fetching Customers...'
       });
       await loader.present();
-      await this.fetchMore();
+      await this.fetch();
       await this.platform.ready();
       loader.dismiss();
     } catch (err) {
@@ -47,4 +49,15 @@ export class Customers extends SearchableListing<Customer>{
     this.navCtrl.push(CustomerDetails, { customer });
   }
 
+  public async remove(customer: Customer, index: number) {
+      try {
+          const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this employee!");
+          if(!deleteItem){
+              return;
+          }
+          await super.remove(customer, index);
+      } catch (err) {
+          throw new Error(err);
+      }
+  }
 }

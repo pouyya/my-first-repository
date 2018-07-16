@@ -6,6 +6,7 @@ import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
 import { DataBootstrapper } from '../../../../pages/data-bootstrapper/data-bootstrapper';
 import { DBIndex } from '@simpleidea/simplepos-core/dist/db/dbIndex';
+import { PlatformService } from '../../../../services/platformService';
 
 @Component({
 	selector: 'datasync',
@@ -17,7 +18,8 @@ export class DataSync {
 	private isNavigated = false;
 
 	constructor(private userService: UserService,
-		private navCtrl: NavController) {
+		private navCtrl: NavController,
+		private platformService: PlatformService) {
 	}
 
 	async ionViewDidLoad() {
@@ -36,8 +38,9 @@ export class DataSync {
 
 		this.updateText = "Check for data update!";
 
-		DBService.initializePlugin(ConfigService.isDevelopment());
-		DBService.initialize(
+		DBService.pouchDBProvider.initializePlugin(ConfigService.isDevelopment(), this.platformService.isMobileDevice());
+		DBService.pouchDBProvider.initialize(
+			this.platformService.isMobileDevice(),
 			ConfigService.currentCriticalFullExternalDBUrl,
 			ConfigService.internalCriticalDBName,
 			ConfigService.currentFullExternalDBUrl,
@@ -46,12 +49,12 @@ export class DataSync {
 			ConfigService.internalAuditDBName,
 			user.access_token,
 			[
-				<DBIndex>{ fields: ['order', 'entityTypeName', 'entityTypeNames'] },
-				<DBIndex>{ fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
-			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }],
-			[<DBIndex>{ fields: ['entityTypeName', 'entityTypeNames'] }]);
+				<DBIndex>{ name: 'orderEntityTypeName', fields: ['order', 'entityTypeName', 'entityTypeNames'] },
+				<DBIndex>{ name: 'orderNameEntityTypeName', fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
+			[<DBIndex>{ name: 'entityTypeName', fields: ['entityTypeName', 'entityTypeNames'] }],
+			[<DBIndex>{ name: 'entityTypeName', fields: ['entityTypeName', 'entityTypeNames'] }]);
 
-		DBService.criticalDBSyncProgress.subscribe(
+		DBService.pouchDBProvider.criticalDBSyncProgress.subscribe(
 			async (data: DBEvent) => {
 				if (data) {
 					if (data.progress === 1 && !this.isNavigated) {

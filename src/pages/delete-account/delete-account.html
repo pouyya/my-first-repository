@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Delete Account</ion-title>
+        <button ion-button icon-only menuToggle="leftMenu">
+            <ion-icon name="menu"></ion-icon>
+        </button>
+
+        <ion-buttons end>
+            <button ion-button (click)="deleteAccount()">
+                <ion-icon name="delete"></ion-icon>
+            </button>
+        </ion-buttons>
+        <ion-buttons end network-monitor></ion-buttons>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <h1 style="color: #5e9ca0;">Delete your account</h1>
+    <p>
+        <span style="color: #ff0000;">Are you sure you want to delete your account?</span>
+    </p>
+    <p>
+        <span style="color: #2b2301;">If you want to change your email address, simply do so right here from account settings, and if you want to change
+            your name or shop name, you can do from your profile settings. you can also change your privacy settings or Notificatin
+            settings at any time.</span>
+    </p>
+    <p>
+        <span style="color: #2b2301;">please note: </span>If you delete your account you wont be able to reactivate it later!</p>
+    <p>
+        <span style="background-color: #2b2301; color: #fff; display: inline-block; padding: 3px 10px; font-weight: bold; border-radius: 5px;">Delete Account</span>&nbsp;button to clean all information and shop data and meta data in our servers.</p>
+    <p>&nbsp;</p>
+    <h2 style="color: #2e6c80;">&nbsp;</h2>
+
+    <p>The GDPR is a European Union (EU) privacy law that affects businesses around the world. It regulates how any organization
+        that is subject to the Regulation treats or uses the personal data of people located in the EU. Personal data is
+        any piece of data that, used alone or with other data, could identify a person. If you collect, change, transmit,
+        erase, or otherwise use or store the personal data of EU citizens, you'll need to comply with the GDPR. The GDPR
+        will replace an older directive on data privacy, Directive 95/46/EC, and it introduces a few important changes that
+        may affect MailChimp users.</p>
+
+    <ion-buttons>
+        <button ion-button (click)="deleteAccount()">Delete Account</button>
+    </ion-buttons>
+
+</ion-content>

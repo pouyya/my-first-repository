@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { Store } from './../../model/store';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { SelectRolesModal } from './modals/select-roles/select-roles';
-import { EmployeeTimestampService } from './../../services/employeeTimestampService';
 import { reservedPins } from './../../metadata/reservedPins';
 import { PluginService } from './../../services/pluginService';
 import { Employee, EmployeeRolePerStore } from './../../model/employee';
@@ -40,7 +39,6 @@ export class EmployeeDetails {
 
   constructor(
     private employeeService: EmployeeService,
-    private timestampService: EmployeeTimestampService,
     private storeService: StoreService,
     private cdr: ChangeDetectorRef,
     private navParams: NavParams,
@@ -112,8 +110,11 @@ export class EmployeeDetails {
 
   public async remove(): Promise<any> {
     try {
+      const deleteItem = await this.utils.confirmRemoveItem("Do you really want to delete this employee!");
+      if(!deleteItem){
+          return;
+      }
       // delete employee associations
-      await this.timestampService.getEmployeeTimestamps(this.employee._id);
       await this.employeeService.delete(this.employee);
       this.navCtrl.pop();
       return;
@@ -125,7 +126,7 @@ export class EmployeeDetails {
   public selectRoles(store: SelectableStore, index: number) {
     let modal = this.modalCtrl.create(SelectRolesModal, { store });
     modal.onDidDismiss((res) => {
-      if (store.selected && res.selectedRole) {
+      if (store.selected && res && res.selectedRole) {
         store.role = res.selectedRole;
         this.isDataChanged = true;
       }

@@ -18,6 +18,10 @@ export class SecurityAccessRightRepo {
     'BackOfficeDashboard',
     'BackOffice Dashboard');
 
+  public static HumanResourceDashboard: AccessRightItem = new AccessRightItem(
+    'HumanResourceDashboard',
+    'HumanResource Dashboard');
+
   public static CustomerListing: AccessRightItem = new AccessRightItem(
     'CustomerListing',
     'Customer Listing');
@@ -78,6 +82,10 @@ export class SecurityAccessRightRepo {
     'StoreAddEdit',
     'Store Add/Edit');
 
+  public static DeleteAccount: AccessRightItem = new AccessRightItem(
+    'DeleteAccount',
+    'Delete Account');
+
   public static readonly RoleListing: AccessRightItem = new AccessRightItem(
     'RoleListing',
     'Role Add/Edit');
@@ -117,12 +125,29 @@ export class SecurityAccessRightRepo {
   public static readonly SwitchPos: AccessRightItem = new AccessRightItem(
     "SwitchPos",
     "Switch Pos");
-  
+
+    public static ReportsDashboard : AccessRightItem = new AccessRightItem(
+      'ReportsDashboard',
+      'Reports Dashboard');
+
+    public static ReportStockMovementSummary : AccessRightItem = new AccessRightItem(
+      'ReportStockMovementSummary',
+      'Report Stock Movement Summary');
+
+    public static Preferences : AccessRightItem = new AccessRightItem(
+      'Preferences',
+      'Preferences');
+
+    public static Roster: AccessRightItem = new AccessRightItem(
+      'Roster',
+      'Roster');
+      
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
     SecurityAccessRightRepo.ServiceListing,
     SecurityAccessRightRepo.InventoryCategory,
     SecurityAccessRightRepo.BackOfficeDashboard,
+    SecurityAccessRightRepo.HumanResourceDashboard,
     SecurityAccessRightRepo.EmployeeAddEdit,
     SecurityAccessRightRepo.EmployeeListing,
     SecurityAccessRightRepo.StoreAddEdit,
@@ -147,7 +172,12 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.MoneyInOut,
     SecurityAccessRightRepo.SaleTax,    
     SecurityAccessRightRepo.OpenCashDrawer,
-    SecurityAccessRightRepo.SwitchPos
+    SecurityAccessRightRepo.SwitchPos,
+    SecurityAccessRightRepo.ReportsDashboard,
+    SecurityAccessRightRepo.ReportStockMovementSummary,
+    SecurityAccessRightRepo.Preferences,
+    SecurityAccessRightRepo.DeleteAccount,
+    SecurityAccessRightRepo.Roster
   ];
 
 }

@@ -19,19 +19,19 @@
       Account Settings
     </ion-list-header>
     <ion-item>
-      <ion-label class="item-name">Name</ion-label>
+      <ion-label class="item-name" stacked>Name</ion-label>
       <ion-input type="text" [(ngModel)]="accountSetting.name"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Sale Number Prefix</ion-label>
+      <ion-label class="item-name" stacked>Sale Number Prefix</ion-label>
       <ion-input type="text" [(ngModel)]="accountSetting.saleNumberPrefix" name="saleNumberPrefix"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Closure Number Prefix</ion-label>
+      <ion-label class="item-name" stacked>Closure Number Prefix</ion-label>
       <ion-input type="text" [(ngModel)]="accountSetting.closureNumberPrefix" name="saleNumberPrefix"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Receipt Footer Message</ion-label>
+      <ion-label class="item-name" stacked>Receipt Footer Message</ion-label>
       <ion-textarea type="text" [(ngModel)]="accountSetting.receiptFooterMessage"></ion-textarea>
     </ion-item>
     <ion-item>
@@ -46,7 +46,7 @@
       Tax Settings
     </ion-list-header>
     <ion-item>
-      <ion-label class="item-name">Tax Default</ion-label>
+      <ion-label class="item-name" stacked>Tax Default</ion-label>
       <ion-select [(ngModel)]="selectedTax" name="salesTax">
         <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
           <small>({{ tax.rate }}%)</small>
@@ -54,7 +54,7 @@
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Tax Type</ion-label>
+      <ion-label class="item-name" stacked>Tax Type</ion-label>
       <ion-select [(ngModel)]="selectedType" name="taxType">
         <ion-option [value]="type._id" *ngFor="let type of taxTypes">{{type.type}}</ion-option>
       </ion-select>

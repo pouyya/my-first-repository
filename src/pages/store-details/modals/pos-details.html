@@ -9,7 +9,6 @@
         <ion-icon name="trash"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-buttons end network-monitor></ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -18,7 +17,7 @@
   <ion-list-header>Details</ion-list-header>
   <ion-list>
     <ion-item>
-      <ion-label class="item-name">Name </ion-label>
+      <ion-label class="item-name" stacked>Name </ion-label>
       <ion-input type="text" [(ngModel)]="pos.name" name="name" required></ion-input>
     </ion-item>
   </ion-list>
@@ -26,19 +25,19 @@
   <ion-list-header>Receipt</ion-list-header>
   <ion-list>
     <ion-item>
-      <ion-label class="item-name">Receipt Template</ion-label>
+      <ion-label class="item-name" stacked>Receipt Template</ion-label>
       <ion-input type="text" [(ngModel)]="pos.receiptTemplate" name="name"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">number</ion-label>
+      <ion-label class="item-name" stacked>number</ion-label>
       <ion-input type="text" [(ngModel)]="pos.number" name="number"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Prefix</ion-label>
+      <ion-label class="item-name" stacked>Prefix</ion-label>
       <ion-input type="text" [(ngModel)]="pos.prefix" name="prefix"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-label class="item-name">Suffix</ion-label>
+      <ion-label class="item-name" stacked>Suffix</ion-label>
       <ion-input type="text" [(ngModel)]="pos.suffix" name="suffix"></ion-input>
     </ion-item>
   </ion-list>

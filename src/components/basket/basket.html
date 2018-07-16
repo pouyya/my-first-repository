@@ -1,6 +1,6 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
-    <ion-col col-md-8 class="customer-container pull-left">
+    <ion-col col-xl-8 col-lg-8 class="customer-container pull-left">
       <ion-item item-content *ngIf="customer" (click)="editCustomer()" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
@@ -23,7 +23,10 @@
         </ion-item>
       </ion-list>
     </ion-col>
-    <ion-col col-md-4 class="pull-right">
+    <ion-col col-xl-4 col-lg-4 class="pull-right">
+      <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
+        <ion-icon name="paper"></ion-icon><span class="change-large" *ngIf="sale && sale.notes">*</span>
+      </button>
       <button ion-button clear (click)="parkSale()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="pause"></ion-icon>
       </button>
@@ -34,12 +37,12 @@
   </ion-row>
 </ion-grid>
 
-<ion-grid class="top-component basket">
+  <ion-grid class="top-component basket">
   <ion-row>
     <ion-col col-12>
       <ion-list *ngIf="sale">
         <!-- Items in the basket [start] -->
-        <ion-item *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'selected' || '']" tappable>
+        <ion-item [id]="item.purchsableItemId" *ngFor="let item of sale.items | groupBy:'employeeId'; let $index=index" [ngClass]="[item.cssClass && item.cssClass || '', item.isSelected && 'animated flash selected' || '']" tappable>
 
           <ion-grid (click)="viewInfo(item, $index)">
             <ion-row>
@@ -61,11 +64,11 @@
                   </small>
                 </span>
               </ion-col>
-              <ion-col col-md-1 class="pull-right">
-                <ion-icon click-stop-propagation name="trash" class="clickable" (click)="removeItem($index)"></ion-icon>
+              <ion-col col-md-1 text-center="" (click)="removeItem($index)">
+                <ion-icon name="trash" class="clickable"></ion-icon>
               </ion-col>
             </ion-row>
-            <ion-row class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
+            <ion-row [id]="modifierItem.purchsableItemId" class="modifier-item" margin-left="10px" *ngFor="let modifierItem of item.modifierItems">
               <ion-col col-md-1>
                 {{modifierItem.quantity}}
               </ion-col>
@@ -92,17 +95,10 @@
 </ion-grid>
 <ion-grid class="bottom-component basket" *ngIf="sale">
   <ion-row>
-    <ion-col col-md-12>
-      <hr/>
-      <ion-textarea [(ngModel)]="sale.notes" rows="1" (change)="syncSale()" placeholder="Add Sale Notes...">
-      </ion-textarea>
-    </ion-col>
-    
+    <ion-col col-md-4>Subtotal</ion-col>
+    <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-3>Subtotal</ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
-
-    <ion-col col-md-3 [ngPlural]="sale.items.length">
+    <ion-col col-md-4 [ngPlural]="sale.items.length">
       <ng-template ngPluralCase="=0">Tax</ng-template>
       <ng-template ngPluralCase="=1">Tax
         <small>({{sale.items[0].tax.name}})</small>
@@ -111,13 +107,13 @@
         <small>({{sale.items.length}} taxes)</small>
       </ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.tax | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.tax | number : '1.2-2'}}</ion-col>
 
 
-    <ion-col col-md-3 (click) = "externalValue().applyDiscount()">{{ totalExternalValue > 0 ? "Total Surcharge": "Total Discount" }}</ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{totalExternalValue | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-4 (click) = "externalValue().applyDiscount()">{{ totalExternalValue > 0 ? "Total Surcharge": "Total Discount" }}</ion-col>
+    <ion-col col-md-4 offset-md-4 class="pull-right">${{totalExternalValue | number : '1.2-2'}}</ion-col>
 
-    <ion-col col-md-3 [ngPlural]="sale.items.length">
+    <ion-col col-md-4 [ngPlural]="sale.items.length" class="bold">
       <ng-template ngPluralCase="=0">Total
         <small>(no items)</small>
       </ng-template>
@@ -128,7 +124,7 @@
         <small>({{sale.items.length}} items)</small>
       </ng-template>
     </ion-col>
-    <ion-col col-md-3 offset-md-6 class="pull-right">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
+    <ion-col col-md-4 offset-md-4 class="pull-right bold">${{sale.taxTotal | number : '1.2-2'}}</ion-col>
     <ion-col col-md-2 no-padding>
       <button ion-button small block padding (click)="fastPayment()" class="pay-button" color="warning" [disabled]="disablePaymentBtn">
         <span class="button-inner pull-left">

@@ -27,7 +27,7 @@ import { PrintService } from './../../services/printService';
 import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
-import { Product } from "../../model/product";
+import { AddNotes } from "./modals/add-notes/add-notes";
 
 @Component({
   selector: 'basket',
@@ -54,7 +54,7 @@ export class BasketComponent {
   private selectedItem;
   private evaluationContext: EvaluationContext;
   private baseDataLoaded: boolean = false;
-
+  private isSaleParked: boolean = false;
   private get refund(): boolean {
     return this.balance < 0
   }
@@ -67,7 +67,7 @@ export class BasketComponent {
   }
 
   @Output() paymentCompleted = new EventEmitter<any>();
-
+  @Output() saleParked = new EventEmitter<any>();
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
@@ -100,7 +100,6 @@ export class BasketComponent {
       await this.recalculateSaleAmounts(sale);
       sale = await this.salesService.update(sale);
     }
-
     let customer: Customer = null;
 
     if (sale.customerKey) {
@@ -108,6 +107,7 @@ export class BasketComponent {
     }
 
     this.sale = sale;
+    this.isSaleParked = this.sale.state === 'parked';
     this.customer = customer || null;
     this.setBalance();
     this.sale.completed = false;
@@ -148,6 +148,10 @@ export class BasketComponent {
   }
 
   public async addItemToBasket(purchasableItem: PurchasableItem, categoryId: string, currentEmployeeId: string, stockControl: boolean) {
+    if (!this.sale) {
+      return;
+    }
+
     const isFirstModifier = !this.sale.items.length && purchasableItem.isModifier;
     if (!isFirstModifier) {
       let itemPrice = await this.priceBookService.getEligibleItemPrice(this.evaluationContext, this.priceBooks, purchasableItem._id);
@@ -162,6 +166,7 @@ export class BasketComponent {
         }
         this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
         this.calculateAndSync();
+        this.scrollIntoView(basketItem.purchsableItemId);
       } else {
         let toast = this.toastCtrl.create({
           message: `${purchasableItem.name} does not have any price`,
@@ -194,10 +199,14 @@ export class BasketComponent {
       item = basketItem;
       saleItems.push(item);
     }
-
     !items && this.selectItem(item);
   }
 
+  private scrollIntoView(purchsableItemId: string) {
+    setTimeout(() => {
+      document.getElementById(purchsableItemId).scrollIntoView();
+    }, 0);
+  }
   public removeItem($index) {
     this.sale.items.splice($index, 1);
     this.sale.items = this.groupByPipe.transform(this.sale.items, 'employeeId');
@@ -261,6 +270,13 @@ export class BasketComponent {
       }
       return initialVal;
     }, 0);
+
+    this.totalExternalValue -= this.sale.items.reduce((initialVal, item) => {
+      if (item.discount) {
+        initialVal += item.quantity * (item.systemPrice * item.discount / 100);
+      }
+      return initialVal;
+    }, 0)
   }
 
   public externalValue(): { applyDiscount: Function, applySurcharge: Function } {
@@ -288,9 +304,10 @@ export class BasketComponent {
   }
 
   public gotoPayment() {
-
     let pushCallback = async params => {
       if (params) {
+        this.isSaleParked && this.saleParked.emit(false);
+        this.isSaleParked = false;
         this.sale = await this.salesService.instantiateSale();
         this.paymentCompleted.emit();
         this.customer = null;
@@ -298,11 +315,19 @@ export class BasketComponent {
       this.calculateAndSync();
     }
 
+    this.initializeSearchBar();
+
     this.navCtrl.push(PaymentsPage, {
       sale: this.sale,
       doRefund: this.refund,
       callback: pushCallback
     });
+  }
+
+  private initializeSearchBar() {
+    this.searchBarEnabled = true;
+    this.searchedCustomers = [];
+    this.searchInput = "";
   }
 
   public async fastPayment() {
@@ -329,6 +354,8 @@ export class BasketComponent {
       }
     }
 
+    this.initializeSearchBar();
+
     this.ngZone.runOutsideAngular(async () => {
       let sale = { ...this.sale }
 
@@ -346,7 +373,7 @@ export class BasketComponent {
       try {
 
         this.printSale(false, sale);
-        await this.printService.printProductionLinePrinter(this.sale);
+        this.printService.printProductionLinePrinter(sale);
 
       } catch (error) {
         console.log(error);
@@ -357,6 +384,8 @@ export class BasketComponent {
 
     this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
     this.paymentCompleted.emit();
+    this.isSaleParked && this.saleParked.emit(false);
+    this.isSaleParked = false;
     this.customer = null;
     this.calculateAndSync();
   }
@@ -387,6 +416,8 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(ParkSale, { sale: this.sale });
     modal.onDidDismiss(data => {
       if (data.status) {
+        this.isSaleParked = true;
+        this.saleParked.emit(true);
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
           subTitle: 'Your sale has successfully been parked',
@@ -398,6 +429,7 @@ export class BasketComponent {
                   this.customer = null;
                   this.sale = sale;
                   this.calculateAndSync();
+                  this.initializeSearchBar();
                 });
               }
             }
@@ -425,10 +457,13 @@ export class BasketComponent {
           text: 'Yes',
           handler: () => {
             this.salesService.delete(this.sale).then(async () => {
+              this.isSaleParked && this.saleParked.emit(false);
+              this.isSaleParked = false;
               localStorage.removeItem('sale_id');
               this.customer = null;
               this.sale = await this.salesService.instantiateSale();
               this.calculateAndSync();
+              this.initializeSearchBar();
             });
           }
         },
@@ -436,6 +471,16 @@ export class BasketComponent {
       ]
     });
     confirm.present();
+  }
+
+  public addNote() {
+    let modal = this.modalCtrl.create(AddNotes, { notes: this.sale.notes || '' });
+    modal.onDidDismiss(notes => {
+      if (notes) {
+        this.sale.notes = notes;
+      }
+    });
+    modal.present();
   }
 
   public cancelSearch($event) {

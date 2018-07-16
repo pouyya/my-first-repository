@@ -34,12 +34,12 @@ export class SearchableListing<T extends DBBasedEntity> {
     this.initData();
   }
 
-  private initData(){
-    this.displayColumns = ListingInfo.getDisplayList( this.type );
-    this.searchFilters = ListingInfo.getFilterList( this.type );
+  private initData() {
+    this.displayColumns = ListingInfo.getDisplayList(this.type);
+    this.searchFilters = ListingInfo.getFilterList(this.type);
   }
 
-  protected setDefaultSettings(){
+  protected setDefaultSettings() {
     this.limit = this.defaultLimit;
     this.offset = this.defaultOffset;
     this.items = [];
@@ -57,6 +57,11 @@ export class SearchableListing<T extends DBBasedEntity> {
     return await this.service.search(this.limit, this.offset, selectors, this.options);
   }
 
+  protected async fetch() {
+    this.setDefaultSettings();
+    await this.fetchMore();
+  }
+
   protected async fetchMore(infiniteScroll?: InfiniteScroll) {
     let data = await this.loadData();
     this.offset += data ? data.length : 0;
@@ -65,11 +70,11 @@ export class SearchableListing<T extends DBBasedEntity> {
       infiniteScroll && infiniteScroll.complete();
     });
   }
-  protected async filterList(filterItem: Item, value){
-    if(filterItem.type === FilterType.Boolean){
-      if(value){
+  protected async filterList(filterItem: Item, value) {
+    if (filterItem.type === FilterType.Boolean) {
+      if (value) {
         this.options.conditionalSelectors[filterItem.variableName] = (value == 'true' || value == true);
-      }else{
+      } else {
         delete this.options.conditionalSelectors[filterItem.variableName];
       }
     }
@@ -77,18 +82,14 @@ export class SearchableListing<T extends DBBasedEntity> {
     await this.fetchMore();
   }
 
-  protected async searchByText(filterItem: Item, value){
+  protected async searchByText(filterItem: Item, value) {
     this.filter[filterItem.variableName] = (value && value.trim() != '') ? value : "";
     this.setDefaultSettings();
     await this.fetchMore();
   }
 
-  protected async remove(item: T, index) {
-    try {
-      await this.service.delete(item);
-      this.items.splice(index, 1);
-    } catch (err) {
-      return Promise.reject(err);
-    }
+  protected async remove(item: T, index: number) {
+    await this.service.delete(item);
+    this.items.splice(index, 1);
   }
 }

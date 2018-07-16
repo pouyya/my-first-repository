@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { BackOfficeModule } from '../../modules/backOfficeModule';
 import { PageModule } from '../../metadata/pageModule';
-import { IonicDeployInfo } from '../../modules/ionicpro-deploy/ionic-pro-deploy.interfaces';
-import { IonicProDeployService } from '../../modules/ionicpro-deploy/ionic-pro-deploy.service';
+import { IonicDeployInfo } from 'ionicpro-deploy';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { ConfigService } from '../../modules/dataSync/services/configService';
 import { SyncContext } from "../../services/SyncContext";
-import { Pro } from '@ionic/pro';
+import { Pro } from '@simpleidea/ionic-pro';
 
 @SecurityModule(SecurityAccessRightRepo.AboutPage)
 @PageModule(() => BackOfficeModule)
@@ -15,6 +14,7 @@ import { Pro } from '@ionic/pro';
   selector: 'about-page',
   templateUrl: 'about.html'
 })
+
 export class AboutPage {
 
   public dbInternalName: string;
@@ -27,8 +27,9 @@ export class AboutPage {
   public deployInfo: IonicDeployInfo;
 
   constructor(
-    private syncContext: SyncContext // Used in view
-  ) { }
+    public syncContext: SyncContext
+  ) {
+   }
 
   async ionViewDidLoad() {
     try {

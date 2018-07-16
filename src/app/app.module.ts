@@ -21,7 +21,7 @@ import { SharedModule } from './../modules/shared.module';
 import { authProvider } from './../modules/auth.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
+import { SortablejsModule } from 'angular-sortablejs';
 // pages
 import { SimplePOSApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -79,6 +79,8 @@ import { AddSupplierAndStore } from '../pages/order-details/modals/addSupplierAn
 import { CreateSupplier } from '../pages/order-details/modals/createSupplier/createSupplier';
 import { ProductsSelector } from '../pages/order-details/modals/products-selector/products-selector';
 import { Closures } from './../pages/closures/closures';
+import { DeleteAccount } from '../pages/delete-account/delete-account';
+
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
@@ -95,7 +97,9 @@ import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-sc
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 import { ColorPickerModule } from "../components/color-picker/color-picker.module";
+import { ImagePickerModule } from "../components/image-picker/image-picker.module";
 import { SelectColorModal } from "../components/color-picker/modal/select-color/select-color";
+import { ImportExportModule } from "../components/import-export/import-export";
 
 // pipes
 import { KeysPipe } from './../pipes/keys.pipe';
@@ -139,7 +143,7 @@ import { StockHistoryService } from './../services/stockHistoryService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployModule } from '../modules/ionicpro-deploy/ionic-pro-deploy.module';
+import { IonicProDeployModule } from 'ionicpro-deploy';
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
@@ -154,7 +158,30 @@ import { TranslateService } from "@ngx-translate/core";
 import { DeviceDetailsModal } from "../pages/store-details/modals/device-details";
 import { EmailService } from '../services/emailService';
 import { PosDetailsModal } from "../pages/store-details/modals/pos-details";
+import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
+import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
+import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
+import { Preferences } from "../pages/preferences/preferences";
+import { SplitPaymentPage } from "../pages/split-payment/split-payment";
+import { File } from "@ionic-native/file";
+import { PapaParseModule } from "ngx-papaparse";
+import { FileTransfer } from "@ionic-native/file-transfer";
+import { Camera } from "@ionic-native/camera";
+import { SelectLocationModal } from "../components/image-picker/modal/select-color/select-location";
+import { DeleteAccountService } from './../services/deleteAccountService';
+import { DateDurationPickerModule } from "../components/date-duration-picker/date-duration-picker.module";
+import { DeployService } from '../services/deployService';
+import { Roster } from "../pages/roster/roster";
+import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
+import { CalendarModule } from "angular-calendar";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { AddShiftDirective } from "../directives/shift.directive";
+import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
+import { ShiftService } from "../services/shiftService";
+import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
+import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
+import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
 
 @NgModule({
   declarations: [
@@ -162,6 +189,10 @@ import { Utilities } from "../utility/index";
     HomePage,
     Products,
     ProductDetails,
+    ReportsDashboard,
+    HumanResourceDashboard,
+    Preferences,
+    ReportStockMovementSummaryPage,
     Services,
     ServiceDetails,
     Categories,
@@ -175,9 +206,13 @@ import { Utilities } from "../utility/index";
     EmployeeDetails,
     Employees,
     PaymentsPage,
+    SplitPaymentPage,
     CashModal,
+    CreateProductModal,
     CreditCardModal,
+    ShiftModalPage,
     ParkSale,
+    AddNotes,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -204,12 +239,14 @@ import { Utilities } from "../utility/index";
     CustomerDetails,
     CreateCustomerModal,
     SelectColorModal,
+    SelectLocationModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
     Brands,
     BrandDetails,
     DeployPage,
+    Roster,
     Roles,
     RoleDetails,
     Suppliers,
@@ -220,7 +257,11 @@ import { Utilities } from "../utility/index";
     CreateSupplier,
     ProductsSelector,
     Closures,
-    TranslatorPipe
+    TranslatorPipe,
+    DeleteAccount,
+    AddShiftDirective,
+    IonSimpleWizard,
+    IonSimpleWizardStep
   ],
   imports: [
     FormsModule,
@@ -249,6 +290,9 @@ import { Utilities } from "../utility/index";
     DndModule.forRoot(),
     ReactiveFormsModule,
     DataSyncModule.forRoot(),
+    SortablejsModule.forRoot({
+      animation: 100
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -256,11 +300,16 @@ import { Utilities } from "../utility/index";
         deps: [HttpClient]
       }
     }),
-
+    PapaParseModule,
+    NgbModule.forRoot(),
+    CalendarModule.forRoot(),
     // custom
     SharedModule,
     NetworkMonitorModule,
     ColorPickerModule,
+    ImagePickerModule,
+    DateDurationPickerModule,
+    ImportExportModule,
     TileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
@@ -272,7 +321,7 @@ import { Utilities } from "../utility/index";
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
     SearchableIonSelectModule,
-    IonicProDeployModule.forRoot(),
+    IonicProDeployModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -280,6 +329,10 @@ import { Utilities } from "../utility/index";
     HomePage,
     Products,
     ProductDetails,
+    ReportsDashboard,
+    HumanResourceDashboard,
+    ReportStockMovementSummaryPage,
+    Preferences,
     Services,
     ServiceDetails,
     Categories,
@@ -293,11 +346,15 @@ import { Utilities } from "../utility/index";
     EmployeeDetails,
     Employees,
     PaymentsPage,
+    SplitPaymentPage,
     CashModal,
+    CreateProductModal,
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,
+    ShiftModalPage,
     ParkSale,
+    AddNotes,
     OpenCloseRegister,
     SalesHistoryPage,
     SwitchPosModal,
@@ -323,12 +380,14 @@ import { Utilities } from "../utility/index";
     CustomerDetails,
     CreateCustomerModal,
     SelectColorModal,
+    SelectLocationModal,
     AboutPage,
     StockIncreaseModal,
     StockDecreaseModal,
     Brands,
     BrandDetails,
     DeployPage,
+    Roster,
     Roles,
     RoleDetails,
     Suppliers,
@@ -338,7 +397,8 @@ import { Utilities } from "../utility/index";
     AddSupplierAndStore,
     CreateSupplier,
     ProductsSelector,
-    Closures
+    Closures,
+    DeleteAccount
   ],
   providers: [
     IonicErrorHandler,
@@ -350,6 +410,9 @@ import { Utilities } from "../utility/index";
     Dialogs,
     Insomnia,
     InAppBrowser,
+    File,
+    Camera,
+    FileTransfer,
     DatePipe,
     SharedService,
     CacheFactory,
@@ -381,6 +444,7 @@ import { Utilities } from "../utility/index";
     BrandService,
     StoreService,
     SalesServices,
+    ShiftService,
     ClickStopPropagation,
     KeysPipe,
     GroupByPipe,
@@ -397,16 +461,18 @@ import { Utilities } from "../utility/index";
     PaymentService,
     AuditService,
     EmailService,
-    SyncContext
+    DeployService,
+    SyncContext,
+    DeleteAccountService
   ]
 })
 export class AppModule {
-  constructor(private syncContext: SyncContext, injector: Injector) {
+  constructor(public syncContext: SyncContext, injector: Injector) {
     ServiceLocator.injector = injector;
   }
 }
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, '../assets/language/', '.json');
+  return new TranslateHttpLoader(http, 'assets/language/', '.json');
 }
 

@@ -3,13 +3,17 @@ import * as moment from 'moment';
 import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { Http, Response } from '@angular/http';
+import { ENV } from '@app/env';
+import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
 
   readonly view_stock_per_store = "inventory/stock_per_store";
 
-  constructor() {
+  constructor(private http: Http,
+    private userService: UserService) {
     super(StockHistory);
   }
 
@@ -17,6 +21,18 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     try {
       return await this.findBy({
         selector: { storeId, productId },
+        sort: [{ _id: 'desc' }],
+        limit: 50
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async getByProductId(productId: string): Promise<StockHistory[]> {
+    try {
+      return await this.findBy({
+        selector: { productId },
         sort: [{ _id: 'desc' }],
         limit: 50
       });
@@ -52,10 +68,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
       }
     }) : null;
   }
+
   public async getProductTotalStockValue(productId: string) {
 
     var param = { reduce: true, group: true, startkey: [productId], endkey: [productId, {}] };
-
     var result = await this.getDB().query(this.view_stock_per_store, param);
 
     return result ? result.rows.map(row => {
@@ -90,4 +106,35 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     stock.reason = stock.value <= 0 ? Reason.Purchase : Reason.Return;
     return stock;
   }
+
+  public async getAllStockHistoryByDate(storeId: string, fromDate: Date, toDate: Date): Promise<StockHistory[]> {
+    try {
+      const query = { createdAt: { $gte: fromDate, $lt: toDate } };
+      if (storeId) {
+        query['storeId'] = storeId;
+      }
+      return await this.findBy({
+        selector: query,
+        sort: [{ _id: 'desc' }]
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
+  public async getStockMovement(storeId: string, fromDate: Date, toDate: Date) {
+    return this.http
+      .get(`${ENV.service.baseUrl}/wp-content/plugins/simplepos-reports/inventory.php?type=json&fromDate=${fromDate.getFullYear()}-${fromDate.getMonth()}-${fromDate.getDate()}&toDate=${toDate.getFullYear()}-${toDate.getMonth()}-${toDate.getDate()}&currentStoreId=${storeId}&Authorization=${await this.userService.getUserToken()}`)
+      .map((response: Response) => <StockMovement[]>response.json());
+  }
+}
+
+export interface StockMovement {
+  productName: string,
+  startStock: number,
+  received: number,
+  sold: number,
+  deducted: number,
+  endStock: number,
+  returned: number
 }

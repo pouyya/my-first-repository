@@ -1,40 +1,64 @@
 import { ViewController, ToastController } from 'ionic-angular';
-import { AuthService } from './../../../../services/authService';
+import { AuthService, ServerResponse } from './../../../../services/authService';
 import { Component } from '@angular/core';
+import { LoadingController } from "ionic-angular";
+import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/catch';
 
 @Component({
-  selector: "forgot-password",
-  templateUrl: "forgot-password.html"
+    selector: "forgot-password",
+    templateUrl: "forgot-password.html"
 })
 export class ForgotPassword {
 
-  public email: string;
+    public email: string;
+    public serverResponse: ServerResponse[] = [];
 
-  constructor(
-    private authService: AuthService, 
-    private viewCtrl: ViewController,
-    private toastCtrl: ToastController
-  ) { }
+    constructor(
+        private authService: AuthService,
+        private viewCtrl: ViewController,
+        private toastCtrl: ToastController,
+        private loading: LoadingController
+    ) { }
 
-  public sendEmail() {
-    this.authService.resetPassword(this.email).finally(() => this.viewCtrl.dismiss())
-    .subscribe((data) => {
-        let toast = this.toastCtrl.create({
-          message: "An email will be send to you shortly",
-          duration: 3000
-        });
-        toast.present();
-    }, error => {
-      let toast = this.toastCtrl.create({
-        message: 'Invalid Email!',
-        duration: 3000
-      });
-      toast.present();
-    });
-  }
+    public async sendEmail() {
+        let loader = this.loading.create({ content: 'Sending Request to server...', });
+        await loader.present();
 
-  public dismiss(): void {
-    this.viewCtrl.dismiss();
-  }
+        var serverRes = await this.authService.resetPassword(this.email);
+        serverRes.subscribe(response => {
+            if (response.length > 0) {
+                this.serverResponse = response;
+                loader.dismiss();
+                this.toast();
+            }
+        },
+            err => {
+                console.log(err);
+                loader.dismiss();
+            });
+    }
 
+    private toast() {
+        if (this.serverResponse && this.serverResponse.length > 0 && this.serverResponse[0])
+            if (this.serverResponse[0]['Status'] == 200) {
+                let toast = this.toastCtrl.create({
+                    message: "An email will be send to you shortly",
+                    duration: 5000
+                });
+                toast.present();
+                this.dismiss()
+            }
+            else {
+                let toast = this.toastCtrl.create({
+                    message: 'Invalid Email!',
+                    duration: 5000
+                });
+                toast.present();
+            }
+    }
+
+    dismiss() {
+        this.viewCtrl.dismiss()
+    }
 }
