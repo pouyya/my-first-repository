@@ -32,7 +32,7 @@
         Sales Summary Chart
       </ion-card-header>
       <ion-card-content style="height: 87%">
-        <canvas  #lineCanvas></canvas>
+        <canvas #lineCanvas></canvas>
       </ion-card-content>
     </ion-card>
 
@@ -46,7 +46,7 @@
     </ion-row>
     <div>
       <ion-row class="row-border" *ngFor="let sale of sales">
-        <ion-col>{{sale.date}}</ion-col>
+        <ion-col>{{sale.date | localDate:'MMM DD, YYYY h:mm a'}}</ion-col>
         <ion-col>{{sale.noOfSales}}</ion-col>
         <ion-col>{{sale.netAmount}}</ion-col>
         <ion-col>{{sale.taxAmount}}</ion-col>

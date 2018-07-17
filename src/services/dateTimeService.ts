@@ -17,6 +17,6 @@ export class DateTimeService {
 
   public getTimezoneDate(date: Date | string) {
     let utc = this.getUTCDate(date);
-    return this.syncContext.timezone ? moment.tz(date, this.syncContext.timezone) : utc.local();
+    return this.syncContext.timezone ? utc.tz(this.syncContext.timezone) : utc.local();
   }
 }
