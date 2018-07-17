@@ -17,7 +17,7 @@ export class SyncContext implements ISyncContext {
   constructor() { }
 
   private subscribeCriticalDBLiveProgress() {
-    DBService.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
+    DBService.pouchDBProvider.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
       if (data.isValid && data.entityTypeName == "Store" && data.data._id === this.currentStore._id) {
         this.currentStore = data.data;
         this.setCurrentPos(this.currentPos.id);
