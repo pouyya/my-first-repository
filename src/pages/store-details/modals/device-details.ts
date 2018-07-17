@@ -27,9 +27,6 @@ export class DeviceDetailsModal {
     { value: DeviceType.ReceiptPrinter, text: 'Receipt Printer' }
   ];
   public purchasableItems = [];
-  public formValidation = false;
-  public IpColor: string = 'black';
-  public PortColor: string = 'black';
 
   constructor(
     private navParams: NavParams,

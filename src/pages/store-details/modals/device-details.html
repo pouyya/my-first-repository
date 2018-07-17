@@ -2,7 +2,7 @@
   <ion-navbar>
     <ion-title>{{action}} Device</ion-title>
     <ion-buttons start>
-      <button ion-button (click)="dismiss()" >
+      <button ion-button (click)="dismiss()">
         <ion-icon name="close"></ion-icon>
       </button>
     </ion-buttons>
@@ -41,7 +41,7 @@
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
         <ion-label class="item-name" stacked>IP Address </ion-label>
-        <ion-input type="text" name="ipAddress" required></ion-input>
+        <ion-input type="text" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
