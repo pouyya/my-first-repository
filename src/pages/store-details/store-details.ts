@@ -66,6 +66,8 @@ export class StoreDetailsPage {
             name: timezone
         }
     });
+    this.item.timezone &&
+    ( this.item.timezone = <any>{code: this.item.timezone, value: this.item.timezone} );
     await loader.present();
     this.countries = await this.resourceService.getCountries();
     await loader.dismiss();
@@ -90,6 +92,8 @@ export class StoreDetailsPage {
 
     this.utils.setFormFields(this.storeForm, this.fields, this.item);
     this.item.timezone = (this.item.timezone as any).code;
+    this.item.timezone &&
+    ( this.item.timezone = <any>{code: this.item.timezone, value: this.item.timezone} );
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);

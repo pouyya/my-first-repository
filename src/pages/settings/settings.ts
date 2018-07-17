@@ -70,6 +70,8 @@ export class Settings {
         });
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
+        this.accountSetting.timeOffset &&
+        ( this.accountSetting.timeOffset = {code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset} );
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {
           return saleTax._id === this.accountSetting.defaultTax;
         });
@@ -100,8 +102,9 @@ export class Settings {
       this.syncContext.appTimezone = this.accountSetting.timeOffset;
     }
 
-    this.accountSettingService.update(this.accountSetting);
-
+    await this.accountSettingService.update(this.accountSetting);
+    this.accountSetting.timeOffset &&
+    ( this.accountSetting.timeOffset = {code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset} );
     await loader.dismiss();
     let toast = this.toast.create({
       message: "Settings have been saved",
