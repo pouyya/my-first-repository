@@ -87,13 +87,9 @@ export class ClockInOutPage {
       }
 
       !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
-
-      employee.firstName=(employee.firstName?employee.firstName:"");
-      employee.lastName=(employee.lastName?employee.lastName:"");
-
-      this.employeeAlias=employee.firstName + " " + employee.lastName;
-      if(this.employeeAlias.trim()=="")
-      this.employeeAlias="Employee";
+      
+      this.employeeAlias=(employee.firstName?employee.firstName:"") + " " + (employee.lastName?employee.lastName:"");
+      this.employeeAlias = (this.employeeAlias.trim() == "" ? "Employee" : this.employeeAlias);
 
       if(!employee.isAdmin && !employee.isActive) {
         toast.setMessage('Employee not Active!');
