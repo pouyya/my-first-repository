@@ -22,6 +22,7 @@ import _ from "lodash";
 export class ClockInOutPage {
 
   public employee: Employee;
+  public employeeAlias: string;
   public pos: POS;
   public dataLoaded: boolean = false;
   public timestamp: EmployeeTimestamp;
@@ -49,6 +50,7 @@ export class ClockInOutPage {
     private zone: NgZone,
     private syncContext: SyncContext
   ) {
+
   }
 
   /**
@@ -76,7 +78,7 @@ export class ClockInOutPage {
 
     this.employee = await this.zone.runOutsideAngular(async () => {
       let employee: Employee = await this.employeeService.findByPin(pin);
-      let toast = this.toastCtrl.create({duration: 3000});
+      let toast = this.toastCtrl.create({ duration: 3000 });
 
       if (!employee) {
         toast.setMessage('Invalid PIN!');
@@ -86,21 +88,24 @@ export class ClockInOutPage {
 
       !employee.workingStatus && (employee.workingStatus = <WorkingStatus>{});
 
-      if(!employee.isAdmin && !employee.isActive) {
+      this.employeeAlias = (employee.firstName || "") + " " + (employee.lastName || "");
+      this.employeeAlias = (this.employeeAlias.trim() == "" ? "Employee" : this.employeeAlias);
+
+      if (!employee.isAdmin && !employee.isActive) {
         toast.setMessage('Employee not Active!');
         toast.present();
         return null;
       }
 
-      if(!employee.isAdmin && !_.find(employee.store || [], {id : this.syncContext.currentStore._id})){
+      if (!employee.isAdmin && !_.find(employee.store || [], { id: this.syncContext.currentStore._id })) {
         toast.setMessage(`You dont have access for '${this.syncContext.currentStore.name}'.`);
         toast.present();
         return null;
       }
 
       if (employee.workingStatus && employee.workingStatus.storeId
-          && employee.workingStatus.storeId !== this.syncContext.currentStore._id
-          && employee.workingStatus.status !== WorkingStatusEnum.ClockedOut) {
+        && employee.workingStatus.storeId !== this.syncContext.currentStore._id
+        && employee.workingStatus.status !== WorkingStatusEnum.ClockedOut) {
         let store = await this.storeService.get(employee.workingStatus.storeId);
         toast.setMessage(`You already logged in to Store '${store.name}'. Please clock out first from there and then clock back in here.`);
         toast.present();
@@ -172,7 +177,7 @@ export class ClockInOutPage {
 
     if (this.employee.workingStatus.status) {
       this.activeButtons = this.buttons[this.employee.workingStatus.status];
-    }else{
+    } else {
       this.activeButtons = this.buttons[WorkingStatusEnum.ClockedOut];
     }
 
@@ -211,7 +216,7 @@ export class ClockInOutPage {
     newTimestamp.time = time || new Date();
     newTimestamp.type = this.mappingTimestamp[button.next];
 
-    if (button.next == WorkingStatusEnum.ClockedOut && this.employee.workingStatus.status ===  WorkingStatusEnum.BreakStart) {
+    if (button.next == WorkingStatusEnum.ClockedOut && this.employee.workingStatus.status === WorkingStatusEnum.BreakStart) {
       let breakEnd = new EmployeeTimestamp();
       breakEnd.employeeId = this.employee._id;
       breakEnd.storeId = this.syncContext.currentStore._id;
