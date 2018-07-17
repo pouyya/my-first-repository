@@ -18,13 +18,13 @@
     </ion-item>
     <ion-item>
       <ion-label stacked>Store</ion-label>
-      <ion-select [(ngModel)]="stock.storeId" name="stockStore" (ionChange)="setStore()">
+      <ion-select interface="action-sheet" [(ngModel)]="stock.storeId" name="stockStore" (ionChange)="setStore()">
         <ion-option *ngFor="let storeStock of storesStock" value={{storeStock.storeId}}>{{storeStock.store.name}}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
       <ion-label stacked>Reason</ion-label>
-      <ion-select [(ngModel)]="stock.reason" name="stockReason">
+      <ion-select interface="action-sheet" [(ngModel)]="stock.reason" name="stockReason">
         <ion-option *ngFor="let reason of reasons | keys" value={{reason.key}}>{{reason.value}}</ion-option>
       </ion-select>
     </ion-item>
