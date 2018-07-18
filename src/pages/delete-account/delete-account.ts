@@ -47,7 +47,7 @@
         await loader.present();
         await this.menuController.close();
         await this.storage.clear();
-        await DBService.destroyInternals();
+        await DBService.pouchDBProvider.destroyInternals();
         localStorage.clear();
         loader.dismiss();
         this.navCtrl.setRoot(LoginPage);
