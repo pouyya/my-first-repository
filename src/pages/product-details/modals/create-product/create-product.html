@@ -12,7 +12,7 @@
     <form (ngSubmit)="createProduct()" #productForm="ngForm">
       <ion-list inset>
         <ion-item>
-          <ion-label class="item-name" stacked>Name</ion-label>
+          <ion-label class="item-name required" stacked>Name<span danger>*</span></ion-label>
           <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
         </ion-item>
         <ion-item>
