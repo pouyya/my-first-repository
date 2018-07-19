@@ -10,6 +10,7 @@ import { SalesServices } from "../../services/salesService";
 import { SyncContext } from "../../services/SyncContext";
 import * as moment from "moment-timezone";
 import { AccountSettingService } from "../../modules/dataSync/services/accountSettingService";
+import {DateTimeService} from "../../services/dateTimeService";
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
 @PageModule(() => ReportModule)
@@ -38,19 +39,22 @@ export class ReportsDashboard {
 
     constructor(private salesService: SalesServices,
                 private syncContext: SyncContext,
-                private accountSettingService: AccountSettingService) {
+                private dateTimeService: DateTimeService,
+                private accountSettingService: AccountSettingService,
+                private loading: LoadingController) {
     }
 
     async ionViewDidLoad() {
       this.locations.unshift({text: "Current", value: this.syncContext.currentStore._id});
       this.selectedStore = this.locations[0].value;
       this.dates$.asObservable().subscribe(async (date: any) => {
-         this.fromDate = date.fromDate;
-         this.toDate = date.toDate;
+         this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
+         this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
          await this.loadSales();
       });
 
-        let fromDate = new Date(), toDate = new Date();
+        let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
+            toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
         fromDate.setHours(0);
         fromDate.setMinutes(0);
         fromDate.setSeconds(0);
