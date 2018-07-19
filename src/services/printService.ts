@@ -19,6 +19,7 @@ import { DeviceType } from "../model/store";
 import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
 import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 import { EscPrinterProvider, PrinterWidth } from '../provider/print/escPrinterProvider';
+import {Utilities} from "../utility";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -52,7 +53,8 @@ export class PrintService {
     private employeeService: EmployeeService,
     private categoryService: CategoryService,
     private syncContext: SyncContext,
-    private translateService: TranslateService) {
+    private translateService: TranslateService,
+    private utility: Utilities) {
   }
 
   public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
@@ -64,8 +66,8 @@ export class PrintService {
     context.openFloat = closure.openingAmount;
     context.posName = closure.posName;
     context.storeName = closure.storeName;
-    context.openTime = closure.openTime;
-    context.closeTime = closure.closeTime;
+    context.openTime = this.utility.convertTimezone(closure.openTime).toString();
+    context.closeTime = this.utility.convertTimezone(closure.closeTime).toString();
     context.cashIn = closure.totalCashIn;
     context.cashOut = closure.totalCashOut;
     context.cashCounted = closure.cashCounted;
@@ -75,7 +77,7 @@ export class PrintService {
     context.totalCounted = closure.totalCounted;
     context.totalDifference = closure.totalDifference;
     context.employeeFullName = closure.employeeFullName;
-    context.currentDateTime = new Date().toLocaleString();
+    context.currentDateTime = this.utility.convertTimezone(new Date()).toString();
     context.closureNumber = closure.closureNumber;
     context.dayItems = [];
 
