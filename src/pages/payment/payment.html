@@ -121,7 +121,7 @@
             <ion-col col-md-4>
               <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block disabled>Gift Card</button>
             </ion-col>
-            <ion-col col-md-4>
+            <ion-col col-md-4 *ngIf="!doRefund">
               <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="splitPayment()">Split Payment</button>
             </ion-col>
 
