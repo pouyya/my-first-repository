@@ -104,7 +104,16 @@ export class Products extends SearchableListing<Product>{
   }
 
   showDetail(product?: ProductsList) {
-    this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null });
+    this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null,
+    callback: this.onProductStockChange.bind(this)});
+  }
+
+  private onProductStockChange(productId, count){
+    if(count < 0){
+      return;
+    }
+    const stockValue = _.find(this.stockValues, stockValue => stockValue.productId == productId);
+    stockValue.value = count;
   }
 
   private async getStockValues(products) {

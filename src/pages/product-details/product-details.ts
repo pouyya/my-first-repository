@@ -83,6 +83,7 @@ export class ProductDetails {
 	private color: Subject<string> = new Subject<string>();
 	private image: Subject<string> = new Subject<string>();
 	private thumbnail: Subject<string> = new Subject<string>();
+	private productStockChangeCallback;
 	public isStockEnabled: boolean = false;
 
 	constructor(public navCtrl: NavController,
@@ -116,6 +117,7 @@ export class ProductDetails {
 		await loader.present();
 
 		let editProduct = this.navParams.get('item');
+		this.productStockChangeCallback = this.navParams.get('callback');
 		var _user = await this.userService.getUser();
 		let stores = await this.storeService.getAll();
 
@@ -456,6 +458,12 @@ export class ProductDetails {
 
 			await Promise.all(stockPromises);
 		}
+
+		const count = this.storesStock.reduce((initialVal, data)=> {
+			initialVal += data.value;
+			return initialVal;
+		}, 0);
+		this.productStockChangeCallback(this.productItem._id, count);
 		this.navCtrl.pop();
 	}
 
