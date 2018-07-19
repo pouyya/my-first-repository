@@ -12,7 +12,7 @@
     <form (ngSubmit)="createProduct()" #productForm="ngForm">
       <ion-list inset>
         <ion-item>
-          <ion-label class="item-name required" stacked>Name<span danger>*</span></ion-label>
+          <ion-label class="item-name" stacked>Name*</ion-label>
           <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
         </ion-item>
         <ion-item>
@@ -52,7 +52,7 @@
   
         <ion-col col-md-2>
           <ion-item item-content>
-            <ion-label color="primary" stacked>= Retail Price (Excl.)</ion-label>
+            <ion-label color="primary" stacked>= Retail Price (Excl.)*</ion-label>
             <ion-input type="number" [(ngModel)]="defaultPriceBook.item.retailPrice" (change)="calculate('retailPrice', defaultPriceBook)"
                        required></ion-input>
           </ion-item>
