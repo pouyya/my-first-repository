@@ -179,7 +179,7 @@ export class PrintService {
         receiptProviderContext.shopName = this.syncContext.currentStore.name;
         receiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
         receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
-        receiptProviderContext.footerMessage = currentAccountsetting.receiptFooterMessage;
+        receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage;
 
         const printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
         const receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
