@@ -31,7 +31,7 @@ export class StoreDetailsPage {
   private storeForm: FormGroup;
   private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
     'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
-    'timezone', 'email', 'phone', 'twitter'];
+    'timezone', 'email', 'phone', 'twitter', 'receiptHeaderMessage', 'receiptFooterMessage'];
 
   constructor(private navCtrl: NavController,
     private navParams: NavParams,

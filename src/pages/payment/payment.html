@@ -145,38 +145,6 @@
         <ion-grid *ngIf="sale.completed && stockErrors.length == 0">
           <ion-row>
             <ion-col col-md-12>
-
-              <ion-grid>
-                <ion-row>
-                  <ion-col col-md-3></ion-col>
-                  <ion-col col-md-6 class="content-center">
-                    <a href="#" (click)="printSale(true)">
-                      <ion-icon name="print" class="link-payment"></ion-icon> Print Recipt</a>&nbsp;
-                    <a href="#">
-                      <ion-icon name="cube" class="link-payment-payment"></ion-icon> Gift Recipt</a>
-                  </ion-col>
-                  <ion-col col-md-3></ion-col>
-                </ion-row>
-              </ion-grid>
-
-            </ion-col>
-
-            <ion-col col-md-12>
-
-              <ion-grid>
-                <ion-row>
-                  <ion-col col-md-9>
-                    <ion-input clearInput placeholder="Enter email..."></ion-input>
-                  </ion-col>
-                  <ion-col col-md-3>
-                    <button ion-button color="primary">Email Recipt</button>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-
-            </ion-col>
-
-            <ion-col col-md-12>
               <button ion-button color="primary" block large (click)="clearSale()">Done</button>
             </ion-col>
           </ion-row>
