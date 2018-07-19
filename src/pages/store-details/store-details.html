@@ -46,6 +46,14 @@
         <ion-label class="item-name" stacked>{{ 'TaxFileNumber' | translator }}</ion-label>
         <ion-input type="number" formControlName="taxFileNumber" name="taxFileNumber"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label class="item-name" stacked>Print Header</ion-label>
+        <ion-textarea type="text" formControlName="receiptHeaderMessage" name="receiptHeaderMessage"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name" stacked>Print Footer</ion-label>
+        <ion-textarea type="text"  formControlName="receiptFooterMessage" name="receiptFooterMessage"></ion-textarea>
+      </ion-item>
     </ion-list>
 
     <ion-list-header>Physical Address and Contact Details</ion-list-header>
