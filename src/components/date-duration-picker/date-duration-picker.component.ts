@@ -43,7 +43,7 @@ export class DateDurationPickerComponent {
         {text: "Week", value: "WEEK"}, {text: "Month", value: "MONTH"}, {text: "Custom", value: "CUSTOM"}];
     public selectedTimeframe: string;
 
-    constructor() {}
+    constructor(private dateTimeService: DateTimeService) {}
 
     ngAfterViewInit() {
         let timeframeIndex = 0;
