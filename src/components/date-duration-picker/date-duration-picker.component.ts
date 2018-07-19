@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { ModalController } from "ionic-angular";
 import { Subject } from "rxjs/Subject";
+import {DateTimeService} from "../../services/dateTimeService";
 
 @Component({
   selector: 'date-duration-picker',
@@ -40,12 +41,13 @@ export class DateDurationPickerComponent {
         {text: "Week", value: "WEEK"}, {text: "Month", value: "MONTH"}, {text: "Custom", value: "CUSTOM"}];
     public selectedTimeframe: string;
 
-    constructor(private modalCtrl: ModalController) {
+    constructor(private dateTimeService: DateTimeService) {
         this.selectedTimeframe = this.timeframes[0].value;
 
     }
     public calculate() {
-        let fromDate = new Date(), toDate = new Date();
+        let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
+            toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
         fromDate.setHours(0);
         fromDate.setMinutes(0);
         fromDate.setSeconds(0);
