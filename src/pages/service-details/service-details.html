@@ -93,9 +93,9 @@
         <color-picker [selectedColor$]="color"></color-picker>
       </ion-item>
       <ion-item>
-        <button ion-button (click)="selectIcon()">Select Icon</button>
-        <span *ngIf="selectedIcon">
-          <sp-icon [icon]="serviceItem.icon.name"></sp-icon>&nbsp;{{ serviceItem.icon.name }}</span>
+        <button class="pull-left" ion-button (click)="selectIcon()">Select Icon</button>
+        <sp-icon class="pull-left" *ngIf="selectedIcon" [icon]="icons[serviceItem.icon.name]"></sp-icon>
+        <span *ngIf="selectedIcon">&nbsp;{{ serviceItem.icon.name }}</span>
       </ion-item>
     </ion-list>
     <div class="insert-image">
