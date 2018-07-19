@@ -33,17 +33,6 @@ export class Categories extends SearchableListing<Category> {
     let loader = this.loading.create({ content: 'Loading Categories...' });
     await loader.present();
     try {
-      this.options = {
-        sort: [
-          { order: SortOptions.ASC }
-        ],
-        conditionalSelectors: {
-          order: {
-            $gt: true
-          }
-        }
-      }
-
       await this.fetch();
       loader.dismiss();
     } catch (err) {
@@ -88,4 +77,4 @@ export class Categories extends SearchableListing<Category> {
           throw new Error(err);
       }
   }
-}
+} 
