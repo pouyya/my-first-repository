@@ -112,7 +112,11 @@ export class Products extends SearchableListing<Product>{
     if(count < 0){
       return;
     }
-    const stockValue = _.find(this.stockValues, stockValue => stockValue.productId == productId);
+    let stockValue = _.find(this.stockValues, stockValue => stockValue.productId == productId);
+    if(!stockValue){
+        stockValue = {productId, value: 0};
+        this.stockValues.push(stockValue);
+    }
     stockValue.value = count;
   }
 
