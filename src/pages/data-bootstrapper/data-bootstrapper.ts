@@ -40,10 +40,10 @@ export class DataBootstrapper {
   private _user: UserSession;
   private store: Store;
 
-  step: any;
-  stepCondition: any;
-  stepDefaultCondition: any;
-  currentStep: any;
+  public step: any;
+  public stepCondition: any;
+  public stepDefaultCondition: any;
+  public currentStep: any;
 
   constructor(
     private accountSettingService: AccountSettingService,
