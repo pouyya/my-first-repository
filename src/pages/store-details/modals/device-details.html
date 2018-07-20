@@ -21,7 +21,7 @@
   <form (ngSubmit)="onSubmit()" #deviceForm="ngForm">
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" stacked>Name </ion-label>
+        <ion-label class="item-name" stacked>Name*</ion-label>
         <ion-input type="text" [(ngModel)]="device.name" name="name" required></ion-input>
       </ion-item>
 
@@ -33,24 +33,24 @@
       </ion-item>
 
       <ion-item>
-        <ion-label stacked>Type</ion-label>
+        <ion-label stacked>Type*</ion-label>
         <ion-select [(ngModel)]="device.type" multiple="false" name="type" required>
           <ion-option *ngFor="let type of typeList" value={{type.value}}>{{type.text}}</ion-option>
         </ion-select>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
-        <ion-label class="item-name" stacked>IP Address </ion-label>
+        <ion-label class="item-name" stacked>IP Address*</ion-label>
         <ion-input type="text" [pattern]="patternIpAddress" [(ngModel)]="device.ipAddress" name="ipAddress" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
-        <ion-label class="item-name" stacked>Printer Port</ion-label>
+        <ion-label class="item-name" stacked>Printer Port*</ion-label>
         <ion-input type="text" [pattern]="patternPrinterPort" [(ngModel)]="device.printerPort" name="printerPort" required></ion-input>
       </ion-item>
 
       <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
-        <ion-label stacked>Character Per Line</ion-label>
+        <ion-label stacked>Character Per Line*</ion-label>
         <ion-select [(ngModel)]="device.characterPerLine" multiple="false" name="characterPerLine" required>
           <ion-option value=48>48</ion-option>
           <ion-option value=42>42</ion-option>
