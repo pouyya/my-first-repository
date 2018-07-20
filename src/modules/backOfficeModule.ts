@@ -27,7 +27,7 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Customers', icon: 'contacts', component: Customers },
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
-    { title: 'Human Resource', icon: 'build', component: HumanResourceDashboard },
+    { title: 'Human Resource', icon: 'people', component: HumanResourceDashboard },
     { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
     { title: 'Report', icon: 'print', component: ReportsDashboard },
     { title: 'Settings', icon: 'cog', component: Settings },

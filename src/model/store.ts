@@ -89,6 +89,8 @@ export class Store extends DBBasedEntity {
     public defaultSaleTaxId: string;
     public trackEmployeeSales: boolean;
     public printReceiptAtEndOfSale: boolean;
+    public receiptHeaderMessage: string;
+    public receiptFooterMessage: string;
     public devices: Device[];
     public POS: POS[];
 

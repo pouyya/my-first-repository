@@ -33,7 +33,6 @@ export class AppService {
    */
 
   public async loadSalesAndGroupTaxes(): Promise<any> {
-    try {
       let taxes: Array<any> = [];
       let _salesTaxes: SalesTax[] = await this.salesTaxService.getAll();
       taxes = _salesTaxes.map((salesTax => {
@@ -44,9 +43,6 @@ export class AppService {
         return { ...groupSaleTax, noOfTaxes: groupSaleTax.salesTaxes.length };
       })));
       return taxes;
-    } catch (err) {
-      return Promise.reject(err);
-    }
   }
   
   public async deleteStoreAssoc(store: Store) {
