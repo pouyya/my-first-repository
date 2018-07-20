@@ -1,6 +1,6 @@
 import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
-import { NavController, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import {NavController, AlertController, ToastController, LoadingController, NavParams} from 'ionic-angular';
 import { Component, NgZone } from '@angular/core';
 import { Sale } from './../../model/sale';
 import { Sales } from './../sales/sales';
@@ -57,6 +57,7 @@ export class SalesHistoryPage {
   constructor(
     private zone: NgZone,
     private navCtrl: NavController,
+    private navParams: NavParams,
     private salesService: SalesServices,
     private customerService: CustomerService,
     private employeeService: EmployeeService,
@@ -85,9 +86,14 @@ export class SalesHistoryPage {
     let loader = this.loading.create({
       content: 'Fetching Sales...'
     });
+    const filterType = this.navParams.get('filterType');
+
     await loader.present();
     try {
-      await this.fetchMoreSales();
+      if(filterType){
+        this.selectedStatus = filterType;
+      }
+      !filterType && await this.fetchMoreSales();
       loader.dismiss();
     } catch (err) {
       throw new Error(err);
@@ -370,7 +376,7 @@ export class SalesHistoryPage {
         this.selectedPaymentType
       );
       this.offset += sales ? sales.length : 0;
-      sales = await this.attachCustomersToSales(sales);
+      this.attachCustomersToSales(sales);
       this.zone.run(() => {
         this.sales = this.sales.concat(sales);
         infiniteScroll && infiniteScroll.complete();

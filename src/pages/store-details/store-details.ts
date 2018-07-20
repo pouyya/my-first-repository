@@ -92,14 +92,15 @@ export class StoreDetailsPage {
 
     this.utils.setFormFields(this.storeForm, this.fields, this.item);
     this.item.timezone = (this.item.timezone as any).code;
-    this.item.timezone &&
-    ( this.item.timezone = <any>{code: this.item.timezone, value: this.item.timezone} );
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);
     } else {
       await this.storeService.update(this.item);
     }
+
+    this.item.timezone &&
+    ( this.item.timezone = <any>{code: this.item.timezone, value: this.item.timezone} );
     loader.dismiss();
 
     if (isReturn == true){
