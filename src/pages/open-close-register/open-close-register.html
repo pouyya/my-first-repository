@@ -21,7 +21,7 @@
           <h2 text-center>Register Closed</h2>
           <h5 text-center>Set an opening float to open the register and make sale</h5>
 
-          <ion-label stacked>Opening Float</ion-label>
+          <ion-label stacked>Opening Float*</ion-label>
           <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="openingPos.amount" name="openingAmount" required></ion-input>
 
           <ion-label color="primary" stacked>Notes
@@ -72,7 +72,7 @@
           <small>Opening Time</small>
         </p>
         <p>
-          <strong>{{ syncContext.currentPos.openTime | localDate:'MMM d, YY, h:mm:ss a' }}</strong>
+          <strong>{{ syncContext.currentPos.openTime | localDate:'d MMM, YYYY, h:mm:ss a' }}</strong>
         </p>
       </ion-col>
       <ion-col col-md-12>
@@ -80,7 +80,7 @@
           <small>Closing Time</small>
         </p>
         <p>
-          <strong>{{ closure.openTime | localDate:'MMM d, YY, h:mm:ss a' }}</strong>
+          <strong>{{ closure.openTime | localDate:'d MMM, YYYY, h:mm:ss a' }}</strong>
         </p>
       </ion-col>
 
@@ -211,7 +211,7 @@
           <small>Opening Time</small>
         </p>
         <p>
-          <strong>{{ syncContext.currentPos.openTime | localDate:'MMM d, y, h:mm:ss a' }}</strong>
+          <strong>{{ syncContext.currentPos.openTime | localDate:'d MMM, YYYY, h:mm:ss a' }}</strong>
         </p>
       </ion-col>
 
