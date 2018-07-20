@@ -22,6 +22,7 @@ import {DateTimeService} from "../../services/dateTimeService";
 export class ReportsDashboard {
 
     @ViewChild('lineCanvas') lineCanvas;
+    @ViewChild('progressBar') progressBar;
     private lineChart;
     private dates$: Subject<Object> = new Subject<Object>();
     private fromDate: Date;
@@ -30,6 +31,11 @@ export class ReportsDashboard {
     private totalSales: number = 0;
     private salesAverage: number = 0;
     private isTaxInclusive: boolean = false;
+    public selectedValue: string = "WEEK" ;
+    public selectedStore;
+    public spinnerDisplay: string = "block";
+    public locations = [{ text: "All locations", value: "" }];
+
 
     constructor(private salesService: SalesServices,
                 private syncContext: SyncContext,
@@ -39,14 +45,12 @@ export class ReportsDashboard {
     }
 
     async ionViewDidLoad() {
+      this.locations.unshift({text: "Current", value: this.syncContext.currentStore._id});
+      this.selectedStore = this.locations[0].value;
       this.dates$.asObservable().subscribe(async (date: any) => {
          this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
          this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
-         let loader = this.loading.create({ content: 'Loading Report...', });
-         await loader.present();
          await this.loadSales();
-         this.loadPurchaseChart();
-         loader.dismiss();
       });
 
         let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
@@ -54,6 +58,7 @@ export class ReportsDashboard {
         fromDate.setHours(0);
         fromDate.setMinutes(0);
         fromDate.setSeconds(0);
+        fromDate.setDate(fromDate.getDate() - 7);
         this.dates$.next({fromDate, toDate});
 
         var currentAccount = await this.accountSettingService.getCurrentSetting();
@@ -62,10 +67,11 @@ export class ReportsDashboard {
 
     private async loadSales(){
         try {
+            this.spinnerDisplay = "block";
             this.totalSales = 0;
             this.salesAverage = 0;
             const sales = await this.salesService.searchSales(
-                [this.syncContext.currentPos.id],
+                this.selectedStore ? [this.syncContext.currentPos.id] : [],
                 null,
                 null,
                 null,
@@ -94,10 +100,13 @@ export class ReportsDashboard {
                 this.salesAverage += salesObj[key].saleAverage;
                 return salesObj[key]
             });
+            this.spinnerDisplay = "none";
+            this.loadPurchaseChart();
         } catch(ex){
 
         }
     }
+
     private loadPurchaseChart(){
         const labels = [], data = [];
         this.sales.map(sale => {
