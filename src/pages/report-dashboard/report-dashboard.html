@@ -9,7 +9,14 @@
 </ion-header>
 
 <ion-content padding>
-  <date-duration-picker [dates$]="dates$"></date-duration-picker>
+  <ion-row>
+    <ion-col class="removePadding" col-md-3>
+      <ion-select class="white-bg full-width" [(ngModel)]="selectedStore" (ngModelChange)="loadSales()">
+        <ion-option *ngFor="let location of locations" [value]="location.value">{{ location.text }}</ion-option>
+      </ion-select>
+    </ion-col>
+  </ion-row>
+  <date-duration-picker [dates$]="dates$" [selectedValue]="selectedValue"></date-duration-picker>
   <ion-grid>
     <div style="margin-top:25px" text-center>
       <ion-row>
@@ -32,6 +39,7 @@
         Sales Summary Chart
       </ion-card-header>
       <ion-card-content style="height: 87%">
+        <ion-spinner class="spinner-center" [style.display]="spinnerDisplay" name="bubbles"></ion-spinner>
         <canvas  #lineCanvas></canvas>
       </ion-card-content>
     </ion-card>
@@ -46,7 +54,7 @@
     </ion-row>
     <div>
       <ion-row class="row-border" *ngFor="let sale of sales">
-        <ion-col>{{sale.date}}</ion-col>
+        <ion-col>{{sale.date | localDate:'MMM DD, YYYY h:mm a'}}</ion-col>
         <ion-col>{{sale.noOfSales}}</ion-col>
         <ion-col>{{sale.netAmount}}</ion-col>
         <ion-col>{{sale.taxAmount}}</ion-col>

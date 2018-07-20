@@ -45,8 +45,7 @@ export class PaymentsPage {
   async ionViewDidLoad() {
     this.sale = <Sale>this.navParams.get('sale');
     this.doRefund = this.navParams.get('doRefund');
-    this.navPopCallback = this.navParams.get("callback")
-
+    this.navPopCallback = this.navParams.get("callback");
     this.amount = 0;
     this.change = 0;
     await this.calculateBalance(this.sale);
@@ -74,7 +73,7 @@ export class PaymentsPage {
 
     this.amount = sale.taxTotal - totalPayments;
 
-    if (totalPayments >= sale.taxTotal) {
+    if (Math.abs(totalPayments) >= Math.abs(sale.taxTotal)) {
       await this.completeSale(totalPayments)
     }
 

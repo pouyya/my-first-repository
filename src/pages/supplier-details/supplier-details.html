@@ -22,7 +22,7 @@
         <ion-input type="text" [formControl]="name" name="name" required></ion-input>
       </ion-item>
       <ion-item *ngIf="name.invalid && (name.dirty || name.touched) && name.errors.required" class="alert alert-danger">
-        Name is required
+        Name is required!
       </ion-item>
       <ion-item>
         <ion-label class="item-name" stacked>Description</ion-label>

@@ -2,10 +2,12 @@ import { Injectable } from "@angular/core";
 import { AlertController, ToastController } from "ionic-angular";
 import { ValidationInfo } from "../metadata/validationModule";
 import { Validators } from "@angular/forms";
+import * as moment from "moment-timezone";
+import {SyncContext} from "../services/SyncContext";
 
 @Injectable()
 export class Utilities {
-  constructor(private alertCtrl: AlertController, private toastCtrl:ToastController){}
+  constructor(private alertCtrl: AlertController, private toastCtrl:ToastController, private syncContext: SyncContext){}
 
   public checkUnsavedChanges(isDataChanged) {
     return new Promise<boolean>((resolve) => {
@@ -89,5 +91,9 @@ export class Utilities {
         });
         confirm.present();
     });
+  }
+
+  public convertTimezone(date){
+      return this.syncContext.timezone ? moment.tz(date, this.syncContext.timezone) : moment.utc(date).local();
   }
 }
