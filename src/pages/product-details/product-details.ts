@@ -273,7 +273,7 @@ export class ProductDetails {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
 			if (data && data.status) {
-                this.productItem.icon = this.icons[this.selectedIcon] || null;
+                this.productItem.icon = this.icons[data.selected] || null;
 			}
 		});
 		modal.present();
@@ -327,6 +327,7 @@ export class ProductDetails {
 					this.stockEntities.push(stock);
 					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
 					this.storesStock[index].value += stock.value;
+                    !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
 					this.stockHistory[stock.storeId].push(stock);
 				} catch (err) {
 					throw new Error(err);
@@ -411,8 +412,6 @@ export class ProductDetails {
             this.stockEntities.push(stock);
             let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
             this.storesStock[index].value += stock.value;
-            !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
-            this.stockHistory[stock.storeId].push(stock);
         }
 	}
 

@@ -32,13 +32,13 @@
     <ion-row *ngIf="selectedTimeframe === 'CUSTOM' ">
       <ion-col>
         <ion-item>
-          <ion-label>From</ion-label>
+          <ion-label stacked>From</ion-label>
           <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="fromDate"></ion-datetime>
         </ion-item>
       </ion-col>
       <ion-col>
         <ion-item>
-          <ion-label>To</ion-label>
+          <ion-label stacked>To</ion-label>
           <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="toDate"></ion-datetime>
         </ion-item>
       </ion-col>

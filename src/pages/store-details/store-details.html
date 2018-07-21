@@ -18,56 +18,64 @@
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>Store Name*</ion-label>
+        <ion-label class="item-name" stacked>Store Name*</ion-label>
         <ion-input type="text" formControlName="name" name="name"></ion-input>
       </ion-item>
       <p ion-text *ngIf="storeForm.controls['name'].errors && storeForm.controls['name'].dirty" color="danger" padding-left="">Name should not be empty.</p>
       <ion-item>
-        <ion-label class="item-name" floating>Order Number Prefix</ion-label>
+        <ion-label class="item-name" stacked>Order Number Prefix</ion-label>
         <ion-input type="text" formControlName="orderNumPrefix" name="orderNumPrefix"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Order Number</ion-label>
+        <ion-label class="item-name" stacked>Order Number</ion-label>
         <ion-input type="text" formControlName="orderNum" name="orderNum"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Supplier Return Prefix</ion-label>
+        <ion-label class="item-name" stacked>Supplier Return Prefix</ion-label>
         <ion-input type="text" formControlName="supplierReturnPrefix" name="supplierReturnPrefix"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Supplier Return Number</ion-label>
+        <ion-label class="item-name" stacked>Supplier Return Number</ion-label>
         <ion-input type="text" formControlName="supplierReturnNum" name="supplierReturnNum"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Printer At End of Sale</ion-label>
+        <ion-label class="item-name" stacked>Printer At End of Sale</ion-label>
         <ion-toggle formControlName="printReceiptAtEndOfSale" name="printReceiptAtEndOfSale"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>{{ 'TaxFileNumber' | translator }}</ion-label>
+        <ion-label class="item-name" stacked>{{ 'TaxFileNumber' | translator }}</ion-label>
         <ion-input type="number" formControlName="taxFileNumber" name="taxFileNumber"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name" stacked>Print Header</ion-label>
+        <ion-textarea type="text" formControlName="receiptHeaderMessage" name="receiptHeaderMessage"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name" stacked>Print Footer</ion-label>
+        <ion-textarea type="text"  formControlName="receiptFooterMessage" name="receiptFooterMessage"></ion-textarea>
       </ion-item>
     </ion-list>
 
     <ion-list-header>Physical Address and Contact Details</ion-list-header>
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>Street</ion-label>
+        <ion-label class="item-name" stacked>Street</ion-label>
         <ion-input type="text" formControlName="street" name="street"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Suburb</ion-label>
+        <ion-label class="item-name" stacked>Suburb</ion-label>
         <ion-input type="text" formControlName="suburb" name="suburb"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>City</ion-label>
+        <ion-label class="item-name" stacked>City</ion-label>
         <ion-input type="text" formControlName="city" name="city"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Postcode</ion-label>
+        <ion-label class="item-name" stacked>Postcode</ion-label>
         <ion-input type="text" formControlName="postCode" name="postCode"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>State</ion-label>
+        <ion-label class="item-name" stacked>State</ion-label>
         <ion-input type="text" formControlName="state" name="state"></ion-input>
       </ion-item>
       <ion-item>
@@ -76,20 +84,21 @@
         </searchable-ion-select>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Timezone</ion-label>
-        <ion-input type="text" formControlName="timezone" name="timezone"></ion-input>
+        <searchable-ion-select [isModal]="true" name="timezone" formControlName="timezone" title="Timezone" valueField="code"
+                               textField="name" [items]="timezones">
+        </searchable-ion-select>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Email</ion-label>
+        <ion-label class="item-name" stacked>Email</ion-label>
         <ion-input type="text" formControlName="email" name="email"></ion-input>
       </ion-item>
       <p ion-text *ngIf="storeForm.controls['email'].errors && storeForm.controls['email'].dirty" color="danger" padding-left>Email is invalid.</p>
       <ion-item>
-        <ion-label class="item-name" floating>Phone</ion-label>
+        <ion-label class="item-name" stacked>Phone</ion-label>
         <ion-input type="text" formControlName="phone" name="phone"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" floating>Twitter</ion-label>
+        <ion-label class="item-name" stacked>Twitter</ion-label>
         <ion-input type="text" formControlName="twitter" name="twitter"></ion-input>
       </ion-item>
     </ion-list>

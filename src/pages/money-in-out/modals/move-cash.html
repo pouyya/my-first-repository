@@ -15,11 +15,11 @@
   <form (ngSubmit)="onSubmit()" #moveForm="ngForm">
     <ion-list>
       <ion-item>
-        <ion-label class="item-name">Amount*</ion-label>
+        <ion-label class="item-name" stacked>Amount*</ion-label>
         <ion-input min="1" type="number" [(ngModel)]="cash.amount" name="amount" placeholder="e.g. 50.00" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name">Note</ion-label>
+        <ion-label class="item-name" stacked>Note</ion-label>
         <ion-textarea [(ngModel)]="cash.notes" name="notes" placeholder="Type to add a notes"></ion-textarea>
       </ion-item>
     </ion-list>

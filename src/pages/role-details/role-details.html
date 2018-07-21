@@ -19,7 +19,7 @@
   <form (ngSubmit)="save()" #roleForm="ngForm">
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" floating>Name</ion-label>
+        <ion-label class="item-name" stacked>Name*</ion-label>
         <ion-input type="text" [(ngModel)]="role.name" name="name" required></ion-input>
       </ion-item>
       <ion-item *ngFor="let accessRightItem of accessRightItems">

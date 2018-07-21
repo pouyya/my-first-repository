@@ -9,13 +9,13 @@
       <button ion-button small (click)="addSupplier()">+ Add Supplier</button>
     </ion-item>
     <ion-item *ngIf="suppliers.length > 0">
-      <ion-label color="primary">Select Supplier</ion-label>
+      <ion-label color="primary" stacked>Select Supplier</ion-label>
       <ion-select [(ngModel)]="selectedSupplier">
         <ion-option [value]="supplier" *ngFor="let supplier of suppliers">{{ supplier.name }}</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label color="primary">Select Store</ion-label>
+      <ion-label color="primary" stacked>Select Store</ion-label>
       <ion-select [(ngModel)]="selectedStore">
         <ion-option [value]="store" *ngFor="let store of stores">{{ store.name }}</ion-option>
       </ion-select>

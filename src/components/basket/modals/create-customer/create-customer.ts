@@ -62,7 +62,7 @@ export class CreateCustomerModal {
 
     if(this.isNew) {
       let result = await this.customerService.add(this.customer);
-      let customer = await this.customerService.get(result.id);
+      let customer = await this.customerService.get(result._id);
       this.viewCtrl.dismiss(customer);
     } else {
       await this.customerService.update(this.customer);

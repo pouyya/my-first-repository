@@ -40,6 +40,7 @@ export class Sales implements OnDestroy {
       this._basketComponent = basketComponent;
       if (this._basketComponent) {
         await this._basketComponent.initializeSale(this.navParams.get('sale'), this.evaluationContext);
+        this.salesService.getParkedSalesCount().then(count => this.parkedSaleCount = count);
       }
     }, 0);
 
@@ -54,6 +55,7 @@ export class Sales implements OnDestroy {
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
+  public parkedSaleCount: number;
 
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
@@ -75,6 +77,7 @@ export class Sales implements OnDestroy {
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
+    this.parkedSaleCount = 0;
   }
 
   ngOnDestroy() {
@@ -127,7 +130,6 @@ export class Sales implements OnDestroy {
     } else {
       await this.loadRegister();
     }
-
     this.cdr.reattach();
   }
 
@@ -170,6 +172,13 @@ export class Sales implements OnDestroy {
     this.selectedEmployee = null;
   }
 
+  public onParkedSale(isParked) {
+      if( !isParked && this.parkedSaleCount == 0 ) {
+        return;
+      }
+      isParked ? this.parkedSaleCount += 1 : this.parkedSaleCount -=1;
+  }
+  // Event
   private async loadCategoriesAndAssociations() {
 
     let [categories, purchasableItems] = await Promise.all([this.categoryService.getAll(), this.categoryService.getPurchasableItems()]);

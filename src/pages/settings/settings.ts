@@ -6,13 +6,13 @@ import { NgZone } from '@angular/core';
 import { SettingsModule } from './../../modules/settingsModule';
 import { PageModule } from './../../metadata/pageModule';
 import { AppService } from "../../services/appService";
-import { DateTimeService } from './../../services/dateTimeService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
 import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
 import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
+import {SyncContext} from "../../services/SyncContext";
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -41,7 +41,7 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
-    private datetimeService: DateTimeService
+    private syncContext: SyncContext
   ) {
     this.cdr.detach();
     this.taxTypes = [
@@ -70,6 +70,8 @@ export class Settings {
         });
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
+        this.accountSetting.timeOffset &&
+        ( this.accountSetting.timeOffset = {code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset} );
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {
           return saleTax._id === this.accountSetting.defaultTax;
         });
@@ -96,11 +98,13 @@ export class Settings {
     this.accountSetting.defaultTax = this.newTax._id;
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
     if (this.accountSetting.timeOffset) {
-      this.datetimeService.timezone = this.accountSetting.timeOffset;
+      this.accountSetting.timeOffset = this.accountSetting.timeOffset.code;
+      this.syncContext.appTimezone = this.accountSetting.timeOffset;
     }
 
-    this.accountSettingService.update(this.accountSetting);
-
+    await this.accountSettingService.update(this.accountSetting);
+    this.accountSetting.timeOffset &&
+    ( this.accountSetting.timeOffset = {code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset} );
     await loader.dismiss();
     let toast = this.toast.create({
       message: "Settings have been saved",

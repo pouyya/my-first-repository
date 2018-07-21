@@ -31,22 +31,16 @@ export class NetworkMonitorComponent {
   public syncIcon: string = 'cloud-outline';
 
   constructor(private network: Network) {
-    this.network.onDisconnect().subscribe(() => { 
-      this.networkIcon = "eye-off";
-      console.log('Offline event was detected.');
-     });
-    this.network.onConnect().subscribe(() => { 
-      this.networkIcon = "eye";
-      console.log('Online event was detected.');
-     });
+    this.network.onDisconnect().subscribe(() => this.networkIcon = "eye-off");
+    this.network.onConnect().subscribe(() => this.networkIcon = "eye");
 
-    DBService.criticalDBSyncProgress.subscribe(
+    DBService.pouchDBProvider.criticalDBSyncProgress.subscribe(
       (data: DBEvent) => {
         data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
       }
     );
 
-    DBService.dbSyncProgress.subscribe(
+    DBService.pouchDBProvider.dbSyncProgress.subscribe(
       (data: DBEvent) => {
         data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
       }
