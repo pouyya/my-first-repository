@@ -30,6 +30,7 @@ export class StockIncreaseModal {
             Reason.Return,
             Reason.Transfer,
             Reason.Adjustment,
+            Reason.InitialValue,
             Reason.Other
         ];
         this.storesStock = this.navParams.get('storesStock');
