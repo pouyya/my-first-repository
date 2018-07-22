@@ -7,6 +7,7 @@ import { StockHistory } from '../../../../model/stockHistory';
 import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
 import { EmployeeService } from '../../../../services/employeeService';
 import { SyncContext } from '../../../../services/SyncContext';
+import { InteractableStoreStock } from '../../InteractableStoreStock';
 
 @Component({
   selector: 'stock-decrease-modal',
@@ -14,11 +15,10 @@ import { SyncContext } from '../../../../services/SyncContext';
 })
 export class StockDecreaseModal {
 
-  public storesStock: any[] = [];
+  public storesStock: InteractableStoreStock[] = [];
   public stock: StockHistory = new StockHistory();
   public currentStore: any = {};
   public reasons: any[] = [];
-  public storeId: string;
 
   constructor(
     private navParams: NavParams,
@@ -36,15 +36,19 @@ export class StockDecreaseModal {
     this.storesStock = this.navParams.get('storesStock');
     let reasons = TypeHelper.enumToObject(Reason, 'string');
     Object.keys(reasons).forEach(reason => {
-      if (decreaseReasons.indexOf(reason)!= -1 ) {
+      if (decreaseReasons.indexOf(reason) != -1) {
         this.reasons[reason] = reasons[reason];
       }
     });
     this.stock.productId = this.navParams.get('productId');
-    this.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
-    this.stock.storeId = (this.storeId)?this.storeId:this.storesStock[0].storeId;
+    this.stock.storeId = this.getCurrentStore();
     this.stock.reason = this.reasons[Object.keys(this.reasons)[0]];
     this.setStore();
+  }
+
+  private getCurrentStore() {
+    const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+    return (storeId) ? storeId : this.storesStock[0].storeId;
   }
 
   public setStore() {

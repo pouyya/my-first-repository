@@ -1,12 +1,13 @@
+import { InteractableItemPriceInterface } from './InteractableItemPriceInterface';
+import { InteractableStoreStock } from './InteractableStoreStock';
+
 import { Supplier } from './../../model/supplier';
-import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import {Reason, StockHistory} from './../../model/stockHistory';
 import { StoreService } from './../../services/storeService';
 import { BrandService } from './../../services/brandService';
 import _ from 'lodash';
 import { SalesTaxService } from './../../services/salesTaxService';
-import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
@@ -28,22 +29,6 @@ import { Utilities } from "../../utility";
 import * as moment from "moment-timezone";
 import {EmployeeService} from "../../services/employeeService";
 import {SyncContext} from "../../services/SyncContext";
-
-interface InteractableStoreStock {
-	storeId: string,
-	store: Store, /** Store */
-	value: number, /** sum of all stock values */
-	supplierId?: string, /** from supplier */
-	reorderPoint?: any,
-	reorderQty?: any
-}
-
-interface InteractableItemPriceInterface {
-	id: string;
-	tax: any,
-	item: PurchasableItemPriceInterface,
-	isDefault: boolean
-}
 
 @SecurityModule(SecurityAccessRightRepo.ProductAddEdit)
 @Component({

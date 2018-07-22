@@ -32,12 +32,11 @@ export class AddSupplierAndStore {
 	}
 
 	async ionViewDidLoad() {
-		[ this.suppliers, this.stores ] = [ await this.supplierService.getAll(), await this.storeService.getAll() ];
+		[this.suppliers, this.stores] = [await this.supplierService.getAll(), await this.storeService.getAll()];
 
 		let storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
 		if (!storeId) {
 			this.selectedStore = this.stores[0];
-			storeId = this.selectedStore._id;
 		} else {
 			this.selectedStore = _.find(this.stores, { _id: storeId });
 		}
