@@ -48,6 +48,7 @@ export class Roster implements OnDestroy{
 
   // To hold selected store
   public selectedStore: Store;
+  public storeId: string;
   // To hold store list
   public stores: Array<Store> = [];
   // To hold Employee List
@@ -88,7 +89,8 @@ export class Roster implements OnDestroy{
   constructor(private ngZone: NgZone, private calendar: NgbCalendar, private storeService: StoreService,
               private employeeService: EmployeeService, public modalCtrl: ModalController,
               public navCtrl: NavController, public navParams: NavParams, private shiftService: ShiftService,
-              private loading: LoadingController) {
+              private loading: LoadingController,
+              private syncContext: SyncContext) {
     // Initialize with today's date
     this.fromDate = this.calendar.getToday();
     this.dateRange = moment().format('DD MMM');
@@ -359,7 +361,8 @@ export class Roster implements OnDestroy{
         this.employeeService.getAll() ]);
     this.stores = stores;
     this.employees = employees;
-    this.selectedStore = this.stores[0];
+    this.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+    this.selectedStore = (this.storeId)?this.syncContext.currentStore:this.stores[0];
     // this.events = events;
     await this.onStoreChange();
     this.refresh.next();
