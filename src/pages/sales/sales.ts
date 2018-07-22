@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import { LoadingController, NavParams } from 'ionic-angular';
+import { LoadingController, NavParams, NavController } from 'ionic-angular';
 
 import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -23,6 +23,7 @@ import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
+import {SalesHistoryPage} from "../sales-history/sales-history";
 
 
 @SecurityModule()
@@ -71,6 +72,7 @@ export class Sales implements OnDestroy {
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private storeService: StoreService,
+    private navCtrl: NavController,
     private navParams: NavParams,
     private cacheService: CacheService,
     private utils: Utilities,
@@ -138,6 +140,10 @@ export class Sales implements OnDestroy {
     await loader.present();
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
+  }
+
+  public openSalesHistory(){
+    this.navCtrl.push(SalesHistoryPage, {filterType: 'parked'});
   }
 
   public selectCategory(category) {
