@@ -79,12 +79,12 @@
         <ion-input type="text" formControlName="state" name="state"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select [isModal]="true" name="country" formControlName="country" title="Country" valueField="code" textField="name"
+        <searchable-ion-select [isModal]="true" name="country" [(ngModel)]="item.country" formControlName="country" title="Country" valueField="code" textField="name"
           [items]="countries">
         </searchable-ion-select>
       </ion-item>
       <ion-item>
-        <searchable-ion-select [isModal]="true" name="timezone" formControlName="timezone" title="Timezone" valueField="code"
+        <searchable-ion-select [isModal]="true" name="timezone" [(ngModel)]="item.timezone" formControlName="timezone" title="Timezone" valueField="code"
                                textField="name" [items]="timezones">
         </searchable-ion-select>
       </ion-item>
