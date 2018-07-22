@@ -6,7 +6,7 @@
     <ion-title class="ion-title-center">Sales</ion-title>
 
     <ion-buttons style="display: inline-flex;" right>
-      <button id="notification-button" [disabled]="parkedSaleCount == 0" no-margin ion-button clear>
+      <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin ion-button clear>
         <ion-icon name="archive">
           <ion-badge *ngIf="parkedSaleCount" id="notifications-badge" color="danger">{{parkedSaleCount}}</ion-badge>
         </ion-icon>
