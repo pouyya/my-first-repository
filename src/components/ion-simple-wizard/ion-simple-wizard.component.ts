@@ -8,15 +8,15 @@ import { WizardAnimations } from './ion-simple-wizard-animations';
   templateUrl: 'ion-simple-wizard.component.html',
   animations: WizardAnimations.btnRotate
 })
-export class IonSimpleWizard {
-  @Input() finishIcon = 'send';//Default
-  @Input() showSteps: boolean=true;//Default
-  @Input() step = 1;//Default
-  @Output() finish = new EventEmitter();
-  @Output() stepChange = new EventEmitter();
+export class IonSimpleWizardComponent {
+  @Input() finishIcon$ = 'send';//Default
+  @Input() showSteps$: boolean=true;//Default
+  @Input() step$ = 1;//Default
+  @Output() finish$ = new EventEmitter();
+  @Output() stepChange$ = new EventEmitter();
   public steps = 0;//Innitial
   public hideWizard = false;//Default
-  @Input() stepCondition = true;//Default
+  @Input() stepCondition$ = true;//Default
 
   constructor(public evts: Events) {
   }
@@ -44,25 +44,25 @@ export class IonSimpleWizard {
    * @return {boolean} true if is the final step
    */
   isOnFinalStep() {
-    return this.step === this.steps;
+    return this.step$ === this.steps;
   }
   /**
    * @return {boolean} the current step condition
    */
   getCondition() {
-    return this.stepCondition;
+    return this.stepCondition$;
   }
   /**
    * @return {boolean} true if the the step is the first 
    */
   isOnFirstStep() {
-    return this.step === 1;
+    return this.step$ === 1;
   }
   /**
    * @method back button event and emit Event Called 'step:back'
    */
   back() {
-    this.stepChange.emit(this.step - 1);
+    this.stepChange$.emit(this.step$ - 1);
     this.evts.publish('step:back');
 
   }
@@ -70,7 +70,7 @@ export class IonSimpleWizard {
    * @method next button event and emit  Event Called 'step:next'
    */
   next() {
-    this.stepChange.emit(this.step + 1);
+    this.stepChange$.emit(this.step$ + 1);
     this.evts.publish('step:next');
   }
 

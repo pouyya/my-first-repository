@@ -9,19 +9,14 @@ import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
 import { NavController, ModalController, LoadingController, ToastController, AlertController, Events } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
-<<<<<<< HEAD
-import { Component, ChangeDetectorRef , CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { DateTimeService } from '../../services/dateTimeService';
-=======
 import { Component, ChangeDetectorRef } from '@angular/core';
->>>>>>> 32e095bd198c6fa08a88216558e1c0ae4c8ff68b
 import { StoreService } from '../../services/storeService';
 import { TranslateService } from '@ngx-translate/core';
 import { SyncContext } from "../../services/SyncContext";
 import { BoostraperModule } from '../../modules/bootstraperModule';
 import { PageModule } from '../../metadata/pageModule';
-import { IonSimpleWizard } from '../../components/ion-simple-wizard/ion-simple-wizard.component';
-import { IonSimpleWizardStep } from '../../components/ion-simple-wizard/ion-simple-wizard.step.component';
+import { IonSimpleWizardComponent } from '../../components/ion-simple-wizard/ion-simple-wizard.component';
+import { IonSimpleWizardStepComponent } from '../../components/ion-simple-wizard/ion-simple-wizard.step.component';
 
 @PageModule(() => BoostraperModule)
 @Component({

@@ -178,8 +178,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
-import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
-import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
+import { IonSimpleWizardModule } from '../components/ion-simple-wizard/ion-simple-wizard.module';
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -261,8 +260,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     TranslatorPipe,
     DeleteAccount,
     AddShiftDirective,
-    IonSimpleWizard,
-    IonSimpleWizardStep
   ],
   imports: [
     FormsModule,
@@ -322,6 +319,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
     SearchableIonSelectModule,
+    IonSimpleWizardModule,
     IonicProDeployModule.forRoot()
   ],
   bootstrap: [IonicApp],

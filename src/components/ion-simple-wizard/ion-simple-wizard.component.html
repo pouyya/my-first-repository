@@ -8,7 +8,7 @@
       </button>
     </ion-fab>
     <!--Steps count-->   
-    <ion-badge *ngIf="showSteps">{{step}} / {{steps}}</ion-badge>
+    <ion-badge *ngIf="showSteps$">{{step$}} / {{steps$}}</ion-badge>
     <!--Next Button-->
     <ion-fab [@btnState] *ngIf="(!isOnFinalStep() && getCondition())" right bottom>
       <button ion-fab (click)="next()">
