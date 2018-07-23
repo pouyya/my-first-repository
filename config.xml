@@ -143,7 +143,7 @@
         <variable name="WARN_DEBUG" value="true" />
         <variable name="UPDATE_API" value="https://api.ionicjs.com" />
     </plugin>
-    <engine name="ios" spec="~4.4.0" />
+    <engine name="ios" spec="4.5.4" />
     <engine name="android" spec="6.3.0" />
     <engine name="browser" spec="~5.0.3" />
 </widget>
