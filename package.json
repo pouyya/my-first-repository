@@ -18,7 +18,7 @@
     "serve": "cross-env SP_ENV=dev ionic-app-scripts serve",
     "ios": "npm run build:dev && cordova run ios",
     "ios:stage": "npm run build:stage && cordova run ios",
-    "ios:prod": "npm run build && cordova build ios --release",
+    "ios:prod": "npm run build && cordova build ios",
     "android": "npm run build:dev && cordova run android",
     "android:stage": "npm run build:stage && cordova run android",
     "android:prod": "npm run build && cordova build android --release"
