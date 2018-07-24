@@ -92,7 +92,7 @@
         <ion-label class="item-name" stacked>Email</ion-label>
         <ion-input type="text" formControlName="email" name="email"></ion-input>
       </ion-item>
-      <p ion-text *ngIf="storeForm.controls['email'].errors && storeForm.controls['email'].dirty" color="danger" padding-left>Email is invalid.</p>
+      <p ion-text *ngIf="!EMAIL_REGEXP.test(storeForm.controls['email'].value)" color="danger" padding-left>Email is invalid.</p>
       <ion-item>
         <ion-label class="item-name" stacked>Phone</ion-label>
         <ion-input type="text" formControlName="phone" name="phone"></ion-input>
