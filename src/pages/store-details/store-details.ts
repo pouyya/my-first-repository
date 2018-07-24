@@ -68,8 +68,13 @@ export class StoreDetailsPage {
     });
     this.item.timezone &&
     ( this.item.timezone = <any>{code: this.item.timezone, value: this.item.timezone} );
+
     await loader.present();
+
     this.countries = await this.resourceService.getCountries();
+    this.item.country &&
+    ( this.item.country = <any>{code: this.item.country, value: this.item.country} );
+    
     await loader.dismiss();
   }
 
@@ -92,6 +97,7 @@ export class StoreDetailsPage {
 
     this.utils.setFormFields(this.storeForm, this.fields, this.item);
     this.item.timezone = (this.item.timezone as any).code;
+    this.item.country = (this.item.country as any).code;
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);
@@ -101,6 +107,10 @@ export class StoreDetailsPage {
 
     this.item.timezone &&
     ( this.item.timezone = <any>{code: this.item.timezone, value: this.item.timezone} );
+
+    this.item.country &&
+    ( this.item.country = <any>{code: this.item.country, value: this.item.country} );
+
     loader.dismiss();
 
     if (isReturn == true){
