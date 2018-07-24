@@ -57,8 +57,8 @@ import { DiscountSurchargeModal } from './../components/basket/modals/discount-s
 import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
-import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
-import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
+import { StaffsTimeLogs } from './../pages/staffs-time-logs/staffs-time-logs';
+import { TimeLogDetailsModal } from './../pages/staffs-time-logs/modals/time-log-details/time-log-details';
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
 import { Customers } from './../pages/customers/customers';
 import { Bumps } from "../pages/bumps/bumps";

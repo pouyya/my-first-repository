@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
-import { EmployeeTimestamp } from './../../../../../model/employeeTimestamp';
-import { EmployeeTimestampService } from './../../../../../services/employeeTimestampService';
-import { GlobalConstants } from './../../../../../metadata/globalConstants';
+import { EmployeeTimestamp } from './../../../../model/employeeTimestamp';
+import { EmployeeTimestampService } from './../../../../services/employeeTimestampService';
+import { GlobalConstants } from './../../../../metadata/globalConstants';
 import { ViewController, LoadingController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
 import { Component, OnInit, NgZone } from '@angular/core';
