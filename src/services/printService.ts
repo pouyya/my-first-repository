@@ -232,7 +232,7 @@ export class PrintService {
       console.warn("can't print on dekstop");
       return;
     }
-
+    sale.items = sale.items.filter(item => !item.isPrintedForProductionLine);
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
     productionLinePrinters.forEach(productionLinePrinter => {
