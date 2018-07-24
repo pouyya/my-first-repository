@@ -365,6 +365,11 @@ export class SalesHistoryPage {
   }
 
   public async fetchMoreSales(infiniteScroll?: any) {
+    
+    let loader = this.loading.create({
+      content: 'Fetching more Sales...'
+    });
+    await loader.present();
     try {
       let sales = await await this.salesService.searchSales(
         [this.syncContext.currentPos.id],
@@ -380,6 +385,7 @@ export class SalesHistoryPage {
       this.zone.run(() => {
         this.sales = this.sales.concat(sales);
         infiniteScroll && infiniteScroll.complete();
+        loader.dismiss();
       });
     } catch (err) {
       return Promise.reject(err);
