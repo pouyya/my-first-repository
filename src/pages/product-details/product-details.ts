@@ -1,12 +1,13 @@
+import { InteractableItemPriceInterface } from './InteractableItemPriceInterface';
+import { InteractableStoreStock } from './InteractableStoreStock';
+
 import { Supplier } from './../../model/supplier';
-import { Store } from './../../model/store';
 import { StockHistoryService } from './../../services/stockHistoryService';
 import {Reason, StockHistory} from './../../model/stockHistory';
 import { StoreService } from './../../services/storeService';
 import { BrandService } from './../../services/brandService';
 import _ from 'lodash';
 import { SalesTaxService } from './../../services/salesTaxService';
-import { PurchasableItemPriceInterface } from './../../model/purchasableItemPrice.interface';
 import { PriceBookService } from './../../services/priceBookService';
 import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
@@ -28,22 +29,6 @@ import { Utilities } from "../../utility";
 import * as moment from "moment-timezone";
 import {EmployeeService} from "../../services/employeeService";
 import {SyncContext} from "../../services/SyncContext";
-
-interface InteractableStoreStock {
-	storeId: string,
-	store: Store, /** Store */
-	value: number, /** sum of all stock values */
-	supplierId?: string, /** from supplier */
-	reorderPoint?: any,
-	reorderQty?: any
-}
-
-interface InteractableItemPriceInterface {
-	id: string;
-	tax: any,
-	item: PurchasableItemPriceInterface,
-	isDefault: boolean
-}
 
 @SecurityModule(SecurityAccessRightRepo.ProductAddEdit)
 @Component({
@@ -83,6 +68,7 @@ export class ProductDetails {
 	private color: Subject<string> = new Subject<string>();
 	private image: Subject<string> = new Subject<string>();
 	private thumbnail: Subject<string> = new Subject<string>();
+	private productStockChangeCallback;
 	public isStockEnabled: boolean = false;
 
 	constructor(public navCtrl: NavController,
@@ -116,6 +102,7 @@ export class ProductDetails {
 		await loader.present();
 
 		let editProduct = this.navParams.get('item');
+		this.productStockChangeCallback = this.navParams.get('callback');
 		var _user = await this.userService.getUser();
 		let stores = await this.storeService.getAll();
 
@@ -273,7 +260,7 @@ export class ProductDetails {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
 			if (data && data.status) {
-                this.productItem.icon = this.icons[this.selectedIcon] || null;
+                this.productItem.icon = this.icons[data.selected] || null;
 			}
 		});
 		modal.present();
@@ -327,6 +314,7 @@ export class ProductDetails {
 					this.stockEntities.push(stock);
 					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
 					this.storesStock[index].value += stock.value;
+                    !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
 					this.stockHistory[stock.storeId].push(stock);
 				} catch (err) {
 					throw new Error(err);
@@ -411,8 +399,6 @@ export class ProductDetails {
             this.stockEntities.push(stock);
             let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
             this.storesStock[index].value += stock.value;
-            !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
-            this.stockHistory[stock.storeId].push(stock);
         }
 	}
 
@@ -457,6 +443,12 @@ export class ProductDetails {
 
 			await Promise.all(stockPromises);
 		}
+
+		const count = this.storesStock.reduce((initialVal, data)=> {
+			initialVal += data.value;
+			return initialVal;
+		}, 0);
+		this.productStockChangeCallback(this.productItem._id, count);
 		this.navCtrl.pop();
 	}
 

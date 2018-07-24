@@ -25,7 +25,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Sales History', icon: 'list', component: SalesHistoryPage, pushNavigation: true },
     { title: 'Bumps', icon: 'list', component: Bumps },
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
-    { title: 'Money In/Out', icon: 'cash', component: MoneyInOut },
+    { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, pushNavigation: true },
     { title: 'Closures', icon: 'bookmarks', component: Closures },
     { title: 'Preferences', icon: 'settings', component: Preferences },
     { title: 'Back Office', icon: 'build', component: HomePage },

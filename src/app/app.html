@@ -38,6 +38,11 @@
         <ion-title>Inventory</ion-title>
       </ion-toolbar>
     </ion-header>
+    <ion-header *ngIf="moduleName == 'HumanResourceModule'">
+      <ion-toolbar>
+        <ion-title>Human Resource</ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-header *ngIf="moduleName == 'ReportModule'">
       <ion-toolbar>
         <ion-title>Reports</ion-title>

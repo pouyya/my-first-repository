@@ -22,6 +22,7 @@ import { Category } from "../../model/category";
 import { AppService } from "../../services/appService";
 import { Utilities } from "../../utility";
 import { CreateProductModal } from '../product-details/modals/create-product/create-product';
+import { PurchasableItemPriceInterface } from 'model/purchasableItemPrice.interface';
 
 interface ProductsList extends Product {
   stockInHand: number; /** Stock of all shops */
@@ -103,13 +104,26 @@ export class Products extends SearchableListing<Product>{
   }
 
   showDetail(product?: ProductsList) {
-    this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null });
+    this.navCtrl.push(ProductDetails, { item: product ? <Product>_.omit(product, ['stockInHand']) : null,
+    callback: this.onProductStockChange.bind(this)});
+  }
+
+  private onProductStockChange(productId, count){
+    if(count < 0){
+      return;
+    }
+    let stockValue = _.find(this.stockValues, stockValue => stockValue.productId == productId);
+    if(!stockValue){
+        stockValue = {productId, value: 0};
+        this.stockValues.push(stockValue);
+    }
+    stockValue.value = count;
   }
 
   private async getStockValues(products) {
     this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
     products.forEach((product) => {
-      var stockValue = <any>_.find(this.stockValues, stockValue => stockValue.productId == product._id);
+      var stockValue = _.find(this.stockValues, stockValue => stockValue.productId == product._id);
       product["stockInHand"] = stockValue ? stockValue.value : 0;
     });
   }
@@ -117,7 +131,7 @@ export class Products extends SearchableListing<Product>{
   private async getPriceBook(products) {
     this.priceBook = await this.priceBookService.getDefault();
     products.forEach((product) => {
-      let priceBookItem = _.find(this.priceBook.purchasableItems, { id: product._id });
+      let priceBookItem = _.find<PurchasableItemPriceInterface>(this.priceBook.purchasableItems, { id: product._id });
       product["retailPrice"] = priceBookItem ? priceBookItem.retailPrice : 0;
       product["inclusivePrice"] = priceBookItem ? priceBookItem.inclusivePrice : 0;
     });
@@ -229,7 +243,7 @@ export class Products extends SearchableListing<Product>{
           if (!product) {
             return;
           }
-          const saleTax = _.find(salesTax, { name: product.SellTaxCode }) || _.find(salesTax, { name: 'GST' });
+          const saleTax = <any>_.find(salesTax, { name: product.SellTaxCode }) || _.find(salesTax, { name: <any>'GST' });
           this.priceBook.purchasableItems.push({
             id: newProduct._id,
             retailPrice: this.priceBookService.calculateRetailPriceTaxExclusive(

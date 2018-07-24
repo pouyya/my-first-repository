@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import { LoadingController, NavParams } from 'ionic-angular';
+import { LoadingController, NavParams, NavController } from 'ionic-angular';
 
 import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -23,6 +23,7 @@ import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
+import {SalesHistoryPage} from "../sales-history/sales-history";
 
 
 @SecurityModule()
@@ -40,6 +41,7 @@ export class Sales implements OnDestroy {
       this._basketComponent = basketComponent;
       if (this._basketComponent) {
         await this._basketComponent.initializeSale(this.navParams.get('sale'), this.evaluationContext);
+        this.salesService.getParkedSalesCount().then(count => this.parkedSaleCount = count);
       }
     }, 0);
 
@@ -54,6 +56,7 @@ export class Sales implements OnDestroy {
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
+  public parkedSaleCount: number;
 
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
@@ -69,12 +72,14 @@ export class Sales implements OnDestroy {
     private cdr: ChangeDetectorRef,
     private loading: LoadingController,
     private storeService: StoreService,
+    private navCtrl: NavController,
     private navParams: NavParams,
     private cacheService: CacheService,
     private utils: Utilities,
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
+    this.parkedSaleCount = 0;
   }
 
   ngOnDestroy() {
@@ -127,7 +132,6 @@ export class Sales implements OnDestroy {
     } else {
       await this.loadRegister();
     }
-
     this.cdr.reattach();
   }
 
@@ -136,6 +140,10 @@ export class Sales implements OnDestroy {
     await loader.present();
     await this.initiateSales(this.user.settings.trackEmployeeSales);
     loader.dismiss();
+  }
+
+  public openSalesHistory(){
+    this.navCtrl.push(SalesHistoryPage, {filterType: 'parked'});
   }
 
   public selectCategory(category) {
@@ -170,6 +178,13 @@ export class Sales implements OnDestroy {
     this.selectedEmployee = null;
   }
 
+  public onParkedSale(isParked) {
+      if( !isParked && this.parkedSaleCount == 0 ) {
+        return;
+      }
+      isParked ? this.parkedSaleCount += 1 : this.parkedSaleCount -=1;
+  }
+  // Event
   private async loadCategoriesAndAssociations() {
 
     let [categories, purchasableItems] = await Promise.all([this.categoryService.getAll(), this.categoryService.getPurchasableItems()]);

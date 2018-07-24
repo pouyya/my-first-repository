@@ -15,7 +15,8 @@
   <ion-grid style="margin-top: 50px;">
     <ion-row>
       <ion-col col-9>To Pay</ion-col>
-      <ion-col col-2><button ion-button outline color="primary" (click)="split()">Split</button></ion-col>
+      <ion-col col-2 *ngIf="sum == 0">All split payments are paid</ion-col>
+      <ion-col col-2 *ngIf="sum"><button ion-button outline color="primary" (click)="split()">Split</button></ion-col>
     </ion-row>
     <ion-row *ngFor="let amount of moneySplit; let idx = index;">
       <ion-col class="split-payment-item" col-md-8>${{amount | number : '1.2-2'}} </ion-col>

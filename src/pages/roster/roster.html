@@ -14,7 +14,7 @@
           <div class="drop-container">
             <div class="select-container">
               <ion-select placeholder="Stores" interface="popover" [(ngModel)]="selectedStore" (ngModelChange)="onStoreChange()">
-                <ion-option *ngFor="let store of stores" [value]="store">{{store['name']}}</ion-option>
+                <ion-option [selected]="(selectedStore.name == store['name']) ? true : null" *ngFor="let store of stores" [value]="store">{{store['name']}}</ion-option>
               </ion-select>
             </div>
           </div>
