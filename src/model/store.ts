@@ -76,7 +76,7 @@ export class Store extends DBBasedEntity {
     public postCode?: string;
     public state: string;
     public country: string;
-    @Regex('^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$')
+    @Regex("^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$")
     public email: string;
     public phone: string;
     public printerIP: string;
