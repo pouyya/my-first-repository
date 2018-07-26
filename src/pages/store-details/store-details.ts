@@ -31,6 +31,7 @@ export class StoreDetailsPage {
   public timezones: Array<{ code: string, name: string }> = [];
   public deviceType = DeviceType;
   private storeForm: FormGroup;
+  public stores: Array<any> = [];
   private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
     'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
     'timezone', 'email', 'phone', 'twitter', 'receiptHeaderMessage', 'receiptFooterMessage'];
@@ -75,6 +76,9 @@ export class StoreDetailsPage {
     this.item.country &&
     ( this.item.country = <any>{code: this.item.country, value: this.item.country} );
     
+    
+    this.stores = await this.storeService.getAll();
+
     await loader.dismiss();
   }
 
@@ -204,10 +208,19 @@ export class StoreDetailsPage {
   }
 
   public remove() {
+    
+    if(this.stores.length<2){
+      const toast = this.toastCtrl.create({
+        message: 'Selected store cannot be deleted because this is the last store',
+        duration: 5000
+      });
+      toast.present();
+      return;
+    }
     if(this.item._id === this.syncContext.currentStore._id){
       const toast = this.toastCtrl.create({
-        message: 'Selected store cannot be deleted',
-        duration: 3000
+        message: 'Selected store cannot be deleted because this is the current store',
+        duration: 5000
       });
       toast.present();
       return;
