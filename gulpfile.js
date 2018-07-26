@@ -3,6 +3,7 @@ var concat = require("gulp-concat");
 var fs = require("fs");
 var path = require("path");
 var through = require('through2');
+var inject = require('gulp-inject-string');
 
 var scriptsPath = "src/data/";
 
@@ -57,10 +58,12 @@ gulp.task("build-scripts", function () {
         .src([
           scriptsPath + folder + "/views/*.json",
           scriptsPath + folder + "/business-data/" + type + "-data.json",
-          scriptsPath + folder + "/base-data.json"
+          scriptsPath + folder + "/base-data.json",
         ])
         .pipe(clip())
         .pipe(concat(folder + ".json", { newLine: "," }))
+        .pipe(inject.prepend('{  \"docs\": ['))
+        .pipe(inject.append(']}'))
         .pipe(gulp.dest(argv.dest + type + "/"))
     });
   }
