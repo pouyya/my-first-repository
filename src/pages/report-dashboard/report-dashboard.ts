@@ -10,14 +10,15 @@ import { SalesServices } from "../../services/salesService";
 import { SyncContext } from "../../services/SyncContext";
 import * as moment from "moment-timezone";
 import { AccountSettingService } from "../../modules/dataSync/services/accountSettingService";
-import {DateTimeService} from "../../services/dateTimeService";
+import { DateTimeService } from "../../services/dateTimeService";
+import { HelperService } from '../../services/helperService';
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
 @PageModule(() => ReportModule)
 @Component({
-  selector: 'report-dashboard',
-  templateUrl: 'report-dashboard.html',
-  styleUrls: ['/components/pages/report-dashboard.scss']
+    selector: 'report-dashboard',
+    templateUrl: 'report-dashboard.html',
+    styleUrls: ['/components/pages/report-dashboard.scss']
 })
 export class ReportsDashboard {
 
@@ -28,30 +29,32 @@ export class ReportsDashboard {
     private fromDate: Date;
     private toDate: Date;
     private sales;
+    private totalNoSales: number = 0;
     private totalSales: number = 0;
-    private salesAverage: number = 0;
+    private totalSaleAverage: number = 0;
     private isTaxInclusive: boolean = false;
-    public selectedValue: string = "WEEK" ;
+    public selectedValue: string = "WEEK";
     public selectedStore;
     public spinnerDisplay: string = "block";
     public locations = [{ text: "All locations", value: "" }];
 
 
     constructor(private salesService: SalesServices,
-                private syncContext: SyncContext,
-                private dateTimeService: DateTimeService,
-                private accountSettingService: AccountSettingService,
-                private loading: LoadingController) {
+        private syncContext: SyncContext,
+        private dateTimeService: DateTimeService,
+        private accountSettingService: AccountSettingService,
+        private loading: LoadingController,
+        private helperService: HelperService) {
     }
 
     async ionViewDidLoad() {
-      this.locations.unshift({text: "Current", value: this.syncContext.currentStore._id});
-      this.selectedStore = this.locations[0].value;
-      this.dates$.asObservable().subscribe(async (date: any) => {
-         this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
-         this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
-         await this.loadSales();
-      });
+        this.locations.unshift({ text: "Current", value: this.syncContext.currentStore._id });
+        this.selectedStore = this.locations[0].value;
+        this.dates$.asObservable().subscribe(async (date: any) => {
+            this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
+            this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
+            await this.loadSales();
+        });
 
         let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
             toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
@@ -59,55 +62,61 @@ export class ReportsDashboard {
         fromDate.setMinutes(0);
         fromDate.setSeconds(0);
         fromDate.setDate(fromDate.getDate() - 7);
-        this.dates$.next({fromDate, toDate});
+        this.dates$.next({ fromDate, toDate });
 
         var currentAccount = await this.accountSettingService.getCurrentSetting();
         this.isTaxInclusive = currentAccount.taxType;
     }
 
-    private async loadSales(){
+    private async loadSales() {
         try {
             this.spinnerDisplay = "block";
+            this.totalNoSales = 0;
             this.totalSales = 0;
-            this.salesAverage = 0;
+
+            const filters = { state: ['completed', 'refund'], completed: true };
+
             const sales = await this.salesService.searchSales(
                 this.selectedStore ? [this.syncContext.currentPos.id] : [],
                 null,
                 null,
-                null,
-                {startDate: moment.utc(this.fromDate).format(), endDate: moment.utc(this.toDate).format()},
+                filters,
+                { startDate: moment.utc(this.fromDate).format(), endDate: moment.utc(this.toDate).format() },
                 null,
                 null
             );
 
-            const salesObj = sales.reduce((obj, sale)=> {
+            const salesObj = sales.reduce((obj, sale) => {
                 const created = moment(sale.created).format("MMM D YYYY");
-                if(!obj[created]){
-                    obj[created] = {noOfSales: 0, netAmount: 0, taxAmount: 0, total: 0, saleAverage: 0};
+                if (!obj[created]) {
+                    obj[created] = { noOfSales: 0, netAmount: 0, taxAmount: 0, total: 0, saleAverage: 0 };
                 }
                 obj[created].date = created;
                 obj[created].noOfSales += 1;
-                obj[created].netAmount += Math.round(sale.subTotal);
+                obj[created].netAmount += Math.round(sale.taxTotal - sale.tax);
                 obj[created].taxAmount += Math.round(sale.tax);
-                obj[created].total += Math.round(this.isTaxInclusive && sale.taxTotal || sale.subTotal);
-                obj[created].saleAverage += Math.round(obj[created].total / obj[created].noOfSales);
+                obj[created].total += Math.round(sale.taxTotal);
                 return obj;
             }, {});
 
             this.sales = Object.keys(salesObj).sort().map(key => {
-                console.log('In');
-                this.totalSales += salesObj[key].noOfSales;
-                this.salesAverage += salesObj[key].saleAverage;
+                this.totalNoSales += salesObj[key].noOfSales;
+                this.totalSales += salesObj[key].total;
+                salesObj[key].saleAverage = this.helperService.round2Dec(salesObj[key].total / salesObj[key].noOfSales);
+
                 return salesObj[key]
             });
+
+            this.totalSaleAverage = this.helperService.round2Dec(this.totalSales / this.totalNoSales);
+
             this.spinnerDisplay = "none";
             this.loadPurchaseChart();
-        } catch(ex){
+        } catch (ex) {
 
         }
     }
 
-    private loadPurchaseChart(){
+    private loadPurchaseChart() {
         const labels = [], data = [];
         this.sales.map(sale => {
             labels.push(sale.date);
