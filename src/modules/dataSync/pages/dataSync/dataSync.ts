@@ -1,12 +1,14 @@
 import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
 import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { ModalController, NavController } from 'ionic-angular';
 import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
 import { DataBootstrapper } from '../../../../pages/data-bootstrapper/data-bootstrapper';
 import { DBIndex } from '@simpleidea/simplepos-core/dist/db/dbIndex';
 import { PlatformService } from '../../../../services/platformService';
+import { AccountSettingService } from "../../services/accountSettingService";
+import { Wizard } from "./modals/wizard/wizard";
 
 @Component({
 	selector: 'datasync',
@@ -19,7 +21,9 @@ export class DataSync {
 
 	constructor(private userService: UserService,
 		private navCtrl: NavController,
-		private platformService: PlatformService) {
+		private platformService: PlatformService,
+		private accountSettings: AccountSettingService,
+        private modalCtrl: ModalController) {
 	}
 
 	async ionViewDidLoad() {
@@ -60,7 +64,8 @@ export class DataSync {
 					if (data.progress === 1 && !this.isNavigated) {
 						this.updateText = "Loading your company data 100%";
 						this.isNavigated = true;
-						this.navCtrl.setRoot(DataBootstrapper);
+                        let accountSettings = await this.accountSettings.getCurrentSetting();
+                        accountSettings.isInitialized ? this.navCtrl.setRoot(DataBootstrapper): this.showWizardModal();
 					}
 					else {
 						this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";
@@ -68,5 +73,12 @@ export class DataSync {
 				}
 			}
 		);
+	}
+
+	private showWizardModal(){
+        let modal = this.modalCtrl.create(Wizard);
+        modal.onDidDismiss(data => {
+        });
+        modal.present();
 	}
 }
