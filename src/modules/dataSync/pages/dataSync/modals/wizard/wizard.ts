@@ -10,7 +10,7 @@ export class Wizard {
     public taxFileNumber: string = "";
     public phoneNumber: string = "";
     public address: string = "";
-    public socialNumber: string = "";
+    public socialName: string = "";
     public adminPin: number;
 
     step: any;
@@ -27,13 +27,8 @@ export class Wizard {
         });
     }
     onFinish() {
-        this.alertCtrl.create({
-            message: 'Wizard Finished!!',
-            title: 'Congrats!!',
-            buttons: [{
-                text: 'Ok'
-            }]
-        }).present();
+        this.viewCtrl.dismiss({status: true, taxFileNumber: this.taxFileNumber, phoneNumber: this.phoneNumber,
+            address: this.address, socialName: this.socialName, adminPin: this.adminPin});
     }
 
     onFieldChanged() {
@@ -42,9 +37,5 @@ export class Wizard {
         }else{
             this.stepCondition = true
         }
-    }
-
-    dismiss() {
-        this.viewCtrl.dismiss()
     }
 }

@@ -18,19 +18,19 @@
       <ion-list>
         <ion-item>
           <ion-label class="item-name" stacked>Tax File Number (aka ABN)*</ion-label>
-          <ion-input [(ngModel)]="taxFileNumber" (ngModelChange)="onFieldChanged()" type="text" name="name"></ion-input>
+          <ion-input [(ngModel)]="taxFileNumber" (ngModelChange)="onFieldChanged()" type="text" name="taxFileNumber"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Phone number*</ion-label>
-          <ion-input [(ngModel)]="phoneNumber" (ngModelChange)="onFieldChanged()" type="text" name="orderNumPrefix"></ion-input>
+          <ion-input [(ngModel)]="phoneNumber" (ngModelChange)="onFieldChanged()" type="text" name="phoneNumber"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Physical address*</ion-label>
-          <ion-input [(ngModel)]="address" (ngModelChange)="onFieldChanged()" type="text" name="orderNum"></ion-input>
+          <ion-input [(ngModel)]="address" (ngModelChange)="onFieldChanged()" type="text" name="address"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Twitter, Facebook account</ion-label>
-          <ion-input [(ngModel)]="socialNumber" type="text" name="supplierReturnPrefix"></ion-input>
+          <ion-input [(ngModel)]="socialName" type="text" name="socialName"></ion-input>
         </ion-item>
       </ion-list>
     </ion-wizard-step>
@@ -38,7 +38,7 @@
       <ion-list>
         <ion-item>
           <ion-label class="item-name" stacked>Admin Pin*</ion-label>
-          <ion-input type="number" name="name"></ion-input>
+          <ion-input type="number" [(ngModel)]="adminPin" name="adminPin"></ion-input>
         </ion-item>
       </ion-list>
     </ion-wizard-step>

@@ -7,7 +7,7 @@ import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
-import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import {NavController, ModalController, LoadingController, ToastController, NavParams} from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { StoreService } from '../../services/storeService';
@@ -36,6 +36,7 @@ export class DataBootstrapper {
   constructor(
     private accountSettingService: AccountSettingService,
     private storeService: StoreService,
+    private navParams: NavParams,
     private userService: UserService,
     private employeeService: EmployeeService,
     private pluginService: PluginService,
