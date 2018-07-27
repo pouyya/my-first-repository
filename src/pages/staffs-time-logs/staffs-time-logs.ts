@@ -3,21 +3,22 @@ import * as moment from 'moment';
 import { TimeLogDetailsModal } from './modals/time-log-details/time-log-details';
 import { AlertController } from 'ionic-angular';
 import { ModalController } from 'ionic-angular';
-import { EmployeeTimestamp } from './../../../model/employeeTimestamp';
-import { Employee } from './../../../model/employee';
-import { Store } from './../../../model/store';
-import { StoreService } from './../../../services/storeService';
+import { EmployeeTimestamp } from './../../model/employeeTimestamp';
+import { Employee } from './../../model/employee';
+import { Store } from './../../model/store';
+import { StoreService } from './../../services/storeService';
 import { LoadingController } from 'ionic-angular';
-import { EmployeeTimestampService } from './../../../services/employeeTimestampService';
-import { EmployeeService } from './../../../services/employeeService';
+import { EmployeeTimestampService } from './../../services/employeeTimestampService';
+import { EmployeeService } from './../../services/employeeService';
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { BackOfficeModule } from '../../../modules/backOfficeModule';
-import { PageModule } from '../../../metadata/pageModule';
-import { SecurityModule } from '../../../infra/security/securityModule';
-import { SecurityAccessRightRepo } from '../../../model/securityAccessRightRepo';
+import { PageModule } from '../../metadata/pageModule';
+import { SecurityModule } from '../../infra/security/securityModule';
+import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
+import { HumanResourceModule } from "../../modules/humanResourceModule";
+
 
 @SecurityModule(SecurityAccessRightRepo.StaffsTimeLogs)
-@PageModule(() => BackOfficeModule)
+@PageModule(() => HumanResourceModule)
 @Component({
   selector: 'staffs-time-logs',
   templateUrl: 'staffs-time-logs.html',
