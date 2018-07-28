@@ -32,19 +32,21 @@ export class MoneyInOut {
 	}
 
 	ionViewCanEnter(): boolean {
-		return this.syncContext.currentPos.status;
-	}
-
-	async ionViewDidLoad() {
 		if (!this.syncContext.currentPos.status) {
 			let toast = this.toastCtrl.create({
 				message: 'POS is closed!',
 				duration: 3000
 			});
 			toast.present();
-			this.dismiss();
+			
 			return false;
-		} else this.cdr.reattach();
+		}
+
+		return true;
+	}
+
+	async ionViewDidLoad() {
+		this.cdr.reattach();
 	}
 
 	public openMoveCashModal(reason: string): void {
