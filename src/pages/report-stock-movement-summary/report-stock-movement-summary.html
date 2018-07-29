@@ -8,15 +8,15 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding >
-  <ion-grid>
-      <ion-row class="stock-header">
-        <ion-col>
-            <ion-buttons network-enable-page></ion-buttons>
-        </ion-col>
-      </ion-row>
+<ion-content padding>
+  <ion-grid *ngIf="InternetAvailable">
+    <ion-row class="stock-header">
+      <ion-col>
+        <div><ion-icon name="eye-off"></ion-icon>Internet unavailable please check your connection and try again! </div>
+      </ion-col>
+    </ion-row>
   </ion-grid> 
-  <ion-grid>
+  <ion-grid *ngIf="!InternetAvailable">
     <ion-row>
       <ion-col col-md-3>
         <ion-select class="white-bg full-width" [(ngModel)]="selectedTimeframe" (ngModelChange)="selectedTimeframe !== 'CUSTOM' && loadStockReport()">
@@ -54,7 +54,7 @@
   </ion-grid>
 
 
-  <ion-grid>
+  <ion-grid *ngIf="!InternetAvailable">
     <ion-row class="stock-header">
       <ion-col>
         PRODUCT
