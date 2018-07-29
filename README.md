@@ -26,4 +26,6 @@ For each task we create branch using
 
 ### Who do I talk to? ###
 
-admin@simpleidea.com.au
+dev@pos.app
+or
+Aria Zanganeh
