@@ -1,5 +1,5 @@
 {
-  "name": "com.simpleidea.simplepos",
+  "name": "com.simplepos.pos",
   "version": "0.0.1",
   "author": "SimplePOS",
   "homepage": "https://pos.app",
@@ -51,8 +51,8 @@
     "@ng-bootstrap/ng-bootstrap": "^1.1.0",
     "@ngx-translate/core": "^9.1.1",
     "@ngx-translate/http-loader": "^2.0.1",
-    "@simpleidea/ionic-pro": "1.0.3",
-    "@simpleidea/simplepos-core": "1.0.53",
+    "@simplepos/ionic-pro": "1.0.0",
+    "@simplepos/core": "1.0.0",
     "@types/htmlparser2": "^3.7.31",
     "@types/lodash": "^4.14.66",
     "@types/moment": "^2.13.0",

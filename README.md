@@ -9,14 +9,13 @@ SimplePOS Enterprise Client
 
 - Get latest code from 'development' branch
 - get npm
-- get ionic
-- get access to private npm (speak with Aria)
-- run 'npm login' and use you npmjs username and password
+- get ionic (npm i -g ionic)
+- get access to private npm (Please visit https://code.pos.app/root/simplepos/wikis/setup-npm-package)
 - run 'npm i'
 - run 'ionic serve -b'
 
 sample account:
-U: aria100@test.com
+U: aria900@test.com
 P: Admin@1
 
 
