@@ -1,5 +1,5 @@
 import { OrderableInterface } from './orderableInterface';
-import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 
 export abstract class PurchasableItem extends DBBasedEntity implements OrderableInterface
 {

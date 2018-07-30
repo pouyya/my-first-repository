@@ -9,7 +9,7 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams, Platform, ModalController, LoadingController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 import { ServiceService } from '../../services/serviceService';
-import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
+import { icons } from '@simplepos/core/dist/metadata/itemIcons';
 import { AppService } from "../../services/appService";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';

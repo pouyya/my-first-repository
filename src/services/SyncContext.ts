@@ -1,7 +1,7 @@
 import { Store, POS } from "../model/store";
 import { Injectable } from "@angular/core";
-import { DBService } from "@simpleidea/simplepos-core/dist/services/dBService";
-import { DBDataEvent } from "@simpleidea/simplepos-core/dist/db/dbDataEvent";
+import { DBService } from "@simplepos/core/dist/services/dBService";
+import { DBDataEvent } from "@simplepos/core/dist/db/dbDataEvent";
 
 export interface ISyncContext {
   currentStore: Store;

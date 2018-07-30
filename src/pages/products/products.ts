@@ -12,7 +12,7 @@ import { Product } from '../../model/product';
 import { PriceBook } from '../../model/priceBook';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { SortOptions } from '@simplepos/core/dist/services/baseEntityService';
 import { SearchableListing } from "../../modules/searchableListing";
 import { AccountSettingService } from "../../modules/dataSync/services/accountSettingService";
 import { Subject } from "rxjs/Subject";

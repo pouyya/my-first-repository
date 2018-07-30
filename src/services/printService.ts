@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
-import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
+import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
 import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';

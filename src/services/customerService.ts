@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Customer } from './../model/customer';
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 
 @Injectable()
 export class CustomerService extends BaseEntityService<Customer> {
