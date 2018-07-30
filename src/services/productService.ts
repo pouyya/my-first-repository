@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../model/product';
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { BasketItem } from "../model/basketItem";
 
 @Injectable()

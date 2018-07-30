@@ -8,7 +8,7 @@ import { OrderStatus, BaseOrder } from './../../model/baseOrder';
 import { Component, NgZone } from '@angular/core';
 import { PageModule } from '../../metadata/pageModule';
 import { SupplierService } from '../../services/supplierService';
-import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { SortOptions } from '@simplepos/core/dist/services/baseEntityService';
 import { SearchableListing } from "../../modules/searchableListing";
 import { Order } from "../../model/order";
 import * as moment from "moment-timezone";

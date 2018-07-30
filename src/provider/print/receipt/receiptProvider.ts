@@ -1,7 +1,7 @@
 import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ReceiptProviderContext } from "./receiptProviderContext";
-import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
+import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 import { TranslateService } from "@ngx-translate/core";
 
 export class ReceiptProvider {

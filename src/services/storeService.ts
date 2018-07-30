@@ -1,7 +1,7 @@
 import { AppService } from './appService';
 import { Injectable } from '@angular/core';
 import { Store, POS } from '../model/store'
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { SyncContext } from "./SyncContext";
 import * as moment from "moment-timezone";
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
+import { icons } from '@simplepos/core/dist/metadata/itemIcons';
 
 @Component({
   selector: 'icon-select',

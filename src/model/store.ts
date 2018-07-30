@@ -1,4 +1,4 @@
-import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 import { DisplayColumn, FilterType, SearchFilter } from "../metadata/listingModule";
 import { Required, Regex } from "../metadata/validationModule";
 
