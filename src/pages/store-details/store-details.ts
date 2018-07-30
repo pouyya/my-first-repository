@@ -53,6 +53,8 @@ export class StoreDetailsPage {
 		'email',
 		'phone',
 		'twitter',
+		'facebook',
+		'instagram',
 		'receiptHeaderMessage',
 		'receiptFooterMessage'
 	];

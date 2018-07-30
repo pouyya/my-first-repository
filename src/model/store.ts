@@ -83,6 +83,8 @@ export class Store extends DBBasedEntity {
     public printerPort: number;
     public taxFileNumber: string;
     public twitter?: string;
+    public facebook?: string;
+    public instagram?: string;
     public timezone?: string;
     public supplierReturnPrefix?: string;
     public supplierReturnNum?: number;

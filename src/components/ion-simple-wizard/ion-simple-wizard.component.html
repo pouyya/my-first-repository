@@ -10,14 +10,14 @@
     <!--Steps count-->   
     <ion-badge *ngIf="showSteps">{{step}} / {{steps}}</ion-badge>
     <!--Next Button-->
-    <ion-fab [@btnState] *ngIf="(!isOnFinalStep() && getCondition())" right bottom>
-      <button ion-fab (click)="next()">
+    <ion-fab [@btnState] *ngIf="!isOnFinalStep()" right bottom>
+      <button ion-fab [disabled]="(!getCondition())" (click)="next()">
         <ion-icon name="arrow-round-forward"></ion-icon>
       </button>
     </ion-fab>
     <!--Finish Button-->
-    <ion-fab [@btnState] *ngIf="(isOnFinalStep() && getCondition())" right bottom>
-      <button ion-fab (click)="finish.emit(step + 1)">
+    <ion-fab [@btnState] *ngIf="isOnFinalStep()"  right bottom>
+      <button ion-fab [disabled]="(!getCondition())" (click)="finish.emit(step + 1)">
         <ion-icon [name]="finishIcon"></ion-icon>
       </button>
     </ion-fab>
