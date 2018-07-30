@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PlatformService } from './platformService';
 import { Sale } from '../model/sale';
-import { TypeHelper } from '@simpleidea/simplepos-core/dist/utility/typeHelper';
+import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
 import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';
@@ -232,7 +232,7 @@ export class PrintService {
       console.warn("can't print on dekstop");
       return;
     }
-
+    sale.items = sale.items.filter(item => !item.isPrintedForProductionLine);
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
     productionLinePrinters.forEach(productionLinePrinter => {

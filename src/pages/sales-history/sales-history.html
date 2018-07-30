@@ -96,7 +96,7 @@
     <ion-item *ngFor="let sale of sales; let $index = index" [ngClass]="{active: isItemShown(sale._id)}">
       <ion-grid>
         <ion-row (click)="toggleItem(sale)">
-          <ion-col col-md-2>{{sale.created | localDate:'DD/M/YY, h:mm a'}}</ion-col>
+          <ion-col col-md-2>{{sale.completedAt | localDate:'DD/M/YY, h:mm a'}}</ion-col>
           <ion-col col-md-1>{{sale.receiptNo}}</ion-col>
           <ion-col col-md-2>-</ion-col>
           <ion-col col-md-2 *ngIf="sale.customer">{{sale.customer.firstName}} {{sale.customer.lastName}}</ion-col>

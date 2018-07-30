@@ -16,7 +16,7 @@ import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
 import {NavController, NavParams, ModalController, LoadingController, AlertController} from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
-import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
+import { icons } from '@simplepos/core/dist/metadata/itemIcons';
 import { AppService } from "../../services/appService";
 import { StockIncreaseModal } from './modals/stock-increase/stock-increase';
 import { StockDecreaseModal } from './modals/stock-decrease/stock-decrease';
