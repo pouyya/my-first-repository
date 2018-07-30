@@ -38,4 +38,8 @@ export class Wizard {
             this.stepCondition = true
         }
     }
+
+    dismiss(){
+      this.viewCtrl.dismiss({status: false});
+    }
 }
