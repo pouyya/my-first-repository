@@ -49,7 +49,7 @@ export class Stores extends SearchableListing<Store>{
       if(store._id === this.syncContext.currentStore._id){
           const toast = this.toastCtrl.create({
               message: 'Current store cant be delete. Consider to change current store in pos and at least one store should exists.',
-              duration: 3000
+              duration: 5000
           });
           toast.present();
           return;
