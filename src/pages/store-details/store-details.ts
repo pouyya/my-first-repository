@@ -75,10 +75,6 @@ export class StoreDetailsPage {
     this.countries = await this.resourceService.getCountries();
     this.item.country &&
     ( this.item.country = <any>{code: this.item.country, value: this.item.country} );
-    
-    
-    this.stores = await this.storeService.getAll();
-
     await loader.dismiss();
   }
 
@@ -208,18 +204,9 @@ export class StoreDetailsPage {
   }
 
   public remove() {
-    
-    if(this.stores.length<2){
-      const toast = this.toastCtrl.create({
-        message: 'Selected store cannot be deleted because this is the last store',
-        duration: 5000
-      });
-      toast.present();
-      return;
-    }
     if(this.item._id === this.syncContext.currentStore._id){
       const toast = this.toastCtrl.create({
-        message: 'Selected store cannot be deleted because this is the current store',
+        message: 'Current store cant be delete. Consider to change current store in pos and at least one store should exists.',
         duration: 5000
       });
       toast.present();
