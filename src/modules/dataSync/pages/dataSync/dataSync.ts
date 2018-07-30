@@ -98,11 +98,13 @@ export class DataSync {
       currentStore.taxFileNumber = data.taxFileNumber;
       currentStore.phone = data.phoneNumber;
       currentStore.address = data.address;
-      currentStore.twitter = data.socialName || "";
+      currentStore.twitter = data.twitter || "";
+      currentStore.facebook = data.facebook || "";
+      currentStore.instagram = data.instagram || "";
       if(data.adminPin){
         const employees = await this.employeeService.getAll();
         const employee = employees[0];
-        employee.pin = data.adminPin;
+        employee.pin =  Number(data.adminPin);
         await this.employeeService.update(employee);
       }
       this.accountSettings.isInitialized = true;

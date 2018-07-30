@@ -7,7 +7,7 @@ import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
-import {NavController, ModalController, LoadingController, ToastController, NavParams} from 'ionic-angular';
+import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { StoreService } from '../../services/storeService';
@@ -36,7 +36,6 @@ export class DataBootstrapper {
   constructor(
     private accountSettingService: AccountSettingService,
     private storeService: StoreService,
-    private navParams: NavParams,
     private userService: UserService,
     private employeeService: EmployeeService,
     private pluginService: PluginService,
@@ -60,7 +59,7 @@ export class DataBootstrapper {
   async ionViewCanEnter() {
     this.translateService.setDefaultLang('au');
     this.translateService.use('au');
-    
+
     this._user = await this.userService.getDeviceUser();
     if (this._user.currentStore) {
       this.store = await this.storeService.get(this._user.currentStore);
@@ -123,10 +122,10 @@ export class DataBootstrapper {
 
     if (!this._user.currentPos || !this._user.currentStore) {
 
-      if(!store){
-        let allStores =  await this.storeService.getAll();
+      if (!store) {
+        let allStores = await this.storeService.getAll();
         currentStore = allStores[0];
-      }else{
+      } else {
         currentStore = store;
       }
 
@@ -136,13 +135,13 @@ export class DataBootstrapper {
       this._user.currentStore = currentStore._id;
       this.userService.setSession(this._user);
     } else {
-        currentStore = await this.storeService.get(this._user.currentStore);
-        currentStore.POS.some( pos => {
-          if(pos.id === this._user.currentPos){
-            currentPos = pos;
-            return true;
-          }
-        });
+      currentStore = await this.storeService.get(this._user.currentStore);
+      currentStore.POS.some(pos => {
+        if (pos.id === this._user.currentPos) {
+          currentPos = pos;
+          return true;
+        }
+      });
     }
     this.syncContext.initialize(currentStore, currentPos.id);
     this.syncContext.appTimezone = accountSettings.timeOffset;

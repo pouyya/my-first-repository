@@ -1,4 +1,4 @@
-import {ViewController, NavController, AlertController, Events} from 'ionic-angular';
+import { ViewController, NavController, AlertController, Events } from 'ionic-angular';
 import { Component } from '@angular/core';
 
 @Component({
@@ -10,8 +10,10 @@ export class Wizard {
     public taxFileNumber: string = "";
     public phoneNumber: string = "";
     public address: string = "";
-    public socialName: string = "";
-    public adminPin: number;
+    public twitter: string = "";
+    public facebook: string = "";
+    public instagram: string = "";
+    public adminPin: string = "";
 
     step: any;
     stepCondition: any;
@@ -27,19 +29,21 @@ export class Wizard {
         });
     }
     onFinish() {
-        this.viewCtrl.dismiss({status: true, taxFileNumber: this.taxFileNumber, phoneNumber: this.phoneNumber,
-            address: this.address, socialName: this.socialName, adminPin: this.adminPin});
+        this.viewCtrl.dismiss({
+            status: true, taxFileNumber: this.taxFileNumber, phoneNumber: this.phoneNumber,
+            address: this.address, twitter: this.twitter, facebook: this.facebook, instagram: this.instagram, adminPin: this.adminPin
+        });
     }
 
     onFieldChanged() {
-        if(this.currentStep === 1 && (this.taxFileNumber == "" || this.phoneNumber == "" || this.address == "")){
+        if (this.currentStep === 1 && (this.taxFileNumber == "" || this.phoneNumber == "" || this.address == "" || this.adminPin == "")) {
             this.stepCondition = false;
-        }else{
+        } else {
             this.stepCondition = true
         }
     }
 
-    dismiss(){
-      this.viewCtrl.dismiss({status: false});
+    dismiss() {
+        this.viewCtrl.dismiss({ status: false });
     }
 }

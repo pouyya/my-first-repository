@@ -29,16 +29,24 @@
           <ion-input [(ngModel)]="address" (ngModelChange)="onFieldChanged()" type="text" name="address"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name" stacked>Twitter, Facebook account</ion-label>
-          <ion-input [(ngModel)]="socialName" type="text" name="socialName"></ion-input>
+          <ion-label class="item-name" stacked>Admin Pin*</ion-label>
+          <ion-input type="number" (ngModelChange)="onFieldChanged()" [(ngModel)]="adminPin" name="adminPin"></ion-input>
         </ion-item>
       </ion-list>
     </ion-wizard-step>
     <ion-wizard-step>
       <ion-list>
         <ion-item>
-          <ion-label class="item-name" stacked>Admin Pin*</ion-label>
-          <ion-input type="number" [(ngModel)]="adminPin" name="adminPin"></ion-input>
+          <ion-label class="item-name" stacked>Twitter</ion-label>
+          <ion-input [(ngModel)]="twitter" type="text" name="twitter"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Facebook</ion-label>
+          <ion-input [(ngModel)]="facebook" type="text" name="facebook"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Instagram</ion-label>
+          <ion-input [(ngModel)]="instagram" type="text" name="instagram"></ion-input>
         </ion-item>
       </ion-list>
     </ion-wizard-step>
