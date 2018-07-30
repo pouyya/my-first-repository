@@ -1,5 +1,5 @@
-import { DBModeEnum, DBMode } from "@simpleidea/simplepos-core/dist/metadata/dbMode";
-import { DBBasedEntity } from "@simpleidea/simplepos-core/dist/model/dbBasedEntity";
+import { DBModeEnum, DBMode } from "@simplepos/core/dist/metadata/dbMode";
+import { DBBasedEntity } from "@simplepos/core/dist/model/dbBasedEntity";
 
 
 export enum OrderStatus {

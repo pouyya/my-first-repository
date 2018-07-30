@@ -5,9 +5,9 @@ import { Component, NgZone } from '@angular/core';
 import { NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { SyncContext } from "../../services/SyncContext";
 import { Sale } from "../../model/sale";
-import { DBService } from "@simpleidea/simplepos-core/dist/services/dBService";
-import { SortOptions } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
-import { DBDataEvent } from "@simpleidea/simplepos-core/dist/db/dbDataEvent";
+import { DBService } from "@simplepos/core/dist/services/dBService";
+import { SortOptions } from "@simplepos/core/dist/services/baseEntityService";
+import { DBDataEvent } from "@simplepos/core/dist/db/dbDataEvent";
 
 @Component({
     selector: 'bump-details',

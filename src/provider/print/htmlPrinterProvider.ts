@@ -1,7 +1,7 @@
 import { EscPrinterProvider, PrinterWidth } from "./escPrinterProvider";
 import { Parser } from "htmlparser2";
 import { PrintTable, PrintColumn, ColumnAlign } from "./printTable";
-import { TypeHelper } from "@simpleidea/simplepos-core/dist/utility/typeHelper";
+import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 
 export class HtmlPrinterProvider {
 

@@ -138,7 +138,7 @@ export class PaymentsPage {
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
       this.printSale(false);
-      await this.printService.printProductionLinePrinter(this.sale);
+      this.sale.state != "refund" && await this.printService.printProductionLinePrinter(this.sale);
     } catch (error) { }
   }
 

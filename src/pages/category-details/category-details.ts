@@ -3,7 +3,7 @@ import { CategoryIconSelectModal } from './modals/category-icon-select/category-
 import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
-import { icons } from '@simpleidea/simplepos-core/dist/metadata/itemIcons';
+import { icons } from '@simplepos/core/dist/metadata/itemIcons';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
 import {Utilities} from "../../utility";

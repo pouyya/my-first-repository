@@ -3,7 +3,7 @@ import { EmployeeTimestamp } from './../model/employeeTimestamp';
 import { EmployeeTimestampService } from './employeeTimestampService';
 import { Injectable } from "@angular/core";
 import { Employee, WorkingStatusEnum } from "../model/employee";
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { SyncContext } from "./SyncContext";
 
 @Injectable()

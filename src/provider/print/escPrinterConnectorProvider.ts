@@ -1,5 +1,5 @@
 import * as encoding from "text-encoding";
-import { Pro } from "@simpleidea/ionic-pro";
+import { Pro } from "@simplepos/ionic-pro";
 
 export class EscPrinterConnectorProvider {
     static socket: any = {};

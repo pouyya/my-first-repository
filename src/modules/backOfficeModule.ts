@@ -1,5 +1,4 @@
 import { AboutPage } from './../pages/about/about';
-import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { Categories } from './../pages/categories/categories';
 import { Injectable } from '@angular/core';
@@ -28,7 +27,6 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Human Resource', icon: 'people', component: HumanResourceDashboard },
-    { title: 'Staffs Time Logs', icon: 'time', component: StaffsTimeLogs },
     { title: 'Report', icon: 'print', component: ReportsDashboard },
     { title: 'Settings', icon: 'cog', component: Settings },
     { title: 'About', icon: 'information-circle', component: AboutPage },

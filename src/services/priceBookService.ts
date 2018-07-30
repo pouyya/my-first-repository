@@ -4,7 +4,7 @@ import { EvaluationContext } from './EvaluationContext';
 import { Injectable } from '@angular/core';
 import { HelperService } from './helperService';
 import { PriceBook } from './../model/priceBook';
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { PurchasableItemPriceInterface } from "../model/purchasableItemPrice.interface";
 import { StoreEvaluationProvider } from './StoreEvaluationProvider';
 import { DaysOfWeekEvaluationProvider } from './DaysOfWeekEvaluationProvider';

@@ -1,5 +1,5 @@
-import { DBEvent } from '@simpleidea/simplepos-core/dist/db/dbEvent';
-import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
+import { DBEvent } from '@simplepos/core/dist/db/dbEvent';
+import { DBService } from '@simplepos/core/dist/services/dBService';
 import { Network } from '@ionic-native/network';
 import { Component } from "@angular/core";
 
