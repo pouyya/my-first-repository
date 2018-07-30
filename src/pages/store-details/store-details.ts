@@ -225,8 +225,8 @@ export class StoreDetailsPage {
 	public remove() {
 		if (this.item._id === this.syncContext.currentStore._id) {
 			const toast = this.toastCtrl.create({
-				message: 'Selected store cannot be deleted',
-				duration: 3000
+				message: 'Current store cant be delete. Consider to change current store in pos and at least one store should exists.',
+				duration: 5000
 			});
 			toast.present();
 			return;
