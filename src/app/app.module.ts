@@ -143,7 +143,6 @@ import { StockHistoryService } from './../services/stockHistoryService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployModule } from 'ionicpro-deploy';
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
@@ -179,8 +178,6 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
-import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
-import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
 
 @NgModule({
@@ -259,9 +256,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     Closures,
     TranslatorPipe,
     DeleteAccount,
-    AddShiftDirective,
-    IonSimpleWizard,
-    IonSimpleWizardStep
+    AddShiftDirective
   ],
   imports: [
     FormsModule,
@@ -320,8 +315,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     TileScrollableModule,
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
-    SearchableIonSelectModule,
-    IonicProDeployModule.forRoot()
+    SearchableIonSelectModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

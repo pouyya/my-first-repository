@@ -38,3 +38,4 @@ UserInterfaceState.xcuserstate
 package-lock.json
 yarn.lock
 !**/environment.model.ts
+.vs/slnx.sqlite

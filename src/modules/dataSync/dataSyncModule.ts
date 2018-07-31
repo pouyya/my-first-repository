@@ -12,23 +12,29 @@ import { LogOut } from './pages/logout/logout';
 import { ForgotPassword } from './pages/login/modals/forgot-password/forgot-password';
 import { CommonModule } from '@angular/common';
 import { DataBootstrapper } from '../../pages/data-bootstrapper/data-bootstrapper';
+import {IonSimpleWizardModule} from "../../components/ion-simple-wizard/simple-wizard.module";
+import {Wizard} from "./pages/dataSync/modals/wizard/wizard";
 
 @NgModule({
-	imports: [CommonModule, IonicPageModule.forChild(DataSync)],
+	imports: [CommonModule, IonSimpleWizardModule, IonicPageModule.forChild(DataSync)],
 
 	declarations: [
 		LoginPage, 
 		DataSync, 
 		DataBootstrapper, 
 		LogOut, 
-		ForgotPassword],
+		ForgotPassword,
+		Wizard
+	],
 
 	entryComponents: [
 		LoginPage, 
 		DataSync, 
 		DataBootstrapper, 
 		LogOut, 
-		ForgotPassword]
+		ForgotPassword,
+		Wizard
+        ]
 })
 export class DataSyncModule {
 
