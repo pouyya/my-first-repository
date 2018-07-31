@@ -68,7 +68,7 @@
     "chart.js": "^2.7.2",
     "cordova-android": "^7.0.0",
     "cordova-browser": "~5.0.3",
-    "cordova-ios": "4.5.4",
+    "cordova-ios": "4.5.5",
     "cordova-plugin-add-swift-support": "^1.7.1",
     "cordova-plugin-appsee": "^2.4.11",
     "cordova-plugin-camera": "^4.0.3",
@@ -173,9 +173,9 @@
       "cordova-plugin-ionic-webview": {}
     },
     "platforms": [
-      "ios",
       "browser",
-      "android"
+      "android",
+      "ios"
     ]
   },
   "ionic:build": "node --max-old-space-size=8192 ./node_modules/@ionic/app-scripts/bin/ionic-app-scripts.js build"
