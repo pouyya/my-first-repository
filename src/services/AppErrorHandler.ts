@@ -1,4 +1,4 @@
-import { Pro } from '@simplepos/ionic-pro';
+import { Pro } from '@ionic/pro';
 import { ConfigService } from './../modules/dataSync/services/configService';
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { IonicErrorHandler } from 'ionic-angular';

@@ -143,7 +143,6 @@ import { StockHistoryService } from './../services/stockHistoryService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployModule } from 'ionicpro-deploy';
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
@@ -316,8 +315,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     TileScrollableModule,
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
-    SearchableIonSelectModule,
-    IonicProDeployModule.forRoot()
+    SearchableIonSelectModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
