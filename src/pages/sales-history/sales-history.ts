@@ -361,7 +361,7 @@ export class SalesHistoryPage {
 
 	public async fetchMoreSales(infiniteScroll?: any) {
 		let loader = this.loading.create({
-			content: 'Fetching more Sales...'
+			content: 'Fetching Sales...'
 		});
 		if (!infiniteScroll) await loader.present();
 		try {
