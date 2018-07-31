@@ -66,7 +66,7 @@
     "cachefactory": "^3.0.0",
     "calendar-utils": "^0.1.2",
     "chart.js": "^2.7.2",
-    "cordova-android": "6.3.0",
+    "cordova-android": "^7.0.0",
     "cordova-browser": "~5.0.3",
     "cordova-ios": "4.5.4",
     "cordova-plugin-add-swift-support": "^1.7.1",
@@ -169,12 +169,13 @@
         "APP_ID": "22d41469",
         "CHANNEL_NAME": "Master",
         "UPDATE_METHOD": "none"
-      }
+      },
+      "cordova-plugin-ionic-webview": {}
     },
     "platforms": [
       "ios",
-      "android",
-      "browser"
+      "browser",
+      "android"
     ]
   },
   "ionic:build": "node --max-old-space-size=8192 ./node_modules/@ionic/app-scripts/bin/ionic-app-scripts.js build"
