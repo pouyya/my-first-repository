@@ -51,8 +51,8 @@
     "@ng-bootstrap/ng-bootstrap": "^1.1.0",
     "@ngx-translate/core": "^9.1.1",
     "@ngx-translate/http-loader": "^2.0.1",
-    "@simplepos/ionic-pro": "1.0.0",
     "@simplepos/core": "1.0.0",
+    "@simplepos/ionic-pro": "1.0.0",
     "@types/htmlparser2": "^3.7.31",
     "@types/lodash": "^4.14.66",
     "@types/moment": "^2.13.0",
@@ -78,7 +78,7 @@
     "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-insomnia": "^4.3.0",
-    "cordova-plugin-ionic": "^4.2.0",
+    "cordova-plugin-ionic": "^5.0.3",
     "cordova-plugin-ionic-keyboard": "^2.1.2",
     "cordova-plugin-ionic-webview": "^2.0.1",
     "cordova-plugin-ios-camera-permissions": "^1.2.0",
@@ -160,21 +160,16 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-inappbrowser": {},
       "cordova-plugin-camera": {},
-      "cordova-plugin-ionic": {
-        "APP_ID": "22d41469",
-        "CHANNEL_NAME": "Master",
-        "UPDATE_METHOD": "none",
-        "MAX_STORE": "2",
-        "WARN_DEBUG": "true",
-        "UPDATE_API": "https://api.ionicjs.com",
-        "ROLLBACK_TIMEOUT": "10",
-        "MIN_BACKGROUND_DURATION": "30"
-      },
       "cordova-plugin-ios-camera-permissions": {
         "CAMERA_USAGE_DESCRIPTION": "This app needs camera access",
         "MICROPHONE_USAGE_DESCRIPTION": "This app needs microphone access",
         "PHOTOLIBRARY_ADD_USAGE_DESCRIPTION": "This app needs write-access to photo library",
         "PHOTOLIBRARY_USAGE_DESCRIPTION": "This app needs read/write-access photo library access"
+      },
+      "cordova-plugin-ionic": {
+        "APP_ID": "22d41469",
+        "CHANNEL_NAME": "Master",
+        "UPDATE_METHOD": "none"
       }
     },
     "platforms": [
