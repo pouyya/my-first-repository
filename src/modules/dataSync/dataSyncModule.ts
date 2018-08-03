@@ -12,11 +12,12 @@ import { LogOut } from './pages/logout/logout';
 import { ForgotPassword } from './pages/login/modals/forgot-password/forgot-password';
 import { CommonModule } from '@angular/common';
 import { DataBootstrapper } from '../../pages/data-bootstrapper/data-bootstrapper';
-import {IonSimpleWizardModule} from "../../components/ion-simple-wizard/simple-wizard.module";
-import {Wizard} from "./pages/dataSync/modals/wizard/wizard";
+import { IonSimpleWizardModule } from "../../components/ion-simple-wizard/simple-wizard.module";
+import { Wizard } from "./pages/dataSync/modals/wizard/wizard";
+import {SharedModule} from "../shared.module";
 
 @NgModule({
-	imports: [CommonModule, IonSimpleWizardModule, IonicPageModule.forChild(DataSync)],
+	imports: [CommonModule, SharedModule, IonSimpleWizardModule, IonicPageModule.forChild(DataSync)],
 
 	declarations: [
 		LoginPage, 
@@ -34,7 +35,8 @@ import {Wizard} from "./pages/dataSync/modals/wizard/wizard";
 		LogOut, 
 		ForgotPassword,
 		Wizard
-        ]
+        ],
+	providers: [  ]
 })
 export class DataSyncModule {
 
