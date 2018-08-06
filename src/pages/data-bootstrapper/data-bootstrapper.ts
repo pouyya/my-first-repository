@@ -11,7 +11,6 @@ import {NavController, ModalController, LoadingController, ToastController, NavP
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { StoreService } from '../../services/storeService';
-import { TranslateService } from '@ngx-translate/core';
 import { SyncContext } from "../../services/SyncContext";
 import { BoostraperModule } from '../../modules/bootstraperModule';
 import { PageModule } from '../../metadata/pageModule';
@@ -45,7 +44,7 @@ export class DataBootstrapper {
     private toastCtrl: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
-    private translateService: TranslateService,
+    
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
@@ -58,8 +57,6 @@ export class DataBootstrapper {
 
   /** @AuthGuard */
   async ionViewCanEnter() {
-    this.translateService.setDefaultLang('au');
-    this.translateService.use('au');
     const isAfterSetupLogin = this.navParams.get('afterSetupLogin');
     this._user = await this.userService.getDeviceUser();
     if (this._user.currentStore) {

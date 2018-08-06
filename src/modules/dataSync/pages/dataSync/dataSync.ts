@@ -9,8 +9,8 @@ import { DBIndex } from '@simplepos/core/dist/db/dbIndex';
 import { PlatformService } from '../../../../services/platformService';
 import { AccountSettingService } from "../../services/accountSettingService";
 import { Wizard } from "./modals/wizard/wizard";
-import { StoreService } from "../../../../services/storeService";
 import { EmployeeService } from "../../../../services/employeeService";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'datasync',
@@ -29,7 +29,7 @@ export class DataSync {
               private accountSettingsService: AccountSettingService,
               private employeeService: EmployeeService,
               private modalCtrl: ModalController,
-              private storeService: StoreService) {
+              private translateService: TranslateService,) {
   }
 
   async ionViewDidLoad() {
@@ -71,6 +71,8 @@ export class DataSync {
             this.updateText = "Loading your company data 100%";
             this.isNavigated = true;
             this.accountSettings = await this.accountSettingsService.getCurrentSetting();
+            this.translateService.setDefaultLang('au');
+            this.translateService.use('au');        
             this.accountSettings.isInitialized && false ? this.navCtrl.setRoot(DataBootstrapper) : this.showWizardModal();
           }
           else {
