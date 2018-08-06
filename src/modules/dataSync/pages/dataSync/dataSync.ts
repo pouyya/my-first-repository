@@ -9,8 +9,8 @@ import { DBIndex } from '@simplepos/core/dist/db/dbIndex';
 import { PlatformService } from '../../../../services/platformService';
 import { AccountSettingService } from "../../services/accountSettingService";
 import { Wizard } from "./modals/wizard/wizard";
-import { StoreService } from "../../../../services/storeService";
 import { EmployeeService } from "../../../../services/employeeService";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'datasync',
@@ -29,7 +29,7 @@ export class DataSync {
               private accountSettingsService: AccountSettingService,
               private employeeService: EmployeeService,
               private modalCtrl: ModalController,
-              private storeService: StoreService) {
+              private translateService: TranslateService,) {
   }
 
   async ionViewDidLoad() {
@@ -71,7 +71,9 @@ export class DataSync {
             this.updateText = "Loading your company data 100%";
             this.isNavigated = true;
             this.accountSettings = await this.accountSettingsService.getCurrentSetting();
-            this.accountSettings.isInitialized ? this.navCtrl.setRoot(DataBootstrapper) : this.showWizardModal();
+            this.translateService.setDefaultLang('au');
+            this.translateService.use('au');        
+            this.accountSettings.isInitialized && false ? this.navCtrl.setRoot(DataBootstrapper) : this.showWizardModal();
           }
           else {
             this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";
@@ -82,25 +84,11 @@ export class DataSync {
   }
 
   private showWizardModal() {
-    let modal = this.modalCtrl.create(Wizard);
+    let modal = this.modalCtrl.create(Wizard, {currentStore: this.user.currentStore}, {enableBackdropDismiss: false});
     modal.onDidDismiss(async data => {
       if (!data || !data.status) {
         return;
       }
-      let currentStore;
-      if (!this.user.currentStore) {
-        let allStores = await this.storeService.getAll();
-        currentStore = allStores[0];
-      } else {
-        currentStore = await this.storeService.get(this.user.currentStore);
-      }
-
-      currentStore.taxFileNumber = data.taxFileNumber;
-      currentStore.phone = data.phoneNumber;
-      currentStore.address = data.address;
-      currentStore.twitter = data.twitter || "";
-      currentStore.facebook = data.facebook || "";
-      currentStore.instagram = data.instagram || "";
       if(data.adminPin){
         const employees = await this.employeeService.getAll();
         const employee = employees[0];
@@ -108,9 +96,8 @@ export class DataSync {
         await this.employeeService.update(employee);
       }
       this.accountSettings.isInitialized = true;
-      await this.storeService.update(currentStore);
       await this.accountSettingsService.update(this.accountSettings);
-      this.navCtrl.setRoot(DataBootstrapper)
+      this.navCtrl.setRoot(DataBootstrapper, {afterSetupLogin: true})
     });
     modal.present();
   }

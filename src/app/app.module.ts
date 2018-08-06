@@ -254,7 +254,6 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     CreateSupplier,
     ProductsSelector,
     Closures,
-    TranslatorPipe,
     DeleteAccount,
     AddShiftDirective
   ],
