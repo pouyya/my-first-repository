@@ -2,6 +2,10 @@ export const ENV = {
   name: "Production",
   production: true,
   turnOnDeployment: true,
+  webapp: {
+    baseUrl: "https://webapp-dev.pos.app",
+    inventoryReportUrl: "/v1/api/reports/inventory"
+  },
   service: {
     baseUrl: "https://site.pos.app"
   },

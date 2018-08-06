@@ -35,11 +35,7 @@ export class OpenCloseRegister {
   public store: Store;
   public closure: Closure;
   public showReport: Boolean;
-  public expected: { [type: string]: number } = {
-    cash: 0,
-    cc: 0,
-    total: 0
-  };
+  public expected: { [type: string]: number };
   public openingPos: { amount: number, notes: string } = {
     amount: null,
     notes: null
@@ -74,7 +70,7 @@ export class OpenCloseRegister {
     });
 
     await loader.present();
-
+    this.expected = { cash: 0, cc: 0, total: 0 };
     let sales: Array<Sale>;
 
     sales = await this.salesService.findCompletedByPosId(this.syncContext.currentPos.id, this.syncContext.currentPos.openTime);
