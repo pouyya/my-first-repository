@@ -97,7 +97,7 @@
   "defaultTax": "2017-07-25T10:22:51.163Z",
   "taxEntity": "SalesTax",
   "defaultIcon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-chalkboard",
     "type": "svg",
     "noOfPaths": 17
   },
@@ -114,7 +114,7 @@
     "order": 0,
     "name": "Coffee",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-barber-shop-1",
     "type": "svg",
     "noOfPaths": 17
     }
@@ -130,7 +130,7 @@
     "order": 0,
     "name": "Food",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-barber-shop-1",
     "type": "svg",
     "noOfPaths": 17
     }
@@ -151,7 +151,7 @@
     ],
     "name": "Almond Milk",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-milk",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -173,7 +173,7 @@
     ],
     "name": "Cappuccino",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-cappuccino",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -195,7 +195,7 @@
     ],
     "name": "Cream",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-meringue",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -217,7 +217,7 @@
     ],
     "name": "Decaf",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-chocolate",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -239,7 +239,7 @@
     ],
     "name": "Extra Hot",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-cookies",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -261,7 +261,7 @@
     ],
     "name": "Extra shot",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-sugar-1",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -283,7 +283,7 @@
     ],
     "name": "Flat White",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-barman",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -305,7 +305,7 @@
     ],
     "name": "Latte",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-hot-chocolate",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -327,7 +327,7 @@
     ],
     "name": "Long Black",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-couch",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -349,7 +349,7 @@
     ],
     "name": "Mocha",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-10",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -371,7 +371,7 @@
     ],
     "name": "Soy",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-9",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -393,7 +393,7 @@
     ],
     "name": "Sweetener",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-irish-coffee",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -415,7 +415,7 @@
     ],
     "name": "Antipasto Plate",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-8",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -437,7 +437,7 @@
     ],
     "name": "BLT",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-7",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -459,7 +459,7 @@
     ],
     "name": "Breaky Roll",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-pie",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -481,7 +481,7 @@
     ],
     "name": "Fruit Danish",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-6",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -503,7 +503,7 @@
     ],
     "name": "Granola",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-clock-2",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -525,7 +525,7 @@
     ],
     "name": "Espresso",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-lemonade",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -547,7 +547,7 @@
     ],
     "name": "Full Cream",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-milkshake",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -569,7 +569,7 @@
     ],
     "name": "Piccolo",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-machine",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -591,7 +591,7 @@
     ],
     "name": "Sugar",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-tea-bag",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -613,7 +613,7 @@
     ],
     "name": "Fruit Salad",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-muffin",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -635,7 +635,7 @@
     ],
     "name": "Large",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-coffee-5",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -657,7 +657,7 @@
     ],
     "name": "Macchiato",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-frappe",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -679,7 +679,7 @@
     ],
     "name": "Skim",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-pudding",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -701,7 +701,7 @@
     ],
     "name": "Warm",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-mixer",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -723,7 +723,7 @@
     ],
     "name": "Bacon and Egg Panini",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-shaker",
     "type": "svg",
     "noOfPaths": 17
     },
@@ -745,7 +745,7 @@
     ],
     "name": "Chicken Mayo Panini",
     "icon": {
-    "name": "icon-barbc-barber-shop-1",
+    "name": "icon-cffshp-bartender",
     "type": "svg",
     "noOfPaths": 17
     },
