@@ -1,11 +1,11 @@
 {
   "name": "SimplePOS",
-  "app_id": "22d41469",
-  "type": "ionic-angular",
   "integrations": {
     "cordova": {},
     "gulp": {
       "enabled": false
     }
-  }
+  },
+  "type": "ionic-angular",
+  "pro_id": "22d41469"
 }
