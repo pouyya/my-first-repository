@@ -74,13 +74,26 @@
         <ion-label class="item-name" stacked>Postcode</ion-label>
         <ion-input type="text" formControlName="postCode" name="postCode"></ion-input>
       </ion-item>
+      <!-- <ion-item>
+       
+        <ion-label>State</ion-label>
+        <ion-select formControlName="state" name="state">
+          <ion-option>Bacon</ion-option>
+          <ion-option>Black Olives</ion-option>
+          <ion-option>Extra Cheese</ion-option>
+          <ion-option>Mushrooms</ion-option>
+          <ion-option>Pepperoni</ion-option>
+          <ion-option>Sausage</ion-option>
+        </ion-select>
+      </ion-item> -->
       <ion-item>
-        <ion-label class="item-name" stacked>State</ion-label>
-        <ion-input type="text" formControlName="state" name="state"></ion-input>
+        <searchable-ion-select (onChange)="onCountrySelect($event)" [isModal]="true" name="country" [(ngModel)]="item.country" formControlName="country" title="Country" valueField="code" textField="name"
+          [items]="countries">
+        </searchable-ion-select>
       </ion-item>
       <ion-item>
-        <searchable-ion-select [isModal]="true" name="country" [(ngModel)]="item.country" formControlName="country" title="Country" valueField="code" textField="name"
-          [items]="countries">
+        <searchable-ion-select [disabled]="this.states ==null || this.states.length==0"  [isModal]="true" name="state" [(ngModel)]="item.state" formControlName="state" title="state" 
+          [items]="states">
         </searchable-ion-select>
       </ion-item>
       <ion-item>

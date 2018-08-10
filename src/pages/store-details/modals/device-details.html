@@ -49,11 +49,11 @@
         <ion-input type="text" [pattern]="patternPrinterPort" [(ngModel)]="device.printerPort" name="printerPort" required></ion-input>
       </ion-item>
 
-      <ion-item *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
+      <ion-item  *ngIf="device.type == deviceType.ProductionLinePrinter || device.type == deviceType.ReceiptPrinter">
         <ion-label stacked>Character Per Line*</ion-label>
-        <ion-select [(ngModel)]="device.characterPerLine" multiple="false" name="characterPerLine" required>
-          <ion-option value=48>48</ion-option>
-          <ion-option value=42>42</ion-option>
+        <ion-select  interface="action-sheet" cancelText="Close"  [(ngModel)]="device.characterPerLine" multiple="false" name="characterPerLine" required>
+          <ion-option  value=48>48</ion-option>
+          <ion-option  value=42>42</ion-option>
         </ion-select>
       </ion-item>
 

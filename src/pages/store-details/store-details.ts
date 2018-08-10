@@ -32,6 +32,7 @@ export class StoreDetailsPage {
 	public action: string = 'Add';
 	public devices: Device[] = [];
 	public countries: Array<any> = [];
+	public states: Array<any> = [];
 	public timezones: Array<{ code: string; name: string }> = [];
 	public deviceType = DeviceType;
 	private storeForm: FormGroup;
@@ -101,7 +102,12 @@ export class StoreDetailsPage {
 
 		await loader.dismiss();
 	}
-
+async	onCountrySelect(event: {
+       value:any
+    }) {
+		this.states=await this.resourceService.getStates(event.value.code);
+		this.item.state=null;
+    }
 	private createForm() {
 		const store = this.navParams.get('store') || {};
 		const groupValidation = this.utils.createGroupValidation('Store', this.fields, store);
