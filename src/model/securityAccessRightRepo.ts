@@ -134,6 +134,10 @@ export class SecurityAccessRightRepo {
       'ReportStockMovementSummary',
       'Report Stock Movement Summary');
 
+    public static ReportStaffAttendance : AccessRightItem = new AccessRightItem(
+      'ReportStaffAttendance',
+      'Report Staff Attendance');
+      
     public static Preferences : AccessRightItem = new AccessRightItem(
       'Preferences',
       'Preferences');
@@ -175,6 +179,7 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.SwitchPos,
     SecurityAccessRightRepo.ReportsDashboard,
     SecurityAccessRightRepo.ReportStockMovementSummary,
+    SecurityAccessRightRepo.ReportStaffAttendance,
     SecurityAccessRightRepo.Preferences,
     SecurityAccessRightRepo.DeleteAccount,
     SecurityAccessRightRepo.Roster

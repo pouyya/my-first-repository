@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle="lefMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Staff Attendance</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-3>
+        <ion-select class="white-bg full-width" [(ngModel)]="selectedTimeframe" (ngModelChange)="selectedTimeframe !== 'CUSTOM' && loadStockReport()">
+          <ion-option *ngFor="let timeframe of timeframes" [value]="timeframe.value">{{ timeframe.text }}</ion-option>
+        </ion-select>
+      </ion-col>
+      <ion-col col-md-3>
+        <ion-select class="white-bg full-width" [(ngModel)]="selectedStore" (ngModelChange)="loadStockReport()">
+          <ion-option *ngFor="let location of locations" [value]="location.value">{{ location.text }}</ion-option>
+        </ion-select>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="selectedTimeframe === 'CUSTOM' ">
+      <ion-col>
+        <ion-item>
+          <ion-label stacked>From</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="fromDate"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label stacked>To</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="toDate"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <button [disabled]="!fromDate || !toDate || fromDate > toDate" ion-button (click)="loadStockReport()">Calculate</button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}} </span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-grid>
+    <ion-row class="stock-header">
+      <ion-col>
+        Day Date
+      </ion-col>
+      <ion-col *ngFor="let emp of employee" >
+        {{emp.name}}
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let day of days" padding-top>
+      <ion-col>
+        {{day.date}}
+      </ion-col>
+      <ion-col *ngFor="let att of employee.Attendance">
+        Working: {{att.working}} 
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
