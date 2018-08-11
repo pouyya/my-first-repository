@@ -53,15 +53,15 @@
         Day Date
       </ion-col>
       <ion-col *ngFor="let emp of employee" >
-        {{emp.name}}
+        {{emp.name}}-{{emp.storeName}}
       </ion-col>
     </ion-row>
     <ion-row *ngFor="let day of days" padding-top>
       <ion-col>
-        {{day.date}}
+        {{day.dateDMMM}}
       </ion-col>
-      <ion-col *ngFor="let att of employee.Attendance">
-        Working: {{att.working}} 
+      <ion-col *ngFor="let e of day.Employee">
+        Working: {{e.attendance.working}} Break: {{e.attendance.break}} 
       </ion-col>
     </ion-row>
   </ion-grid>

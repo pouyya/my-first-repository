@@ -161,6 +161,7 @@ import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
+import { ReportStaffAttendancePage } from "../pages/report-staff-attendance/report-staff-attendance";
 import { Preferences } from "../pages/preferences/preferences";
 import { SplitPaymentPage } from "../pages/split-payment/split-payment";
 import { File } from "@ionic-native/file";
@@ -190,6 +191,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     HumanResourceDashboard,
     Preferences,
     ReportStockMovementSummaryPage,
+    ReportStaffAttendancePage,
     Services,
     ServiceDetails,
     Categories,
@@ -325,6 +327,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     ReportsDashboard,
     HumanResourceDashboard,
     ReportStockMovementSummaryPage,
+    ReportStaffAttendancePage,
     Preferences,
     Services,
     ServiceDetails,

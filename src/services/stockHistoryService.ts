@@ -180,7 +180,7 @@ export interface AttendanceDetail {
 // and asserts the results of JSON.parse at runtime
 export namespace Convert {
   export function toStaffAttendance(json: string): StaffAttendance {
-      return cast(JSON.parse(json), r("StaffAttendance"));
+      return cast((json), r("StaffAttendance"));
   }
 
   export function staffAttendanceToJson(value: StaffAttendance): string {
