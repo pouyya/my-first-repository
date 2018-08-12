@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
-import { StockHistoryService, StaffAttendance ,Convert , Day , Employee , Attendance, AttendanceDetail} from "../../services/stockHistoryService";
+import { StaffAttendanceService , StaffAttendance ,Convert , Day , Employee , Attendance, AttendanceDetail} from "../../services/staffAttendanceService";
 import { LoadingController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
@@ -27,7 +27,7 @@ export class ReportStaffAttendancePage {
   public fromDate: Date = new Date();
   public toDate: Date = new Date();
 
-  constructor(private stockHistoryService: StockHistoryService,
+  constructor(private staffAttendanceService: StaffAttendanceService,
     private storeService: StoreService,
     private loading: LoadingController,
     private syncContext: SyncContext) {
@@ -63,7 +63,7 @@ export class ReportStaffAttendancePage {
 
     }
 
-    var stockMovement = await this.stockHistoryService.getStaffAttendance(this.selectedStore, fromDate, toDate);
+    var stockMovement = await this.staffAttendanceService.getStaffAttendance(this.selectedStore, fromDate, toDate);
     stockMovement.subscribe(
       stockMovementList => {
         this.stockMovementList = <StaffAttendance>Convert.toStaffAttendance(stockMovementList);
@@ -78,4 +78,10 @@ export class ReportStaffAttendancePage {
     );
     this.reportGeneratedTime = new Date();
   }
+
+  onButtonClick(item)
+  {
+    let row = document.getElementById( item.currentTarget.id)
+    row.getElementsByTagName('div')[0].hidden=!row.getElementsByTagName('div')[0].hidden;
+  } 
 }

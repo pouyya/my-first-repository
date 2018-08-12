@@ -52,16 +52,21 @@
       <ion-col>
         Day Date
       </ion-col>
-      <ion-col *ngFor="let emp of employee" >
+      <ion-col *ngFor="let emp of employee">
         {{emp.name}}-{{emp.storeName}}
       </ion-col>
     </ion-row>
-    <ion-row *ngFor="let day of days" padding-top>
+    <ion-row *ngFor="let day of days; let idrow= index" padding-top>
       <ion-col>
-        {{day.dateDMMM}}
+        {{day.dateDMMM}} 
       </ion-col>
-      <ion-col *ngFor="let e of day.Employee">
-        Working: {{e.attendance.working}} Break: {{e.attendance.break}} 
+      <ion-col *ngFor="let e of day.Employee; let idcol= index" id="{{'c' + '_' + idrow + '_' + idcol}}" (click)="onButtonClick($event)">
+        Working: {{e.attendance.working}} Break: {{e.attendance.break}}
+        <div hidden=true>
+          <p *ngFor="let ad of e.attendanceDetails" >
+            {{ad.key}}: {{ad.value}}
+          </p>
+      </div>
       </ion-col>
     </ion-row>
   </ion-grid>
