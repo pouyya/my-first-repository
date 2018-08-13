@@ -42,8 +42,8 @@
       <ion-grid>
         <ion-row (click)="toggleItem(closure)">
           <ion-col col-md-2>{{ closure.closureNumber }}</ion-col>
-          <ion-col col-md-2>{{ closure.closeTime | localDate: 'd MMM, YYYY, h:mm:ss a' }}</ion-col>
-          <ion-col col-md-2>{{ closure.openTime | localDate: 'd MMM, YYYY, h:mm:ss a'}}</ion-col>
+          <ion-col col-md-2>{{ closure.closeTime | localDate: 'DD/M/YYYY, h:mm a' }}</ion-col>
+          <ion-col col-md-2>{{ closure.openTime | localDate: 'DD/M/YYYY, h:mm a'}}</ion-col>
           <ion-col col-md-2 text-right>${{ closure.openingAmount | number : '1.2-2' }}</ion-col>
           <ion-col col-md-2 text-right>${{ closure.totalCounted | number : '1.2-2' }}</ion-col>
           <ion-col col-md-2 text-right>${{ closure.totalDifference | number : '1.2-2' }}</ion-col>
