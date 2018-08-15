@@ -16,8 +16,6 @@ export interface SalesList {
     total:         number;
 }
 
-// Converts JSON strings to/from your types
-// and asserts the results of JSON.parse at runtime
 export namespace Convert {
     export function toReportResult(json: string): SalesSummaryList {
         return cast(json, r("ReportResult"));
@@ -56,7 +54,6 @@ export namespace Convert {
         }
 
         function transformUnion(typs: any[], val: any): any {
-            // val must validate against one typ in typs
             var l = typs.length;
             for (var i = 0; i < l; i++) {
                 var typ = typs[i];
@@ -73,7 +70,6 @@ export namespace Convert {
         }
 
         function transformArray(typ: any, val: any): any {
-            // val must be an array with no invalid elements
             if (!Array.isArray(val)) return invalidValue("array", val);
             return val.map(el => transform(el, typ, getProps));
         }
