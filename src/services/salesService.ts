@@ -177,6 +177,7 @@ export class SalesServices extends BaseEntityService<Sale> {
 			});
 		}
 
+		query.selector.$and.push({entityTypeName: 'Sale'});
 		query.sort = [{
 			_id: sort || SortOptions.DESC
 		}];
