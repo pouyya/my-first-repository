@@ -39,6 +39,7 @@ export class ReportsDashboard {
 	public salesSummaryList: SalesSummaryList;
 	public salesList: SalesList[];
 	public chartDatePattern: string = 'DD MMM YYYY';
+	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
 
 	constructor(
 		private syncContext: SyncContext,
@@ -83,7 +84,11 @@ export class ReportsDashboard {
 			}
 			let loading = this.loading.create({ content: 'Loading Report...' });
 			await loading.present();
-			var sales = await this.salesSummaryReportService.getDashboard(currentPosId, this.fromDate, this.toDate);
+			var sales = await this.salesSummaryReportService.getDashboard(
+				currentPosId,
+				this.dateTimeService.getTimezoneDate(this.fromDate).format(this.UTCDatePattern),
+				this.dateTimeService.getTimezoneDate(this.toDate).format(this.UTCDatePattern)
+			);
 			sales.subscribe(
 				(json) => {
 					this.salesSummaryList = <SalesSummaryList>Convert.toReportResult(json);
