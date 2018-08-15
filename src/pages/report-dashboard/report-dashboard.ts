@@ -11,7 +11,8 @@ import * as moment from 'moment-timezone';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
 import { DateTimeService } from '../../services/dateTimeService';
 import { HelperService } from '../../services/helperService';
-import { DashboardService, ReportResult, ReportDetailsList, Convert } from '../../services/dashboardService';
+import { SalesSummaryReportService } from '../../services/salesSummaryReportService';
+import { SalesSummaryList, SalesList, Convert } from '../../model/SalesReportResponse';
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
 @PageModule(() => ReportModule)
@@ -28,15 +29,16 @@ export class ReportsDashboard {
 	private fromDate: Date;
 	private toDate: Date;
 	private sales;
-	private totalNoSalesServer: number = 0;
-	private totalSalesServer: number = 0;
-	private totalSaleAverageServer: number = 0;
+	private totalNoSales: number = 0;
+	private totalSales: number = 0;
+	private totalSaleAverage: number = 0;
 	private isTaxInclusive: boolean = false;
 	public selectedValue: string = 'WEEK';
 	public selectedStore;
 	public locations = [ { text: 'All locations', value: '' } ];
-	public dashboardReport: ReportResult;
-	public reportDetailsList: ReportDetailsList[];
+	public salesSummaryList: SalesSummaryList;
+	public salesList: SalesList[];
+	public chartDatePattern: string = 'DD MMM YYYY';
 
 	constructor(
 		private syncContext: SyncContext,
@@ -44,7 +46,7 @@ export class ReportsDashboard {
 		private accountSettingService: AccountSettingService,
 		private loading: LoadingController,
 		private helperService: HelperService,
-		private dashboardService: DashboardService
+		private salesSummaryReportService: SalesSummaryReportService
 	) {}
 
 	async ionViewDidLoad() {
@@ -74,7 +76,6 @@ export class ReportsDashboard {
 
 	private async loadSales() {
 		try {
-
 			let currentPosId = ''; //means all location
 			let posIDs: string[] = this.selectedStore ? [ this.syncContext.currentPos.id ] : [];
 			if (posIDs && posIDs.length == 1) {
@@ -82,27 +83,32 @@ export class ReportsDashboard {
 			}
 			let loading = this.loading.create({ content: 'Loading Report...' });
 			await loading.present();
-			var sales = await this.dashboardService.getDashboard(currentPosId, this.fromDate, this.toDate);
+			var sales = await this.salesSummaryReportService.getDashboard(currentPosId, this.fromDate, this.toDate);
 			sales.subscribe(
 				(json) => {
-					this.dashboardReport = <ReportResult>Convert.toReportResult(json);
-                    this.reportDetailsList = <ReportDetailsList[]>this.dashboardReport.reportDetailsList;
-                    this.totalNoSalesServer=this.dashboardReport.salesCountTotal;
-                    this.totalSalesServer=this.dashboardReport.salesAverage;
-                    this.totalSaleAverageServer=this.dashboardReport.totalExcTax;
+					this.salesSummaryList = <SalesSummaryList>Convert.toReportResult(json);
+					this.salesList = <SalesList[]>this.salesSummaryList.salesList;
+					this.totalNoSales = this.salesSummaryList.salesCountTotal;
+					this.totalSaleAverage = this.salesSummaryList.salesAverage;
+					this.totalSales = this.salesSummaryList.totalExcTax;
 
-                    this.sales = Object.keys(this.reportDetailsList).sort().map((key) => {
-                        this.reportDetailsList[key].saleAverage = this.helperService.round2Dec(this.reportDetailsList[key].total / this.reportDetailsList[key].noOfSales);
-                        return this.reportDetailsList[key];
-                    });
-                    this.loadPurchaseChart();
+					this.sales = Object.keys(this.salesList).sort().map((key) => {
+						this.salesList[key].saleAverage = this.helperService.round2Dec(
+							this.salesList[key].total / this.salesList[key].noOfSales
+						);
+						this.salesList[key].total = this.helperService.round2Dec(this.salesList[key].total);
+						this.salesList[key].taxAmount = this.helperService.round2Dec(this.salesList[key].taxAmount);
+						this.salesList[key].netAmount = this.helperService.round2Dec(this.salesList[key].netAmount);
+						return this.salesList[key];
+					});
+					this.loadPurchaseChart();
 				},
 				(err) => {
 					console.log(err);
 					loading.dismiss();
 				},
 				() => loading.dismiss()
-            );
+			);
 		} catch (ex) {}
 	}
 
@@ -110,8 +116,8 @@ export class ReportsDashboard {
 		const labels = [],
 			data = [];
 		this.sales.map((sale) => {
-			labels.push(sale.date);
-			data.push(sale.total);
+			labels.push(this.dateTimeService.getTimezoneDate(sale.date).format(this.chartDatePattern));
+			data.push(sale.total.toFixed(2));
 		});
 		this.lineChart = new Chart(this.lineCanvas.nativeElement, {
 			type: 'line',
@@ -145,6 +151,6 @@ export class ReportsDashboard {
 			options: {
 				maintainAspectRatio: false
 			}
-        });
+		});
 	}
 }

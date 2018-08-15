@@ -27,11 +27,11 @@
         <ion-col>Total({{this.isTaxInclusive ? 'inc' : 'exc'}}. tax)</ion-col>
       </ion-row>
       <ion-row style="font-size:25px">
-        <ion-col>{{totalNoSalesServer}}</ion-col>
+        <ion-col>{{totalNoSales}}</ion-col>
         <ion-col>X</ion-col>
-        <ion-col>${{totalSalesServer}}</ion-col>
+        <ion-col>${{totalSaleAverage}}</ion-col>
         <ion-col>=</ion-col>
-        <ion-col>${{totalSaleAverageServer}}</ion-col>
+        <ion-col>${{totalSales}}</ion-col>
       </ion-row>
     </div>
     <ion-card class="line-graph">
@@ -52,13 +52,13 @@
       <ion-col>Sale Average</ion-col>
     </ion-row>
     <div>
-      <ion-row class="row-border" *ngFor="let sale of reportDetailsList">
+      <ion-row class="row-border" *ngFor="let sale of salesList">
         <ion-col>{{sale.date | localDate:'DD MMM YYYY'}}</ion-col>
         <ion-col>{{sale.noOfSales}}</ion-col>
-        <ion-col>{{sale.netAmount.toFixed(2)}}</ion-col>
+        <ion-col>{{sale.netAmount}}</ion-col>
         <ion-col>{{sale.taxAmount}}</ion-col>
-        <ion-col>{{sale.total.toFixed(2)}}</ion-col>
-        <ion-col>{{saleAverage}}</ion-col>
+        <ion-col>{{sale.total}}</ion-col>
+        <ion-col>{{sale.saleAverage}}</ion-col>
       </ion-row>
     </div>
   </ion-grid>

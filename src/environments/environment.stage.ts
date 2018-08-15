@@ -5,7 +5,11 @@ export const ENV = {
   webapp: {
     baseUrl: "https://webapp-dev.pos.app",
     inventoryReportUrl: "/v1/api/reports/inventory"
-  },  
+  },
+  dotNetApp: {
+    baseUrl: "http://localhost:5000",
+    salesReportUrl: "/v1/api/reports/dashboard"
+  },
   service: {
     baseUrl: "https://site-stage.pos.app"
   },

@@ -140,7 +140,7 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { StockHistoryService } from './../services/stockHistoryService';
-import { DashboardService } from './../services/dashboardService';
+import { SalesSummaryReportService } from './../services/salesSummaryReportService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
@@ -429,7 +429,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     PluginService,
     EmployeeTimestampService,
     StockHistoryService,
-    DashboardService,
+    SalesSummaryReportService,
     CustomerService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
