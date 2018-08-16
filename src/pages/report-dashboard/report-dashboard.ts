@@ -12,7 +12,7 @@ import { AccountSettingService } from '../../modules/dataSync/services/accountSe
 import { DateTimeService } from '../../services/dateTimeService';
 import { HelperService } from '../../services/helperService';
 import { SalesSummaryReportService } from '../../services/salesSummaryReportService';
-import { SalesSummaryList, SalesList, Convert } from '../../model/SalesReportResponse';
+import { SalesSummaryList, SalesSummary, Convert } from '../../model/SalesReportResponse';
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
 @PageModule(() => ReportModule)
@@ -37,7 +37,7 @@ export class ReportsDashboard {
 	public selectedStore;
 	public locations = [ { text: 'All locations', value: '' } ];
 	public salesSummaryList: SalesSummaryList;
-	public salesList: SalesList[];
+	public salesSummary: SalesSummary[];
 	public chartDatePattern: string = 'DD MMM YYYY';
 	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
 
@@ -91,20 +91,20 @@ export class ReportsDashboard {
 			);
 			sales.subscribe(
 				(json) => {
-					this.salesSummaryList = <SalesSummaryList>Convert.toReportResult(json);
-					this.salesList = <SalesList[]>this.salesSummaryList.salesList;
+					this.salesSummaryList = <SalesSummaryList>Convert.toSalesSummaryList(json);
+					this.salesSummary = <SalesSummary[]>this.salesSummaryList.salesSummary;
 					this.totalNoSales = this.salesSummaryList.salesCountTotal;
 					this.totalSaleAverage = this.salesSummaryList.salesAverage;
 					this.totalSales = this.salesSummaryList.totalExcTax;
 
-					this.sales = Object.keys(this.salesList).sort().map((key) => {
-						this.salesList[key].saleAverage = this.helperService.round2Dec(
-							this.salesList[key].total / this.salesList[key].noOfSales
+					this.sales = Object.keys(this.salesSummary).sort().map((key) => {
+						this.salesSummary[key].saleAverage = this.helperService.round2Dec(
+							this.salesSummary[key].total / this.salesSummary[key].noOfSales
 						);
-						this.salesList[key].total = this.helperService.round2Dec(this.salesList[key].total);
-						this.salesList[key].taxAmount = this.helperService.round2Dec(this.salesList[key].taxAmount);
-						this.salesList[key].netAmount = this.helperService.round2Dec(this.salesList[key].netAmount);
-						return this.salesList[key];
+						this.salesSummary[key].total = this.helperService.round2Dec(this.salesSummary[key].total);
+						this.salesSummary[key].taxAmount = this.helperService.round2Dec(this.salesSummary[key].taxAmount);
+						this.salesSummary[key].netAmount = this.helperService.round2Dec(this.salesSummary[key].netAmount);
+						return this.salesSummary[key];
 					});
 					this.loadPurchaseChart();
 				},

@@ -8,7 +8,7 @@ export const ENV = {
   },
   dotNetApp: {
     baseUrl: "http://localhost:5000",
-    salesReportUrl: "/v1/api/reports/dashboard"
+    salesReportUrl: "/v1/api/reports/salessummary"
   },
   service: {
     baseUrl: "https://site-dev.pos.app"

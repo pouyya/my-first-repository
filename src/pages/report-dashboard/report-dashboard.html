@@ -52,7 +52,7 @@
       <ion-col>Sale Average</ion-col>
     </ion-row>
     <div>
-      <ion-row class="row-border" *ngFor="let sale of salesList">
+      <ion-row class="row-border" *ngFor="let sale of salesSummary">
         <ion-col>{{sale.date | localDate:'DD MMM YYYY'}}</ion-col>
         <ion-col>{{sale.noOfSales}}</ion-col>
         <ion-col>{{sale.netAmount}}</ion-col>

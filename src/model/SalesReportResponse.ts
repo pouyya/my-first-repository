@@ -4,10 +4,10 @@ export interface SalesSummaryList {
     salesCountTotal:    number;
     salesAverage:       number;
     totalExcTax:        number;
-    salesList:          SalesList[];
+    salesSummary:       SalesSummary[];
 }
 
-export interface SalesList {
+export interface SalesSummary {
     date:          string;
     noOfSales:     number;
     noOfItemsSold: number;
@@ -17,12 +17,12 @@ export interface SalesList {
 }
 
 export namespace Convert {
-    export function toReportResult(json: string): SalesSummaryList {
-        return cast(json, r("ReportResult"));
+    export function toSalesSummaryList(json: string): SalesSummaryList {
+        return cast(json, r("SalesSummaryList"));
     }
 
-    export function reportResultToJson(value: SalesSummaryList): string {
-        return JSON.stringify(uncast(value, r("ReportResult")), null, 2);
+    export function salesSummaryListToJson(value: SalesSummaryList): string {
+        return JSON.stringify(uncast(value, r("SalesSummaryList")), null, 2);
     }
 
     function invalidValue(typ: any, val: any): never {
@@ -140,14 +140,14 @@ export namespace Convert {
     }
 
     const typeMap: any = {
-        "ReportResult": o([
+        "SalesSummaryList": o([
             { json: "reportGenerateDate", js: "reportGenerateDate", typ: "" },
             { json: "salesCountTotal", js: "salesCountTotal", typ: 0 },
             { json: "salesAverage", js: "salesAverage", typ: 0 },
             { json: "totalExcTax", js: "totalExcTax", typ: 3.14 },
-            { json: "salesList", js: "salesList", typ: a(r("SalesList")) },
+            { json: "salesSummary", js: "salesSummary", typ: a(r("SalesSummary")) },
         ], false),
-        "SalesList": o([
+        "SalesSummary": o([
             { json: "date", js: "date", typ: "" },
             { json: "noOfSales", js: "noOfSales", typ: 0 },
             { json: "noOfItemsSold", js: "noOfItemsSold", typ: 0 },
