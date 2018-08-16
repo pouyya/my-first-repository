@@ -86,8 +86,8 @@ export class ReportsDashboard {
 			await loading.present();
 			var sales = await this.salesSummaryReportService.getDashboard(
 				currentPosId,
-				this.dateTimeService.getTimezoneDate(this.fromDate).format(this.UTCDatePattern),
-				this.dateTimeService.getTimezoneDate(this.toDate).format(this.UTCDatePattern)
+				this.dateTimeService.getUTCDate(this.fromDate).format(this.UTCDatePattern),
+				this.dateTimeService.getUTCDate(this.toDate).format(this.UTCDatePattern)
 			);
 			sales.subscribe(
 				(json) => {
