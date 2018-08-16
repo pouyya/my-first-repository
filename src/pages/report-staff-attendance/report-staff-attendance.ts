@@ -31,6 +31,7 @@ export class ReportStaffAttendancePage {
 	public reportGeneratedTime: Date;
 	public fromDate: Date = new Date();
 	public toDate: Date = new Date();
+	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
 
 	constructor(
 		private staffAttendanceService: StaffAttendanceService,
@@ -70,8 +71,8 @@ export class ReportStaffAttendancePage {
 
 		var callRest = await this.staffAttendanceService.getStaffAttendance(
 			this.selectedStore,
-			this.dateTimeService.getUTCDate(fromDate).format('YYYY-MM-DDTh:mm:ssZ'),
-			this.dateTimeService.getUTCDate(toDate).format('YYYY-MM-DDTh:mm:ssZ')
+			this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern),
+			this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern)
 		);
 		callRest.subscribe(
 			(staffAttendance) => {
