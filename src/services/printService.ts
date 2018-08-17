@@ -235,7 +235,7 @@ export class PrintService {
     sale.items = sale.items.filter(item => {
       const count = item.quantity - item.printedProductionLineCount;
       item.quantity = count;
-      return count;
+      return count > 0;
     });
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
