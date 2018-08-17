@@ -37,13 +37,19 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col col-md-4>
+      <ion-col col-md-3>
+        <p>Store</p>
+        <ion-select [(ngModel)]="selectedStore" (ngModelChange)="searchByStore()">
+          <ion-option *ngFor="let store of storeList" [value]="store.value">{{ store.text }}</ion-option>
+        </ion-select>
+      </ion-col>
+      <ion-col col-md-3>
         <p>Status</p>
         <ion-select [(ngModel)]="selectedStatus" (ionChange)="searchByStatus()">
           <ion-option *ngFor="let status of statusList" [value]="status.value">{{ status.text }}</ion-option>
         </ion-select>
       </ion-col>
-      <ion-col col-md-4>
+      <ion-col col-md-3>
         <p>Time</p>
         <ion-select [(ngModel)]="selectedTime" (ionChange)="searchByTime()">
           <ion-option value="1">Anytime</ion-option>
@@ -52,7 +58,7 @@
           <ion-option value="4">This Month</ion-option>
         </ion-select>
       </ion-col>
-      <ion-col col-md-4>
+      <ion-col col-md-3>
         <p>Payment Type</p>
         <ion-select [(ngModel)]="selectedPaymentType" (ionChange)="searchByPaymentType()">
           <ion-option value="">All</ion-option>
