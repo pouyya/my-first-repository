@@ -1,34 +1,37 @@
-import { EscPrinterProvider, PrinterWidth } from "./escPrinterProvider";
+import { EPosPrinterProvider, PrinterWidth } from "./eposPrinterProvider";
 import { Parser } from "htmlparser2";
 import { PrintTable, PrintColumn, ColumnAlign } from "./printTable";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 
+
+
 export class HtmlPrinterProvider {
 
-    constructor(private printer: EscPrinterProvider) {
+    constructor(private printer: EPosPrinterProvider) {
     }
 
-    public parse(html: string) {
+    public async parse(html: string) {
 
         var currentPrintTable: PrintTable;
         var currentRow: Array<string>;
         var onTd: boolean;
         var isBarcode: boolean;
+        var printerActions = new Array<PrinterAction>();
 
         var parser = new Parser({
             onopentag: (tagName, attribs) => {
                 if (tagName == "center") {
-                    this.printer.setJustification(EscPrinterProvider.JUSTIFY_CENTER);
+                    printerActions.push(new PrinterAction("setJustification", [EPosPrinterProvider.JUSTIFY_CENTER]));
                 } else if (tagName == "left") {
-                    this.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+                    printerActions.push(new PrinterAction("setJustification", [EPosPrinterProvider.JUSTIFY_LEFT]));
                 } else if (tagName == "b") {
-                    this.printer.setEmphasis(true);
+                    printerActions.push(new PrinterAction("setEmphasis", [true]));
                 } else if (tagName == "h2") {
-                    this.printer.setTextSize(1, 2);
+                    printerActions.push(new PrinterAction("setTextSize", [1, 2]));
                 } else if (tagName == "h3") {
-                    this.printer.setTextSize(2, 1);
+                    printerActions.push(new PrinterAction("setTextSize", [2, 1]));
                 } else if (tagName == "br") {
-                    this.printer.feed();
+                    printerActions.push(new PrinterAction("feed"));
                 } else if (tagName == "table") {
                     var columns = attribs.cols ? attribs.cols.split(",") : [];
                     var printColumns = new Array<PrintColumn>();
@@ -47,11 +50,11 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "barcode") {
                     isBarcode = true;
                 } else if (tagName == "hr") {
-                    this.printer.text("-".repeat(this.printer.printerWidth == PrinterWidth.Narrow ? 42 : 48));
+                    printerActions.push(new PrinterAction("text", ["-".repeat(this.printer.printerWidth == PrinterWidth.Narrow ? 42 : 48)]));
                 } else if (tagName == "cut") {
-                    this.printer.cut();
+                    printerActions.push(new PrinterAction("cut"));
                 } else if (tagName == "pulse") {
-                    this.printer.pulse();
+                    printerActions.push(new PrinterAction("pulse"));
                 }
             },
             ontext: (text) => {
@@ -60,21 +63,21 @@ export class HtmlPrinterProvider {
                         currentRow.push(TypeHelper.decodeHtml(text))
                     }
                     else if (isBarcode) {
-                        this.printer.barcode(TypeHelper.decodeHtml(text));
+                        printerActions.push(new PrinterAction("barcode", [TypeHelper.decodeHtml(text)]));
                     }
                     else {
-                        this.printer.text(TypeHelper.decodeHtml(text) + "\n");
+                        printerActions.push(new PrinterAction("text", [TypeHelper.decodeHtml(text) + "\n"]));
                     }
                 }
             },
             onclosetag: (tagName) => {
                 if (tagName == "h2" || tagName == "h3") {
-                    this.printer.setTextSize(1, 1);
+                    printerActions.push(new PrinterAction("setTextSize", [1, 1]));
                 } else if (tagName == "b") {
-                    this.printer.setEmphasis(false);
+                    printerActions.push(new PrinterAction("setEmphasis", [false]));
                 } else if (tagName == "table") {
                     if (currentPrintTable) {
-                        this.printer.printTable(currentPrintTable);
+                        printerActions.push(new PrinterAction("printTable", [currentPrintTable]));
                     }
                     currentPrintTable = null;
                 } else if (tagName == "tr") {
@@ -85,7 +88,7 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "td") {
                     onTd = false;
                 } else if (tagName == "center") {
-                    this.printer.setJustification(EscPrinterProvider.JUSTIFY_LEFT);
+                    printerActions.push(new PrinterAction("setJustification", [EPosPrinterProvider.JUSTIFY_LEFT]));
                 } else if (tagName == "barcode") {
                     isBarcode = false;
                 }
@@ -95,5 +98,45 @@ export class HtmlPrinterProvider {
         parser.write(html);
 
         parser.end();
+
+        for (let printerAction of printerActions) {
+            switch (printerAction.action) {
+                case "setJustification":
+                    await this.printer.setJustification(printerAction.argument[0]);
+                    break;
+                case "setEmphasis":
+                    await this.printer.setEmphasis(printerAction.argument[0]);
+                    break;
+                case "setTextSize":
+                    await this.printer.setTextSize(printerAction.argument[0], printerAction.argument[1]);
+                    break;
+                case "feed":
+                    await this.printer.feed();
+                    break;
+                case "text":
+                    await this.printer.text(printerAction.argument[0]);
+                    break;
+                case "cut":
+                    await this.printer.cut();
+                    break;
+                case "pulse":
+                    await this.printer.pulse();
+                    break;
+                case "barcode":
+                    await this.printer.barcode(printerAction.argument[0]);
+                    break;
+            }
+        }
     }
+}
+
+class PrinterAction {
+
+    constructor(action: string, argument: Array<any> = null) {
+        this.action = action;
+        this.argument = argument;
+    }
+
+    action: string;
+    argument: Array<any>;
 }

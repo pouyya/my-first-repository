@@ -1,20 +1,20 @@
-import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ProductionLinePrinterProviderContext } from "./productionLinePrinterProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
+import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
 
 export class ProductionLinePrinterProvider {
 
-    htmlPrinterProvider: HtmlPrinterProvider;
+    headerHtml: string;
 
     constructor(
         public productionLinePrinterProviderContext: ProductionLinePrinterProviderContext,
-        private printer: EscPrinterProvider) {
-        this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
+        private printer: EPosPrinterProvider) {
+        this.headerHtml = "";
     }
 
-    setHeader(): ProductionLinePrinterProvider {
-        var headerHtml = `
+    setHeader() {
+        this.headerHtml += `
         <center>
             <h2><b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b></h2>
         </center>
@@ -23,7 +23,6 @@ export class ProductionLinePrinterProvider {
         <br>
         ${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? "Note: " + this.productionLinePrinterProviderContext.sale.notes + "<br>" : ""}
         `;
-        this.htmlPrinterProvider.parse(headerHtml);
 
         return this;
     }
@@ -48,31 +47,29 @@ export class ProductionLinePrinterProvider {
                 }
             }
 
-            basketItems += `</table>
+            this.headerHtml += `</table>
             <hr>
             <br>`;
-            var bodyHtml = `${basketItems}`;
-
-            this.htmlPrinterProvider.parse(bodyHtml);
 
             return this;
         }
     }
     cutPaper(): ProductionLinePrinterProvider {
 
-        this.htmlPrinterProvider.parse('<cut>');
+        this.headerHtml += '<cut>';
 
         return this;
     }
 
     openCashDrawer(): ProductionLinePrinterProvider {
 
-        this.htmlPrinterProvider.parse('<pulse>');
+        this.headerHtml += '<pulse>';
 
         return this;
     }
 
-    getResult(): string {
-        return this.printer.getBuffer();
+    print(): Promise<void> {
+        
+        const htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:rim="http://www.blackberry.com/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" id="simplepos-plugin-posprinter" version="1.0.3">
+    <name>simplepos-plugin-posprinter</name>
+    <description></description>
+    <license>MIT</license>
+    <keywords></keywords>
+    <repo>https://code.pos.app</repo>
+    <issue> https://code.pos.app</issue>
+
+    <engines>
+	    <engine name="cordova" version=">=3.2.0"/>
+    </engines>
+	
+    <!-- android -->
+    <platform name="android">
+
+		<js-module src="www/plugin.js" name="plugin">
+			<runs/>
+			<clobbers target="posprinter" />
+		</js-module>
+	
+      <config-file target="res/xml/config.xml" parent="/*">
+        <feature name="posprinter">
+          <param name="android-package" value="com.cordova.plugin.posprinter" />
+          <param name="onload" value="true" />
+        </feature>
+      </config-file>
+
+      <config-file target="AndroidManifest.xml" parent="/*">
+        <uses-permission android:name="android.permission.BLUETOOTH"/>
+        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+      </config-file>
+
+      <source-file src="src/android/posprinter.java" target-dir="src/com/cordova/plugin" />
+      <source-file src="src/android/libepos2.so" target-dir="app/src/main/jniLibs/armeabi" />
+      <lib-file src="src/android/ePOS2.jar" target-dir="libs/" />
+    </platform>
+	
+    <!-- ios -->
+    <platform name="ios">
+
+		<js-module src="www/plugin.js" name="plugin">
+			<runs/>
+			<clobbers target="posprinter" />
+		</js-module>
+	
+        <config-file target="config.xml" parent="/*">
+            <feature name="posprinter">
+                <param name="ios-package" value="posprinter" onload="true" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/ePOS2.h" />
+
+        <header-file src="src/ios/posprinter.h" />
+        <source-file src="src/ios/posprinter.m" />
+
+        <source-file src="src/ios/libepos2.a" framework="true" />
+
+        <framework src="libxml2.2.dylib" framework="true" />
+        <framework src="ExternalAccessory.framework" framework="true" />
+    </platform>
+</plugin>

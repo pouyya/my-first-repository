@@ -1,8 +1,8 @@
-import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ReceiptProviderContext } from "./receiptProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 import { TranslateService } from "@ngx-translate/core";
+import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
 
 export class ReceiptProvider {
 
@@ -11,7 +11,7 @@ export class ReceiptProvider {
     constructor(
         public receiptProviderContext: ReceiptProviderContext,
         private translateService: TranslateService,
-        private printer: EscPrinterProvider) {
+        private printer: EPosPrinterProvider) {
         this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
@@ -123,7 +123,7 @@ ${this.receiptProviderContext.footerMessage}
         return this;
     }
 
-    getResult(): string {
-        return this.printer.getBuffer();
+    print(): Promise<void> {
+        
     }
 }

@@ -1,7 +1,7 @@
-import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { EndOfDayProviderContext } from "./endOfDayProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
+import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
 
 export class EndOfDayProvider {
 
@@ -9,7 +9,7 @@ export class EndOfDayProvider {
 
     constructor(
         public endOfDayProviderContext: EndOfDayProviderContext,
-        private printer: EscPrinterProvider) {
+        private printer: EPosPrinterProvider) {
         this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
     }
 
@@ -195,7 +195,7 @@ By: ${this.endOfDayProviderContext.employeeFullName}
     }
 
 
-    getResult(): string {
-        return this.printer.getBuffer();
+    print(): Promise<void> {
+
     }
 }

@@ -154,4 +154,5 @@
     <engine name="browser" spec="5.0.3" />
     <engine name="android" spec="^7.0.0" />
     <engine name="ios" spec="4.5.5" />
+    <plugin name="simplepos-plugin-posprinter" spec="./custom-packages/cordova-plugins/simplepos-plugin-posprinter" />
 </widget>

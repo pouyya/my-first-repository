@@ -27,7 +27,8 @@ platforms/
 plugins/
 plugins/android.json
 plugins/ios.json
-www/
+www/*
+!custom-packages/cordova-plugins/simplepos-plugin-posprinter/www/*
 $RECYCLE.BIN/
 
 .DS_Store

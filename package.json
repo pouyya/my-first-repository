@@ -106,6 +106,7 @@
     "pouchdb-adapter-cordova-sqlite": "^2.0.3",
     "reflect-metadata": "^0.1.12",
     "rxjs": "5.5.2",
+    "simplepos-plugin-posprinter": "file:custom-packages/cordova-plugins/simplepos-plugin-posprinter",
     "stream-browserify": "^2.0.1",
     "sw-toolbox": "^3.4.0",
     "text-encoding": "^0.6.4",
@@ -174,7 +175,8 @@
         "UPDATE_API": "https://api.ionicjs.com",
         "MAX_STORE": "2",
         "MIN_BACKGROUND_DURATION": "30"
-      }
+      },
+      "simplepos-plugin-posprinter": {}
     },
     "platforms": [
       "android",
