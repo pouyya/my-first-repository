@@ -14,6 +14,7 @@ import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
 import { BoostraperModule } from '../../modules/bootstraperModule';
 import { PageModule } from '../../metadata/pageModule';
+import {PingService} from "../../services/pingService";
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -36,6 +37,7 @@ export class DataBootstrapper {
     private accountSettingService: AccountSettingService,
     private storeService: StoreService,
     private userService: UserService,
+    private pingService: PingService,
     private employeeService: EmployeeService,
     private pluginService: PluginService,
     private navCtrl: NavController,
@@ -108,6 +110,7 @@ export class DataBootstrapper {
         let store = await this.storeService.get(this._user.currentStore);
         this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`;
         loader.dismiss();
+        this.pingService.init();
         await this.openNextPage();
       }
     });
@@ -144,6 +147,7 @@ export class DataBootstrapper {
     }
     this.syncContext.initialize(currentStore, currentPos.id);
     this.syncContext.appTimezone = accountSettings.timeOffset;
+    this.pingService.init();
     this.navCtrl.setRoot(this._initialPage);
   }
 

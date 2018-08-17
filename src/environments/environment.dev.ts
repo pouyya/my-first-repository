@@ -10,7 +10,7 @@ export const ENV = {
     baseUrl: "https://site-dev.pos.app"
   },
   security: {
-    serverUrl: "https://site-dev.pos.app"
+    serverUrl: "http://localhost:5000" //https://site-dev.pos.app"
   },
   ionicDeploy: {
     appId: "22d41469",
@@ -18,5 +18,6 @@ export const ENV = {
   },
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
-  }
+  },
+  pingInterval: 5 * 60 *1000
 };
