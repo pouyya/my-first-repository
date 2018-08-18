@@ -3,12 +3,9 @@ export const ENV = {
   production: true,
   turnOnDeployment: true,
   webapp: {
-    baseUrl: "https://webapp-dev.pos.app",
-    inventoryReportUrl: "/v1/api/reports/inventory"
-  },
-  dotNetApp: {
-    baseUrl: "http://localhost:5000",
-    salesReportUrl: "/v1/api/reports/staffattendance"
+    baseUrl: "https://webapp-stage.pos.app",
+    inventoryReportUrl: "/v1/api/reports/inventory",
+    staffAttendanceReportUrl: "/v1/api/reports/staffattendance"
   },
   service: {
     baseUrl: "https://site-stage.pos.app"

@@ -18,9 +18,10 @@ export class StaffAttendanceReportService  {
         if(employeeIDs.length>0){
             empIDs=employeeIDs.join(",");
         }
+        let token = await this.userService.getUserToken();
 		return this.http
 			.get(
-                `${ConfigService.dotNetAppStaffAttendanceReport()}/?type=json&employeeIds=${empIDs}&fromDate=${fromDate}&toDate=${toDate}&storeId=${storeId}&token=${await this.userService.getUserToken()}`
+                `${ConfigService.staffAttendanceReport()}/?type=json&employeeIds=${empIDs}&fromDate=${fromDate}&toDate=${toDate}&storeId=${storeId}&token=${token}`
 			)
 			.map((response: Response) => response.json());
     }

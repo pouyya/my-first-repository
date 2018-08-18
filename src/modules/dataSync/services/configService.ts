@@ -99,8 +99,8 @@ export class ConfigService {
 		return ConfigService.apiServerBaseUrl() + '/common/SendEmail';
 	}
 
-	static dotNetAppStaffAttendanceReport(): string {
-		return ENV.dotNetApp.baseUrl + ENV.dotNetApp.salesReportUrl;
+	static staffAttendanceReport(): string {
+		return ENV.webapp.baseUrl + ENV.webapp.staffAttendanceReportUrl;
 	}
 
 	static securityServerBaseUrl(): string {
