@@ -1,4 +1,3 @@
-
 export interface StaffAttendance {
     days:    Day[];
     warning: null;
@@ -8,44 +7,8 @@ export interface Day {
     hide:     string;
     dateTime: string;
     date:     string;
-    dateMMM:  string;
-    dateDMMM: string;
-    Employee: Employee[];
-}
-
-export interface Employee {
-    name:              string;
-    storeName:         StoreName;
-    attendance:        Attendance;
-    attendanceDetails: AttendanceDetail[];
-}
-
-export interface Attendance {
-    working: string;
-    break:   Break;
-}
-
-export enum Break {
-    Error = "error",
-    The0M = "0m",
-    The4M = "4m",
-}
-
-export interface AttendanceDetail {
-    key:   Key;
-    value: string;
-}
-
-export enum Key {
-    BreakEnd = "BreakEnd",
-    BreakStart = "BreakStart",
-    ClockIn = "ClockIn",
-    ClockOut = "ClockOut",
-}
-
-export enum StoreName {
-    Forestvill = "Forestvill",
-    WarringahMall = "Warringah Mall ",
+    daydate:  string;
+    Employee: any[];
 }
 
 // Converts JSON strings to/from your types
@@ -53,10 +16,6 @@ export enum StoreName {
 export namespace Convert {
     export function toStaffAttendance(json: string): StaffAttendance {
         return cast(json, r("StaffAttendance"));
-    }
-
-    export function staffAttendanceToJson(value: StaffAttendance): string {
-        return JSON.stringify(uncast(value, r("StaffAttendance")), null, 2);
     }
 
     function invalidValue(typ: any, val: any): never {
@@ -151,24 +110,12 @@ export namespace Convert {
         return transform(val, typ, jsonToJSProps);
     }
 
-    function uncast<T>(val: T, typ: any): any {
-        return transform(val, typ, jsToJSONProps);
-    }
-
-    function a(typ: any) {
+    function checkTypeIsAny(typ: any) {
         return { arrayItems: typ };
-    }
-
-    function u(...typs: any[]) {
-        return { unionMembers: typs };
     }
 
     function o(props: any[], additional: any) {
         return { props, additional };
-    }
-
-    function m(additional: any) {
-        return { props: [], additional };
     }
 
     function r(name: string) {
@@ -177,45 +124,15 @@ export namespace Convert {
 
     const typeMap: any = {
         "StaffAttendance": o([
-            { json: "days", js: "days", typ: a(r("Day")) },
+            { json: "days", js: "days", typ: checkTypeIsAny(r("Day")) },
             { json: "warning", js: "warning", typ: null },
         ], false),
         "Day": o([
             { json: "hide", js: "hide", typ: "" },
             { json: "dateTime", js: "dateTime", typ: "" },
             { json: "date", js: "date", typ: "" },
-            { json: "dateMMM", js: "dateMMM", typ: "" },
-            { json: "dateDMMM", js: "dateDMMM", typ: "" },
-            { json: "Employee", js: "Employee", typ: a(r("Employee")) },
+            { json: "daydate", js: "daydate", typ: "" },
+            { json: "Employee", js: "Employee", typ: checkTypeIsAny("any") },
         ], false),
-        "Employee": o([
-            { json: "name", js: "name", typ: "" },
-            { json: "storeName", js: "storeName", typ: r("StoreName") },
-            { json: "attendance", js: "attendance", typ: r("Attendance") },
-            { json: "attendanceDetails", js: "attendanceDetails", typ: a(r("AttendanceDetail")) },
-        ], false),
-        "Attendance": o([
-            { json: "working", js: "working", typ: "" },
-            { json: "break", js: "break", typ: r("Break") },
-        ], false),
-        "AttendanceDetail": o([
-            { json: "key", js: "key", typ: r("Key") },
-            { json: "value", js: "value", typ: "" },
-        ], false),
-        "Break": [
-            "error",
-            "0m",
-            "4m",
-        ],
-        "Key": [
-            "BreakEnd",
-            "BreakStart",
-            "ClockIn",
-            "ClockOut",
-        ],
-        "StoreName": [
-            "Forestvill",
-            "Warringah Mall ",
-        ],
     };
 }

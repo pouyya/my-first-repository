@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
-import { StaffAttendanceService } from '../../services/staffAttendanceService';
-import { StaffAttendance, Convert, Day, Employee, Attendance, AttendanceDetail } from '../../model/staffAttendance';
+import { StaffAttendanceReportService } from '../../services/StaffAttendanceReportService';
+import { StaffAttendance, Convert, Day } from '../../model/staffAttendance';
 import { LoadingController } from 'ionic-angular';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
@@ -27,14 +27,16 @@ export class ReportStaffAttendancePage {
 	public selectedStore: string;
 	public staffAttendanceList: StaffAttendance;
 	public days: Day[] = [];
-	public employee: Employee[] = [];
+	public employee: any[] = [];
 	public reportGeneratedTime: Date;
 	public fromDate: Date = new Date();
 	public toDate: Date = new Date();
-	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
+	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
+	public employeeIDs: string[] = [];
+	public detailRowToShow = -1;
 
 	constructor(
-		private staffAttendanceService: StaffAttendanceService,
+		private staffAttendanceReportService: StaffAttendanceReportService,
 		private storeService: StoreService,
 		private loading: LoadingController,
 		private dateTimeService: DateTimeService,
@@ -69,8 +71,9 @@ export class ReportStaffAttendancePage {
 			toDate = new Date(this.toDate);
 		}
 
-		var callRest = await this.staffAttendanceService.getStaffAttendance(
+		const callRest = await this.staffAttendanceReportService.getStaffAttendance(
 			this.selectedStore,
+			this.employeeIDs,
 			this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern),
 			this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern)
 		);
@@ -90,8 +93,7 @@ export class ReportStaffAttendancePage {
 		this.reportGeneratedTime = new Date();
 	}
 
-	onButtonClick(item) {
-		let row = document.getElementById(item.currentTarget.id);
-		row.getElementsByTagName('div')[0].hidden = !row.getElementsByTagName('div')[0].hidden;
+	onButtonClick(idrow) {
+		this.detailRowToShow = idrow;
 	}
 }
