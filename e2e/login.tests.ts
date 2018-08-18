@@ -1,35 +1,27 @@
-describe('atest', function() {
 
-    beforeEach(function(done) {
-        browser.get("http://localhost:8100/");
+describe('test desc', function () {
 
-        element(by.css('form input[name=email]')).sendKeys("t900");
-        element(by.css('form input[name=password]')).sendKeys("Admin@1");
-        element(by.css('form button')).click();
-        setTimeout(function () {
-       
+
+    beforeAll(async function (done) {
+        browser.get('');
+        var until = protractor.ExpectedConditions;
+        await browser.wait(until.presenceOf(element(by.css('form input[name=email]'))));
+
+        element(by.css('form input[name=email]')).sendKeys(browser.params.login.username);
+        element(by.css('form input[name=password]')).sendKeys(browser.params.login.password);
+        await element(by.css('form button')).click();
+        setTimeout(()=> {      
             done();
-        }, 40000)
-    },42000);
+        }, 35000);//Time to pass wizard manually
+        
+    },700000);
 
-    it('atest test one', function() {
-        browser.waitForAngularEnabled(false);
-        var myElement = element(by.css('ion-modal.show-page'));
-        browser.waitForAngularEnabled(true);
+    it('should show list of register items',async function (done) {
+        console.log('should show list of register items');
+        expect(element.all(by.css('div.activeCategory button.sales-category-button')).count()>0);
+        expect(element.all(by.css('ion-grid ion-card')).count()>0);
+     });
 
-        expect(myElement.isPresent()).toBeFalsy();
-
-        ;
-    });
-    it('atest test one', function() {
-        browser.waitForAngularEnabled(false);
-      
-        var myElement = element(by.css('ion-modal.show-page'));
-        browser.waitForAngularEnabled(true);
-
-        expect(myElement.isPresent());
-
-        ;
-    });
+  
 
 });
