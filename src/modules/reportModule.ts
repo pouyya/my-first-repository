@@ -13,7 +13,7 @@ export class ReportModule implements ModuleBase {
   public pages = [
     { title: 'Dashboard', icon: 'home', component: ReportsDashboard },
     { title: 'Inventory', icon: 'cube', component: ReportStockMovementSummaryPage },
-    { title: 'StaffAttendance', icon: 'people', component: ReportStaffAttendancePage },
+    { title: 'Staff Attendance', icon: 'people', component: ReportStaffAttendancePage },
     { title: 'Back Office', icon: 'build', component: HomePage }
   ];    
 
