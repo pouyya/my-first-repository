@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { EmployeeService } from './../../services/employeeService';
 import { CustomerService } from './../../services/customerService';
 import { NavController, AlertController, ToastController, LoadingController, NavParams } from 'ionic-angular';
@@ -14,6 +15,8 @@ import * as moment from 'moment-timezone';
 import { DateTimeHelper } from '../../infra/helpers/dateTimeHelper';
 import { SyncContext } from '../../services/SyncContext';
 import { SharedService } from '../../services/_sharedService';
+import {StoreService} from "../../services/storeService";
+import {Store} from "../../model/store";
 
 enum TimeValues {
 	anytime = '1',
@@ -31,6 +34,8 @@ enum TimeValues {
 export class SalesHistoryPage {
 	public sales: any[];
 	public statusList: Array<{ value: any; text: string }>;
+	public storeList: Array<{ value: any; text: string }>;
+	public selectedStore: string = '';
 	public selectedStatus: string = '';
 	public selectedPaymentType: string = '';
 	public selectedTime: TimeValues = TimeValues.anytime;
@@ -52,11 +57,13 @@ export class SalesHistoryPage {
 	private filters: any = {};
 	private timeFrame: any = null;
 	private employeeId: string = null;
+	private stores: Store[];
 
 	constructor(
 		private zone: NgZone,
 		private navCtrl: NavController,
 		private navParams: NavParams,
+		private storeService: StoreService,
 		private salesService: SalesServices,
 		private customerService: CustomerService,
 		private employeeService: EmployeeService,
@@ -88,6 +95,10 @@ export class SalesHistoryPage {
 		const filterType = this.navParams.get('filterType');
 
 		await loader.present();
+        this.stores = await this.storeService.getAll();
+        this.storeList = this.stores.map(store => { return {value: store._id, text: store.name}});
+        this.storeList.unshift({value: '', text: 'All'});
+        this.selectedStore = this.syncContext.currentStore._id;
 		try {
 			if (filterType) {
 				this.selectedStatus = filterType;
@@ -270,6 +281,12 @@ export class SalesHistoryPage {
 		return;
 	}
 
+	public async searchByStore(){
+        this.sales = [];
+        this.limit = this.defaultLimit;
+        this.offset = this.defaultOffset;
+        await this.fetchMoreSales();
+	}
 	public async searchByStatus() {
 		this.sales = this.salesBackup;
 		switch (this.selectedStatus) {
@@ -365,8 +382,15 @@ export class SalesHistoryPage {
 		});
 		if (!infiniteScroll) await loader.present();
 		try {
+			let postIds = [];
+			if(this.selectedStore){
+				const store = _.find(this.stores, {_id : this.selectedStore});
+				store.POS.map(pos => {
+					pos.id && postIds.push(pos.id);
+                });
+			}
 			let sales = await await this.salesService.searchSales(
-				[ this.syncContext.currentPos.id ],
+                postIds,
 				this.limit,
 				this.offset,
 				this.filters,
