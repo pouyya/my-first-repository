@@ -10,7 +10,7 @@ import { StoreService } from '../../services/storeService';
 import { SyncContext } from '../../services/SyncContext';
 import { DateTimeService } from '../../services/dateTimeService';
 import { Employee } from 'model/employee';
-import { EmployeeService } from "../../services/employeeService";
+import { EmployeeService } from '../../services/employeeService';
 
 @SecurityModule(SecurityAccessRightRepo.ReportStaffAttendance)
 @PageModule(() => ReportModule)
@@ -52,7 +52,7 @@ export class ReportStaffAttendancePage {
 		this.selectedTimeframe = this.timeframes[0].value;
 		const stores = await this.storeService.getAll();
 		stores.forEach((store) => this.locations.push({ text: store.name, value: store._id }));
-        this.employees = await this.employeeService.getAll();
+		this.employees = await this.employeeService.getAll();
 		const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
 		this.selectedStore = storeId ? storeId : this.locations[0].value;
 
