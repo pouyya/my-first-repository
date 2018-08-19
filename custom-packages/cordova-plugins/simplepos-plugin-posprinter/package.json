@@ -8,9 +8,5 @@
       "ios"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aelx311/simplepos-plugin-posprinter"
-  },
-  "description": "A starting point for a Cordova Plugin"
+  "description": "EPOS Printer Driver"
 }
