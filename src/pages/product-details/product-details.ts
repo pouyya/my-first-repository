@@ -13,7 +13,7 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import {NavController, NavParams, ModalController, LoadingController, AlertController} from 'ionic-angular';
+import {NavController, NavParams, ModalController, LoadingController, AlertController , ToastController} from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simplepos/core/dist/metadata/itemIcons';
@@ -90,7 +90,9 @@ export class ProductDetails {
 		private cdr: ChangeDetectorRef,
 		private employeeService: EmployeeService,
 		private utility: Utilities,
-		private syncContext: SyncContext) {
+		private syncContext: SyncContext,
+		private toastCtrl: ToastController
+	) {
 		this.icons = icons;
 	}
 
@@ -371,11 +373,17 @@ export class ProductDetails {
 					{
 						text: 'Save',
 						handler: data => {
-							if(data.initialVal){
-								this.isStockEnabled = true;
-								this.addInitialVal(data.initialVal);
-							}else{
-								this.isStockEnabled = false
+							if (/^[0-9]*$/.test(data.initialVal)) {
+								if(data.initialVal){
+									this.isStockEnabled = true;
+									this.addInitialVal(data.initialVal);
+								}else{
+									this.isStockEnabled = false
+								}
+							  return true;
+							} else {
+							  this.showErrorToast('Invalid Input. Please Insert Number. then try again!');
+							  return false;
 							}
 						}
 					}
@@ -473,5 +481,14 @@ export class ProductDetails {
 		await this.productService.delete(this.productItem);
 		this.navCtrl.pop();
 		return;
+	}
+
+	private showErrorToast(data: any) {
+		let toast = this.toastCtrl.create({
+			message: data,
+			duration: 3000
+		});
+
+		toast.present();
 	}
 }
