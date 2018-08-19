@@ -21,9 +21,9 @@
           <ion-option *ngFor="let location of locations" [value]="location.value">{{ location.text }}</ion-option>
         </ion-select>
       </ion-col>
-      <ion-col col-md-5 *ngIf="employee.length>0">
+      <ion-col col-md-4>
         <ion-select [(ngModel)]="employeeIDs" multiple="true" (ngModelChange)="loadStaffAttendanceReport()">
-          <ion-option *ngFor="let emp of employee ; let idx=index" value={{emp._id}}>{{emp.name}}</ion-option>
+          <ion-option *ngFor="let emp of employees ; let idx=index" value={{emp._id}}>{{emp.firstName}} {{emp?.lastName}}</ion-option>
         </ion-select>
       </ion-col>
     </ion-row>
@@ -58,18 +58,18 @@
         Day Date
       </ion-col>
       <ion-col *ngFor="let emp of employee">
-        {{emp.name}}
+        {{ emp.name }}
       </ion-col>
     </ion-row>
     <ion-row *ngFor="let day of days; let idrow= index" padding-top>
       <ion-col>
-        {{day.daydate}}  {{day.Employee[0]?day.Employee[0].storeName:""}}
+        {{ day.daydate }}  {{ day.Employee[0] ? day.Employee[0].storeName : "" }}
       </ion-col>
       <ion-col *ngFor="let emp of day.Employee; let idcol= index" (click)="onButtonClick(idrow)">
-        Working: {{emp.attendance.working}} Break: {{emp.attendance.break}}
+        Working: {{ emp.attendance.working }} Break: {{ emp.attendance.break }}
         <div *ngIf="detailRowToShow == idrow">
           <p *ngFor="let attDetail of emp.attendanceDetails">
-            {{attDetail.key}}: {{attDetail.value | localDate:'h:mm a' }}
+            {{ attDetail.key }}: {{ attDetail.value | localDate:'h:mm a' }}
           </p>
         </div>
       </ion-col>
