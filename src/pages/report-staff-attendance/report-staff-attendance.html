@@ -57,13 +57,19 @@
       <ion-col>
         Day Date
       </ion-col>
+      <ion-col *ngIf="selectedStore==''">
+        Store
+      </ion-col>
       <ion-col *ngFor="let emp of employee">
         {{ emp.name }}
       </ion-col>
     </ion-row>
     <ion-row *ngFor="let day of days; let idrow= index" padding-top>
       <ion-col>
-        {{ day.daydate }}  {{ day.Employee[0] ? day.Employee[0].storeName : "" }}
+        {{ day.daydate }}
+      </ion-col>
+      <ion-col *ngIf="selectedStore==''">
+        {{ day.Employee[0] ? day.Employee[0].storeName : "" }}
       </ion-col>
       <ion-col *ngFor="let emp of day.Employee; let idcol= index" (click)="onButtonClick(idrow)">
         Working: {{ emp.attendance.working }} Break: {{ emp.attendance.break }}

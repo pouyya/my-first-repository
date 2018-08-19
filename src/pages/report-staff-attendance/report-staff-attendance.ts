@@ -49,7 +49,7 @@ export class ReportStaffAttendancePage {
 
 	async ionViewDidLoad() {
 		this.fromDate.setDate(this.fromDate.getDate() - 15);
-		this.selectedTimeframe = this.timeframes[0].value;
+		this.selectedTimeframe = this.timeframes[1].value;
 		const stores = await this.storeService.getAll();
 		stores.forEach((store) => this.locations.push({ text: store.name, value: store._id }));
 		this.employees = await this.employeeService.getAll();
