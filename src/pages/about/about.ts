@@ -24,6 +24,7 @@ export class AboutPage {
   public dbServerURL_Critical: string;
   public serverBaseURL: string;
   public snapshotInfo: ISnapshotInfo;
+  public envName: string;
 
   constructor(
     public syncContext: SyncContext
@@ -39,5 +40,6 @@ export class AboutPage {
     this.dbServerURL_Critical = ConfigService.currentCriticalFullExternalDBUrl;
     this.serverBaseURL = ConfigService.securityServerBaseUrl();
     this.snapshotInfo = await Pro.deploy.getCurrentVersion();
+    this.envName=ConfigService.EnvName();
   }
 }
