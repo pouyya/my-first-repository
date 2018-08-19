@@ -416,8 +416,10 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(ParkSale, { sale: this.sale });
     modal.onDidDismiss(data => {
       if (data.status) {
-        this.isSaleParked = true;
-        this.saleParked.emit(true);
+        if(!this.isSaleParked){
+            this.isSaleParked = true;
+            this.saleParked.emit(true);
+        }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
           subTitle: 'Your sale has successfully been parked',

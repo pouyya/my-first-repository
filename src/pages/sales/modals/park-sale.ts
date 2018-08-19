@@ -33,8 +33,8 @@ export class ParkSale {
       localStorage.removeItem('sale_id');
 
       this.sale.state = 'parked';
-      this.printService.printProductionLinePrinter(_.clone(this.sale));
-      this.sale.items.forEach(item => item.isPrintedForProductionLine = true);
+      this.printService.printProductionLinePrinter(_.cloneDeep(this.sale));
+      this.sale.items.forEach(item => item.printedProductionLineCount = item.quantity );
       await this.salesService.update(this.sale);
       this.viewCtrl.dismiss({ status: true, error: false });
     }

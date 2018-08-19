@@ -228,7 +228,11 @@ export class PrintService {
       console.warn("can't print on dekstop");
       return;
     }
-    sale.items = sale.items.filter(item => !item.isPrintedForProductionLine);
+    sale.items = sale.items.filter(item => {
+      const count = item.quantity - item.printedProductionLineCount;
+      item.quantity = count;
+      return count > 0;
+    });
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
     productionLinePrinters.forEach(productionLinePrinter => {

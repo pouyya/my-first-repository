@@ -20,9 +20,9 @@ export class BasketItem {
   cssClass: string | null;
   stockControl: boolean;
   isBumped: boolean;
-  isPrintedForProductionLine: boolean
+  printedProductionLineCount: number;
 
   constructor() {
-    this.isPrintedForProductionLine = false;
+    this.printedProductionLineCount = 0;
   }
 }
