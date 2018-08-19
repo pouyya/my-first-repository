@@ -40,6 +40,6 @@ export class AboutPage {
     this.dbServerURL_Critical = ConfigService.currentCriticalFullExternalDBUrl;
     this.serverBaseURL = ConfigService.securityServerBaseUrl();
     this.snapshotInfo = await Pro.deploy.getCurrentVersion();
-    this.envName=ConfigService.EnvName();
+    this.envName = ConfigService.envName();
   }
 }

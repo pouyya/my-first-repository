@@ -121,7 +121,7 @@ export class ConfigService {
         return ENV.appSee.apikey;
     }
 
-    static EnvName(): string {
+    static envName(): string {
         return ENV.name;
     }
 }
