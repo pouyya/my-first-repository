@@ -17,7 +17,7 @@ import _ from 'lodash';
 import { DeviceType } from "../model/store";
 import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
 import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
-import { EPosPrinterProvider, PrinterWidth } from '../provider/print/EPosPrinterProvider';
+import { EPosPrinterProvider, PrinterWidth } from '../provider/print/eposPrinterProvider';
 import { Utilities } from "../utility";
 
 export enum EndOfDayReportType {

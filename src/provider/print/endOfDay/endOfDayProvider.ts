@@ -196,6 +196,6 @@ By: ${this.endOfDayProviderContext.employeeFullName}
 
 
     print(): Promise<void> {
-
+        return this.printer.print();
     }
 }

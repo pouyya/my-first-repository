@@ -179,6 +179,7 @@ import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+import { EPosPrinterProvider } from '../provider/print/eposPrinterProvider';
 
 @NgModule({
   declarations: [
@@ -456,7 +457,8 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     EmailService,
     DeployService,
     SyncContext,
-    DeleteAccountService
+    DeleteAccountService,
+    EPosPrinterProvider
   ]
 })
 export class AppModule {

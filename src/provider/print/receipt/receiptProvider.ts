@@ -124,6 +124,6 @@ ${this.receiptProviderContext.footerMessage}
     }
 
     print(): Promise<void> {
-        
+        return this.printer.print();   
     }
 }

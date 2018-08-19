@@ -64,7 +64,7 @@ var posprinter = {
       exec(successCallback, errorCallback, PLUGIN_NAME, 'addPulse', [drawer, time]);
     });
   },
-  print: function (successCallback, errorCallback) {
+  print: function () {
     return new Promise(function (successCallback, errorCallback) {
       exec(successCallback, errorCallback, PLUGIN_NAME, 'print');
     });

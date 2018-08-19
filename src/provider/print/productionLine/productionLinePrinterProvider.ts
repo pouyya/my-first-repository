@@ -70,6 +70,6 @@ export class ProductionLinePrinterProvider {
 
     print(): Promise<void> {
         
-        const htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
+        return this.printer.print();
     }
 }

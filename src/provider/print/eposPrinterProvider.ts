@@ -1,4 +1,5 @@
 import { PrintTable } from "./printTable";
+import { Pro } from "@ionic/pro";
 
 export enum PrinterWidth {
     Narrow,
@@ -7,7 +8,11 @@ export enum PrinterWidth {
 
 export class EPosPrinterProvider {
 
+    posprinter: any;
+    connected: boolean;
+
     constructor(public ip: string, public printerWidth: PrinterWidth) {
+        this.posprinter = (<any>window).posprinter;
     }
 
     /**
@@ -23,66 +28,74 @@ export class EPosPrinterProvider {
      */
     static JUSTIFY_RIGHT = 2;
     /**
-     * Make a full cut, when used with EscPrinterProvider.cut
+     * Make a no feed cut, when used with EscPrinterProvider.cut
      */
-    static CUT_FULL = 65;
+    static CUT_NO_FEED = 0;
+    /**
+     * Make a cut feed, when used with EscPrinterProvider.cut
+     */
+    static CUT_FEED = 1;
     /**
      * Make a partial cut, when used with EscPrinterProvider.cut
      */
-    static CUT_PARTIAL = 66;
+    static CUT_RESERVE = 2;
     /**
      * Indicates UPC-A barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_UPCA = 65;
+    static BARCODE_UPCA = 0;
     /**
      * Indicates UPC-E barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_UPCE = 66;
+    static BARCODE_UPCE = 1;    
+    /**
+     * Indicates EAN-13 barcode when used with EscPrinterProvider.barcode
+     */
+    static BARCODE_EAN13 = 2;
     /**
      * Indicates JAN13 barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_JAN13 = 67;
+    static BARCODE_JAN13 = 3;
     /**
      * Indicates JAN8 barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_JAN8 = 68;
+    static BARCODE_JAN8 = 5;
     /**
      * Indicates CODE39 barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_CODE39 = 69;
+    static BARCODE_CODE39 = 6;
     /**
      * Indicates ITF barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_ITF = 70;
+    static BARCODE_ITF = 7;
     /**
      * Indicates CODABAR barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_CODABAR = 71;
+    static BARCODE_CODABAR = 8;
     /**
      * Indicates CODE93 barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_CODE93 = 72;
+    static BARCODE_CODE93 = 9;
     /**
      * Indicates CODE128 barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_CODE128 = 73;
-    /**
-     * Indicates that HRI (human-readable interpretation) text should not be
-     * printed, when used with EscPrinterProvider.setBarcodeTextPosition
-     */
-    static BARCODE_TEXT_NONE = 0;
-    /**
-     * Indicates that HRI (human-readable interpretation) text should be printed
-     * above a barcode, when used with EscPrinterProvider.setBarcodeTextPosition
-     */
-    static BARCODE_TEXT_ABOVE = 1;
-    /**
-     * Indicates that HRI (human-readable interpretation) text should be printed
-     * below a barcode, when used with EscPrinterProvider.setBarcodeTextPosition
-     */
-    static BARCODE_TEXT_BELOW = 2;
+    static BARCODE_CODE128 = 10;
 
-    public async setJustification($justification = EPosPrinterProvider.JUSTIFY_LEFT) {
+    public async connect(): Promise<void> {
+        return this.posprinter.connectPrinter(10, this.ip);
+    }
+
+    public async setJustification(justification = EPosPrinterProvider.JUSTIFY_LEFT) {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addTextAlign(justification)
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     /**
@@ -90,7 +103,18 @@ export class EPosPrinterProvider {
      *
      *  @param boolean $on true for emphasis, false for no emphasis
      */
-    public setEmphasis($on = true) {
+    public async setEmphasis(on = true) {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addTextStyle(false, false, on, undefined)
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     /**
@@ -99,9 +123,18 @@ export class EPosPrinterProvider {
      * @param int $widthMultiplier Multiple of the regular height to use (range 1 - 8)
      * @param int $heightMultiplier Multiple of the regular height to use (range 1 - 8)
      */
-    public setTextSize($widthMultiplier, $heightMultiplier) {
-        // let $c = Math.pow(2, 4) * ($widthMultiplier - 1) + ($heightMultiplier - 1);
-        // this.buffer += EscPrinterProvider.GS + "!" + String.fromCharCode($c);
+    public async setTextSize(widthMultiplier, heightMultiplier) {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addTextSize(widthMultiplier, heightMultiplier);
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     /**
@@ -109,12 +142,18 @@ export class EPosPrinterProvider {
    *
    * @param int $lines Number of lines to feed
    */
-    public feed(lines = 1) {
-        // if (lines <= 1) {
-        //     this.buffer += (EscPrinterProvider.LF);
-        // } else {
-        //     this.buffer += (EscPrinterProvider.ESC + "d" + String.fromCharCode(lines));
-        // }
+    public async feed(lines = 1) {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addFeedLine(lines);
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     /**
@@ -125,8 +164,18 @@ export class EPosPrinterProvider {
      *
      * @param string $str Text to print
      */
-    public text($str = "") {
-        // this.buffer += $str;
+    public async text(str = "") {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addText(str);
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
 
@@ -136,8 +185,18 @@ export class EPosPrinterProvider {
      * @param int $mode Cut mode, either EscPrinterProvider.CUT_FULL or EscPrinterProvider.CUT_PARTIAL. If not specified, `EscPrinterProvider.CUT_FULL` will be used.
      * @param int $lines Number of lines to feed
      */
-    public cut(mode = EPosPrinterProvider.CUT_FULL, lines = 3) {
-        // this.buffer += EscPrinterProvider.GS + "V" + String.fromCharCode(mode) + String.fromCharCode(lines);
+    public async cut(mode = EPosPrinterProvider.CUT_FEED) {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addCut(mode);
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     /**
@@ -148,8 +207,18 @@ export class EPosPrinterProvider {
      * @param int $on_ms pulse ON time, in milliseconds.
      * @param int $off_ms pulse OFF time, in milliseconds.
      */
-    public pulse($pin = 0, $on_ms = 120, $off_ms = 240) {
-        // this.buffer += EscPrinterProvider.ESC + "p" + String.fromCharCode($pin + 48) + String.fromCharCode($on_ms / 2) + String.fromCharCode($off_ms / 2);
+    public async pulse() {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addPulse();
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     /**
@@ -165,8 +234,32 @@ export class EPosPrinterProvider {
      * available barcode types vary between printers.
      * @throws InvalidArgumentException Where the length or characters used in $content is invalid for the requested barcode format.
      */
-    public barcode($content, $type = EPosPrinterProvider.BARCODE_CODE39) {
-        // this.buffer += EscPrinterProvider.GS + "k" + String.fromCharCode($type - 65) + $content + EscPrinterProvider.NUL;
+    public async barcode(content, type = EPosPrinterProvider.BARCODE_CODE39) {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.addBarcode(content, type);
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
+    }
+
+    public async print() {
+        try {
+            if (!this.connected) {
+                await this.connect();
+            }
+
+            return this.posprinter.print();
+
+        } catch (error) {
+            Pro.monitoring.exception(error);
+            throw error;
+        }
     }
 
     public printTable(table: PrintTable) {
