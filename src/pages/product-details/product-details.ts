@@ -13,7 +13,7 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import {NavController, NavParams, ModalController, LoadingController, AlertController , ToastController} from 'ionic-angular';
+import {NavController, NavParams, ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simplepos/core/dist/metadata/itemIcons';
