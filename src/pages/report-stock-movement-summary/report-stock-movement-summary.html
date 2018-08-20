@@ -9,7 +9,13 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-grid network-monitor-report>internet unavailable!</ion-grid>
+  <ion-grid>
+    <ion-row class="stock-header">
+      <ion-col>
+        <ion-buttons network-monitor-report>internet unavailable!</ion-buttons>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-grid *ngIf="true">
     <ion-row>
       <ion-col col-md-3>
