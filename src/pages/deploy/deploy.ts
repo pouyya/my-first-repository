@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { DeployService } from '../../services/deployService';
 import { Pro } from "@ionic/pro";
+import { ConfigService } from '../../modules/dataSync/services/configService';
 
 @Component({
   selector: 'page-deploy',
@@ -23,6 +24,13 @@ export class DeployPage {
     try {
 
       this.progressMessage = 'Checking for new version.';
+
+      const config = {
+        'appId': ConfigService.ionicDeployAppId(),
+        'channel': ConfigService.ionicDeployAppChannel()
+      }
+
+      await Pro.deploy.configure(config);
 
       const update = await Pro.deploy.checkForUpdate()
 
