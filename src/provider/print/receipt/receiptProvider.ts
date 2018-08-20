@@ -3,16 +3,18 @@ import { ReceiptProviderContext } from "./receiptProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 import { TranslateService } from "@ngx-translate/core";
 import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
+import { ReportPrinterProviderBase } from "../reportPrinterProviderBase";
 
-export class ReceiptProvider {
+export class ReceiptProvider extends ReportPrinterProviderBase {
 
     htmlPrinterProvider: HtmlPrinterProvider;
+    buffer: string;
 
     constructor(
         public receiptProviderContext: ReceiptProviderContext,
         private translateService: TranslateService,
-        private printer: EPosPrinterProvider) {
-        this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
+        printer: EPosPrinterProvider) {
+        super(printer);
     }
 
     setHeader(): ReceiptProvider {
@@ -31,7 +33,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
         <br>
         <br>`;
 
-        this.htmlPrinterProvider.parse(headerHtml);
+        this.buffer += headerHtml;
 
         return this;
     }
@@ -86,7 +88,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
         <br>
         <br>`;
 
-        this.htmlPrinterProvider.parse(bodyHtml);
+        this.buffer += bodyHtml;
 
         return this;
     }
@@ -104,26 +106,8 @@ ${this.receiptProviderContext.footerMessage}
         <br>
         <br>`;
 
-        this.htmlPrinterProvider.parse(footerHtml);
+        this.buffer += footerHtml;
 
         return this;
-    }
-
-    cutPaper(): ReceiptProvider {
-
-        this.htmlPrinterProvider.parse('<cut>');
-
-        return this;
-    }
-
-    openCashDrawer(): ReceiptProvider {
-
-        this.htmlPrinterProvider.parse('<pulse>');
-
-        return this;
-    }
-
-    print(): Promise<void> {
-        return this.printer.print();   
     }
 }

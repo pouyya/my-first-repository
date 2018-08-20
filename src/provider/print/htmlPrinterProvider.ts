@@ -125,6 +125,11 @@ export class HtmlPrinterProvider {
                 case "barcode":
                     await this.printer.barcode(printerAction.argument[0]);
                     break;
+                case "printTable":
+                    await this.printer.printTable(printerAction.argument[0]);
+                    break;
+                default:
+                    throw new Error(`The ${printerAction.action} is not implemented`);
             }
         }
     }

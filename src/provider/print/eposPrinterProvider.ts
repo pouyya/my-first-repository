@@ -15,6 +15,21 @@ export class EPosPrinterProvider {
         this.posprinter = (<any>window).posprinter;
     }
 
+    static EPOS_OC_FALSE = 0;
+    static EPOS_OC_TRUE = 1;
+    static EPOS_OC_PARAM_UNSPECIFIED = -1;
+
+    static EPOS_OC_HRI_NONE = 0;
+    static EPOS_OC_HRI_ABOVE = 1;
+    static EPOS_OC_HRI_BELOW = 2;
+    static EPOS_OC_HRI_BOTH = 3;
+
+    static EPOS_OC_FONT_A = 0;
+    static EPOS_OC_FONT_B = 1;
+    static EPOS_OC_FONT_C = 2;
+    static EPOS_OC_FONT_D = 3;
+    static EPOS_OC_FONT_E = 4;
+
     /**
      * Align text to the left, when used with EscPrinterProvider.setJustification
      */
@@ -46,7 +61,7 @@ export class EPosPrinterProvider {
     /**
      * Indicates UPC-E barcode when used with EscPrinterProvider.barcode
      */
-    static BARCODE_UPCE = 1;    
+    static BARCODE_UPCE = 1;
     /**
      * Indicates EAN-13 barcode when used with EscPrinterProvider.barcode
      */
@@ -81,7 +96,8 @@ export class EPosPrinterProvider {
     static BARCODE_CODE128 = 10;
 
     public async connect(): Promise<void> {
-        return this.posprinter.connectPrinter(10, this.ip);
+        await this.posprinter.connectPrinter(10, this.ip);
+        this.connected = true;
     }
 
     public async setJustification(justification = EPosPrinterProvider.JUSTIFY_LEFT) {
@@ -93,8 +109,15 @@ export class EPosPrinterProvider {
             return this.posprinter.addTextAlign(justification)
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printer setJustification. Arguments: justification='${justification}'`);
+            Pro.monitoring.exception(error, [printerError.message]);
+
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+
+            throw [printerError, error];
         }
     }
 
@@ -109,11 +132,20 @@ export class EPosPrinterProvider {
                 await this.connect();
             }
 
-            return this.posprinter.addTextStyle(false, false, on, undefined)
+            return this.posprinter.addTextStyle(
+                EPosPrinterProvider.EPOS_OC_FALSE,
+                EPosPrinterProvider.EPOS_OC_FALSE,
+                on ? EPosPrinterProvider.EPOS_OC_TRUE : EPosPrinterProvider.EPOS_OC_FALSE,
+                EPosPrinterProvider.EPOS_OC_PARAM_UNSPECIFIED);
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing setEmphasis. Arguments: on='${on}'`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -132,8 +164,13 @@ export class EPosPrinterProvider {
             return this.posprinter.addTextSize(widthMultiplier, heightMultiplier);
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing setTextSize. Arguments: widthMultiplier='${widthMultiplier}', heightMultiplier='${heightMultiplier}'`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -151,8 +188,13 @@ export class EPosPrinterProvider {
             return this.posprinter.addFeedLine(lines);
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing feed. Arguments: lines='${lines}'`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -173,8 +215,13 @@ export class EPosPrinterProvider {
             return this.posprinter.addText(str);
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing text. Arguments: str='${str}'`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -194,8 +241,13 @@ export class EPosPrinterProvider {
             return this.posprinter.addCut(mode);
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing cut. Arguments: mode='${mode}'`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -216,8 +268,13 @@ export class EPosPrinterProvider {
             return this.posprinter.addPulse();
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing pulse`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -240,11 +297,22 @@ export class EPosPrinterProvider {
                 await this.connect();
             }
 
-            return this.posprinter.addBarcode(content, type);
+            return this.posprinter.addBarcode(
+                content,
+                type,
+                EPosPrinterProvider.EPOS_OC_HRI_NONE,
+                EPosPrinterProvider.EPOS_OC_FONT_A,
+                EPosPrinterProvider.EPOS_OC_PARAM_UNSPECIFIED,
+                EPosPrinterProvider.EPOS_OC_PARAM_UNSPECIFIED);
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing barcode. Arguments: content='${content}', type='${type}`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -257,8 +325,13 @@ export class EPosPrinterProvider {
             return this.posprinter.print();
 
         } catch (error) {
-            Pro.monitoring.exception(error);
-            throw error;
+            var printerError = new Error(`Error in printing.`);
+            Pro.monitoring.exception(error, [printerError.message]);
+            try {
+                this.posprinter.disconnectPrinter();
+            }
+            catch { }
+            throw [printerError, error];
         }
     }
 
@@ -267,5 +340,4 @@ export class EPosPrinterProvider {
             this.text(table.toString())
         }
     }
-
 }

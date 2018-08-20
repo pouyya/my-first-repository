@@ -1,20 +1,18 @@
-import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ProductionLinePrinterProviderContext } from "./productionLinePrinterProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
+import { ReportPrinterProviderBase } from "../reportPrinterProviderBase";
 
-export class ProductionLinePrinterProvider {
-
-    headerHtml: string;
+export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
 
     constructor(
         public productionLinePrinterProviderContext: ProductionLinePrinterProviderContext,
-        private printer: EPosPrinterProvider) {
-        this.headerHtml = "";
+        printer: EPosPrinterProvider) {
+        super(printer);
     }
 
     setHeader() {
-        this.headerHtml += `
+        this.buffer += `
         <center>
             <h2><b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b></h2>
         </center>
@@ -47,29 +45,11 @@ export class ProductionLinePrinterProvider {
                 }
             }
 
-            this.headerHtml += `</table>
+            this.buffer += `</table>
             <hr>
             <br>`;
 
             return this;
         }
-    }
-    cutPaper(): ProductionLinePrinterProvider {
-
-        this.headerHtml += '<cut>';
-
-        return this;
-    }
-
-    openCashDrawer(): ProductionLinePrinterProvider {
-
-        this.headerHtml += '<pulse>';
-
-        return this;
-    }
-
-    print(): Promise<void> {
-        
-        return this.printer.print();
     }
 }
