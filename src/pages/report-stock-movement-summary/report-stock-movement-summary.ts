@@ -41,7 +41,7 @@ export class ReportStockMovementSummaryPage {
     stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
 
     const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
-    this.selectedStore = (storeId)?storeId:this.locations[0].value;
+    this.selectedStore = (storeId) ? storeId : this.locations[0].value;
 
     await this.loadStockReport();
   }

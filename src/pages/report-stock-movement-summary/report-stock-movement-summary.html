@@ -10,7 +10,7 @@
 
 <ion-content padding>
   <ion-grid network-monitor-report>internet unavailable!</ion-grid>
-  <ion-grid *ngIf="networkState==true">
+  <ion-grid *ngIf="true">
     <ion-row>
       <ion-col col-md-3>
         <ion-select class="white-bg full-width" [(ngModel)]="selectedTimeframe" (ngModelChange)="selectedTimeframe !== 'CUSTOM' && loadStockReport()">

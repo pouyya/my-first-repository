@@ -5,12 +5,7 @@ import { Component } from "@angular/core";
 
 @Component({
   selector: '[network-monitor-report]',
-  template: `<button class="no-cursor bar-button bar-button-md bar-button-default bar-button-default-md" ion-button icon-only clear >
-        <ion-icon [name]="networkIcon"></ion-icon>
-      </button>
-      <button class="no-cursor bar-button bar-button-md bar-button-default bar-button-default-md" ion-button icon-only clear >
-          <ion-icon [name]="syncIcon"></ion-icon>
-        </button>`,
+  template: `<ion-icon [name]="networkIcon"></ion-icon>`,
   styles: [
     `button > ion-spinner * {
       width: 28px;
