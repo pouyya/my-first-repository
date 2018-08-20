@@ -39,26 +39,14 @@ export class DeployPage {
         this.progressMessage = 'New version available!';
 
         await Pro.deploy.downloadUpdate((progress) => {
-
-          this.zone.run(() => {
-
-            this.progressMessage = `Download New version ${progress}%`;
-          });
+          this.zone.run(() => this.progressMessage = `Download New version ${progress}%`);
         });
-
-        //download completed 
-        this.progressMessage = 'Download new version done.';
 
         this.progressMessage = 'Extract new version started.';
 
-
         await Pro.deploy.extractUpdate((progress) => {
-          this.zone.run(async () => {
-            this.progressMessage = `Extract new version ${progress}%`;
-          });
+          this.zone.run(async () => this.progressMessage = `Extract new version ${progress}%`);
         });
-
-        this.progressMessage = 'Extract new version done.';
 
         this.splashScreen.show();
         await Pro.deploy.reloadApp();
