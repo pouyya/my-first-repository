@@ -5,6 +5,7 @@ import {DateTimeService} from "./dateTimeService";
 import {SyncContext} from "./SyncContext";
 import {Platform} from "ionic-angular";
 import {ENV} from "@app/env";
+import {UserService} from "../modules/dataSync/services/userService";
 
 @Injectable()
 export class PingService {
@@ -13,7 +14,8 @@ export class PingService {
   private currentStore;
   private currentPos;
   constructor(private authService: AuthService, private dateTimeService: DateTimeService,
-              private syncContext: SyncContext, private platform: Platform) {
+              private syncContext: SyncContext, private platform: Platform,
+               private userService: UserService) {
   }
 
   public async init(){
@@ -27,8 +29,9 @@ export class PingService {
     this.timer = setInterval(async () => {
         const time = this.dateTimeService.getCurrentUTCDate().toString();
         const path: string[] = this.platform.url().split('/');
+        const email = await this.userService.getUserEmail();
         const currentPage = path[0];
-        const response = await this.authService.ping(this.proDeployVersion, this.currentStore, this.currentPos, currentPage, time);
+        const response = await this.authService.ping(this.proDeployVersion, email, this.currentStore, this.currentPos, currentPage, time);
         response.subscribe(response => {
                 if (response.length > 0) {
                     console.log("Success");

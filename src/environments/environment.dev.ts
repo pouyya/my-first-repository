@@ -10,7 +10,7 @@ export const ENV = {
     baseUrl: "https://site-dev.pos.app"
   },
   security: {
-    serverUrl: "http://localhost:5000" //https://site-dev.pos.app"
+    serverUrl: "https://site-dev.pos.app"
   },
   ionicDeploy: {
     appId: "22d41469",
