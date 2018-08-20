@@ -26,6 +26,8 @@ export class HtmlPrinterProvider {
                     printerActions.push(new PrinterAction("setJustification", [EPosPrinterProvider.JUSTIFY_LEFT]));
                 } else if (tagName == "b") {
                     printerActions.push(new PrinterAction("setEmphasis", [true]));
+                } else if (tagName == "h1") {
+                    printerActions.push(new PrinterAction("setTextSize", [2, 2]));
                 } else if (tagName == "h2") {
                     printerActions.push(new PrinterAction("setTextSize", [1, 2]));
                 } else if (tagName == "h3") {
@@ -71,7 +73,7 @@ export class HtmlPrinterProvider {
                 }
             },
             onclosetag: (tagName) => {
-                if (tagName == "h2" || tagName == "h3") {
+                if (tagName == "h1" || tagName == "h2" || tagName == "h3") {
                     printerActions.push(new PrinterAction("setTextSize", [1, 1]));
                 } else if (tagName == "b") {
                     printerActions.push(new PrinterAction("setEmphasis", [false]));

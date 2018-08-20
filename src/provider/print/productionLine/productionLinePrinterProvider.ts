@@ -26,9 +26,9 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
     }
 
     setBody(): ProductionLinePrinterProvider {
-        var basketItems = "";
+        var basketItems = "<h1>";
         if (this.productionLinePrinterProviderContext.sale.items) {
-            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"}">`;
+            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "4" : "3"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "20" : "18"}">`;
 
             for (let basketItem of this.productionLinePrinterProviderContext.sale.items) {
                 basketItems += `<tr>
@@ -45,7 +45,8 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
                 }
             }
 
-            this.buffer += `</table>
+            this.buffer += basketItems + `</table>
+            </h1>
             <hr>
             <br>`;
 
