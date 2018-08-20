@@ -120,4 +120,8 @@ export class ConfigService {
     static ApseeApiKey(): string {
         return ENV.appSee.apikey;
     }
+
+    static envName(): string {
+        return ENV.name;
+    }
 }
