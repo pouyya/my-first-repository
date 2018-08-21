@@ -1,16 +1,18 @@
-import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
 import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { EndOfDayProviderContext } from "./endOfDayProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
+import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
+import { ReportPrinterProviderBase } from "../reportPrinterProviderBase";
 
-export class EndOfDayProvider {
+export class EndOfDayProvider extends ReportPrinterProviderBase {
 
     htmlPrinterProvider: HtmlPrinterProvider;
+    buffer: string;
 
     constructor(
         public endOfDayProviderContext: EndOfDayProviderContext,
-        private printer: EscPrinterProvider) {
-        this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
+        printer: EPosPrinterProvider) {
+        super(printer);
     }
 
     setHeader(): EndOfDayProvider {
@@ -24,7 +26,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
         <br>
         <br>`;
 
-        this.htmlPrinterProvider.parse(headerHtml);
+        this.buffer += headerHtml;
 
         return this;
     }
@@ -40,7 +42,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
         <br>
         <br>`;
 
-        this.htmlPrinterProvider.parse(bodyHtml);
+        this.buffer += bodyHtml;
 
         return this;
     }
@@ -182,20 +184,8 @@ By: ${this.endOfDayProviderContext.employeeFullName}
             <hr>
             <br>`;
 
-        this.htmlPrinterProvider.parse(footerHtml);
+        this.buffer += footerHtml;
 
         return this;
-    }
-
-    cutPaper(): EndOfDayProvider {
-
-        this.htmlPrinterProvider.parse('<cut>');
-
-        return this;
-    }
-
-
-    getResult(): string {
-        return this.printer.getBuffer();
     }
 }

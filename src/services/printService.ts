@@ -4,7 +4,6 @@ import { Sale } from '../model/sale';
 import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
 import { EndOfDayProvider } from '../provider/print/endOfDay/endOfDayProvider';
 import { EndOfDayProviderContext } from '../provider/print/endOfDay/endOfDayProviderContext';
-import { EscPrinterConnectorProvider } from '../provider/print/escPrinterConnectorProvider';
 import { Closure } from '../model/closure';
 import { ReceiptProviderContext } from '../provider/print/receipt/receiptProviderContext';
 import { ReceiptProvider } from '../provider/print/receipt/receiptProvider';
@@ -18,8 +17,8 @@ import _ from 'lodash';
 import { DeviceType } from "../model/store";
 import { ProductionLinePrinterProviderContext } from "../provider/print/productionLine/productionLinePrinterProviderContext";
 import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
-import { EscPrinterProvider, PrinterWidth } from '../provider/print/escPrinterProvider';
-import {Utilities} from "../utility";
+import { EPosPrinterProvider, PrinterWidth } from '../provider/print/eposPrinterProvider';
+import { Utilities } from "../utility";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -109,17 +108,15 @@ export class PrintService {
     const promises = [];
     receiptPrinters.forEach(receiptPrinter => {
 
-      let printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+      let printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
       let provider = new EndOfDayProvider(context, printerProvider);
 
-      provider
+      promises.push(provider
         .setHeader()
         .setBody()
         .setFooter()
-        .cutPaper();
-
-      promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
-        .write(provider.getResult()));
+        .cutPaper()
+        .print());
     });
 
     await Promise.all(promises);
@@ -183,15 +180,14 @@ export class PrintService {
         receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
         receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage;
 
-        const printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
-        const receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
+        const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+
+        promises.push(new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
           .setHeader()
           .setBody()
           .setFooter()
-          .cutPaper();
-
-        promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
-          .write(receiptProvider.getResult()));
+          .cutPaper()
+          .print());
       });
 
       return Promise.all(promises);
@@ -243,15 +239,13 @@ export class PrintService {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = productionLinePrinter.sale;
 
-      const printerProvider = new EscPrinterProvider(productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+      const printerProvider = new EPosPrinterProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
 
-      const productionLinePrinterProvider = new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
+      promises.push(new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
         .setHeader()
         .setBody()
-        .cutPaper();
-
-      promises.push(new EscPrinterConnectorProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.printerPort)
-        .write(productionLinePrinterProvider.getResult()));
+        .cutPaper()
+        .print());
     });
 
     return Promise.all(promises);
@@ -270,9 +264,8 @@ export class PrintService {
     if (receiptPrinters.length) {
       const promises = [];
       receiptPrinters.forEach(receiptPrinter => {
-        const printerProvider = new EscPrinterProvider(receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
-        promises.push(new EscPrinterConnectorProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.printerPort)
-          .write(new ReceiptProvider(null, this.translateService, printerProvider).openCashDrawer().getResult()));
+        const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+        promises.push(new ReceiptProvider(null, this.translateService, printerProvider).openCashDrawer());
       });
 
       return Promise.all(promises);
