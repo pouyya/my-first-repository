@@ -392,10 +392,10 @@ export class BasketComponent {
 
   private async printSale(forcePrint: boolean, sale: Sale) {
     if (this.syncContext.currentStore.printReceiptAtEndOfSale || forcePrint) {
-      await this.printService.printReceipt(sale);
+      await this.printService.printReceipt(sale, true);
+    } else {
+      await this.printService.openCashDrawer();
     }
-
-    await this.printService.openCashDrawer();
   }
 
   private generatePaymentBtnText() {
@@ -416,9 +416,9 @@ export class BasketComponent {
     let modal = this.modalCtrl.create(ParkSale, { sale: this.sale });
     modal.onDidDismiss(data => {
       if (data.status) {
-        if(!this.isSaleParked){
-            this.isSaleParked = true;
-            this.saleParked.emit(true);
+        if (!this.isSaleParked) {
+          this.isSaleParked = true;
+          this.saleParked.emit(true);
         }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',

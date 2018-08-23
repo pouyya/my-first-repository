@@ -160,7 +160,7 @@ export class PrintService {
   }
 
 
-  public async printReceipt(sale: Sale): Promise<any> {
+  public async printReceipt(sale: Sale, openCashDrawer: boolean): Promise<any> {
     if (!this.platformService.isMobileDevice()) {
       console.warn("can't print on dekstop");
       return;
@@ -182,12 +182,17 @@ export class PrintService {
 
         const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
 
-        promises.push(new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
+        var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
           .setHeader()
           .setBody()
           .setFooter()
-          .cutPaper()
-          .print());
+          .cutPaper();
+
+        if (openCashDrawer) {
+          receiptProvider = receiptProvider.openCashDrawer();
+        }
+
+        promises.push(receiptProvider.print());
       });
 
       return Promise.all(promises);
