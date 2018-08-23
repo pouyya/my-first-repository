@@ -9,7 +9,17 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-grid>
+  <ion-grid *ngIf="!networkStatus">
+    <ion-row class="stock-header">
+      <ion-col>
+        <ion-buttons network-monitor-report></ion-buttons>
+      </ion-col>
+      <ion-col>
+        internet unavailable!
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="networkStatus">
     <ion-row>
       <ion-col col-md-3>
         <ion-select class="white-bg full-width" [(ngModel)]="selectedTimeframe" (ngModelChange)="selectedTimeframe !== 'CUSTOM' && loadStockReport()">
@@ -41,13 +51,14 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}} </span>
+        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}}
+        </span>
       </ion-col>
     </ion-row>
   </ion-grid>
 
 
-  <ion-grid>
+  <ion-grid *ngIf="networkStatus">
     <ion-row class="stock-header">
       <ion-col>
         PRODUCT

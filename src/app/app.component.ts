@@ -16,10 +16,12 @@ import { SecurityResultReason } from '../infra/security/model/securityResult';
 import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
 import { DeployService } from '../services/deployService';
+import { NetworkService } from '../services/networkService'
 
 @Component({
   selector: 'app',
-  templateUrl: 'app.html'
+  templateUrl: 'app.html',
+  providers: [NetworkService]
 })
 export class SimplePOSApp implements OnInit {
   @ViewChild(Nav) nav: Nav;

@@ -1,20 +1,18 @@
-import { EscPrinterProvider, PrinterWidth } from "../escPrinterProvider";
-import { HtmlPrinterProvider } from "../htmlPrinterProvider";
 import { ProductionLinePrinterProviderContext } from "./productionLinePrinterProviderContext";
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
+import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
+import { ReportPrinterProviderBase } from "../reportPrinterProviderBase";
 
-export class ProductionLinePrinterProvider {
-
-    htmlPrinterProvider: HtmlPrinterProvider;
+export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
 
     constructor(
         public productionLinePrinterProviderContext: ProductionLinePrinterProviderContext,
-        private printer: EscPrinterProvider) {
-        this.htmlPrinterProvider = new HtmlPrinterProvider(this.printer);
+        printer: EPosPrinterProvider) {
+        super(printer);
     }
 
-    setHeader(): ProductionLinePrinterProvider {
-        var headerHtml = `
+    setHeader() {
+        this.buffer += `
         <center>
             <h2><b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b></h2>
         </center>
@@ -23,15 +21,14 @@ export class ProductionLinePrinterProvider {
         <br>
         ${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? "Note: " + this.productionLinePrinterProviderContext.sale.notes + "<br>" : ""}
         `;
-        this.htmlPrinterProvider.parse(headerHtml);
 
         return this;
     }
 
     setBody(): ProductionLinePrinterProvider {
-        var basketItems = "";
+        var basketItems = "<h1>";
         if (this.productionLinePrinterProviderContext.sale.items) {
-            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"}">`;
+            basketItems += `<table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "4" : "3"},left-${this.printer.printerWidth == PrinterWidth.Wide ? "20" : "18"}">`;
 
             for (let basketItem of this.productionLinePrinterProviderContext.sale.items) {
                 basketItems += `<tr>
@@ -48,31 +45,12 @@ export class ProductionLinePrinterProvider {
                 }
             }
 
-            basketItems += `</table>
+            this.buffer += basketItems + `</table>
+            </h1>
             <hr>
             <br>`;
-            var bodyHtml = `${basketItems}`;
-
-            this.htmlPrinterProvider.parse(bodyHtml);
 
             return this;
         }
-    }
-    cutPaper(): ProductionLinePrinterProvider {
-
-        this.htmlPrinterProvider.parse('<cut>');
-
-        return this;
-    }
-
-    openCashDrawer(): ProductionLinePrinterProvider {
-
-        this.htmlPrinterProvider.parse('<pulse>');
-
-        return this;
-    }
-
-    getResult(): string {
-        return this.printer.getBuffer();
     }
 }
