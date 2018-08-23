@@ -1,51 +1,36 @@
-import { DBEvent } from '@simplepos/core/dist/db/dbEvent';
-import { DBService } from '@simplepos/core/dist/services/dBService';
 import { Network } from '@ionic-native/network';
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
+import { NetworkService } from '../../services/networkService';
 
 @Component({
   selector: '[network-monitor-report]',
   template: `<ion-icon [name]="networkIcon"></ion-icon>`,
   styles: [
-    `button > ion-spinner * {
-      width: 28px;
-      height: 28px;
-      stroke: white;
-      fill: white;
-    }
-    .no-cursor {
-        pointer-events: none;
-        cursor: default;
-    }
-    `
+    ``
   ]
 })
+
 export class NetworkMonitorReportComponent {
 
   public networkIcon: string = 'eye';
-  public syncIcon: string = 'cloud-outline';
-  public networkState: boolean = false;
 
-  constructor(private network: Network) {
+  constructor(
+    private network: Network,
+    private networkService: NetworkService
+  ) {
     this.network.onDisconnect().subscribe(() => {
       this.networkIcon = "eye-off";
-      this.networkState = false;
+      this.announce(false);
     });
+
     this.network.onConnect().subscribe(() => {
       this.networkIcon = "eye";
-      this.networkState = true;
+      this.announce(true);
     });
-
-    DBService.pouchDBProvider.criticalDBSyncProgress.subscribe(
-      (data: DBEvent) => {
-        data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
-      }
-    );
-
-    DBService.pouchDBProvider.dbSyncProgress.subscribe(
-      (data: DBEvent) => {
-        data && (this.syncIcon = data.isActive ? 'cloud-upload' : 'cloud-outline');
-      }
-    );
   }
+
+  public announce(status: boolean) {
+    this.networkService.announceStatus(status);
+  }
+
 }
