@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
 import { StockHistoryService, StockMovement } from "../../services/stockHistoryService";
