@@ -19,7 +19,7 @@ import { SalesSummaryList, SalesSummary, Convert } from '../../model/SalesReport
 @Component({
 	selector: 'report-dashboard',
 	templateUrl: 'report-dashboard.html',
-	styleUrls: [ '/components/pages/report-dashboard.scss' ]
+	styleUrls: ['/components/pages/report-dashboard.scss']
 })
 export class ReportsDashboard {
 	@ViewChild('lineCanvas') lineCanvas;
@@ -35,7 +35,7 @@ export class ReportsDashboard {
 	private isTaxInclusive: boolean = false;
 	public selectedValue: string = 'WEEK';
 	public selectedStore;
-	public locations = [ { text: 'All locations', value: '' } ];
+	public locations = [{ text: 'All locations', value: '' }];
 	public salesSummaryList: SalesSummaryList;
 	public salesSummary: SalesSummary[];
 	public chartDatePattern: string = 'DD MMM YYYY';
@@ -48,7 +48,7 @@ export class ReportsDashboard {
 		private loading: LoadingController,
 		private helperService: HelperService,
 		private salesSummaryReportService: SalesSummaryReportService
-	) {}
+	) { }
 
 	async ionViewDidLoad() {
 		this.locations.unshift({ text: 'Current', value: this.syncContext.currentStore._id });
@@ -78,7 +78,7 @@ export class ReportsDashboard {
 	private async loadSales() {
 		try {
 			let currentPosId = ''; //means all location
-			let posIDs: string[] = this.selectedStore ? [ this.syncContext.currentPos.id ] : [];
+			let posIDs: string[] = this.selectedStore ? [this.syncContext.currentPos.id] : [];
 			if (posIDs && posIDs.length == 1) {
 				currentPosId = this.syncContext.currentPos.id;
 			}
@@ -94,7 +94,7 @@ export class ReportsDashboard {
 					this.salesSummaryList = <SalesSummaryList>Convert.toSalesSummaryList(json);
 					this.salesSummary = <SalesSummary[]>this.salesSummaryList.salesSummary;
 					this.totalNoSales = this.salesSummaryList.salesCountTotal;
-					this.totalSaleAverage = this.salesSummaryList.salesAverage;
+					this.totalSaleAverage = this.helperService.round2Dec(this.salesSummaryList.salesAverage);
 					this.totalSales = this.salesSummaryList.totalExcTax;
 
 					this.sales = Object.keys(this.salesSummary).sort().map((key) => {
@@ -114,7 +114,7 @@ export class ReportsDashboard {
 				},
 				() => loading.dismiss()
 			);
-		} catch (ex) {}
+		} catch (ex) { }
 	}
 
 	private loadPurchaseChart() {

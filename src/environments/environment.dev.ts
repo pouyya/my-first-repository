@@ -8,7 +8,6 @@ export const ENV = {
     salesReportUrl: "/v1/api/reports/salessummary",
     staffAttendanceReportUrl: "/v1/api/reports/staffattendance"
   },
-},
   service: {
     baseUrl: "https://site-dev.pos.app"
   },
