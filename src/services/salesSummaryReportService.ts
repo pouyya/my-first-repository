@@ -5,13 +5,15 @@ import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class SalesSummaryReportService {
-	constructor(private http: Http, private userService: UserService) {}
+	constructor(private http: Http, private userService: UserService) { }
 
 	public async getDashboard(currentPosId: string, fromDate: string, toDate: string) {
-	return this.http
+		let token = await this.userService.getUserToken();
+
+		return this.http
 			.get(
 				ConfigService.salesReportEndPoint() +
-					`/?type=json&fromDate=${fromDate}&toDate=${toDate}&currentPosId=${currentPosId}&token=${await this.userService.getUserToken()}`
+				`/?type=json&fromDate=${fromDate}&toDate=${toDate}&currentPosId=${currentPosId}&token=${token}`
 			)
 			.map((response: Response) => response.json());
 	}
