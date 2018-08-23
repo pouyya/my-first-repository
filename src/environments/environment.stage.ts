@@ -3,7 +3,7 @@ export const ENV = {
   production: true,
   turnOnDeployment: true,
   webapp: {
-    baseUrl: "https://webapp-dev.pos.app",
+    baseUrl: "https://webapp-stage.pos.app",
     inventoryReportUrl: "/v1/api/reports/inventory"
   },  
   service: {
@@ -14,7 +14,7 @@ export const ENV = {
   },
   ionicDeploy: {
     appId: "22d41469",
-    appChannel: "Production"
+    appChannel: "Stage"
   },
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
