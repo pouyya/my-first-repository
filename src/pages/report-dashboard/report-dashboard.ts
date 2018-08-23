@@ -1,11 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { Subject } from 'rxjs/Subject';
 import { Chart } from 'chart.js';
-import { LoadingController } from 'ionic-angular';
+import { LoadingController, ToastController } from 'ionic-angular';
 import { SyncContext } from '../../services/SyncContext';
 import * as moment from 'moment-timezone';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
@@ -13,6 +13,7 @@ import { DateTimeService } from '../../services/dateTimeService';
 import { HelperService } from '../../services/helperService';
 import { SalesSummaryReportService } from '../../services/salesSummaryReportService';
 import { SalesSummaryList, SalesSummary, Convert } from '../../model/SalesReportResponse';
+import { NetworkService } from '../../services/networkService';
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
 @PageModule(() => ReportModule)
@@ -33,13 +34,14 @@ export class ReportsDashboard {
 	private totalSales: number = 0;
 	private totalSaleAverage: number = 0;
 	private isTaxInclusive: boolean = false;
-	public selectedValue: string = 'WEEK';
+	public selectedValue: string;
 	public selectedStore;
 	public locations = [{ text: 'All locations', value: '' }];
 	public salesSummaryList: SalesSummaryList;
 	public salesSummary: SalesSummary[];
 	public chartDatePattern: string = 'DD MMM YYYY';
 	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
+	networkStatus: boolean;
 
 	constructor(
 		private syncContext: SyncContext,
@@ -47,10 +49,19 @@ export class ReportsDashboard {
 		private accountSettingService: AccountSettingService,
 		private loading: LoadingController,
 		private helperService: HelperService,
-		private salesSummaryReportService: SalesSummaryReportService
+		private salesSummaryReportService: SalesSummaryReportService,
+		private networkService: NetworkService,
+		private cdRef: ChangeDetectorRef,
+		private toastCtrl: ToastController
 	) { }
 
 	async ionViewDidLoad() {
+		this.networkService.statusConfirmed$.subscribe(
+			status => {
+				this.networkStatus = status;
+			});
+
+		this.networkService.announceStatus(true);
 		this.locations.unshift({ text: 'Current', value: this.syncContext.currentStore._id });
 		this.selectedStore = this.locations[0].value;
 		let loader = this.loading.create({ content: 'Loading Report...' });
@@ -73,6 +84,11 @@ export class ReportsDashboard {
 		var currentAccount = await this.accountSettingService.getCurrentSetting();
 		this.isTaxInclusive = currentAccount.taxType;
 		loader.dismiss();
+	}
+
+	ngAfterViewChecked() {
+		this.selectedValue = 'WEEK';
+		this.cdRef.detectChanges();
 	}
 
 	private async loadSales() {
@@ -109,6 +125,8 @@ export class ReportsDashboard {
 					this.loadPurchaseChart();
 				},
 				(err) => {
+					let toast = this.toastCtrl.create({ message: 'Server not availble now!', duration: 3000 })
+					toast.present();
 					console.log(err);
 					loading.dismiss();
 				},
