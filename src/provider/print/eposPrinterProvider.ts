@@ -30,6 +30,15 @@ export class EPosPrinterProvider {
     static EPOS_OC_FONT_D = 3;
     static EPOS_OC_FONT_E = 4;
 
+    static DRAWER_2PIN = 0;
+    static DRAWER_5PIN = 1;
+
+    static PULSE_100 = 0;
+    static PULSE_200 = 1;
+    static PULSE_300 = 2;
+    static PULSE_400 = 3;
+    static PULSE_500 = 4;
+
     /**
      * Align text to the left, when used with EscPrinterProvider.setJustification
      */
@@ -265,7 +274,7 @@ export class EPosPrinterProvider {
                 await this.connect();
             }
 
-            return this.posprinter.addPulse();
+            return this.posprinter.addPulse(EPosPrinterProvider.DRAWER_2PIN, EPosPrinterProvider.PULSE_100);
 
         } catch (error) {
             var printerError = new Error(`Error in printing pulse`);

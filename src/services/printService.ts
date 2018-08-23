@@ -265,7 +265,9 @@ export class PrintService {
       const promises = [];
       receiptPrinters.forEach(receiptPrinter => {
         const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
-        promises.push(new ReceiptProvider(null, this.translateService, printerProvider).openCashDrawer());
+        promises.push(new ReceiptProvider(null, this.translateService, printerProvider)
+          .openCashDrawer()
+          .print());
       });
 
       return Promise.all(promises);
