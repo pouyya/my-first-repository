@@ -21,12 +21,12 @@
     <ion-item-divider color="light">Deploy</ion-item-divider>
     <ion-item>{{ dbInternalName }}</ion-item>
   </ion-item-group>  
-  <ion-item-group *ngIf="this.deployInfo">
+  <ion-item-group *ngIf="this.snapshotInfo">
     <ion-item-divider color="light">Current Version</ion-item-divider>
-    <ion-item>Deploy uuid: {{ deployInfo.deploy_uuid }}</ion-item>
-    <ion-item>Deploy versionId: {{ deployInfo.versionId }}</ion-item>
-    <ion-item>Deploy channel: {{ deployInfo.channel }}</ion-item>
-    <ion-item>Deploy binaryVersion: {{ deployInfo.binaryVersion }}</ion-item>
+    <ion-item>Deploy uuid: {{ snapshotInfo.deploy_uuid }}</ion-item>
+    <ion-item>Deploy versionId: {{ snapshotInfo.versionId }}</ion-item>
+    <ion-item>Deploy channel: {{ snapshotInfo.channel }}</ion-item>
+    <ion-item>Deploy binaryVersion: {{ snapshotInfo.binaryVersion }}</ion-item>
   </ion-item-group>
   <ion-item-group>
     <ion-item-divider color="light">External Database Name</ion-item-divider>
@@ -51,5 +51,9 @@
   <ion-item-group>
     <ion-item-divider color="light">Identity Server Base URL</ion-item-divider>
     <ion-item>{{ serverBaseURL }}</ion-item>
+  </ion-item-group>
+  <ion-item-group>
+    <ion-item-divider color="light">Environment Name</ion-item-divider>
+    <ion-item>{{ envName }}</ion-item>
   </ion-item-group>
 </ion-content>

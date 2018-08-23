@@ -7,13 +7,14 @@ import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from '../../services/SyncContext';
+import { NetworkService } from '../../services/networkService';
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
 @PageModule(() => ReportModule)
 @Component({
 	selector: 'report-stock-movement-summary',
 	templateUrl: 'report-stock-movement-summary.html',
-	styleUrls: [ '/components/pages/report-stock-movement-summary.scss' ]
+	styleUrls: ['/components/pages/report-stock-movement-summary.scss']
 })
 export class ReportStockMovementSummaryPage {
 	public timeframes = [
@@ -21,7 +22,7 @@ export class ReportStockMovementSummaryPage {
 		{ text: 'Month', value: 'MONTH' },
 		{ text: 'Custom', value: 'CUSTOM' }
 	];
-	public locations = [ { text: 'All locations', value: '' } ];
+	public locations = [{ text: 'All locations', value: '' }];
 	public selectedTimeframe: string;
 	public selectedStore: string;
 	public stockMovementList: StockMovement[] = [];
@@ -29,22 +30,30 @@ export class ReportStockMovementSummaryPage {
 	public fromDate: Date = new Date();
 	public toDate: Date = new Date();
 
-	constructor(
-		private stockHistoryService: StockHistoryService,
+	networkStatus: boolean;
+
+	constructor(private stockHistoryService: StockHistoryService,
 		private storeService: StoreService,
 		private loading: LoadingController,
-		private syncContext: SyncContext
-	) {}
+		private syncContext: SyncContext,
+		private networkService: NetworkService
+	) {
+	}
 
 	async ionViewDidLoad() {
+		this.networkService.statusConfirmed$.subscribe(
+			status => {
+				this.networkStatus = status;
+			});
+
+		this.networkService.announceStatus(true);
 		this.fromDate.setDate(this.fromDate.getDate() - 15);
 		this.selectedTimeframe = this.timeframes[0].value;
 		const stores = await this.storeService.getAll();
-		stores.forEach((store) => this.locations.push({ text: store.name, value: store._id }));
+		stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
 
 		const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
-		let defaultLocationValue = this.locations[0] ? this.locations[0].value : '';
-		this.selectedStore = storeId ? storeId : defaultLocationValue;
+		this.selectedStore = (storeId) ? storeId : this.locations[0].value;
 
 		await this.loadStockReport();
 	}

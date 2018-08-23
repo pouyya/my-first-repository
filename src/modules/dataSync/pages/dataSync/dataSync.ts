@@ -24,12 +24,12 @@ export class DataSync {
   private accountSettings;
 
   constructor(private userService: UserService,
-              private navCtrl: NavController,
-              private platformService: PlatformService,
-              private accountSettingsService: AccountSettingService,
-              private employeeService: EmployeeService,
-              private modalCtrl: ModalController,
-              private translateService: TranslateService,) {
+    private navCtrl: NavController,
+    private platformService: PlatformService,
+    private accountSettingsService: AccountSettingService,
+    private employeeService: EmployeeService,
+    private modalCtrl: ModalController,
+    private translateService: TranslateService, ) {
   }
 
   async ionViewDidLoad() {
@@ -59,10 +59,10 @@ export class DataSync {
       ConfigService.internalAuditDBName,
       this.user.access_token,
       [
-        <DBIndex>{name: 'orderEntityTypeName', fields: ['order', 'entityTypeName', 'entityTypeNames']},
-        <DBIndex>{name: 'orderNameEntityTypeName', fields: ['order', 'name', 'entityTypeName', 'entityTypeNames']}],
-      [<DBIndex>{name: 'entityTypeName', fields: ['entityTypeName', 'entityTypeNames']}],
-      [<DBIndex>{name: 'entityTypeName', fields: ['entityTypeName', 'entityTypeNames']}]);
+        <DBIndex>{ name: 'orderEntityTypeName', fields: ['order', 'entityTypeName', 'entityTypeNames'] },
+        <DBIndex>{ name: 'orderNameEntityTypeName', fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
+      [<DBIndex>{ name: 'entityTypeName', fields: ['entityTypeName', 'entityTypeNames'] }],
+      [<DBIndex>{ name: 'entityTypeName', fields: ['entityTypeName', 'entityTypeNames'] }]);
 
     DBService.pouchDBProvider.criticalDBSyncProgress.subscribe(
       async (data: DBEvent) => {
@@ -72,8 +72,8 @@ export class DataSync {
             this.isNavigated = true;
             this.accountSettings = await this.accountSettingsService.getCurrentSetting();
             this.translateService.setDefaultLang('au');
-            this.translateService.use('au');        
-            this.accountSettings.isInitialized && false ? this.navCtrl.setRoot(DataBootstrapper) : this.showWizardModal();
+            this.translateService.use('au');
+            this.accountSettings.isInitialized ? this.navCtrl.setRoot(DataBootstrapper) : this.showWizardModal();
           }
           else {
             this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";
@@ -84,20 +84,20 @@ export class DataSync {
   }
 
   private showWizardModal() {
-    let modal = this.modalCtrl.create(Wizard, {currentStore: this.user.currentStore}, {enableBackdropDismiss: false});
+    let modal = this.modalCtrl.create(Wizard, { currentStore: this.user.currentStore }, { enableBackdropDismiss: false });
     modal.onDidDismiss(async data => {
       if (!data || !data.status) {
         return;
       }
-      if(data.adminPin){
+      if (data.adminPin) {
         const employees = await this.employeeService.getAll();
         const employee = employees[0];
-        employee.pin =  Number(data.adminPin);
+        employee.pin = Number(data.adminPin);
         await this.employeeService.update(employee);
       }
       this.accountSettings.isInitialized = true;
       await this.accountSettingsService.update(this.accountSettings);
-      this.navCtrl.setRoot(DataBootstrapper, {afterSetupLogin: true})
+      this.navCtrl.setRoot(DataBootstrapper, { afterSetupLogin: true })
     });
     modal.present();
   }

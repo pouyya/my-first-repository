@@ -53,9 +53,9 @@ export class GroupEmployeeTimeLog implements OnInit {
     if (this._timeLog && this._timeLog.length > 0) {
       this._timeLog.forEach((log, index) => {
         if (log.type == 'clock_in') {
-          this.renderable.clockIn = this.dateTimeService.getTimezoneDate(log.time).format('d MMM, YYYY, h:mm:ss a');
+          this.renderable.clockIn = this.dateTimeService.getTimezoneDate(log.time).format('DD/M/YYYY, h:mm a');
         } else if (log.type == 'clock_out') {
-          this.renderable.clockOut = this.dateTimeService.getTimezoneDate(log.time).format('d MMM, YYYY, h:mm:ss a');
+          this.renderable.clockOut = this.dateTimeService.getTimezoneDate(log.time).format('DD/M/YYYY, h:mm a');
         }
       });
       if (this._timeLog[0].employee) {
