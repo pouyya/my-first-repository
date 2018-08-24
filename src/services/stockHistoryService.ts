@@ -124,8 +124,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 
   public async getStockMovement(storeId: string, fromDate: string, toDate: string) {
     let token = await this.userService.getUserToken();
+    storeId = (storeId == "" ? "''" : storeId);
     return this.http
-      .get(`${ConfigService.inventoryReportUrl}?fromDate=${fromDate}&toDate=${toDate}&currentStoreId=${storeId}&token=${token}`)
+      .get(ConfigService.inventoryReportUrl() +
+        `?fromDate=${fromDate}&toDate=${toDate}&currentStoreId=${storeId}&token=${token}`)
       .map((response: Response) => <StockMovement[]>response.json());
   }
 }
