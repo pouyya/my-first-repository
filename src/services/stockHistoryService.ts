@@ -4,7 +4,7 @@ import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { Http, Response } from '@angular/http';
-import { ENV } from '@app/env';
+import { ConfigService } from './../modules/dataSync/services/configService';
 import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
@@ -122,9 +122,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
     }
   }
 
-  public async getStockMovement(storeId: string, fromDate: Date, toDate: Date) {
+  public async getStockMovement(storeId: string, fromDate: string, toDate: string) {
+    let token = await this.userService.getUserToken();
     return this.http
-      .get(`${ENV.webapp.baseUrl}${ENV.webapp.inventoryReportUrl}?fromDate=${fromDate.getFullYear()}-${fromDate.getMonth()}-${fromDate.getDate()}&toDate=${toDate.getFullYear()}-${toDate.getMonth()}-${toDate.getDate()}&currentStoreId=${storeId}&token=${await this.userService.getUserToken()}`)
+      .get(`${ConfigService.inventoryReportUrl}?fromDate=${fromDate}&toDate=${toDate}&currentStoreId=${storeId}&token=${token}`)
       .map((response: Response) => <StockMovement[]>response.json());
   }
 }
