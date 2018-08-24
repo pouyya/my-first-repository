@@ -34,7 +34,7 @@
 
       <ion-item>
         <ion-label stacked>Type*</ion-label>
-        <ion-select [(ngModel)]="device.type" interface="action-sheet" multiple="false" name="type" required>
+        <ion-select [(ngModel)]="device.type" multiple="false" name="type" required>
           <ion-option *ngFor="let type of typeList" value={{type.value}}>{{type.text}}</ion-option>
         </ion-select>
       </ion-item>

@@ -1,14 +1,9 @@
 <ion-header>
   <ion-navbar>
     <ion-title>{{action}} Register</ion-title>
-    <ion-buttons start>
-      <button ion-button (click)="dismiss()">
-        <ion-icon name="close"></ion-icon>
-      </button>
-    </ion-buttons>
     <ion-buttons end>
       <button type="button" ion-button icon-only (click)="save()">
-        Done
+        Save
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
         <ion-icon name="trash"></ion-icon>
