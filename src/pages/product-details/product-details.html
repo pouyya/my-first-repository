@@ -27,7 +27,7 @@
       </button>
     </ion-fab-list>
   </ion-fab>
-  <form (ngSubmit)="saveProducts()" #productForm="ngForm">
+  <form (ngSubmit)="saveProducts(true)" #productForm="ngForm">
     <ion-list>
       <ion-item>
         <ion-label class="item-name" stacked>Name*</ion-label>
@@ -118,7 +118,8 @@
         <ion-item item-content>
           <ion-label color="primary" stacked>+ Sales Tax</ion-label>
           <ion-select [(ngModel)]="defaultPriceBook.tax" (ionChange)="calculate('salesTax', defaultPriceBook)">
-            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax
+              - ' + tax.name : tax.name }}
               <small>({{ tax.rate }}%)</small>
             </ion-option>
           </ion-select>
