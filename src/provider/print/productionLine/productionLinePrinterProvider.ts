@@ -12,7 +12,7 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
     }
 
     setHeader() {
-        this.buffer += `
+        this.buffer += `${this.productionLinePrinterProviderContext.headerMessage}
         <center>
             <h2><b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b></h2>
         </center>

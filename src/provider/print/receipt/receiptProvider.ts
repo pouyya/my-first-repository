@@ -18,7 +18,7 @@ export class ReceiptProvider extends ReportPrinterProviderBase {
     }
 
     setHeader(): ReceiptProvider {
-        var headerHtml = `
+        var headerHtml = `${this.receiptProviderContext.headerMessage}
         <center>
             <h2><b>${this.receiptProviderContext.invoiceTitle}</b></h2>${this.receiptProviderContext.shopName}
 Ph: ${this.receiptProviderContext.phoneNumber}
