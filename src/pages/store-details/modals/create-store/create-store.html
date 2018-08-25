@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Create Store</ion-title>
+    <ion-buttons end>
+      <button type="button" ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <form (ngSubmit)="createStore()" #storeForm="ngForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name" stacked>Name*</ion-label>
+        <ion-input type="text" [(ngModel)]="storeItem.name" name="name" required></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
+<ion-footer>
+  <button class="pull-right" type="submit" ion-button (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">Create</button>
+</ion-footer>
