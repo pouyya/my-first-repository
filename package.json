@@ -106,7 +106,7 @@
     "pouchdb-adapter-cordova-sqlite": "^2.0.3",
     "reflect-metadata": "^0.1.12",
     "rxjs": "5.5.2",
-    "simplepos-plugin-posprinter": "^1.0.1",
+    "simplepos-plugin-posprinter": "^1.0.2",
     "stream-browserify": "^2.0.1",
     "sw-toolbox": "^3.4.0",
     "text-encoding": "^0.6.4",
