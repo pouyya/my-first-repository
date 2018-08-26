@@ -12,7 +12,7 @@ import { AccountSettingService } from '../../modules/dataSync/services/accountSe
 import { DateTimeService } from '../../services/dateTimeService';
 import { HelperService } from '../../services/helperService';
 import { SalesSummaryReportService } from '../../services/salesSummaryReportService';
-import { SalesSummaryList, SalesSummary, Convert } from '../../model/SalesReportResponse';
+import { SalesSummaryList, SalesSummary } from '../../model/SalesReportResponse';
 import { NetworkService } from '../../services/networkService';
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
@@ -100,18 +100,19 @@ export class ReportsDashboard {
 			}
 			let loading = this.loading.create({ content: 'Loading Report...' });
 			await loading.present();
-			var sales = await this.salesSummaryReportService.getDashboard(
+			var sales = await this.salesSummaryReportService.getSalesSummary(
 				currentPosId,
 				this.dateTimeService.getUTCDate(this.fromDate).format(this.UTCDatePattern),
 				this.dateTimeService.getUTCDate(this.toDate).format(this.UTCDatePattern)
 			);
+
 			sales.subscribe(
-				(json) => {
-					this.salesSummaryList = <SalesSummaryList>Convert.toSalesSummaryList(json);
+				salesSummaryList => {
+					this.salesSummaryList = salesSummaryList;
 					this.salesSummary = <SalesSummary[]>this.salesSummaryList.salesSummary;
 					this.totalNoSales = this.salesSummaryList.salesCountTotal;
 					this.totalSaleAverage = this.helperService.round2Dec(this.salesSummaryList.salesAverage);
-					this.totalSales = this.salesSummaryList.totalExcTax;
+					this.totalSales = this.helperService.round2Dec(this.salesSummaryList.totalExcTax);
 
 					this.sales = Object.keys(this.salesSummary).sort().map((key) => {
 						this.salesSummary[key].saleAverage = this.helperService.round2Dec(
@@ -124,7 +125,7 @@ export class ReportsDashboard {
 					});
 					this.loadPurchaseChart();
 				},
-				(err) => {
+				err => {
 					let toast = this.toastCtrl.create({ message: 'Server not availble now!', duration: 3000 })
 					toast.present();
 					console.log(err);
@@ -132,8 +133,12 @@ export class ReportsDashboard {
 				},
 				() => loading.dismiss()
 			);
-		} catch (ex) { }
+		} catch (ex) {
+			console.log(ex);
+		}
 	}
+
+
 
 	private loadPurchaseChart() {
 		const labels = [],
