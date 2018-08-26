@@ -8,6 +8,7 @@ import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from "../../services/storeService";
 import { SyncContext } from '../../services/SyncContext';
 import { NetworkService } from '../../services/networkService';
+import { DateTimeService } from "../../services/dateTimeService";
 
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
@@ -28,12 +29,14 @@ export class ReportStockMovementSummaryPage {
   public fromDate: Date = new Date();
   public toDate: Date = new Date();
   networkStatus: boolean;
+  public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 
   constructor(private stockHistoryService: StockHistoryService,
     private storeService: StoreService,
     private loading: LoadingController,
     private syncContext: SyncContext,
-    private networkService: NetworkService
+    private networkService: NetworkService,
+    private dateTimeService: DateTimeService
   ) {
   }
 
@@ -73,7 +76,10 @@ export class ReportStockMovementSummaryPage {
 
     }
 
-    var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, fromDate, toDate);
+    let _fromDate = this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern);
+    let _toDate = this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern);
+
+    var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, _fromDate, _toDate);
     stockMovement.subscribe(
       stockMovementList => this.stockMovementList = stockMovementList,
       err => {
