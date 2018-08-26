@@ -12,15 +12,15 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
     }
 
     setHeader() {
-        this.buffer += `${this.productionLinePrinterProviderContext.headerMessage}
+        this.buffer += `<h1>${this.productionLinePrinterProviderContext.headerMessage}
         <center>
-            <h2><b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b></h2>
+            <b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b>
         </center>
         <br>
-        Date time: ${new Date(this.productionLinePrinterProviderContext.sale.completedAt).toLocaleString()}
+        </h1>Date time: ${new Date(this.productionLinePrinterProviderContext.sale.completedAt).toLocaleString()}
         <br>
-        ${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? "Note: " + this.productionLinePrinterProviderContext.sale.notes + "<br>" : ""}
-        `;
+        <h1>${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? "Note: " + this.productionLinePrinterProviderContext.sale.notes + "<br>" : ""}
+        </h1>`;
 
         return this;
     }
@@ -35,12 +35,24 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
                             <td>${basketItem.quantity}</td>
                             <td>${TypeHelper.encodeHtml(basketItem.name)}</td>
                         </tr>`;
+                if (!TypeHelper.isNullOrWhitespace(basketItem.notes)) {
+                    basketItems += `<tr>
+                    <td> Note</td>
+                    <td> ${TypeHelper.encodeHtml(basketItem.notes)}</td>
+                </tr>`;
+                }
                 if (basketItem.modifierItems) {
                     for (let basketItemModifier of basketItem.modifierItems) {
                         basketItems += `<tr>
                         <td>   ${basketItemModifier.quantity}</td>
                         <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
                     </tr>`;
+                        if (!TypeHelper.isNullOrWhitespace(basketItemModifier.notes)) {
+                            basketItems += `<tr>
+                            <td>   Note:</td>
+                            <td>   ${TypeHelper.encodeHtml(basketItemModifier.notes)}</td>
+                        </tr>`;
+                        }
                     }
                 }
             }
