@@ -11,10 +11,38 @@
 <ion-content>
   <form (ngSubmit)="createStore()" #storeForm="ngForm">
     <ion-list inset>
+
       <ion-item>
         <ion-label class="item-name" stacked>Name*</ion-label>
         <ion-input type="text" [(ngModel)]="storeItem.name" name="name" required></ion-input>
       </ion-item>
+
+      <ion-item>
+        <searchable-ion-select [isModal]="true" name="timezone" [(ngModel)]="timezone" title="Timezone" valueField="code" textField="name"
+          [items]="timezones" required>
+        </searchable-ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="item-name" stacked>Printer Address</ion-label>
+        <ion-input name="Address" [(ngModel)]="ipAddress" title="Main" placeholder="Main Printer Address" required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="item-name" stacked>Printer Port</ion-label>
+        <ion-input name="Port" [(ngModel)]="printerPort" title="Main" placeholder="Main Printer Port" required>
+        </ion-input>
+      </ion-item>
+
+      <hr/>
+
+      <ion-item>
+        <ion-label class="item-name" stacked>POS*</ion-label>
+        <ion-input [disabled]="true" name="POS" [(ngModel)]="storeItem.POS" title="Main" placeholder="Main POS">
+        </ion-input>
+      </ion-item>
+
     </ion-list>
   </form>
 </ion-content>
