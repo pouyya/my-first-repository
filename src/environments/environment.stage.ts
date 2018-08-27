@@ -4,8 +4,10 @@ export const ENV = {
   turnOnDeployment: true,
   webapp: {
     baseUrl: "https://webapp-stage.pos.app",
-    inventoryReportUrl: "/v1/api/reports/inventory"
-  },  
+    inventoryReportUrl: "/v1/api/reports/inventory",
+    salesReportUrl: "/v1/api/reports/salessummary",
+    staffAttendanceReportUrl: "/v1/api/reports/staffattendance"
+  },
   service: {
     baseUrl: "https://site-stage.pos.app"
   },
