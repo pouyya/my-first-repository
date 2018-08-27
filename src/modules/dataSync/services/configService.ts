@@ -104,12 +104,17 @@ export class ConfigService {
         return ConfigService.apiServerBaseUrl() + '/common/SendEmail';
     }
 
+
     static securityServerBaseUrl(): string {
         return ENV.security.serverUrl + '/wp-json/jwt-auth/v1';
     }
 
     static apiServerBaseUrl(): string {
         return ENV.security.serverUrl + '/wp-json/wp/v2/users';
+    }
+
+    static inventoryReportUrl(): string {
+        return ENV.webapp.baseUrl + ENV.webapp.inventoryReportUrl;
     }
 
     static ionicDeployAppId(): string {
