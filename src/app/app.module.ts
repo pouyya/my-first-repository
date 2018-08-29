@@ -181,6 +181,7 @@ import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+import { ErrorLoggingService } from "../services/ErrorLoggingService";
 
 @NgModule({
   declarations: [
@@ -437,6 +438,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     DaysOfWeekEvaluationProvider,
     AppService,
     Utilities,
+    ErrorLoggingService,
     PrintService,
     BrandService,
     StoreService,

@@ -1,5 +1,6 @@
 import { PrintTable } from "./printTable";
 import { Pro } from "@ionic/pro";
+import { ErrorLoggingService } from "../../services/ErrorLoggingService";
 
 export enum PrinterWidth {
     Narrow,
@@ -11,7 +12,7 @@ export class EPosPrinterProvider {
     posprinter: any;
     connected: boolean;
 
-    constructor(public ip: string, public printerWidth: PrinterWidth) {
+    constructor(public ip: string, public printerWidth: PrinterWidth, private errorLoggingService: ErrorLoggingService) {
         this.posprinter = (<any>window).posprinter;
     }
 
@@ -119,8 +120,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printer setJustification. Arguments: justification='${justification}'`);
-            Pro.monitoring.exception(error, [printerError.message]);
-
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -174,7 +174,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing setTextSize. Arguments: widthMultiplier='${widthMultiplier}', heightMultiplier='${heightMultiplier}'`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -198,7 +198,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing feed. Arguments: lines='${lines}'`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -225,7 +225,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing text. Arguments: str='${str}'`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -251,7 +251,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing cut. Arguments: mode='${mode}'`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -278,7 +278,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing pulse`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -316,7 +316,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing barcode. Arguments: content='${content}', type='${type}`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
@@ -335,7 +335,7 @@ export class EPosPrinterProvider {
 
         } catch (error) {
             var printerError = new Error(`Error in printing.`);
-            Pro.monitoring.exception(error, [printerError.message]);
+            this.errorLoggingService.exception(error, [printerError.message]);
             try {
                 this.posprinter.disconnectPrinter();
             }
