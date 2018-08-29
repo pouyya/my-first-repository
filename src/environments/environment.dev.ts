@@ -3,7 +3,7 @@ export const ENV = {
   production: false,
   turnOnDeployment: false,
   webapp: {
-    baseUrl: "http://localhost:63814/",
+    baseUrl: "https://webapp-dev.pos.app",
     inventoryReportUrl: "/v1/api/reports/inventory",
     salesReportUrl: "/v1/api/reports/salessummary",
     staffAttendanceReportUrl: "/v1/api/reports/staffattendance"
