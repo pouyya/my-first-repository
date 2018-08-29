@@ -4,6 +4,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { DeployService } from '../../services/deployService';
 import { Pro } from "@ionic/pro";
 import { ConfigService } from '../../modules/dataSync/services/configService';
+import {ErrorLoggingService} from "../../services/ErrorLoggingService";
 
 @Component({
   selector: 'page-deploy',
@@ -17,7 +18,8 @@ export class DeployPage {
     private navCtrl: NavController,
     private zone: NgZone,
     public splashScreen: SplashScreen,
-    private deployService: DeployService) {
+    private deployService: DeployService,
+    private errorLoggingService: ErrorLoggingService) {
   }
 
   async ionViewDidLoad() {
@@ -55,7 +57,7 @@ export class DeployPage {
         await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
       }
     } catch (error) {
-      Pro.monitoring.exception(error);
+      this.errorLoggingService.exception(error);
       await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
     }
   }
