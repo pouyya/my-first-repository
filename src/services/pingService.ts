@@ -26,21 +26,24 @@ export class PingService {
   }
 
   private start(){
-    this.timer = setInterval(async () => {
+      if(!ENV.pingInterval){
+          return
+      }
+      this.timer = setInterval(async () => {
         const time = this.dateTimeService.getCurrentUTCDate().toString();
         const path: string[] = this.platform.url().split('/');
         const email = await this.userService.getUserEmail();
         const currentPage = path[0];
         const response = await this.authService.ping(this.proDeployVersion, email, this.currentStore, this.currentPos, currentPage, time);
-        response.subscribe(response => {
-                if (response.length > 0) {
+        response.subscribe((response: any) => {
+                if (response === "Success") {
                     console.log("Success");
                 }
             },
             err => {
                 console.log(err);
             });
-    }, ENV.pingInterval);
+      }, ENV.pingInterval);
   }
 
   public stop(){
