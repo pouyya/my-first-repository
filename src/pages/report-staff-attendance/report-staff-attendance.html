@@ -46,7 +46,8 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}} </span>
+        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}}
+        </span>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -66,7 +67,7 @@
     </ion-row>
     <ion-row *ngFor="let day of days; let idrow= index" padding-top>
       <ion-col>
-        {{ day.daydate }}
+        {{ day.date | localDate:'dddd, Do MMMM YYYY'}}
       </ion-col>
       <ion-col *ngIf="selectedStore==''">
         {{ day.Employee[0] ? day.Employee[0].storeName : "" }}

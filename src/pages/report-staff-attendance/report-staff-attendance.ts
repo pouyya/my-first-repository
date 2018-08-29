@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
 import { StaffAttendanceReportService } from '../../services/StaffAttendanceReportService';
-import { StaffAttendance, Convert, Day } from '../../model/staffAttendance';
+import { StaffAttendance, Day } from '../../model/staffAttendance';
 import { LoadingController } from 'ionic-angular';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
@@ -24,7 +24,7 @@ export class ReportStaffAttendancePage {
 		{ text: 'Month', value: 'MONTH' },
 		{ text: 'Custom', value: 'CUSTOM' }
 	];
-	public locations = [ { text: 'All locations', value: '' } ];
+	public locations = [{ text: 'All locations', value: '' }];
 	public selectedTimeframe: string;
 	public selectedStore: string;
 	public staffAttendanceList: StaffAttendance;
@@ -45,7 +45,7 @@ export class ReportStaffAttendancePage {
 		private dateTimeService: DateTimeService,
 		private employeeService: EmployeeService,
 		private syncContext: SyncContext
-	) {}
+	) { }
 
 	async ionViewDidLoad() {
 		this.fromDate.setDate(this.fromDate.getDate() - 15);
@@ -82,8 +82,8 @@ export class ReportStaffAttendancePage {
 			this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern)
 		);
 		callRest.subscribe(
-			(staffAttendance) => {
-				this.staffAttendanceList = <StaffAttendance>Convert.toStaffAttendance(staffAttendance);
+			(staffAttendanceList) => {
+				this.staffAttendanceList = staffAttendanceList;
 				this.days = this.staffAttendanceList.days;
 				this.employee =
 					this.staffAttendanceList.days.length > 0 ? this.staffAttendanceList.days[0].Employee : [];
