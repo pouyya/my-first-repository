@@ -88,6 +88,10 @@ export class ConfigService {
         return ConfigService.apiServerBaseUrl() + '/common/register';
     }
 
+    static statusEndPoint(): string {
+        return ENV.security.serverUrl + "/v1/api/user/status";
+    }
+
     static forgotPasswordEndPoint(): string {
         return ENV.security.serverUrl + '/wp-content/plugins/simplepos-account-management/forget-password.php';
     }

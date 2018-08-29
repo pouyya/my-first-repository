@@ -22,5 +22,7 @@ export const ENV = {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
   },
   logError: true,
-  logsEnabled: false
+  logsEnabled: false,
+  pingInterval: 5 * 60 *1000
+
 }; 
