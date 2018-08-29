@@ -141,6 +141,7 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { StockHistoryService } from './../services/stockHistoryService';
+import { SalesSummaryReportService } from './../services/salesSummaryReportService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
@@ -181,6 +182,8 @@ import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
 import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
+import {PingService} from "../services/pingService";
+
 
 @NgModule({
   declarations: [
@@ -433,6 +436,7 @@ import { CreateStoreModal } from '../pages/store-details/modals/create-store/cre
     PluginService,
     EmployeeTimestampService,
     StockHistoryService,
+    SalesSummaryReportService,
     CustomerService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
@@ -440,6 +444,7 @@ import { CreateStoreModal } from '../pages/store-details/modals/create-store/cre
     Utilities,
     PrintService,
     BrandService,
+    PingService,
     StoreService,
     SalesServices,
     ShiftService,

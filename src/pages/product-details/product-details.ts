@@ -3,7 +3,7 @@ import { InteractableStoreStock } from './InteractableStoreStock';
 
 import { Supplier } from './../../model/supplier';
 import { StockHistoryService } from './../../services/stockHistoryService';
-import {Reason, StockHistory} from './../../model/stockHistory';
+import { Reason, StockHistory } from './../../model/stockHistory';
 import { StoreService } from './../../services/storeService';
 import { BrandService } from './../../services/brandService';
 import _ from 'lodash';
@@ -13,7 +13,7 @@ import { PriceBook } from './../../model/priceBook';
 import { Product } from './../../model/product';
 import { CategoryIconSelectModal } from './../category-details/modals/category-icon-select/category-icon-select';
 import { Component, NgZone, ChangeDetectorRef } from '@angular/core';
-import {NavController, NavParams, ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 import { ProductService } from '../../services/productService';
 import { CategoryService } from '../../services/categoryService';
 import { icons } from '@simplepos/core/dist/metadata/itemIcons';
@@ -27,8 +27,8 @@ import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
 import { Utilities } from "../../utility";
 import * as moment from "moment-timezone";
-import {EmployeeService} from "../../services/employeeService";
-import {SyncContext} from "../../services/SyncContext";
+import { EmployeeService } from "../../services/employeeService";
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.ProductAddEdit)
 @Component({
@@ -62,7 +62,7 @@ export class ProductDetails {
 		},
 		isDefault: false
 	};
-	
+
 	private _defaultPriceBook: PriceBook;
 	private stockEntities: StockHistory[] = [];
 	private color: Subject<string> = new Subject<string>();
@@ -237,6 +237,7 @@ export class ProductDetails {
 					item: productPriceBook
 				};
 			}
+			this.saveProducts(false);
 			loader.dismiss();
 			this.getAllStoreStockHistory();
 		});
@@ -262,7 +263,7 @@ export class ProductDetails {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
 			if (data && data.status) {
-                this.productItem.icon = this.icons[data.selected] || null;
+				this.productItem.icon = this.icons[data.selected] || null;
 			}
 		});
 		modal.present();
@@ -316,7 +317,7 @@ export class ProductDetails {
 					this.stockEntities.push(stock);
 					let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
 					this.storesStock[index].value += stock.value;
-                    !this.stockHistory[stock.storeId] && ( this.stockHistory[stock.storeId] = [] );
+					!this.stockHistory[stock.storeId] && (this.stockHistory[stock.storeId] = []);
 					this.stockHistory[stock.storeId].push(stock);
 				} catch (err) {
 					throw new Error(err);
@@ -338,22 +339,22 @@ export class ProductDetails {
 		};
 	}
 
-	public onStockToggle(event){
+	public onStockToggle(event) {
 		let alert;
-		if(!this.isStockEnabled){
-            alert = this.alertCtrl.create({
-                title: 'You cannot turn off the stock',
-                buttons: [
-                    {
-                        text: 'OK',
-                        role: 'cancel',
-                        handler: data => {
-                            this.isStockEnabled = true
-                        }
-                    }
-                 ]
-            });
-		}else{
+		if (!this.isStockEnabled) {
+			alert = this.alertCtrl.create({
+				title: 'You cannot turn off the stock',
+				buttons: [
+					{
+						text: 'OK',
+						role: 'cancel',
+						handler: data => {
+							this.isStockEnabled = true
+						}
+					}
+				]
+			});
+		} else {
 			alert = this.alertCtrl.create({
 				title: 'Initial Value',
 				inputs: [
@@ -374,43 +375,43 @@ export class ProductDetails {
 						text: 'Save',
 						handler: data => {
 							if (/^[0-9]*$/.test(data.initialVal)) {
-								if(data.initialVal){
+								if (data.initialVal) {
 									this.isStockEnabled = true;
 									this.addInitialVal(data.initialVal);
-								}else{
+								} else {
 									this.isStockEnabled = false
 								}
-							  return true;
+								return true;
 							} else {
-							  this.showErrorToast('Invalid Input. Please Insert Number. then try again!');
-							  return false;
+								this.showErrorToast('Invalid Input. Please Insert Number. then try again!');
+								return false;
 							}
 						}
 					}
 				]
 			});
-        }
-        alert.present();
+		}
+		alert.present();
 	}
 
-	public async addInitialVal(initVal){
+	public async addInitialVal(initVal) {
 		initVal = Number(initVal);
-		if(initVal && initVal > 0) {
-            const stock: StockHistory = new StockHistory();
-            stock.productId = this.productItem._id;
-            stock.reason = Reason.InitialValue;
-            stock.storeId = this.syncContext.currentStore._id;
-            stock.createdAt = moment().utc().format();
-            stock.value = initVal;
-            stock.createdBy = this.employeeService.getEmployee()._id;
-            stock.supplyPrice = stock.supplyPrice ? Number(stock.supplyPrice) : null;
-            this.stockEntities.push(stock);
-            let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
-            this.storesStock[index].value += stock.value;
-        }
+		if (initVal && initVal > 0) {
+			const stock: StockHistory = new StockHistory();
+			stock.productId = this.productItem._id;
+			stock.reason = Reason.InitialValue;
+			stock.storeId = this.syncContext.currentStore._id;
+			stock.createdAt = moment().utc().format();
+			stock.value = initVal;
+			stock.createdBy = this.employeeService.getEmployee()._id;
+			stock.supplyPrice = stock.supplyPrice ? Number(stock.supplyPrice) : null;
+			this.stockEntities.push(stock);
+			let index = _.findIndex(this.storesStock, { storeId: stock.storeId });
+			this.storesStock[index].value += stock.value;
+		}
 	}
 
-	public async saveProducts() {
+	public async saveProducts(willReturn: boolean) {
 		this.productItem.stockControl = this.isStockEnabled;
 		if (this.isNew) {
 			var res = await this.productService.add(this.productItem);
@@ -452,12 +453,15 @@ export class ProductDetails {
 			await Promise.all(stockPromises);
 		}
 
-		const count = this.storesStock.reduce((initialVal, data)=> {
+		const count = this.storesStock.reduce((initialVal, data) => {
 			initialVal += data.value;
 			return initialVal;
 		}, 0);
 		this.productStockChangeCallback(this.productItem._id, count);
-		this.navCtrl.pop();
+
+		if (willReturn) {
+			this.navCtrl.pop();
+		}
 	}
 
 	public async delete() {

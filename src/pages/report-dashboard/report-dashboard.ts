@@ -1,160 +1,184 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { Subject } from "rxjs/Subject";
-import { Chart } from 'chart.js'
-import { LoadingController } from "ionic-angular";
-import { SalesServices } from "../../services/salesService";
-import { SyncContext } from "../../services/SyncContext";
-import * as moment from "moment-timezone";
-import { AccountSettingService } from "../../modules/dataSync/services/accountSettingService";
-import { DateTimeService } from "../../services/dateTimeService";
+import { Subject } from 'rxjs/Subject';
+import { Chart } from 'chart.js';
+import { LoadingController, ToastController } from 'ionic-angular';
+import { SyncContext } from '../../services/SyncContext';
+import * as moment from 'moment-timezone';
+import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
+import { DateTimeService } from '../../services/dateTimeService';
 import { HelperService } from '../../services/helperService';
+import { SalesSummaryReportService } from '../../services/salesSummaryReportService';
+import { SalesSummaryList, SalesSummary } from '../../model/SalesReportResponse';
+import { NetworkService } from '../../services/networkService';
 
 @SecurityModule(SecurityAccessRightRepo.ReportsDashboard)
 @PageModule(() => ReportModule)
 @Component({
-    selector: 'report-dashboard',
-    templateUrl: 'report-dashboard.html',
-    styleUrls: ['/components/pages/report-dashboard.scss']
+	selector: 'report-dashboard',
+	templateUrl: 'report-dashboard.html',
+	styleUrls: ['/components/pages/report-dashboard.scss']
 })
 export class ReportsDashboard {
+	@ViewChild('lineCanvas') lineCanvas;
+	@ViewChild('progressBar') progressBar;
+	private lineChart;
+	private dates$: Subject<Object> = new Subject<Object>();
+	private fromDate: Date;
+	private toDate: Date;
+	private sales;
+	private totalNoSales: number = 0;
+	private totalSales: number = 0;
+	private totalSaleAverage: number = 0;
+	private isTaxInclusive: boolean = false;
+	public selectedValue: string;
+	public selectedStore;
+	public locations = [{ text: 'All locations', value: '' }];
+	public salesSummaryList: SalesSummaryList;
+	public salesSummary: SalesSummary[];
+	public chartDatePattern: string = 'DD MMM YYYY';
+	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
+	networkStatus: boolean;
 
-    @ViewChild('lineCanvas') lineCanvas;
-    @ViewChild('progressBar') progressBar;
-    private lineChart;
-    private dates$: Subject<Object> = new Subject<Object>();
-    private fromDate: Date;
-    private toDate: Date;
-    private sales;
-    private totalNoSales: number = 0;
-    private totalSales: number = 0;
-    private totalSaleAverage: number = 0;
-    private isTaxInclusive: boolean = false;
-    public selectedValue: string = "WEEK";
-    public selectedStore;
-    public spinnerDisplay: string = "block";
-    public locations = [{ text: "All locations", value: "" }];
+	constructor(
+		private syncContext: SyncContext,
+		private dateTimeService: DateTimeService,
+		private accountSettingService: AccountSettingService,
+		private loading: LoadingController,
+		private helperService: HelperService,
+		private salesSummaryReportService: SalesSummaryReportService,
+		private networkService: NetworkService,
+		private cdRef: ChangeDetectorRef,
+		private toastCtrl: ToastController
+	) { }
+
+	async ionViewDidLoad() {
+		this.networkService.statusConfirmed$.subscribe(
+			status => {
+				this.networkStatus = status;
+			});
+
+		this.networkService.announceStatus(true);
+		this.locations.unshift({ text: 'Current', value: this.syncContext.currentStore._id });
+		this.selectedStore = this.locations[0].value;
+		let loader = this.loading.create({ content: 'Loading Report...' });
+		await loader.present();
+
+		this.dates$.asObservable().subscribe(async (date: any) => {
+			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
+			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
+			await this.loadSales();
+		});
+
+		let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
+			toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
+		fromDate.setHours(0);
+		fromDate.setMinutes(0);
+		fromDate.setSeconds(0);
+		fromDate.setDate(fromDate.getDate() - 7);
+		this.dates$.next({ fromDate, toDate });
+
+		var currentAccount = await this.accountSettingService.getCurrentSetting();
+		this.isTaxInclusive = currentAccount.taxType;
+		loader.dismiss();
+	}
+
+	ngAfterViewChecked() {
+		this.selectedValue = 'WEEK';
+		this.cdRef.detectChanges();
+	}
+
+	private async loadSales() {
+		try {
+			let currentPosId = ''; //means all location
+			let posIDs: string[] = this.selectedStore ? [this.syncContext.currentPos.id] : [];
+			if (posIDs && posIDs.length == 1) {
+				currentPosId = this.syncContext.currentPos.id;
+			}
+			let loading = this.loading.create({ content: 'Loading Report...' });
+			await loading.present();
+			var sales = await this.salesSummaryReportService.getSalesSummary(
+				currentPosId,
+				this.dateTimeService.getUTCDate(this.fromDate).format(this.UTCDatePattern),
+				this.dateTimeService.getUTCDate(this.toDate).format(this.UTCDatePattern)
+			);
+
+			sales.subscribe(
+				salesSummaryList => {
+					this.salesSummaryList = salesSummaryList;
+					this.salesSummary = <SalesSummary[]>this.salesSummaryList.salesSummary;
+					this.totalNoSales = this.salesSummaryList.salesCountTotal;
+					this.totalSaleAverage = this.helperService.round2Dec(this.salesSummaryList.salesAverage);
+					this.totalSales = this.helperService.round2Dec(this.salesSummaryList.totalExcTax);
+
+					this.sales = Object.keys(this.salesSummary).sort().map((key) => {
+						this.salesSummary[key].saleAverage = this.helperService.round2Dec(
+							this.salesSummary[key].total / this.salesSummary[key].noOfSales
+						);
+						this.salesSummary[key].total = this.helperService.round2Dec(this.salesSummary[key].total);
+						this.salesSummary[key].taxAmount = this.helperService.round2Dec(this.salesSummary[key].taxAmount);
+						this.salesSummary[key].netAmount = this.helperService.round2Dec(this.salesSummary[key].netAmount);
+						return this.salesSummary[key];
+					});
+					this.loadPurchaseChart();
+				},
+				err => {
+					let toast = this.toastCtrl.create({ message: 'Server not availble now!', duration: 3000 })
+					toast.present();
+					console.log(err);
+					loading.dismiss();
+				},
+				() => loading.dismiss()
+			);
+		} catch (ex) {
+			console.log(ex);
+		}
+	}
 
 
-    constructor(private salesService: SalesServices,
-        private syncContext: SyncContext,
-        private dateTimeService: DateTimeService,
-        private accountSettingService: AccountSettingService,
-        private loading: LoadingController,
-        private helperService: HelperService) {
-    }
 
-    async ionViewDidLoad() {
-        this.locations.unshift({ text: "Current", value: this.syncContext.currentStore._id });
-        this.selectedStore = this.locations[0].value;
-        this.dates$.asObservable().subscribe(async (date: any) => {
-            this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
-            this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
-            await this.loadSales();
-        });
-
-        let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
-            toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
-        fromDate.setHours(0);
-        fromDate.setMinutes(0);
-        fromDate.setSeconds(0);
-        fromDate.setDate(fromDate.getDate() - 7);
-        this.dates$.next({ fromDate, toDate });
-
-        var currentAccount = await this.accountSettingService.getCurrentSetting();
-        this.isTaxInclusive = currentAccount.taxType;
-    }
-
-    private async loadSales() {
-        try {
-            this.spinnerDisplay = "block";
-            this.totalNoSales = 0;
-            this.totalSales = 0;
-
-            const filters = { state: ['completed', 'refund'], completed: true };
-
-            const sales = await this.salesService.searchSales(
-                this.selectedStore ? [this.syncContext.currentPos.id] : [],
-                null,
-                null,
-                filters,
-                { startDate: moment.utc(this.fromDate).format(), endDate: moment.utc(this.toDate).format() },
-                null,
-                null
-            );
-
-            const salesObj = sales.reduce((obj, sale) => {
-                const created = moment(sale.created).format("MMM D YYYY");
-                if (!obj[created]) {
-                    obj[created] = { noOfSales: 0, netAmount: 0, taxAmount: 0, total: 0, saleAverage: 0 };
-                }
-                obj[created].date = created;
-                obj[created].noOfSales += 1;
-                obj[created].netAmount += Math.round(sale.taxTotal - sale.tax);
-                obj[created].taxAmount += Math.round(sale.tax);
-                obj[created].total += Math.round(sale.taxTotal);
-                return obj;
-            }, {});
-
-            this.sales = Object.keys(salesObj).sort().map(key => {
-                this.totalNoSales += salesObj[key].noOfSales;
-                this.totalSales += salesObj[key].total;
-                salesObj[key].saleAverage = this.helperService.round2Dec(salesObj[key].total / salesObj[key].noOfSales);
-
-                return salesObj[key]
-            });
-
-            this.totalSaleAverage = this.helperService.round2Dec(this.totalSales / this.totalNoSales);
-
-            this.spinnerDisplay = "none";
-            this.loadPurchaseChart();
-        } catch (ex) {
-
-        }
-    }
-
-    private loadPurchaseChart() {
-        const labels = [], data = [];
-        this.sales.map(sale => {
-            labels.push(sale.date);
-            data.push(sale.total);
-        })
-        this.lineChart = new Chart(this.lineCanvas.nativeElement, {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: "Total Sales Amount",
-                        fill: false,
-                        lineTension: 0.1,
-                        backgroundColor: "rgba(75,192,192,0.4)",
-                        borderColor: "rgba(75,192,192,1)",
-                        borderCapStyle: 'butt',
-                        borderDash: [],
-                        borderDashOffset: 0.0,
-                        borderJoinStyle: 'miter',
-                        pointBorderColor: "rgba(75,192,192,1)",
-                        pointBackgroundColor: "#fff",
-                        pointBorderWidth: 1,
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                        pointHoverBorderColor: "rgba(220,220,220,1)",
-                        pointHoverBorderWidth: 2,
-                        pointRadius: 5,
-                        pointHitRadius: 10,
-                        data,
-                        spanGaps: false,
-                    }
-                ]
-            },
-            options: {
-                maintainAspectRatio: false
-            }
-
-        });
-    }
+	private loadPurchaseChart() {
+		const labels = [],
+			data = [];
+		this.sales.map((sale) => {
+			labels.push(this.dateTimeService.getTimezoneDate(sale.date).format(this.chartDatePattern));
+			data.push(sale.total.toFixed(2));
+		});
+		this.lineChart = new Chart(this.lineCanvas.nativeElement, {
+			type: 'line',
+			data: {
+				labels,
+				datasets: [
+					{
+						label: 'Total Sales Amount',
+						fill: false,
+						lineTension: 0.1,
+						backgroundColor: 'rgba(75,192,192,0.4)',
+						borderColor: 'rgba(75,192,192,1)',
+						borderCapStyle: 'butt',
+						borderDash: [],
+						borderDashOffset: 0.0,
+						borderJoinStyle: 'miter',
+						pointBorderColor: 'rgba(75,192,192,1)',
+						pointBackgroundColor: '#fff',
+						pointBorderWidth: 1,
+						pointHoverRadius: 5,
+						pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+						pointHoverBorderColor: 'rgba(220,220,220,1)',
+						pointHoverBorderWidth: 2,
+						pointRadius: 5,
+						pointHitRadius: 10,
+						data,
+						spanGaps: false
+					}
+				]
+			},
+			options: {
+				maintainAspectRatio: false
+			}
+		});
+	}
 }

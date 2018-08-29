@@ -137,7 +137,7 @@ export class PaymentsPage {
     await this.paymentService.completePayment(this.sale, this.syncContext.currentStore._id, this.doRefund);
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
-      this.printSale(false);
+      await this.printSale(false);
       this.sale.state != "refund" && await this.printService.printProductionLinePrinter(this.sale);
     } catch (error) { }
   }

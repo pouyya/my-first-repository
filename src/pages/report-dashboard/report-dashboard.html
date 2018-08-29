@@ -9,58 +9,71 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-row>
-    <ion-col class="removePadding" col-md-3>
-      <ion-select class="white-bg full-width" [(ngModel)]="selectedStore" (ngModelChange)="loadSales()">
-        <ion-option *ngFor="let location of locations" [value]="location.value">{{ location.text }}</ion-option>
-      </ion-select>
+  <ion-grid *ngIf="!networkStatus">
+    <ion-row class="stock-header">
+      <ion-col>
+        <ion-buttons network-monitor-report></ion-buttons>
+      </ion-col>
+      <ion-col col-md-3>
+        internet unavailable!
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-row *ngIf="networkStatus">
+    <ion-col col-md-12>
+      <ion-row>
+        <ion-col class="removePadding" col-md-3>
+          <ion-select class="white-bg full-width" [(ngModel)]="selectedStore" (ngModelChange)="loadSales()">
+            <ion-option *ngFor="let location of locations" [value]="location.value">{{ location.text }}</ion-option>
+          </ion-select>
+        </ion-col>
+      </ion-row>
+      <date-duration-picker [dates$]="dates$" [selectedValue]="selectedValue"></date-duration-picker>
+      <ion-grid>
+        <div style="margin-top:25px" text-center>
+          <ion-row>
+            <ion-col>Sales Count Total</ion-col>
+            <ion-col></ion-col>
+            <ion-col>Sales Average</ion-col>
+            <ion-col></ion-col>
+            <ion-col>Total({{this.isTaxInclusive ? 'inc' : 'exc'}}. tax)</ion-col>
+          </ion-row>
+          <ion-row style="font-size:25px">
+            <ion-col>{{totalNoSales}}</ion-col>
+            <ion-col>X</ion-col>
+            <ion-col>${{totalSaleAverage}}</ion-col>
+            <ion-col>=</ion-col>
+            <ion-col>${{totalSales}}</ion-col>
+          </ion-row>
+        </div>
+        <ion-card class="line-graph">
+          <ion-card-header>
+            Sales Summary Chart
+          </ion-card-header>
+          <ion-card-content style="height: 87%">
+            <canvas #lineCanvas></canvas>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-row class="row-bold-font">
+          <ion-col>Date</ion-col>
+          <ion-col>No of sales</ion-col>
+          <ion-col>Net amount</ion-col>
+          <ion-col>Tax amount</ion-col>
+          <ion-col>Total</ion-col>
+          <ion-col>Sale Average</ion-col>
+        </ion-row>
+        <div>
+          <ion-row class="row-border" *ngFor="let sale of salesSummary">
+            <ion-col>{{sale.date | localDate:'DD MMM YYYY'}}</ion-col>
+            <ion-col>{{sale.noOfSales}}</ion-col>
+            <ion-col>{{sale.netAmount}}</ion-col>
+            <ion-col>{{sale.taxAmount}}</ion-col>
+            <ion-col>{{sale.total}}</ion-col>
+            <ion-col>{{sale.saleAverage}}</ion-col>
+          </ion-row>
+        </div>
+      </ion-grid>
     </ion-col>
   </ion-row>
-  <date-duration-picker [dates$]="dates$" [selectedValue]="selectedValue"></date-duration-picker>
-  <ion-grid>
-    <div style="margin-top:25px" text-center>
-      <ion-row>
-        <ion-col>Sales Count Total</ion-col>
-        <ion-col></ion-col>
-        <ion-col>Sales Average</ion-col>
-        <ion-col></ion-col>
-        <ion-col>Total({{this.isTaxInclusive ? 'inc' : 'exc'}}. tax)</ion-col>
-      </ion-row>
-      <ion-row style="font-size:25px">
-        <ion-col>{{totalNoSales}}</ion-col>
-        <ion-col>X</ion-col>
-        <ion-col>${{totalSaleAverage}}</ion-col>
-        <ion-col>=</ion-col>
-        <ion-col>${{totalSales}}</ion-col>
-      </ion-row>
-    </div>
-    <ion-card class="line-graph">
-      <ion-card-header>
-        Sales Summary Chart
-      </ion-card-header>
-      <ion-card-content style="height: 87%">
-        <ion-spinner class="spinner-center" [style.display]="spinnerDisplay" name="bubbles"></ion-spinner>
-        <canvas #lineCanvas></canvas>
-      </ion-card-content>
-    </ion-card>
-
-    <ion-row class="row-bold-font">
-      <ion-col>Date</ion-col>
-      <ion-col>No of sales</ion-col>
-      <ion-col>Net amount</ion-col>
-      <ion-col>Tax amount</ion-col>
-      <ion-col>Total</ion-col>
-      <ion-col>Sale Average</ion-col>
-    </ion-row>
-    <div>
-      <ion-row class="row-border" *ngFor="let sale of sales">
-        <ion-col>{{sale.date | localDate:'DD MMM YYYY'}}</ion-col>
-        <ion-col>{{sale.noOfSales}}</ion-col>
-        <ion-col>{{sale.netAmount}}</ion-col>
-        <ion-col>{{sale.taxAmount}}</ion-col>
-        <ion-col>{{sale.total}}</ion-col>
-        <ion-col>{{saleAverage}}</ion-col>
-      </ion-row>
-    </div>
-  </ion-grid>
 </ion-content>

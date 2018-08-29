@@ -178,7 +178,8 @@ export class PrintService {
         receiptProviderContext.shopName = this.syncContext.currentStore.name;
         receiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
         receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
-        receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage;
+        receiptProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
+        receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage || '';
 
         const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
 
@@ -238,11 +239,14 @@ export class PrintService {
       item.quantity = count;
       return count > 0;
     });
+
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
+    
     productionLinePrinters.forEach(productionLinePrinter => {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = productionLinePrinter.sale;
+      productionLinePrinterProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
 
       const printerProvider = new EPosPrinterProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
 
