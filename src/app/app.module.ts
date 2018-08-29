@@ -181,6 +181,7 @@ import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+import {PingService} from "../services/pingService";
 
 @NgModule({
   declarations: [
@@ -439,6 +440,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     Utilities,
     PrintService,
     BrandService,
+    PingService,
     StoreService,
     SalesServices,
     ShiftService,

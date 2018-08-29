@@ -45,6 +45,10 @@ export class UserService {
     return null;
   }
 
+  public setUserEmail(email: string): Promise<any> {
+    return this.storage.set("user-email", email);
+  }
+
   public setAccessToken(access_token: string): Promise<any> {
     return this.storage.set("jwt-token", access_token);
   }
@@ -56,5 +60,12 @@ export class UserService {
   public async getUserToken(): Promise<string> {
     var currentUser = await this.getUser();
     return currentUser.access_token;
+  }
+
+  public async getUserEmail(): Promise<string> {
+    var userEmail = await this.storage.get("user-email");
+    if (userEmail) {
+        return userEmail;
+    }
   }
 }

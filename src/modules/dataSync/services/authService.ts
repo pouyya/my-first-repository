@@ -35,7 +35,8 @@ export class AuthService {
     return this.http.post(ConfigService.securityTokenEndPoint(), payLoad.toString(), { headers: headers })
       .flatMap(async (response: Response) => {
         let user = response.json();
-        await this.userService.setAccessToken(user.token)
+        await this.userService.setUserEmail(user.user_email);
+        await this.userService.setAccessToken(user.token);
 
         return this.getUserProfile(user.token);
       });
@@ -99,6 +100,21 @@ export class AuthService {
     let url = ConfigService.forgotPasswordEndPoint();
     return this.http
       .get(`${url}?email=${email}`)
+      .map((response: Response) => <ServerResponse[]>response.json());
+  }
+
+  /**
+   * Sends ping along with some data information to the server
+   * @param email
+   * @returns {Observable<any>}
+   */
+  public async ping(proDeployVersion: string, userEmail: string, currentStore: string, currentPos: string,
+                    currentPage: string, time: string) {
+      const url = ConfigService.statusEndPoint();
+      const data = {proDeployVersion, userEmail, currentStore, currentPos, page: currentPage, dateTime: time};
+      const headers = new Headers({ 'Content-Type': 'application/json' });
+    return this.http
+      .post(url, data, {headers})
       .map((response: Response) => <ServerResponse[]>response.json());
   }
 

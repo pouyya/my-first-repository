@@ -20,5 +20,6 @@ export const ENV = {
   },
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
-  }
+  },
+  pingInterval: 5 * 60 *1000
 }; 
