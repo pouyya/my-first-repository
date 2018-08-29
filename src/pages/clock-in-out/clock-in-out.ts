@@ -12,6 +12,8 @@ import { Observable } from 'rxjs/Rx';
 import { POS } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
+import { DateTimeService } from './../../services/dateTimeService';
+
 import _ from "lodash";
 
 @PageModule(() => SalesModule)
@@ -21,6 +23,7 @@ import _ from "lodash";
 })
 export class ClockInOutPage {
 
+  
   public employee: Employee;
   public employeeAlias: string;
   public pos: POS;
@@ -48,6 +51,7 @@ export class ClockInOutPage {
     private storeService: StoreService,
     private loading: LoadingController,
     private zone: NgZone,
+    private dateTimeService: DateTimeService,
     private syncContext: SyncContext
   ) {
 
@@ -192,7 +196,9 @@ export class ClockInOutPage {
    */
   public async markTime(button: any, time?: Date): Promise<any> {
     try {
-      const type = await this.prepareAndInsertTimeStamp(time, button);
+
+      let utcDate= this.dateTimeService.getCurrentUTCDate().toDate();
+      const type = await this.prepareAndInsertTimeStamp( utcDate, button);
       this.dismiss();
       let toast = this.toastCtrl.create({
         message: this.messagePlaceholder,
@@ -213,7 +219,7 @@ export class ClockInOutPage {
     let newTimestamp: EmployeeTimestamp = new EmployeeTimestamp();
     newTimestamp.employeeId = this.employee._id;
     newTimestamp.storeId = this.syncContext.currentStore._id;
-    newTimestamp.time = time || new Date();
+    newTimestamp.time = time;
     newTimestamp.type = this.mappingTimestamp[button.next];
 
     if (button.next == WorkingStatusEnum.ClockedOut && this.employee.workingStatus.status === WorkingStatusEnum.BreakStart) {
@@ -228,7 +234,7 @@ export class ClockInOutPage {
     this.employee.workingStatus.status = button.next;
     this.employee.workingStatus.posId = this.syncContext.currentPos.id;
     this.employee.workingStatus.storeId = this.syncContext.currentStore._id;
-    this.employee.workingStatus.time = new Date();
+    this.employee.workingStatus.time = time;
 
     promises.push(this.employeeTimestampService.add(newTimestamp));
     promises.push(this.employeeService.update(this.employee));
