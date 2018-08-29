@@ -414,7 +414,6 @@ export class BasketComponent {
     modal.onDidDismiss(data => {
       if (data.status) {
         if (!this.isSaleParked) {
-          this.isSaleParked = true;
           this.saleParked.emit(true);
         }
         let confirm = this.alertController.create({
@@ -424,6 +423,7 @@ export class BasketComponent {
             {
               'text': 'OK',
               handler: () => {
+                this.isSaleParked = false;
                 this.salesService.instantiateSale().then((sale: any) => {
                   this.customer = null;
                   this.sale = sale;
