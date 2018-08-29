@@ -181,7 +181,9 @@ import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
 import {PingService} from "../services/pingService";
+
 
 @NgModule({
   declarations: [
@@ -209,6 +211,7 @@ import {PingService} from "../services/pingService";
     SplitPaymentPage,
     CashModal,
     CreateProductModal,
+    CreateStoreModal,
     CreditCardModal,
     ShiftModalPage,
     ParkSale,
@@ -346,6 +349,7 @@ import {PingService} from "../services/pingService";
     SplitPaymentPage,
     CashModal,
     CreateProductModal,
+    CreateStoreModal,
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,

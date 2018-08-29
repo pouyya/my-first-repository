@@ -6,7 +6,7 @@
     </button>
 
     <ion-buttons end>
-      <button ion-button icon-only (click)="showDetail()">
+      <button ion-button icon-only (click)="createStore()">
         <ion-icon name="add"></ion-icon>
       </button>
     </ion-buttons>
@@ -15,8 +15,10 @@
 </ion-header>
 <ion-content>
   <ion-row *ngIf="searchFilters.length">
-    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined" *ngFor="let filter of searchFilters">
-      <ion-searchbar  *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true" placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
+    <ion-col [attr.col-md-12]="filter.type == 'Text' ? '' : undefined" [attr.col-md-2]="filter.type == 'Boolean' ? '' : undefined"
+      *ngFor="let filter of searchFilters">
+      <ion-searchbar *ngIf="filter.type == 'Text'" [(ngModel)]="models[filter['variableName']]" debounce="500" animated="true"
+        placeholder="{{filter.placeholderText}}" (ionInput)="searchByText(filter, models[filter['variableName']])"></ion-searchbar>
     </ion-col>
   </ion-row>
   <ion-list inset *ngFor="let store of items ; let idx=index">
@@ -24,7 +26,9 @@
       <ion-item (click)="showDetail(store)">
         <ion-grid>
           <ion-row>
-            <ion-col col-md-2 *ngFor="let column of displayColumns;"> <h2 class="item-title" item-left>{{store[column.variableName]}}</h2></ion-col>
+            <ion-col col-md-2 *ngFor="let column of displayColumns;">
+              <h2 class="item-title" item-left>{{store[column.variableName]}}</h2>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
