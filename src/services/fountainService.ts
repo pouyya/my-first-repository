@@ -1,25 +1,36 @@
 import { Injectable } from '@angular/core';
-import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
+import { SyncContext } from "./SyncContext";
+import { StoreService } from "./storeService";
+import { AccountSettingService } from "../modules/dataSync/services/accountSettingService";
+import {AccountSetting} from "../modules/dataSync/model/accountSetting";
 
 @Injectable()
 export class FountainService {
-
+  private accountSettings: AccountSetting;
   constructor(
-    private accountSettingService: AccountSettingService
+  	private accountSettingService: AccountSettingService,
+    private syncContext: SyncContext,
+    private storeService: StoreService
   ) { }
 
+  private async getAccountSettings(){
+    if(!this.accountSettings){
+      this.accountSettings = await this.accountSettingService.getCurrentSetting();
+    }
+    return this.accountSettings;
+  }
   public async getReceiptNumber() {
-    var currentAccountSetting = await this.accountSettingService.getCurrentSetting();
-    currentAccountSetting.saleLastNumber = (currentAccountSetting.saleLastNumber || 0) + 1;
-    await this.accountSettingService.update(currentAccountSetting);
-    return `${currentAccountSetting.saleNumberPrefix || 'RC'}${currentAccountSetting.saleLastNumber}`;
+    const currentAccountSetting = await this.getAccountSettings();
+    this.syncContext.currentStore.saleLastNumber = (this.syncContext.currentStore.saleLastNumber || 0) + 1;
+    await this.storeService.update(this.syncContext.currentStore);
+    return `${currentAccountSetting.saleNumberPrefix || 'RC'}${this.syncContext.currentStore.saleLastNumber}`;
   }
 
   public async getClosureNumber() {
-    var currentAccountSetting = await this.accountSettingService.getCurrentSetting();
-    currentAccountSetting.closureLastNumber = (currentAccountSetting.closureLastNumber || 0) + 1;
-    await this.accountSettingService.update(currentAccountSetting);
-    return `${currentAccountSetting.closureNumberPrefix || 'CL'}${currentAccountSetting.closureLastNumber}`;
+    const currentAccountSetting = await this.getAccountSettings();
+    this.syncContext.currentStore.closureLastNumber = (this.syncContext.currentStore.closureLastNumber || 0) + 1;
+    await this.storeService.update(this.syncContext.currentStore);
+    return `${currentAccountSetting.closureNumberPrefix || 'CL'}${this.syncContext.currentStore.closureLastNumber}`;
   }
 
   public async getOrderNumber() {

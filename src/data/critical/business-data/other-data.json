@@ -48,7 +48,8 @@
   "city": "{CityName}",
   "timezone": "{TimeZone}",
   "email": "{EmailAddress}",
-  "twitter": ""
+  "twitter": "",
+  "saleLastNumber": 0
 },{
     "_id": "2017-11-29T05:35:15.263Z",
     "entityTypeName": "AccountSetting",
@@ -69,7 +70,6 @@
       "noOfPaths": 17
     },
     "timeOffset": "{TimeZone}",
-    "saleLastNumber": 0,
     "saleNumberPrefix": ""
   },{
     "_id": "2017-07-19T21:43:48.073Z",
