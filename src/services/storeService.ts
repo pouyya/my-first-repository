@@ -1,9 +1,10 @@
 import { AppService } from './appService';
 import { Injectable } from '@angular/core';
-import { Store, POS } from '../model/store'
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { Store, POS, Device } from '../model/store'
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { SyncContext } from "./SyncContext";
 import * as moment from "moment-timezone";
+import { PrintService } from './printService';
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
@@ -42,28 +43,50 @@ export class StoreService extends BaseEntityService<Store> {
   }
 
   public openRegister(register: POS, openingAmount: number, openingNote: string): Promise<Store> {
-      register.openTime = moment().utc().format();
-      register.status = true;
-      register.openingAmount = Number(openingAmount);
-      register.openingNote = openingNote;
-      return this.update(this.syncContext.currentStore);
+    register.openTime = moment().utc().format();
+    register.status = true;
+    register.openingAmount = Number(openingAmount);
+    register.openingNote = openingNote;
+    return this.update(this.syncContext.currentStore);
   }
 
-  public getPosById(posId: string, store?: Store){
+  public getPosById(posId: string, store?: Store) {
     const currentStore = store || this.syncContext.currentStore;
-    const pos = currentStore.POS.filter( pos => pos.id === posId);
+    const pos = currentStore.POS.filter(pos => pos.id === posId);
     return pos.length && pos[0] || null;
   }
 
-  public async addPOS(pos: POS[], store?: Store){
+  public async addPOS(pos: POS[], store?: Store) {
     const currentStore = store || this.syncContext.currentStore;
     currentStore.POS = [...currentStore.POS, ...pos];
     await this.update(currentStore);
   }
-  public async updatePOS(pos: POS, store?: Store){
+
+  public async addFirstStore(pos: POS, store?: Store, ipAddress?: string, printerPort?: number, timezone?: { code: string; name: string }) {
+    const currentStore = store;
+    pos.name = "Main";
+    currentStore.POS = [...currentStore.POS, ...[pos]];
+    currentStore.timezone = timezone.code;
+    let device: Device = {
+      "name": "Main Printer",
+      "type": 2,
+      "posIds": [],
+      "ipAddress": "192.168.1.1",
+      "printerPort": 123,
+      "associatedPurchasableItemIds": []
+    };
+    device.ipAddress = ipAddress;
+    device.printerPort = printerPort;
+    !currentStore.devices && (currentStore.devices = []);
+    currentStore.devices.push(device);
+
+    await this.update(currentStore);
+  }
+
+  public async updatePOS(pos: POS, store?: Store) {
     const currentStore = store || this.syncContext.currentStore;
-    currentStore.POS.some( ( register, index ) => {
-      if(register.id === pos.id){
+    currentStore.POS.some((register, index) => {
+      if (register.id === pos.id) {
         currentStore.POS[index] = pos;
         return true;
       }
@@ -71,23 +94,23 @@ export class StoreService extends BaseEntityService<Store> {
     await this.update(currentStore);
   }
 
-  public async removePOS(pos: POS){
-      this.syncContext.currentStore.POS.some( ( register, index ) => {
-          if(register.id === pos.id){
-              this.syncContext.currentStore.POS.splice(index, 1);
-              return true;
-          }
-      });
-      await this.update(this.syncContext.currentStore);
+  public async removePOS(pos: POS) {
+    this.syncContext.currentStore.POS.some((register, index) => {
+      if (register.id === pos.id) {
+        this.syncContext.currentStore.POS.splice(index, 1);
+        return true;
+      }
+    });
+    await this.update(this.syncContext.currentStore);
   }
 
   public isThisLastPosClosingInStore(posId: string): boolean {
     let isLastPos = true;
-    this.syncContext.currentStore.POS.some( pos => {
-        if(pos.openTime && pos.id !== posId){
-            isLastPos = false;
-            return true;
-        }
+    this.syncContext.currentStore.POS.some(pos => {
+      if (pos.openTime && pos.id !== posId) {
+        isLastPos = false;
+        return true;
+      }
     });
     return isLastPos;
   }

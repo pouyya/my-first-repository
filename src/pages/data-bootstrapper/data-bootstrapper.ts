@@ -7,15 +7,14 @@ import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
-import { NavController, ModalController, LoadingController, ToastController } from 'ionic-angular';
+import {NavController, ModalController, LoadingController, ToastController, NavParams} from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { DateTimeService } from '../../services/dateTimeService';
 import { StoreService } from '../../services/storeService';
-import { TranslateService } from '@ngx-translate/core';
 import { SyncContext } from "../../services/SyncContext";
 import { BoostraperModule } from '../../modules/bootstraperModule';
 import { PageModule } from '../../metadata/pageModule';
+import {PingService} from "../../services/pingService";
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -36,21 +35,22 @@ export class DataBootstrapper {
 
   constructor(
     private accountSettingService: AccountSettingService,
-    private dateTimeService: DateTimeService,
     private storeService: StoreService,
     private userService: UserService,
+    private pingService: PingService,
     private employeeService: EmployeeService,
     private pluginService: PluginService,
     private navCtrl: NavController,
+    private navParams: NavParams,
     private modalCtrl: ModalController,
     private toastCtrl: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
-    private translateService: TranslateService,
+    
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
-    this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`
+    this.securityMessage = `To open the app, please provide your PIN number (No Store Selected)`;
     this._initialPage = Sales;
     this.headerTitle = "Launching...";
     this.hideSpinner = false;
@@ -59,15 +59,14 @@ export class DataBootstrapper {
 
   /** @AuthGuard */
   async ionViewCanEnter() {
-    this.translateService.setDefaultLang('au');
-    this.translateService.use('au');
-    
+    const isAfterSetupLogin = this.navParams.get('afterSetupLogin');
     this._user = await this.userService.getDeviceUser();
     if (this._user.currentStore) {
       this.store = await this.storeService.get(this._user.currentStore);
       this.securityMessage = `To open the app for store ${this.store.name}, please provide your PIN number`
     }
-    return this.enterPin();
+    isAfterSetupLogin && (this.haveAccess = true);
+    return isAfterSetupLogin || this.enterPin();
   }
 
   async ionViewDidLoad() {
@@ -111,6 +110,7 @@ export class DataBootstrapper {
         let store = await this.storeService.get(this._user.currentStore);
         this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`;
         loader.dismiss();
+        this.pingService.init();
         await this.openNextPage();
       }
     });
@@ -122,14 +122,12 @@ export class DataBootstrapper {
     let currentPos: POS;
     let currentStore: Store;
 
-    this.dateTimeService.timezone = accountSettings.timeOffset || null;
-
     if (!this._user.currentPos || !this._user.currentStore) {
 
-      if(!store){
-        let allStores =  await this.storeService.getAll();
+      if (!store) {
+        let allStores = await this.storeService.getAll();
         currentStore = allStores[0];
-      }else{
+      } else {
         currentStore = store;
       }
 
@@ -139,15 +137,17 @@ export class DataBootstrapper {
       this._user.currentStore = currentStore._id;
       this.userService.setSession(this._user);
     } else {
-        currentStore = await this.storeService.get(this._user.currentStore);
-        currentStore.POS.some( pos => {
-          if(pos.id === this._user.currentPos){
-            currentPos = pos;
-            return true;
-          }
-        });
+      currentStore = await this.storeService.get(this._user.currentStore);
+      currentStore.POS.some(pos => {
+        if (pos.id === this._user.currentPos) {
+          currentPos = pos;
+          return true;
+        }
+      });
     }
     this.syncContext.initialize(currentStore, currentPos.id);
+    this.syncContext.appTimezone = accountSettings.timeOffset;
+    this.pingService.init();
     this.navCtrl.setRoot(this._initialPage);
   }
 

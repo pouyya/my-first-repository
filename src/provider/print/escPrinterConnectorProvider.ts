@@ -1,10 +1,11 @@
 import * as encoding from "text-encoding";
-import { Pro } from "@simpleidea/ionic-pro";
+import { Pro } from "@ionic/pro";
+import { ErrorLoggingService } from "../../services/ErrorLoggingService";
 
 export class EscPrinterConnectorProvider {
     static socket: any = {};
 
-    constructor(private ip: string, private port: number) {
+    constructor(private ip: string, private port: number, private errorLoggingService: ErrorLoggingService) {
         this.port = Number(this.port);
         if ((<any>window).Socket && !EscPrinterConnectorProvider.socket[ip]) {
             EscPrinterConnectorProvider.socket[ip] = new (<any>window).Socket();
@@ -31,7 +32,7 @@ export class EscPrinterConnectorProvider {
                 return EscPrinterConnectorProvider.write(currentSocket, uint8array);
             }
             catch (error) {
-                Pro.monitoring.exception(error);
+                this.errorLoggingService.exception(error);
                 throw error;
             }
         }
@@ -52,7 +53,7 @@ export class EscPrinterConnectorProvider {
 
     onError(errorMessage: any) {
         var message = 'error happend while communicating with device. The error: ' + errorMessage;
-        Pro.monitoring.log(message, { level: 'error' })
+        this.errorLoggingService.log(message, { level: 'error' });
         console.error(message);
     }
 

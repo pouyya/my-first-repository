@@ -1,4 +1,4 @@
-import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 import {DisplayColumn, SearchFilter, FilterType} from "../metadata/listingModule";
 
 export class Brand extends DBBasedEntity {

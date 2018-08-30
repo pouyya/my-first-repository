@@ -1,4 +1,4 @@
-import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';    
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';    
 
 export class AccountSetting extends DBBasedEntity {
     public name: string;
@@ -6,14 +6,20 @@ export class AccountSetting extends DBBasedEntity {
     public taxType: boolean;
     public screenAwake: boolean;
     public trackEmployeeSales: boolean;
+    public isInitialized: boolean;
     public defaultTax: string;
     public taxEntity: string;
     public defaultIcon: Icon;
-    public timeOffset: string;
+    public timeOffset: any;
     public saleNumberPrefix: string;
     public saleLastNumber: number = 0;
     public closureNumberPrefix: string;
     public closureLastNumber: number = 0;
+
+    constructor(){
+      super();
+      this.isInitialized = false;
+    }
 }
 
 class Icon {

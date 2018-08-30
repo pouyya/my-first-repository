@@ -2,7 +2,7 @@ import { ENV } from '@app/env';
 
 export class ConfigService {
 
-    static _internalCriticalDBName: string = "";
+    static _internalCriticalDBName: string = '';
     static get internalCriticalDBName(): string {
         return this._internalCriticalDBName;
     }
@@ -10,7 +10,7 @@ export class ConfigService {
         this._internalCriticalDBName = v;
     }
 
-    static _externalCriticalDBName: string = "";
+    static _externalCriticalDBName: string = '';
     static get externalCriticalDBName(): string {
         return this._externalCriticalDBName;
     }
@@ -18,7 +18,7 @@ export class ConfigService {
         this._externalCriticalDBName = v;
     }
 
-    static _internalDBName: string = "";
+    static _internalDBName: string = '';
     static get internalDBName(): string {
         return ConfigService._internalDBName;
     }
@@ -27,15 +27,15 @@ export class ConfigService {
         ConfigService._internalDBName = internalDBName;
     }
 
-    static _externalDBUrl: string = "";
+    static _externalDBUrl: string = '';
     static get externalDBUrl(): string {
-        return ConfigService._externalDBUrl;;
+        return ConfigService._externalDBUrl;
     }
     static set externalDBUrl(externalDBBaseUrl: string) {
         ConfigService._externalDBUrl = externalDBBaseUrl;
     }
 
-    static _externalDBName: string = "";
+    static _externalDBName: string = '';
     static get externalDBName(): string {
         return ConfigService._externalDBName;
     }
@@ -44,7 +44,7 @@ export class ConfigService {
         ConfigService._externalDBName = currentExternalDBName;
     }
 
-    static _externalAuditDBName: string = "";
+    static _externalAuditDBName: string = '';
     static get externalAuditDBName(): string {
         return this._externalAuditDBName;
     }
@@ -52,7 +52,7 @@ export class ConfigService {
         this._externalAuditDBName = v;
     }
 
-    static _internalAuditDBName: string = "";
+    static _internalAuditDBName: string = '';
     static get internalAuditDBName(): string {
         return this._internalAuditDBName;
     }
@@ -61,15 +61,15 @@ export class ConfigService {
     }
 
     static get currentFullExternalDBUrl(): string {
-        return ConfigService.externalDBUrl + "/" + ConfigService.externalDBName;
+        return ConfigService.externalDBUrl + '/' + ConfigService.externalDBName;
     }
 
     static get currentCriticalFullExternalDBUrl(): string {
-        return ConfigService.externalDBUrl + "/" + ConfigService.externalCriticalDBName;
+        return ConfigService.externalDBUrl + '/' + ConfigService.externalCriticalDBName;
     }
 
     static get currentAuditDBUrl(): string {
-        return ConfigService.externalDBUrl + "/" + ConfigService.externalAuditDBName;
+        return ConfigService.externalDBUrl + '/' + ConfigService.externalAuditDBName;
     }
 
     static isDevelopment(): boolean {
@@ -81,32 +81,44 @@ export class ConfigService {
     }
 
     static securityTokenEndPoint(): string {
-        return ConfigService.securityServerBaseUrl() + "/token";
+        return ConfigService.securityServerBaseUrl() + '/token';
     }
 
     static registeEndPoint(): string {
-        return ConfigService.apiServerBaseUrl() + "/common/register";
+        return ConfigService.apiServerBaseUrl() + '/common/register';
+    }
+
+    static statusEndPoint(): string {
+        return ENV.security.serverUrl + "/v1/api/user/status";
     }
 
     static forgotPasswordEndPoint(): string {
-        return ENV.security.serverUrl + "/wp-content/plugins/simplepos-account-management/forget-password.php";
+        return ENV.security.serverUrl + '/wp-content/plugins/simplepos-account-management/forget-password.php';
+    }
+
+    static salesReportEndPoint(): string {
+        return ENV.webapp.baseUrl + ENV.webapp.salesReportUrl;
     }
 
     static securityUserInfoEndPoint(): string {
-        return ConfigService.apiServerBaseUrl() + "/me";
+        return ConfigService.apiServerBaseUrl() + '/me';
     }
 
     static mailSenderAPI(): string {
-        return ConfigService.apiServerBaseUrl() + "/common/SendEmail";
+        return ConfigService.apiServerBaseUrl() + '/common/SendEmail';
     }
 
-    
+
     static securityServerBaseUrl(): string {
-        return ENV.security.serverUrl + "/wp-json/jwt-auth/v1";
+        return ENV.security.serverUrl + '/wp-json/jwt-auth/v1';
     }
 
     static apiServerBaseUrl(): string {
-        return ENV.security.serverUrl + "/wp-json/wp/v2/users";
+        return ENV.security.serverUrl + '/wp-json/wp/v2/users';
+    }
+
+    static inventoryReportUrl(): string {
+        return ENV.webapp.baseUrl + ENV.webapp.inventoryReportUrl;
     }
 
     static ionicDeployAppId(): string {
@@ -119,5 +131,9 @@ export class ConfigService {
 
     static ApseeApiKey(): string {
         return ENV.appSee.apikey;
+    }
+
+    static envName(): string {
+        return ENV.name;
     }
 }

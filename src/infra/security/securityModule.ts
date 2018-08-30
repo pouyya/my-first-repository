@@ -8,13 +8,21 @@ export function SecurityModule(accessRights?: AccessRightItem, persistsCurrentEm
 	return function (target: Function): any {
 		Object.defineProperty(target.prototype, "PageAccessRightItems", {
 			get: function () {
-        return accessRights ? [accessRights] : [];
+				return accessRights ? [accessRights] : [];
 			},
 			enumerable: false,
 			configurable: false
 		});
 
+		target.prototype.baseIonViewCanEnter = target.prototype.ionViewCanEnter;
+
 		target.prototype.ionViewCanEnter = async function (): Promise<boolean> {
+
+			if (target.prototype.baseIonViewCanEnter) {
+				if (!await target.prototype.baseIonViewCanEnter.bind(this)()) {
+					return false;
+				}
+			}
 
 			let securityService = ServiceLocator.injector.get<SecurityService>(SecurityService);
 			let toastController = ServiceLocator.injector.get<ToastController>(ToastController);
@@ -26,7 +34,7 @@ export function SecurityModule(accessRights?: AccessRightItem, persistsCurrentEm
 			}
 
 			let message: string;
-			switch(securityResult.reason) {
+			switch (securityResult.reason) {
 				case SecurityResultReason.notEnoughAccess:
 					message = 'You do not have enough access rights!';
 					break;

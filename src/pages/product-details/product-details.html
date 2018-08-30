@@ -27,10 +27,10 @@
       </button>
     </ion-fab-list>
   </ion-fab>
-  <form (ngSubmit)="saveProducts()" #productForm="ngForm">
+  <form (ngSubmit)="saveProducts(true)" #productForm="ngForm">
     <ion-list>
       <ion-item>
-        <ion-label class="item-name" stacked>Name</ion-label>
+        <ion-label class="item-name" stacked>Name*</ion-label>
         <ion-input type="text" [(ngModel)]="productItem.name" name="name" required></ion-input>
       </ion-item>
       <ion-item>
@@ -108,7 +108,7 @@
 
       <ion-col col-md-2>
         <ion-item item-content>
-          <ion-label color="primary" stacked>= Retail Price (Excl.)</ion-label>
+          <ion-label color="primary" stacked>= Retail Price (Excl.)*</ion-label>
           <ion-input type="number" [(ngModel)]="defaultPriceBook.item.retailPrice" (change)="calculate('retailPrice', defaultPriceBook)"
             required></ion-input>
         </ion-item>
@@ -118,7 +118,8 @@
         <ion-item item-content>
           <ion-label color="primary" stacked>+ Sales Tax</ion-label>
           <ion-select [(ngModel)]="defaultPriceBook.tax" (ionChange)="calculate('salesTax', defaultPriceBook)">
-            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax
+              - ' + tax.name : tax.name }}
               <small>({{ tax.rate }}%)</small>
             </ion-option>
           </ion-select>
@@ -174,10 +175,11 @@
         <ion-item>
           <color-picker [selectedColor$]="color"></color-picker>
         </ion-item>
+
         <ion-item>
-          <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
-          <span *ngIf="selectedIcon">
-            <sp-icon [icon]="productItem.icon.name"></sp-icon>&nbsp;{{ productItem.icon.name }}</span>
+          <button class="pull-left" ion-button (click)="selectIcon()">Select Icon</button>
+          <sp-icon class="pull-left" *ngIf="selectedIcon" [icon]="icons[productItem.icon.name]"></sp-icon>
+          <span *ngIf="selectedIcon">&nbsp;{{ productItem.icon.name }}</span>
         </ion-item>
       </ion-list>
     </ion-row>
@@ -225,7 +227,7 @@
       </ion-col>
     </ion-row>
     <ion-row *ngFor="let history of stockHistory[selectedStore]">
-      <ion-col col-md-2>{{ history.createdAt | localDate:'MMM DD, YYYY h:mm:ss a' }}</ion-col>
+      <ion-col col-md-2>{{ history.createdAt | localDate:'DD/M/YYYY, h:mm a' }}</ion-col>
       <ion-col col-md-2>{{ history.reason }}</ion-col>
       <ion-col col-md-2>{{ history.value > 0 ? '+'+history.value : history.value }}</ion-col>
       <ion-col col-md-2>{{ history.supplyPrice }}</ion-col>

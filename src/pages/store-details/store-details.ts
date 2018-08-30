@@ -3,23 +3,28 @@ import { Employee } from './../../model/employee';
 import { EmployeeService } from './../../services/employeeService';
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, LoadingController, ModalController, NavController, NavParams,
-  ToastController
+	AlertController,
+	LoadingController,
+	ModalController,
+	NavController,
+	NavParams,
+	ToastController
 } from 'ionic-angular';
-import { StoreService } from "../../services/storeService";
+import { StoreService } from '../../services/storeService';
 import { Store, POS, Device, DeviceType } from './../../model/store';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
-import { DeviceDetailsModal } from "./modals/device-details";
-import { PosDetailsModal } from "./modals/pos-details";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { Utilities } from "../../utility/index";
-import { SyncContext } from "../../services/SyncContext";
+import { DeviceDetailsModal } from './modals/device-details';
+import { PosDetailsModal } from './modals/pos-details';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Utilities } from '../../utility/index';
+import { SyncContext } from '../../services/SyncContext';
+import * as moment from 'moment-timezone';
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
-  templateUrl: 'store-details.html'
+	templateUrl: 'store-details.html'
 })
 export class StoreDetailsPage {
   public item: Store = new Store();
@@ -27,11 +32,15 @@ export class StoreDetailsPage {
   public action: string = 'Add';
   public devices: Device[] = [];
   public countries: Array<any> = [];
+  public timezones: Array<{ code: string; name: string }> = [];
   public deviceType = DeviceType;
   private storeForm: FormGroup;
   private fields = ['name', 'orderNumPrefix', 'orderNum', 'supplierReturnPrefix', 'supplierReturnNum',
     'printReceiptAtEndOfSale', 'taxFileNumber', 'street', 'suburb', 'city', 'postCode', 'state', 'country',
-    'timezone', 'email', 'phone', 'twitter'];
+    'timezone', 'email', 'phone', 'twitter','facebook',
+		'instagram',
+		'receiptHeaderMessage',
+		'receiptFooterMessage'];
   public isDataChanged = false;
 
   constructor(private navCtrl: NavController,
@@ -59,8 +68,15 @@ export class StoreDetailsPage {
       this.isNew = false;
       this.action = 'Edit';
     }
+    this.timezones = moment.tz.names().map((timezone) => {
+			return <{ code: string; name: string }>{
+				code: timezone,
+				name: timezone
+			};
+	});
     await loader.present();
     this.countries = await this.resourceService.getCountries();
+    this.item.country && (this.item.country = <any>{ code: this.item.country, value: this.item.country });
     await loader.dismiss();
     this.onFormChange();
   }
@@ -93,13 +109,19 @@ export class StoreDetailsPage {
     }
 
     this.utils.setFormFields(this.storeForm, this.fields, this.item);
+    this.item.timezone = this.item.timezone?(this.item.timezone as any).code:"";
+	this.item.country = this.item.country?(this.item.country as any).code:"";
     await loader.present();
     if (this.isNew) {
       await this.storeService.add(this.item);
     } else {
       await this.storeService.update(this.item);
     }
-    loader.dismiss();
+    this.item.timezone && (this.item.timezone = <any>{ code: this.item.timezone, value: this.item.timezone });
+
+	this.item.country && (this.item.country = <any>{ code: this.item.country, value: this.item.country });
+
+	loader.dismiss();
     this.isDataChanged = false;
     if (isReturn == true){
       this.navCtrl.pop();
@@ -111,7 +133,7 @@ export class StoreDetailsPage {
     let modal = this.modalCtrl.create(PosDetailsModal, { pos : newPos });
     modal.onDidDismiss((data: { status: string,  pos: POS }) => {
         if (data) {
-          if(data.status == "remove"){
+          if(data.status == 'remove'){
             this.item.POS.splice(index, 1);
           } else {
               this.item.POS[index] = data.pos;
@@ -124,7 +146,7 @@ export class StoreDetailsPage {
   public addRegister() {
     let modal = this.modalCtrl.create(PosDetailsModal);
     modal.onDidDismiss((data: { status: string, pos: POS }) => {
-        if (data && data.status === "add") {
+        if (data && data.status === 'add') {
             !this.item.POS && (this.item.POS = []);
             this.item.POS.push(data.pos);
             this.isDataChanged = true;
@@ -156,7 +178,7 @@ export class StoreDetailsPage {
   public showDevice(device: Device, index: number) {
     let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
     modal.onDidDismiss((data: { status: string, device: Device }) => {
-      if (data && data.status == "remove") {
+      if (data && data.status == 'remove') {
         this.item.devices.splice(index, 1);
         this.isDataChanged = true;
       }
@@ -167,7 +189,7 @@ export class StoreDetailsPage {
   public addDevice() {
     let modal = this.modalCtrl.create(DeviceDetailsModal);
     modal.onDidDismiss((data: { status: string, device: Device }) => {
-      if (data && data.status === "add") {
+      if (data && data.status === 'add') {
         !this.item.devices && (this.item.devices = []);
         this.item.devices.push(data.device);
         this.isDataChanged = true;

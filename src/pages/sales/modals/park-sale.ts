@@ -2,6 +2,8 @@ import { SalesServices } from './../../../services/salesService';
 import { Sale } from './../../../model/sale';
 import { ViewController, NavParams, AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
+import {PrintService} from "../../../services/printService";
+import _ from 'lodash';
 
 @Component({
   selector: 'park-sale',
@@ -17,6 +19,7 @@ export class ParkSale {
     private alertController: AlertController,
     private navParams: NavParams,
     private salesService: SalesServices,
+    private printService: PrintService
   ) {
     this.sale = this.navParams.get('sale');
   }
@@ -30,6 +33,8 @@ export class ParkSale {
       localStorage.removeItem('sale_id');
 
       this.sale.state = 'parked';
+      this.printService.printProductionLinePrinter(_.cloneDeep(this.sale));
+      this.sale.items.forEach(item => item.printedProductionLineCount = item.quantity );
       await this.salesService.update(this.sale);
       this.viewCtrl.dismiss({ status: true, error: false });
     }

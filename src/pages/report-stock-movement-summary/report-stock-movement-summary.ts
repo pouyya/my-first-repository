@@ -6,6 +6,9 @@ import { LoadingController } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { StoreService } from "../../services/storeService";
+import { SyncContext } from '../../services/SyncContext';
+import { NetworkService } from '../../services/networkService';
+import { DateTimeService } from "../../services/dateTimeService";
 
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
@@ -25,18 +28,33 @@ export class ReportStockMovementSummaryPage {
   public reportGeneratedTime: Date;
   public fromDate: Date = new Date();
   public toDate: Date = new Date();
+  networkStatus: boolean;
+  public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 
   constructor(private stockHistoryService: StockHistoryService,
     private storeService: StoreService,
-    private loading: LoadingController) {
+    private loading: LoadingController,
+    private syncContext: SyncContext,
+    private networkService: NetworkService,
+    private dateTimeService: DateTimeService
+  ) {
   }
 
   async ionViewDidLoad() {
+    this.networkService.statusConfirmed$.subscribe(
+      status => {
+        this.networkStatus = status;
+      });
+
+    this.networkService.announceStatus(true);
     this.fromDate.setDate(this.fromDate.getDate() - 15);
     this.selectedTimeframe = this.timeframes[0].value;
-    this.selectedStore = this.locations[0].value;
     const stores = await this.storeService.getAll();
     stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
+
+    const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+    this.selectedStore = (storeId) ? storeId : this.locations[0].value;
+
     await this.loadStockReport();
   }
 
@@ -58,7 +76,10 @@ export class ReportStockMovementSummaryPage {
 
     }
 
-    var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, fromDate, toDate);
+    let _fromDate = this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern);
+    let _toDate = this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern);
+
+    var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, _fromDate, _toDate);
     stockMovement.subscribe(
       stockMovementList => this.stockMovementList = stockMovementList,
       err => {

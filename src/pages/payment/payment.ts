@@ -8,7 +8,7 @@ import { PrintService } from '../../services/printService';
 import { PaymentService } from '../../services/paymentService';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
-import {SplitPaymentPage} from "../split-payment/split-payment";
+import { SplitPaymentPage } from "../split-payment/split-payment";
 
 @Component({
   selector: 'payment',
@@ -45,8 +45,7 @@ export class PaymentsPage {
   async ionViewDidLoad() {
     this.sale = <Sale>this.navParams.get('sale');
     this.doRefund = this.navParams.get('doRefund');
-    this.navPopCallback = this.navParams.get("callback")
-
+    this.navPopCallback = this.navParams.get("callback");
     this.amount = 0;
     this.change = 0;
     await this.calculateBalance(this.sale);
@@ -74,7 +73,7 @@ export class PaymentsPage {
 
     this.amount = sale.taxTotal - totalPayments;
 
-    if (totalPayments >= sale.taxTotal) {
+    if (Math.abs(totalPayments) >= Math.abs(sale.taxTotal)) {
       await this.completeSale(totalPayments)
     }
 
@@ -95,17 +94,17 @@ export class PaymentsPage {
       sale: this.sale, moneySplit: this.moneySplit, splitCallback: this.splitCallback.bind(this)
     });
   }
-  private async splitCallback (data) {
-      if (data) {
-          if (data.type === 'PAY' && data.values.length) {
-              data.values.forEach(payment => {
-                  this.addPayment('cash', payment.amount);
-              });
-              await this.calculateBalance(this.sale);
-              await this.salesService.update(this.sale);
-          }
-          this.moneySplit = data.moneySplit;
+  private async splitCallback(data) {
+    if (data) {
+      if (data.type === 'PAY' && data.values.length) {
+        data.values.forEach(payment => {
+          this.addPayment('cash', payment.amount);
+        });
+        await this.calculateBalance(this.sale);
+        await this.salesService.update(this.sale);
       }
+      this.moneySplit = data.moneySplit;
+    }
   }
 
   private openModal(component: Component, type: string) {
@@ -138,8 +137,8 @@ export class PaymentsPage {
     await this.paymentService.completePayment(this.sale, this.syncContext.currentStore._id, this.doRefund);
     payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
-      this.printSale(false);
-      await this.printService.printProductionLinePrinter(this.sale);
+      await this.printSale(false);
+      this.sale.state != "refund" && await this.printService.printProductionLinePrinter(this.sale);
     } catch (error) { }
   }
 
@@ -150,10 +149,10 @@ export class PaymentsPage {
 
   public async printSale(forcePrint: boolean) {
     if (this.syncContext.currentStore.printReceiptAtEndOfSale || forcePrint) {
-      await this.printService.printReceipt(this.sale);
+      await this.printService.printReceipt(this.sale, true);
+    } else {
+      await this.printService.openCashDrawer();
     }
-
-    await this.printService.openCashDrawer();
   }
 
   public goBack(state: boolean = false) {

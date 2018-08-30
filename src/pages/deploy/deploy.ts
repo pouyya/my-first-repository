@@ -1,8 +1,10 @@
 import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { IonicProDeployService } from 'ionicpro-deploy';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { DeployService } from '../../services/deployService';
+import { Pro } from "@ionic/pro";
+import { ConfigService } from '../../modules/dataSync/services/configService';
+import {ErrorLoggingService} from "../../services/ErrorLoggingService";
 
 @Component({
   selector: 'page-deploy',
@@ -14,10 +16,10 @@ export class DeployPage {
 
   constructor(
     private navCtrl: NavController,
-    private ionicProDeployService: IonicProDeployService,
     private zone: NgZone,
     public splashScreen: SplashScreen,
-    private deployService: DeployService) {
+    private deployService: DeployService,
+    private errorLoggingService: ErrorLoggingService) {
   }
 
   async ionViewDidLoad() {
@@ -25,46 +27,37 @@ export class DeployPage {
 
       this.progressMessage = 'Checking for new version.';
 
-      if (await this.ionicProDeployService.check() === true) {
+      const config = {
+        'appId': ConfigService.ionicDeployAppId(),
+        'channel': ConfigService.ionicDeployAppChannel()
+      }
+
+      await Pro.deploy.configure(config);
+
+      const update = await Pro.deploy.checkForUpdate()
+
+      if (update && update.available) {
 
         this.progressMessage = 'New version available!';
 
-        this.ionicProDeployService.download().subscribe(async downloadProgress => {
+        await Pro.deploy.downloadUpdate((progress) => {
+          this.zone.run(() => this.progressMessage = `Download New version ${progress}%`);
+        });
 
-          this.zone.run(() => {
+        this.progressMessage = 'Extract new version started.';
 
-            this.progressMessage = `Download New version ${downloadProgress}%`;
-          });
-        }, async error => {
+        await Pro.deploy.extractUpdate((progress) => {
+          this.zone.run(async () => this.progressMessage = `Extract new version ${progress}%`);
+        });
 
-          console.error('error in downloading new version');
-          await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
-        }, () => {
-          //download completed 
-          this.progressMessage = 'Download new version done.';
-
-          this.progressMessage = 'Extract new version started.';
-
-          this.ionicProDeployService.extract().subscribe(async extractProgress => {
-
-            this.zone.run(async () => {
-              this.progressMessage = `Extract new version ${extractProgress}%`;
-            });
-          }, async error => {
-            await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
-          }, async () => {
-            //extract completed
-            this.progressMessage = 'Extract new version done.';
-
-            this.splashScreen.show();
-            await this.ionicProDeployService.redirect();
-          });
-        })
+        this.splashScreen.show();
+        await Pro.deploy.reloadApp();
       }
       else {
         await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
       }
     } catch (error) {
+      this.errorLoggingService.exception(error);
       await this.navCtrl.setRoot(await this.deployService.getNextPageAfterDeploy());
     }
   }

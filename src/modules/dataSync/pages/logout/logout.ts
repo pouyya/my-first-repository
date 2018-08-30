@@ -1,8 +1,9 @@
-import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
+import { DBService } from '@simplepos/core/dist/services/dBService';
 import { Component } from "@angular/core";
 import { LoadingController, NavController, AlertController, MenuController } from "ionic-angular";
 import { Storage } from '@ionic/storage';
 import { LoginPage } from "../login/login";
+import {PingService} from "../../../../services/pingService";
 
 @Component({
   selector: 'logout',
@@ -12,6 +13,7 @@ export class LogOut {
 
   constructor(
     private loading: LoadingController,
+    private pingService: PingService,
     private navCtrl: NavController,
     private storage: Storage,
     private alertCtrl: AlertController,
@@ -49,6 +51,7 @@ export class LogOut {
       await this.menuController.close();
       await this.storage.clear();
       await DBService.pouchDBProvider.destroyInternals();
+      this.pingService.stop();
       localStorage.clear();
       loader.dismiss();
       this.navCtrl.setRoot(LoginPage);

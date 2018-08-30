@@ -1,11 +1,15 @@
 import { Store, POS } from "../model/store";
 import { Injectable } from "@angular/core";
-import { DBService } from "@simpleidea/simplepos-core/dist/services/dBService";
-import { DBDataEvent } from "@simpleidea/simplepos-core/dist/db/dbDataEvent";
+import { DBService } from "@simplepos/core/dist/services/dBService";
+import { DBDataEvent } from "@simplepos/core/dist/db/dbDataEvent";
 
 export interface ISyncContext {
   currentStore: Store;
   currentPos: POS
+}
+
+export interface IConfig {
+    timezone: string;
 }
 
 @Injectable()
@@ -13,8 +17,12 @@ export class SyncContext implements ISyncContext {
   private isSubscribed: boolean = false;
   private _currentStore: Store = null;
   private _currentPos: POS = null;
+  private _currentConfig: IConfig;
+  private _appTimezone: string = null;
 
-  constructor() { }
+  constructor() {
+    this._currentConfig = <any>{};
+  }
 
   private subscribeCriticalDBLiveProgress() {
     DBService.pouchDBProvider.criticalDBLiveProgress.subscribe((data: DBDataEvent) => {
@@ -40,7 +48,13 @@ export class SyncContext implements ISyncContext {
 
   public set currentStore(store: Store) {
     this._currentStore = store;
+    if(this._currentStore.timezone){
+      this._currentConfig.timezone = this._currentStore.timezone;
+    }else{
+      this._currentConfig.timezone = this.appTimezone;
+    }
   }
+
 
   public get currentPos(): POS {
     return this._currentPos;
@@ -59,5 +73,20 @@ export class SyncContext implements ISyncContext {
     } else {
       this._currentPos = null;
     }
+  }
+
+  public get appTimezone(): string {
+      return this._appTimezone;
+  }
+
+  public set appTimezone(appTimezone: string) {
+    this._appTimezone = appTimezone;
+    if(!this.currentStore.timezone){
+      this._currentConfig.timezone = this.appTimezone;
+    }
+  }
+
+  public get timezone(): string {
+    return this._currentConfig.timezone;
   }
 }

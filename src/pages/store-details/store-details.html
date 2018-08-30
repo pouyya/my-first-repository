@@ -2,10 +2,10 @@
   <ion-navbar>
     <ion-title>{{action}} Store</ion-title>
     <ion-buttons end>
-      <button type="submit" *ngIf="!isDataChanged" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
+      <button type="submit" *ngIf="!isDataChanged" ion-button icon-only (click)="storeForm1.ngSubmit.emit()" [disabled]="!storeForm.valid">
         Save
       </button>
-      <button class="save-bold" type="submit" *ngIf="isDataChanged" ion-button icon-only (click)="storeForm.ngSubmit.emit()" [disabled]="!storeForm.form.valid">
+      <button class="save-bold" type="submit" *ngIf="isDataChanged" ion-button icon-only (click)="storeForm1.ngSubmit.emit()" [disabled]="!storeForm.valid">
         Save*
       </button>
       <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
@@ -17,7 +17,7 @@
 </ion-header>
 
 <ion-content>
-  <form id="storeForm" [formGroup]="storeForm" (ngSubmit)="onSubmitAndReturn(true)">
+  <form #storeForm1="ngForm" [formGroup]="storeForm" (ngSubmit)="onSubmitAndReturn(true)">
     <ion-list-header>Details</ion-list-header>
     <ion-list>
       <ion-item>
@@ -49,6 +49,14 @@
         <ion-label class="item-name" stacked>{{ 'TaxFileNumber' | translator }}</ion-label>
         <ion-input type="number" formControlName="taxFileNumber" name="taxFileNumber"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label class="item-name" stacked>Print Header</ion-label>
+        <ion-textarea type="text" formControlName="receiptHeaderMessage" name="receiptHeaderMessage"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label class="item-name" stacked>Print Footer</ion-label>
+        <ion-textarea type="text"  formControlName="receiptFooterMessage" name="receiptFooterMessage"></ion-textarea>
+      </ion-item>
     </ion-list>
 
     <ion-list-header>Physical Address and Contact Details</ion-list-header>
@@ -74,13 +82,14 @@
         <ion-input type="text" formControlName="state" name="state"></ion-input>
       </ion-item>
       <ion-item>
-        <searchable-ion-select [isModal]="true" name="country" formControlName="country" title="Country" valueField="code" textField="name"
+        <searchable-ion-select [isModal]="true" name="country" [(ngModel)]="item.country" formControlName="country" title="Country" valueField="code" textField="name"
           [items]="countries">
         </searchable-ion-select>
       </ion-item>
       <ion-item>
-        <ion-label class="item-name" stacked>Timezone</ion-label>
-        <ion-input type="text" formControlName="timezone" name="timezone"></ion-input>
+        <searchable-ion-select [isModal]="true" name="timezone" [(ngModel)]="item.timezone" formControlName="timezone" title="Timezone" valueField="code"
+                               textField="name" [items]="timezones">
+        </searchable-ion-select>
       </ion-item>
       <ion-item>
         <ion-label class="item-name" stacked>Email</ion-label>
@@ -95,6 +104,14 @@
         <ion-label class="item-name" stacked>Twitter</ion-label>
         <ion-input type="text" formControlName="twitter" name="twitter"></ion-input>
       </ion-item>
+      <ion-item>
+          <ion-label class="item-name" stacked>Facebook</ion-label>
+          <ion-input type="text" formControlName="facebook" name="facebook"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label class="item-name" stacked>Instagram</ion-label>
+            <ion-input type="text" formControlName="instagram" name="instagram"></ion-input>
+          </ion-item>      
     </ion-list>
 
   </form>

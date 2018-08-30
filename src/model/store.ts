@@ -1,4 +1,4 @@
-import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 import { DisplayColumn, FilterType, SearchFilter } from "../metadata/listingModule";
 import { Required, Regex } from "../metadata/validationModule";
 
@@ -76,19 +76,23 @@ export class Store extends DBBasedEntity {
     public postCode?: string;
     public state: string;
     public country: string;
-    @Regex('^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$')
+    @Regex("^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$")
     public email: string;
     public phone: string;
     public printerIP: string;
     public printerPort: number;
     public taxFileNumber: string;
     public twitter?: string;
+    public facebook?: string;
+    public instagram?: string;
     public timezone?: string;
     public supplierReturnPrefix?: string;
     public supplierReturnNum?: number;
     public defaultSaleTaxId: string;
     public trackEmployeeSales: boolean;
     public printReceiptAtEndOfSale: boolean;
+    public receiptHeaderMessage: string;
+    public receiptFooterMessage: string;
     public devices: Device[];
     public POS: POS[];
 

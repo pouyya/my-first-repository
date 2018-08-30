@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { NgZone } from '@angular/core';
-import { DBBasedEntity } from '@simpleidea/simplepos-core/dist/model/dbBasedEntity';
-import { BaseEntityService, QuerySelectorInterface, QueryOptionsInterface } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
+import { BaseEntityService, QuerySelectorInterface, QueryOptionsInterface } from '@simplepos/core/dist/services/baseEntityService';
 import { InfiniteScroll } from 'ionic-angular';
 import { ListingInfo, Item, FilterType } from "../metadata/listingModule";
 

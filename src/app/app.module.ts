@@ -57,8 +57,8 @@ import { DiscountSurchargeModal } from './../components/basket/modals/discount-s
 import { ViewDiscountSurchargesModal } from './../components/basket/modals/view-discount-surcharge/view-discount-surcharge';
 import { PriceBooksPage } from './../pages/price-books/price-books';
 import { PriceBookDetails } from './../pages/price-book-details/price-book-details';
-import { StaffsTimeLogs } from './../pages/admin/staffs-time-logs/staffs-time-logs';
-import { TimeLogDetailsModal } from './../pages/admin/staffs-time-logs/modals/time-log-details/time-log-details';
+import { StaffsTimeLogs } from './../pages/staffs-time-logs/staffs-time-logs';
+import { TimeLogDetailsModal } from './../pages/staffs-time-logs/modals/time-log-details/time-log-details';
 import { SelectRolesModal } from './../pages/employee-details/modals/select-roles/select-roles'
 import { Customers } from './../pages/customers/customers';
 import { Bumps } from "../pages/bumps/bumps";
@@ -95,6 +95,7 @@ import { SelectPurchasableItemsModel } from './../components/purchasable-item-pr
 import { GroupEmployeeTimeLogModule } from './../components/group-employee-timelog/group-employee-timelog.module';
 import { BarcodeScannerModule } from './../components/barcode-scanner/barcode-scanner.module';
 import { NetworkMonitorModule } from '../components/network-monitor/network-monitor.module';
+import { NetworkMonitorReportModule } from '../components/network-monitor/network-monitor-report.module';
 import { SearchableIonSelectModule } from './../components/searchable-ion-select/searchable-ion-select.module';
 import { ColorPickerModule } from "../components/color-picker/color-picker.module";
 import { ImagePickerModule } from "../components/image-picker/image-picker.module";
@@ -140,10 +141,10 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { StockHistoryService } from './../services/stockHistoryService';
+import { SalesSummaryReportService } from './../services/salesSummaryReportService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
-import { IonicProDeployModule } from 'ionicpro-deploy';
 import { ServiceLocator } from '../services/serviceLocator';
 import { RoleService } from '../services/roleService';
 import { SupplierService } from '../services/supplierService';
@@ -179,9 +180,10 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
-import { IonSimpleWizard } from '../components/ion-simple-wizard/ion-simple-wizard.component';
-import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step.component';
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+import { ErrorLoggingService } from "../services/ErrorLoggingService";
+import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
+import {PingService} from "../services/pingService";
 
 @NgModule({
   declarations: [
@@ -209,6 +211,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     SplitPaymentPage,
     CashModal,
     CreateProductModal,
+    CreateStoreModal,
     CreditCardModal,
     ShiftModalPage,
     ParkSale,
@@ -257,11 +260,8 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     CreateSupplier,
     ProductsSelector,
     Closures,
-    TranslatorPipe,
     DeleteAccount,
-    AddShiftDirective,
-    IonSimpleWizard,
-    IonSimpleWizardStep
+    AddShiftDirective
   ],
   imports: [
     FormsModule,
@@ -306,6 +306,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     // custom
     SharedModule,
     NetworkMonitorModule,
+    NetworkMonitorReportModule,
     ColorPickerModule,
     ImagePickerModule,
     DateDurationPickerModule,
@@ -320,8 +321,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     TileScrollableModule,
     GroupEmployeeTimeLogModule,
     BarcodeScannerModule,
-    SearchableIonSelectModule,
-    IonicProDeployModule.forRoot()
+    SearchableIonSelectModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -349,6 +349,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     SplitPaymentPage,
     CashModal,
     CreateProductModal,
+    CreateStoreModal,
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,
@@ -435,13 +436,16 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     PluginService,
     EmployeeTimestampService,
     StockHistoryService,
+    SalesSummaryReportService,
     CustomerService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
     Utilities,
+    ErrorLoggingService,
     PrintService,
     BrandService,
+    PingService,
     StoreService,
     SalesServices,
     ShiftService,

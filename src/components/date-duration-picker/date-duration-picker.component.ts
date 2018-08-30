@@ -1,11 +1,12 @@
 import { Component, Input } from "@angular/core";
 import { ModalController } from "ionic-angular";
 import { Subject } from "rxjs/Subject";
+import {DateTimeService} from "../../services/dateTimeService";
 
 @Component({
   selector: 'date-duration-picker',
-  template: `<ion-grid>
-      <ion-row>
+  template: `<ion-grid no-padding>
+      <ion-row >
           <ion-col col-md-3>
               <ion-select class="white-bg full-width" [(ngModel)]="selectedTimeframe" (ngModelChange)="selectedTimeframe !== 'CUSTOM' && calculate()">
                   <ion-option *ngFor="let timeframe of timeframes" [value]="timeframe.value">{{ timeframe.text }}</ion-option>
@@ -13,13 +14,13 @@ import { Subject } from "rxjs/Subject";
           </ion-col>
       </ion-row>
       <ion-row *ngIf="selectedTimeframe === 'CUSTOM' ">
-          <ion-col>
+          <ion-col col-md-3>
               <ion-item>
                   <ion-label>From</ion-label>
                   <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="fromDate"></ion-datetime>
               </ion-item>
           </ion-col>
-          <ion-col>
+          <ion-col col-md-3>
               <ion-item>
                   <ion-label>To</ion-label>
                   <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="toDate"></ion-datetime>
@@ -36,16 +37,30 @@ export class DateDurationPickerComponent {
     public fromDate: Date;
     public toDate: Date;
     @Input() dates$: Subject<Object>;
+    @Input() selectedValue: string;
+
     public timeframes = [{text: "Today", value: "TODAY"}, {text: "Yesterday", value: "YESTERDAY"},
         {text: "Week", value: "WEEK"}, {text: "Month", value: "MONTH"}, {text: "Custom", value: "CUSTOM"}];
     public selectedTimeframe: string;
 
-    constructor(private modalCtrl: ModalController) {
-        this.selectedTimeframe = this.timeframes[0].value;
+    constructor(private dateTimeService: DateTimeService) {}
+
+    ngAfterViewInit() {
+        let timeframeIndex = 0;
+        if(this.selectedValue) {
+            this.timeframes.some((timeframe, index) => {
+                if(timeframe.value == this.selectedValue){
+                    timeframeIndex = index;
+                    return true;
+                }
+            });
+        }
+        this.selectedTimeframe = this.timeframes[timeframeIndex].value;
 
     }
     public calculate() {
-        let fromDate = new Date(), toDate = new Date();
+        let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
+            toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
         fromDate.setHours(0);
         fromDate.setMinutes(0);
         fromDate.setSeconds(0);

@@ -1,4 +1,4 @@
- import { DBService } from '@simpleidea/simplepos-core/dist/services/dBService';
+ import { DBService } from '@simplepos/core/dist/services/dBService';
  import { Component } from '@angular/core';
  import { PageModule } from '../../metadata/pageModule';
  import { DeleteAccountService } from "../../services/deleteAccountService";

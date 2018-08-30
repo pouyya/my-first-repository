@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Injectable } from '@angular/core';
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { GroupSaleTax } from './../model/groupSalesTax';
 import { PriceBookService } from './priceBookService';
 import { SalesTax } from './../model/salesTax';

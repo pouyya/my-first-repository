@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as moment from 'moment';
 import { Injectable } from '@angular/core';
-import { BaseEntityService } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { Http, Response } from '@angular/http';
 import { ENV } from '@app/env';
 import { UserService } from '../modules/dataSync/services/userService';

@@ -27,7 +27,7 @@ platforms/
 plugins/
 plugins/android.json
 plugins/ios.json
-www/
+www/*
 $RECYCLE.BIN/
 
 .DS_Store
@@ -38,3 +38,4 @@ UserInterfaceState.xcuserstate
 package-lock.json
 yarn.lock
 !**/environment.model.ts
+.vs/slnx.sqlite

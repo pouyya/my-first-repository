@@ -11,7 +11,7 @@ import { CalculatorService } from './calculatorService';
 import { TaxService } from './taxService';
 import { Sale, DiscountSurchargeInterface } from './../model/sale';
 import { PurchasableItemPriceInterface } from './../model/purchasableItemPrice.interface';
-import { BaseEntityService, SortOptions } from "@simpleidea/simplepos-core/dist/services/baseEntityService";
+import { BaseEntityService, SortOptions } from "@simplepos/core/dist/services/baseEntityService";
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 import { StockHistoryService } from './stockHistoryService';
 import { SyncContext } from "./SyncContext";
@@ -114,69 +114,55 @@ export class SalesServices extends BaseEntityService<Sale> {
 	public async searchSales(posIDs: string[], limit?: number, skip?: number, options?: any, timeFrame?: { startDate: string, endDate: string }, employeeId?: string, paymentType?: string, sort?: SortOptions): Promise<Array<Sale>> {
 		let query: any = {
 			selector: {
-				$and: []
 			}
 		};
 
 		if (posIDs && posIDs.length > 0) {
-			query.selector.$and.posID = { $in: posIDs }
+			query.selector.posID = { $in: posIDs }
 		}
 
 		if (options) {
 			_.each(options, (value, key) => {
 				if (value != undefined) {
-					query.selector.$and.push({ [key]: _.isArray(value) ? { $in: value } : value });
+					query.selector[key] = _.isArray(value) ? { $in: value } : value;
 				}
 			});
 			if (options.hasOwnProperty('completed') && !_.isNull(options.completed)) {
-				query.selector.$and.push({ completed: options.completed });
+				query.selector['completed'] = options.completed;
 			}
 		}
 
 		if (timeFrame) {
-			query.selector.$and.push({ created: { $exists: true } });
+			query.selector['created'] = { $exists: true };
 
 			if (timeFrame.endDate) {
-				query.selector.$and.push({
-					created: {
-						$lte: timeFrame.endDate
-					}
-				});
+                query.selector['created']['$lte'] = timeFrame.endDate;
 			}
 
 			if (timeFrame.startDate) {
-				query.selector.$and.push({
-					created: {
-						$gte: timeFrame.startDate
-					}
-				});
+                query.selector['created']['$gte'] = timeFrame.startDate;
 			}
 		}
 
 		if (employeeId) {
-			query.selector.$and.push({
-				items: {
-					$elemMatch: {
-						employeeId: {
-							$eq: employeeId
-						}
-					}
-				}
-			});
+            query.selector['items']= {
+                    $elemMatch: {
+                    employeeId: {
+                        $eq: employeeId
+                    }
+                }
+            };
 		}
 
 		if (paymentType) {
-			query.selector.$and.push({
-				payments: {
-					$elemMatch: {
-						type: {
-							$eq: paymentType
-						}
-					}
-				}
-			});
+            query.selector["payments"] = {
+                $elemMatch: {
+                    type: {
+                        $eq: paymentType
+                    }
+                }
+            }
 		}
-
 		query.sort = [{
 			_id: sort || SortOptions.DESC
 		}];

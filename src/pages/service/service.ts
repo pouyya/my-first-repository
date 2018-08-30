@@ -1,5 +1,5 @@
 import { LoadingController } from 'ionic-angular';
-import { SortOptions } from '@simpleidea/simplepos-core/dist/services/baseEntityService';
+import { SortOptions } from '@simplepos/core/dist/services/baseEntityService';
 import { Component, NgZone } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ServiceService } from '../../services/serviceService';

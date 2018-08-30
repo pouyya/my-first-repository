@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Some information is required
+    </ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-simple-wizard [(step)]="step" [showSteps]="false" (finish)="onFinish()" [finishIcon]="'done-all'" [(stepCondition)]="stepCondition">
+    <ion-wizard-step>
+      <div class="wizard-info">
+        <p style="font-size:35px;">Welcome to the login wizard.</p>
+        <p>This wizard will guide you through the the fields which are required when registering in the app.</p>
+      </div>
+    </ion-wizard-step>
+    <ion-wizard-step>
+      <ion-list class="list-padding">
+        <ion-item>
+          <ion-label class="item-name" stacked>{{ 'TaxFileNumber' | translator }}*</ion-label>
+          <ion-input [(ngModel)]="store.taxFileNumber" (ngModelChange)="onFieldChanged()" type="number" name="taxFileNumber"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Phone number*</ion-label>
+          <ion-input [(ngModel)]="store.phone" (ngModelChange)="onFieldChanged()" type="text" name="phoneNumber"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>City</ion-label>
+          <ion-input [disabled]="true" type="text" [(ngModel)]="store.city" name="city"></ion-input>
+        </ion-item>
+        <ion-item >
+          <ion-label class="item-name" stacked>Country</ion-label>
+          <ion-input [disabled]="true" type="text" [(ngModel)]="store.country" name="country"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Physical address*</ion-label>
+          <ion-input [(ngModel)]="store.address" (ngModelChange)="onFieldChanged()" type="text" name="address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Admin Pin*</ion-label>
+          <ion-input type="number" (ngModelChange)="onFieldChanged()" [(ngModel)]="adminPin" name="adminPin"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-wizard-step>
+    <ion-wizard-step>
+      <ion-list>
+        <ion-item>
+          <ion-label class="item-name" stacked>Twitter</ion-label>
+          <ion-input [(ngModel)]="store.twitter" type="text" name="twitter"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Facebook</ion-label>
+          <ion-input [(ngModel)]="store.facebook" type="text" name="facebook"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>Instagram</ion-label>
+          <ion-input [(ngModel)]="store.instagram" type="text" name="instagram"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-wizard-step>
+  </ion-simple-wizard>
+
+</ion-content>
