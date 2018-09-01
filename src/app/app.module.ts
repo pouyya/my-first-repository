@@ -142,6 +142,7 @@ import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { StockHistoryService } from './../services/stockHistoryService';
 import { StaffAttendanceReportService } from './../services/StaffAttendanceReportService';
+import { SalesSummaryReportService } from './../services/salesSummaryReportService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
 import { DeployPage } from '../pages/deploy/deploy';
@@ -182,6 +183,9 @@ import { AddShiftDirective } from "../directives/shift.directive";
 import { ShiftModalPage } from "../pages/roster/modals/shift-modal/shift-modal";
 import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
+import { ErrorLoggingService } from "../services/ErrorLoggingService";
+import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
+import { PingService } from "../services/pingService";
 
 @NgModule({
   declarations: [
@@ -210,6 +214,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     SplitPaymentPage,
     CashModal,
     CreateProductModal,
+    CreateStoreModal,
     CreditCardModal,
     ShiftModalPage,
     ParkSale,
@@ -348,6 +353,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     SplitPaymentPage,
     CashModal,
     CreateProductModal,
+    CreateStoreModal,
     DeviceDetailsModal,
     PosDetailsModal,
     CreditCardModal,
@@ -435,13 +441,16 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
     EmployeeTimestampService,
     StockHistoryService,
     StaffAttendanceReportService,
+    SalesSummaryReportService,
     CustomerService,
     StoreEvaluationProvider,
     DaysOfWeekEvaluationProvider,
     AppService,
     Utilities,
+    ErrorLoggingService,
     PrintService,
     BrandService,
+    PingService,
     StoreService,
     SalesServices,
     ShiftService,

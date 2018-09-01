@@ -370,14 +370,11 @@ export class BasketComponent {
 
       await this.salesService.update(sale);
 
-      try {
-
-        this.printSale(false, sale);
-        this.printService.printProductionLinePrinter(sale);
-
-      } catch (error) {
-        console.log(error);
-      }
+      setTimeout(async () => {
+        try { await this.printSale(false, sale); } catch (error) { console.log(error); }
+        try { await this.printService.printProductionLinePrinter(sale); } catch (error) { console.log(error); }
+      }, 0);
+      
     });
 
     localStorage.removeItem('sale_id');
@@ -417,7 +414,6 @@ export class BasketComponent {
     modal.onDidDismiss(data => {
       if (data.status) {
         if (!this.isSaleParked) {
-          this.isSaleParked = true;
           this.saleParked.emit(true);
         }
         let confirm = this.alertController.create({
@@ -427,6 +423,7 @@ export class BasketComponent {
             {
               'text': 'OK',
               handler: () => {
+                this.isSaleParked = false;
                 this.salesService.instantiateSale().then((sale: any) => {
                   this.customer = null;
                   this.sale = sale;

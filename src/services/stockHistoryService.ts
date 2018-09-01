@@ -4,14 +4,16 @@ import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from '@simplepos/core/dist/services/baseEntityService';
 import { Http, Response } from '@angular/http';
-import { ENV } from '@app/env';
+import { ConfigService } from './../modules/dataSync/services/configService';
 import { UserService } from '../modules/dataSync/services/userService';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
-	readonly view_stock_per_store = 'inventory/stock_per_store';
 
-	constructor(private http: Http, private userService: UserService) {
+	readonly view_stock_per_store = "inventory/stock_per_store";
+
+	constructor(private http: Http,
+		private userService: UserService) {
 		super(StockHistory);
 	}
 
@@ -19,7 +21,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 		try {
 			return await this.findBy({
 				selector: { storeId, productId },
-				sort: [ { _id: 'desc' } ],
+				sort: [{ _id: 'desc' }],
 				limit: 50
 			});
 		} catch (err) {
@@ -31,7 +33,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 		try {
 			return await this.findBy({
 				selector: { productId },
-				sort: [ { _id: 'desc' } ],
+				sort: [{ _id: 'desc' }],
 				limit: 50
 			});
 		} catch (err) {
@@ -40,66 +42,56 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 	}
 
 	public async getAllProductsTotalStockValue() {
+
 		var param = { reduce: true, group: true, group_level: 1 };
 
 		var result = await this.getDB().query(this.view_stock_per_store, param);
 
-		return result
-			? result.rows.map((row) => {
-					return {
-						productId: row.key[0],
-						value: row.value
-					};
-				})
-			: null;
+		return result ? result.rows.map(row => {
+			return {
+				productId: row.key[0],
+				value: row.value
+			}
+		}) : null;
 	}
 
 	public async getAvailableStock(productIds: string[], storeId) {
-		var param = { keys: productIds.map((productId) => [ productId, storeId ]), reduce: true, group: true };
+
+		var param = { keys: productIds.map(productId => [productId, storeId]), reduce: true, group: true };
 
 		var result = await this.getDB().query(this.view_stock_per_store, param);
 
-		return result
-			? result.rows.map((row) => {
-					return {
-						productId: row.key[0],
-						value: row.value
-					};
-				})
-			: null;
+		return result ? result.rows.map(row => {
+			return {
+				productId: row.key[0],
+				value: row.value
+			}
+		}) : null;
 	}
 
 	public async getProductTotalStockValue(productId: string) {
-		var param = { reduce: true, group: true, startkey: [ productId ], endkey: [ productId, {} ] };
+
+		var param = { reduce: true, group: true, startkey: [productId], endkey: [productId, {}] };
 		var result = await this.getDB().query(this.view_stock_per_store, param);
 
-		return result
-			? result.rows.map((row) => {
-					return {
-						value: row.value,
-						storeId: row.key[1]
-					};
-				})
-			: null;
+		return result ? result.rows.map(row => {
+			return {
+				value: row.value,
+				storeId: row.key[1]
+			};
+		}) : null;
 	}
 
-	public async getProductsTotalStockValueByStore(
-		productIds: string[],
-		storeId: string
-	): Promise<{ [id: string]: number }> {
+	public async getProductsTotalStockValueByStore(productIds: string[], storeId: string): Promise<{ [id: string]: number }> {
+
 		if (productIds.length > 0) {
-			let stockPromises: Promise<any>[] = productIds.map((id) => this.getByStoreAndProductId(storeId, id));
+			let stockPromises: Promise<any>[] = productIds.map(id => this.getByStoreAndProductId(storeId, id));
 			let productStocks: any[] = await Promise.all(stockPromises);
-			return <{ [id: string]: number }>_.zipObject(
-				productIds,
-				productStocks.map((stocks) => {
-					let value: number =
-						stocks.length > 0
-							? stocks.map((stock) => stock.value).reduce((a, b) => Number(a) + Number(b))
-							: 0;
-					return value;
-				})
-			);
+			return <{ [id: string]: number }>_.zipObject(productIds, productStocks.map(stocks => {
+				let value: number = stocks.length > 0 ? stocks.map(stock => stock.value)
+					.reduce((a, b) => Number(a) + Number(b)) : 0;
+				return value;
+			}));
 		}
 
 		return {};
@@ -123,19 +115,18 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 			}
 			return await this.findBy({
 				selector: query,
-				sort: [ { _id: 'desc' } ]
+				sort: [{ _id: 'desc' }]
 			});
 		} catch (err) {
 			return Promise.reject(err);
 		}
 	}
 
-	public async getStockMovement(storeId: string, fromDate: Date, toDate: Date) {
+	public async getStockMovement(storeId: string, fromDate: string, toDate: string) {
+		let token = await this.userService.getUserToken();
 		return this.http
-			.get(
-				`${ENV.webapp.baseUrl}${ENV.webapp
-					.inventoryReportUrl}?fromDate=${fromDate.getFullYear()}-${fromDate.getMonth()}-${fromDate.getDate()}&toDate=${toDate.getFullYear()}-${toDate.getMonth()}-${toDate.getDate()}&currentStoreId=${storeId}&token=${await this.userService.getUserToken()}`
-			)
+			.get(ConfigService.inventoryReportUrl() +
+				`?fromDate=${fromDate}&toDate=${toDate}&currentStoreId=${storeId}&token=${token}`)
 			.map((response: Response) => <StockMovement[]>response.json());
 	}
 }

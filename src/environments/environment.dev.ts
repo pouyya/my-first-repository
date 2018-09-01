@@ -5,6 +5,7 @@ export const ENV = {
   webapp: {
     baseUrl: "https://webapp-dev.pos.app",
     inventoryReportUrl: "/v1/api/reports/inventory",
+    salesReportUrl: "/v1/api/reports/salessummary",
     staffAttendanceReportUrl: "/v1/api/reports/staffattendance"
   },
   service: {
@@ -19,5 +20,7 @@ export const ENV = {
   },
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
-  }
+  },
+  logError: false,
+  logsEnabled: true
 };

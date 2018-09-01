@@ -19,6 +19,7 @@ import { ProductionLinePrinterProviderContext } from "../provider/print/producti
 import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 import { EPosPrinterProvider, PrinterWidth } from '../provider/print/eposPrinterProvider';
 import { Utilities } from "../utility";
+import {ErrorLoggingService} from "./ErrorLoggingService";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -53,6 +54,7 @@ export class PrintService {
     private categoryService: CategoryService,
     private syncContext: SyncContext,
     private translateService: TranslateService,
+    private errorLoggingService: ErrorLoggingService,
     private utility: Utilities) {
   }
 
@@ -108,7 +110,7 @@ export class PrintService {
     const promises = [];
     receiptPrinters.forEach(receiptPrinter => {
 
-      let printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+      let printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
       let provider = new EndOfDayProvider(context, printerProvider);
 
       promises.push(provider
@@ -178,9 +180,10 @@ export class PrintService {
         receiptProviderContext.shopName = this.syncContext.currentStore.name;
         receiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
         receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
-        receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage;
+        receiptProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
+        receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage || '';
 
-        const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+        const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
 
         var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
           .setHeader()
@@ -238,13 +241,16 @@ export class PrintService {
       item.quantity = count;
       return count > 0;
     });
+
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
+    
     productionLinePrinters.forEach(productionLinePrinter => {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = productionLinePrinter.sale;
+      productionLinePrinterProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
 
-      const printerProvider = new EPosPrinterProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+      const printerProvider = new EPosPrinterProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
 
       promises.push(new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
         .setHeader()
@@ -269,7 +275,7 @@ export class PrintService {
     if (receiptPrinters.length) {
       const promises = [];
       receiptPrinters.forEach(receiptPrinter => {
-        const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide);
+        const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
         promises.push(new ReceiptProvider(null, this.translateService, printerProvider)
           .openCashDrawer()
           .print());

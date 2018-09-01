@@ -1,26 +1,22 @@
-import { Pro } from '@ionic/pro';
-import { ConfigService } from './../modules/dataSync/services/configService';
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { IonicErrorHandler } from 'ionic-angular';
-
-
-const IonicPro = Pro.init(ConfigService.ionicDeployAppId(), {
-  appVersion: "0.0.3"
-});
+import { ErrorLoggingService } from "./ErrorLoggingService";
 
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {
   ionicErrorHandler: IonicErrorHandler;
+  errorLoggingService: ErrorLoggingService;
 
   constructor(injector: Injector) {
     try {
       this.ionicErrorHandler = injector.get(IonicErrorHandler);
+      this.errorLoggingService = injector.get(ErrorLoggingService);
     } catch (e) {
     }
   }
 
   handleError(err: any): void {
-    IonicPro.monitoring.handleNewError(err);
+    this.errorLoggingService.handleNewError(err);
     this.ionicErrorHandler && this.ionicErrorHandler.handleError(err);
   }
 }

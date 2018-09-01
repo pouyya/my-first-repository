@@ -1,10 +1,12 @@
 import { ENV } from '@app/env';
 
 export class ConfigService {
+
     static _internalCriticalDBName: string = '';
     static get internalCriticalDBName(): string {
         return this._internalCriticalDBName;
     }
+
     static set internalCriticalDBName(v: string) {
         this._internalCriticalDBName = v;
     }
@@ -13,6 +15,7 @@ export class ConfigService {
     static get externalCriticalDBName(): string {
         return this._externalCriticalDBName;
     }
+
     static set externalCriticalDBName(v: string) {
         this._externalCriticalDBName = v;
     }
@@ -87,8 +90,16 @@ export class ConfigService {
         return ConfigService.apiServerBaseUrl() + '/common/register';
     }
 
+    static statusEndPoint(): string {
+        return ENV.security.serverUrl + "/v1/api/user/status";
+    }
+
     static forgotPasswordEndPoint(): string {
         return ENV.security.serverUrl + '/wp-content/plugins/simplepos-account-management/forget-password.php';
+    }
+
+    static salesReportEndPoint(): string {
+        return ENV.webapp.baseUrl + ENV.webapp.salesReportUrl;
     }
 
     static securityUserInfoEndPoint(): string {
@@ -109,6 +120,10 @@ export class ConfigService {
 
     static apiServerBaseUrl(): string {
         return ENV.security.serverUrl + '/wp-json/wp/v2/users';
+    }
+
+    static inventoryReportUrl(): string {
+        return ENV.webapp.baseUrl + ENV.webapp.inventoryReportUrl;
     }
 
     static ionicDeployAppId(): string {

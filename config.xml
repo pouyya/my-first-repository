@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.simplepos.posapp" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.simplepos.posapp" version="0.0.4" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>SimplePOS</name>
     <description>Simple point of sale</description>
     <author email="dev@pos.app" href="http://pos.app/">SimplePOS</author>
@@ -153,6 +153,6 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^2.0.1" />
     <engine name="browser" spec="5.0.3" />
     <engine name="android" spec="7.0.0" />
-    <engine name="ios" spec="4.5.5" />
-    <plugin name="simplepos-plugin-posprinter" spec="1.0.1" />
+    <plugin name="simplepos-plugin-posprinter" spec="^1.0.2" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>
