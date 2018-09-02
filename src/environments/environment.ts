@@ -23,6 +23,6 @@ export const ENV = {
   },
   logError: true,
   logsEnabled: false,
-  pingInterval: 5 * 60 *1000
+  pingInterval: 5 * 60 * 1000
 
 }; 

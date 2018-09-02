@@ -1,93 +1,107 @@
 import { Component } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
-import { StockHistoryService, StockMovement } from "../../services/stockHistoryService";
-import { LoadingController } from "ionic-angular";
+import { StockHistoryService, StockMovement } from '../../services/stockHistoryService';
+import { LoadingController } from 'ionic-angular';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { StoreService } from "../../services/storeService";
+import { StoreService } from '../../services/storeService';
 import { SyncContext } from '../../services/SyncContext';
 import { NetworkService } from '../../services/networkService';
 import { DateTimeService } from "../../services/dateTimeService";
 
-
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
 @PageModule(() => ReportModule)
 @Component({
-  selector: 'report-stock-movement-summary',
-  templateUrl: 'report-stock-movement-summary.html',
-  styleUrls: ['/components/pages/report-stock-movement-summary.scss']
+	selector: 'report-stock-movement-summary',
+	templateUrl: 'report-stock-movement-summary.html',
+	styleUrls: ['/components/pages/report-stock-movement-summary.scss']
 })
 export class ReportStockMovementSummaryPage {
+	public timeframes = [
+		{ text: 'Week', value: 'WEEK' },
+		{ text: 'Month', value: 'MONTH' },
+		{ text: 'Custom', value: 'CUSTOM' }
+	];
+	public locations = [{ text: 'All locations', value: '' }];
+	public selectedTimeframe: string;
+	public selectedStore: string;
+	public stockMovementList: StockMovement[] = [];
+	public reportGeneratedTime: Date;
+	public fromDate: Date = new Date();
+	public toDate: Date = new Date();
+	networkStatus: boolean;
+	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 
-  public timeframes = [{ text: "Week", value: "WEEK" }, { text: "Month", value: "MONTH" }, { text: "Custom", value: "CUSTOM" }];
-  public locations = [{ text: "All locations", value: "" }];
-  public selectedTimeframe: string;
-  public selectedStore: string;
-  public stockMovementList: StockMovement[] = [];
-  public reportGeneratedTime: Date;
-  public fromDate: Date = new Date();
-  public toDate: Date = new Date();
-  networkStatus: boolean;
-  public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
+	constructor(private stockHistoryService: StockHistoryService,
+		private storeService: StoreService,
+		private loading: LoadingController,
+		private syncContext: SyncContext,
+		private networkService: NetworkService,
+		private dateTimeService: DateTimeService
+	) {
+	}
 
-  constructor(private stockHistoryService: StockHistoryService,
-    private storeService: StoreService,
-    private loading: LoadingController,
-    private syncContext: SyncContext,
-    private networkService: NetworkService,
-    private dateTimeService: DateTimeService
-  ) {
-  }
+	async ionViewDidLoad() {
+		this.networkService.statusConfirmed$.subscribe(
+			status => {
+				this.networkStatus = status;
+			});
 
-  async ionViewDidLoad() {
-    this.networkService.statusConfirmed$.subscribe(
-      status => {
-        this.networkStatus = status;
-      });
+		constructor(private stockHistoryService: StockHistoryService,
+			private storeService: StoreService,
+			private loading: LoadingController,
+			private syncContext: SyncContext,
+			private networkService: NetworkService
+		) {
+		}
 
-    this.networkService.announceStatus(true);
-    this.fromDate.setDate(this.fromDate.getDate() - 15);
-    this.selectedTimeframe = this.timeframes[0].value;
-    const stores = await this.storeService.getAll();
-    stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
+		async ionViewDidLoad() {
+			this.networkService.statusConfirmed$.subscribe(
+				status => {
+					this.networkStatus = status;
+				});
 
-    const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
-    this.selectedStore = (storeId) ? storeId : this.locations[0].value;
+			this.networkService.announceStatus(true);
+			this.fromDate.setDate(this.fromDate.getDate() - 15);
+			this.selectedTimeframe = this.timeframes[0].value;
+			const stores = await this.storeService.getAll();
+			stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
 
-    await this.loadStockReport();
-  }
+			const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+			this.selectedStore = (storeId) ? storeId : this.locations[0].value;
 
-  public async loadStockReport() {
-    let loader = this.loading.create({ content: 'Loading Report...', });
-    await loader.present();
-    let toDate = new Date();
-    let fromDate = new Date();
-    let days = 7;
+			await this.loadStockReport();
+		}
 
-    if (this.selectedTimeframe === "MONTH" || this.selectedTimeframe === "WEEK") {
-      this.selectedTimeframe === "WEEK" && (days = 7);
-      this.selectedTimeframe === "MONTH" && (days = 30);
-      fromDate.setDate(fromDate.getDate() - days);
-    } else if (this.selectedTimeframe === "CUSTOM") {
+	public async loadStockReport() {
+		let loader = this.loading.create({ content: 'Loading Report...' });
+		await loader.present();
+		let toDate = new Date();
+		let fromDate = new Date();
+		let days = 7;
 
-      fromDate = new Date(this.fromDate);
-      toDate = new Date(this.toDate);
+		if (this.selectedTimeframe === 'MONTH' || this.selectedTimeframe === 'WEEK') {
+			this.selectedTimeframe === 'WEEK' && (days = 7);
+			this.selectedTimeframe === 'MONTH' && (days = 30);
+			fromDate.setDate(fromDate.getDate() - days);
+		} else if (this.selectedTimeframe === 'CUSTOM') {
+			fromDate = new Date(this.fromDate);
+			toDate = new Date(this.toDate);
+		}
 
-    }
+		let _fromDate = this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern);
+		let _toDate = this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern);
 
-    let _fromDate = this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern);
-    let _toDate = this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern);
-
-    var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, _fromDate, _toDate);
-    stockMovement.subscribe(
-      stockMovementList => this.stockMovementList = stockMovementList,
-      err => {
-        console.log(err);
-        loader.dismiss();
-      },
-      () => loader.dismiss()
-    );
-    this.reportGeneratedTime = new Date();
-  }
+		var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, _fromDate, _toDate);
+		stockMovement.subscribe(
+			stockMovementList => this.stockMovementList = stockMovementList,
+			err => {
+				console.log(err);
+				loader.dismiss();
+			},
+			() => loader.dismiss()
+		);
+		this.reportGeneratedTime = new Date();
+	}
 }

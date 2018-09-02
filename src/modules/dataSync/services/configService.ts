@@ -6,6 +6,7 @@ export class ConfigService {
     static get internalCriticalDBName(): string {
         return this._internalCriticalDBName;
     }
+
     static set internalCriticalDBName(v: string) {
         this._internalCriticalDBName = v;
     }
@@ -14,6 +15,7 @@ export class ConfigService {
     static get externalCriticalDBName(): string {
         return this._externalCriticalDBName;
     }
+
     static set externalCriticalDBName(v: string) {
         this._externalCriticalDBName = v;
     }
@@ -108,6 +110,9 @@ export class ConfigService {
         return ConfigService.apiServerBaseUrl() + '/common/SendEmail';
     }
 
+    static staffAttendanceReport(): string {
+        return ENV.webapp.baseUrl + ENV.webapp.staffAttendanceReportUrl;
+    }
 
     static securityServerBaseUrl(): string {
         return ENV.security.serverUrl + '/wp-json/jwt-auth/v1';

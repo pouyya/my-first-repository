@@ -141,6 +141,7 @@ import { PrintService } from '../services/printService';
 import { SecurityService } from '../services/securityService';
 import { PlatformService } from '../services/platformService';
 import { StockHistoryService } from './../services/stockHistoryService';
+import { StaffAttendanceReportService } from './../services/StaffAttendanceReportService';
 import { SalesSummaryReportService } from './../services/salesSummaryReportService';
 import { StockDecreaseModal } from '../pages/product-details/modals/stock-decrease/stock-decrease';
 import { BrandService } from '../services/brandService';
@@ -163,6 +164,7 @@ import { AddNotes } from "../components/basket/modals/add-notes/add-notes";
 import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
+import { ReportStaffAttendancePage } from "../pages/report-staff-attendance/report-staff-attendance";
 import { Preferences } from "../pages/preferences/preferences";
 import { SplitPaymentPage } from "../pages/split-payment/split-payment";
 import { File } from "@ionic-native/file";
@@ -183,7 +185,7 @@ import { ShiftService } from "../services/shiftService";
 import { CreateProductModal } from '../pages/product-details/modals/create-product/create-product';
 import { ErrorLoggingService } from "../services/ErrorLoggingService";
 import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
-import {PingService} from "../services/pingService";
+import { PingService } from "../services/pingService";
 
 @NgModule({
   declarations: [
@@ -195,6 +197,7 @@ import {PingService} from "../services/pingService";
     HumanResourceDashboard,
     Preferences,
     ReportStockMovementSummaryPage,
+    ReportStaffAttendancePage,
     Services,
     ServiceDetails,
     Categories,
@@ -332,6 +335,7 @@ import {PingService} from "../services/pingService";
     ReportsDashboard,
     HumanResourceDashboard,
     ReportStockMovementSummaryPage,
+    ReportStaffAttendancePage,
     Preferences,
     Services,
     ServiceDetails,
@@ -436,6 +440,7 @@ import {PingService} from "../services/pingService";
     PluginService,
     EmployeeTimestampService,
     StockHistoryService,
+    StaffAttendanceReportService,
     SalesSummaryReportService,
     CustomerService,
     StoreEvaluationProvider,
