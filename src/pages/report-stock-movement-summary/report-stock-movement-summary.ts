@@ -31,7 +31,6 @@ export class ReportStockMovementSummaryPage {
 	public fromDate: Date = new Date();
 	public toDate: Date = new Date();
 	networkStatus: boolean;
-	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 
 	constructor(private stockHistoryService: StockHistoryService,
 		private storeService: StoreService,
@@ -48,31 +47,17 @@ export class ReportStockMovementSummaryPage {
 				this.networkStatus = status;
 			});
 
-		constructor(private stockHistoryService: StockHistoryService,
-			private storeService: StoreService,
-			private loading: LoadingController,
-			private syncContext: SyncContext,
-			private networkService: NetworkService
-		) {
-		}
+		this.networkService.announceStatus(true);
+		this.fromDate.setDate(this.fromDate.getDate() - 15);
+		this.selectedTimeframe = this.timeframes[0].value;
+		const stores = await this.storeService.getAll();
+		stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
 
-		async ionViewDidLoad() {
-			this.networkService.statusConfirmed$.subscribe(
-				status => {
-					this.networkStatus = status;
-				});
+		const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+		this.selectedStore = (storeId) ? storeId : this.locations[0].value;
 
-			this.networkService.announceStatus(true);
-			this.fromDate.setDate(this.fromDate.getDate() - 15);
-			this.selectedTimeframe = this.timeframes[0].value;
-			const stores = await this.storeService.getAll();
-			stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
-
-			const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
-			this.selectedStore = (storeId) ? storeId : this.locations[0].value;
-
-			await this.loadStockReport();
-		}
+		await this.loadStockReport();
+	}
 
 	public async loadStockReport() {
 		let loader = this.loading.create({ content: 'Loading Report...' });
@@ -90,8 +75,8 @@ export class ReportStockMovementSummaryPage {
 			toDate = new Date(this.toDate);
 		}
 
-		let _fromDate = this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern);
-		let _toDate = this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern);
+		let _fromDate = this.dateTimeService.getUTCDate(fromDate).toISOString();
+		let _toDate = this.dateTimeService.getUTCDate(toDate).toISOString();
 
 		var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, _fromDate, _toDate);
 		stockMovement.subscribe(
