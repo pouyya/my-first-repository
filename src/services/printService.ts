@@ -19,7 +19,7 @@ import { ProductionLinePrinterProviderContext } from "../provider/print/producti
 import { ProductionLinePrinterProvider } from "../provider/print/productionLine/productionLinePrinterProvider";
 import { EPosPrinterProvider, PrinterWidth } from '../provider/print/eposPrinterProvider';
 import { Utilities } from "../utility";
-import {ErrorLoggingService} from "./ErrorLoggingService";
+import { ErrorLoggingService } from "./ErrorLoggingService";
 
 export enum EndOfDayReportType {
   PerProduct,
@@ -185,15 +185,17 @@ export class PrintService {
 
         const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
 
-        var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider)
-          .setHeader()
-          .setBody()
-          .setFooter()
-          .cutPaper();
+        var receiptProvider = new ReceiptProvider(receiptProviderContext, this.translateService, printerProvider);
 
         if (openCashDrawer) {
           receiptProvider = receiptProvider.openCashDrawer();
         }
+
+        receiptProvider = receiptProvider
+          .setHeader()
+          .setBody()
+          .setFooter()
+          .cutPaper();
 
         promises.push(receiptProvider.print());
       });
@@ -244,7 +246,7 @@ export class PrintService {
 
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
     const promises = [];
-    
+
     productionLinePrinters.forEach(productionLinePrinter => {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = productionLinePrinter.sale;

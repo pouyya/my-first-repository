@@ -12,14 +12,14 @@ export abstract class ReportPrinterProviderBase  {
         this.buffer = "";
     }
 
-    cutPaper(): ReportPrinterProviderBase {
+    cutPaper(): this {
 
         this.buffer += '<cut>';
 
         return this;
     }
 
-    openCashDrawer(): ReportPrinterProviderBase {
+    openCashDrawer(): this {
 
         this.buffer += '<pulse>';
 
