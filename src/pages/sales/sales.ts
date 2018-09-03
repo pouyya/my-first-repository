@@ -23,7 +23,7 @@ import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
-import {SalesHistoryPage} from "../sales-history/sales-history";
+import { SalesHistoryPage } from "../sales-history/sales-history";
 
 
 @SecurityModule()
@@ -41,9 +41,9 @@ export class Sales implements OnDestroy {
       this._basketComponent = basketComponent;
       if (this._basketComponent) {
         await this._basketComponent.initializeSale(this.navParams.get('sale'), this.evaluationContext);
-        this.salesService.getParkedSalesCount().then(count => this.parkedSaleCount = count);
+        this.parkedSaleCount = await this.salesService.getParkedSalesCount();
       }
-    }, 0);
+    }, 100);
 
   }
 
@@ -142,8 +142,8 @@ export class Sales implements OnDestroy {
     loader.dismiss();
   }
 
-  public openSalesHistory(){
-    this.navCtrl.push(SalesHistoryPage, {filterType: 'parked'});
+  public openSalesHistory() {
+    this.navCtrl.push(SalesHistoryPage, { filterType: 'parked' });
   }
 
   public selectCategory(category) {
@@ -179,10 +179,10 @@ export class Sales implements OnDestroy {
   }
 
   public onParkedSale(isParked) {
-      if( !isParked && this.parkedSaleCount == 0 ) {
-        return;
-      }
-      isParked ? this.parkedSaleCount += 1 : this.parkedSaleCount -=1;
+    if (!isParked && this.parkedSaleCount == 0) {
+      return;
+    }
+    isParked ? this.parkedSaleCount += 1 : this.parkedSaleCount -= 1;
   }
   // Event
   private async loadCategoriesAndAssociations() {
