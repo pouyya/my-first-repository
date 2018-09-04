@@ -29,7 +29,7 @@
   "isActive": true,
   "isAdmin": true,
   "isActive": true,
-  "pin": {PIN}
+  "pin": 1111
 },
 {
   "_id": "2018-01-31T09:36:48.8240000",
@@ -44,7 +44,8 @@
     "MoneyInOut",
     "OpenCashDrawer"
   ]
-},{
+},
+{
   "_id": "2018-01-31T09:43:28.7960000",
   "entityTypeName": "Role",
   "entityTypeNames": [
