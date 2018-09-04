@@ -21,6 +21,8 @@ import { FountainService } from '../../services/fountainService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
 import { SyncContext } from "../../services/SyncContext";
+import { DateTimeService } from './../../services/dateTimeService';
+
 
 @SecurityModule(SecurityAccessRightRepo.OpenCloseRegister)
 @PageModule(() => SalesModule)
@@ -58,6 +60,7 @@ export class OpenCloseRegister {
     private alertCtrl: AlertController,
     private navCtrl: NavController,
     private printService: PrintService,
+    private dateTimeService: DateTimeService,
     private fountainService: FountainService) {
     this.cdr.detach();
     this.showReport = false;
@@ -175,7 +178,7 @@ export class OpenCloseRegister {
 
       loader.setContent("Saving and Printing Closure..");
 
-      this.closure.closeTime = moment().utc().format();
+      this.closure.closeTime = this.dateTimeService.getCurrentUTCDate().toString();
       this.closure.closureNumber = await this.fountainService.getClosureNumber();
       await this.closureService.add(this.closure);
 
