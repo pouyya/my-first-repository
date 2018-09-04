@@ -10,7 +10,7 @@ import { ModuleBase, PageSettingsInterface, ModalPageInterface } from './moduelB
 import { HomePage } from './../pages/home/home';
 import { OpenCloseRegister } from './../pages/open-close-register/open-close-register';
 import { MoneyInOut } from './../pages/money-in-out/money-in-out';
-import { Preferences } from "../pages/preferences/preferences";
+import { PreferencePosPageLayout } from "../pages/preferences-pos-page-layout/preferences-pos-page-layout";
 
 export class SalesModule implements ModuleBase {
   private toastCtrl: ToastController;
@@ -27,7 +27,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Clock In/Out', icon: 'time', component: ClockInOutPage, modal: true },
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, pushNavigation: true },
     { title: 'Closures', icon: 'bookmarks', component: Closures },
-    { title: 'Preferences', icon: 'settings', component: Preferences },
+    { title: 'Preferences', icon: 'settings', component: PreferencePosPageLayout },
     { title: 'Back Office', icon: 'build', component: HomePage },
     { title: 'Logout', icon: 'log-out', component: LogOut }
   ];

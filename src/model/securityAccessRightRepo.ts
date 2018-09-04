@@ -126,26 +126,30 @@ export class SecurityAccessRightRepo {
     "SwitchPos",
     "Switch Pos");
 
-    public static ReportsDashboard : AccessRightItem = new AccessRightItem(
-      'ReportsDashboard',
-      'Reports Dashboard');
+  public static ReportsDashboard: AccessRightItem = new AccessRightItem(
+    'ReportsDashboard',
+    'Reports Dashboard');
 
-    public static ReportStockMovementSummary : AccessRightItem = new AccessRightItem(
-      'ReportStockMovementSummary',
-      'Report Stock Movement Summary');
+  public static ReportStockMovementSummary: AccessRightItem = new AccessRightItem(
+    'ReportStockMovementSummary',
+    'Report Stock Movement Summary');
 
-    public static ReportStaffAttendance : AccessRightItem = new AccessRightItem(
-      'ReportStaffAttendance',
-      'Report Staff Attendance');
-      
-    public static Preferences : AccessRightItem = new AccessRightItem(
-      'Preferences',
-      'Preferences');
+  public static ReportStaffAttendance: AccessRightItem = new AccessRightItem(
+    'ReportStaffAttendance',
+    'Report Staff Attendance');
 
-    public static Roster: AccessRightItem = new AccessRightItem(
-      'Roster',
-      'Roster');
-      
+  public static PreferencePosPageLayout: AccessRightItem = new AccessRightItem(
+    'PreferencePosPageLayout',
+    'Preference Pos Page Layout');
+
+  public static PreferencesStyleFormatPage: AccessRightItem = new AccessRightItem(
+    'PreferencesStyleFormatPage',
+    'Preferences Format Page');
+
+  public static Roster: AccessRightItem = new AccessRightItem(
+    'Roster',
+    'Roster');
+
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
     SecurityAccessRightRepo.ServiceListing,
@@ -174,13 +178,14 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.OpenCloseRegister,
     SecurityAccessRightRepo.GroupSaleTax,
     SecurityAccessRightRepo.MoneyInOut,
-    SecurityAccessRightRepo.SaleTax,    
+    SecurityAccessRightRepo.SaleTax,
     SecurityAccessRightRepo.OpenCashDrawer,
     SecurityAccessRightRepo.SwitchPos,
     SecurityAccessRightRepo.ReportsDashboard,
     SecurityAccessRightRepo.ReportStockMovementSummary,
     SecurityAccessRightRepo.ReportStaffAttendance,
-    SecurityAccessRightRepo.Preferences,
+    SecurityAccessRightRepo.PreferencePosPageLayout,
+    SecurityAccessRightRepo.PreferencesStyleFormatPage,
     SecurityAccessRightRepo.DeleteAccount,
     SecurityAccessRightRepo.Roster
   ];

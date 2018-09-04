@@ -48,6 +48,11 @@
         <ion-title>Reports</ion-title>
       </ion-toolbar>
     </ion-header>
+    <ion-header *ngIf="moduleName == 'PreferencesModule'">
+      <ion-toolbar>
+        <ion-title>Preferences</ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-header *ngIf="moduleName == 'SalesModule' && syncContext.currentPos && syncContext.currentStore" class="header-toolbar">
       <ion-title>{{syncContext.currentStore.name}}</ion-title>
       <ion-title>

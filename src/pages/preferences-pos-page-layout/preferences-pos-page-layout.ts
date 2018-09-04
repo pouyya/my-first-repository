@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { LoadingController, ModalController } from 'ionic-angular';
 import { CategoryService } from '../../services/categoryService';
 
-
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { PurchasableItem } from '../../model/purchasableItem';
@@ -15,15 +14,16 @@ import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
 import { Utilities } from "../../utility";
 import { SortablejsOptions } from "angular-sortablejs";
 import { SelectColorModal } from "../../components/color-picker/modal/select-color/select-color";
+import { PreferencesModule } from '../../modules/preferencesModule';
 
 
-@SecurityModule(SecurityAccessRightRepo.Preferences)
-@PageModule(() => SalesModule)
+@SecurityModule(SecurityAccessRightRepo.PreferencePosPageLayout)
+@PageModule(() => PreferencesModule)
 @Component({
-  selector: 'preferences',
-  templateUrl: 'preferences.html'
+  selector: 'preferences-pos-page-layout',
+  templateUrl: 'preferences-pos-page-layout.html'
 })
-export class Preferences {
+export class PreferencePosPageLayout {
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public options: SortablejsOptions;

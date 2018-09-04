@@ -165,7 +165,8 @@ import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
 import { ReportStaffAttendancePage } from "../pages/report-staff-attendance/report-staff-attendance";
-import { Preferences } from "../pages/preferences/preferences";
+import { PreferencePosPageLayout } from "../pages/preferences-pos-page-layout/preferences-pos-page-layout";
+import { PreferencesStyleFormatPage } from "../pages/preferences-style-format-page/preferences-style-format-page";
 import { SplitPaymentPage } from "../pages/split-payment/split-payment";
 import { File } from "@ionic-native/file";
 import { PapaParseModule } from "ngx-papaparse";
@@ -195,7 +196,8 @@ import { PingService } from "../services/pingService";
     ProductDetails,
     ReportsDashboard,
     HumanResourceDashboard,
-    Preferences,
+    PreferencePosPageLayout,
+    PreferencesStyleFormatPage,
     ReportStockMovementSummaryPage,
     ReportStaffAttendancePage,
     Services,
@@ -336,7 +338,8 @@ import { PingService } from "../services/pingService";
     HumanResourceDashboard,
     ReportStockMovementSummaryPage,
     ReportStaffAttendancePage,
-    Preferences,
+    PreferencePosPageLayout,
+    PreferencesStyleFormatPage,
     Services,
     ServiceDetails,
     Categories,
