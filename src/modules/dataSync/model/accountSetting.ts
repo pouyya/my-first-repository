@@ -12,9 +12,7 @@ export class AccountSetting extends DBBasedEntity {
     public defaultIcon: Icon;
     public timeOffset: any;
     public saleNumberPrefix: string;
-    public saleLastNumber: number = 0;
     public closureNumberPrefix: string;
-    public closureLastNumber: number = 0;
 
     constructor(){
       super();

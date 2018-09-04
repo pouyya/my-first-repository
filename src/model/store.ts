@@ -95,6 +95,8 @@ export class Store extends DBBasedEntity {
     public receiptFooterMessage: string;
     public devices: Device[];
     public POS: POS[];
+    public saleLastNumber: number = 0;
+    public closureLastNumber: number = 0;
 
     constructor() {
         super();
