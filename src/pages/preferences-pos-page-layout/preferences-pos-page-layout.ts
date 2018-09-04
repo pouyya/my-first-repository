@@ -9,7 +9,6 @@ import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
 import { Category } from '../../model/category';
 import { StoreService } from "../../services/storeService";
-import { SalesModule } from "../../modules/salesModule";
 import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
 import { Utilities } from "../../utility";
 import { SortablejsOptions } from "angular-sortablejs";

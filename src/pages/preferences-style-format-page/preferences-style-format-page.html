@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle="leftMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-buttons end>
+      <button (click)="save()" ion-button icon-only>
+        Save
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+    <ion-title class="ion-title-center">Preferences</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list inset>
+    <ion-list-header>
+      Style & Format Settings
+    </ion-list-header>
+    <ion-list-header>
+      Format Settings
+    </ion-list-header>
+    <ion-item>
+      <ion-label class="item-name" stacked>Date</ion-label>
+      <ion-select [(ngModel)]="selectedDateFormat" name="DateFormat">
+        <ion-option *ngFor="let df of dateFormats" [value]="df._id">{{ df.example }}
+          <small>({{ df.format }})</small>
+        </ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+</ion-content>
