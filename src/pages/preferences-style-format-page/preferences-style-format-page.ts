@@ -16,7 +16,7 @@ import { PreferencesModule } from '../../modules/preferencesModule';
   templateUrl: 'preferences-style-format-page.html'
 })
 export class PreferencesStyleFormatPage {
-  public dateFormats: Array<any> = [{ "_id": 1, "format": "mm/dd/yyyy", "example": "11/22/1392" }];
+  public dateFormats: Array<any> = [{ "_id": 1, "format": "mm/dd/yyyy", "example": "11/22/1992" }];
 
   constructor(
     private loading: LoadingController,
