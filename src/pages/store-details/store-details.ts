@@ -28,6 +28,7 @@ import * as moment from 'moment-timezone';
 })
 export class StoreDetailsPage {
     public isDataChanged = false;
+    public isSaved: boolean = false;
 	public item: Store = new Store();
 	public isNew: boolean = true;
 	public action: string = 'Add';
