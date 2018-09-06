@@ -27,6 +27,8 @@ import * as moment from 'moment-timezone';
 	templateUrl: 'store-details.html'
 })
 export class StoreDetailsPage {
+    public isDataChanged = false;
+    public isSaved: boolean = false;
 	public item: Store = new Store();
 	public isNew: boolean = true;
 	public action: string = 'Add';
@@ -98,15 +100,28 @@ export class StoreDetailsPage {
 
 		this.countries = await this.resourceService.getCountries();
 		this.item.country && (this.item.country = <any>{ code: this.item.country, value: this.item.country });
-
+        this.isDataChanged = false;
+        this.isSaved = false;
 		await loader.dismiss();
+
+        this.onFormChange();
 	}
+
+    private ionViewCanLeave(): Promise<boolean> {
+        return this.utils.checkUnsavedChanges(this.isDataChanged && !this.isSaved);
+    }
 
 	private createForm() {
 		const store = this.navParams.get('store') || {};
 		const groupValidation = this.utils.createGroupValidation('Store', this.fields, store);
 		this.storeForm = this.formBuilder.group(groupValidation);
 	}
+
+    private onFormChange(){
+        this.storeForm.valueChanges.subscribe(val => {
+            this.isDataChanged = true;
+        });
+    }
 
 	public async onSubmitAndReturn(isReturn) {
 		let loader = this.loading.create({ content: 'Saving store...' });
@@ -118,7 +133,6 @@ export class StoreDetailsPage {
 			toast.present();
 			return;
 		}
-
 		this.utils.setFormFields(this.storeForm, this.fields, this.item);
 		this.item.timezone = this.item.timezone?(this.item.timezone as any).code:"";
 		this.item.country = this.item.country?(this.item.country as any).code:"";
@@ -132,11 +146,10 @@ export class StoreDetailsPage {
 		this.item.timezone && (this.item.timezone = <any>{ code: this.item.timezone, value: this.item.timezone });
 
 		this.item.country && (this.item.country = <any>{ code: this.item.country, value: this.item.country });
-
-		loader.dismiss();
-
+		await loader.dismiss();
+        this.isSaved = true;
 		if (isReturn == true) {
-			this.navCtrl.pop();
+			this.navCtrl.pop()
 		}
 	}
 
