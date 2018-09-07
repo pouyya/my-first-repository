@@ -39,6 +39,14 @@
         textField="name" [items]="timezones">
       </searchable-ion-select>
     </ion-item>
+    <ion-item>
+      <ion-label class="item-name" stacked>Date Format</ion-label>
+      <ion-select [(ngModel)]="accountSetting.selectedDateFormat" name="DateFormat">
+        <ion-option *ngFor="let df of dateFormats" [value]="df._id">{{ df.example }}
+          <small>({{ df.format }})</small>
+        </ion-option>
+      </ion-select>
+    </ion-item>
   </ion-list>
 
   <ion-list inset>
@@ -48,7 +56,8 @@
     <ion-item>
       <ion-label class="item-name" stacked>Tax Default</ion-label>
       <ion-select [(ngModel)]="selectedTax" name="salesTax">
-        <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
+        <ion-option [value]="tax._id" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax
+          - ' + tax.name : tax.name }}
           <small>({{ tax.rate }}%)</small>
         </ion-option>
       </ion-select>
