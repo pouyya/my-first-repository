@@ -1,18 +1,23 @@
 {
-    "_id": "_design/inventory",
-    "views": {
-        "stock_per_store": {
-            "reduce": "function(keys, values, rereduce) {\r\n    return sum(values);\r\n}",
-            "map": "function (doc) {\n  if(doc.entityTypeName == 'StockHistory') {\n    emit([ doc.productId, doc.storeId], doc.value );\n  }\n}"
-        },
-        "stock_per_day_store": {
-            "map": "  function(doc) {\r\n    if (doc.entityTypeName == 'StockHistory') {\r\n        var d = new Date(doc.createdAt);\r\n        emit([doc.productId, doc.storeId, d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()], {\r\n            reason: doc.reason,\r\n            amount: doc.value\r\n        });\r\n    }\r\n}",
-            "reduce": "function(keys, values, rereduce) {\r\n\r\n    function sumField(arr, field) {\r\n        return arr.reduce(function(prev, cur) {\r\n            return prev + cur[field];\r\n        }, 0);\r\n    }\r\n\r\n    if (rereduce) {\r\n        return {\r\n            received: sumField(values, \"received\"),\r\n            sold: sumField(values, \"sold\"),\r\n            returned: sumField(values, \"returned\"),\r\n            deducted: sumField(values, \"deducted\")\r\n        };\r\n    } else {\r\n        var result = {\r\n            received: 0,\r\n            sold: 0,\r\n            returned: 0,\r\n            deducted: 0\r\n        };\r\n        var map = {\r\n            'Purchase': 'sold',\r\n            'InitialValue': 'received',\r\n            'NewStock': 'received',\r\n            'Return': 'returned'\r\n        };\r\n        if (values) {\r\n            for (var idx in values) {\r\n                var value = values[idx];\r\n                if (value) {\r\n                    var property = map[value.reason];\r\n                    if (property) {\r\n                        result[property] = result[property] + value.amount;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return result;\r\n    }\r\n}"
-        },
-        "stock_per_day": {
-            "map": "  function(doc) {\r\n    if (doc.entityTypeName == 'StockHistory') {\r\n        var d = new Date(doc.createdAt);\r\n        emit([doc.productId, d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()], {\r\n            reason: doc.reason,\r\n            amount: doc.value\r\n        });\r\n    }\r\n}",
-            "reduce": "function(keys, values, rereduce) {\r\n\r\n    function sumField(arr, field) {\r\n        return arr.reduce(function(prev, cur) {\r\n            return prev + cur[field];\r\n        }, 0);\r\n    }\r\n\r\n    if (rereduce) {\r\n        return {\r\n            received: sumField(values, \"received\"),\r\n            sold: sumField(values, \"sold\"),\r\n            returned: sumField(values, \"returned\"),\r\n            deducted: sumField(values, \"deducted\")\r\n        };\r\n    } else {\r\n        var result = {\r\n            received: 0,\r\n            sold: 0,\r\n            returned: 0,\r\n            deducted: 0\r\n        };\r\n        var map = {\r\n            'Purchase': 'sold',\r\n            'InitialValue': 'received',\r\n            'NewStock': 'received',\r\n            'Return': 'returned'\r\n        };\r\n        if (values) {\r\n            for (var idx in values) {\r\n                var value = values[idx];\r\n                if (value) {\r\n                    var property = map[value.reason];\r\n                    if (property) {\r\n                        result[property] = result[property] + value.amount;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return result;\r\n    }\r\n}"
-        }
-    },
-    "language": "javascript"
+	"_id":"_design/inventory",
+	"_rev":"40-abf0df9f77b148e0c7670eabb5e2c35a",
+	"views":
+	{
+		"stock_per_store":
+		{
+			"reduce":"function(keys, values, rereduce) {\r\n    return sum(values);\r\n}",
+			"map":"function (doc) {\n  if(doc.entityTypeName == 'StockHistory') {\n    emit([ doc.productId, doc.storeId], doc.value );\n  }\n}"
+		},
+		"stock_per_day_store":
+		{
+			"map":"function (doc) {\r\r\n\tif (doc.entityTypeName == 'StockHistory') {\r\r\n\t\tvar d = new Date(doc.createdAtLocalDate);\r\r\n\t\temit([doc.productId, doc.storeId, d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()], {\r\r\n\t\t\treason: doc.reason,\r\r\n\t\t\tamount: doc.value\r\r\n\t\t});\r\r\n\t}\r\r\n}",
+			"reduce":"function (keys, values, rereduce) {\r\r\n\r\r\n\tfunction sumField(arr, field) {\r\r\n\t\treturn arr.reduce(function (prev, cur) {\r\r\n\t\t\treturn prev + cur[field];\r\r\n\t\t},\r\r\n\t\t0);\r\r\n\t}\r\r\n\r\r\n\tif (rereduce) {\r\r\n\t\treturn {\r\r\n\t\t\tpurchase: sumField(values, \"InitialValue\"),\r\r\n\t\t\tinitialValue: sumField(values, \"InitialValue\"),\r\r\n\t\t\tnewStock: sumField(values, \"NewStock\"),\r\r\n\t\t\treturned: sumField(values, \"Return\"),\r\r\n\t\t\ttransfer: sumField(values, \"Transfer\"),\r\r\n\t\t\tadjustment: sumField(values, \"Adjustment\"),\r\r\n\t\t\tinternalUse: sumField(values, \"InternalUse\"),\r\r\n\t\t\tdamaged: sumField(values, \"Damaged\"),\r\r\n\t\t\toutOfDate: sumField(values, \"OutOfDate\"),\r\r\n\t\t\tother: sumField(values, \"Other\")\r\r\n\t\t};\r\r\n\t}else {\r\r\n\t\tvar result = {\r\r\n\t\t\tPurchase: 0,\r\r\n\t\t\tInitialValue: 0,\r\r\n\t\t\tNewStock: 0,\r\r\n\t\t\tReturn: 0,\r\r\n\t\t\tTransfer: 0,\r\r\n\t\t\tAdjustment: 0,\r\r\n\t\t\tInternalUse: 0,\r\r\n\t\t\tDamaged: 0,\r\r\n\t\t\tOutOfDate: 0,\r\r\n\t\t\tOther: 0\r\r\n\r\r\n\t\t}\r\r\n\r\r\n\t\tif (values) {\r\r\n\t\t\tfor (var idx in values) {\r\r\n\t\t\t\tvar value = values[idx];\r\r\n\t\t\t\tif (value) {\r\r\n\t\t\t\t\tvar property = value.reason;\r\r\n\t\t\t\t\tif (property) {\r\r\n\t\t\t\t\t\tresult[property] = result[property] + value.amount;\r\r\n\t\t\t\t\t}\r\r\n\t\t\t\t}\r\r\n\t\t\t}\r\r\n\t\t}\r\r\n\t\treturn result;\r\r\n\t}\r\r\n}"
+		},
+		"stock_per_day":
+		{
+			"map":"function (doc) {\r\r\n\tif (doc.entityTypeName == 'StockHistory') {\r\r\n\t\tvar d = new Date(doc.createdAtLocalDate);\r\r\n\t\temit([doc.productId, d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours()], {\r\r\n\t\t\treason: doc.reason,\r\r\n\t\t\tamount: doc.value\r\r\n\t\t});\r\r\n\t}\r\r\n}",
+			"reduce":"function (keys, values, rereduce) {\r\r\n\r\r\n\tfunction sumField(arr, field) {\r\r\n\t\treturn arr.reduce(function (prev, cur) {\r\r\n\t\t\treturn prev + cur[field];\r\r\n\t\t},\r\r\n\t\t0);\r\r\n\t}\r\r\n\r\r\n\tif (rereduce) {\r\r\n\t\treturn {\r\r\n\t\t\tpurchase: sumField(values, \"InitialValue\"),\r\r\n\t\t\tinitialValue: sumField(values, \"InitialValue\"),\r\r\n\t\t\tnewStock: sumField(values, \"NewStock\"),\r\r\n\t\t\treturned: sumField(values, \"Return\"),\r\r\n\t\t\ttransfer: sumField(values, \"Transfer\"),\r\r\n\t\t\tadjustment: sumField(values, \"Adjustment\"),\r\r\n\t\t\tinternalUse: sumField(values, \"InternalUse\"),\r\r\n\t\t\tdamaged: sumField(values, \"Damaged\"),\r\r\n\t\t\toutOfDate: sumField(values, \"OutOfDate\"),\r\r\n\t\t\tother: sumField(values, \"Other\")\r\r\n\t\t};\r\r\n\t}else {\r\r\n\t\tvar result = {\r\r\n\t\t\tPurchase: 0,\r\r\n\t\t\tInitialValue: 0,\r\r\n\t\t\tNewStock: 0,\r\r\n\t\t\tReturn: 0,\r\r\n\t\t\tTransfer: 0,\r\r\n\t\t\tAdjustment: 0,\r\r\n\t\t\tInternalUse: 0,\r\r\n\t\t\tDamaged: 0,\r\r\n\t\t\tOutOfDate: 0,\r\r\n\t\t\tOther: 0\r\r\n\r\r\n\t\t}\r\r\n\r\r\n\t\tif (values) {\r\r\n\t\t\tfor (var idx in values) {\r\r\n\t\t\t\tvar value = values[idx];\r\r\n\t\t\t\tif (value) {\r\r\n\t\t\t\t\tvar property = value.reason;\r\r\n\t\t\t\t\tif (property) {\r\r\n\t\t\t\t\t\tresult[property] = result[property] + value.amount;\r\r\n\t\t\t\t\t}\r\r\n\t\t\t\t}\r\r\n\t\t\t}\r\r\n\t\t}\r\r\n\t\treturn result;\r\r\n\t}\r\r\n}"
+		}
+	},
+	"language":"javascript"
 }
