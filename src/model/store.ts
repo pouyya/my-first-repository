@@ -18,6 +18,10 @@ export interface Device {
     associatedPurchasableItemIds: string[]
 }
 
+export interface Table {
+    name: string;
+}
+
 export interface CashMovement {
     amount: number,
     type: string,
@@ -94,6 +98,7 @@ export class Store extends DBBasedEntity {
     public receiptHeaderMessage: string;
     public receiptFooterMessage: string;
     public devices: Device[];
+    public tables: Table[];
     public POS: POS[];
     public saleLastNumber: number = 0;
     public closureLastNumber: number = 0;

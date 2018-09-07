@@ -173,6 +173,33 @@
         </ion-list>
       </ion-col>
     </ion-row>
+    <ion-row>
+
+      <ion-col col-md-6>
+        <h2>Tables</h2>
+      </ion-col>
+      <ion-col col-md-6 class="pull-right">
+        <button ion-button color="primary" (click)="addTable()">Add Table</button>
+      </ion-col>
+
+      <ion-col col-md-12 *ngIf="item.tables && item.tables.length > 0">
+        <ion-list inset *ngFor="let table of item.tables; let idx=index">
+          <ion-item-sliding class="sliding">
+            <ion-item (click)="showTable(table, idx)">
+              <ion-icon name="basket" item-left></ion-icon>
+                <h2 class="item-title">{{table.name}}
+              </h2>
+            </ion-item>
+            <ion-item-options>
+              <button ion-button color='danger' icon=left (click)="removeTable(idx)">
+                <ion-icon name="trash"></ion-icon>
+                Delete
+              </button>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 
 

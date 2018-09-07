@@ -11,7 +11,7 @@ import {
 	ToastController
 } from 'ionic-angular';
 import { StoreService } from '../../services/storeService';
-import { Store, POS, Device, DeviceType } from './../../model/store';
+import {Store, POS, Device, DeviceType, Table} from './../../model/store';
 import { ResourceService } from '../../services/resourceService';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from './../../model/securityAccessRightRepo';
@@ -21,6 +21,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Utilities } from '../../utility/index';
 import { SyncContext } from '../../services/SyncContext';
 import * as moment from 'moment-timezone';
+import {TableDetailsModal} from "./modals/table-details";
 
 @SecurityModule(SecurityAccessRightRepo.StoreAddEdit)
 @Component({
@@ -108,7 +109,7 @@ export class StoreDetailsPage {
 	}
 
     private ionViewCanLeave(): Promise<boolean> {
-        return this.utils.checkUnsavedChanges(this.isDataChanged && !this.isSaved);
+        return this.utils.checkUnsavedChanges(this.isDataChanged);
     }
 
 	private createForm() {
@@ -119,11 +120,12 @@ export class StoreDetailsPage {
 
     private onFormChange(){
         this.storeForm.valueChanges.subscribe(val => {
-            this.isDataChanged = true;
+            !this.isSaved && (this.isDataChanged = true);
         });
     }
 
 	public async onSubmitAndReturn(isReturn) {
+        this.isSaved = true;
 		let loader = this.loading.create({ content: 'Saving store...' });
 		if (!this.item.POS || this.item.POS.length === 0) {
 			const toast = this.toastCtrl.create({
@@ -147,7 +149,7 @@ export class StoreDetailsPage {
 
 		this.item.country && (this.item.country = <any>{ code: this.item.country, value: this.item.country });
 		await loader.dismiss();
-        this.isSaved = true;
+        this.isDataChanged = false;
 		if (isReturn == true) {
 			this.navCtrl.pop()
 		}
@@ -196,46 +198,87 @@ export class StoreDetailsPage {
 		this.item.POS.splice(index, 1);
 	}
 
-	// Device
-	public showDevice(device: Device, index: number) {
-		let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
-		modal.onDidDismiss((data: { status: string; device: Device }) => {
-			if (data && data.status == 'remove') {
-				this.item.devices.splice(index, 1);
-			}
-		});
-		modal.present();
-	}
+    // Device
+    public showDevice(device: Device, index: number) {
+        let modal = this.modalCtrl.create(DeviceDetailsModal, { device });
+        modal.onDidDismiss((data: { status: string; device: Device }) => {
+            if (data && data.status == 'remove') {
+                this.item.devices.splice(index, 1);
+            }
+        });
+        modal.present();
+    }
 
-	public addDevice() {
-		let modal = this.modalCtrl.create(DeviceDetailsModal);
-		modal.onDidDismiss((data: { status: string; device: Device }) => {
-			if (data && data.status === 'add') {
-				!this.item.devices && (this.item.devices = []);
-				this.item.devices.push(data.device);
-			}
-		});
-		modal.present();
-	}
+    public addDevice() {
+        let modal = this.modalCtrl.create(DeviceDetailsModal);
+        modal.onDidDismiss((data: { status: string; device: Device }) => {
+            if (data && data.status === 'add') {
+                !this.item.devices && (this.item.devices = []);
+                this.item.devices.push(data.device);
+            }
+        });
+        modal.present();
+    }
 
-	public async removeDevice(index: number) {
-		const deleteItem = await this.utils.confirmRemoveItem('Do you really want to delete this device!');
-		if (!deleteItem) {
-			return;
-		}
-		let loader = this.loading.create({
-			content: 'Deleting. Please Wait!'
-		});
+    public async removeDevice(index: number) {
+        const deleteItem = await this.utils.confirmRemoveItem('Do you really want to delete this device!');
+        if (!deleteItem) {
+            return;
+        }
+        let loader = this.loading.create({
+            content: 'Deleting. Please Wait!'
+        });
 
-		await loader.present();
-		this.item.devices.splice(index, 1);
-		let toast = this.toastCtrl.create({
-			message: 'Device has been deleted successfully',
-			duration: 3000
-		});
-		toast.present();
-		loader.dismiss();
-	}
+        await loader.present();
+        this.item.devices.splice(index, 1);
+        let toast = this.toastCtrl.create({
+            message: 'Device has been deleted successfully',
+            duration: 3000
+        });
+        toast.present();
+        loader.dismiss();
+    }
+
+    // Table
+    public showTable(table: Table, index: number) {
+        let modal = this.modalCtrl.create(TableDetailsModal, { table });
+        modal.onDidDismiss((data: { status: string; device: Device }) => {
+            if (data && data.status == 'remove') {
+                this.item.tables.splice(index, 1);
+            }
+        });
+        modal.present();
+    }
+
+    public addTable() {
+        let modal = this.modalCtrl.create(TableDetailsModal);
+        modal.onDidDismiss((data: { status: string; table: Table}) => {
+            if (data && data.status === 'add') {
+                !this.item.tables && (this.item.tables = []);
+                this.item.tables.push(data.table);
+            }
+        });
+        modal.present();
+    }
+
+    public async removeTable(index: number) {
+        const deleteItem = await this.utils.confirmRemoveItem('Do you really want to delete this table!');
+        if (!deleteItem) {
+            return;
+        }
+        let loader = this.loading.create({
+            content: 'Deleting. Please Wait!'
+        });
+
+        await loader.present();
+        this.item.tables.splice(index, 1);
+        let toast = this.toastCtrl.create({
+            message: 'Table has been deleted successfully',
+            duration: 3000
+        });
+        toast.present();
+        loader.dismiss();
+    }
 
 	public remove() {
 		if (this.item._id === this.syncContext.currentStore._id) {

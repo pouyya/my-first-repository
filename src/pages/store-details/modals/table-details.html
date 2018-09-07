@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Table</ion-title>
+    <ion-buttons start>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="tableForm.ngSubmit.emit()" [disabled]="!tableForm.form.valid">
+        Done
+      </button>
+      <button *ngIf="action == 'Edit'" ion-button icon-only (click)="remove()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #tableForm="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label class="item-name" stacked>Name*</ion-label>
+        <ion-input type="text" [(ngModel)]="table.name" name="name" required></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

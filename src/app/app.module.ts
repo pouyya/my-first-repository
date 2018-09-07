@@ -186,6 +186,7 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
 import { ErrorLoggingService } from "../services/ErrorLoggingService";
 import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
 import { PingService } from "../services/pingService";
+import {TableDetailsModal} from "../pages/store-details/modals/table-details";
 
 @NgModule({
   declarations: [
@@ -232,6 +233,7 @@ import { PingService } from "../services/pingService";
     MoneyInOut,
     MoveCashModal,
     DeviceDetailsModal,
+    TableDetailsModal,
     PosDetailsModal,
     DiscountSurchargeModal,
     ViewDiscountSurchargesModal,
@@ -355,6 +357,7 @@ import { PingService } from "../services/pingService";
     CreateProductModal,
     CreateStoreModal,
     DeviceDetailsModal,
+    TableDetailsModal,
     PosDetailsModal,
     CreditCardModal,
     ShiftModalPage,
