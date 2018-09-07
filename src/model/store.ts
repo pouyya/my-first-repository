@@ -55,6 +55,7 @@ export class POS {
     public productColor: IProductColor;
     public productCategorySort: IProductCategorySort;
     public cashMovements: Array<CashMovement>;
+    public dateFormat: number = 0;
 
     constructor() {
         this.cashMovements = [];

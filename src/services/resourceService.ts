@@ -14,4 +14,12 @@ export class ResourceService {
 
         return result.json();
     }
+
+    async getDateFormats(): Promise<any> {
+
+        var result = await this.http.get('assets/dateFormats.json')
+            .toPromise();
+
+        return result.json();
+    }
 }

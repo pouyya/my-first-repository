@@ -1,0 +1,22 @@
+[
+  {
+    "_id": 1,
+    "format": "mm/dd/yyyy",
+    "example": "11/22/1992"
+  },
+  {
+    "_id": 2,
+    "format": "mm/dd/yy",
+    "example": "11/22/92"
+  },
+  {
+    "_id": 3,
+    "format": "dd mmm yyyy",
+    "example": "22 nov 1992"
+  },
+  {
+    "_id": 4,
+    "format": "ddd dd mmm yyyy",
+    "example": "Mon 22 november 1992"
+  }
+]

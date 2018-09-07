@@ -7,6 +7,7 @@ import { SyncContext } from "../../services/SyncContext";
 import { StoreService } from "../../services/storeService";
 import { SecurityAccessRightRepo } from "../../model/securityAccessRightRepo";
 import { PreferencesModule } from '../../modules/preferencesModule';
+import { ResourceService } from '../../services/resourceService';
 
 
 @SecurityModule(SecurityAccessRightRepo.PreferencesStyleFormatPage)
@@ -16,20 +17,25 @@ import { PreferencesModule } from '../../modules/preferencesModule';
   templateUrl: 'preferences-style-format-page.html'
 })
 export class PreferencesStyleFormatPage {
-  public dateFormats: Array<any> = [{ "_id": 1, "format": "mm/dd/yyyy", "example": "11/22/1992" }];
+  public dateFormats: { _id: number, format: string, example: string }[] = [{ _id: 0, format: 'Default', example: null }];
+  public selectedDateFormat;
 
   constructor(
     private loading: LoadingController,
     private storeService: StoreService,
+    private resourceService: ResourceService,
     private syncContext: SyncContext
   ) {
   }
 
   async ionViewDidLoad() {
+    let dateFormats = await this.resourceService.getDateFormats();
+    dateFormats && (this.dateFormats = this.dateFormats.concat(dateFormats));
+    this.selectedDateFormat = 1;
   }
 
-
   public async save() {
+    this.syncContext.currentPos.dateFormat = this.selectedDateFormat;
     let loader = this.loading.create({
       content: 'Saving Preferences...'
     });
