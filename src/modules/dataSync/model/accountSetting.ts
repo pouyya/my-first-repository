@@ -1,4 +1,4 @@
-import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';    
+import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 
 export class AccountSetting extends DBBasedEntity {
     public name: string;
@@ -13,10 +13,11 @@ export class AccountSetting extends DBBasedEntity {
     public timeOffset: any;
     public saleNumberPrefix: string;
     public closureNumberPrefix: string;
+    public selectedDateFormat: number;
 
-    constructor(){
-      super();
-      this.isInitialized = false;
+    constructor() {
+        super();
+        this.isInitialized = false;
     }
 }
 

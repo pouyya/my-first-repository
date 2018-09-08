@@ -12,7 +12,8 @@ import { AccountSetting } from '../../modules/dataSync/model/accountSetting';
 import { AppSettingsInterface } from '../../modules/dataSync/model/UserSession';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
-import {SyncContext} from "../../services/SyncContext";
+import { SyncContext } from "../../services/SyncContext";
+import { ResourceService } from '../../services/resourceService';
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -32,6 +33,7 @@ export class Settings {
   private currentTax: any;
   private newTax: any;
   private setting: AppSettingsInterface;
+  public dateFormats: { _id: number, format: string, example: string }[] = [{ _id: 0, format: 'Default', example: null }];
 
   constructor(
     private userService: UserService,
@@ -41,7 +43,9 @@ export class Settings {
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
     private accountSettingService: AccountSettingService,
-    private syncContext: SyncContext
+    private syncContext: SyncContext,
+    private resourceService: ResourceService,
+
   ) {
     this.cdr.detach();
     this.taxTypes = [
@@ -50,7 +54,10 @@ export class Settings {
     ];
   }
 
-  ionViewDidLoad() {
+  async ionViewDidLoad() {
+    let dateFormats = await this.resourceService.getDateFormats();
+    dateFormats && (this.dateFormats = this.dateFormats.concat(dateFormats));
+
     var promises: Array<Promise<any>> = [
       this.appService.loadSalesAndGroupTaxes(),
       this.userService.getUser(),
@@ -63,7 +70,7 @@ export class Settings {
         this.setting = results[1];
         this.accountSetting = results[2];
         this.timezones = moment.tz.names().map(timezone => {
-          return <{ code: string, name: string }> {
+          return <{ code: string, name: string }>{
             code: timezone,
             name: timezone
           }
@@ -71,7 +78,7 @@ export class Settings {
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.accountSetting.timeOffset &&
-        ( this.accountSetting.timeOffset = {code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset} );
+          (this.accountSetting.timeOffset = { code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset });
         this.currentTax = _.find(this.salesTaxes, (saleTax) => {
           return saleTax._id === this.accountSetting.defaultTax;
         });
@@ -97,6 +104,7 @@ export class Settings {
     this.accountSetting.taxType = this.selectedType == 0 ? false : true;
     this.accountSetting.defaultTax = this.newTax._id;
     this.accountSetting.taxEntity = this.newTax.entityTypeName;
+
     if (this.accountSetting.timeOffset) {
       this.accountSetting.timeOffset = this.accountSetting.timeOffset.code;
       this.syncContext.appTimezone = this.accountSetting.timeOffset;
@@ -104,7 +112,7 @@ export class Settings {
 
     await this.accountSettingService.update(this.accountSetting);
     this.accountSetting.timeOffset &&
-    ( this.accountSetting.timeOffset = {code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset} );
+      (this.accountSetting.timeOffset = { code: this.accountSetting.timeOffset, value: this.accountSetting.timeOffset });
     await loader.dismiss();
     let toast = this.toast.create({
       message: "Settings have been saved",
