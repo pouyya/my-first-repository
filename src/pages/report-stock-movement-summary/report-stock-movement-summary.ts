@@ -72,9 +72,12 @@ export class ReportStockMovementSummaryPage {
 			fromDate.setDate(fromDate.getDate() - days);
 		} else if (this.selectedTimeframe === 'CUSTOM') {
 			fromDate = new Date(this.fromDate);
-			toDate = new Date(this.toDate);
+			toDate = new Date();
 		}
 
+		fromDate.setHours(0, 0, 0, 0);
+		toDate.setHours(23, 59, 59, 0);
+		
 		let _fromDate = this.dateTimeService.getUTCDate(fromDate).toISOString();
 		let _toDate = this.dateTimeService.getUTCDate(toDate).toISOString();
 

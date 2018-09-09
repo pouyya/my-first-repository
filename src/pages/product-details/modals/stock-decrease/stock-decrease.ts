@@ -57,6 +57,7 @@ export class StockDecreaseModal {
 
   public decrease() {
     this.stock.createdAt = moment().utc().format();
+    this.stock.createdAtLocalDate = moment().format();
     this.stock.createdBy = this.employeeService.getEmployee()._id;
     this.stock.value = Number(this.stock.value) * -1;
     if (this.stock.value != 0) {

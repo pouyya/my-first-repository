@@ -17,6 +17,7 @@ import { DBMode, DBModeEnum } from "@simplepos/core/dist/metadata/dbMode";
 @DBMode(DBModeEnum.Current)
 export class StockHistory extends DBBasedEntity {
   public createdAt: string;
+  public createdAtLocalDate: string;
   public createdBy: string;
   public productId: string;
   public value: number;

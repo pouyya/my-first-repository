@@ -53,6 +53,7 @@ export class StockIncreaseModal {
 
     public increase() {
         this.stock.createdAt = moment().utc().format();
+        this.stock.createdAtLocalDate = moment().format();
         this.stock.value = Number(this.stock.value);
         this.stock.createdBy = this.employeeService.getEmployee()._id;
         this.stock.supplyPrice = this.stock.supplyPrice ? Number(this.stock.supplyPrice) : null;

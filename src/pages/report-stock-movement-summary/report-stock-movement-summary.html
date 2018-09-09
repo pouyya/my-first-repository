@@ -51,12 +51,12 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}}
+        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date:
+          'h:mm'}}
         </span>
       </ion-col>
     </ion-row>
   </ion-grid>
-
 
   <ion-grid *ngIf="networkStatus">
     <ion-row class="stock-header">
@@ -64,16 +64,34 @@
         PRODUCT
       </ion-col>
       <ion-col>
-        START STOCK
+        START PERIOD
       </ion-col>
       <ion-col>
-        RECEIVED
+        NEW STOCK
       </ion-col>
       <ion-col>
         SOLD
       </ion-col>
       <ion-col>
-        DEDUCTED
+        RETURNED
+      </ion-col>
+      <ion-col>
+        TRANSFER
+      </ion-col>
+      <ion-col>
+        ADJUSTMENT
+      </ion-col>
+      <ion-col>
+        INTERNAL USE
+      </ion-col>
+      <ion-col>
+        DAMAGE
+      </ion-col>
+      <ion-col>
+        OUT OF DATE
+      </ion-col>
+      <ion-col>
+        OUT OF DATE
       </ion-col>
       <ion-col>
         END STOCK
@@ -87,13 +105,31 @@
         {{stockMovement.startStock}}
       </ion-col>
       <ion-col>
-        {{stockMovement.received}}
+        {{stockMovement.newStock}}
       </ion-col>
       <ion-col>
         {{stockMovement.sold}}
       </ion-col>
       <ion-col>
-        {{stockMovement.deducted}}
+        {{stockMovement.returned}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.transfer}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.adjustment}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.internalUse}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.damaged}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.outOfDate}}
+      </ion-col>
+      <ion-col>
+        {{stockMovement.other}}
       </ion-col>
       <ion-col>
         {{stockMovement.endStock}}
