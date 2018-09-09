@@ -402,6 +402,7 @@ export class ProductDetails {
 			stock.reason = Reason.InitialValue;
 			stock.storeId = this.syncContext.currentStore._id;
 			stock.createdAt = moment().utc().format();
+			stock.createdAtLocalDate = moment().format();
 			stock.value = initVal;
 			stock.createdBy = this.employeeService.getEmployee()._id;
 			stock.supplyPrice = stock.supplyPrice ? Number(stock.supplyPrice) : null;

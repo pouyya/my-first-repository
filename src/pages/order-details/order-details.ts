@@ -253,6 +253,7 @@ export class OrderDetails {
         stock.supplyPrice = Number(item.price);
         stock.value = Number(item.quantity);
         stock.createdAt = moment().utc().format();
+        stock.createdAtLocalDate = moment().format();
         stock.orderId = this.order._id;
         return this.stockHistoryService.add(stock);
       });

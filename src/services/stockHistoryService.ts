@@ -82,24 +82,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 		}) : null;
 	}
 
-	public async getProductsTotalStockValueByStore(productIds: string[], storeId: string): Promise<{ [id: string]: number }> {
-
-		if (productIds.length > 0) {
-			let stockPromises: Promise<any>[] = productIds.map(id => this.getByStoreAndProductId(storeId, id));
-			let productStocks: any[] = await Promise.all(stockPromises);
-			return <{ [id: string]: number }>_.zipObject(productIds, productStocks.map(stocks => {
-				let value: number = stocks.length > 0 ? stocks.map(stock => stock.value)
-					.reduce((a, b) => Number(a) + Number(b)) : 0;
-				return value;
-			}));
-		}
-
-		return {};
-	}
-
 	public static createStockForSale(productId: string, storeId: string, value: number): StockHistory {
 		let stock = new StockHistory();
 		stock.createdAt = moment().utc().format();
+		stock.createdAtLocalDate = moment().format();
 		stock.productId = productId;
 		stock.storeId = storeId;
 		stock.value = value * -1;
@@ -134,9 +120,14 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 export interface StockMovement {
 	productName: string;
 	startStock: number;
-	received: number;
 	sold: number;
-	deducted: number;
-	endStock: number;
+	newStock: number;
 	returned: number;
+	transfer: number;
+	adjustment: number;
+	internalUse: number;
+	damaged: number;
+	outOfDate: number;
+	other: number;
+	endStock: number;
 }
