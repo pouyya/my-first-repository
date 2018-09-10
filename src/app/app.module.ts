@@ -186,6 +186,8 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
 import { ErrorLoggingService } from "../services/ErrorLoggingService";
 import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
 import { PingService } from "../services/pingService";
+import {AddonDashboard} from "../pages/addon-dashboard/addon-dashboard";
+import {AddonService} from "../services/addonService";
 
 @NgModule({
   declarations: [
@@ -195,6 +197,7 @@ import { PingService } from "../services/pingService";
     ProductDetails,
     ReportsDashboard,
     HumanResourceDashboard,
+    AddonDashboard,
     Preferences,
     ReportStockMovementSummaryPage,
     ReportStaffAttendancePage,
@@ -334,6 +337,7 @@ import { PingService } from "../services/pingService";
     ProductDetails,
     ReportsDashboard,
     HumanResourceDashboard,
+    AddonDashboard,
     ReportStockMovementSummaryPage,
     ReportStaffAttendancePage,
     Preferences,
@@ -425,6 +429,7 @@ import { PingService } from "../services/pingService";
     ProductService,
     ServiceService,
     CategoryService,
+    AddonService,
     EmployeeService,
     TaxService,
     CalculatorService,

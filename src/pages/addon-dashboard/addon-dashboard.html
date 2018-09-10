@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Addons</ion-title>
+    <button ion-button icon-only menuToggle="leftMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showDetail()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-list inset *ngFor="let addon of addons ; let idx=index">
+    <ion-item>
+      <ion-label>{{addon.name}}</ion-label>
+      <ion-toggle [(ngModel)]="addon.isEnabled" (ionChange)="onChange(addon)"></ion-toggle>
+    </ion-item>
+  </ion-list>
+</ion-content>
