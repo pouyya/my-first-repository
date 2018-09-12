@@ -1,19 +1,17 @@
 import {Injectable, Injector} from '@angular/core';
 import { ModuleBase } from "./moduelBase";
-import {AddonConfig, AddonDashboard} from "../pages/addon-dashboard/addon-dashboard";
+import { AddonDashboard } from "../pages/addon-dashboard/addon-dashboard";
 import {Sections} from "../pages/section/sections";
-import {ToastController} from "ionic-angular";
-import {AccountSettingService} from "./dataSync/services/accountSettingService";
 import {AddonService} from "../services/addonService";
 import {HomePage} from "../pages/home/home";
 
 @Injectable()
 export class AddonModule implements ModuleBase {
-    private addonConfig: AddonConfig;
+    private addonService: AddonService;
 
     public setInjector(injector: Injector): void {
-        this.addonConfig = injector.get(AddonConfig);
-        (this.pages[1] as any).isEnabled = this.addonConfig.isAddonEnabled.bind(this.addonConfig, 'Table');
+        this.addonService = injector.get(AddonService);
+        (this.pages[1] as any).isEnabled = this.addonService.isAddonEnabled.bind(this.addonService, 'Table');
     }
 
   public pages = [

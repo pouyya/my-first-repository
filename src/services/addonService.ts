@@ -8,4 +8,16 @@ export class AddonService extends BaseEntityService<Addon> {
   constructor() {
     super(Addon);
   }
+
+  public async isAddonEnabled(type: string){
+    let isEnabled = false;
+    const addonsData: Addon[] = await this.getAll();
+    addonsData.some((addon) => {
+        if(addon.addonType === type){
+            isEnabled = addon.isEnabled || false;
+            return true;
+        }
+    });
+    return isEnabled;
+  }
 }

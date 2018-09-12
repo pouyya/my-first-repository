@@ -193,7 +193,6 @@ import {Sections} from "../pages/section/sections";
 import {Tables} from "../pages/table/tables";
 import {TableDetails} from "../pages/table-details/table-details";
 import {TableArrangementService} from "../services/tableArrangementService";
-import {AddonConfig} from "../services/addonConfigService";
 
 @NgModule({
   declarations: [
@@ -444,7 +443,6 @@ import {AddonConfig} from "../services/addonConfigService";
     ServiceService,
     CategoryService,
     TableArrangementService,
-    AddonConfig,
     AddonService,
     EmployeeService,
     TaxService,
