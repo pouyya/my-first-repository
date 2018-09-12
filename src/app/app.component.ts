@@ -117,6 +117,18 @@ export class SimplePOSApp implements OnInit {
   }
 
   async openPage(page) {
+    if (page.hasOwnProperty('isAddon') && page.isAddon){
+      const isEnabled = await page.isEnabled();
+      if(!isEnabled){
+        let toast = this.toastController.create({
+            message: "This Addon is not enabled",
+            duration: 3000
+        });
+
+        toast.present();
+        return;
+      }
+    }
     if (page.hasOwnProperty('modal') && page.modal) {
       let modal = this.modalCtrl.create(page.component);
       modal.onDidDismiss(data => {

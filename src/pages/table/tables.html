@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Tables</ion-title>
+    <button ion-button icon-only menuToggle="leftMenu">
+      <ion-icon name="menu"></ion-icon>
+    </button>
+
+    <ion-buttons end>
+      <button ion-button icon-only (click)="showDetail()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+  <ion-row>
+    <ion-col col-md-6>
+      <ion-item no-padding>
+        <ion-label stacked>Section</ion-label>
+        <ion-select [(ngModel)]="selectedSection" (ngModelChange)="filterBySection()">
+          <ion-option *ngFor="let section of sectionList" [value]="section.id">{{ section.name }}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  </ion-grid>
+  <tile-items [items]="tables" [emptyListMessage]="emptyListMessage" (onSelect)="onSelectTile($event)">
+  </tile-items>
+</ion-content>

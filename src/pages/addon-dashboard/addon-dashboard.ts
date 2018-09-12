@@ -1,15 +1,12 @@
-import { Component, NgZone } from '@angular/core';
+import {Component, Injectable, NgZone} from '@angular/core';
 import { NavController, LoadingController } from 'ionic-angular';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import { Utilities } from "../../utility";
 import { AddonModule } from "../../modules/addonModule";
 import { ADDONS } from "../../metadata/addons";
 import {AddonService} from "../../services/addonService";
 import {Addon} from "../../model/addon";
-import {AccountSettingService} from "../../modules/dataSync/services/accountSettingService";
-import {AccountSetting} from "../../modules/dataSync/model/accountSetting";
 
 @SecurityModule(SecurityAccessRightRepo.Addons)
 @PageModule(() => AddonModule)
@@ -20,10 +17,8 @@ import {AccountSetting} from "../../modules/dataSync/model/accountSetting";
 export class AddonDashboard {
   private addons = [];
   private addonsMapping = {};
-  private currentAccount: AccountSetting;
   constructor(public navCtrl: NavController,
     private addonService: AddonService,
-    private accountSettingService: AccountSettingService,
     protected zone: NgZone,
     private loading: LoadingController
   ) {
@@ -32,8 +27,7 @@ export class AddonDashboard {
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Addons...' });
     await loader.present();
-    this.currentAccount = await this.accountSettingService.getCurrentSetting();
-    const addonsData: Addon[] = await this.addonService.getAddonsByAccountId(this.currentAccount._id);
+    const addonsData: Addon[] = await this.addonService.getAll();
     this.addonsMapping = addonsData.reduce((initObject, data) => {
       initObject[data.addonType] = data;
       return initObject;
@@ -57,7 +51,6 @@ export class AddonDashboard {
       await this.addonService.update(addonData);
     }else{
       const newAddon = new Addon();
-      newAddon.accountId = this.currentAccount._id;
       newAddon.addonType = addon.code;
       newAddon.isEnabled = addon.isEnabled;
       newAddon.createdAt = (new Date).toISOString();

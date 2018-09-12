@@ -9,9 +9,15 @@ export class AddonService extends BaseEntityService<Addon> {
     super(Addon);
   }
 
-  public async getAddonsByAccountId(accountId: string, ): Promise<Addon[]> {
-      const query: any = { selector: { entityTypeName: 'Addon' , accountId} };
-      const addons = await this.findBy(query);
-      return addons;
+  public async isAddonEnabled(type: string){
+    let isEnabled = false;
+    const addonsData: Addon[] = await this.getAll();
+    addonsData.some((addon) => {
+        if(addon.addonType === type){
+            isEnabled = addon.isEnabled || false;
+            return true;
+        }
+    });
+    return isEnabled;
   }
 }
