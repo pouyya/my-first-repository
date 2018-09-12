@@ -8,10 +8,4 @@ export class AddonService extends BaseEntityService<Addon> {
   constructor() {
     super(Addon);
   }
-
-  public async getAddonsByAccountId(accountId: string, ): Promise<Addon[]> {
-      const query: any = { selector: { entityTypeName: 'Addon' , accountId} };
-      const addons = await this.findBy(query);
-      return addons;
-  }
 }

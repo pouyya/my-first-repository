@@ -28,7 +28,7 @@
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>
         </ion-col>
-    <ion-col text-center *ngIf="items.length === 0">Please use back office to add new products and services.</ion-col>
+    <ion-col text-center *ngIf="items.length === 0">{{ emptyListMessage || 'Please use back office to add new products and services.'}}</ion-col>
   </ion-row>
     <ion-row *ngIf="!allowDragSupport">
         <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let tile of items; let i = index" class="tile-col">
@@ -52,6 +52,6 @@
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>
         </ion-col>
-        <ion-col text-center *ngIf="items.length === 0">Please use back office to add new products and services.</ion-col>
+        <ion-col text-center *ngIf="items.length === 0">{{emptyListMessage || 'Please use back office to add new products and services.'}}</ion-col>
     </ion-row>
 </ion-grid>

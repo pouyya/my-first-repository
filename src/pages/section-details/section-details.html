@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Section</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="sectionForm.ngSubmit.emit()" [disabled]="!sectionForm.form.valid">
+        Save
+      </button>
+      <button ion-button icon-only *ngIf="!isNew" (click)="delete()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #sectionForm="ngForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name" stacked>Name*</ion-label>
+        <ion-input type="text" [(ngModel)]="sectionItem.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item no-padding="">
+        <ion-label stacked>Store*</ion-label>
+        <ion-select [(ngModel)]="sectionItem.storeId" name="store" required>
+          <ion-option *ngFor="let item of stores ;" value={{item._id}}>{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

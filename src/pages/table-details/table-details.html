@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{action}} Table</ion-title>
+    <ion-buttons end>
+      <button type="submit" ion-button icon-only (click)="tableForm.ngSubmit.emit()" [disabled]="!tableForm.form.valid">
+        Save
+      </button>
+      <button ion-button icon-only *ngIf="!isNew" (click)="delete()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end network-monitor></ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onSubmit()" #tableForm="ngForm">
+    <ion-list inset>
+      <ion-item>
+        <ion-label class="item-name" stacked>Name*</ion-label>
+        <ion-input type="text" [(ngModel)]="tableItem.name" name="name" required></ion-input>
+      </ion-item>
+      <ion-item no-padding="">
+        <ion-label stacked>Section*</ion-label>
+        <ion-select [(ngModel)]="tableItem.sectionId" name="section" required>
+          <ion-option *ngFor="let item of sections;" value={{item.id}}>{{item.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label stacked>Size*</ion-label>
+        <ion-input type="number" [(ngModel)]="tableItem.size" name="size" required></ion-input>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

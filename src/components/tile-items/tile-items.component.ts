@@ -13,6 +13,7 @@ export class TileItemsComponent {
   @Input() allowDragSupport: boolean;
   @Input() items: Array<any>;
   @Input() activeEmployee: any | null;
+  @Input() emptyListMessage: string | null; 
   @Output() onSelect = new EventEmitter<Object>();
   @Output() onPositionChange = new EventEmitter();
   @Output() onColorSelected = new EventEmitter();

@@ -149,6 +149,10 @@ export class SecurityAccessRightRepo {
     public static Addons: AccessRightItem = new AccessRightItem(
       'Addons',
       'Addons');
+
+    public static TableManagement: AccessRightItem = new AccessRightItem(
+      'TableManagement',
+      'Table Management');
       
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
@@ -187,7 +191,8 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.Preferences,
     SecurityAccessRightRepo.DeleteAccount,
     SecurityAccessRightRepo.Roster,
-    SecurityAccessRightRepo.Addons
+    SecurityAccessRightRepo.Addons,
+    SecurityAccessRightRepo.TableManagement
   ];
 
 }

@@ -188,6 +188,12 @@ import { CreateStoreModal } from '../pages/store-details/modals/create-store/cre
 import { PingService } from "../services/pingService";
 import {AddonDashboard} from "../pages/addon-dashboard/addon-dashboard";
 import {AddonService} from "../services/addonService";
+import {SectionDetails} from "../pages/section-details/section-details";
+import {Sections} from "../pages/section/sections";
+import {Tables} from "../pages/table/tables";
+import {TableDetails} from "../pages/table-details/table-details";
+import {TableArrangementService} from "../services/tableArrangementService";
+import {AddonConfig} from "../services/addonConfigService";
 
 @NgModule({
   declarations: [
@@ -205,6 +211,10 @@ import {AddonService} from "../services/addonService";
     ServiceDetails,
     Categories,
     CategoryDetails,
+    Sections,
+    SectionDetails,
+    Tables,
+    TableDetails,
     Sales,
     Bumps,
     BumpDetails,
@@ -345,6 +355,10 @@ import {AddonService} from "../services/addonService";
     ServiceDetails,
     Categories,
     CategoryDetails,
+    Sections,
+    SectionDetails,
+    Tables,
+    TableDetails,
     Sales,
     Bumps,
     BumpDetails,
@@ -429,6 +443,8 @@ import {AddonService} from "../services/addonService";
     ProductService,
     ServiceService,
     CategoryService,
+    TableArrangementService,
+    AddonConfig,
     AddonService,
     EmployeeService,
     TaxService,
