@@ -54,7 +54,7 @@ export class Sale extends DBBasedEntity {
     this.payments = [];
     this.notes = "";
     this.round = 0;
-    this.created = moment().utc().format()
+    this.created = moment().utc().format();
     this.customerKey = null;
     this.receiptNo = "";
     this.originalSalesId = "";

@@ -12,6 +12,7 @@ import { Customers } from '../pages/customers/customers';
 import { LogOut } from './dataSync/pages/logout/logout';
 import { ReportsDashboard } from '../pages/report-dashboard/report-dashboard';
 import { HumanResourceDashboard } from "../pages/human-resource-dashboard/human-resource-dashboard";
+import { AddonDashboard } from "../pages/addon-dashboard/addon-dashboard";
 
 @Injectable()
 export class BackOfficeModule implements ModuleBase {
@@ -27,6 +28,7 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Human Resource', icon: 'people', component: HumanResourceDashboard },
+    { title: 'Addons', icon: 'people', component: AddonDashboard },
     { title: 'Report', icon: 'print', component: ReportsDashboard },
     { title: 'Settings', icon: 'cog', component: Settings },
     { title: 'About', icon: 'information-circle', component: AboutPage },
