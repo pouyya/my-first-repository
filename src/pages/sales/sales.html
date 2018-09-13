@@ -7,7 +7,7 @@
 
     <ion-buttons style="display: inline-flex;" right>
       <button *ngIf="isTableEnabled" no-margin ion-button (click)="openTablesPopup()">
-        <ion-icon name="cog"></ion-icon>
+        <ion-icon name="list-box"></ion-icon>
       </button>
       <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin ion-button clear>
         <ion-icon name="archive">
