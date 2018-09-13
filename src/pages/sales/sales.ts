@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import { LoadingController, NavParams, NavController } from 'ionic-angular';
+import {LoadingController, NavParams, NavController, ModalController} from 'ionic-angular';
 
 import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -24,6 +24,9 @@ import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
 import { SalesHistoryPage } from "../sales-history/sales-history";
+import {AddonService} from "../../services/addonService";
+import {AddonType} from "../../model/addon";
+import {SelectTablesModal} from "../table/modal/select-table/select-tables";
 
 
 @SecurityModule()
@@ -62,6 +65,7 @@ export class Sales implements OnDestroy {
   public selectedEmployee: Employee = null;
   public user: UserSession;
   private alive: boolean = true;
+  private isTableEnabled: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -74,9 +78,11 @@ export class Sales implements OnDestroy {
     private storeService: StoreService,
     private navCtrl: NavController,
     private navParams: NavParams,
+    private modalCtrl: ModalController,
     private cacheService: CacheService,
     private utils: Utilities,
-    private syncContext: SyncContext
+    private syncContext: SyncContext,
+    private addonService: AddonService
   ) {
     this.cdr.detach();
     this.parkedSaleCount = 0;
@@ -93,6 +99,7 @@ export class Sales implements OnDestroy {
   }
 
   async ionViewDidLoad() {
+    this.isTableEnabled = await this.addonService.isAddonEnabled(AddonType.Table);
     this.syncContext.currentPos.categorySort = this.syncContext.currentPos.categorySort || [];
     this.syncContext.currentPos.productCategorySort = this.syncContext.currentPos.productCategorySort || {};
     this._sharedService
@@ -250,6 +257,12 @@ export class Sales implements OnDestroy {
     loader.dismiss();
   }
 
+  public openTablesPopup(){
+      let modal = this.modalCtrl.create(SelectTablesModal, {});
+      modal.onDidDismiss((res) => {
+      });
+      modal.present();
+  }
 }
 
 export class SalesCategory extends Category {

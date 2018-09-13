@@ -16,7 +16,7 @@ import {TableArrangementService} from "../../services/tableArrangementService";
   templateUrl: 'tables.html'
 })
 export class Tables {
-  public emptyListMessage: string;
+  public emptyListMessage: string = "No tables present for this section";
   public tableList: ITable[] = [];
   public tables: ITable[] = [];
   public sectionList = [];
@@ -31,7 +31,6 @@ export class Tables {
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Tables...' });
     await loader.present();
-    this.emptyListMessage = "No tables present for this section";
     try {
       this.tableList = await this.tableArrangementService.getAllTables() || [];
       this.sectionList = await this.tableArrangementService.getAllSections() || [];

@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Table Selection
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="heading" text-center>
+        Section
+      </ion-col>
+    </ion-row>
+    <tile-items [items]="sections" [emptyListMessage]="emptyListSectionMessage" (onSelect)="onSelectSection($event)">
+    </tile-items>
+    <ion-row>
+      <ion-col class="heading" text-center>
+        Tables
+      </ion-col>
+    </ion-row>
+    <tile-items [items]="tables" [emptyListMessage]="emptyListTableMessage" (onSelect)="onSelectTable($event)">
+    </tile-items>
+  </ion-grid>
+</ion-content>
