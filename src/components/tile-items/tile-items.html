@@ -17,14 +17,15 @@
                 </ion-row>
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>
-            <ion-card *ngIf="tile.thumbnail" tappable class="tile" [ngStyle]="{ 'background-image': 'url(' + tile.thumbnail + ')'}" (click)="selectItem(tile)">
-                <ion-card-content class="tile-content">
-                </ion-card-content>
+            <ion-card *ngIf="tile.thumbnail" tappable class="tile" (click)="selectItem(tile)">
 
                 <button class="tile-editItem" item-right clear (click)="selectColor(tile._id)">
                     <ion-icon name="simpleidea-edit"></ion-icon>
                 </button>
-
+                
+                <img src="{{tile.thumbnail}}"/>
+                <div class="card-title">{{ tile.name }}</div>
+            
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>
         </ion-col>
@@ -45,9 +46,10 @@
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>
 
-            <ion-card *ngIf="tile.thumbnail" tappable class="tile" [ngStyle]="{ 'background-image': 'url(' + tile.thumbnail + ')'}" (click)="selectItem(tile)">
-                <ion-card-content class="tile-content">
-                </ion-card-content>
+            <ion-card *ngIf="tile.thumbnail" tappable class="tile" (click)="selectItem(tile)">
+
+                <img src="{{tile.thumbnail}}"/>
+                <div class="card-title">{{ tile.name }}</div>
 
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>

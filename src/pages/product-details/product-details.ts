@@ -269,6 +269,11 @@ export class ProductDetails {
 		modal.present();
 	}
 
+	public clearImage() {
+		this.image = null;
+		this.thumbnail = null;
+	}
+
 	public calculate(type, itemPrice: InteractableItemPriceInterface) {
 		this.zone.runOutsideAngular(() => {
 			switch (type) {
