@@ -188,6 +188,7 @@
         <div class="insert-image">
           <p>
             <image-picker [selectedImage$]="image" [selectedThumbnail$]="thumbnail"></image-picker>
+            <button ion-button (click)="clearImage()">Clear Image</button>
           </p>
         </div>
       </ion-col>
