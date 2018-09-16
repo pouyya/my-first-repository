@@ -16,6 +16,7 @@ export class PaymentService {
     await this.salesService.updateStock(sale, storeId);
     sale.completed = true;
     sale.completedAt = moment().utc().format();
+    sale.completedAtLocalDate = moment().format();
     sale.state = isRefund ? 'refund' : 'completed';
     sale.receiptNo = await this.fountainService.getReceiptNumber();
   }

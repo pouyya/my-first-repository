@@ -75,9 +75,7 @@ export class ReportsDashboard {
 
 		let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
 			toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
-		fromDate.setHours(0);
-		fromDate.setMinutes(0);
-		fromDate.setSeconds(0);
+		fromDate.setHours(0, 0, 0, 0);
 		fromDate.setDate(fromDate.getDate() - 7);
 		this.dates$.next({ fromDate, toDate });
 
@@ -98,12 +96,18 @@ export class ReportsDashboard {
 			if (posIDs && posIDs.length == 1) {
 				currentPosId = this.syncContext.currentPos.id;
 			}
+
 			let loading = this.loading.create({ content: 'Loading Report...' });
+
 			await loading.present();
+
+			this.fromDate.setHours(0, 0, 0, 0);
+			this.toDate.setHours(23, 59, 59, 0);
+
 			var sales = await this.salesSummaryReportService.getSalesSummary(
 				currentPosId,
-				this.dateTimeService.getUTCDate(this.fromDate).format(this.UTCDatePattern),
-				this.dateTimeService.getUTCDate(this.toDate).format(this.UTCDatePattern)
+				this.fromDate.toISOString(),
+				this.toDate.toISOString()
 			);
 
 			sales.subscribe(
