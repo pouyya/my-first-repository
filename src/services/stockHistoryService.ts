@@ -120,6 +120,7 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 export interface StockMovement {
 	productName: string;
 	startStock: number;
+	initialValue: number;
 	sold: number;
 	newStock: number;
 	returned: number;
