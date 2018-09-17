@@ -2,6 +2,8 @@ import { ProductionLinePrinterProviderContext } from "./productionLinePrinterPro
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
 import { ReportPrinterProviderBase } from "../reportPrinterProviderBase";
+import {TableStatus} from "../../../model/tableArrangement";
+import {SaleType} from "../../../model/sale";
 
 export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
 
@@ -31,7 +33,21 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
         <center>
             <b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b>
         </center>
-        <br>
+        <br>`;
+        if(this.productionLinePrinterProviderContext.sale.type){
+            const types = {};
+            types[SaleType.DineIn] = 'Dine In';
+            types[SaleType.TakeAway] = 'Takeaway';
+            this.buffer +=`${types[this.productionLinePrinterProviderContext.sale.type]}:`
+        }
+
+        if(this.productionLinePrinterProviderContext.sale.tableId){
+            this.buffer += `${this.productionLinePrinterProviderContext.sale.tableName}`;
+        } else if (this.productionLinePrinterProviderContext.sale.attachedCustomerName){
+            this.buffer += `${this.productionLinePrinterProviderContext.sale.attachedCustomerName}`;
+        }
+
+        this.buffer +=`<br>
         </h1>Date time: ${new Date(this.productionLinePrinterProviderContext.sale.completedAt).toLocaleString()}
         <br>
         <h1>${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? "Note: " + this.productionLinePrinterProviderContext.sale.notes + "<br>" : ""}

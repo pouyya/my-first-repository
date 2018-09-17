@@ -2,7 +2,8 @@ import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 
 export enum TableStatus {
     Open = 'open',
-    Closed = 'closed'
+    Closed = 'closed',
+    Active = 'active'
 }
 
 export class TableArrangement extends DBBasedEntity{
@@ -20,6 +21,7 @@ export interface ITable{
     name: string;
     sectionId: string;
     size: number;
+    numberOfGuests: number;
     status: string;
     storeId: string;
     createdAt: string;

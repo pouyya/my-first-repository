@@ -8,7 +8,7 @@ import {
 } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
-import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes } from './../../model/sale';
+import {Sale, DiscountSurchargeInterface, DiscountSurchargeTypes, SaleType} from './../../model/sale';
 import { BasketItem } from './../../model/basketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
@@ -28,6 +28,8 @@ import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
 import { AddNotes } from "./modals/add-notes/add-notes";
+import {TableArrangementService} from "../../services/tableArrangementService";
+import {TableStatus} from "../../model/tableArrangement";
 
 @Component({
   selector: 'basket',
@@ -55,6 +57,8 @@ export class BasketComponent {
   private evaluationContext: EvaluationContext;
   private baseDataLoaded: boolean = false;
   private isSaleParked: boolean = false;
+  private tables;
+  private table;
   private get refund(): boolean {
     return this.balance < 0
   }
@@ -82,6 +86,7 @@ export class BasketComponent {
     private loading: LoadingController,
     private syncContext: SyncContext,
     private productService: ProductService,
+    private tableArrangementService: TableArrangementService,
     private ngZone: NgZone) {
   }
 
@@ -93,6 +98,11 @@ export class BasketComponent {
     }
 
     this.evaluationContext = evaluationContext;
+    const allTables = await this.tableArrangementService.getCurrentStoreTables();
+    this.tables = allTables.reduce((initObj, data) => {
+      initObj[data.id] = data;
+      return initObj;
+    }, {});
 
     if (!sale) {
       sale = await this.salesService.instantiateSale()
@@ -107,6 +117,7 @@ export class BasketComponent {
     }
 
     this.sale = sale;
+    this.sale.tableId && this.attachTable(this.sale.tableId);
     this.isSaleParked = this.sale.state === 'parked';
     this.customer = customer || null;
     this.setBalance();
@@ -118,7 +129,7 @@ export class BasketComponent {
         this.selectItem(item);
         return true;
       }
-    })
+    });
     return;
   }
 
@@ -416,6 +427,11 @@ export class BasketComponent {
         if (!this.isSaleParked) {
           this.saleParked.emit(true);
         }
+        if(this.sale.tableId){
+          const table = this.tables[this.sale.tableId];
+          table.status = TableStatus.Active;
+          this.tableArrangementService.updateTable(table);
+        }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
           subTitle: 'Your sale has successfully been parked',
@@ -426,6 +442,7 @@ export class BasketComponent {
                 this.isSaleParked = false;
                 this.salesService.instantiateSale().then((sale: any) => {
                   this.customer = null;
+                  this.table = null;
                   this.sale = sale;
                   this.calculateAndSync();
                   this.initializeSearchBar();
@@ -456,6 +473,12 @@ export class BasketComponent {
           text: 'Yes',
           handler: () => {
             this.salesService.delete(this.sale).then(async () => {
+              if(this.sale.tableId){
+                const table = this.tables[this.sale.tableId];
+                table.status = TableStatus.Closed;
+                table.numberOfGuests = 0;
+                this.tableArrangementService.updateTable(table);
+              }
               this.isSaleParked && this.saleParked.emit(false);
               this.isSaleParked = false;
               localStorage.removeItem('sale_id');
@@ -588,5 +611,23 @@ export class BasketComponent {
     return basketItem;
   }
 
+
+  public attachTable(tableId){
+    this.table = this.tables[tableId];
+    if(this.sale){
+        this.sale.tableId = tableId;
+        this.sale.tableName = this.table.name;
+        this.sale.type = SaleType.DineIn;
+    }
+  }
+
+  public unassignTable(){
+    this.table = null;
+    if(this.sale){
+        delete this.sale.tableId;
+        delete this.sale.tableName;
+        delete this.sale.type;
+    }
+  }
 
 }

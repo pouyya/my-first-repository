@@ -1,6 +1,6 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
-    <ion-col col-xl-8 col-lg-8 class="customer-container pull-left">
+    <ion-col col-xl-6 col-lg-6 class="customer-container pull-left">
       <ion-item item-content *ngIf="customer" (click)="editCustomer()" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
@@ -23,7 +23,15 @@
         </ion-item>
       </ion-list>
     </ion-col>
-    <ion-col col-xl-4 col-lg-4 class="pull-right">
+    <ion-col col-xl-3 col-lg-3 class="pull-left">
+      <ion-item *ngIf="table" item-content tappable class="table-arrangemenet">
+        <ion-label color="primary">
+          {{table.name}}
+          <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unassignTable()"></ion-icon>
+        </ion-label>
+      </ion-item>
+    </ion-col>
+    <ion-col col-xl-3 col-lg-3 class="pull-right">
       <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="paper"></ion-icon><span class="change-large" *ngIf="sale && sale.notes">*</span>
       </button>

@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import _ from 'lodash';
 import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import {ISection, ITable, TableArrangement} from "../model/tableArrangement";
+import {SyncContext} from "./SyncContext";
 
 @Injectable()
 export class TableArrangementService extends BaseEntityService<TableArrangement> {
-    constructor() {
+    constructor(private syncContext: SyncContext) {
         super(TableArrangement);
     }
 
@@ -19,14 +20,25 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         }
         return tableArrangement;
     }
+
     public async getAllTables(): Promise<ITable[]> {
         const tableArrangement = await this.getTableArrangement();
         return tableArrangement.tables;
     }
 
+    public async getCurrentStoreTables(): Promise<ITable[]> {
+        const tableArrangement = await this.getTableArrangement();
+        return tableArrangement.tables.filter(table => table.storeId === this.syncContext.currentStore._id);
+    }
+
     public async getAllSections(): Promise<ISection[]> {
         const tableArrangement = await this.getTableArrangement();
         return tableArrangement.sections;
+    }
+
+    public async getCurrentStoreSections(): Promise<ISection[]> {
+        const tableArrangement = await this.getTableArrangement();
+        return tableArrangement.sections.filter(section => section.storeId === this.syncContext.currentStore._id);
     }
 
     public async addTable(table: ITable){
