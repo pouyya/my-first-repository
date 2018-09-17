@@ -7,4 +7,5 @@ export class EmployeeTimestamp extends DBBasedEntity {
   public storeId: string;
   public type: string;
   public time: Date;
+  public createdAtLocalDate: string;
 }
