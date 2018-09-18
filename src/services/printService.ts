@@ -90,7 +90,7 @@ export class PrintService {
 
             const qty = saleItem.quantity || 0;
             const totalPrice = (saleItem.finalPrice || 0) * qty;
-            const tax = saleItem.tax || 0;
+            const tax = saleItem.taxAmount || 0;
 
             let id: string;
             let name: string;
