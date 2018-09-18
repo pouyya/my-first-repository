@@ -214,15 +214,15 @@ export class StoreDetailsPage {
 				!this.item.devices && (this.item.devices = []);
 				this.item.devices.push(data.device);
 			}
+			else if (data && data.status === 'remove'){
+				this.removeDevice(this.item.devices.indexOf(data.device));
+			}
 		});
 		modal.present();
 	}
 
 	public async removeDevice(index: number) {
-		const deleteItem = await this.utils.confirmRemoveItem('Do you really want to delete this device!');
-		if (!deleteItem) {
-			return;
-		}
+	
 		let loader = this.loading.create({
 			content: 'Deleting. Please Wait!'
 		});
