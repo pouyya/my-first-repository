@@ -46,27 +46,27 @@ gulp.task("build-scripts", function () {
   }
 
   return folders.map(function (folder) {
-    if(folder!='views'){
-    return business.types.map(function (type) {
+    if (folder != 'views') {
+      return business.types.map(function (type) {
 
-      if (!fs.existsSync(argv.dest + type)) {
-        fs.mkdirSync(argv.dest + type);
-      }
+        if (!fs.existsSync(argv.dest + type)) {
+          fs.mkdirSync(argv.dest + type);
+        }
 
-      fs.writeFileSync(argv.dest + type + "/" + folder + ".json", "");
-      return gulp
-        .src([
-          scriptsPath + folder + "/views/*.json",
-          scriptsPath + folder + "/business-data/" + type + "-data.json",
-          scriptsPath + folder + "/base-data.json",
-        ])
-        .pipe(clip())
-        .pipe(concat(folder + ".json", { newLine: "," }))
-        .pipe(inject.prepend('{  \"docs\": ['))
-        .pipe(inject.append(']}'))
-        .pipe(gulp.dest(argv.dest + type + "/"))
-    });
-  }
+        fs.writeFileSync(argv.dest + type + "/" + folder + ".json", "");
+        return gulp
+          .src([
+            scriptsPath + folder + "/views/*.json",
+            scriptsPath + folder + "/business-data/" + type + "-data.json",
+            scriptsPath + folder + "/base-data.json",
+          ])
+          .pipe(clip())
+          .pipe(concat(folder + ".json", { newLine: "," }))
+          .pipe(inject.prepend('{\n  \"docs\": [\n  '))
+          .pipe(inject.append('\n]\n}'))
+          .pipe(gulp.dest(argv.dest + type + "/"))
+      });
+    }
   });
 });
 

@@ -11,6 +11,7 @@
   "postCode": "{PostCode}",
   "state": "{StateName}",
   "country": "{CountryName}",
+  "businessType": "{BusinessType}",
   "phone": "",
   "printReceiptAtEndOfSale": null,
   "POS": [
@@ -33,8 +34,7 @@
       "productColor": {}
     }
   ],
-  "devices": [
-  ],
+  "devices": [],
   "openingAmount": null,
   "openTime": null,
   "status": false,
@@ -50,36 +50,38 @@
   "email": "{EmailAddress}",
   "twitter": "",
   "saleLastNumber": 0
-},{
-    "_id": "2017-11-29T05:35:15.263Z",
-    "entityTypeName": "AccountSetting",
-    "entityTypeNames": [
-      "AccountSetting",
-      "DBBasedEntity"
-    ],
-    "name": "{StoreName}",
-    "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us",
-    "taxType": true,
-    "screenAwake": true,
-    "trackEmployeeSales": true,
-    "defaultTax": "2017-07-25T10:22:51.163Z",
-    "taxEntity": "SalesTax",
-    "defaultIcon": {
-      "name": "icon-barbc-barber-shop-1",
-      "type": "svg",
-      "noOfPaths": 17
-    },
-    "timeOffset": "{TimeZone}",
-    "saleNumberPrefix": ""
-  },{
-    "_id": "2017-07-19T21:43:48.073Z",
-    "name": "Default PriceBook",
-    "entityTypeName": "PriceBook",
-    "entityTypeNames": [
-        "PriceBook",
-        "DBBasedEntity"
-    ],
-    "priority": 999999999,
-    "criteria": [],
-    "purchasableItems": []
+},
+{
+  "_id": "2017-11-29T05:35:15.263Z",
+  "entityTypeName": "AccountSetting",
+  "entityTypeNames": [
+    "AccountSetting",
+    "DBBasedEntity"
+  ],
+  "name": "{StoreName}",
+  "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us",
+  "taxType": true,
+  "screenAwake": true,
+  "trackEmployeeSales": true,
+  "defaultTax": "2017-07-25T10:22:51.163Z",
+  "taxEntity": "SalesTax",
+  "defaultIcon": {
+    "name": "icon-barbc-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "timeOffset": "{TimeZone}",
+  "saleNumberPrefix": ""
+},
+{
+  "_id": "2017-07-19T21:43:48.073Z",
+  "name": "Default PriceBook",
+  "entityTypeName": "PriceBook",
+  "entityTypeNames": [
+    "PriceBook",
+    "DBBasedEntity"
+  ],
+  "priority": 999999999,
+  "criteria": [],
+  "purchasableItems": []
 }
