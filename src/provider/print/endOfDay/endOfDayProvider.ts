@@ -133,6 +133,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
     private printDayItems(bodyHtml: string) {
         if (this.endOfDayProviderContext.dayItems) {
             let sumOfDay = 0;
+            let sumTaxOfDay = 0;
             bodyHtml += `<center><h2><b>Sales per Item</b></h2></center>
                         <br>
                         <hr>
@@ -147,6 +148,7 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
                                 <td>${TypeHelper.toCurrency(dayItem.totalPrice)}</td>
                             </tr>`;
                     sumOfDay += dayItem.totalPrice;
+                    sumTaxOfDay += dayItem.totalTax;
                 }
             }
             bodyHtml += '</table>';
@@ -155,7 +157,11 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
             <br>
             <table cols="left-${this.printer.printerWidth == PrinterWidth.Wide ? "38" : "33"},right-${this.printer.printerWidth == PrinterWidth.Wide ? "10" : "9"}">
                 <tr>
-                    <td>Total Sales per Item</td>
+                    <td>Total Tax</td>
+                    <td>${TypeHelper.toCurrency(sumTaxOfDay)}</td>
+                </tr>
+                <tr>
+                    <td>Total Sales</td>
                     <td>${TypeHelper.toCurrency(sumOfDay)}</td>
                 </tr>
             </table>
@@ -165,7 +171,6 @@ Closure#: ${this.endOfDayProviderContext.closureNumber}
             <br>
             <br>
             <br>`;
-
         }
 
         return bodyHtml;

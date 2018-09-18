@@ -90,6 +90,7 @@ export class PrintService {
 
             const qty = saleItem.quantity || 0;
             const totalPrice = (saleItem.finalPrice || 0) * qty;
+            const tax = saleItem.tax || 0;
 
             let id: string;
             let name: string;
@@ -97,10 +98,11 @@ export class PrintService {
             ({ id, name } = await this.endOfDayReportSettings[endOfDayReportType].saleItemGetter(saleItem));
 
             if (!context.dayItems[id]) {
-              context.dayItems[id] = { name: name, totalPrice: totalPrice, totalQuantity: qty };
+              context.dayItems[id] = { name: name, totalPrice: totalPrice, totalQuantity: qty, totalTax: tax };
             } else {
               context.dayItems[id].totalPrice += totalPrice || 0;
               context.dayItems[id].totalQuantity += qty || 0;
+              context.dayItems[id].totalTax += tax || 0;
             }
           }
         }
