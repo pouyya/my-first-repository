@@ -21,9 +21,6 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
         <br>
         <br>
         <br>
-        <br>
-        <br>
-        <br>
         <h1>${this.productionLinePrinterProviderContext.headerMessage}
         <center>
             <b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b>
@@ -33,9 +30,8 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
         <br>
         <h1>${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? 
             `<br> 
-            <hr> 
-            Note: ${this.productionLinePrinterProviderContext.sale.notes}
-            <br> 
+            <hr>
+Note: ${this.productionLinePrinterProviderContext.sale.notes}
             <hr>` : ""}
         </h1>`;
 
