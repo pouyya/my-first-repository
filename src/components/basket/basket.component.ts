@@ -98,7 +98,7 @@ export class BasketComponent {
     }
 
     this.evaluationContext = evaluationContext;
-    const allTables = await this.tableArrangementService.getCurrentStoreTables();
+    const allTables = await this.tableArrangementService.getStoreTables();
     this.tables = allTables.reduce((initObj, data) => {
       initObj[data.id] = data;
       return initObj;
@@ -319,6 +319,7 @@ export class BasketComponent {
       if (params) {
         this.isSaleParked && this.saleParked.emit(false);
         this.isSaleParked = false;
+        await this.unassignTable();
         this.sale = await this.salesService.instantiateSale();
         this.paymentCompleted.emit();
         this.customer = null;
@@ -389,7 +390,7 @@ export class BasketComponent {
     });
 
     localStorage.removeItem('sale_id');
-
+    await this.unassignTable();
     this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
     this.paymentCompleted.emit();
     this.isSaleParked && this.saleParked.emit(false);
@@ -430,7 +431,7 @@ export class BasketComponent {
         if(this.sale.tableId){
           const table = this.tables[this.sale.tableId];
           table.status = TableStatus.Active;
-          this.tableArrangementService.updateTable(table);
+          this.tableArrangementService.updateTable(table, null);
         }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
@@ -477,7 +478,7 @@ export class BasketComponent {
                 const table = this.tables[this.sale.tableId];
                 table.status = TableStatus.Closed;
                 table.numberOfGuests = 0;
-                this.tableArrangementService.updateTable(table);
+                this.tableArrangementService.updateTable(table, null);
               }
               this.isSaleParked && this.saleParked.emit(false);
               this.isSaleParked = false;
@@ -618,16 +619,23 @@ export class BasketComponent {
         this.sale.tableId = tableId;
         this.sale.tableName = this.table.name;
         this.sale.type = SaleType.DineIn;
+
+        if(this.table.status !== TableStatus.Active && this.sale.items.length){
+          this.parkSale();
+        }
     }
   }
 
-  public unassignTable(){
-    this.table = null;
+  public async unassignTable(){
     if(this.sale){
         delete this.sale.tableId;
         delete this.sale.tableName;
         delete this.sale.type;
+        this.table.status = TableStatus.Closed;
+        this.table.numberOfGuests = 0;
+        await this.tableArrangementService.updateTable(this.table, null);
     }
+    this.table = null;
   }
 
 }

@@ -22,7 +22,7 @@
       </ion-item>
       <ion-item no-padding="">
         <ion-label stacked>Section*</ion-label>
-        <ion-select [(ngModel)]="tableItem.sectionId" name="section" required>
+        <ion-select [(ngModel)]="selectedSection" name="section" required>
           <ion-option *ngFor="let item of sections;" value={{item.id}}>{{item.name}}</ion-option>
         </ion-select>
       </ion-item>

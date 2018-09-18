@@ -15,6 +15,7 @@ export class TableDetails {
   public isNew = true;
   public action = 'Add';
   private sections = [];
+  private selectedSection;
   constructor(public navCtrl: NavController,
     private tableArrangementService: TableArrangementService,
     private navParams: NavParams,
@@ -26,6 +27,7 @@ export class TableDetails {
   async ionViewDidLoad() {
     this.sections = this.navParams.get('sectionList');
     this.tableList = this.navParams.get('tableList') || [];
+    this.selectedSection = this.navParams.get('selectedSection') || '';
     let editTable = this.navParams.get('table');
     if (editTable) {
       this.tableItem = editTable;
@@ -33,7 +35,7 @@ export class TableDetails {
       this.isNew = false;
       this.action = 'Edit';
     }else {
-      this.tableItem.sectionId = this.sections[0].id;
+      this.selectedSection = this.sections[0].id;
       this.tableItem.id = (new Date()).toISOString();
       this.tableItem.createdAt = (new Date()).toISOString();
       this.tableItem.status = TableStatus.Closed;
@@ -46,8 +48,9 @@ export class TableDetails {
           message: `Section '${this.tableItem.name}' has been created successfully!`,
           duration: 3000
       });
-      const section = _.find(this.sections, {id: this.tableItem.sectionId});
-      const tableNames = _.filter(this.tableList, {storeId: section.storeId}).map(item => item.name);
+      const section = _.find(this.sections, {id: this.selectedSection});
+      const tableList = await this.tableArrangementService.getStoreTables(section.storeId);
+      const tableNames = _.filter(tableList, {id: this.tableItem.id}).map(item => item.name);
 
       if((tableNames as any).includes(this.tableItem.name)){
           toast.setMessage(`Table already present with the name '${this.tableItem.name}'. Please use a different name.`);
@@ -60,8 +63,7 @@ export class TableDetails {
           return;
       }
 
-      this.tableItem.storeId = section.storeId;
-      await this.tableArrangementService[this.isNew ? 'addTable':'updateTable'](this.tableItem);
+      await this.tableArrangementService[this.isNew ? 'addTable':'updateTable'](this.tableItem, this.selectedSection);
       toast.present();
       this.navCtrl.pop();
     } catch (err) {
@@ -75,7 +77,7 @@ export class TableDetails {
       if(!deleteItem){
           return;
       }
-      await this.tableArrangementService.deleteTable(this.tableItem._id);
+      await this.tableArrangementService.deleteTable(this.tableItem.id, this.selectedSection);
       let toast = this.toastCtrl.create({
         message: `Section '${this.tableItem.name}' has been deleted successfully!`,
         duration: 3000

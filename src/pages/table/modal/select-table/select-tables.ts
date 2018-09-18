@@ -13,7 +13,6 @@ import {SyncContext} from "../../../../services/SyncContext";
 export class SelectTablesModal {
 
   public sections = [];
-  private allTables = [];
   public tables = [];
   public selectedSection;
   public emptyListSectionMessage: string;
@@ -33,7 +32,6 @@ export class SelectTablesModal {
     this.emptyListTableMessage= "No tables present for this section";
     const tableArrangement: TableArrangement[] = await this.tableArrangementService.getAll();
     this.sections = tableArrangement[0].sections.filter(section => section.storeId === this.syncContext.currentStore._id);
-    this.allTables = tableArrangement[0].tables;
     if(this.sections.length){
         this.onSelectSection(this.sections[0]);
     }
@@ -49,7 +47,7 @@ export class SelectTablesModal {
     }
     section.color = "rgb(233, 236, 236)" ;
     this.selectedSection = section;
-    this.tables = this.allTables.filter(( table: any ) => {
+    this.tables = section.tables.map(( table: any ) => {
         switch (table.status){
             case TableStatus.Open:
                 table.color = "rgb(157, 240, 255)";
@@ -61,13 +59,13 @@ export class SelectTablesModal {
                 delete table.color;
                 break;
         }
-      return table.sectionId === section.id;
+        return table;
     });
   }
 
   public onSelectTable(table){
     if(table.status === TableStatus.Closed ){
-        let modal = this.modalCtrl.create(AddTableGuestsModal, {table});
+        let modal = this.modalCtrl.create(AddTableGuestsModal, {table, selectedSection: this.selectedSection});
         modal.onDidDismiss((res) => {
           if(res.table){
               table = res.table;

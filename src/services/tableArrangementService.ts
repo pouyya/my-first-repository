@@ -21,16 +21,40 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         return tableArrangement;
     }
 
-    public async getAllTables(): Promise<ITable[]> {
+    public async getStoreTables(storeId?: string): Promise<ITable[]> {
+        if(!storeId){
+            storeId = this.syncContext.currentStore._id;
+        }
         const tableArrangement = await this.getTableArrangement();
-        return tableArrangement.tables;
+        const sections = tableArrangement.sections.filter(section => section.storeId === storeId);
+        let tables = [];
+        sections.forEach(section => {
+            tables = [...tables, ...section.tables];
+        });
+        return tables;
     }
 
-    public async getCurrentStoreTables(): Promise<ITable[]> {
+    private async getSection(sectionId: string): Promise<ISection>{
         const tableArrangement = await this.getTableArrangement();
-        return tableArrangement.tables.filter(table => table.storeId === this.syncContext.currentStore._id);
+        const section = tableArrangement.sections.filter(section => section.id === sectionId);
+        return section;
     }
 
+    private getSectionFromTableId(tableId, tableArrangement){
+        let selectedSection = null;
+        tableArrangement.sections.some(section => {
+            section.tables.some(table => {
+                if(table.id === tableId){
+                    selectedSection = section;
+                    return true;
+                }
+            });
+            if(selectedSection){
+                return true;
+            }
+        });
+        return selectedSection;
+    }
     public async getAllSections(): Promise<ISection[]> {
         const tableArrangement = await this.getTableArrangement();
         return tableArrangement.sections;
@@ -41,29 +65,61 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         return tableArrangement.sections.filter(section => section.storeId === this.syncContext.currentStore._id);
     }
 
-    public async addTable(table: ITable){
+    public async addTable(table: ITable, sectionId: string){
         const tableArrangement = await this.getTableArrangement();
-        tableArrangement.tables.push(table);
-        await this.update(tableArrangement);
-    }
+        let section;
+        if(!sectionId){
+            section = this.getSectionFromTableId(table.id, tableArrangement);
+        }else{
+            const sections = tableArrangement.sections.filter(section => section.id === sectionId);
+            sections.length && ( section = sections[0] );
+        }
 
-    public async updateTable(tableData: ITable){
-        const tableArrangement = await this.getTableArrangement();
-        let tableIndex = _.findIndex(tableArrangement.tables, {id: tableData.id});
-        if(tableIndex != -1){
-            tableArrangement.tables[tableIndex] = { ...tableArrangement.tables[tableIndex], ...tableData };
+        if(section) {
+            section.tables.push(table);
             await this.update(tableArrangement);
         }
     }
 
-    public async deleteTable(tableId: string){
+    public async updateTable(tableData: ITable, sectionId: string){
         const tableArrangement = await this.getTableArrangement();
-        _.remove(tableArrangement.tables, {_id: tableId});
-        await this.update(tableArrangement);
+        let section;
+        if(!sectionId){
+            section = this.getSectionFromTableId(tableData.id, tableArrangement);
+        }else{
+            const sections = tableArrangement.sections.filter(section => section.id === sectionId);
+            sections.length && ( section = sections[0] );
+        }
+
+        if(section){
+            let tableIndex = _.findIndex(section.tables, {id: tableData.id});
+            if(tableIndex != -1){
+                section.tables[tableIndex] = { ...section.tables[tableIndex], ...tableData };
+                await this.update(tableArrangement);
+            }
+        }
+
+    }
+
+    public async deleteTable(tableId: string, sectionId: string){
+        const tableArrangement = await this.getTableArrangement();
+        let section;
+        if(!sectionId){
+            section = this.getSectionFromTableId(tableId, tableArrangement);
+        }else{
+            const sections = tableArrangement.sections.filter(section => section.id === sectionId);
+            sections.length && ( section = sections[0] );
+        }
+
+        if(section) {
+            _.remove(section.tables, {id: tableId});
+            await this.update(tableArrangement);
+        }
     }
 
     public async addSection(section: ISection){
         const tableArrangement = await this.getTableArrangement();
+        section.tables = [];
         tableArrangement.sections.push(section);
         await this.update(tableArrangement);
     }
@@ -79,7 +135,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
 
     public async deleteSection(sectionId: string){
         const tableArrangement = await this.getTableArrangement();
-        _.remove(tableArrangement.sections, {_id: sectionId});
+        _.remove(tableArrangement.sections, {id: sectionId});
         await this.update(tableArrangement);
     }
 }

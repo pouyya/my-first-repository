@@ -7,11 +7,9 @@ export enum TableStatus {
 }
 
 export class TableArrangement extends DBBasedEntity{
-    public tables: ITable[];
     public sections: ISection[];
     constructor(){
         super();
-        this.tables = [];
         this.sections = [];
     }
 }
@@ -19,11 +17,9 @@ export class TableArrangement extends DBBasedEntity{
 export interface ITable{
     id: string;
     name: string;
-    sectionId: string;
     size: number;
     numberOfGuests: number;
     status: string;
-    storeId: string;
     createdAt: string;
 }
 
@@ -32,4 +28,5 @@ export interface ISection {
     name: string;
     storeId: string;
     createdAt: string;
+    tables: ITable[];
 }
