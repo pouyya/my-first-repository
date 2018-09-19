@@ -7,10 +7,10 @@
       <span>{{ renderable.store }}</span>
     </ion-col>
     <ion-col col-md-3>
-      <span>{{ renderable.clockIn | localDate:'MMM DD, YYYY h:mm a' }}</span>
+      <span>{{ renderable.clockIn | localDate:'h:mm a' }}</span>
     </ion-col>
     <ion-col col-md-3>
-      <span>{{ renderable.clockOut | localDate:'MMM DD, YYYY h:mm a' }}</span>
+      <span>{{ renderable.clockOut | localDate:'h:mm a' }}</span>
     </ion-col>
     <ion-col col-md-1 tappable>
       <ion-icon name="eye" (click)="viewDetails()"></ion-icon>
