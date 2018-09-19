@@ -189,7 +189,7 @@ export class BasketComponent {
     var index = _.findIndex(saleItems, (currentSaleItem: BasketItem) => {
       return (currentSaleItem.purchsableItemId == basketItem.purchsableItemId &&
         currentSaleItem.finalPrice == basketItem.finalPrice &&
-        currentSaleItem.employeeId == basketItem.employeeId);
+        currentSaleItem.employeeId == basketItem.employeeId && (!currentSaleItem.modifierItems || !currentSaleItem.modifierItems.length));
     });
     let item;
     if (index !== -1) {
@@ -374,7 +374,7 @@ export class BasketComponent {
         try { await this.printSale(false, sale); } catch (error) { console.log(error); }
         try { await this.printService.printProductionLinePrinter(sale); } catch (error) { console.log(error); }
       }, 0);
-      
+
     });
 
     localStorage.removeItem('sale_id');

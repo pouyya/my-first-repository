@@ -59,14 +59,14 @@ export class PaymentsPage {
     }
   }
 
-  private async calculateBalance(sale: Sale) {
+  private async calculateBalance(sale: Sale, remaining: number = 0) {
 
     let loader = this.loading.create({ content: 'Finalizing Sale' });
     loader.present();
 
-    var totalPayments = 0;
+    var totalPayments = remaining;
     if (sale.taxTotal != 0 && sale.payments && sale.payments.length > 0) {
-      totalPayments = sale.payments
+      totalPayments += sale.payments
         .map(payment => payment.amount)
         .reduce((a, b) => a + b);
     }
@@ -74,6 +74,7 @@ export class PaymentsPage {
     this.amount = sale.taxTotal - totalPayments;
 
     if (Math.abs(totalPayments) >= Math.abs(sale.taxTotal)) {
+      totalPayments != 0 && (this.change = totalPayments - this.sale.taxTotal);
       await this.completeSale(totalPayments)
     }
 
@@ -115,8 +116,10 @@ export class PaymentsPage {
     });
     modal.onDidDismiss(async data => {
       if (data && data.status) {
-        this.addPayment(type, data.data);
-        await this.calculateBalance(this.sale);
+        var payment = data.data > this.amount ? this.amount : data.data;
+        var remaining = data.data - payment;
+        this.addPayment(type, payment);
+        await this.calculateBalance(this.sale, remaining);
         await this.salesService.update(this.sale);
       }
     });
@@ -135,7 +138,6 @@ export class PaymentsPage {
 
   private async completeSale(payments: number) {
     await this.paymentService.completePayment(this.sale, this.syncContext.currentStore._id, this.doRefund);
-    payments != 0 && (this.change = payments - this.sale.taxTotal);
     try {
       await this.printSale(false);
       this.sale.state != "refund" && await this.printService.printProductionLinePrinter(this.sale);

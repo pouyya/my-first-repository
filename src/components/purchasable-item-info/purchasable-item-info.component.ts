@@ -6,7 +6,7 @@ import { Component, Input } from '@angular/core';
 @Component({
   selector: 'purchasable-item-info',
   templateUrl: 'purchasable-item-info.html',
-  styleUrls : ['/component/purchasable-item-info/purchasable-item-info.scss']
+  styleUrls: ['/component/purchasable-item-info/purchasable-item-info.scss']
 })
 export class PurchasableItemInfoComponent {
 
@@ -26,14 +26,19 @@ export class PurchasableItemInfoComponent {
 
   public updatePrice(item: BasketItem) {
     item.finalPrice = Number(item.finalPrice);
-    item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.systemPrice, item.finalPrice));
+
+    if (item.systemPrice !== 0) {
+      item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.systemPrice, item.finalPrice));
+    } else {
+      item.manualPrice = item.finalPrice;
+    }
   }
 
   public addQuantity(item: BasketItem) {
     item.quantity = Number(item.quantity);
   }
 
-  public removeModifier(index){
+  public removeModifier(index) {
     this.item.modifierItems.splice(index, 1);
   }
 }
