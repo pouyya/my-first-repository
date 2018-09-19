@@ -264,6 +264,11 @@ export class ProductDetails {
 		modal.onDidDismiss(data => {
 			if (data && data.status) {
 				this.productItem.icon = this.icons[data.selected] || null;
+				if (this.productItem.icon && this.productItem.icon.name) {
+					this.selectedIcon = this.productItem.icon.name;
+				} else {
+					this.selectedIcon = null;
+				}
 			}
 		});
 		modal.present();

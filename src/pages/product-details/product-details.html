@@ -178,8 +178,8 @@
 
         <ion-item>
           <button class="pull-left" ion-button (click)="selectIcon()">Select Icon</button>
-          <sp-icon class="pull-left" *ngIf="selectedIcon" [icon]="icons[productItem.icon.name]"></sp-icon>
-          <span *ngIf="selectedIcon">&nbsp;{{ productItem.icon.name }}</span>
+          <sp-icon class="pull-left" *ngIf="selectedIcon" [icon]="icons[selectedIcon]"></sp-icon>
+          <span *ngIf="selectedIcon">&nbsp;{{ selectedIcon }}</span>
         </ion-item>
       </ion-list>
     </ion-row>

@@ -166,10 +166,14 @@ export class ServiceDetails {
 	public selectIcon() {
 		let modal = this.modalCtrl.create(CategoryIconSelectModal, { selectedIcon: this.selectedIcon });
 		modal.onDidDismiss(data => {
-			if (data.status) {
-				this.selectedIcon = data.selected;
-				this.serviceItem.icon = this.icons[this.selectedIcon];
-			}
+			if (data && data.status) {
+				this.serviceItem.icon = this.icons[data.selected] || null;
+				if (this.serviceItem.icon && this.serviceItem.icon.name) {
+					this.selectedIcon = this.serviceItem.icon.name;
+				} else {
+					this.selectedIcon = null;
+				}
+			}			
 		});
 		modal.present();
 	}
