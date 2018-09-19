@@ -4,6 +4,8 @@ import { ValidationInfo } from "../metadata/validationModule";
 import { Validators } from "@angular/forms";
 import * as moment from "moment-timezone";
 import {SyncContext} from "../services/SyncContext";
+import {Sale} from "../model/sale";
+import {Sales} from "../pages/sales/sales";
 
 @Injectable()
 export class Utilities {
@@ -95,5 +97,35 @@ export class Utilities {
 
   public convertTimezone(date){
       return this.syncContext.timezone ? moment.tz(date, this.syncContext.timezone) : moment.utc(date).local();
+  }
+
+  public confirmDiscardSale(): Promise<boolean> {
+      return new Promise((resolve, reject) => {
+          let saleId = localStorage.getItem('sale_id');
+          if (saleId) {
+              let confirm = this.alertCtrl.create({
+                  title: 'Warning!',
+                  message: 'There is a sale already exists in your memory. What do you want with it ?',
+                  buttons: [
+                      {
+                          text: 'Discard It!',
+                          handler: async () => {
+                              resolve(true);
+                          }
+                      },
+                      {
+                          text: 'Take me to that Sale',
+                          handler: () => {
+                              resolve(false);
+                          }
+                      }
+                  ]
+              });
+              confirm.present();
+          } else {
+              resolve(true);
+          }
+      });
+
   }
 }

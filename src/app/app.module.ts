@@ -194,6 +194,7 @@ import {Tables} from "../pages/table/tables";
 import {TableDetails} from "../pages/table-details/table-details";
 import {TableArrangementService} from "../services/tableArrangementService";
 import {SelectTablesModal} from "../pages/table/modal/select-table/select-tables";
+import {AddTableGuestsModal} from "../pages/table/modal/add-table-guests/add-table-guests";
 
 @NgModule({
   declarations: [
@@ -216,6 +217,7 @@ import {SelectTablesModal} from "../pages/table/modal/select-table/select-tables
     Tables,
     TableDetails,
     SelectTablesModal,
+    AddTableGuestsModal,
     Sales,
     Bumps,
     BumpDetails,
@@ -361,6 +363,7 @@ import {SelectTablesModal} from "../pages/table/modal/select-table/select-tables
     Tables,
     TableDetails,
     SelectTablesModal,
+    AddTableGuestsModal,
     Sales,
     Bumps,
     BumpDetails,

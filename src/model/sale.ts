@@ -13,6 +13,11 @@ export enum DiscountSurchargeTypes {
   Discount = 'discount'
 }
 
+export enum SaleType {
+  DineIn = 'dinein',
+  TakeAway = 'takeaway'
+}
+
 export interface DiscountSurchargeInterface {
   value: number;
   type: string;
@@ -35,6 +40,7 @@ export class Sale extends DBBasedEntity {
   public payments: Array<PaymentsInterface>;
   public round: number;
   public created: string;
+  public type: string;
   public completedAt: string;
   public status: string;
   public receiptNo: string;
@@ -44,6 +50,9 @@ export class Sale extends DBBasedEntity {
   public saleAppliedType?: string;
   public appliedValues: DiscountSurchargeInterface[];
   public isBumped: boolean;
+  public tableId: string;
+  public tableName: string;
+  public attachedCustomerName: string;
 
   constructor() {
     super();
