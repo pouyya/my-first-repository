@@ -97,7 +97,6 @@ export class Store extends DBBasedEntity {
     public POS: POS[];
     public saleLastNumber: number = 0;
     public closureLastNumber: number = 0;
-    public businessType: string;
 
     constructor() {
         super();

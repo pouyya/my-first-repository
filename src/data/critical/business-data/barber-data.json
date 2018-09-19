@@ -11,7 +11,6 @@
   "postCode": "{PostCode}",
   "state": "{StateName}",
   "country": "{CountryName}",
-  "businessType": "{BusinessType}",
   "phone": "",
   "printReceiptAtEndOfSale": null,
   "POS": [
@@ -71,6 +70,7 @@
     "noOfPaths": 17
   },
   "timeOffset": "{TimeZone}",
+  "businessType": "{BusinessType}",
   "saleNumberPrefix": ""
 },
 {

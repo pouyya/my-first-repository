@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { barberIcons } from '@simplepos/core/dist/metadata/BarberIcons';
 import { coffeeIcons } from '@simplepos/core/dist/metadata/CoffeeIcons';
 import { icons } from '@simplepos/core/dist/metadata/itemIcons';
-import { SyncContext } from "../../services/SyncContext";
+import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 
 @Component({
   selector: 'icon-select',
@@ -18,9 +18,16 @@ export class IconSelectComponent {
   public businessType: string;
 
   constructor(
-    private syncContext: SyncContext
+    private accountSettingService: AccountSettingService,
   ) {
-    this.businessType = this.syncContext.currentStore.businessType;
+    this.loadIcons();
+  }
+
+
+  async loadIcons() {
+    let accountSettings = await this.accountSettingService.getCurrentSetting();
+
+    this.businessType = accountSettings.businessType;
     this.icons = _.values(icons);
     if (this.businessType == "barber")
       this.icons = _.values(barberIcons);
