@@ -5,7 +5,8 @@ import {TableStatus} from "../../../../model/tableArrangement";
 
 @Component({
   selector: 'add-table-guests-modal',
-  templateUrl: 'add-table-guests.html'
+  templateUrl: 'add-table-guests.html',
+    styleUrls: ['/pages/table/modal/select-table/add-table-guests.scss']
 })
 export class AddTableGuestsModal {
 
@@ -21,7 +22,8 @@ export class AddTableGuestsModal {
 
   async ionViewDidLoad() {
     this.table = this.navParams.get('table');
-    this.selectedSection = this.navParams.get('selectedSection');
+    const section = this.navParams.get('selectedSection');
+    this.selectedSection = section.id;
     !this.table.numberOfGuests && ( this.table.numberOfGuests = 0 );
   }
 
@@ -38,12 +40,6 @@ export class AddTableGuestsModal {
     if(this.table.numberOfGuests <= 0){
         toast.present();
         return;
-    }
-
-    if(this.table.numberOfGuests > Number(this.table.size)) {
-      toast.setMessage(`Number of guests should be less than ${this.table.size}`);
-      toast.present();
-      return;
     }
 
     this.table.status = TableStatus.Open;

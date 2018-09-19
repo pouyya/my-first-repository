@@ -57,11 +57,6 @@ export class TableDetails {
           toast.present();
           return;
       }
-      if(this.tableItem.size <= 0){
-          toast.setMessage(`Table size should be greater than 0.`);
-          toast.present();
-          return;
-      }
 
       await this.tableArrangementService[this.isNew ? 'addTable':'updateTable'](this.tableItem, this.selectedSection);
       toast.present();
