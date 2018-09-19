@@ -17,7 +17,6 @@ import {TableArrangementService} from "../../services/tableArrangementService";
 })
 export class Tables {
   public emptyListMessage: string = "No tables present for this section";
-  public tableList: ITable[] = [];
   public tables: ITable[] = [];
   public sectionList = [];
   public selectedSection = "";
@@ -32,7 +31,6 @@ export class Tables {
     let loader = this.loading.create({ content: 'Loading Tables...' });
     await loader.present();
     try {
-      this.tableList = await this.tableArrangementService.getAllTables() || [];
       this.sectionList = await this.tableArrangementService.getAllSections() || [];
       if(this.sectionList.length){
         this.selectedSection = this.sectionList[0].id;
@@ -47,7 +45,8 @@ export class Tables {
   }
 
   showDetail(table) {
-    this.navCtrl.push(TableDetails, { table, sectionList: this.sectionList, tableList: this.tableList});
+    this.navCtrl.push(TableDetails, { table, sectionList: this.sectionList,
+        tableList: this.tables, selectedSection: this.selectedSection});
   }
 
 
@@ -57,9 +56,10 @@ export class Tables {
 
   public filterBySection(){
     if(!this.selectedSection){
-      this.tables = this.tableList;
+      this.tables = [];
       return;
     }
-    this.tables = this.tableList.filter(table => table.sectionId === this.selectedSection);
+    const sections: any = this.sectionList.filter(section => section.id === this.selectedSection);
+    sections.length && ( this.tables = sections[0].tables || []);
   }
 } 
