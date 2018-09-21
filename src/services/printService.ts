@@ -174,8 +174,7 @@ export class PrintService {
     if (receiptPrinters.length) {
       var currentAccountsetting = await this.accountSettingService.getCurrentSetting();
 
-      const promises = [];
-      receiptPrinters.forEach(receiptPrinter => {
+      receiptPrinters.forEach(async receiptPrinter => {
         const receiptProviderContext = new ReceiptProviderContext();
         receiptProviderContext.sale = receiptPrinter.sale;
         receiptProviderContext.invoiceTitle = currentAccountsetting.name;
@@ -199,10 +198,8 @@ export class PrintService {
           .setFooter()
           .cutPaper();
 
-        promises.push(receiptProvider.print());
+        await receiptProvider.print();
       });
-
-      return Promise.all(promises);
     }
   }
 
@@ -247,23 +244,20 @@ export class PrintService {
     });
 
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
-    const promises = [];
 
-    productionLinePrinters.forEach(productionLinePrinter => {
+    productionLinePrinters.forEach(async productionLinePrinter => {
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = productionLinePrinter.sale;
       productionLinePrinterProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
 
       const printerProvider = new EPosPrinterProvider(productionLinePrinter.printer.ipAddress, productionLinePrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
 
-      promises.push(new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
+      await new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
         .setHeader()
         .setBody()
         .cutPaper()
-        .print());
+        .print();
     });
-
-    return Promise.all(promises);
   }
 
   public async openCashDrawer(): Promise<any> {
