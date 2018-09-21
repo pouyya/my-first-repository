@@ -40,7 +40,7 @@ export class ReportsDashboard {
 	public salesSummaryList: SalesSummaryList;
 	public salesSummary: SalesSummary[];
 	public chartDatePattern: string = 'DD MMM YYYY';
-	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
+	public DatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 	networkStatus: boolean;
 
 	constructor(
@@ -68,16 +68,14 @@ export class ReportsDashboard {
 		await loader.present();
 
 		this.dates$.asObservable().subscribe(async (date: any) => {
-			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
-			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
+			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
+			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
 			await this.loadSales();
 		});
 
 		let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
 			toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
-		fromDate.setHours(0);
-		fromDate.setMinutes(0);
-		fromDate.setSeconds(0);
+		fromDate.setHours(0, 0, 0, 0);
 		fromDate.setDate(fromDate.getDate() - 7);
 		this.dates$.next({ fromDate, toDate });
 
@@ -98,12 +96,18 @@ export class ReportsDashboard {
 			if (posIDs && posIDs.length == 1) {
 				currentPosId = this.syncContext.currentPos.id;
 			}
+
 			let loading = this.loading.create({ content: 'Loading Report...' });
+
 			await loading.present();
+
+			this.fromDate.setHours(0, 0, 0, 0);
+			this.toDate.setHours(23, 59, 59, 0);
+
 			var sales = await this.salesSummaryReportService.getSalesSummary(
 				currentPosId,
-				this.dateTimeService.getUTCDate(this.fromDate).format(this.UTCDatePattern),
-				this.dateTimeService.getUTCDate(this.toDate).format(this.UTCDatePattern)
+				this.fromDate.toISOString(),
+				this.toDate.toISOString()
 			);
 
 			sales.subscribe(
