@@ -60,9 +60,11 @@ export class PrintService {
 
   public async printEndOfDayReport(closure: Closure, endOfDayReportType: EndOfDayReportType = EndOfDayReportType.PerProduct) {
     const receiptPrinters = this.getPrinterSales(null, DeviceType.ReceiptPrinter);
+
     if (!receiptPrinters.length) {
       return false;
     }
+
     const context = new EndOfDayProviderContext();
     context.openFloat = closure.openingAmount;
     context.posName = closure.posName;
@@ -109,21 +111,18 @@ export class PrintService {
       }
     }
 
-    const promises = [];
-    receiptPrinters.forEach(receiptPrinter => {
+    for (const receiptPrinter of receiptPrinters) {
 
       let printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
       let provider = new EndOfDayProvider(context, printerProvider);
 
-      promises.push(provider
+      await provider
         .setHeader()
         .setBody()
         .setFooter()
         .cutPaper()
-        .print());
-    });
-
-    await Promise.all(promises);
+        .print();
+    };
   }
 
   private getPerProduct(saleItem: BasketItem) {
@@ -174,8 +173,10 @@ export class PrintService {
     if (receiptPrinters.length) {
       var currentAccountsetting = await this.accountSettingService.getCurrentSetting();
 
-      receiptPrinters.forEach(async receiptPrinter => {
+      for (const receiptPrinter of receiptPrinters) {
+
         const receiptProviderContext = new ReceiptProviderContext();
+
         receiptProviderContext.sale = receiptPrinter.sale;
         receiptProviderContext.invoiceTitle = currentAccountsetting.name;
         receiptProviderContext.shopName = this.syncContext.currentStore.name;
@@ -199,7 +200,7 @@ export class PrintService {
           .cutPaper();
 
         await receiptProvider.print();
-      });
+      };
     }
   }
 
@@ -207,7 +208,8 @@ export class PrintService {
     const printerSales = [];
     if (this.syncContext.currentStore.devices) {
       const printers = this.syncContext.currentStore.devices.filter(device => device.type == deviceType);
-      printers.forEach(printer => {
+
+      for (const printer of printers) {
         if (TypeHelper.isNullOrWhitespace(printer.ipAddress) || TypeHelper.isNullOrWhitespace(printer.printerPort) ||
           (printer.posIds && printer.posIds.length && printer.posIds.indexOf(this.syncContext.currentPos.id) == -1)) {
           return;
@@ -227,7 +229,7 @@ export class PrintService {
         } else if (!sale) {
           printerSales.push({ printer });
         }
-      });
+      };
     }
     return printerSales;
   }
@@ -245,7 +247,8 @@ export class PrintService {
 
     const productionLinePrinters = this.getPrinterSales(sale, DeviceType.ProductionLinePrinter);
 
-    productionLinePrinters.forEach(async productionLinePrinter => {
+    for (const productionLinePrinter of productionLinePrinters) {
+
       const productionLinePrinterProviderContext = new ProductionLinePrinterProviderContext();
       productionLinePrinterProviderContext.sale = productionLinePrinter.sale;
       productionLinePrinterProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
@@ -257,7 +260,7 @@ export class PrintService {
         .setBody()
         .cutPaper()
         .print();
-    });
+    };
   }
 
   public async openCashDrawer(): Promise<any> {
@@ -270,16 +273,13 @@ export class PrintService {
 
     const receiptPrinters = this.getPrinterSales(null, DeviceType.ReceiptPrinter);
 
-    if (receiptPrinters.length) {
-      const promises = [];
-      receiptPrinters.forEach(receiptPrinter => {
+    if (receiptPrinters && receiptPrinters.length) {
+      for (const receiptPrinter of receiptPrinters) {
         const printerProvider = new EPosPrinterProvider(receiptPrinter.printer.ipAddress, receiptPrinter.printer.characterPerLine == 42 ? PrinterWidth.Narrow : PrinterWidth.Wide, this.errorLoggingService);
-        promises.push(new ReceiptProvider(null, this.translateService, printerProvider)
+        await new ReceiptProvider(null, this.translateService, printerProvider)
           .openCashDrawer()
-          .print());
-      });
-
-      return Promise.all(promises);
+          .print();
+      };
     }
   }
 }
