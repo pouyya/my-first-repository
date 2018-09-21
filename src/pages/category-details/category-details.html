@@ -26,8 +26,8 @@
       <ion-item>
         <button ion-button type="button" (click)="selectIcon()">Select Icon</button>
         <sp-icon *ngIf="selectedIcon&&categoryItem.icon" [icon]="icons[categoryItem.icon.name]"></sp-icon>
-        <span *ngIf="selectedIcon&&categoryItem.icon">&nbsp;{{ categoryItem.icon.name }}</span>
-        <span *ngIf="!selectedIcon">&nbsp;No icon</span>
+        <span *ngIf="selectedIcon && categoryItem.icon">&nbsp;{{ categoryItem.icon.name }}</span>
+        <span *ngIf="!categoryItem.icon">&nbsp;No icon</span>
       </ion-item>
     </ion-list>
     <div class="insert-image">
