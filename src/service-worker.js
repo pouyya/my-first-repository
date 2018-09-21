@@ -24,7 +24,7 @@
 // cache, then increment the CACHE_VERSION value. It will kick off the service worker update
 // flow and the old cache(s) will be purged as part of the activate event handler when the
 // updated service worker is activated.
-var CACHE_VERSION = 1;
+var CACHE_VERSION = 2;
 var CURRENT_CACHES = {
   'post-message': 'post-message-cache-v' + CACHE_VERSION
 };
@@ -79,48 +79,27 @@ self.addEventListener('message', function(event) {
   console.log('Handling message event:', event);
   var p = caches.open(CURRENT_CACHES['post-message']).then(function(cache) {
     switch (event.data.command) {
-      // This command returns a list of the URLs corresponding to the Request objects
-      // that serve as keys for the current cache.
-      case 'keys':
-        return cache.keys().then(function(requests) {
-          var urls = requests.map(function(request) {
-            return request.url;
-          });
-
-          return urls.sort();
-        }).then(function(urls) {
-          // event.ports[0] corresponds to the MessagePort that was transferred as part of the controlled page's
-          // call to controller.postMessage(). Therefore, event.ports[0].postMessage() will trigger the onmessage
-          // handler from the controlled page.
-          // It's up to you how to structure the messages that you send back; this is just one example.
-          event.ports[0].postMessage({
-            error: null,
-            urls: urls
-          });
-        });
-
-      // This command adds a new request/response pair to the cache.
       case 'add':
-        // If event.data.url isn't a valid URL, new Request() will throw a TypeError which will be handled
-        // by the outer .catch().
-        // Hardcode {mode: 'no-cors} since the default for new Requests constructed from strings is to require
-        // CORS, and we don't have any way of knowing whether an arbitrary URL that a user entered supports CORS.
-        var request = new Request(event.data.url, {mode: 'no-cors'});
-        return fetch(request).then(function(response) {
-          return cache.put(event.data.url, response);
-        }).then(function() {
-          event.ports[0].postMessage({
-            error: null
-          });
-        });
-
-      // This command removes a request/response pair from the cache (assuming it exists).
-      case 'delete':
-        return cache.delete(event.data.url).then(function(success) {
-          event.ports[0].postMessage({
-            error: success ? null : 'Item was not found in the cache.'
-          });
-        });
+      function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+          if ((new Date().getTime() - start) > milliseconds){
+            break;
+          }
+        }
+      }
+      sleep(10000);
+     event.ports[0].postMessage({
+           error: null
+         });
+        // var request = new Request(event.data.url, {mode: 'no-cors'});
+        // return fetch(request).then(function(response) {
+        //   return cache.put(event.data.url, response);
+        // }).then(function() {
+        //   event.ports[0].postMessage({
+        //     error: null
+        //   });
+        // });
 
       default:
         // This will be handled by the outer .catch().

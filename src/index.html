@@ -12,46 +12,23 @@
   <meta name="theme-color" content="#4e8ef7">
 
 <!-- un-comment this code to enable service worker -->
-<script>function showCommands() {
-  document.querySelector('#add').addEventListener('click', function() {
-    sendMessage({
-      command: 'add',
-      url: document.querySelector('#url').value
-    }).then(function() {
-      // If the promise resolves, just display a success message.
-      ChromeSamples.setStatus('Added to cache.');
-    }).catch(ChromeSamples.setStatus); // If the promise rejects, show the error.
-  });
+<script>function sendPrintMessage() {
 
-  document.querySelector('#delete').addEventListener('click', function() {
-    sendMessage({
-      command: 'delete',
-      url: document.querySelector('#url').value
-    }).then(function() {
-      // If the promise resolves, just display a success message.
-      ChromeSamples.setStatus('Deleted from cache.');
-    }).catch(ChromeSamples.setStatus); // If the promise rejects, show the error.
-  });
-
-  document.querySelector('#listcontents').addEventListener('click', function() {
-    sendMessage({command: 'keys'})
-      .then(function(data) {
-        var contentsElement = document.querySelector('#contents');
-        // Clear out the existing items from the list.
-        while (contentsElement.firstChild) {
-          contentsElement.removeChild(contentsElement.firstChild);
+   function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+          if ((new Date().getTime() - start) > milliseconds){
+            break;
+          }
         }
-
-        // Add each cached URL to the list, one by one.
-        data.urls.forEach(function(url) {
-          var liElement = document.createElement('li');
-          liElement.textContent = url;
-          contentsElement.appendChild(liElement);
-        });
-      }).catch(ChromeSamples.setStatus); // If the promise rejects, show the error.
-  });
-
-  document.querySelector('#commands').style.display = 'block';
+      }
+      sleep(10000);
+  sendMessage({
+      command: 'add',
+      url: 'TestUrl'
+    }).then(function() {
+      // If the promise resolves, just display a success message.
+    }).catch(function(){});
 }
 
 function sendMessage(message) {
@@ -93,7 +70,7 @@ if ('serviceWorker' in navigator) {
       return navigator.serviceWorker.ready;
     })
     // ...and then show the interface for the commands once it's ready.
-    .then(showCommands)
+    .then(sendPrintMessage)
     .catch(function(error) {
       // Something went wrong during registration. The service-worker.js file
       // might be unavailable or contain a syntax error.
