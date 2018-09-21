@@ -18,7 +18,8 @@ export interface WorkingStatus {
   status: WorkingStatusEnum;
   posId: string;
   storeId: string;
-  time: Date
+  time: Date;
+  createdAtLocalDate: string;
 }
 
 export class Employee extends DBBasedEntity {

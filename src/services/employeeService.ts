@@ -124,6 +124,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
         newTimestamp.storeId = currentStoreId;
         newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
         newTimestamp.time = moment(checkOutTime).utc().toDate();
+        newTimestamp.createdAtLocalDate = moment(checkOutTime).format();
 
         employee.workingStatus.status = WorkingStatusEnum.ClockedOut;
         employee.workingStatus.posId = this.syncContext.currentPos.id;

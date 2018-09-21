@@ -37,6 +37,7 @@ export class ReportStaffAttendancePage {
 	public employeeIDs: string[] = [];
 	public detailRowToShow = -1;
 	public employees: Array<Employee> = [];
+	public emptyReportWarning = false;
 
 	constructor(
 		private staffAttendanceReportService: StaffAttendanceReportService,
@@ -60,6 +61,7 @@ export class ReportStaffAttendancePage {
 	}
 
 	public async loadStaffAttendanceReport() {
+		this.emptyReportWarning = false;
 		let loader = this.loading.create({ content: 'Loading Report...' });
 		await loader.present();
 		let toDate = new Date();
@@ -75,11 +77,15 @@ export class ReportStaffAttendancePage {
 			toDate = new Date(this.toDate);
 		}
 
+		fromDate.setHours(0, 0, 0, 0);
+		toDate.setHours(23, 59, 59, 0);
+
 		const callRest = await this.staffAttendanceReportService.getStaffAttendance(
 			this.selectedStore,
 			this.employeeIDs,
-			this.dateTimeService.getUTCDate(fromDate).format(this.UTCDatePattern),
-			this.dateTimeService.getUTCDate(toDate).format(this.UTCDatePattern)
+			fromDate.toISOString(),
+			toDate.toISOString()
+
 		);
 		callRest.subscribe(
 			(staffAttendanceList) => {
@@ -90,6 +96,8 @@ export class ReportStaffAttendancePage {
 			},
 			(err) => {
 				console.log(err);
+				if (err.status == 0)
+					this.emptyReportWarning = true;
 				loader.dismiss();
 			},
 			() => loader.dismiss()
