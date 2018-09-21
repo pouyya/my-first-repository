@@ -34,15 +34,23 @@ export class DiscountSurchargeModal {
 
   public confirmChanges() {
     if (this.value > 0) {
-      this.viewCtrl.dismiss({
-        values: this.valuesBackup,
-        data: <DiscountSurchargeInterface>{
-          value: +this.value,
-          type: this.action,
-          format: this.inputType,
-          createdAt: moment().utc().format()
-        }
-      });
+      if (this.action == "discount" && this.inputType == "percentage" && this.value > 100) {
+        let toast = this.toastCtrl.create({
+          message: 'Discount value percentage must between 0 to 100 ',
+          duration: 3000
+        });
+        toast.present();
+      } else {
+        this.viewCtrl.dismiss({
+          values: this.valuesBackup,
+          data: <DiscountSurchargeInterface>{
+            value: +this.value,
+            type: this.action,
+            format: this.inputType,
+            createdAt: moment().utc().format()
+          }
+        });
+      }
     } else {
       let toast = this.toastCtrl.create({
         message: 'Value must be positive',
