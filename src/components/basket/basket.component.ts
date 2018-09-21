@@ -8,7 +8,7 @@ import {
 } from 'ionic-angular';
 import { ParkSale } from './../../pages/sales/modals/park-sale';
 import { SalesServices } from './../../services/salesService';
-import {Sale, DiscountSurchargeInterface, DiscountSurchargeTypes, SaleType} from './../../model/sale';
+import { Sale, DiscountSurchargeInterface, DiscountSurchargeTypes, SaleType } from './../../model/sale';
 import { BasketItem } from './../../model/basketItem';
 import { GlobalConstants } from './../../metadata/globalConstants';
 import { ItemInfoModal } from './item-info-modal/item-info';
@@ -28,8 +28,8 @@ import { PaymentsPage } from './../../pages/payment/payment';
 import { SyncContext } from "../../services/SyncContext";
 import { ProductService } from "../../services/productService";
 import { AddNotes } from "./modals/add-notes/add-notes";
-import {TableArrangementService} from "../../services/tableArrangementService";
-import {TableStatus} from "../../model/tableArrangement";
+import { TableArrangementService } from "../../services/tableArrangementService";
+import { TableStatus } from "../../model/tableArrangement";
 
 @Component({
   selector: 'basket',
@@ -428,7 +428,7 @@ export class BasketComponent {
         if (!this.isSaleParked) {
           this.saleParked.emit(true);
         }
-        if(this.sale.tableId){
+        if (this.sale.tableId) {
           const table = this.tables[this.sale.tableId];
           table.status = TableStatus.Active;
           this.tableArrangementService.updateTable(table, null);
@@ -474,7 +474,7 @@ export class BasketComponent {
           text: 'Yes',
           handler: () => {
             this.salesService.delete(this.sale).then(async () => {
-              if(this.sale.tableId){
+              if (this.sale.tableId) {
                 const table = this.tables[this.sale.tableId];
                 table.status = TableStatus.Closed;
                 table.numberOfGuests = 0;
@@ -613,27 +613,29 @@ export class BasketComponent {
   }
 
 
-  public attachTable(tableId){
+  public attachTable(tableId) {
     this.table = this.tables[tableId];
-    if(this.sale){
-        this.sale.tableId = tableId;
-        this.sale.tableName = this.table.name;
-        this.sale.type = SaleType.DineIn;
+    if (this.sale) {
+      this.sale.tableId = tableId;
+      this.sale.tableName = this.table.name;
+      this.sale.type = SaleType.DineIn;
 
-        if(this.table.status !== TableStatus.Active && this.sale.items.length){
-          this.parkSale();
-        }
+      if (this.table.status !== TableStatus.Active && this.sale.items.length) {
+        this.parkSale();
+      }
     }
   }
 
-  public async unassignTable(){
-    if(this.sale){
-        delete this.sale.tableId;
-        delete this.sale.tableName;
-        delete this.sale.type;
+  public async unassignTable() {
+    if (this.sale) {
+      delete this.sale.tableId;
+      delete this.sale.tableName;
+      delete this.sale.type;
+      if (this.table) {
         this.table.status = TableStatus.Closed;
         this.table.numberOfGuests = 0;
         await this.tableArrangementService.updateTable(this.table, null);
+      }
     }
     this.table = null;
   }
