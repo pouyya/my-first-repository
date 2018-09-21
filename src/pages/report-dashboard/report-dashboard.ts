@@ -40,7 +40,7 @@ export class ReportsDashboard {
 	public salesSummaryList: SalesSummaryList;
 	public salesSummary: SalesSummary[];
 	public chartDatePattern: string = 'DD MMM YYYY';
-	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ss';
+	public DatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 	networkStatus: boolean;
 
 	constructor(
@@ -68,8 +68,8 @@ export class ReportsDashboard {
 		await loader.present();
 
 		this.dates$.asObservable().subscribe(async (date: any) => {
-			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate).toDate();
-			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate).toDate();
+			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
+			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
 			await this.loadSales();
 		});
 
