@@ -16,6 +16,7 @@ export class DiscountSurchargeModal {
   public static readonly PRECENTAGE: string = 'percentage';
 
   public value: number;
+  public total: number;
   public action: string = DiscountSurchargeModal.DISCOUNT;
   public inputType: string = DiscountSurchargeModal.CASH;
 
@@ -28,18 +29,18 @@ export class DiscountSurchargeModal {
     private navParams: NavParams
   ) {
     this.action = <string>this.navParams.get('action');
+    this.total = <number>this.navParams.get('total');
     this.values = <DiscountSurchargeInterface[]>this.navParams.get('values');
     this.valuesBackup = _.map(this.values, value => value);
   }
 
   public confirmChanges() {
     if (this.value > 0) {
-      if (this.action == "discount" && this.inputType == "percentage" && this.value > 100) {
-        let toast = this.toastCtrl.create({
-          message: 'Discount value percentage must between 0 to 100 ',
-          duration: 3000
-        });
-        toast.present();
+      if (this.action == DiscountSurchargeModal.DISCOUNT && this.inputType == DiscountSurchargeModal.CASH && this.total - this.value < 0) {
+        this.toast("Final result value must be positive");
+      }
+      else if (this.action == DiscountSurchargeModal.DISCOUNT && this.inputType == DiscountSurchargeModal.PRECENTAGE && this.value > 100) {
+        this.toast('Discount value percentage must between 0 to 100');
       } else {
         this.viewCtrl.dismiss({
           values: this.valuesBackup,
@@ -52,12 +53,16 @@ export class DiscountSurchargeModal {
         });
       }
     } else {
-      let toast = this.toastCtrl.create({
-        message: 'Value must be positive',
-        duration: 3000
-      });
-      toast.present();
+      this.toast('Value must be positive');
     }
+  }
+
+  public toast(message: string) {
+    let toast = this.toastCtrl.create({
+      message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   public remove(value, index) {

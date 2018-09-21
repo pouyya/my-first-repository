@@ -303,6 +303,7 @@ export class BasketComponent {
 
     let exec = (action) => {
       modalOptions.action = action;
+      modalOptions.total = this.balance;
       modal = this.modalCtrl.create(DiscountSurchargeModal, modalOptions);
       modal.onDidDismiss(onDismiss);
       modal.present();
