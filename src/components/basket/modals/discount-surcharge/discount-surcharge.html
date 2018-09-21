@@ -73,18 +73,37 @@
       </ion-row>
     </ion-grid>
   </div>
+  <ion-grid>
+    <ion-row>
+      List of dicount and surcharge that applied
+    </ion-row>
+  </ion-grid>
+  <ion-list *ngIf="valuesBackup.length == 0">
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col col-md-3>
+            <strong>No data available to show</strong>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
   <ion-list *ngIf="valuesBackup.length > 0">
     <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col col-md-4>
+          <ion-col col-md-3>
             <strong>Value</strong>
+          </ion-col>
+          <ion-col col-md-3>
+            <strong>Type</strong>
           </ion-col>
           <ion-col col-md-5>
             <strong>Added At</strong>
           </ion-col>
-          <ion-col col-md-4>
-            <strong>Type</strong>
+          <ion-col col-md-1>
+            <strong>x</strong>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -96,10 +115,10 @@
         <ion-row>
           <ion-col col-md-3>
             <ion-item item-content>
-              <ion-input type="text" [(ngModel)]="value.value"></ion-input>
+              <ion-input max="100" type="text" [(ngModel)]="value.value"></ion-input>
             </ion-item>
           </ion-col>
-          <ion-col col-md-3>{{value.format}} </ion-col>
+          <ion-col col-md-3>{{value.format}} : {{(value.type=="discount"?"-":"+")}}</ion-col>
           <ion-col col-md-5>{{value.createdAt | localDate:'M/d/YY, h:mm a'}}</ion-col>
           <ion-col col-md-1>
             <ion-icon name="trash" (click)="remove(value, $index)" tappable></ion-icon>
