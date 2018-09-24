@@ -11,6 +11,7 @@ export class AccountSetting extends DBBasedEntity {
     public taxEntity: string;
     public defaultIcon: Icon;
     public timeOffset: any;
+    public businessType: string;
     public saleNumberPrefix: string;
     public closureNumberPrefix: string;
     public selectedDateFormat: number;
