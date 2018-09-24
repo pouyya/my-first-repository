@@ -28,7 +28,7 @@ import {AddonService} from "../../services/addonService";
 import {AddonType} from "../../model/addon";
 import {SelectTablesModal} from "../table/modal/select-table/select-tables";
 import {TableStatus} from "../../model/tableArrangement";
-import {Sale} from "../../model/sale";
+import {AttachCustomerModal} from "./modals/attach-customer/attach-customer";
 
 
 @SecurityModule()
@@ -57,7 +57,7 @@ export class Sales implements OnDestroy {
   }
 
   private _basketComponent: BasketComponent;
-
+  private customerName: string;
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
@@ -185,6 +185,7 @@ export class Sales implements OnDestroy {
       return employee;
     });
     this.selectedEmployee = null;
+    this.customerName = "";
   }
 
   public onParkedSale(isParked) {
@@ -284,6 +285,29 @@ export class Sales implements OnDestroy {
             this._sharedService.publish('updateSale', { sale });
         }
     }
+  }
+
+  public openAttachCustomerPopup(){
+      if(this.customerName){
+          this._basketComponent.attachCustomer(this.customerName);
+      }else{
+          let modal = this.modalCtrl.create(AttachCustomerModal, {customerName: this.customerName || ''});
+          modal.onDidDismiss(async (res) => {
+              if(res.customerName) {
+                  this._basketComponent.attachCustomer(res.customerName);
+              }
+          });
+          modal.present();
+      }
+
+  }
+
+  public onAttachCustomer(data){
+      if(data.isAttached){
+          this.customerName = data.customerName;
+      }else {
+          this.customerName = "";
+      }
   }
 }
 

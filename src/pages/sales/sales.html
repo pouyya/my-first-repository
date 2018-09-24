@@ -6,7 +6,10 @@
     <ion-title class="ion-title-center">Sales</ion-title>
 
     <ion-buttons style="display: inline-flex;" right>
-      <button *ngIf="isTableEnabled" no-margin ion-button (click)="openTablesPopup()">
+      <button class="big_icon" no-margin ion-button (click)="openAttachCustomerPopup()">
+        <ion-icon name="person"></ion-icon>
+      </button>
+      <button *ngIf="isTableEnabled" class="big_icon" no-margin ion-button (click)="openTablesPopup()">
         <ion-icon name="list-box"></ion-icon>
       </button>
       <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin ion-button clear>
@@ -86,7 +89,7 @@
       </ion-col>
       <ion-col col-4>
         <basket class="basket-component" [employees]="employees"
-          [user]="user" (paymentCompleted)="paymentCompleted()" (saleParked)="onParkedSale($event)" >
+          [user]="user" (paymentCompleted)="paymentCompleted()" (saleParked)="onParkedSale($event)" (onAttachCustomer)="onAttachCustomer($event)" >
         </basket>
       </ion-col>
     </ion-row>
