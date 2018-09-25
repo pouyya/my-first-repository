@@ -1,23 +1,16 @@
+import { PrinterWidth } from "./eposPrinterProvider";
+
 export class PrintTable {
     buffer: string;
-
-    public static CreateTwoColumns(lenghtLeft: number, lenghtRight: number): PrintTable {
-        return new PrintTable([new PrintColumn(ColumnAlign.Left, lenghtLeft), new PrintColumn(ColumnAlign.Right, lenghtRight)]);
-    }
 
     constructor(private columnTemplates: PrintColumn[]) {
         this.buffer = "";
     }
 
-    addRow(columns: string[]): PrintTable {
-        for (var i = 0; i < columns.length; i++) {
-            var columnTemplate = this.columnTemplates[i];
-            if (columnTemplate.align == ColumnAlign.Right) {
-                this.buffer += PrintTable.padLeft(columns[i], columnTemplate.length);
-            }
-            else {
-                this.buffer += PrintTable.padRight(columns[i], columnTemplate.length);
-            }
+    addRow(values: string[]): PrintTable {
+
+        for (var i = 0; i < values.length; i++) {
+            this.pad(values[i], i, this.columnTemplates[i].align == ColumnAlign.Left);
         }
 
         return this;
@@ -27,14 +20,46 @@ export class PrintTable {
         return this.buffer;
     }
 
-    static padRight(value: string, size: number): string {
-        while (value && value.length < size) value = value + " ";
-        return value;
+    pad(value: string, currentColumnIndex: number, padLeft: boolean) {
+
+        var result = "";
+        var size = this.columnTemplates[currentColumnIndex].length;
+
+        var words = value.split(' ');
+
+        for (var i = 0; i < words.length; i++) {
+
+            result += words[i];
+
+            if (i < words.length - 1) {
+                result += " ";
+            }
+
+            if ((i < words.length - 1) && (result.length + words[i + 1].length > size)) {
+                this.buffer += result + this.gotoNextLine(result.length, currentColumnIndex);
+                result = "";
+            }
+        }
+
+        if (padLeft) {
+            while (result && result.length < size) result = result + " ";
+        } else {
+            while (result && result.length < size) result = " " + result;
+        }
+
+        this.buffer += result;
     }
 
-    static padLeft(value: string, size: number): string {
-        while (value && value.length < size) value = " " + value;
-        return value;
+    gotoNextLine(currentColumnResultLength: number, currentColumnIndex: number) {
+
+        var currenRemaingColumn = this.columnTemplates[currentColumnIndex].length - currentColumnResultLength;
+
+        for (var i = 0; i < this.columnTemplates.length - 1; i++) {
+            var columnIndex = (++currentColumnIndex) % this.columnTemplates.length;
+            currenRemaingColumn = currenRemaingColumn + this.columnTemplates[columnIndex].length
+        }
+
+        return " ".repeat(currenRemaingColumn)
     }
 }
 
