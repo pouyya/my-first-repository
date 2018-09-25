@@ -99,9 +99,9 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
         <center>
             <barcode>${this.receiptProviderContext.sale.receiptNo}</barcode>
 ${new Date(this.receiptProviderContext.sale.completedAt).toLocaleString()}  ${this.receiptProviderContext.sale.receiptNo}
+${this.receiptProviderContext.shopAddress}
 ${this.receiptProviderContext.footerMessage}
         </center>
-        <br>
         <br>
         <br>
         <br>`;

@@ -182,6 +182,7 @@ export class PrintService {
         receiptProviderContext.shopName = this.syncContext.currentStore.name;
         receiptProviderContext.phoneNumber = this.syncContext.currentStore.phone;
         receiptProviderContext.taxFileNumber = this.syncContext.currentStore.taxFileNumber;
+        receiptProviderContext.shopAddress = `${this.syncContext.currentStore.street || ''} ${this.syncContext.currentStore.city || ''} ${this.syncContext.currentStore.postCode || ''} ${this.syncContext.currentStore.city || ''}`;
         receiptProviderContext.headerMessage = this.syncContext.currentStore.receiptHeaderMessage || '';
         receiptProviderContext.footerMessage = this.syncContext.currentStore.receiptFooterMessage || currentAccountsetting.receiptFooterMessage || '';
 
@@ -258,6 +259,7 @@ export class PrintService {
       await new ProductionLinePrinterProvider(productionLinePrinterProviderContext, printerProvider)
         .setHeader()
         .setBody()
+        .adjustHeight()
         .cutPaper()
         .print();
     };

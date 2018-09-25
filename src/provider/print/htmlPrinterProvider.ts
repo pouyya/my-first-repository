@@ -7,7 +7,9 @@ import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 
 export class HtmlPrinterProvider {
 
+    rowLenght: number;
     constructor(private printer: EPosPrinterProvider) {
+        this.rowLenght = this.printer.printerWidth == PrinterWidth.Narrow ? 42 : 48;
     }
 
     public async parse(html: string) {
@@ -52,7 +54,7 @@ export class HtmlPrinterProvider {
                 } else if (tagName == "barcode") {
                     isBarcode = true;
                 } else if (tagName == "hr") {
-                    printerActions.push(new PrinterAction("text", ["-".repeat(this.printer.printerWidth == PrinterWidth.Narrow ? 42 : 48)]));
+                    printerActions.push(new PrinterAction("text", ["-".repeat(this.rowLenght)]));
                 } else if (tagName == "cut") {
                     printerActions.push(new PrinterAction("cut"));
                 } else if (tagName == "pulse") {

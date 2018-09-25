@@ -7,6 +7,7 @@ export class ReceiptProviderContext {
     public shopName: string;
     public phoneNumber: string;
     public taxFileNumber: string;
+    public shopAddress: string;
     public headerMessage: string;
     public footerMessage: string;
 }
