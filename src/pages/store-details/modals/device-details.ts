@@ -83,10 +83,9 @@ export class DeviceDetailsModal {
         {
           text: 'Yes',
           handler: () => {
-            this.loading.create({
-              content: 'Deleting. Please Wait!',
-            });
-          }
+            this.viewCtrl.dismiss({ status: 'remove', device: this.device });
+          },
+         
         }, 'No'
       ]
     });
