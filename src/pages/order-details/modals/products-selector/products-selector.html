@@ -18,7 +18,14 @@
       <ion-checkbox color="primary" [(ngModel)]="product.selected"></ion-checkbox>
     </ion-item>
   </ion-list>
+  <ion-list *ngIf="(products?products.length==0:true)">
+    <ion-item>
+      <ion-label text-wrap>no products related to this supplier please goto product list
+        then assign product to the supplier</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
 <ion-footer>
-  <button ion-button class="pull-right" (click)="addProduct()">Add Products</button>
+  <button ion-button class="pull-right" (click)="addProduct()">Add
+    Products</button>
 </ion-footer>
