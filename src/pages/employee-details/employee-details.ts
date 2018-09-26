@@ -16,7 +16,7 @@ import {
   LoadingController
 } from "ionic-angular";
 import { SecurityModule } from '../../infra/security/securityModule';
-import {Utilities} from "../../utility";
+import { Utilities } from "../../utility";
 
 interface SelectableStore extends Store {
   selected: boolean;
@@ -84,7 +84,7 @@ export class EmployeeDetails {
     try {
       this.employee.store = _.filter(this.stores, { selected: true })
         .map(store => {
-          return <EmployeeRolePerStore> {
+          return <EmployeeRolePerStore>{
             id: store._id,
             role: store.role
           };
@@ -101,10 +101,9 @@ export class EmployeeDetails {
   public async remove(): Promise<any> {
     try {
       const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this employee!");
-      if(!deleteItem){
-          return;
+      if (!deleteItem) {
+        return;
       }
-      // delete employee associations
       await this.employeeService.delete(this.employee);
       this.navCtrl.pop();
       return;
@@ -134,11 +133,10 @@ export class EmployeeDetails {
     };
 
     this.pluginService.openPinPrompt('Enter PIN', 'Enter Your PIN', config.inputs, config.buttons).then((pin1: number) => {
-      // check for validity
       let validators: Array<Promise<any>> = [
         new Promise((resolve, reject) => {
           let exp: RegExp = /([a-zA-Z0-9])\1{2,}/;
-          exp.test(pin1.toString()) ? reject("PIN have duplicate entries") : resolve();
+          exp.test(pin1.toString()) ? reject("Choose another PIN, we need a strong PIN, please try again!") : resolve();
         }),
         new Promise((resolve, reject) => {
           reservedPins.indexOf(pin1.toString()) > -1 ? reject("This PIN is reserved for the System, please choose another") : resolve();
@@ -164,7 +162,7 @@ export class EmployeeDetails {
       }).catch((error) => {
         let toast = this.toastCtrl.create({
           message: error,
-          duration: 3000
+          duration: 4000
         });
         toast.present();
       });
