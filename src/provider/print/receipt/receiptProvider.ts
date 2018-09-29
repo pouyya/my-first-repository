@@ -54,7 +54,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
                         basketItems += `<tr>
                                 <td>   ${basketItemModifier.quantity}</td>
                                 <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
-                                <td>${TypeHelper.toCurrency(basketItem.finalPrice)}</td>
+                                <td>${TypeHelper.toCurrency(basketItemModifier.finalPrice)}</td>
                             </tr>`;
                     }
                 }
