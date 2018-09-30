@@ -27,7 +27,7 @@ export class CreateSupplier {
   public async save(): Promise<any> {
     try {
       let info = await this.supplierService.add(this.supplier);
-      let data = await this.supplierService.get(info.id);
+      let data = await this.supplierService.get(info._id);
       this.viewCtrl.dismiss(data);
       return;
     } catch (err) {
