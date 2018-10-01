@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-navbar hideBackButton="true">
+    <button ion-button menuToggle="leftMenu" start>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title class="ion-title-center">Sales</ion-title>
+
+    <ion-buttons style="display: inline-flex;" right>
+      <button *ngIf="isTableEnabled" no-margin ion-button (click)="openTablesPopup()">
+        <ion-icon name="list-box"></ion-icon>
+      </button>
+      <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin ion-button clear>
+        <ion-icon name="archive">
+          <ion-badge *ngIf="parkedSaleCount" id="notifications-badge" color="danger">{{parkedSaleCount}}</ion-badge>
+        </ion-icon>
+      </button>
+      <button no-margin ion-button menuToggle="rightMenu">
+        <ion-icon name="cog"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons network-monitor right>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="no-scroll">
+
+  <ion-grid *ngIf="!syncContext.currentPos.status">
+    <ion-row>
+      <ion-col col-md-6 offset-md-3>
+        <form (ngSubmit)="openRegister()" #salesForm="ngForm">
+          <h2 text-center>Register Closed</h2>
+          <h5 text-center>Set an opening float to open the register and make sale</h5>
+
+          <ion-label stacked>Opening Float*</ion-label>
+          <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="syncContext.currentPos.openingAmount" name="openingAmount" required></ion-input>
+
+          <ion-label color="primary" stacked>Notes
+            <small>optional</small>
+          </ion-label>
+          <ion-textarea placeholder="Enter Note" [(ngModel)]="syncContext.currentPos.openingNote" name="openingNote">
+          </ion-textarea>
+
+          <button ion-button color="primary" [disabled]="!salesForm.form.valid" block type="submit">
+            Open Register
+          </button>
+        </form>
+      </ion-col>
+      <ion-col col-md-3>
+        <!-- fill empty space -->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="syncContext.currentPos.status && categories && activeCategory" class="full-height">
+    <ion-row class="full-height">
+      <ion-col class="scroll-content" col-2>
+          <ion-list no-lines class="full-height no-margin sales-category">
+            <ion-item text-wrap *ngIf="categories.length == 0">Please use back office to add new categories.</ion-item>
+              <div [ngClass]="{'activeCategory': category._id == activeCategory._id }" *ngFor="let category of categories">
+                  <button *ngIf="!category.thumbnail" ion-item class="sales-category-button text-wrap" [style.background-color]="syncContext.currentPos.categoryColor && syncContext.currentPos.categoryColor[category._id] || category.color"
+                          (click)="selectCategory(category)">
+                      <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
+                      {{ category.name }}
+                  </button>
+                  <div text-center *ngIf="category.thumbnail" ion-item class="sales-category-button text-wrap"  (click)="selectCategory(category)" >
+                      <img [src]="category.thumbnail"  scroll="false" height="50px">
+                      <p>  {{ category.name }}</p>
+                  </div>
+              </div>
+          </ion-list> 
+      </ion-col>
+      <ion-col class="scroll-content" col-6>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales && employees.length > 0">
+              <tiles-scrollable [(elements)]="employees" [(selectedElement)]="selectedEmployee" [displayProperty]="'firstName'" (notifyChange)="toggleEmployee($event)">
+              </tiles-scrollable>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <tile-items [items]="activeCategory.purchasableItems" [activeEmployee]="selectedEmployee" (onSelect)="onSelectTile($event)">
+        </tile-items>
+      </ion-col>
+      <ion-col col-4>
+        <basket class="basket-component" [employees]="employees"
+          [user]="user" (paymentCompleted)="paymentCompleted()" (saleParked)="onParkedSale($event)" >
+        </basket>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <barcode-scanner (scan)="barcodeReader($event)" style="display:hidden"></barcode-scanner>
+</ion-content>

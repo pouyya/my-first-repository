@@ -165,7 +165,7 @@ import { Utilities } from "../utility/index";
 import { ReportsDashboard } from "../pages/report-dashboard/report-dashboard";
 import { ReportStockMovementSummaryPage } from "../pages/report-stock-movement-summary/report-stock-movement-summary";
 import { ReportStaffAttendancePage } from "../pages/report-staff-attendance/report-staff-attendance";
-import { Preferences } from "../pages/preferences/preferences";
+import { Preferences1 } from "../pages/preferences1/preferences1";
 import { SplitPaymentPage } from "../pages/split-payment/split-payment";
 import { File } from "@ionic-native/file";
 import { PapaParseModule } from "ngx-papaparse";
@@ -186,15 +186,15 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
 import { ErrorLoggingService } from "../services/ErrorLoggingService";
 import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
 import { PingService } from "../services/pingService";
-import {AddonDashboard} from "../pages/addon-dashboard/addon-dashboard";
-import {AddonService} from "../services/addonService";
-import {SectionDetails} from "../pages/section-details/section-details";
-import {Sections} from "../pages/section/sections";
-import {Tables} from "../pages/table/tables";
-import {TableDetails} from "../pages/table-details/table-details";
-import {TableArrangementService} from "../services/tableArrangementService";
-import {SelectTablesModal} from "../pages/table/modal/select-table/select-tables";
-import {AddTableGuestsModal} from "../pages/table/modal/add-table-guests/add-table-guests";
+import { AddonDashboard } from "../pages/addon-dashboard/addon-dashboard";
+import { AddonService } from "../services/addonService";
+import { SectionDetails } from "../pages/section-details/section-details";
+import { Sections } from "../pages/section/sections";
+import { Tables } from "../pages/table/tables";
+import { TableDetails } from "../pages/table-details/table-details";
+import { TableArrangementService } from "../services/tableArrangementService";
+import { SelectTablesModal } from "../pages/table/modal/select-table/select-tables";
+import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
 
 @NgModule({
   declarations: [
@@ -205,7 +205,7 @@ import {AddTableGuestsModal} from "../pages/table/modal/add-table-guests/add-tab
     ReportsDashboard,
     HumanResourceDashboard,
     AddonDashboard,
-    Preferences,
+    Preferences1,
     ReportStockMovementSummaryPage,
     ReportStaffAttendancePage,
     Services,
@@ -353,7 +353,7 @@ import {AddTableGuestsModal} from "../pages/table/modal/add-table-guests/add-tab
     AddonDashboard,
     ReportStockMovementSummaryPage,
     ReportStaffAttendancePage,
-    Preferences,
+    Preferences1,
     Services,
     ServiceDetails,
     Categories,
