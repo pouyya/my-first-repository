@@ -105,7 +105,7 @@
             <ion-col col-md-3 offset-md-6>
               <ion-list>
                 <ion-item>
-                  <ion-input clearInput [disabled]="doRefund" [ngModel]="amount" min="1" (ngModelChange)="amount = $event"></ion-input>
+                  <ion-input type="number" clearInput [disabled]="doRefund" [ngModel]="amount" min="1" (ngModelChange)="amount = $event"></ion-input>
                 </ion-item>
               </ion-list>
             </ion-col>
