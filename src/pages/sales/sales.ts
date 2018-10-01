@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import {LoadingController, NavParams, NavController, ModalController} from 'ionic-angular';
+import { LoadingController, NavParams, NavController, ModalController } from 'ionic-angular';
 
 import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -17,6 +17,7 @@ import { PageModule } from '../../metadata/pageModule';
 import { BasketComponent } from '../../components/basket/basket.component';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { Employee, WorkingStatusEnum } from '../../model/employee';
+import { StockHistoryService } from './../../services/stockHistoryService';
 import { PurchasableItem } from '../../model/purchasableItem';
 import { SyncContext } from "../../services/SyncContext";
 import { Category } from '../../model/category';
@@ -24,12 +25,16 @@ import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
 import { SalesHistoryPage } from "../sales-history/sales-history";
-import {AddonService} from "../../services/addonService";
-import {AddonType} from "../../model/addon";
-import {SelectTablesModal} from "../table/modal/select-table/select-tables";
-import {TableStatus} from "../../model/tableArrangement";
-import {Sale} from "../../model/sale";
+import { AddonService } from "../../services/addonService";
+import { AddonType } from "../../model/addon";
+import { SelectTablesModal } from "../table/modal/select-table/select-tables";
+import { TableStatus } from "../../model/tableArrangement";
+import { Sale } from "../../model/sale";
 
+
+interface PurchasableItemList extends PurchasableItem {
+  stockInHand: number; /** Stock of all shops */
+}
 
 @SecurityModule()
 @PageModule(() => SalesModule)
@@ -68,6 +73,7 @@ export class Sales implements OnDestroy {
   public user: UserSession;
   private alive: boolean = true;
   private isTableEnabled: boolean = false;
+  private stockValues: any;
 
   constructor(
     private userService: UserService,
@@ -84,6 +90,7 @@ export class Sales implements OnDestroy {
     private cacheService: CacheService,
     private utils: Utilities,
     private syncContext: SyncContext,
+    private stockHistoryService: StockHistoryService,
     private addonService: AddonService
   ) {
     this.cdr.detach();
@@ -199,11 +206,11 @@ export class Sales implements OnDestroy {
     let [categories, purchasableItems] = await Promise.all([this.categoryService.getAll(), this.categoryService.getPurchasableItems()]);
 
     (<SalesCategory[]>categories).forEach((category, index, catArray) => {
-      let items = _.filter(<PurchasableItem[]>purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
+      let items = _.filter(<PurchasableItemList[]>purchasableItems, piItem => _.includes(piItem.categoryIDs, category._id));
       if (items.length === 0) {
         category.purchasableItems = [];
       } else {
-        category.purchasableItems = items;
+        category.purchasableItems = this.addStockCount(items);
         if (this.syncContext.currentPos.productCategorySort && this.syncContext.currentPos.productCategorySort[category._id]) {
           this.utils.sort(category.purchasableItems, this.syncContext.currentPos.productCategorySort[category._id]);
         }
@@ -259,31 +266,50 @@ export class Sales implements OnDestroy {
     loader.dismiss();
   }
 
-  public openTablesPopup(){
-      let modal = this.modalCtrl.create(SelectTablesModal, {});
-      modal.onDidDismiss(async (res) => {
-        if(res.table) {
-          if(res.table.status === TableStatus.Active){
-              this.openTableParkedSale(res.table.id);
-          }else {
-              this._basketComponent.attachTable(res.table.id);
-          }
+  public openTablesPopup() {
+    let modal = this.modalCtrl.create(SelectTablesModal, {});
+    modal.onDidDismiss(async (res) => {
+      if (res.table) {
+        if (res.table.status === TableStatus.Active) {
+          this.openTableParkedSale(res.table.id);
+        } else {
+          this._basketComponent.attachTable(res.table.id);
         }
-      });
-      modal.present();
+      }
+    });
+    modal.present();
   }
 
-  public async openTableParkedSale(tableId: string){
+  public async openTableParkedSale(tableId: string) {
     const shouldDiscard = await this.utils.confirmDiscardSale();
-    if(shouldDiscard){
-        const sales = await this.salesService.searchSales([], 1, 0,
-            {tableId, state: 'parked'});
-        if(sales && sales.length) {
-            const sale = sales[0];
-            localStorage.setItem('sale_id', sale._id);
-            this._sharedService.publish('updateSale', { sale });
-        }
+    if (shouldDiscard) {
+      const sales = await this.salesService.searchSales([], 1, 0,
+        { tableId, state: 'parked' });
+      if (sales && sales.length) {
+        const sale = sales[0];
+        localStorage.setItem('sale_id', sale._id);
+        this._sharedService.publish('updateSale', { sale });
+      }
     }
+  }
+
+  private async getStockValues(products: PurchasableItem[]) {
+    this.stockValues = await this.stockHistoryService.getAllProductsTotalStockValue();
+  }
+
+  private addStockCount(items: PurchasableItem[]) {
+    let itms: PurchasableItem[] = [];
+    this.getStockValues(items);
+    items.forEach(product => {
+      product["stockInHand"] = 1;
+
+      if (product.stockControl) {
+        var stockValue = _.find(this.stockValues, stockValue => stockValue.productId == product._id);
+        product["stockInHand"] = stockValue ? stockValue.value : 0;
+      }
+      itms.push(product);
+    });
+    return itms;
   }
 }
 

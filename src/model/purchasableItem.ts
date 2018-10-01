@@ -1,8 +1,7 @@
 import { OrderableInterface } from './orderableInterface';
 import { DBBasedEntity } from '@simplepos/core/dist/model/dbBasedEntity';
 
-export abstract class PurchasableItem extends DBBasedEntity implements OrderableInterface
-{
+export abstract class PurchasableItem extends DBBasedEntity implements OrderableInterface {
     public name: string;
     public color: string;
     public image: string;
@@ -13,4 +12,5 @@ export abstract class PurchasableItem extends DBBasedEntity implements Orderable
     public sku?: string; // stock keeping unit
     public categoryIDs: string[];
     public isModifier: boolean;
+    public stockControl?: boolean;
 }
