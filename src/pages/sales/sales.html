@@ -7,12 +7,13 @@
 
     <ion-buttons style="display: inline-flex;" right>
       <button class="big_icon" no-margin ion-button (click)="openAttachCustomerPopup()">
-        <ion-icon name="person"></ion-icon>
+        <ion-icon [name]="iconTakeaway"></ion-icon>
       </button>
       <button *ngIf="isTableEnabled" class="big_icon" no-margin ion-button (click)="openTablesPopup()">
         <ion-icon name="list-box"></ion-icon>
       </button>
-      <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin ion-button clear>
+      <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin
+        ion-button clear>
         <ion-icon name="archive">
           <ion-badge *ngIf="parkedSaleCount" id="notifications-badge" color="danger">{{parkedSaleCount}}</ion-badge>
         </ion-icon>
@@ -38,7 +39,8 @@
           <h5 text-center>Set an opening float to open the register and make sale</h5>
 
           <ion-label stacked>Opening Float*</ion-label>
-          <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="syncContext.currentPos.openingAmount" name="openingAmount" required></ion-input>
+          <ion-input type="number" min="0" placeholder="$0.00" [(ngModel)]="syncContext.currentPos.openingAmount" name="openingAmount"
+            required></ion-input>
 
           <ion-label color="primary" stacked>Notes
             <small>optional</small>
@@ -60,26 +62,28 @@
   <ion-grid *ngIf="syncContext.currentPos.status && categories && activeCategory" class="full-height">
     <ion-row class="full-height">
       <ion-col class="scroll-content" col-2>
-          <ion-list no-lines class="full-height no-margin sales-category">
-            <ion-item text-wrap *ngIf="categories.length == 0">Please use back office to add new categories.</ion-item>
-              <div [ngClass]="{'activeCategory': category._id == activeCategory._id }" *ngFor="let category of categories">
-                  <button *ngIf="!category.thumbnail" ion-item class="sales-category-button text-wrap" [style.background-color]="syncContext.currentPos.categoryColor && syncContext.currentPos.categoryColor[category._id] || category.color"
-                          (click)="selectCategory(category)">
-                      <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
-                      {{ category.name }}
-                  </button>
-                  <div text-center *ngIf="category.thumbnail" ion-item class="sales-category-button text-wrap"  (click)="selectCategory(category)" >
-                      <img [src]="category.thumbnail"  scroll="false" height="50px">
-                      <p>  {{ category.name }}</p>
-                  </div>
-              </div>
-          </ion-list> 
+        <ion-list no-lines class="full-height no-margin sales-category">
+          <ion-item text-wrap *ngIf="categories.length == 0">Please use back office to add new categories.</ion-item>
+          <div [ngClass]="{'activeCategory': category._id == activeCategory._id }" *ngFor="let category of categories">
+            <button *ngIf="!category.thumbnail" ion-item class="sales-category-button text-wrap"
+              [style.background-color]="syncContext.currentPos.categoryColor && syncContext.currentPos.categoryColor[category._id] || category.color"
+              (click)="selectCategory(category)">
+              <sp-icon class="category-icon" [icon]="category.icon"></sp-icon>
+              {{ category.name }}
+            </button>
+            <div text-center *ngIf="category.thumbnail" ion-item class="sales-category-button text-wrap" (click)="selectCategory(category)">
+              <img [src]="category.thumbnail" scroll="false" height="50px">
+              <p> {{ category.name }}</p>
+            </div>
+          </div>
+        </ion-list>
       </ion-col>
       <ion-col class="scroll-content" col-6>
         <ion-grid>
           <ion-row>
             <ion-col col-md-12 *ngIf="user.settings.trackEmployeeSales && employees.length > 0">
-              <tiles-scrollable [(elements)]="employees" [(selectedElement)]="selectedEmployee" [displayProperty]="'firstName'" (notifyChange)="toggleEmployee($event)">
+              <tiles-scrollable [(elements)]="employees" [(selectedElement)]="selectedEmployee" [displayProperty]="'firstName'"
+                (notifyChange)="toggleEmployee($event)">
               </tiles-scrollable>
             </ion-col>
           </ion-row>
@@ -88,8 +92,8 @@
         </tile-items>
       </ion-col>
       <ion-col col-4>
-        <basket class="basket-component" [employees]="employees"
-          [user]="user" (paymentCompleted)="paymentCompleted()" (saleParked)="onParkedSale($event)" (onAttachCustomer)="onAttachCustomer($event)" >
+        <basket class="basket-component" [employees]="employees" [user]="user" (paymentCompleted)="paymentCompleted()"
+          (saleParked)="onParkedSale($event)" (onAttachCustomer)="onAttachCustomer($event)">
         </basket>
       </ion-col>
     </ion-row>

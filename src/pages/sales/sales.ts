@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { EvaluationContext } from '../../services/EvaluationContext';
 import { Component, ChangeDetectorRef, ViewChild, OnDestroy } from '@angular/core';
-import {LoadingController, NavParams, NavController, ModalController} from 'ionic-angular';
+import { LoadingController, NavParams, NavController, ModalController } from 'ionic-angular';
 
 import { SharedService } from '../../services/_sharedService';
 import { SalesServices } from '../../services/salesService';
@@ -24,11 +24,11 @@ import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
 import { SalesHistoryPage } from "../sales-history/sales-history";
-import {AddonService} from "../../services/addonService";
-import {AddonType} from "../../model/addon";
-import {SelectTablesModal} from "../table/modal/select-table/select-tables";
-import {TableStatus} from "../../model/tableArrangement";
-import {AttachCustomerModal} from "./modals/attach-customer/attach-customer";
+import { AddonService } from "../../services/addonService";
+import { AddonType } from "../../model/addon";
+import { SelectTablesModal } from "../table/modal/select-table/select-tables";
+import { TableStatus } from "../../model/tableArrangement";
+import { AttachCustomerModal } from "./modals/attach-customer/attach-customer";
 
 
 @SecurityModule()
@@ -68,6 +68,7 @@ export class Sales implements OnDestroy {
   public user: UserSession;
   private alive: boolean = true;
   private isTableEnabled: boolean = false;
+  public iconTakeaway: string = "person-add";
 
   constructor(
     private userService: UserService,
@@ -186,6 +187,7 @@ export class Sales implements OnDestroy {
     });
     this.selectedEmployee = null;
     this.customerName = "";
+    this.applyIcon(true);
   }
 
   public onParkedSale(isParked) {
@@ -260,54 +262,62 @@ export class Sales implements OnDestroy {
     loader.dismiss();
   }
 
-  public openTablesPopup(){
-      let modal = this.modalCtrl.create(SelectTablesModal, {});
-      modal.onDidDismiss(async (res) => {
-        if(res.table) {
-          if(res.table.status === TableStatus.Active){
-              this.openTableParkedSale(res.table.id);
-          }else {
-              this._basketComponent.attachTable(res.table.id);
-          }
+  public openTablesPopup() {
+    let modal = this.modalCtrl.create(SelectTablesModal, {});
+    modal.onDidDismiss(async (res) => {
+      if (res.table) {
+        if (res.table.status === TableStatus.Active) {
+          this.openTableParkedSale(res.table.id);
+        } else {
+          this._basketComponent.attachTable(res.table.id);
         }
-      });
-      modal.present();
+      }
+    });
+    modal.present();
   }
 
-  public async openTableParkedSale(tableId: string){
+  public async openTableParkedSale(tableId: string) {
     const shouldDiscard = await this.utils.confirmDiscardSale();
-    if(shouldDiscard){
-        const sales = await this.salesService.searchSales([], 1, 0,
-            {tableId, state: 'parked'});
-        if(sales && sales.length) {
-            const sale = sales[0];
-            localStorage.setItem('sale_id', sale._id);
-            this._sharedService.publish('updateSale', { sale });
-        }
+    if (shouldDiscard) {
+      const sales = await this.salesService.searchSales([], 1, 0,
+        { tableId, state: 'parked' });
+      if (sales && sales.length) {
+        const sale = sales[0];
+        localStorage.setItem('sale_id', sale._id);
+        this._sharedService.publish('updateSale', { sale });
+      }
     }
   }
 
-  public openAttachCustomerPopup(){
-      if(this.customerName){
-          this._basketComponent.attachCustomer(this.customerName);
-      }else{
-          let modal = this.modalCtrl.create(AttachCustomerModal, {customerName: this.customerName || ''});
-          modal.onDidDismiss(async (res) => {
-              if(res.customerName) {
-                  this._basketComponent.attachCustomer(res.customerName);
-              }
-          });
-          modal.present();
-      }
+  public openAttachCustomerPopup() {
+    if (this.customerName) {
+      this._basketComponent.attachCustomer(this.customerName);
+      this.applyIcon(false);
+    } else {
+      let modal = this.modalCtrl.create(AttachCustomerModal, { customerName: this.customerName || '' });
+      modal.onDidDismiss(async (res) => {
+        if (res.customerName) {
+          this._basketComponent.attachCustomer(res.customerName);
+        }
+      });
+      modal.present();
+    }
 
   }
 
-  public onAttachCustomer(data){
-      if(data.isAttached){
-          this.customerName = data.customerName;
-      }else {
-          this.customerName = "";
-      }
+  public onAttachCustomer(data) {
+    if (data.isAttached) {
+      this.customerName = data.customerName;
+    } else {
+      this.customerName = "";
+      this.applyIcon(true);
+    }
+  }
+
+  public applyIcon(isDefault: boolean = false) {
+    this.iconTakeaway = "person-add";
+    if (!isDefault)
+      this.iconTakeaway = "person";
   }
 }
 
