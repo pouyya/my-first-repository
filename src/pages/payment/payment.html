@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar hideBackButton>
+  <ion-navbar>
     <ion-buttons end network-monitor></ion-buttons>
     <ion-title class="ion-title-center">Payment</ion-title>
   </ion-navbar>
@@ -17,7 +17,7 @@
             <ion-col col-md-12>
               <h3 text-center>Sales Summary</h3>
             </ion-col>
-            <hr/>
+            <hr />
 
             <ion-col col-md-12 text-left>
               <span>{{sale.items.length}} item(s)</span>
@@ -30,24 +30,26 @@
                     <ion-row>
                       <ion-col col-md-1>{{item.quantity}}</ion-col>
                       <ion-col col-md-4>{{item.name}}</ion-col>
-                      <ion-col col-md-4 offset-md-3 class="pull-right">${{item.finalPrice * item.quantity | number : '1.2-2'}}</ion-col>
+                      <ion-col col-md-4 offset-md-3 class="pull-right">${{item.finalPrice * item.quantity | number :
+                        '1.2-2'}}</ion-col>
                     </ion-row>
                   </ion-grid>
                 </ion-item>
               </ion-list>
 
-              <hr/>
+              <hr />
               <ion-grid>
                 <ion-row>
 
                   <ion-col col-md-4>Sub-total</ion-col>
                   <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.subTotal | number : '1.2-2'}}</ion-col>
                   <ion-col col-md-4>Total Tax (GST)</ion-col>
-                  <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.taxTotal - sale.subTotal | number : '1.2-2'}}</ion-col>
+                  <ion-col col-md-4 offset-md-4 class="pull-right">${{sale.taxTotal - sale.subTotal | number :
+                    '1.2-2'}}</ion-col>
                 </ion-row>
               </ion-grid>
 
-              <hr/>
+              <hr />
               <ion-grid>
                 <ion-row>
                   <ion-col col-md-4>Total</ion-col>
@@ -73,7 +75,7 @@
                 </ion-row>
               </ion-grid>
 
-              <hr/>
+              <hr />
               <ion-grid>
                 <ion-row>
                   <ion-col col-md-4>
@@ -101,28 +103,29 @@
               <h2>{{ doRefund ? 'Return' : 'Pay' }}</h2>
             </ion-col>
             <ion-col col-md-3 offset-md-6>
-              <span text-right>
-                <a class="link-payment" href="#" (click)="goBack()"><ion-icon name="arrow-round-back"></ion-icon> Back to Sale</a>
-              </span>
-              <br/>
               <ion-list>
                 <ion-item>
-                  <ion-input clearInput [disabled]="doRefund" [ngModel]="amount" min="1" (ngModelChange)="amount = $event"></ion-input>
+                  <ion-input type="number" clearInput [disabled]="doRefund" [ngModel]="amount" min="1" (ngModelChange)="amount = $event"></ion-input>
                 </ion-item>
               </ion-list>
             </ion-col>
 
             <ion-col col-md-4>
-              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCash()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Cash</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block
+                (click)="payWithCash()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Cash</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="payWithCard()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Credit Card</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block
+                (click)="payWithCard()" [disabled]="(sale.completed && !doRefund) || stockErrors.length > 0">Credit
+                Card</button>
             </ion-col>
             <ion-col col-md-4>
-              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block disabled>Gift Card</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block
+                disabled>Gift Card</button>
             </ion-col>
             <ion-col col-md-4 *ngIf="!doRefund">
-              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block (click)="splitPayment()">Split Payment</button>
+              <button ion-button color="primary" [ngClass]="{ 'pay': !doRefund, 'return': doRefund }" large block
+                (click)="splitPayment()">Split Payment</button>
             </ion-col>
 
           </ion-row>
@@ -132,12 +135,14 @@
           <ion-row>
             <ion-col col-md-12 text-center *ngIf="sale.completed && !doRefund">
               <h1>
-                <ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete</h1>
+                <ion-icon name="checkmark-circle-outline"></ion-icon> Payment Complete
+              </h1>
               <h5 *ngIf="change > 0">Issue change of ${{change | number : '1.2-2'}}</h5>
             </ion-col>
             <ion-col col-md-12 text-center *ngIf="sale.completed && doRefund">
               <h1>
-                <ion-icon name="checkmark-circle-outline"></ion-icon> Refund Complete</h1>
+                <ion-icon name="checkmark-circle-outline"></ion-icon> Refund Complete
+              </h1>
             </ion-col>
           </ion-row>
         </ion-grid>

@@ -16,7 +16,7 @@
         <ion-label color="primary" stacked>Price
           <small *ngIf="item.priceBook && item.priceBook.isTaxIncl">({{item.tax.rate}}% Tax Incl.)</small>
         </ion-label>
-        <ion-input type="text" [disabled]="item.quantity < 0" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
+        <ion-input type="number" [disabled]="item.quantity < 0" [(ngModel)]="item.finalPrice" (change)="updatePrice(item)">
         </ion-input>
       </ion-item>
     </ion-col>
@@ -25,8 +25,8 @@
     <ion-col col-md-4>
       <ion-item item-content>
         <ion-label color="primary" stacked>Discount(%)</ion-label>
-        <ion-input type="number" [disabled]="item.quantity < 0" [ngModel]="item.discount" min="0" max="99" (ngModelChange)="item.discount = $event"
-          (change)="calculateDiscount(item)"></ion-input>
+        <ion-input type="number" [disabled]="item.quantity < 0" [ngModel]="item.discount" min="0" max="99"
+          (ngModelChange)="item.discount = $event" (change)="calculateDiscount(item)"></ion-input>
       </ion-item>
     </ion-col>
 
@@ -54,15 +54,18 @@
         <ion-col col-md-4>
           <ion-item item-content>
             <ion-label color="primary" stacked>Price
-              <small *ngIf="modifierItem.priceBook && modifierItem.priceBook.isTaxIncl">({{modifierItem.tax.rate}}% Tax Incl.)</small>
+              <small *ngIf="modifierItem.priceBook && modifierItem.priceBook.isTaxIncl">({{modifierItem.tax.rate}}% Tax
+                Incl.)</small>
             </ion-label>
-            <ion-input type="text" [disabled]="modifierItem.quantity < 0" [(ngModel)]="modifierItem.finalPrice" (change)="updatePrice(modifierItem)">
+            <ion-input type="number" [disabled]="modifierItem.quantity < 0" [(ngModel)]="modifierItem.finalPrice"
+              (change)="updatePrice(modifierItem)">
             </ion-input>
           </ion-item>
         </ion-col>
 
         <ion-col class="pull-right vertical-center" col-md-1>
-          <ion-icon class="clickable icon icon-md ion-md-trash" click-stop-propagation="" name="trash" role="img" aria-label="trash" ng-reflect-name="trash" (click)="removeModifier($index)"></ion-icon>
+          <ion-icon class="clickable icon icon-md ion-md-trash" click-stop-propagation="" name="trash" role="img"
+            aria-label="trash" ng-reflect-name="trash" (click)="removeModifier($index)"></ion-icon>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -87,7 +90,7 @@
           <ion-label>{{employee.value.firstName}}</ion-label>
           <ion-radio [disabled]="employee.value.disabled" [value]="employee.value._id" [checked]="employee.value._id == item.employeeId"></ion-radio>
         </ion-item>
-      
+
       </ion-list>
     </ion-col>
 
