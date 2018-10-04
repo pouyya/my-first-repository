@@ -71,7 +71,8 @@
         <ion-item item-content>
           <ion-label color="primary" stacked>+ Sales Tax</ion-label>
           <ion-select [(ngModel)]="defaultPriceBook.tax" (ionChange)="calculate('salesTax', defaultPriceBook)">
-            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group Tax - ' + tax.name : tax.name }}
+            <ion-option [value]="tax" *ngFor="let tax of salesTaxes">{{ tax.entityTypeName == 'GroupSaleTax' ? 'Group
+              Tax - ' + tax.name : tax.name }}
               <small>({{ tax.rate }}%)</small>
             </ion-option>
           </ion-select>
@@ -94,8 +95,9 @@
       </ion-item>
       <ion-item>
         <button class="pull-left" ion-button (click)="selectIcon()">Select Icon</button>
-        <sp-icon class="pull-left" *ngIf="selectedIcon" [icon]="icons[serviceItem.icon.name]"></sp-icon>
-        <span *ngIf="selectedIcon">&nbsp;{{ serviceItem.icon.name }}</span>
+        <sp-icon class="pull-left" *ngIf="selectedIcon" [icon]="icons[selectedIcon]"></sp-icon>
+        <span *ngIf="selectedIcon">&nbsp;{{ selectedIcon }}</span>
+        <span *ngIf="!selectedIcon">&nbsp;No icon</span>
       </ion-item>
     </ion-list>
     <div class="insert-image">

@@ -54,7 +54,7 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
                         basketItems += `<tr>
                                 <td>   ${basketItemModifier.quantity}</td>
                                 <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
-                                <td>${TypeHelper.toCurrency(basketItem.finalPrice)}</td>
+                                <td>${TypeHelper.toCurrency(basketItemModifier.finalPrice)}</td>
                             </tr>`;
                     }
                 }
@@ -99,9 +99,9 @@ ${this.translateService.instant('TaxFileNumber')}: ${this.receiptProviderContext
         <center>
             <barcode>${this.receiptProviderContext.sale.receiptNo}</barcode>
 ${new Date(this.receiptProviderContext.sale.completedAt).toLocaleString()}  ${this.receiptProviderContext.sale.receiptNo}
+${this.receiptProviderContext.shopAddress}
 ${this.receiptProviderContext.footerMessage}
         </center>
-        <br>
         <br>
         <br>
         <br>`;

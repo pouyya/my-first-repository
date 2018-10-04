@@ -13,8 +13,10 @@ import { POS } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
 import { DateTimeService } from './../../services/dateTimeService';
+import * as moment from 'moment-timezone';
 
 import _ from "lodash";
+import { MOMENT } from 'angular-calendar';
 
 @PageModule(() => SalesModule)
 @Component({
@@ -23,7 +25,7 @@ import _ from "lodash";
 })
 export class ClockInOutPage {
 
-  
+
   public employee: Employee;
   public employeeAlias: string;
   public pos: POS;
@@ -197,8 +199,8 @@ export class ClockInOutPage {
   public async markTime(button: any, time?: Date): Promise<any> {
     try {
 
-      let utcDate= this.dateTimeService.getCurrentUTCDate().toDate();
-      const type = await this.prepareAndInsertTimeStamp( utcDate, button);
+      let utcDate = this.dateTimeService.getCurrentUTCDate().toDate();
+      const type = await this.prepareAndInsertTimeStamp(utcDate, button);
       this.dismiss();
       let toast = this.toastCtrl.create({
         message: this.messagePlaceholder,
@@ -220,6 +222,7 @@ export class ClockInOutPage {
     newTimestamp.employeeId = this.employee._id;
     newTimestamp.storeId = this.syncContext.currentStore._id;
     newTimestamp.time = time;
+    newTimestamp.createdAtLocalDate = moment(time).format();
     newTimestamp.type = this.mappingTimestamp[button.next];
 
     if (button.next == WorkingStatusEnum.ClockedOut && this.employee.workingStatus.status === WorkingStatusEnum.BreakStart) {
@@ -227,6 +230,7 @@ export class ClockInOutPage {
       breakEnd.employeeId = this.employee._id;
       breakEnd.storeId = this.syncContext.currentStore._id;
       breakEnd.time = time;
+      breakEnd.createdAtLocalDate = moment(time).format();
       breakEnd.type = EmployeeTimestampService.BREAK_END;
       promises.push(this.employeeTimestampService.add(breakEnd));
     }
@@ -235,6 +239,7 @@ export class ClockInOutPage {
     this.employee.workingStatus.posId = this.syncContext.currentPos.id;
     this.employee.workingStatus.storeId = this.syncContext.currentStore._id;
     this.employee.workingStatus.time = time;
+    this.employee.workingStatus.createdAtLocalDate = moment(time).format();
 
     promises.push(this.employeeTimestampService.add(newTimestamp));
     promises.push(this.employeeService.update(this.employee));

@@ -103,6 +103,7 @@
     "noOfPaths": 17
   },
   "timeOffset": "{TimeZone}",
+  "businessType": "{BusinessType}",
   "saleNumberPrefix": ""
 },
 {

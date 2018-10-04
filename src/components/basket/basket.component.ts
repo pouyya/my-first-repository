@@ -204,7 +204,7 @@ export class BasketComponent {
     var index = _.findIndex(saleItems, (currentSaleItem: BasketItem) => {
       return (currentSaleItem.purchsableItemId == basketItem.purchsableItemId &&
         currentSaleItem.finalPrice == basketItem.finalPrice &&
-        currentSaleItem.employeeId == basketItem.employeeId);
+        currentSaleItem.employeeId == basketItem.employeeId && (!currentSaleItem.modifierItems || !currentSaleItem.modifierItems.length));
     });
     let item;
     if (index !== -1) {
@@ -307,6 +307,7 @@ export class BasketComponent {
 
     let exec = (action) => {
       modalOptions.action = action;
+      modalOptions.total = this.balance;
       modal = this.modalCtrl.create(DiscountSurchargeModal, modalOptions);
       modal.onDidDismiss(onDismiss);
       modal.present();

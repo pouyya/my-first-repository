@@ -28,7 +28,7 @@ import { AddonService } from "../../services/addonService";
 import { AddonType } from "../../model/addon";
 import { SelectTablesModal } from "../table/modal/select-table/select-tables";
 import { TableStatus } from "../../model/tableArrangement";
-import { AttachCustomerModal } from "./modals/attach-customer/attach-customer";
+import { Sale } from "../../model/sale";
 
 
 @SecurityModule()
@@ -264,8 +264,9 @@ export class Sales implements OnDestroy {
 
   public openTablesPopup() {
     let modal = this.modalCtrl.create(SelectTablesModal, {});
+    
     modal.onDidDismiss(async (res) => {
-      if (res.table) {
+      if (res && res.table) {
         if (res.table.status === TableStatus.Active) {
           this.openTableParkedSale(res.table.id);
         } else {

@@ -54,20 +54,11 @@ export class StaffsTimeLogs {
 
     this.cdr.detach();
 
-    function groupById(collection) {
-      let grouped = _.groupBy(collection, "_id");
-      let corrected: any = {};
-      Object.keys(grouped).forEach(key => {
-        corrected[key] = grouped[key][0]
-      });
-      return corrected;
-    }
-
     let promises: any[] = [
       async () => {
         try {
           let employees: Employee[] = await this.employeeService.getAll();
-          return groupById(employees);
+          return this.groupById(employees);
         } catch (err) {
           return Promise.reject(err);
         }
@@ -75,7 +66,7 @@ export class StaffsTimeLogs {
       async () => {
         try {
           let stores: Store[] = await this.storeService.getAll();
-          return groupById(stores);
+          return this.groupById(stores);
         } catch (err) {
           return Promise.reject(err);
         }
@@ -91,6 +82,7 @@ export class StaffsTimeLogs {
         }
       }
     ];
+
     let [employees, stores, timestamps] = await Promise.all(promises.map(promise => promise()));
     this.employees = employees;
     this.stores = stores;
@@ -98,7 +90,15 @@ export class StaffsTimeLogs {
 
     this.cdr.reattach();
     loader.dismiss();
+  }
 
+  private groupById(collection) {
+    let grouped = _.groupBy(collection, "_id");
+    let corrected: any = {};
+    Object.keys(grouped).forEach(key => {
+      corrected[key] = grouped[key][0]
+    });
+    return corrected;
   }
 
   public viewLogs($event: any) {
@@ -110,13 +110,13 @@ export class StaffsTimeLogs {
     })
     modal.onDidDismiss(data => {
       if (data) {
-        if(data.length > 0) {
+        if (data.length > 0) {
           this.timeLogs[$event.dateKey][$event.employee._id] = data;
         } else {
           delete this.timeLogs[$event.dateKey][$event.employee._id];
           if (Object.keys(this.timeLogs[$event.dateKey]).length == 0) {
             delete this.timeLogs[$event.dateKey];
-          }          
+          }
         }
       }
     });

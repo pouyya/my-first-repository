@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {DateTimeService} from "../../services/dateTimeService";
+import { DateTimeService } from "../../services/dateTimeService";
 
 @Component({
   selector: 'group-employee-timelog',
@@ -46,16 +46,16 @@ export class GroupEmployeeTimeLog implements OnInit {
   @Output() viewLogs: EventEmitter<any> = new EventEmitter<any>();
   @Output() removeAll: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private dateTimeService: DateTimeService){
+  constructor(private dateTimeService: DateTimeService) {
 
   }
   ngOnInit() {
     if (this._timeLog && this._timeLog.length > 0) {
       this._timeLog.forEach((log, index) => {
         if (log.type == 'clock_in') {
-          this.renderable.clockIn =log.time;
+          this.renderable.clockIn = log.time;
         } else if (log.type == 'clock_out') {
-          this.renderable.clockOut =log.time;
+          this.renderable.clockOut = log.time;
         }
       });
       if (this._timeLog[0].employee) {

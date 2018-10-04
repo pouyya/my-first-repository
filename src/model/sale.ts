@@ -42,6 +42,7 @@ export class Sale extends DBBasedEntity {
   public created: string;
   public type: string;
   public completedAt: string;
+  public completedAtLocalDate: string;
   public status: string;
   public receiptNo: string;
   public customerKey: string;

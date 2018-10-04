@@ -2,10 +2,11 @@ import { ProductionLinePrinterProviderContext } from "./productionLinePrinterPro
 import { TypeHelper } from "@simplepos/core/dist/utility/typeHelper";
 import { EPosPrinterProvider, PrinterWidth } from "../eposPrinterProvider";
 import { ReportPrinterProviderBase } from "../reportPrinterProviderBase";
-import {TableStatus} from "../../../model/tableArrangement";
-import {SaleType} from "../../../model/sale";
+import { SaleType } from "../../../model/sale";
 
 export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
+
+    lineCounter: number;
 
     constructor(
         public productionLinePrinterProviderContext: ProductionLinePrinterProviderContext,
@@ -14,42 +15,41 @@ export class ProductionLinePrinterProvider extends ReportPrinterProviderBase {
     }
 
     setHeader() {
-        this.buffer += `<br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+        this.buffer += `
         <h1>${this.productionLinePrinterProviderContext.headerMessage}
         <center>
             <b>Receipt #${this.productionLinePrinterProviderContext.sale.receiptNo}</b>
         </center>
         <br>`;
-        if(this.productionLinePrinterProviderContext.sale.type){
+
+        this.lineCounter = 2;
+
+        if (this.productionLinePrinterProviderContext.sale.type) {
             const types = {};
             types[SaleType.DineIn] = 'Dine In';
             types[SaleType.TakeAway] = 'Takeaway';
-            this.buffer +=`${types[this.productionLinePrinterProviderContext.sale.type]}:`
+            this.buffer += `${types[this.productionLinePrinterProviderContext.sale.type]}:`
+
+            this.lineCounter++;
         }
 
-        if(this.productionLinePrinterProviderContext.sale.tableId){
+        if (this.productionLinePrinterProviderContext.sale.tableId) {
             this.buffer += `${this.productionLinePrinterProviderContext.sale.tableName}`;
-        } else if (this.productionLinePrinterProviderContext.sale.attachedCustomerName){
+        } else if (this.productionLinePrinterProviderContext.sale.attachedCustomerName) {
             this.buffer += `${this.productionLinePrinterProviderContext.sale.attachedCustomerName}`;
         }
 
-        this.buffer +=`<br>
+        this.buffer += `<br>
         </h1>Date time: ${new Date(this.productionLinePrinterProviderContext.sale.completedAt).toLocaleString()}
         <br>
-        <h1>${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ? 
-            `<br> 
+        <h1>${!TypeHelper.isNullOrWhitespace(this.productionLinePrinterProviderContext.sale.notes) ?
+                `<br> 
             <hr>
 Note: ${this.productionLinePrinterProviderContext.sale.notes}
             <hr>` : ""}
         </h1>`;
+
+        this.lineCounter += 4;
 
         return this;
     }
@@ -69,6 +69,9 @@ Note: ${this.productionLinePrinterProviderContext.sale.notes}
                     <td> Note</td>
                     <td> ${TypeHelper.encodeHtml(basketItem.notes)}</td>
                 </tr>`;
+
+                    this.lineCounter++;
+
                 }
                 if (basketItem.modifierItems) {
                     for (let basketItemModifier of basketItem.modifierItems) {
@@ -76,11 +79,15 @@ Note: ${this.productionLinePrinterProviderContext.sale.notes}
                         <td>   ${basketItemModifier.quantity}</td>
                         <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
                     </tr>`;
+
+                        this.lineCounter++;
+
                         if (!TypeHelper.isNullOrWhitespace(basketItemModifier.notes)) {
                             basketItems += `<tr>
                             <td>   Note:</td>
                             <td>   ${TypeHelper.encodeHtml(basketItemModifier.notes)}</td>
                         </tr>`;
+                            this.lineCounter++;
                         }
                     }
                 }
@@ -91,7 +98,22 @@ Note: ${this.productionLinePrinterProviderContext.sale.notes}
             <hr>
             <br>`;
 
+            this.lineCounter++;
+
             return this;
         }
+    }
+
+    adjustHeight(): ProductionLinePrinterProvider {
+        var remainingLine = 20 - this.lineCounter;
+        if (remainingLine > 0) {
+            var topSection = Math.round(remainingLine / 2);
+            this.buffer = "<br>".repeat(topSection) + this.buffer;
+
+            var footerSection = remainingLine - topSection;
+            this.buffer = this.buffer + "<br>".repeat(footerSection);
+        }
+
+        return this;
     }
 }

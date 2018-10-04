@@ -23,7 +23,8 @@
       </ion-col>
       <ion-col col-md-4>
         <ion-select [(ngModel)]="employeeIDs" multiple="true" (ngModelChange)="loadStaffAttendanceReport()">
-          <ion-option *ngFor="let emp of employees ; let idx=index" value={{emp._id}}>{{emp.firstName}} {{emp?.lastName}}</ion-option>
+          <ion-option *ngFor="let emp of employees ; let idx=index" value={{emp._id}}>{{emp.firstName}}
+            {{emp?.lastName}}</ion-option>
         </ion-select>
       </ion-col>
     </ion-row>
@@ -46,7 +47,8 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date: 'h:mm'}}
+        <span>Report generated {{reportGeneratedTime | date: 'EEEE, d MMMM y'}} at {{reportGeneratedTime | date:
+          'h:mm'}}
         </span>
       </ion-col>
     </ion-row>
@@ -81,5 +83,9 @@
         </div>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="emptyReportWarning">
+      no staff attendance record found! please change filter.
+    </ion-row>
+
   </ion-grid>
 </ion-content>

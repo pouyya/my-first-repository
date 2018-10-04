@@ -91,7 +91,7 @@ export class ConfigService {
     }
 
     static statusEndPoint(): string {
-        return ENV.security.serverUrl + "/v1/api/user/status";
+        return ENV.webapp.baseUrl + "/v1/api/user/status";
     }
 
     static forgotPasswordEndPoint(): string {
