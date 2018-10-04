@@ -30,6 +30,12 @@
           <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unassignTable()"></ion-icon>
         </ion-label>
       </ion-item>
+      <ion-item *ngIf="sale && sale.type === 'takeaway' && sale.attachedCustomerName && !customer" item-content tappable class="table-arrangemenet">
+        <ion-label color="primary">
+          {{sale.attachedCustomerName}}
+          <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unattachCustomer()"></ion-icon>
+        </ion-label>
+      </ion-item>
     </ion-col>
     <ion-col col-xl-4 col-lg-4 class="pull-right">
       <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">

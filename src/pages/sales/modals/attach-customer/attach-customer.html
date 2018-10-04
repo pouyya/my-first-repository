@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Add Customer
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button type="button" ion-button icon-only (click)="save()">
+        Done
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label stacked>Customer name*</ion-label>
+      <ion-input type="text" [(ngModel)]="customerName" name="customerName" required></ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>
