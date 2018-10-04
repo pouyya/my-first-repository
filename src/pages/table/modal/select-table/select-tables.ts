@@ -67,7 +67,7 @@ export class SelectTablesModal {
     if(table.status === TableStatus.Closed ){
         let modal = this.modalCtrl.create(AddTableGuestsModal, {table, selectedSection: this.selectedSection});
         modal.onDidDismiss((res) => {
-          if(res.table){
+          if(res && res.table){
               table = res.table;
               table.color = "rgb(157, 240, 255)";
           }
