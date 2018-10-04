@@ -28,6 +28,7 @@ import {AddonService} from "../../services/addonService";
 import {AddonType} from "../../model/addon";
 import {SelectTablesModal} from "../table/modal/select-table/select-tables";
 import {TableStatus} from "../../model/tableArrangement";
+import {AttachCustomerModal} from "./modals/attach-customer/attach-customer";
 import {Sale} from "../../model/sale";
 
 
