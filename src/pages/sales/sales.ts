@@ -59,7 +59,7 @@ export class Sales implements OnDestroy {
   }
 
   private _basketComponent: BasketComponent;
-  private customerName: string;
+
   public categories: SalesCategory[];
   public activeCategory: SalesCategory;
   public register: POS;
@@ -70,7 +70,6 @@ export class Sales implements OnDestroy {
   public user: UserSession;
   private alive: boolean = true;
   private isTableEnabled: boolean = false;
-  public iconTakeaway: string = "person-add";
 
   constructor(
     private userService: UserService,
@@ -188,8 +187,6 @@ export class Sales implements OnDestroy {
       return employee;
     });
     this.selectedEmployee = null;
-    this.customerName = "";
-    this.applyIcon(true);
   }
 
   public onParkedSale(isParked) {
@@ -276,6 +273,7 @@ export class Sales implements OnDestroy {
         }
       }
     });
+
     modal.present();
   }
 
@@ -290,37 +288,6 @@ export class Sales implements OnDestroy {
         this._sharedService.publish('updateSale', { sale });
       }
     }
-  }
-
-  public openAttachCustomerPopup() {
-    if (this.customerName) {
-      this._basketComponent.attachCustomer(this.customerName);
-      this.applyIcon(false);
-    } else {
-      let modal = this.modalCtrl.create(AttachCustomerModal, { customerName: this.customerName || '' });
-      modal.onDidDismiss(async (res) => {
-        if (res.customerName) {
-          this._basketComponent.attachCustomer(res.customerName);
-        }
-      });
-      modal.present();
-    }
-
-  }
-
-  public onAttachCustomer(data) {
-    if (data.isAttached) {
-      this.customerName = data.customerName;
-    } else {
-      this.customerName = "";
-      this.applyIcon(true);
-    }
-  }
-
-  public applyIcon(isDefault: boolean = false) {
-    this.iconTakeaway = "person-add";
-    if (!isDefault)
-      this.iconTakeaway = "person";
   }
 }
 

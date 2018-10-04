@@ -72,7 +72,6 @@ export class BasketComponent {
 
   @Output() paymentCompleted = new EventEmitter<any>();
   @Output() saleParked = new EventEmitter<any>();
-  @Output() onAttachCustomer = new EventEmitter<any>();
   constructor(
     private salesService: SalesServices,
     private alertController: AlertController,
@@ -121,9 +120,6 @@ export class BasketComponent {
     this.sale.tableId && this.attachTable(this.sale.tableId);
     this.isSaleParked = this.sale.state === 'parked';
     this.customer = customer || null;
-    if (this.sale.attachedCustomerName) {
-      this.onAttachCustomer.emit({ isAttached: true, customerName: this.sale.attachedCustomerName });
-    }
     this.setBalance();
     this.sale.completed = false;
     this.generatePaymentBtnText();
@@ -325,7 +321,6 @@ export class BasketComponent {
         this.isSaleParked && this.saleParked.emit(false);
         this.isSaleParked = false;
         await this.unassignTable();
-        this.unattachCustomer();
         this.sale = await this.salesService.instantiateSale();
         this.paymentCompleted.emit();
         this.customer = null;
@@ -397,7 +392,6 @@ export class BasketComponent {
 
     localStorage.removeItem('sale_id');
     await this.unassignTable();
-    this.unattachCustomer();
     this.sale = await this.salesService.instantiateSale(this.syncContext.currentPos.id);
     this.paymentCompleted.emit();
     this.isSaleParked && this.saleParked.emit(false);
@@ -487,7 +481,6 @@ export class BasketComponent {
                 table.numberOfGuests = 0;
                 this.tableArrangementService.updateTable(table, null);
               }
-              this.unattachCustomer();
               this.isSaleParked && this.saleParked.emit(false);
               this.isSaleParked = false;
               localStorage.removeItem('sale_id');
@@ -549,7 +542,6 @@ export class BasketComponent {
     await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
     this.searchBarEnabled = false;
-    this.onAttachCustomer.emit({ isAttached: true, customerName: this.customer.fullname });
   }
 
   public async unassignCustomer() {
@@ -558,9 +550,6 @@ export class BasketComponent {
     await this.salesService.update(this.sale);
     this.salesService.manageSaleId(this.sale);
     this.searchBarEnabled = true;
-    if (this.sale.attachedCustomerName) {
-      this.unattachCustomer();
-    }
   }
 
   public createCustomer() {
@@ -570,7 +559,6 @@ export class BasketComponent {
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this.onAttachCustomer.emit({ isAttached: true, customerName: this.customer.fullname });
         this.sale.customerKey = this.customer._id;
         this.salesService.update(this.sale);
       }
@@ -585,7 +573,6 @@ export class BasketComponent {
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this.onAttachCustomer.emit({ isAttached: true, customerName: this.customer.fullname });
         this.sale.customerKey = this.customer._id;
         this.salesService.update(this.sale);
       }
@@ -633,7 +620,7 @@ export class BasketComponent {
       this.sale.tableId = tableId;
       this.sale.tableName = this.table.name;
       this.sale.type = SaleType.DineIn;
-      this.unattachCustomer();
+
       if (this.table.status !== TableStatus.Active && this.sale.items.length) {
         this.parkSale();
       }
@@ -652,24 +639,6 @@ export class BasketComponent {
       }
     }
     this.table = null;
-  }
-
-
-  public attachCustomer(customerName: string) {
-    if (this.sale) {
-      this.sale.attachedCustomerName = customerName;
-      this.sale.type = SaleType.TakeAway;
-      delete this.sale.tableId;
-      delete this.sale.tableName;
-      this.onAttachCustomer.emit({ isAttached: true, customerName });
-    }
-  }
-
-  public unattachCustomer() {
-    if (this.sale) {
-      delete this.sale.attachedCustomerName;
-      this.onAttachCustomer.emit({ isAttached: false });
-    }
   }
 
 }
