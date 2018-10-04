@@ -23,8 +23,8 @@
         </ion-item>
       </ion-list>
     </ion-col>
-    <ion-col col-xl-3 col-lg-3 class="pull-left">
-      <ion-item *ngIf="sale && sale.type === 'dinein' && table" item-content tappable class="table-arrangemenet">
+    <ion-col col-xl-2 col-lg-2 class="pull-left">
+      <ion-item *ngIf="table" item-content tappable class="table-arrangemenet">
         <ion-label color="primary">
           {{table.name}}
           <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unassignTable()"></ion-icon>
@@ -37,7 +37,7 @@
         </ion-label>
       </ion-item>
     </ion-col>
-    <ion-col col-xl-3 col-lg-3 class="pull-right">
+    <ion-col col-xl-4 col-lg-4 class="pull-right">
       <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="paper"></ion-icon><span class="change-large" *ngIf="sale && sale.notes">*</span>
       </button>
