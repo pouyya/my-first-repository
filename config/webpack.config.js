@@ -7,6 +7,8 @@ var env = process.env.CI_GIT_REF || process.env.SP_ENV || 'dev';
 
 if (env.toLocaleLowerCase() === 'production') {
   env = 'prod'
+} else if (env.toLocaleLowerCase() === 'develop') {
+  env = 'dev'
 }
 
 useDefaultConfig.prod.resolve.alias = {
