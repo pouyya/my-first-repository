@@ -80,11 +80,13 @@ export class ReportStaffAttendancePage {
 		fromDate.setHours(0, 0, 0, 0);
 		toDate.setHours(23, 59, 59, 0);
 
+		let _fromDate = this.dateTimeService.getUTCDate(fromDate).toISOString();
+		let _toDate = this.dateTimeService.getUTCDate(toDate).toISOString();
 		const callRest = await this.staffAttendanceReportService.getStaffAttendance(
 			this.selectedStore,
 			this.employeeIDs,
-			fromDate.toISOString(),
-			toDate.toISOString()
+			_fromDate,
+			_toDate
 
 		);
 		callRest.subscribe(
