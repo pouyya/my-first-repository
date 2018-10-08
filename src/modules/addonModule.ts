@@ -17,7 +17,7 @@ export class AddonModule implements ModuleBase {
     public pages = [
         { title: 'Add-ons', icon: 'infinite', component: AddonDashboard },
         {
-            title: 'Table Management', icon: 'albums', component: Sections, isAddon: true,
+            title: 'Table Management', icon: 'aperture', component: Sections, isAddon: true,
             isEnabled: null
         },
         { title: 'Back Office', icon: 'build', component: HomePage }
