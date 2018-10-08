@@ -109,12 +109,12 @@ export class AuthService {
    * @returns {Observable<any>}
    */
   public async ping(proDeployVersion: string, userEmail: string, currentStore: string, currentPos: string,
-                    currentPage: string, time: string) {
-      const url = ConfigService.statusEndPoint();
-      const data = {proDeployVersion, userEmail, currentStore, currentPos, page: currentPage, dateTime: time};
-      const headers = new Headers({ 'Content-Type': 'application/json' });
+    currentPage: string, utcDateTime: string, localDateTime: string) {
+    const url = ConfigService.statusEndPoint();
+    const data = { proDeployVersion, userEmail, currentStore, currentPos, page: currentPage, utcDateTime, localDateTime };
+    const headers = new Headers({ 'Content-Type': 'application/json' });
     return this.http
-      .post(url, data, {headers})
+      .post(url, data, { headers })
       .map((response: Response) => <ServerResponse[]>response.json());
   }
 

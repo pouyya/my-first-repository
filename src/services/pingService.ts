@@ -30,11 +30,11 @@ export class PingService {
             return
         }
         this.timer = setInterval(async () => {
-            const time = this.dateTimeService.getCurrentUTCDate().toString();
-            const path: string[] = this.platform.url().split('/');
+            const utcDateTime = this.dateTimeService.getCurrentUTCDate().toString();
+            const localDateTime = this.dateTimeService.getCurrentLocalDate().toString();
             const email = await this.userService.getUserEmail();
-            const currentPage = path[0];
-            const response = await this.authService.ping(this.proDeployVersion, email, this.currentStore, this.currentPos, currentPage, time);
+            const currentPage = this.platform.url();
+            const response = await this.authService.ping(this.proDeployVersion, email, this.currentStore, this.currentPos, currentPage, utcDateTime, localDateTime);
             response.subscribe((response: any) => {
                 if (response === "Success") {
                     console.log("Success");

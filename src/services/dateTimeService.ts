@@ -5,10 +5,14 @@ import { SyncContext } from "./SyncContext";
 @Injectable()
 export class DateTimeService {
 
-  constructor(private syncContext: SyncContext){}
+  constructor(private syncContext: SyncContext) { }
 
   public getCurrentUTCDate() {
     return moment.utc();
+  }
+
+  public getCurrentLocalDate() {
+    return this.getTimezoneDate(moment.utc().toDate());
   }
 
   public getUTCDate(date: Date | string) {
