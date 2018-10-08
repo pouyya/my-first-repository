@@ -184,6 +184,10 @@ export class SalesHistoryPage {
 			} else {
 				this.navCtrl.setRoot(Sales, { sale: _sale, doRefund });
 			}
+			localStorage.removeItem('sale_id');
+			_sale.state = 'current';
+			_sale.items.forEach(item => item.printedProductionLineCount = item.quantity);
+			await this.salesService.update(_sale);
 		}
 	}
 

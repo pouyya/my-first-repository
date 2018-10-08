@@ -24,7 +24,7 @@ import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
 import { SalesHistoryPage } from "../sales-history/sales-history";
-import {AttachCustomerModal} from "./modals/attach-customer/attach-customer";
+import { AttachCustomerModal } from "./modals/attach-customer/attach-customer";
 import { AddonService } from "../../services/addonService";
 import { AddonType } from "../../model/addon";
 import { SelectTablesModal } from "../table/modal/select-table/select-tables";
@@ -147,6 +147,10 @@ export class Sales implements OnDestroy {
     this.cdr.reattach();
   }
 
+  async ionViewCanEnter() {
+    this.parkedSaleCount = await this.salesService.getParkedSalesCount();
+  }
+
   private async loadRegister() { //move open/close to it's own module
     let loader = this.loading.create({ content: 'Loading Register...', });
     await loader.present();
@@ -266,7 +270,7 @@ export class Sales implements OnDestroy {
 
   public openTablesPopup() {
     let modal = this.modalCtrl.create(SelectTablesModal, {});
-    
+
     modal.onDidDismiss(async (res) => {
       if (res && res.table) {
         if (res.table.status === TableStatus.Active) {
