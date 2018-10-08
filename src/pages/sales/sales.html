@@ -6,11 +6,11 @@
     <ion-title class="ion-title-center">Sales</ion-title>
 
     <ion-buttons style="display: inline-flex;" right>
-      <button class="big_icon" no-margin ion-button (click)="openAttachCustomerPopup()">
+      <button *ngIf="isTableEnabled" class="big_icon" no-margin ion-button (click)="openAttachCustomerPopup()">
         <ion-icon [name]="iconTakeaway"></ion-icon>
       </button>
       <button *ngIf="isTableEnabled" class="big_icon" no-margin ion-button (click)="openTablesPopup()">
-        <ion-icon name="list-box"></ion-icon>
+        <ion-icon name="apps"></ion-icon>
       </button>
       <button id="notification-button" [disabled]="parkedSaleCount == 0" (click)="openSalesHistory()" no-margin
         ion-button clear>
