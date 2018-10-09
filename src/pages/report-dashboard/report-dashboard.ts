@@ -68,13 +68,16 @@ export class ReportsDashboard {
 		await loader.present();
 
 		this.dates$.asObservable().subscribe(async (date: any) => {
-			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
-			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
+			let _fromDate=new Date(date.fromDate);
+			let _toDate=new Date(date.toDate);
+
+			this.fromDate =_fromDate;
+			this.toDate =_toDate;// this.dateTimeService.getTimezoneDate(_toDate).toDate();
 			await this.loadSales();
 		});
 
 		let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
-			toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
+		toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
 		fromDate.setHours(0, 0, 0, 0);
 		fromDate.setDate(fromDate.getDate() - 7);
 		this.dates$.next({ fromDate, toDate });
@@ -100,14 +103,13 @@ export class ReportsDashboard {
 			let loading = this.loading.create({ content: 'Loading Report...' });
 
 			await loading.present();
-
-			this.fromDate.setHours(0, 0, 0, 0);
-			this.toDate.setHours(23, 59, 59, 0);
+			let _fromDate= this.dateTimeService.getTimezoneDate(this.fromDate).format( 'YYYY-MM-DDTHH:mm:ssZ');
+			let _toDate= this.dateTimeService.getTimezoneDate(this.toDate).format('YYYY-MM-DDTHH:mm:ssZ');
 
 			var sales = await this.salesSummaryReportService.getSalesSummary(
 				currentPosId,
-				this.fromDate.toISOString(),
-				this.toDate.toISOString()
+				_fromDate,
+				_toDate
 			);
 
 			sales.subscribe(

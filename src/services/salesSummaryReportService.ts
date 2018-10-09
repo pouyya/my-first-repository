@@ -11,9 +11,9 @@ export class SalesSummaryReportService {
 	public async getSalesSummary(currentPosId: string, fromDate: string, toDate: string) {
 		let token = await this.userService.getUserToken();
 		return this.http
-			.get(
-				ConfigService.salesReportEndPoint() +
-				`/?type=json&fromDate=${fromDate}&toDate=${toDate}&currentPosId=${currentPosId}&token=${token}`
+			.post(
+				ConfigService.salesReportEndPoint() +`/?type=json`,
+				{fromDate:fromDate,toDate:toDate,currentPosId:currentPosId,token:token}
 			)
 			.map((response: Response) => <SalesSummaryList>response.json());;
 	}
