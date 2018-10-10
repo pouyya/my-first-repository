@@ -130,6 +130,7 @@ export class Sales implements OnDestroy {
       .subscribe((data) => {
         setTimeout(async () => {
           await __this._basketComponent.initializeSale(data.sale, this.evaluationContext);
+          this.parkedSaleCount = await this.salesService.getParkedSalesCount();
         }, 100);
       });
 
@@ -147,7 +148,7 @@ export class Sales implements OnDestroy {
     this.cdr.reattach();
   }
 
-  async ionViewCanEnter() {
+  async ionViewDidEnter() {
     this.parkedSaleCount = await this.salesService.getParkedSalesCount();
   }
 

@@ -136,32 +136,32 @@ export class SalesServices extends BaseEntityService<Sale> {
 			query.selector['created'] = { $exists: true };
 
 			if (timeFrame.endDate) {
-                query.selector['created']['$lte'] = timeFrame.endDate;
+				query.selector['created']['$lte'] = timeFrame.endDate;
 			}
 
 			if (timeFrame.startDate) {
-                query.selector['created']['$gte'] = timeFrame.startDate;
+				query.selector['created']['$gte'] = timeFrame.startDate;
 			}
 		}
 
 		if (employeeId) {
-            query.selector['items']= {
-                    $elemMatch: {
-                    employeeId: {
-                        $eq: employeeId
-                    }
-                }
-            };
+			query.selector['items'] = {
+				$elemMatch: {
+					employeeId: {
+						$eq: employeeId
+					}
+				}
+			};
 		}
 
 		if (paymentType) {
-            query.selector["payments"] = {
-                $elemMatch: {
-                    type: {
-                        $eq: paymentType
-                    }
-                }
-            }
+			query.selector["payments"] = {
+				$elemMatch: {
+					type: {
+						$eq: paymentType
+					}
+				}
+			}
 		}
 		query.sort = [{
 			_id: sort || SortOptions.DESC
@@ -252,18 +252,19 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public async getParkedSalesCount(){
-        let query: any = {
-            selector: {
-                $and: []
-            }
-        };
-        query.selector.$and.push({ posID : this.syncContext.currentPos.id});
-        query.selector.$and.push({ state : 'parked'});
+	public async getParkedSalesCount() {
+		let query: any = {
+			selector: {
+				$and: []
+			}
+		};
+		query.selector.$and.push({ posID: this.syncContext.currentPos.id });
+		query.selector.$and.push({ state: 'parked' });
 		const data = await super.findBy(query);
 
 		return data.length;
 	}
+
 	public manageSaleId(sale: Sale) {
 		if (sale.items.length > 0 || sale.customerKey) {
 			let saleId = localStorage.getItem('sale_id');
