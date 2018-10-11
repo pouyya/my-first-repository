@@ -6,6 +6,7 @@ import { BaseEntityService } from '@simplepos/core/dist/services/baseEntityServi
 import { Http, Response } from '@angular/http';
 import { ConfigService } from './../modules/dataSync/services/configService';
 import { UserService } from '../modules/dataSync/services/userService';
+import { DateTimeService } from './dateTimeService';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
@@ -13,7 +14,8 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 	readonly view_stock_per_store = "inventory/stock_per_store";
 
 	constructor(private http: Http,
-		private userService: UserService) {
+		private userService: UserService,
+		private dateTimeService: DateTimeService) {
 		super(StockHistory);
 	}
 
@@ -82,10 +84,10 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 		}) : null;
 	}
 
-	public static createStockForSale(productId: string, storeId: string, value: number): StockHistory {
+	public createStockForSale(productId: string, storeId: string, value: number): StockHistory {
 		let stock = new StockHistory();
-		stock.createdAt = moment().utc().format();
-		stock.createdAtLocalDate = moment().format();
+		stock.createdAt = this.dateTimeService.getUTCDateString();
+		stock.createdAtLocalDate = this.dateTimeService.getLocalDateString();
 		stock.productId = productId;
 		stock.storeId = storeId;
 		stock.value = value * -1;

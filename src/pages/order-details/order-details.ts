@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import * as moment from 'moment-timezone';
 import { StockHistory, Reason } from './../../model/stockHistory';
 import { OrderService } from './../../services/orderService';
 import { PriceBook } from './../../model/priceBook';
@@ -33,7 +32,8 @@ import {
   OrderPageCurrentSettings,
   OrderPageSettings
 } from './modules/order-details-exportables';
-import {Utilities} from "../../utility";
+import { Utilities } from "../../utility";
+import { DateTimeService } from '../../services/dateTimeService';
 
 @Component({
   selector: 'order-details',
@@ -70,7 +70,8 @@ export class OrderDetails {
     private fountainService: FountainService,
     private priceBookService: PriceBookService,
     private emailService: EmailService,
-    private utility: Utilities
+    private utility: Utilities,
+    private dateTimeService: DateTimeService
   ) {
     this.cdr.detach();
     let order = <Order>this.navParams.get('order');
@@ -184,7 +185,7 @@ export class OrderDetails {
     this.order.storeId = this.store._id;
     this.order.supplierId = this.supplier._id;
     this.order.status = OrderStatus.Ordered;
-    this.order.createdAt = moment().utc().format();
+    this.order.createdAt = this.dateTimeService.getUTCDateString();
     this.order.items = <OrderedItems[]>this.orderedProducts.map(product => {
       return <OrderedItems>{
         productId: product.productId,
@@ -199,16 +200,16 @@ export class OrderDetails {
 
   public async cancelOrder() {
     const isCancel = await this.utility.confirmRemoveItem("Do you really wish to cancel this order!");
-    if(!isCancel){
-        return;
+    if (!isCancel) {
+      return;
     }
     let toast = this.toastCtrl.create({ duration: 3000 });
-    try{
-        this.order.cancelledAt = moment().utc().format();
-        this.order.status = OrderStatus.Cancelled;
-        await this.orderService.update(<Order>_.omit(this.order, ['UIState']));
-        toast.setMessage('Order has been cancelled!');
-    }catch (ex) {
+    try {
+      this.order.cancelledAt = this.dateTimeService.getUTCDateString();
+      this.order.status = OrderStatus.Cancelled;
+      await this.orderService.update(<Order>_.omit(this.order, ['UIState']));
+      toast.setMessage('Order has been cancelled!');
+    } catch (ex) {
       toast.setMessage('Error! Unable to cancel order!');
     } finally {
       toast.present();
@@ -232,7 +233,7 @@ export class OrderDetails {
     let loader = this.loadingCtrl.create({ content: 'Confirming Order...' });
     await loader.present();
     this.order.status = OrderStatus.Received;
-    this.order.receivedAt = moment().utc().format();
+    this.order.receivedAt = this.dateTimeService.getUTCDateString();
     this.order.items = this.orderedProducts.map(product => {
       return <OrderedItems>{
         productId: product.productId,
@@ -252,8 +253,8 @@ export class OrderDetails {
         stock.productId = item.productId;
         stock.supplyPrice = Number(item.price);
         stock.value = Number(item.quantity);
-        stock.createdAt = moment().utc().format();
-        stock.createdAtLocalDate = moment().format();
+        stock.createdAt = this.dateTimeService.getUTCDateString();
+        stock.createdAtLocalDate = this.dateTimeService.getLocalDateString();
         stock.orderId = this.order._id;
         return this.stockHistoryService.add(stock);
       });

@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import * as moment from 'moment';
 import { DiscountSurchargeInterface } from './../../../../model/sale';
 import { ViewController, ToastController, NavParams } from 'ionic-angular';
 import { Component } from '@angular/core';
+import { DateTimeService } from '../../../../services/dateTimeService';
 
 @Component({
   selector: 'discount-surcharge-modal',
@@ -26,7 +26,8 @@ export class DiscountSurchargeModal {
   constructor(
     private viewCtrl: ViewController,
     private toastCtrl: ToastController,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private dateTimeService: DateTimeService
   ) {
     this.action = <string>this.navParams.get('action');
     this.total = <number>this.navParams.get('total');
@@ -48,7 +49,7 @@ export class DiscountSurchargeModal {
             value: +this.value,
             type: this.action,
             format: this.inputType,
-            createdAt: moment().utc().format()
+            createdAt: this.dateTimeService.getUTCDateString()
           }
         });
       }
