@@ -11,8 +11,8 @@ import { SupplierService } from '../../services/supplierService';
 import { SortOptions } from '@simplepos/core/dist/services/baseEntityService';
 import { SearchableListing } from "../../modules/searchableListing";
 import { Order } from "../../model/order";
-import * as moment from "moment-timezone";
-import {Utilities} from "../../utility";
+import { Utilities } from "../../utility";
+import { DateTimeService } from '../../services/dateTimeService';
 
 interface RenderableOrder extends BaseOrder<OrderStatus> {
   totalCost: number;
@@ -49,7 +49,8 @@ export class Orders extends SearchableListing<Order>{
     private loading: LoadingController,
     private navCtrl: NavController,
     protected zone: NgZone,
-    private utility: Utilities
+    private utility: Utilities,
+    private dateTimeService: DateTimeService
   ) {
     super(orderService, zone, 'Order');
     this.filter['status'] = null;
@@ -128,10 +129,10 @@ export class Orders extends SearchableListing<Order>{
 
   public async cancelOrder(order: Order, index: number) {
     const isCancel = await this.utility.confirmRemoveItem("Do you really wish to cancel this order!");
-    if(!isCancel){
-        return;
+    if (!isCancel) {
+      return;
     }
-    order.cancelledAt = moment().utc().format();
+    order.cancelledAt = this.dateTimeService.getUTCDateString();
     order.status = OrderStatus.Cancelled;
     await this.orderService.update(<Order>_.omit(order, ['UIState']));
     this.items.splice(index, 1);

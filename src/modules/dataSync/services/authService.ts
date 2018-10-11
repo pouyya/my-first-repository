@@ -102,22 +102,6 @@ export class AuthService {
       .get(`${url}?email=${email}`)
       .map((response: Response) => <ServerResponse[]>response.json());
   }
-
-  /**
-   * Sends ping along with some data information to the server
-   * @param email
-   * @returns {Observable<any>}
-   */
-  public async ping(proDeployVersion: string, userEmail: string, currentStore: string, currentPos: string,
-    currentPage: string, utcDateTime: string, localDateTime: string) {
-    const url = ConfigService.statusEndPoint();
-    const data = { proDeployVersion, userEmail, currentStore, currentPos, page: currentPage, utcDateTime, localDateTime };
-    const headers = new Headers({ 'Content-Type': 'application/json' });
-    return this.http
-      .post(url, data, { headers })
-      .map((response: Response) => <ServerResponse[]>response.json());
-  }
-
 }
 
 export interface ServerResponse {

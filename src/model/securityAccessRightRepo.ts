@@ -126,34 +126,34 @@ export class SecurityAccessRightRepo {
     "SwitchPos",
     "Switch Pos");
 
-    public static ReportsDashboard : AccessRightItem = new AccessRightItem(
-      'ReportsDashboard',
-      'Reports Dashboard');
+  public static ReportsDashboard: AccessRightItem = new AccessRightItem(
+    'ReportsDashboard',
+    'Reports Dashboard');
 
-    public static ReportStockMovementSummary : AccessRightItem = new AccessRightItem(
-      'ReportStockMovementSummary',
-      'Report Stock Movement Summary');
+  public static ReportStockMovementSummary: AccessRightItem = new AccessRightItem(
+    'ReportStockMovementSummary',
+    'Report Stock Movement Summary');
 
-    public static ReportStaffAttendance : AccessRightItem = new AccessRightItem(
-      'ReportStaffAttendance',
-      'Report Staff Attendance');
-      
-    public static Preferences : AccessRightItem = new AccessRightItem(
-      'Preferences',
-      'Preferences');
+  public static ReportStaffAttendance: AccessRightItem = new AccessRightItem(
+    'ReportStaffAttendance',
+    'Report Staff Attendance');
 
-    public static Roster: AccessRightItem = new AccessRightItem(
-      'Roster',
-      'Roster');
+  public static Preferences: AccessRightItem = new AccessRightItem(
+    'Preferences',
+    'Preferences');
 
-    public static Addons: AccessRightItem = new AccessRightItem(
-      'Addons',
-      'Addons');
+  public static Roster: AccessRightItem = new AccessRightItem(
+    'Roster',
+    'Roster');
 
-    public static TableManagement: AccessRightItem = new AccessRightItem(
-      'TableManagement',
-      'Table Management');
-      
+  public static Addons: AccessRightItem = new AccessRightItem(
+    'Addons',
+    'Add-ons');
+
+  public static TableManagement: AccessRightItem = new AccessRightItem(
+    'TableManagement',
+    'Table Management');
+
   public static readonly Repo: AccessRightItem[] = [
     SecurityAccessRightRepo.ServiceAddEdit,
     SecurityAccessRightRepo.ServiceListing,
@@ -182,7 +182,7 @@ export class SecurityAccessRightRepo {
     SecurityAccessRightRepo.OpenCloseRegister,
     SecurityAccessRightRepo.GroupSaleTax,
     SecurityAccessRightRepo.MoneyInOut,
-    SecurityAccessRightRepo.SaleTax,    
+    SecurityAccessRightRepo.SaleTax,
     SecurityAccessRightRepo.OpenCashDrawer,
     SecurityAccessRightRepo.SwitchPos,
     SecurityAccessRightRepo.ReportsDashboard,

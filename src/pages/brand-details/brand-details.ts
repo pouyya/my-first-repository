@@ -1,11 +1,11 @@
-import * as moment from 'moment-timezone';
 import { BrandService } from './../../services/brandService';
 import { Brand } from './../../model/brand';
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController } from 'ionic-angular';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import {Utilities} from "../../utility";
+import { Utilities } from "../../utility";
+import { DateTimeService } from '../../services/dateTimeService';
 
 @SecurityModule(SecurityAccessRightRepo.BrandAddEdit)
 @Component({
@@ -21,7 +21,8 @@ export class BrandDetails {
     private brandService: BrandService,
     private navParams: NavParams,
     private toastCtrl: ToastController,
-    private utility: Utilities
+    private utility: Utilities,
+    private dateTimeService: DateTimeService
   ) {
   }
 
@@ -35,7 +36,7 @@ export class BrandDetails {
 
   public async onSubmit() {
     try {
-      this.brand.updatedAt = moment().utc().format();
+      this.brand.updatedAt = this.dateTimeService.getUTCDateString();
       await this.brandService[this.isNew ? 'add' : 'update'](this.brand);
       let toast = this.toastCtrl.create({
         message: `Brand '${this.brand.name}' has been created successfully!`,
@@ -51,8 +52,8 @@ export class BrandDetails {
   public async delete() {
     try {
       const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this brand!");
-      if(!deleteItem){
-          return;
+      if (!deleteItem) {
+        return;
       }
       await this.brandService.delete(this.brand);
       let toast = this.toastCtrl.create({

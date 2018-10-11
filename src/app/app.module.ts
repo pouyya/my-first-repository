@@ -186,16 +186,16 @@ import { CreateProductModal } from '../pages/product-details/modals/create-produ
 import { ErrorLoggingService } from "../services/ErrorLoggingService";
 import { CreateStoreModal } from '../pages/store-details/modals/create-store/create-store';
 import { PingService } from "../services/pingService";
-import {AddonDashboard} from "../pages/addon-dashboard/addon-dashboard";
-import {AddonService} from "../services/addonService";
-import {SectionDetails} from "../pages/section-details/section-details";
-import {Sections} from "../pages/section/sections";
-import {Tables} from "../pages/table/tables";
-import {TableDetails} from "../pages/table-details/table-details";
-import {TableArrangementService} from "../services/tableArrangementService";
-import {SelectTablesModal} from "../pages/table/modal/select-table/select-tables";
-import {AddTableGuestsModal} from "../pages/table/modal/add-table-guests/add-table-guests";
-import {AttachCustomerModal} from "../pages/sales/modals/attach-customer/attach-customer";
+import { AddonDashboard } from "../pages/addon-dashboard/addon-dashboard";
+import { AddonService } from "../services/addonService";
+import { SectionDetails } from "../pages/section-details/section-details";
+import { Sections } from "../pages/section/sections";
+import { Tables } from "../pages/table/tables";
+import { TableDetails } from "../pages/table-details/table-details";
+import { TableArrangementService } from "../services/tableArrangementService";
+import { SelectTablesModal } from "../pages/table/modal/select-table/select-tables";
+import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
+import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attach-customer";
 
 @NgModule({
   declarations: [

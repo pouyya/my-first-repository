@@ -26,9 +26,9 @@ import { SupplierService } from '../../services/supplierService';
 import { UserService } from '../../modules/dataSync/services/userService';
 import { Subject } from "rxjs/Subject";
 import { Utilities } from "../../utility";
-import * as moment from "moment-timezone";
 import { EmployeeService } from "../../services/employeeService";
 import { SyncContext } from "../../services/SyncContext";
+import { DateTimeService } from '../../services/dateTimeService';
 
 @SecurityModule(SecurityAccessRightRepo.ProductAddEdit)
 @Component({
@@ -91,7 +91,8 @@ export class ProductDetails {
 		private employeeService: EmployeeService,
 		private utility: Utilities,
 		private syncContext: SyncContext,
-		private toastCtrl: ToastController
+		private toastCtrl: ToastController,
+		private dateTimeService: DateTimeService
 	) {
 		this.icons = icons;
 	}
@@ -411,8 +412,8 @@ export class ProductDetails {
 			stock.productId = this.productItem._id;
 			stock.reason = Reason.InitialValue;
 			stock.storeId = this.syncContext.currentStore._id;
-			stock.createdAt = moment().utc().format();
-			stock.createdAtLocalDate = moment().format();
+			stock.createdAt = this.dateTimeService.getUTCDateString();
+			stock.createdAtLocalDate = this.dateTimeService.getLocalDateString();
 			stock.value = initVal;
 			stock.createdBy = this.employeeService.getEmployee()._id;
 			stock.supplyPrice = stock.supplyPrice ? Number(stock.supplyPrice) : null;

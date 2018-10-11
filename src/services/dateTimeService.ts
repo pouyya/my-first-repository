@@ -7,15 +7,19 @@ export class DateTimeService {
 
   constructor(private syncContext: SyncContext) { }
 
-  public getCurrentUTCDate() {
-    return moment.utc();
+  public getUTCDateString(date?: Date | string) {
+    return moment.utc(date).format();
   }
 
-  public getCurrentLocalDate() {
-    return this.getTimezoneDate(moment.utc().toDate());
+  public getLocalDate(date?: Date | string) {
+    return this.getTimezoneDate(moment.utc(date).toDate());
   }
 
-  public getUTCDate(date: Date | string) {
+  public getLocalDateString(date?: Date | string) {
+    return this.getLocalDate(date).format('YYYY-MM-DDTHH:mm:ss.sss');
+  }
+
+  public getUTCDate(date?: Date | string) {
     return moment.utc(date);
   }
 

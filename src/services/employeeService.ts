@@ -5,6 +5,7 @@ import { Injectable } from "@angular/core";
 import { Employee, WorkingStatusEnum } from "../model/employee";
 import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { SyncContext } from "./SyncContext";
+import { DateTimeService } from "./dateTimeService";
 
 @Injectable()
 export class EmployeeService extends BaseEntityService<Employee> {
@@ -19,8 +20,9 @@ export class EmployeeService extends BaseEntityService<Employee> {
     this._employee = employee;
   }
 
-  constructor(
-    private employeeTimestampService: EmployeeTimestampService, private syncContext: SyncContext) {
+  constructor(private employeeTimestampService: EmployeeTimestampService, 
+    private syncContext: SyncContext,
+    private dateTimeService: DateTimeService) {
     super(Employee);
   }
 
@@ -124,7 +126,7 @@ export class EmployeeService extends BaseEntityService<Employee> {
         newTimestamp.storeId = currentStoreId;
         newTimestamp.type = EmployeeTimestampService.CLOCK_OUT;
         newTimestamp.time = moment(checkOutTime).utc().toDate();
-        newTimestamp.createdAtLocalDate = moment(checkOutTime).format();
+        newTimestamp.createdAtLocalDate = this.dateTimeService.getLocalDateString(checkOutTime);
 
         employee.workingStatus.status = WorkingStatusEnum.ClockedOut;
         employee.workingStatus.posId = this.syncContext.currentPos.id;

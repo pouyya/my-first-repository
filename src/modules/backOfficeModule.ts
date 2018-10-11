@@ -28,12 +28,12 @@ export class BackOfficeModule implements ModuleBase {
     { title: 'Stores', icon: 'basket', component: Stores },
     { title: 'Price Books', icon: 'bookmark', component: PriceBooksPage },
     { title: 'Human Resource', icon: 'people', component: HumanResourceDashboard },
-    { title: 'Addons', icon: 'people', component: AddonDashboard },
+    { title: 'Add-ons', icon: 'infinite', component: AddonDashboard },
     { title: 'Report', icon: 'print', component: ReportsDashboard },
     { title: 'Settings', icon: 'cog', component: Settings },
     { title: 'About', icon: 'information-circle', component: AboutPage },
     { title: 'Logout', icon: 'log-out', component: LogOut }
-  ];    
+  ];
 
   public pinTheMenu: boolean = true;
 }
