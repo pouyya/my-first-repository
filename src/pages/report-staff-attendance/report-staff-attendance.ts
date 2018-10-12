@@ -11,6 +11,7 @@ import { SyncContext } from '../../services/SyncContext';
 import { DateTimeService } from '../../services/dateTimeService';
 import { Employee } from 'model/employee';
 import { EmployeeService } from '../../services/employeeService';
+import { Subject } from 'rxjs';
 
 @SecurityModule(SecurityAccessRightRepo.ReportStaffAttendance)
 @PageModule(() => ReportModule)
@@ -19,13 +20,9 @@ import { EmployeeService } from '../../services/employeeService';
 	templateUrl: 'report-staff-attendance.html'
 })
 export class ReportStaffAttendancePage {
-	public timeframes = [
-		{ text: 'Week', value: 'WEEK' },
-		{ text: 'Month', value: 'MONTH' },
-		{ text: 'Custom', value: 'CUSTOM' }
-	];
 	public locations = [{ text: 'All locations', value: '' }];
 	public selectedTimeframe: string;
+	private dates$: Subject<Object> = new Subject<Object>();
 	public selectedStore: string;
 	public staffAttendanceList: StaffAttendance;
 	public days: Day[] = [];
@@ -33,7 +30,6 @@ export class ReportStaffAttendancePage {
 	public reportGeneratedTime: Date;
 	public fromDate: Date = new Date();
 	public toDate: Date = new Date();
-	public UTCDatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 	public employeeIDs: string[] = [];
 	public detailRowToShow = -1;
 	public employees: Array<Employee> = [];
@@ -50,45 +46,38 @@ export class ReportStaffAttendancePage {
 
 	async ionViewDidLoad() {
 		this.fromDate.setDate(this.fromDate.getDate() - 15);
-		this.selectedTimeframe = this.timeframes[1].value;
 		const stores = await this.storeService.getAll();
 		stores.forEach((store) => this.locations.push({ text: store.name, value: store._id }));
 		this.employees = await this.employeeService.getAll();
 		const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
 		this.selectedStore = storeId ? storeId : this.locations[0].value;
 
-		await this.loadStaffAttendanceReport();
+		this.dates$.asObservable().subscribe(async (date: any) => {
+			this.fromDate = date.fromDate;
+			this.toDate = date.toDate;
+			await this.loadStaffAttendanceReport();
+		});
+
+		let fromDate = new Date(), toDate = new Date();
+		fromDate.setHours(0, 0, 0, 0);
+		fromDate.setDate(fromDate.getDate() - 7);
+		this.dates$.next({ fromDate, toDate });
 	}
 
 	public async loadStaffAttendanceReport() {
 		this.emptyReportWarning = false;
 		let loader = this.loading.create({ content: 'Loading Report...' });
 		await loader.present();
-		let toDate = new Date();
-		let fromDate = new Date();
-		let days = 7;
 
-		if (this.selectedTimeframe === 'MONTH' || this.selectedTimeframe === 'WEEK') {
-			this.selectedTimeframe === 'WEEK' && (days = 7);
-			this.selectedTimeframe === 'MONTH' && (days = 30);
-			fromDate.setDate(fromDate.getDate() - days);
-		} else if (this.selectedTimeframe === 'CUSTOM') {
-			fromDate = new Date(this.fromDate);
-			toDate = new Date(this.toDate);
-		}
+		this.fromDate.setHours(0, 0, 0, 0);
+		this.toDate.setHours(23, 59, 59, 0);
 
-		fromDate.setHours(0, 0, 0, 0);
-		toDate.setHours(23, 59, 59, 0);
-
-		let _fromDate = this.dateTimeService.getUTCDate(fromDate).toISOString();
-		let _toDate = this.dateTimeService.getUTCDate(toDate).toISOString();
 		const callRest = await this.staffAttendanceReportService.getStaffAttendance(
 			this.selectedStore,
 			this.employeeIDs,
-			_fromDate,
-			_toDate
+			this.dateTimeService.getLocalISOString(this.fromDate),
+			this.dateTimeService.getLocalISOString(this.toDate));
 
-		);
 		callRest.subscribe(
 			(staffAttendanceList) => {
 				this.staffAttendanceList = staffAttendanceList;

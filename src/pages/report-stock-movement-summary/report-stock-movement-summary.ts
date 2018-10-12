@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ReportModule } from '../../modules/reportModule';
 import { PageModule } from '../../metadata/pageModule';
 import { StockHistoryService, StockMovement } from '../../services/stockHistoryService';
@@ -9,6 +9,7 @@ import { StoreService } from '../../services/storeService';
 import { SyncContext } from '../../services/SyncContext';
 import { NetworkService } from '../../services/networkService';
 import { DateTimeService } from "../../services/dateTimeService";
+import { Subject } from 'rxjs';
 
 @SecurityModule(SecurityAccessRightRepo.ReportStockMovementSummary)
 @PageModule(() => ReportModule)
@@ -18,16 +19,12 @@ import { DateTimeService } from "../../services/dateTimeService";
 	styleUrls: ['/components/pages/report-stock-movement-summary.scss']
 })
 export class ReportStockMovementSummaryPage {
-	public timeframes = [
-		{ text: 'Week', value: 'WEEK' },
-		{ text: 'Month', value: 'MONTH' },
-		{ text: 'Custom', value: 'CUSTOM' }
-	];
 	public locations = [{ text: 'All locations', value: '' }];
-	public selectedTimeframe: string;
 	public selectedStore: string;
 	public stockMovementList: StockMovement[] = [];
 	public reportGeneratedTime: Date;
+	private dates$: Subject<Object> = new Subject<Object>();
+	public selectedTimeframe: string;
 	public fromDate: Date = new Date();
 	public toDate: Date = new Date();
 	networkStatus: boolean;
@@ -37,7 +34,8 @@ export class ReportStockMovementSummaryPage {
 		private loading: LoadingController,
 		private syncContext: SyncContext,
 		private networkService: NetworkService,
-		private dateTimeService: DateTimeService
+		private dateTimeService: DateTimeService,
+		private cdRef: ChangeDetectorRef
 	) {
 	}
 
@@ -49,39 +47,41 @@ export class ReportStockMovementSummaryPage {
 
 		this.networkService.announceStatus(true);
 		this.fromDate.setDate(this.fromDate.getDate() - 15);
-		this.selectedTimeframe = this.timeframes[0].value;
 		const stores = await this.storeService.getAll();
 		stores.forEach(store => this.locations.push({ text: store.name, value: store._id }));
 
 		const storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
 		this.selectedStore = (storeId) ? storeId : this.locations[0].value;
 
-		await this.loadStockReport();
+		this.dates$.asObservable().subscribe(async (date: any) => {
+			this.fromDate = date.fromDate;
+			this.toDate = date.toDate;
+			await this.loadStockReport();
+		});
+
+		let fromDate = new Date(), toDate = new Date();
+		fromDate.setHours(0, 0, 0, 0);
+		fromDate.setDate(fromDate.getDate() - 7);
+		this.dates$.next({ fromDate, toDate });
+	}
+
+	async ngAfterViewChecked() {
+		this.selectedTimeframe = 'WEEK';
+		this.cdRef.detectChanges();
 	}
 
 	public async loadStockReport() {
 		let loader = this.loading.create({ content: 'Loading Report...' });
 		await loader.present();
-		let toDate = new Date();
-		let fromDate = new Date();
-		let days = 7;
 
-		if (this.selectedTimeframe === 'MONTH' || this.selectedTimeframe === 'WEEK') {
-			this.selectedTimeframe === 'WEEK' && (days = 7);
-			this.selectedTimeframe === 'MONTH' && (days = 30);
-			fromDate.setDate(fromDate.getDate() - days);
-		} else if (this.selectedTimeframe === 'CUSTOM') {
-			fromDate = new Date(this.fromDate);
-			toDate = new Date();
-		}
+		this.fromDate.setHours(0, 0, 0, 0);
+		this.toDate.setHours(23, 59, 59, 0);
 
-		fromDate.setHours(0, 0, 0, 0);
-		toDate.setHours(23, 59, 59, 0);
-		
-		let _fromDate = this.dateTimeService.getUTCDate(fromDate).toISOString();
-		let _toDate = this.dateTimeService.getUTCDate(toDate).toISOString();
+		var stockMovement = await this.stockHistoryService.getStockMovement(
+			this.selectedStore,
+			this.dateTimeService.getLocalISOString(this.fromDate),
+			this.dateTimeService.getLocalISOString(this.toDate));
 
-		var stockMovement = await this.stockHistoryService.getStockMovement(this.selectedStore, _fromDate, _toDate);
 		stockMovement.subscribe(
 			stockMovementList => this.stockMovementList = stockMovementList,
 			err => {
