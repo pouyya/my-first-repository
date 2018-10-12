@@ -59,7 +59,7 @@ export class ReportsDashboard {
 			});
 
 		this.networkService.announceStatus(true);
-		this.locations.unshift({ text: 'Current', value: this.syncContext.currentStore._id });
+		this.locations.unshift({ text: this.syncContext.currentStore.name, value: this.syncContext.currentStore._id });
 		this.selectedStore = this.locations[0].value;
 		let loader = this.loading.create({ content: 'Loading Report...' });
 		await loader.present();
