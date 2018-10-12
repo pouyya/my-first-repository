@@ -1,4 +1,3 @@
-import { LogOut } from './dataSync/pages/logout/logout';
 import { Closures } from './../pages/closures/closures';
 import { Injector } from '@angular/core';
 import { ToastController } from 'ionic-angular';
@@ -28,8 +27,7 @@ export class SalesModule implements ModuleBase {
     { title: 'Money In/Out', icon: 'cash', component: MoneyInOut, pushNavigation: true },
     { title: 'Closures', icon: 'bookmarks', component: Closures },
     { title: 'Preferences', icon: 'settings', component: Preferences },
-    { title: 'Back Office', icon: 'build', component: HomePage },
-    { title: 'Logout', icon: 'log-out', component: LogOut }
+    { title: 'Back Office', icon: 'build', component: HomePage }
   ];
 
   public pinTheMenu: boolean = false;
