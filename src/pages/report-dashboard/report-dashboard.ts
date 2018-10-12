@@ -7,7 +7,6 @@ import { Subject } from 'rxjs/Subject';
 import { Chart } from 'chart.js';
 import { LoadingController, ToastController } from 'ionic-angular';
 import { SyncContext } from '../../services/SyncContext';
-import * as moment from 'moment-timezone';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
 import { DateTimeService } from '../../services/dateTimeService';
 import { HelperService } from '../../services/helperService';
@@ -39,8 +38,6 @@ export class ReportsDashboard {
 	public locations = [{ text: 'All locations', value: '' }];
 	public salesSummaryList: SalesSummaryList;
 	public salesSummary: SalesSummary[];
-	public chartDatePattern: string = 'DD MMM YYYY';
-	public DatePattern: string = 'YYYY-MM-DDTHH:mm:ssZ';
 	networkStatus: boolean;
 
 	constructor(
@@ -68,13 +65,12 @@ export class ReportsDashboard {
 		await loader.present();
 
 		this.dates$.asObservable().subscribe(async (date: any) => {
-			this.fromDate = this.dateTimeService.getTimezoneDate(date.fromDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
-			this.toDate = this.dateTimeService.getTimezoneDate(date.toDate.setHours(0, 0, 0, 0).format(this.DatePattern)).toDate();
+			this.fromDate = date.fromDate;
+			this.toDate = date.toDate;
 			await this.loadSales();
 		});
 
-		let fromDate = this.dateTimeService.getTimezoneDate(new Date()).toDate(),
-			toDate = this.dateTimeService.getTimezoneDate(new Date()).toDate();
+		let fromDate = new Date(), toDate = new Date();
 		fromDate.setHours(0, 0, 0, 0);
 		fromDate.setDate(fromDate.getDate() - 7);
 		this.dates$.next({ fromDate, toDate });
@@ -106,8 +102,8 @@ export class ReportsDashboard {
 
 			var sales = await this.salesSummaryReportService.getSalesSummary(
 				currentPosId,
-				this.fromDate.toISOString(),
-				this.toDate.toISOString()
+				this.dateTimeService.getLocalISOString(this.fromDate),
+				this.dateTimeService.getLocalISOString(this.toDate)
 			);
 
 			sales.subscribe(
@@ -148,7 +144,7 @@ export class ReportsDashboard {
 		const labels = [],
 			data = [];
 		this.sales.map((sale) => {
-			labels.push(this.dateTimeService.getTimezoneDate(sale.date).format(this.chartDatePattern));
+			labels.push(this.dateTimeService.format(sale.date, 'DD MMM YY'));
 			data.push(sale.total.toFixed(2));
 		});
 		this.lineChart = new Chart(this.lineCanvas.nativeElement, {
