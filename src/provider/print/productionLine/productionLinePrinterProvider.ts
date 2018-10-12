@@ -76,7 +76,7 @@ Note: ${this.productionLinePrinterProviderContext.sale.notes}
                 if (basketItem.modifierItems) {
                     for (let basketItemModifier of basketItem.modifierItems) {
                         basketItems += `<tr>
-                        <td>   ${basketItemModifier.quantity}</td>
+                        <td> + ${basketItemModifier.quantity}</td>
                         <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
                     </tr>`;
 
