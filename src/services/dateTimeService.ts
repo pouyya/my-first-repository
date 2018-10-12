@@ -27,4 +27,12 @@ export class DateTimeService {
     let utc = this.getUTCDate(date);
     return this.syncContext.timezone ? utc.tz(this.syncContext.timezone) : utc.local();
   }
+
+  public format(date: Date | string, format: string): string {
+    return moment(date).format(format);
+  }
+
+  public getLocalISOString(date: Date | string): string {
+    return this.format(date, 'YYYY-MM-DDTHH:mm:ss.sss');
+  }
 }

@@ -1,5 +1,4 @@
 import { Component, Input } from "@angular/core";
-import { ModalController } from "ionic-angular";
 import { Subject } from "rxjs/Subject";
 import {DateTimeService} from "../../services/dateTimeService";
 
@@ -17,13 +16,13 @@ import {DateTimeService} from "../../services/dateTimeService";
           <ion-col col-md-3>
               <ion-item>
                   <ion-label>From</ion-label>
-                  <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="fromDate"></ion-datetime>
+                  <ion-datetime displayFormat="DD MMM YY" [(ngModel)]="fromDate"></ion-datetime>
               </ion-item>
           </ion-col>
           <ion-col col-md-3>
               <ion-item>
                   <ion-label>To</ion-label>
-                  <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="toDate"></ion-datetime>
+                  <ion-datetime displayFormat="DD MMM YY" [(ngModel)]="toDate"></ion-datetime>
               </ion-item>
           </ion-col>
           <ion-col>

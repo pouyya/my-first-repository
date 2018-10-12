@@ -44,7 +44,7 @@ export class StoreService extends BaseEntityService<Store> {
   }
 
   public openRegister(register: POS, openingAmount: number, openingNote: string): Promise<Store> {
-    register.openTime =  this.dateTimeService.getLocalDateString();
+    register.openTime =  this.dateTimeService.getUTCDateString();
     register.status = true;
     register.openingAmount = Number(openingAmount);
     register.openingNote = openingNote;
