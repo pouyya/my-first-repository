@@ -85,7 +85,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         const tableArrangement = await this.getTableArrangement();
         let section;
         if (sectionId != toSectionId)
-            this.moveTable(tableData, sectionId, toSectionId);
+            this.moveTable(tableData, toSectionId, sectionId);
         else {
 
             if (!sectionId) {

@@ -48,7 +48,7 @@ export class TableDetails {
 
   public async onSubmit() {
     const section = _.find(this.sections, { id: this.selectedSection });
-    if (section != this.fromSection)
+    if (!this.isNew && section != this.fromSection)
       this.moved = true;
     try {
       let toast = this.toastCtrl.create({
@@ -66,7 +66,7 @@ export class TableDetails {
           return;
         }
 
-      await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.fromSection, this.selectedSection);
+      await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection, this.fromSection);
       toast.present();
       this.navCtrl.pop();
     } catch (err) {
