@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, NavParams, LoadingController } from 'ionic-angular';
+import { NavController, LoadingController } from 'ionic-angular';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
@@ -28,7 +28,6 @@ export class Sections {
     private tableArrangementService: TableArrangementService,
     private storeService: StoreService,
     private loading: LoadingController,
-    private navParams: NavParams,
     public events: Events,
     private syncContext: SyncContext) {
   }
