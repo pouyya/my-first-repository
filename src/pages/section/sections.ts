@@ -1,14 +1,14 @@
 import { Component, NgZone } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import {TableManagementModule} from "../../modules/TableManagementModule";
-import {SectionDetails} from "../section-details/section-details";
-import {SyncContext} from "../../services/SyncContext";
-import {StoreService} from "../../services/storeService";
-import {TableArrangementService} from "../../services/tableArrangementService";
-import {ISection} from "../../model/tableArrangement";
+import { TableManagementModule } from "../../modules/TableManagementModule";
+import { SectionDetails } from "../section-details/section-details";
+import { SyncContext } from "../../services/SyncContext";
+import { StoreService } from "../../services/storeService";
+import { TableArrangementService } from "../../services/tableArrangementService";
+import { ISection } from "../../model/tableArrangement";
 
 @SecurityModule(SecurityAccessRightRepo.TableManagement)
 @PageModule(() => TableManagementModule)
@@ -27,6 +27,7 @@ export class Sections {
     private tableArrangementService: TableArrangementService,
     private storeService: StoreService,
     private loading: LoadingController,
+    private navParams: NavParams,
     private syncContext: SyncContext) {
   }
 
@@ -37,7 +38,9 @@ export class Sections {
     try {
       this.storeList = await this.storeService.getAll();
       this.sectionList = await this.tableArrangementService.getAllSections();
-      this.selectedStore = this.syncContext.currentStore._id;
+      let selectedStore = this.navParams.get('selectedStore');
+      if (!selectedStore)
+        this.selectedStore = this.syncContext.currentStore._id;
       this.filterByStore();
       loader.dismiss();
     } catch (err) {
@@ -49,15 +52,15 @@ export class Sections {
 
   showDetail(section) {
     const allSectionNames = this.sections.map(item => item.name);
-    this.navCtrl.push(SectionDetails, { section, allSectionNames, storeList: this.storeList });
+    this.navCtrl.push(SectionDetails, { section, allSectionNames, storeList: this.storeList, selectedStore: this.selectedStore });
   }
 
 
-  public async onSelectTile(event){
-      this.showDetail(event);
+  public async onSelectTile(event) {
+    this.showDetail(event);
   }
 
-  public filterByStore(){
+  public filterByStore() {
     this.sections = this.sectionList.filter(section => section.storeId === this.selectedStore);
   }
 } 

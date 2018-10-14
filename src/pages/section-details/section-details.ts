@@ -15,6 +15,8 @@ export class SectionDetails {
   public action = 'Add';
   private allSectionNames: string[] = [];
   private stores = [];
+  private selectedStore;
+
   constructor(public navCtrl: NavController,
     private syncContext: SyncContext,
     private tableArrangementService: TableArrangementService,
@@ -29,6 +31,8 @@ export class SectionDetails {
     this.stores = this.navParams.get('storeList');
     this.allSectionNames = this.navParams.get('allSectionNames') || [];
     let editSection = this.navParams.get('section');
+    this.selectedStore = this.navParams.get('selectedStore');
+
     if (editSection) {
       this.sectionItem = editSection;
       this.allSectionNames.splice(this.allSectionNames.indexOf(this.sectionItem.name), 1);
@@ -37,9 +41,8 @@ export class SectionDetails {
     } else {
       this.sectionItem.id = (new Date()).toISOString();
       this.sectionItem.createdAt = (new Date()).toISOString();
-      this.sectionItem.storeId = this.syncContext.currentStore && this.syncContext.currentStore._id;
+      this.sectionItem.storeId = this.selectedStore;
     }
-
   }
 
   public async onSubmit() {
@@ -80,6 +83,5 @@ export class SectionDetails {
       throw new Error(err);
     }
   }
-
 
 }
