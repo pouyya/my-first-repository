@@ -4,6 +4,7 @@ import { Utilities } from "../../utility";
 import { SyncContext } from "../../services/SyncContext";
 import { StoreService } from "../../services/storeService";
 import { TableArrangementService } from "../../services/tableArrangementService";
+import { Events } from 'ionic-angular';
 
 @Component({
   selector: 'section-details',
@@ -24,6 +25,7 @@ export class SectionDetails {
     private navParams: NavParams,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
+    public events: Events,
     private utility: Utilities) {
   }
 
@@ -58,6 +60,7 @@ export class SectionDetails {
       }
       await this.tableArrangementService[this.isNew ? 'addSection' : 'updateSection'](this.sectionItem);
       toast.present();
+      this.events.publish('sectionItem.storeId', this.sectionItem.storeId);
       this.navCtrl.pop();
     } catch (err) {
       throw new Error(err);

@@ -9,6 +9,7 @@ import { SyncContext } from "../../services/SyncContext";
 import { StoreService } from "../../services/storeService";
 import { TableArrangementService } from "../../services/tableArrangementService";
 import { ISection } from "../../model/tableArrangement";
+import { Events } from 'ionic-angular';
 
 @SecurityModule(SecurityAccessRightRepo.TableManagement)
 @PageModule(() => TableManagementModule)
@@ -28,6 +29,7 @@ export class Sections {
     private storeService: StoreService,
     private loading: LoadingController,
     private navParams: NavParams,
+    public events: Events,
     private syncContext: SyncContext) {
   }
 
@@ -38,8 +40,7 @@ export class Sections {
     try {
       this.storeList = await this.storeService.getAll();
       this.sectionList = await this.tableArrangementService.getAllSections();
-      let selectedStore = this.navParams.get('selectedStore');
-      if (!selectedStore)
+      if (!this.selectedStore)
         this.selectedStore = this.syncContext.currentStore._id;
       this.filterByStore();
       loader.dismiss();
@@ -52,6 +53,10 @@ export class Sections {
 
   showDetail(section) {
     const allSectionNames = this.sections.map(item => item.name);
+    this.events.subscribe('sectionItem.storeId', (selectedStore) => {
+      this.selectedStore = selectedStore;
+    });
+
     this.navCtrl.push(SectionDetails, { section, allSectionNames, storeList: this.storeList, selectedStore: this.selectedStore });
   }
 
