@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { NavController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { Utilities } from "../../utility";
 import { TableArrangementService } from "../../services/tableArrangementService";
-import {TableStatus} from "../../model/tableArrangement";
+import { TableStatus } from "../../model/tableArrangement";
+import { Events } from 'ionic-angular';
 
 @Component({
   selector: 'table-details',
@@ -16,11 +17,14 @@ export class TableDetails {
   public action = 'Add';
   private sections = [];
   private selectedSection;
+  private selectedStore;
+
   constructor(public navCtrl: NavController,
     private tableArrangementService: TableArrangementService,
     private navParams: NavParams,
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
+    public events: Events,
     private utility: Utilities) {
   }
 
@@ -31,11 +35,13 @@ export class TableDetails {
     let editTable = this.navParams.get('table');
     if (editTable) {
       this.tableItem = editTable;
-      this.tableList = this.tableList.filter( item => item.id != this.tableItem.id);
+      this.tableList = this.tableList.filter(item => item.id != this.tableItem.id);
       this.isNew = false;
       this.action = 'Edit';
-    }else {
-      this.selectedSection = this.sections[0].id;
+    } else {
+      if (!this.selectedSection) {
+        this.selectedSection = this.sections[0].id;
+      }
       this.tableItem.id = (new Date()).toISOString();
       this.tableItem.createdAt = (new Date()).toISOString();
       this.tableItem.status = TableStatus.Closed;
@@ -45,21 +51,22 @@ export class TableDetails {
   public async onSubmit() {
     try {
       let toast = this.toastCtrl.create({
-          message: `Section '${this.tableItem.name}' has been created successfully!`,
-          duration: 3000
+        message: `Section '${this.tableItem.name}' has been created successfully!`,
+        duration: 3000
       });
-      const section = _.find(this.sections, {id: this.selectedSection});
+      const section = _.find(this.sections, { id: this.selectedSection });
       const tableList = await this.tableArrangementService.getStoreTables(section.storeId);
-      const tableNames = _.filter(tableList, {id: this.tableItem.id}).map(item => item.name);
+      const tableNames = _.filter(tableList, { id: this.tableItem.id }).map(item => item.name);
 
-      if((tableNames as any).includes(this.tableItem.name)){
-          toast.setMessage(`Table already present with the name '${this.tableItem.name}'. Please use a different name.`);
-          toast.present();
-          return;
+      if ((tableNames as any).includes(this.tableItem.name)) {
+        toast.setMessage(`Table already present with the name '${this.tableItem.name}'. Please use a different name.`);
+        toast.present();
+        return;
       }
 
-      await this.tableArrangementService[this.isNew ? 'addTable':'updateTable'](this.tableItem, this.selectedSection);
+      await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection);
       toast.present();
+      this.events.publish('selectedSection', this.selectedSection);
       this.navCtrl.pop();
     } catch (err) {
       throw new Error(err);
@@ -69,8 +76,8 @@ export class TableDetails {
   public async delete() {
     try {
       const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this table!");
-      if(!deleteItem){
-          return;
+      if (!deleteItem) {
+        return;
       }
       await this.tableArrangementService.deleteTable(this.tableItem.id, this.selectedSection);
       let toast = this.toastCtrl.create({

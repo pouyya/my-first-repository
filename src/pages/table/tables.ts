@@ -3,11 +3,12 @@ import { NavController, LoadingController } from 'ionic-angular';
 import { PageModule } from '../../metadata/pageModule';
 import { SecurityModule } from '../../infra/security/securityModule';
 import { SecurityAccessRightRepo } from '../../model/securityAccessRightRepo';
-import {TableManagementModule} from "../../modules/TableManagementModule";
-import {StoreService} from "../../services/storeService";
-import {TableDetails} from "../table-details/table-details";
-import {ITable} from "../../model/tableArrangement";
-import {TableArrangementService} from "../../services/tableArrangementService";
+import { TableManagementModule } from "../../modules/TableManagementModule";
+import { StoreService } from "../../services/storeService";
+import { TableDetails } from "../table-details/table-details";
+import { ITable } from "../../model/tableArrangement";
+import { TableArrangementService } from "../../services/tableArrangementService";
+import { Events } from 'ionic-angular';
 
 @SecurityModule(SecurityAccessRightRepo.TableManagement)
 @PageModule(() => TableManagementModule)
@@ -24,6 +25,7 @@ export class Tables {
   constructor(public navCtrl: NavController,
     private tableArrangementService: TableArrangementService,
     private storeService: StoreService,
+    public events: Events,
     private loading: LoadingController) {
   }
 
@@ -32,8 +34,10 @@ export class Tables {
     await loader.present();
     try {
       this.sectionList = await this.tableArrangementService.getAllSections() || [];
-      if(this.sectionList.length){
-        this.selectedSection = this.sectionList[0].id;
+      if (!this.selectedSection) {
+        if (this.sectionList.length) {
+          this.selectedSection = this.sectionList[0].id;
+        }
       }
       this.filterBySection();
       loader.dismiss();
@@ -45,21 +49,27 @@ export class Tables {
   }
 
   showDetail(table) {
-    this.navCtrl.push(TableDetails, { table, sectionList: this.sectionList,
-        tableList: this.tables, selectedSection: this.selectedSection});
+    this.events.subscribe('selectedSection', (selectedSection) => {
+      this.selectedSection = selectedSection;
+    });
+
+    this.navCtrl.push(TableDetails, {
+      table, sectionList: this.sectionList,
+      tableList: this.tables, selectedSection: this.selectedSection
+    });
   }
 
 
-  public async onSelectTile(event){
-      this.showDetail(event);
+  public async onSelectTile(event) {
+    this.showDetail(event);
   }
 
-  public filterBySection(){
-    if(!this.selectedSection){
+  public filterBySection() {
+    if (!this.selectedSection) {
       this.tables = [];
       return;
     }
     const sections: any = this.sectionList.filter(section => section.id === this.selectedSection);
-    sections.length && ( this.tables = sections[0].tables || []);
+    sections.length && (this.tables = sections[0].tables || []);
   }
 } 
