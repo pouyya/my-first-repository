@@ -16,8 +16,13 @@ export class TableDetails {
   public isNew = true;
   public action = 'Add';
   private sections = [];
+
   private selectedSection;
   private selectedStore;
+ 
+  private fromSection: string;
+  private moved: boolean = false;
+
 
   constructor(public navCtrl: NavController,
     private tableArrangementService: TableArrangementService,
@@ -38,8 +43,11 @@ export class TableDetails {
       this.tableList = this.tableList.filter(item => item.id != this.tableItem.id);
       this.isNew = false;
       this.action = 'Edit';
+      this.fromSection = this.selectedSection;
+
+      
     } else {
-      if (!this.selectedSection) {
+     if (!this.selectedSection) {
         this.selectedSection = this.sections[0].id;
       }
       this.tableItem.id = (new Date()).toISOString();
@@ -49,9 +57,13 @@ export class TableDetails {
   }
 
   public async onSubmit() {
+    const section = _.find(this.sections, { id: this.selectedSection });
+    if (!this.isNew && section != this.fromSection)
+      this.moved = true;
     try {
       let toast = this.toastCtrl.create({
-        message: `Section '${this.tableItem.name}' has been created successfully!`,
+
+     message: `Section '${this.tableItem.name}' has been ` + (!this.moved ? (this.isNew ? `created` : `updated`) : `moved`) + ` successfully!`,
         duration: 3000
       });
       const section = _.find(this.sections, { id: this.selectedSection });
@@ -64,8 +76,9 @@ export class TableDetails {
         return;
       }
 
-      await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection);
-      toast.present();
+        await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection, this.fromSection);
+        
+
       this.events.publish('selectedSection', this.selectedSection);
       this.navCtrl.pop();
     } catch (err) {
