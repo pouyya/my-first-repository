@@ -438,7 +438,7 @@ export class BasketComponent {
         if (this.sale.tableId) {
           const table = this.tables[this.sale.tableId];
           table.status = TableStatus.Active;
-          this.tableArrangementService.updateTable(table, null);
+          this.tableArrangementService.updateTable(table, null,null);
         }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
@@ -485,7 +485,7 @@ export class BasketComponent {
                 const table = this.tables[this.sale.tableId];
                 table.status = TableStatus.Closed;
                 table.numberOfGuests = 0;
-                this.tableArrangementService.updateTable(table, null);
+                this.tableArrangementService.updateTable(table, null,null);
               }
               this.unattachCustomer();
               this.isSaleParked && this.saleParked.emit(false);

@@ -65,7 +65,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         return tableArrangement.sections.filter(section => section.storeId === this.syncContext.currentStore._id);
     }
 
-    public async addTable(table: ITable, sectionId: string, toSectionId: string) {
+    public async addTable(table: ITable, sectionId: string) {
         const tableArrangement = await this.getTableArrangement();
         let section;
         if (!sectionId) {
