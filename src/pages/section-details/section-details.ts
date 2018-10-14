@@ -75,7 +75,7 @@ export class SectionDetails {
       if (!deleteItem) {
         return;
       }
-      await this.tableArrangementService.deleteSection(this.sectionItem._id);
+      await this.tableArrangementService.deleteSection(this.sectionItem.id);
       let toast = this.toastCtrl.create({
         message: `Section '${this.sectionItem.name}' has been deleted successfully!`,
         duration: 3000
