@@ -123,7 +123,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
 
     public async moveTable(table: ITable, sourceSectionId: string, destinationSectionId: string) {
         await this.deleteTable(table.id, sourceSectionId);
-        await this.addTable(table, destinationSectionId, destinationSectionId);
+        await this.addTable(table, destinationSectionId);
     }
 
     public async addSection(section: ISection) {

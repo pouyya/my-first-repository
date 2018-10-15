@@ -14,7 +14,10 @@ export class CreateCustomerModal {
   public customerForm: FormGroup;
   public customer: Customer;
   public isNew: boolean = true;
-  public text: string = 'Create';
+  public text: string = 'Search';
+  public searchInput: string = "";
+  public searchedCustomers: any[] = [];
+  public searchBarEnabled: boolean = true;
 
   get firstName() { return this.customerForm.get('firstName'); }
   get lastName() { return this.customerForm.get('lastName'); }
@@ -33,27 +36,50 @@ export class CreateCustomerModal {
   ) {
     this.customer = new Customer();
 
-    let searchInput = this.navParams.get("searchInput") as string;
     let customer: Customer = <Customer>this.navParams.get("customer");
-    if (searchInput) {
-      var fullName = searchInput.trim().replace("  ", " ").split(" ");
-
-      if (fullName.length > 0) {
-        this.customer.firstName = fullName[0].trim();
-      }
-      if (fullName.length > 1) {
-        this.customer.lastName = fullName[1].trim();
-      }
-    }
-
-    if(customer) {
+    if(!customer) {
+      this.searchBarEnabled = true;
+    }else{
       this.customer = customer;
-      this.isNew = false;
-      this.text = 'Update';
+      this.searchBarEnabled = false;
+      this.text = 'Create';
     }
 
     this.createForm();
   }
+
+
+  public addCustomer(){
+    this.searchBarEnabled = false;
+    this.text = 'Create';
+  }
+
+  public async searchCustomers($event: any) {
+      if (this.searchInput && this.searchInput.trim() != '' && this.searchInput.length > 1) {
+          try {
+              let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
+              this.searchedCustomers = customers;
+              return;
+          } catch (err) {
+              return Promise.reject(err);
+          }
+      } else {
+          this.searchedCustomers = [];
+          return await Promise.resolve([]);
+      }
+  }
+
+  public cancelSearch($event) {
+      this.searchInput = "";
+  }
+
+
+  public async assignCustomer(customer: Customer) {
+      this.customer = customer;
+      this.searchBarEnabled = false;
+      this.viewCtrl.dismiss(this.customer);
+  }
+
 
   public async create() {
     Object.keys(this.customerForm.value).forEach(prop => {
