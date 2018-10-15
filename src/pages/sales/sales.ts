@@ -274,7 +274,9 @@ export class Sales implements OnDestroy {
         await this._basketComponent.attachTable(res.table.id);
 
         if (res.table.status === TableStatus.Active) {
-          await this.openTableParkedSale(res.table.id);
+          if (!this.basketComponent.isItemsInBasket()){
+            await this.openTableParkedSale(res.table.id);
+          }
         }
       }
     }
