@@ -17,6 +17,7 @@ export class SelectTablesModal {
     public selectedSection;
     public emptyListSectionMessage: string;
     public emptyListTableMessage: string;
+    public isItemsInBasket: boolean;
 
     constructor(
         private tableArrangementService: TableArrangementService,
@@ -25,6 +26,7 @@ export class SelectTablesModal {
         private modalCtrl: ModalController,
         private syncContext: SyncContext
     ) {
+        this.isItemsInBasket = this.navParams.get("isItemsInBasket");
     }
 
     async ionViewDidLoad() {
@@ -69,7 +71,15 @@ export class SelectTablesModal {
             modal.onDidDismiss((res) => {
                 if (res && res.table) {
                     table = res.table;
-                    table.color = "rgb(157, 240, 255)";
+                    if  (this.isItemsInBasket){
+                        table.color = "rgb(28, 255, 133)";
+                        table.status=TableStatus.Active;
+                        this.viewCtrl.dismiss({ table, status: table.status });
+                    }
+                    else{
+                        table.color = "rgb(157, 240, 255)";
+                    }
+                 
                 }
             });
             modal.present();

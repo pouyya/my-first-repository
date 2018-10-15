@@ -154,6 +154,7 @@ export class Sales implements OnDestroy {
     loader.dismiss();
   }
 
+ 
   public openSalesHistory() {
     this.navCtrl.push(SalesHistoryPage, { filterType: 'parked' });
   }
@@ -265,7 +266,8 @@ export class Sales implements OnDestroy {
   }
 
   public openTablesPopup() {
-    let modal = this.modalCtrl.create(SelectTablesModal, {});
+    let itemsAvalaible=this._basketComponent.isItemsInBasket();
+    let modal = this.modalCtrl.create(SelectTablesModal, {isItemsInBasket:itemsAvalaible});
 
     modal.onDidDismiss(async (res) => {
       if (res && res.table) {
