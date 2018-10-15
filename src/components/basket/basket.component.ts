@@ -198,6 +198,9 @@ export class BasketComponent {
     }
   }
 
+  public isItemsInBasket() {
+    return this.sale.items.length>0;
+  }
 
   private updateQuantity(basketItem: BasketItem, items?: [BasketItem]) {
     const saleItems = items || this.sale.items;
