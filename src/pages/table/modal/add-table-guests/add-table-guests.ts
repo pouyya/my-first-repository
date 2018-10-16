@@ -43,7 +43,7 @@ export class AddTableGuestsModal {
     }
 
     this.table.status = TableStatus.Open;
-    await this.tableArrangementService.updateTable(this.table, this.selectedSection);
+    await this.tableArrangementService.updateTable(this.table, this.selectedSection,null);
 
     this.viewCtrl.dismiss({ table: this.table});
   }
