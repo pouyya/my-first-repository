@@ -81,7 +81,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         }
     }
 
-    public async updateTable(tableData: ITable, sectionId: string, toSectionId: string){
+    public async updateTable(tableData: ITable, sectionId: string, toSectionId: string) {
         const tableArrangement = await this.getTableArrangement();
         let section;
         if (sectionId != toSectionId)
@@ -105,7 +105,8 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
 
 
     }
-
+}
+    }
     public async deleteTable(tableId: string, sectionId: string){
         const tableArrangement = await this.getTableArrangement();
         let section;
