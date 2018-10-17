@@ -40,7 +40,7 @@ export class TableDetails {
     let editTable = this.navParams.get('table');
     if (editTable) {
       this.tableItem = editTable;
-      this.tableList = this.tableList.filter(item => item.id != this.tableItem.id);
+      this.tableList = this.tableList.filter( item => item.id != this.tableItem.id);
       this.isNew = false;
       this.action = 'Edit';
       this.fromSection = this.selectedSection;
@@ -57,9 +57,6 @@ export class TableDetails {
   }
 
   public async onSubmit() {
-    const section = _.find(this.sections, { id: this.selectedSection });
-    if (!this.isNew && section != this.fromSection)
-      this.moved = true;
     try {
       let toast = this.toastCtrl.create({
 
@@ -68,7 +65,7 @@ export class TableDetails {
       });
       const section = _.find(this.sections, { id: this.selectedSection });
       const tableList = await this.tableArrangementService.getStoreTables(section.storeId);
-      const tableNames = _.filter(tableList, { id: this.tableItem.id }).map(item => item.name);
+      const tableNames = _.filter(tableList, {id: this.tableItem.id}).map(item => item.name);
 
       if ((tableNames as any).includes(this.tableItem.name)) {
         toast.setMessage(`Table already present with the name '${this.tableItem.name}'. Please use a different name.`);
@@ -89,8 +86,8 @@ export class TableDetails {
   public async delete() {
     try {
       const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this table!");
-      if (!deleteItem) {
-        return;
+      if(!deleteItem){
+          return;
       }
       await this.tableArrangementService.deleteTable(this.tableItem.id, this.selectedSection);
       let toast = this.toastCtrl.create({
