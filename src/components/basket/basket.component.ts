@@ -198,6 +198,9 @@ export class BasketComponent {
     }
   }
 
+  public isItemsInBasket() {
+    return this.sale.items.length>0;
+  }
 
   private updateQuantity(basketItem: BasketItem, items?: [BasketItem]) {
     const saleItems = items || this.sale.items;
@@ -648,7 +651,7 @@ export class BasketComponent {
       if (this.table) {
         this.table.status = TableStatus.Closed;
         this.table.numberOfGuests = 0;
-        await this.tableArrangementService.updateTable(this.table, null);
+        await this.tableArrangementService.updateTable(this.table, null,null);
       }
     }
     this.table = null;

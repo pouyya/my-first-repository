@@ -24,7 +24,7 @@ import { StoreService } from "../../services/storeService";
 import { POS } from "../../model/store";
 import { Utilities } from "../../utility";
 import { SalesHistoryPage } from "../sales-history/sales-history";
-import {AttachCustomerModal} from "./modals/attach-customer/attach-customer";
+import { AttachCustomerModal } from "./modals/attach-customer/attach-customer";
 import { AddonService } from "../../services/addonService";
 import { AddonType } from "../../model/addon";
 import { SelectTablesModal } from "../table/modal/select-table/select-tables";
@@ -154,6 +154,7 @@ export class Sales implements OnDestroy {
     loader.dismiss();
   }
 
+ 
   public openSalesHistory() {
     this.navCtrl.push(SalesHistoryPage, { filterType: 'parked' });
   }
@@ -265,17 +266,21 @@ export class Sales implements OnDestroy {
   }
 
   public openTablesPopup() {
-    let modal = this.modalCtrl.create(SelectTablesModal, {});
-    
+    let itemsAvalaible=this._basketComponent.isItemsInBasket();
+    let modal = this.modalCtrl.create(SelectTablesModal, {isItemsInBasket:itemsAvalaible});
+
     modal.onDidDismiss(async (res) => {
       if (res && res.table) {
+        await this._basketComponent.attachTable(res.table.id);
+
         if (res.table.status === TableStatus.Active) {
-          this.openTableParkedSale(res.table.id);
-        } else {
-          this._basketComponent.attachTable(res.table.id);
+          if (!this.basketComponent.isItemsInBasket()){
+            await this.openTableParkedSale(res.table.id);
+          }
         }
       }
-    });
+    }
+    );
     modal.present();
   }
 
