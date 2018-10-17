@@ -73,7 +73,7 @@ export class TableDetails {
         return;
       }
 
-        await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection, this.selectedSection);
+        await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection);
         
 
       this.events.publish('selectedSection', this.selectedSection);
