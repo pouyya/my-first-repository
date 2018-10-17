@@ -19,7 +19,7 @@ export class StaffAttendanceReportService {
         if (employeeIDs.length > 0) {
             empIDs = employeeIDs.join(",");
         }
-        let token = await this.userService.getUserToken();
+        let token = await this.userService.getAccessToken();
         return this.http
             .get(
                 `${ConfigService.staffAttendanceReport()}/?type=json&employeeIds=${empIDs}&fromDate=${fromDate}&toDate=${toDate}&storeId=${storeId}&token=${token}`

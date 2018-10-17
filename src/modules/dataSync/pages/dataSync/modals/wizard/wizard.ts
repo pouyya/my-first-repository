@@ -1,8 +1,7 @@
-import {ViewController, NavController, AlertController, Events, NavParams, LoadingController} from 'ionic-angular';
+import { ViewController, NavController, AlertController, Events, NavParams, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import * as moment from "moment-timezone";
-import {StoreService} from "../../../../../../services/storeService";
-import {Store} from "../../../../../../model/store";
+import { StoreService } from "../../../../../../services/storeService";
+import { Store } from "../../../../../../model/store";
 
 @Component({
     selector: "wizard",
@@ -35,8 +34,8 @@ export class Wizard {
     currentStep: any;
 
     constructor(public navCtrl: NavController, public viewCtrl: ViewController,
-                public alertCtrl: AlertController, public events: Events, private storeService: StoreService,
-                private navParams: NavParams, private loading: LoadingController) {
+        public alertCtrl: AlertController, public events: Events, private storeService: StoreService,
+        private navParams: NavParams, private loading: LoadingController) {
         this.step = 1;
         this.currentStep = this.step;
         this.stepCondition = true;
@@ -51,13 +50,16 @@ export class Wizard {
             content: 'Loading...'
         });
 
+        let store;
         let currentStore = this.navParams.get('currentStore');
         if (currentStore) {
-            this.store = await this.storeService.get(currentStore);
-        }else{
+            store = await this.storeService.get(currentStore);
+        } else {
             let allStores = await this.storeService.getAll();
-            this.store = allStores[0];
+            store = allStores[0];
         }
+
+        this.store = store || new Store();
 
         await loader.dismiss();
     }

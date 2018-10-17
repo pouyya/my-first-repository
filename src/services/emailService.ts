@@ -20,7 +20,7 @@ export class EmailService {
       attachments: []
     };
 
-    let token = await this.userService.getUserToken();
+    let token = await this.userService.getAccessToken();
 
     var headers = new Headers({ 'Content-Type': 'application/json' });
     headers.set('Authorization', 'Bearer ' + token);

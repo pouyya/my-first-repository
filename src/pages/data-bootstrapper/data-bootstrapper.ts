@@ -7,14 +7,14 @@ import { PluginService } from './../../services/pluginService';
 import { Sales } from './../sales/sales';
 import { Store, POS } from './../../model/store';
 import { UserService } from './../../modules/dataSync/services/userService';
-import {NavController, ModalController, LoadingController, ToastController, NavParams} from 'ionic-angular';
+import { NavController, ModalController, LoadingController, ToastController, NavParams } from 'ionic-angular';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
 import { BoostraperModule } from '../../modules/bootstraperModule';
 import { PageModule } from '../../metadata/pageModule';
-import {PingService} from "../../services/pingService";
+import { PingService } from "../../services/pingService";
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -46,7 +46,7 @@ export class DataBootstrapper {
     private toastCtrl: ToastController,
     private loading: LoadingController,
     private cdr: ChangeDetectorRef,
-    
+
     private syncContext: SyncContext
   ) {
     this.cdr.detach();
@@ -60,7 +60,7 @@ export class DataBootstrapper {
   /** @AuthGuard */
   async ionViewCanEnter() {
     const isAfterSetupLogin = this.navParams.get('afterSetupLogin');
-    this._user = await this.userService.getDeviceUser();
+    this._user = await this.userService.getUser(false);
     if (this._user.currentStore) {
       this.store = await this.storeService.get(this._user.currentStore);
       this.securityMessage = `To open the app for store ${this.store.name}, please provide your PIN number`
@@ -106,7 +106,7 @@ export class DataBootstrapper {
       if (data) {
         let loader = this.loading.create();
         await loader.present();
-        this._user = await this.userService.getDeviceUser();
+        this._user = await this.userService.getUser(false);
         let store = await this.storeService.get(this._user.currentStore);
         this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`;
         loader.dismiss();

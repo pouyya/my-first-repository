@@ -7,9 +7,10 @@ import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
 import { BoostraperModule } from '../../../bootstraperModule';
 import { PageModule } from '../../../../metadata/pageModule';
-import { UserService } from '../../services/userService';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { ENV } from '@app/env';
+import { UserService } from '../../../../modules/dataSync/services/userService';
+
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -28,7 +29,8 @@ export class LoginPage {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private iab: InAppBrowser,
-    private userService: UserService) { }
+    private userService: UserService) {
+  }
 
   public async login(): Promise<any> {
 
@@ -38,19 +40,21 @@ export class LoginPage {
 
     await loader.present();
 
-    this.authService.login(this.email, this.password).subscribe(
-      async data => {
-        await this.navigateToDataSync();
-        loader.dismiss();
-      },
-      error => {
-        let toast = this.toastCtrl.create({
-          message: 'Invalid Email/Password!',
-          duration: 3000
-        });
-        toast.present();
-        loader.dismiss();
+
+    try {
+      await this.authService.login(this.email, this.password);
+      await this.userService.initializeUserProfile();
+      await this.navigateToDataSync();
+    } catch (error) {
+      var message = (error && error.status === 0) ? 'There is no internet connection pleas check your internet connection!' : 'Invalid Email/Password!';
+      let toast = this.toastCtrl.create({
+        message,
+        duration: 3000
       });
+      toast.present();
+    } finally {
+      loader.dismiss();
+    }
   }
 
   public register(): void {
@@ -86,8 +90,7 @@ export class LoginPage {
         await loader.present();
 
         try {
-          await _this.userService.setAccessToken(token)
-          await _this.authService.getUserProfile(token);
+          await _this.userService.initializeUserProfile();
           await _this.navigateToDataSync();
           loader.dismiss();
         } catch (error) {

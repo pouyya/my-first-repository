@@ -12,7 +12,10 @@ export const ENV = {
     baseUrl: "https://site-stage.pos.app"
   },
   security: {
-    serverUrl: "https://site-stage.pos.app"
+    serverUrl: "https://site-stage.pos.app",
+    clientId: "app",
+    clientSecret: "secret",
+    clientScope: "openid"
   },
   ionicDeploy: {
     appId: "22d41469",

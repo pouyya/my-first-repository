@@ -60,7 +60,7 @@ export class SimplePOSApp implements OnInit {
 
   async ngOnInit() {
 
-    let user = await this.userService.getDeviceUser();
+    let user = await this.userService.getUser(false);
 
     if (this.platformService.isMobileDevice()) {
       user && user.settings && user.settings.screenAwake === false ? this.insomnia.allowSleepAgain() : this.insomnia.keepAwake();
@@ -117,12 +117,12 @@ export class SimplePOSApp implements OnInit {
   }
 
   async openPage(page) {
-    if (page.hasOwnProperty('isAddon') && page.isAddon){
+    if (page.hasOwnProperty('isAddon') && page.isAddon) {
       const isEnabled = await page.isEnabled();
-      if(!isEnabled){
+      if (!isEnabled) {
         let toast = this.toastController.create({
-            message: "This Addon is not enabled",
-            duration: 3000
+          message: "This Addon is not enabled",
+          duration: 3000
         });
 
         toast.present();

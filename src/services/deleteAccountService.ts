@@ -16,7 +16,7 @@ export class DeleteAccountService {
 
     public async deleteAccount() {
         return this.http
-        .get(`${ENV.service.baseUrl}/wp-content/plugins/simplepos-account-management/user-manager-api.php?action=eraseAllUserData&Authorization=${await this.userService.getUserToken()}`)
+        .get(`${ENV.service.baseUrl}/wp-content/plugins/simplepos-account-management/user-manager-api.php?action=eraseAllUserData&Authorization=${await this.userService.getAccessToken()}`)
         .map((response: Response) => response.json());
     }
 }

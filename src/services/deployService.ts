@@ -11,15 +11,13 @@ export class DeployService {
     constructor(
         private platformService: PlatformService,
         private userService: UserService
-    ) {
-
-    }
+    ) { }
 
     public eligibleForDeploy() {
         return this.platformService.isMobileDevice() && !ConfigService.isDevelopment() && ConfigService.turnOnDeployment();
     }
 
-    public async getNextPageAfterDeploy() {
-        return (await this.userService.isUserLoggedIn()) ? DataSync : LoginPage;
+    public getNextPageAfterDeploy() {
+        return this.userService.isUserLoggedIn() ? DataSync : LoginPage;
     }
 }

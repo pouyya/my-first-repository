@@ -82,10 +82,6 @@ export class ConfigService {
         return ENV.turnOnDeployment;
     }
 
-    static securityTokenEndPoint(): string {
-        return ConfigService.securityServerBaseUrl() + '/token';
-    }
-
     static registeEndPoint(): string {
         return ConfigService.apiServerBaseUrl() + '/common/register';
     }
@@ -115,7 +111,19 @@ export class ConfigService {
     }
 
     static securityServerBaseUrl(): string {
-        return ENV.security.serverUrl + '/wp-json/jwt-auth/v1';
+        return ENV.security.serverUrl;
+    }
+
+    static securityServerClientId(): string {
+        return ENV.security.clientId;
+    }
+
+    static securityServerClientSecret(): string {
+        return ENV.security.clientSecret;
+    }
+
+    static securityServerClientScope(): string {
+        return ENV.security.clientScope;
     }
 
     static apiServerBaseUrl(): string {
