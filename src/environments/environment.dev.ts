@@ -12,7 +12,7 @@ export const ENV = {
     baseUrl: "https://site-dev.pos.app"
   },
   security: {
-    serverUrl: "https://site-dev.pos.app",
+    serverUrl: "https://accounts-dev.pos.app",
     clientId: "app",
     clientSecret: "secret",
     clientScope: "openid"
