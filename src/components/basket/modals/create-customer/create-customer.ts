@@ -74,7 +74,9 @@ export class CreateCustomerModal {
   }
 
 
-  public async assignCustomer(customer: Customer) {
+  public async assignCustomer(customer: Customer, event: Event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
       this.customer = customer;
       this.searchBarEnabled = false;
       this.viewCtrl.dismiss(this.customer);

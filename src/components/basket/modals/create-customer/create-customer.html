@@ -4,9 +4,6 @@
        {{ text }} Customer
     </ion-title>
     <ion-buttons start>
-      <button ion-button (click)="addCustomer()">
-        <ion-icon name="add"></ion-icon>
-      </button>
       <button ion-button (click)="dismiss()">
         <ion-icon name="close"></ion-icon>
       </button>
@@ -18,8 +15,15 @@
   <ion-searchbar *ngIf="searchBarEnabled" autofocus debounce="500" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel"
                  (ionInput)="searchCustomers($event)" (ionCancel)="cancelSearch($event)" placeholder="Search Customer">
   </ion-searchbar>
+
+
+  <button *ngIf="searchBarEnabled" class="pull-right" ion-button (click)="addCustomer()">
+    Add Customer
+  </button>
+
+
   <ion-list class="search-list" *ngIf="searchBarEnabled && searchInput && searchedCustomers.length > 0">
-    <ion-item *ngFor="let item of searchedCustomers" (click)="assignCustomer(item)">
+    <ion-item *ngFor="let item of searchedCustomers" (click)="assignCustomer(item, $event)">
       {{ item.firstName }} {{ item.lastName }}
     </ion-item>
   </ion-list>
