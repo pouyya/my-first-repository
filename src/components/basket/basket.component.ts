@@ -488,7 +488,7 @@ export class BasketComponent {
                 const table = this.tables[this.sale.tableId];
                 table.status = TableStatus.Closed;
                 table.numberOfGuests = 0;
-                this.tableArrangementService.updateTable(table, null);
+                this.tableArrangementService.updateTable(table, null,null);
               }
               this.unattachCustomer();
               this.isSaleParked && this.saleParked.emit(false);
