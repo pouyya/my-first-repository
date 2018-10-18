@@ -1,0 +1,266 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/v2/theming/
+$font-path: "../assets/fonts";
+
+@import "ionic.globals";
+
+
+// Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass variables found in Ionic's source scss files.
+// To view all the possible Ionic variables, see:
+// http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
+
+
+
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+
+$colors-coffee-shop: (
+  primary:    #3DBFD9,
+  secondary:  #F8F8F8,
+  danger:     #f53d3d,
+  light:      #f4f4f4,
+  warning:    yellow,
+  dark:       #343B48,
+  white:    #ffffff,
+  black:    #000000,
+  selected: #495361,
+  lighte-selected: #ecf7fd,
+  background-light: #d2edf6
+);
+
+$colors-md-coffee-shop: (
+  primary:    #3DBFD9,
+  secondary:  #F8F8F8,
+  danger:     #f53d3d,
+  light:      #f4f4f4,
+  dark:       #343B48,
+  white:    #ffffff,
+  warning:    yellow,
+  black:    #000000,
+  selected: #495361,
+  lighte-selected: #ecf7fd,
+  background-light: #d2edf6
+);
+
+$font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+$font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+
+$background-color: #F8F8F8;
+$toolbar-background: #2E99DB;
+$toolbar-text-color: #CBCFD2;
+$list-background-color-coffee-shop: #FFFFFF;
+$list-background-color-border-coffee-shop: #a9a9a9;
+$list-md-border-color:#FFFFFF;
+$toolbar-md-text-color-coffee-shop: #CBCFD2;
+$button-background-color: #3A4953;
+$tile-background-color-coffee-shop: #FFFFFF;
+$tile-background-color-border-coffee-shop: #F1F1F1;
+$tile-hover-background-color-coffee-shop: #62676F;
+$tile-hover-color: #FFFFFF;
+$basket-background-color-coffee-shop: #FFFFFF;
+
+$split-pane-side-min-width : 100px;
+$split-pane-side-max-width : 180px;
+
+$menu-width: 180px;
+$menu-item-color-coffee-shop: #B8B8B8;
+$menu-item-selected-color-coffee-shop: color($colors-coffee-shop, white);
+
+$category: (active: #FFFFFF);
+
+$text-input-highlight-color-valid: #F8F8F8;
+
+$sales-category-tile-btn-color-coffee-shop: #585858;
+$sales-category-selected-background-color-coffee-shop: color($colors-coffee-shop, lighte-selected);
+  // App iOS Variables
+// --------------------------------------------------
+// iOS only Sass variables can go here
+
+
+
+
+// App Material Design Variables
+// --------------------------------------------------
+// Material Design only Sass variables can go here
+
+
+
+
+// App Windows Variables
+// --------------------------------------------------
+// Windows only Sass variables can go here
+
+
+
+
+// App Theme
+// --------------------------------------------------
+// Ionic apps can have different themes applied, which can
+// then be future customized. This import comes last
+// so that the above variables are used and Ionic's
+// default are overridden.
+
+@import "ionic.theme.default";
+
+// Ionicons
+// --------------------------------------------------
+// The premium icon font for Ionic. For more info, please see:
+// http://ionicframework.com/docs/v2/ionicons/
+
+@import "ionic.ionicons";
+
+
+// Fonts
+// --------------------------------------------------
+
+@import "lato";
+@import "roboto";
+@import "noto-sans";
+@import "flaticon";
+
+
+// Global Styles
+// ---------------------------------------------------
+// Styles that apply to the entire app
+.coffee-shop {
+  .insert-image {
+    height: 25%;
+    margin-left: 4%;
+    margin-right: 4%;
+    text-align: center;
+    font-weight: bold;
+    color: color($colors-coffee-shop, dark);
+    font-size: 15px;
+    border-radius: 3px;
+    .item-addImageLabel {
+      padding-top: 10px;
+    }
+  }
+
+  body ion-app {
+    overflow: none;
+  }
+
+  ion-page {
+    display: flex;
+  }
+  ion-scroll {
+    width: 100%;
+    height: 100%;
+  }
+  body.has-scrollbar scroll-content {
+    margin-right: -15px;
+  }
+  body.has-scrollbar ion-menu scroll-content {
+    margin-right: 0;
+  }
+  scroll-content {
+    overflow-y: scroll;
+  }
+
+  ion-alert {
+
+    .alert-wrapper {
+      border-radius: 0px;
+    }
+    .alert-ios .alert-wrapper {
+      overflow: hidden;
+      max-width: 270px;
+      border-radius: 0px;
+      background-color: #f8f8f8;
+      box-shadow: none;
+    }
+  }
+
+  ion-input {
+    background-color: color($colors-coffee-shop, white);
+    border-radius: 8px !important;
+    border-width: 2px;
+    border-color: #CFCFCF;
+    border-style: solid;
+    background-color: white;
+    margin: 5px;
+  }
+
+  ion-list {
+    background-color: transparent !important;
+  }
+
+  ion-item {
+    background-color: transparent !important;
+  }
+
+  // App iOS Styles
+  // --------------------------------------------------
+  // iOS only styles can go here
+
+  .ios {
+
+    // iOS Status Bar
+    //---------------------------
+    .statusbar-img-ios {
+      display: block !important;
+      position: absolute;
+      background-color: transparent;
+      padding: 5px 0;
+      top: 0px;
+      width: 100%;
+      height: auto;
+      z-index: 999;
+    }
+
+    .tabs-icon-text tabbar {
+      .tab-button[aria-selected=true],
+      .tab-button:hover:not(.disable-hover) {
+        color: #7e60ff;
+      }
+    }
+
+  }
+
+  // App Material Design Styles
+  // --------------------------------------------------
+  // Material Design only styles can go here
+
+  .md {
+
+    // Android Status Bar
+    //---------------------------
+    .statusbar-img-md {
+      display: block !important;
+      position: absolute;
+      background-color: transparent;
+      top: 0px;
+      width: 100%;
+      height: auto;
+      z-index: 999;
+    }
+
+    .tabs-icon-text ion-title div.toolbar-title {
+      color: #fff !important;
+    }
+
+    .tabs-icon-text tabbar {
+      background-color: #7e60ff;
+
+      a {
+        color: #fff !important;
+      }
+    }
+
+    .tabs-icon-text tab-highlight {
+      color: #fff;
+      background-color: #fff;
+    }
+
+  }
+}

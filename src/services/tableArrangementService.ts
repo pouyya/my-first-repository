@@ -81,24 +81,30 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         }
     }
 
-    public async updateTable(tableData: ITable, sectionId: string, sectionId2: string) {
+    public async updateTable(tableData: ITable, sectionId: string, toSectionId: string) {
         const tableArrangement = await this.getTableArrangement();
         let section;
-        if (!sectionId) {
-            section = this.getSectionFromTableId(tableData.id, tableArrangement);
-        } else {
-            const sections = tableArrangement.sections.filter(section => section.id === sectionId);
-            sections.length && (section = sections[0]);
-        }
+        if (sectionId != toSectionId)
+            this.moveTable(tableData, toSectionId, sectionId);
+        else {
 
-        if (section) {
-            let tableIndex = _.findIndex(section.tables, { id: tableData.id });
-            if (tableIndex != -1) {
-                section.tables[tableIndex] = { ...section.tables[tableIndex], ...tableData };
-                await this.update(tableArrangement);
+            if (!sectionId) {
+                section = this.getSectionFromTableId(tableData.id, tableArrangement);
+            } else {
+                const sections = tableArrangement.sections.filter(section => section.id === sectionId);
+                sections.length && (section = sections[0]);
+            }
+
+            if (section) {
+                let tableIndex = _.findIndex(section.tables, { id: tableData.id });
+                if (tableIndex != -1) {
+                    section.tables[tableIndex] = { ...section.tables[tableIndex], ...tableData };
+                    await this.update(tableArrangement);
+                }
+
+
             }
         }
-
     }
 
     public async deleteTable(tableId: string, sectionId: string) {
@@ -119,7 +125,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
 
     public async moveTable(table: ITable, sourceSectionId: string, destinationSectionId: string) {
         await this.deleteTable(table.id, sourceSectionId);
-        await this.addTable(table, destinationSectionId,null);
+        await this.addTable(table, destinationSectionId, null);
     }
 
     public async addSection(section: ISection) {
