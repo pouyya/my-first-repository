@@ -131,6 +131,10 @@ sales {
     .basket-component {
       background-color: $basket-background-color-barber;
     }
+
+    .pay-button {
+      background-color: color($colors-barber, primary);
+    }
   }
 }
 
@@ -156,6 +160,10 @@ sales {
 
     .basket-component {
       background-color: $basket-background-color-coffee-shop;
+    }
+
+    .pay-button {
+      background-color: color($colors-coffee-shop, primary);
     }
   }
 }
