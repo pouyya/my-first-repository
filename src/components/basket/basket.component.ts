@@ -607,7 +607,7 @@ export class BasketComponent {
       if (this.table) {
         this.table.status = TableStatus.Closed;
         this.table.numberOfGuests = 0;
-        await this.tableArrangementService.updateTable(this.table, null);
+        await this.tableArrangementService.updateTable(this.table, null,null);
       }
     }
     this.table = null;
