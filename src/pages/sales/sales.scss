@@ -1,6 +1,4 @@
 @import '../../theme/variables';
-@import '../../theme/variables.barber';
-@import '../../theme/variables.coffee-shop';
 
 sales {
 
@@ -105,58 +103,3 @@ sales {
     padding: 0 8px;
   }
 }
-
-
-// Themes //
-.barber {
-  sales {
-    .sales-category {
-      background-color: $tile-background-color-barber;
-      button {
-        color: $sales-category-tile-btn-color-barber;
-        background-color: $tile-background-color-barber;
-      }
-      .activeCategory {
-        button {
-          color: color($colors-barber, dark);
-          background-color: $sales-category-selected-background-color-barber;
-
-          .category-icon {
-            color: color($colors-barber, dark);
-          }
-        }
-      }
-    }
-
-    .basket-component {
-      background-color: $basket-background-color-barber;
-    }
-  }
-}
-
-.coffee-shop {
-  sales {
-    .sales-category {
-      background-color: $tile-background-color-coffee-shop;
-      button {
-        color: $sales-category-tile-btn-color-coffee-shop;
-        background-color: $tile-background-color-coffee-shop;
-      }
-      .activeCategory {
-        button {
-          color: color($colors-coffee-shop, dark);
-          background-color: $sales-category-selected-background-color-coffee-shop;
-
-          .category-icon {
-            color: color($colors-coffee-shop, dark);
-          }
-        }
-      }
-    }
-
-    .basket-component {
-      background-color: $basket-background-color-coffee-shop;
-    }
-  }
-}
-// Themes //
