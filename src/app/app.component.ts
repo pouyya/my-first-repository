@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
@@ -16,7 +17,9 @@ import { SecurityResultReason } from '../infra/security/model/securityResult';
 import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
 import { DeployService } from '../services/deployService';
-import { NetworkService } from '../services/networkService'
+import { NetworkService } from '../services/networkService';
+import { ADDONS } from "../metadata/addons";
+import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 
 @Component({
   selector: 'app',
@@ -30,6 +33,8 @@ export class SimplePOSApp implements OnInit {
   public moduleName: string;
   public currentPage: any;
   private alive: boolean = true;
+  private addonMenuVisibility: boolean = false;
+  private myBusinessType: string;
 
   constructor(
     public platform: Platform,
@@ -46,12 +51,33 @@ export class SimplePOSApp implements OnInit {
     private userService: UserService,
     private printService: PrintService,
     private securityService: SecurityService,
+    private accountSettingService: AccountSettingService,
     private syncContext: SyncContext, // used in view
     private menuController: MenuController
   ) {
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
+  }
+
+  async setVisibilityFlagByBusinessType() {
+    await this.getBusinessType();
+
+    let addonsBusiness = ADDONS.map((addon) => {
+      return addon.businessType;
+    });
+
+    if (addonsBusiness[0].length == 0)
+      return true;
+    if (addonsBusiness[0].indexOf(this.myBusinessType) != -1)
+      return true;
+
+    return false;
+  }
+
+  async getBusinessType() {
+    let accountSettings = await this.accountSettingService.getCurrentSetting();
+    this.myBusinessType = accountSettings.businessType;
   }
 
   ngOnDestroy() {
@@ -117,18 +143,21 @@ export class SimplePOSApp implements OnInit {
   }
 
   async openPage(page) {
-    if (page.hasOwnProperty('isAddon') && page.isAddon){
+    if (page.hasOwnProperty('isAddon') && page.isAddon) {
       const isEnabled = await page.isEnabled();
-      if(!isEnabled){
+      if (!isEnabled) {
         let toast = this.toastController.create({
-            message: "This Addon is not enabled",
-            duration: 3000
+          message: "This Addon is not enabled",
+          duration: 3000
         });
 
         toast.present();
         return;
       }
     }
+
+    this.addonMenuVisibility = await this.setVisibilityFlagByBusinessType();
+
     if (page.hasOwnProperty('modal') && page.modal) {
       let modal = this.modalCtrl.create(page.component);
       modal.onDidDismiss(data => {

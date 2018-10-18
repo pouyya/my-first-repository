@@ -6,6 +6,7 @@ export interface PageSettingsInterface {
 	component: any;
 	pushNavigation?: boolean;
 	disabled?: boolean;
+	canHidden?: boolean;
 }
 
 export interface ModalPageInterface extends PageSettingsInterface {

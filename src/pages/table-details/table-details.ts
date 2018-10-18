@@ -17,9 +17,9 @@ export class TableDetails {
   public action = 'Add';
   private sections = [];
 
-  private selectedSection;
+  private selectedSection: string;
   private selectedStore;
- 
+
   private fromSection: string;
   private moved: boolean = false;
 
@@ -40,14 +40,14 @@ export class TableDetails {
     let editTable = this.navParams.get('table');
     if (editTable) {
       this.tableItem = editTable;
-      this.tableList = this.tableList.filter( item => item.id != this.tableItem.id);
+      this.tableList = this.tableList.filter(item => item.id != this.tableItem.id);
       this.isNew = false;
       this.action = 'Edit';
       this.fromSection = this.selectedSection;
 
-      
+
     } else {
-     if (!this.selectedSection) {
+      if (!this.selectedSection) {
         this.selectedSection = this.sections[0].id;
       }
       this.tableItem.id = (new Date()).toISOString();
@@ -60,12 +60,12 @@ export class TableDetails {
     try {
       let toast = this.toastCtrl.create({
 
-     message: `Section '${this.tableItem.name}' has been ` + (!this.moved ? (this.isNew ? `created` : `updated`) : `moved`) + ` successfully!`,
+        message: `Section '${this.tableItem.name}' has been ` + (!this.moved ? (this.isNew ? `created` : `updated`) : `moved`) + ` successfully!`,
         duration: 3000
       });
       const section = _.find(this.sections, { id: this.selectedSection });
       const tableList = await this.tableArrangementService.getStoreTables(section.storeId);
-      const tableNames = _.filter(tableList, {id: this.tableItem.id}).map(item => item.name);
+      const tableNames = _.filter(tableList, { id: this.tableItem.id }).map(item => item.name);
 
       if ((tableNames as any).includes(this.tableItem.name)) {
         toast.setMessage(`Table already present with the name '${this.tableItem.name}'. Please use a different name.`);
@@ -73,8 +73,8 @@ export class TableDetails {
         return;
       }
 
-        await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection, this.selectedSection);
-        
+      await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection, this.selectedSection);
+
 
       this.events.publish('selectedSection', this.selectedSection);
       this.navCtrl.pop();
@@ -86,8 +86,8 @@ export class TableDetails {
   public async delete() {
     try {
       const deleteItem = await this.utility.confirmRemoveItem("Do you really want to delete this table!");
-      if(!deleteItem){
-          return;
+      if (!deleteItem) {
+        return;
       }
       await this.tableArrangementService.deleteTable(this.tableItem.id, this.selectedSection);
       let toast = this.toastCtrl.create({
