@@ -1,4 +1,6 @@
 @import "../../theme/variables";
+@import "../../theme/variables.barber";
+@import "../../theme/variables.coffeeshop";
 
 employee-details {
   
@@ -49,3 +51,39 @@ employee-details {
   }
 
 }
+
+// Themes //
+.barber {
+  employee-details {
+    .store-tile {
+      background: $tile-background-color-barber;
+      border: 1px solid $tile-hover-background-color-barber;
+    }
+    .store-tile-selected {
+      background: color($colors-barber, lighte-selected);
+      border: 1px solid $tile-hover-background-color-barber;
+      color: $tile-background-color-barber;
+    }
+    .tile {
+      border: 1px solid $tile-background-color-border-barber;
+    }
+  }
+}
+
+.coffeeshop {
+   employee-details {
+     .store-tile {
+       background: $tile-background-color-coffeeshop;
+       border: 1px solid $tile-hover-background-color-coffeeshop;
+     }
+     .store-tile-selected {
+       background: color($colors-coffeeshop, lighte-selected);
+       border: 1px solid $tile-hover-background-color-coffeeshop;
+       color: $tile-background-color-coffeeshop;
+     }
+     .tile {
+       border: 1px solid $tile-background-color-border-coffeeshop;
+     }
+   }
+}
+// Themes //

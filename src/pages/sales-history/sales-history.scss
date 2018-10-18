@@ -1,4 +1,6 @@
 @import '../../theme/variables';
+@import '../../theme/variables.barber';
+@import '../../theme/variables.coffeeshop';
 
 sales-history {
 
@@ -19,3 +21,21 @@ sales-history {
   }
 
 }
+
+// Themes //
+.barber {
+  sales-history {
+    ion-list.customer-search-list {
+      background-color: $tile-background-color-barber;
+    }
+  }
+}
+
+.coffeeshop {
+  sales-history {
+    ion-list.customer-search-list {
+      background-color: $tile-background-color-coffeeshop;
+    }
+  }
+}
+// Themes //

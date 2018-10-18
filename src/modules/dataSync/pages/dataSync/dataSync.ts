@@ -1,7 +1,7 @@
 import { DBEvent } from '@simplepos/core/dist/db/dbEvent';
 import { DBService } from '@simplepos/core/dist/services/dBService';
 import { Component } from '@angular/core';
-import { ModalController, NavController } from 'ionic-angular';
+import { Events, ModalController, NavController } from 'ionic-angular';
 import { UserService } from '../../services/userService';
 import { ConfigService } from '../../services/configService';
 import { DataBootstrapper } from '../../../../pages/data-bootstrapper/data-bootstrapper';
@@ -26,6 +26,7 @@ export class DataSync {
     private platformService: PlatformService,
     private accountSettingsService: AccountSettingService,
     private modalCtrl: ModalController,
+    private events: Events,
     private translateService: TranslateService, ) {
   }
 
@@ -72,11 +73,11 @@ export class DataSync {
             this.updateText = "Loading your company data 100%";
             this.isNavigated = true;
             this.accountSettings = await this.accountSettingsService.getCurrentSetting();
-
             this.translateService.setDefaultLang('au');
             this.translateService.use('au');
 
             if (this.accountSettings && this.accountSettings.isInitialized) {
+              this.events.publish('theme:initialized', this.accountSettings.businessType || '');
               this.navCtrl.setRoot(DataBootstrapper)
             } else {
               this.showWizardModal()
@@ -98,6 +99,7 @@ export class DataSync {
         return;
       }
 
+      this.events.publish('theme:initialized', this.accountSettings.businessType || '');
       this.navCtrl.setRoot(DataBootstrapper, { afterSetupLogin: true })
     });
     modal.present();

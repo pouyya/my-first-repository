@@ -1,4 +1,6 @@
 @import "../../theme/variables";
+@import "../../theme/variables.barber";
+@import "../../theme/variables.coffeeshop";
 
 .scroll {
   overflow-x: scroll;
@@ -39,3 +41,41 @@ ion-card.disabled-element-tile {
     color: $toolbar-md-text-color;
   }
 }
+
+// Themes //
+.barber {
+  ion-card.element-tile {
+    background: $tile-background-color-barber;
+    border: 1px solid $tile-background-color-border-barber;
+  }
+  ion-card.selected-element-tile {
+    background: $tile-background-color-barber;
+    border: 3px solid $tile-hover-background-color-barber;
+  }
+  ion-card.disabled-element-tile {
+    background: $list-background-color-barber;
+    border: 1px solid $tile-background-color-border-barber;
+    ion-item {
+      color: $toolbar-md-text-color-barber;
+    }
+  }
+}
+
+.coffeeshop {
+  ion-card.element-tile {
+    background: $tile-background-color-coffeeshop;
+    border: 1px solid $tile-background-color-border-coffeeshop;
+  }
+  ion-card.selected-element-tile {
+    background: $tile-background-color-coffeeshop;
+    border: 3px solid $tile-hover-background-color-coffeeshop;
+  }
+  ion-card.disabled-element-tile {
+    background: $list-background-color-coffeeshop;
+    border: 1px solid $tile-background-color-border-coffeeshop;
+    ion-item {
+      color: $toolbar-md-text-color-coffeeshop;
+    }
+  }
+}
+// Themes //

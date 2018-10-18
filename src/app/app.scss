@@ -1,5 +1,7 @@
 @import "../../node_modules/angular-calendar/scss/angular-calendar";
 @import "../theme/variables";
+@import "../theme/variables.barber";
+@import "../theme/variables.coffeeshop";
 
 .text-right {
   text-align: right
@@ -56,6 +58,7 @@
     color: $menu-item-selected-color;
   }
 }
+
 ion-title.ion-title-center {
   text-Align:center;
 }
@@ -86,4 +89,54 @@ ion-icon {
 
 .no-scroll > .scroll-content{
   overflow: hidden;
+}
+
+.barber {
+  .error-text {
+    color: color($colors-barber, danger);
+  }
+
+  .header-toolbar {
+    background-color: color($colors-barber, dark);
+  }
+
+  .menu-list{
+
+    background-color: color($colors-barber, dark);
+
+    .menu-item {
+      background-color: color($colors-barber, dark) !important;
+      color: $menu-item-color-barber;
+    }
+
+    .current {
+      background-color: color($colors, selected) !important;
+      color: $menu-item-selected-color-barber;
+    }
+  }
+}
+
+.coffeeshop {
+  .error-text {
+    color: color($colors-coffeeshop, danger);
+  }
+
+  .header-toolbar {
+    background-color: color($colors-coffeeshop, dark);
+  }
+
+  .menu-list{
+
+    background-color: color($colors-coffeeshop, dark);
+
+    .menu-item {
+      background-color: color($colors-coffeeshop, dark) !important;
+      color: $menu-item-color-coffeeshop;
+    }
+
+    .current {
+      background-color: color($colors-coffeeshop, selected) !important;
+      color: $menu-item-selected-color-coffeeshop;
+    }
+  }
 }
