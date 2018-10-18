@@ -1,27 +1,12 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
     <ion-col col-xl-6 col-lg-6 class="customer-container pull-left">
-      <ion-item item-content *ngIf="customer" (click)="editCustomer()" tappable>
+      <ion-item item-content *ngIf="customer" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
-          <ion-icon click-stop-propagation class="pull-right" name="close" tappable (click)="unassignCustomer()"></ion-icon>
+          <ion-icon click-stop-propagation name="close" tappable (click)="unassignCustomer()"></ion-icon>
         </ion-label>
       </ion-item>
-      <ion-searchbar *ngIf="!customer && searchBarEnabled" autofocus debounce="500" [(ngModel)]="searchInput" [showCancelButton]="showSearchCancel"
-        (ionInput)="searchCustomers($event)" (ionCancel)="cancelSearch($event)" placeholder="Search Customer">
-      </ion-searchbar>
-
-      <ion-list class="search-list" *ngIf="!customer && searchBarEnabled && searchInput && searchedCustomers.length > 0">
-        <ion-item *ngFor="let item of searchedCustomers" (click)="assignCustomer(item)">
-          {{ item.firstName }} {{ item.lastName }}
-        </ion-item>
-      </ion-list>
-
-      <ion-list class="search-list" *ngIf="!customer && searchBarEnabled && searchInput && searchedCustomers.length == 0">
-        <ion-item (click)="createCustomer()">
-          <ion-icon name="person-add"></ion-icon>&nbsp;&nbsp;Add a Customer
-        </ion-item>
-      </ion-list>
     </ion-col>
     <ion-col col-xl-2 col-lg-2 class="pull-left">
       <ion-item *ngIf="table" item-content tappable class="table-arrangemenet">
@@ -38,6 +23,9 @@
       </ion-item>
     </ion-col>
     <ion-col col-xl-4 col-lg-4 class="pull-right">
+      <button ion-button clear (click)="selectOrCreateCustomer()" [disabled]="sale && sale.customerKey">
+        <ion-icon name="person-add"></ion-icon>
+      </button>
       <button ion-button clear (click)="addNote()" [disabled]="!sale || (!sale.customerKey && sale.items.length == 0)">
         <ion-icon name="paper"></ion-icon><span class="change-large" *ngIf="sale && sale.notes">*</span>
       </button>

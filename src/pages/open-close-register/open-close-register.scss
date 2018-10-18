@@ -1,6 +1,4 @@
 @import '../../theme/variables';
-@import '../../theme/variables.barber';
-@import '../../theme/variables.coffeeshop';
 
 open-close-register {
   .sub-drawer {
@@ -8,23 +6,3 @@ open-close-register {
     border-left: 3px solid color($colors, secondary);
   }
 }
-
-// Themes //
-.barber {
-  open-close-register {
-    .sub-drawer {
-      background-color: $toolbar-md-text-color-barber;
-      border-left: 3px solid color($colors-barber, secondary);
-    }
-  }
-}
-
-.coffeeshop {
-  open-close-register {
-    .sub-drawer {
-      background-color: $toolbar-md-text-color-coffeeshop;
-      border-left: 3px solid color($colors-coffeeshop, secondary);
-    }
-  }
-}
-// Themes //
