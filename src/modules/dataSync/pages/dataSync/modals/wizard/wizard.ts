@@ -1,7 +1,13 @@
-import { ViewController, NavController, AlertController, Events, NavParams, LoadingController } from 'ionic-angular';
+import { ViewController, NavController, AlertController, Events, LoadingController } from 'ionic-angular';
 import { Component } from '@angular/core';
-import { StoreService } from "../../../../../../services/storeService";
-import { Store } from "../../../../../../model/store";
+import { BusinessService, DBType } from '../../../../../../services/businessService';
+import { Business } from '../../../../../../model/business';
+import { DBService } from '@simplepos/core/dist/services/dBService';
+import { UserService } from '../../../../../../modules/dataSync/services/userService';
+import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
+import { DB } from '@simplepos/core/dist/db/db';
+import moment from 'moment';
+import { ResourceService } from '../../../../../../services/resourceService';
 
 @Component({
     selector: "wizard",
@@ -21,21 +27,37 @@ import { Store } from "../../../../../../model/store";
 })
 export class Wizard {
 
+    public firstName: string = "";
+    public lastName: string = "";
     public taxFileNumber: string = "";
-    public phoneNumber: string = "";
+    public phone: string = "";
     public address: string = "";
-    public twitter: string = "";
-    public facebook: string = "";
-    public instagram: string = "";
+    public city: string = "";
+    public postCode: string = "";
+    public state: string = "";
+    public country: string = "";
     public adminPin: string = "";
-    public store: Store = new Store();
+
+    public facebook: string = "";
+    public twitter: string = "";
+    public instagram: string = "";
+
+    public businesses: Array<Business>;
+    public selectedBusiness: Business;
+
     step: any;
     stepCondition: any;
     currentStep: any;
 
+    public timeZones: Array<{ code: string, name: string }> = [];
+    public timeZone: string = "";
+
+    public countries: Array<{ code: string, name: string }> = [];
+
     constructor(public navCtrl: NavController, public viewCtrl: ViewController,
-        public alertCtrl: AlertController, public events: Events, private storeService: StoreService,
-        private navParams: NavParams, private loading: LoadingController) {
+        public alertCtrl: AlertController, public events: Events,
+        private loading: LoadingController, private businessService: BusinessService,
+        private userService: UserService, private resourceService: ResourceService) {
         this.step = 1;
         this.currentStep = this.step;
         this.stepCondition = true;
@@ -50,29 +72,62 @@ export class Wizard {
             content: 'Loading...'
         });
 
-        let store;
-        let currentStore = this.navParams.get('currentStore');
-        if (currentStore) {
-            store = await this.storeService.get(currentStore);
-        } else {
-            let allStores = await this.storeService.getAll();
-            store = allStores[0];
-        }
-
-        this.store = store || new Store();
+        this.businesses = this.businessService.getAll();
+        this.timeZones = moment.tz.names().map(timezone => {
+            return <{ code: string, name: string }>{
+                code: timezone,
+                name: timezone
+            }
+        });
+        this.countries = await this.resourceService.getCountries();
 
         await loader.dismiss();
     }
 
     public async onFinish() {
-        await this.storeService.update(this.store);
+
+        var criticalDb = await this.businessService.getDataTemplate(this.selectedBusiness, DBType.Critical);
+
+        criticalDb = criticalDb
+            .replace("{StoreName}", this.userService.getAccountName())
+            .replace("{FirstName}", this.firstName)
+            .replace("{LastName}", this.lastName)
+            .replace("{TaxFileNumber}", this.taxFileNumber)
+            .replace("{EmailAddress}", this.userService.getEmail())
+            .replace("{Phone}", this.phone)
+            .replace("{Address}", this.address)
+            .replace("{City}", this.city)
+            .replace("{PostCode}", this.postCode)
+            .replace("{StateName}", this.state)
+            .replace("{TimeZone}", this.timeZone)
+            .replace("{Country}", this.country)
+            .replace("{BusinessType}", this.selectedBusiness.id)
+            .replace("{AdminPin}", this.adminPin)
+            .replace("{Twitter}", this.twitter)
+            .replace("{Facebook}", this.facebook)
+            .replace("{Instagram}", this.instagram);
+
+        this.bulkDocs(DBService.pouchDBProvider.criticalDB, criticalDb);
+        this.bulkDocs(DBService.pouchDBProvider.currentDB, await this.businessService.getDataTemplate(this.selectedBusiness, DBType.Current));
+        this.bulkDocs(DBService.pouchDBProvider.auditDB, await this.businessService.getDataTemplate(this.selectedBusiness, DBType.Audit));
+
         this.viewCtrl.dismiss({
-            status: true, adminPin: this.adminPin
+            status: true
         });
     }
 
+    async bulkDocs(db: DB, dbContent: string) {
+        if (!TypeHelper.isNullOrWhitespace(dbContent)) {
+            var dbDocs = JSON.parse(dbContent);
+            return await db.bulkDocs(dbDocs.docs);
+        }
+    }
+
     public onFieldChanged() {
-        if (this.currentStep === 2 && (this.store.taxFileNumber == "" || this.store.phone == "" || this.store.address == "" || this.adminPin == "")) {
+        if (this.currentStep === 1 && (this.firstName == "" || this.lastName == "")) {
+            this.stepCondition = false;
+        }
+        else if (this.currentStep === 2 && (!this.selectedBusiness || this.taxFileNumber == "" || this.phone == "" || this.address == "" || this.adminPin == "" || this.timeZone)) {
             this.stepCondition = false;
         } else {
             this.stepCondition = true

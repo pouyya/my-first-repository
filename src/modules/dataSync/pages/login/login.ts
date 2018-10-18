@@ -46,18 +46,27 @@ export class LoginPage {
 
     try {
       await this.authService.login(email, password);
-      await this.userService.initializeUserProfile();
-      await this.navigateToDataSync();
+      if (this.userService.ensureRequiredClaims()) {
+        await this.userService.initializeUserProfile();
+        await this.navigateToDataSync();
+      } else {
+        this.authService.logout();
+        this.showMessage("The minimum requirement is not available for your account. Please contact support.");
+      }
     } catch (error) {
       var message = (error && error.status === 0) ? 'There is no internet connection pleas check your internet connection!' : 'Invalid Email/Password!';
-      let toast = this.toastCtrl.create({
-        message,
-        duration: 3000
-      });
-      toast.present();
+      this.showMessage(message);
     } finally {
       loader.dismiss();
     }
+  }
+
+  private showMessage(message: string) {
+    let toast = this.toastCtrl.create({
+      message,
+      duration: 3000
+    });
+    toast.present();
   }
 
   async getValue(browser: InAppBrowserObject, key: string) {

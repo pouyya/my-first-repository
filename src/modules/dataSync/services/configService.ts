@@ -82,10 +82,6 @@ export class ConfigService {
         return ENV.turnOnDeployment;
     }
 
-    static registeEndPoint(): string {
-        return ConfigService.apiServerBaseUrl() + '/common/register';
-    }
-
     static statusEndPoint(): string {
         return ENV.webapp.baseUrl + "/v1/api/user/status";
     }

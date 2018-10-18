@@ -1,6 +1,6 @@
 import { ConfigService } from './configService';
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
+import { Http, Response } from '@angular/http';
 import { OAuthService } from 'angular-oauth2-oidc';
 import 'rxjs/add/operator/map'
 import { AuthConfig } from 'angular-oauth2-oidc';
@@ -25,6 +25,8 @@ export class AuthService {
         dummyClientSecret: ConfigService.securityServerClientSecret(),
         scope: ConfigService.securityServerClientScope(),
         showDebugInformation: ConfigService.isDevelopment(),
+        requireHttps: !ConfigService.isDevelopment(),
+        strictDiscoveryDocumentValidation: !ConfigService.isDevelopment(),
         oidc: false
       };
       this.oauthService.configure(authConfig);
@@ -45,6 +47,10 @@ export class AuthService {
     return this.http
       .get(`${url}?email=${email}`)
       .map((response: Response) => <ServerResponse[]>response.json());
+  }
+
+  public async logout() {
+    this.oauthService.logOut(true);
   }
 }
 

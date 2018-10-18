@@ -9,7 +9,6 @@ import { DBIndex } from '@simplepos/core/dist/db/dbIndex';
 import { PlatformService } from '../../../../services/platformService';
 import { AccountSettingService } from "../../services/accountSettingService";
 import { Wizard } from "./modals/wizard/wizard";
-import { EmployeeService } from "../../../../services/employeeService";
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -26,13 +25,12 @@ export class DataSync {
     private navCtrl: NavController,
     private platformService: PlatformService,
     private accountSettingsService: AccountSettingService,
-    private employeeService: EmployeeService,
     private modalCtrl: ModalController,
     private translateService: TranslateService, ) {
   }
 
   async ionViewDidLoad() {
-    const claims = await this.userService.getUserClaims();
+    const claims = this.userService.getUserClaims();
 
     if (!claims) {
       throw new Error("Can't load users claims, please make sure user is logged in and IDS sent all claims");
@@ -99,16 +97,7 @@ export class DataSync {
       if (!data || !data.status) {
         return;
       }
-      if (data.adminPin) {
-        const employees = await this.employeeService.getAll();
-        if (employees && employees[0]) {
-          const employee = employees[0];
-          employee.pin = Number(data.adminPin);
-          await this.employeeService.update(employee);
-        }
-      }
-      this.accountSettings.isInitialized = true;
-      await this.accountSettingsService.update(this.accountSettings);
+
       this.navCtrl.setRoot(DataBootstrapper, { afterSetupLogin: true })
     });
     modal.present();

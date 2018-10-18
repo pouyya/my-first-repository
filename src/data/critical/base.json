@@ -17,8 +17,8 @@
     "Employee",
     "DBBasedEntity"
   ],
-  "firstName": "Admin",
-  "lastName": "Admin",
+  "firstName": "{FirstName}",
+  "lastName": "{LastName}",
   "store": [
     {
       "id": "2017-08-17T07:32:00.173Z",
@@ -28,8 +28,7 @@
   "roles": [],
   "isActive": true,
   "isAdmin": true,
-  "isActive": true,
-  "pin": 1111
+  "pin": {AdminPin}
 },
 {
   "_id": "2018-01-31T09:36:48.8240000",

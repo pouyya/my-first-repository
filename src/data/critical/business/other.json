@@ -10,8 +10,8 @@
   "suburb": "",
   "postCode": "{PostCode}",
   "state": "{StateName}",
-  "country": "{CountryName}",
-  "phone": "",
+  "country": "{Country}",
+  "phone": "{Phone}",
   "printReceiptAtEndOfSale": null,
   "POS": [
     {
@@ -43,11 +43,14 @@
   "orderNum": null,
   "supplierReturnPrefix": null,
   "supplierReturnNum": null,
-  "taxFileNumber": null,
-  "city": "{CityName}",
+  "taxFileNumber": "{TaxFileNumber}",
+  "address": "{Address}",
+  "city": "{City}",
   "timezone": "{TimeZone}",
   "email": "{EmailAddress}",
-  "twitter": "",
+  "twitter": "{Twitter}",
+  "facebook": "{Facebook}",
+  "instagram": "{Instagram}",
   "saleLastNumber": 0
 },
 {
@@ -71,7 +74,8 @@
   },
   "timeOffset": "{TimeZone}",
   "businessType": "{BusinessType}",
-  "saleNumberPrefix": ""
+  "saleNumberPrefix": "",
+  "isInitialized": true
 },
 {
   "_id": "2017-07-19T21:43:48.073Z",

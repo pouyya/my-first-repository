@@ -196,6 +196,7 @@ import { TableArrangementService } from "../services/tableArrangementService";
 import { SelectTablesModal } from "../pages/table/modal/select-table/select-tables";
 import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
 import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attach-customer";
+import { BusinessService } from '../services/businessService';
 
 @NgModule({
   declarations: [
@@ -500,7 +501,8 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     EmailService,
     DeployService,
     SyncContext,
-    DeleteAccountService
+    DeleteAccountService,
+    BusinessService
   ]
 })
 export class AppModule {

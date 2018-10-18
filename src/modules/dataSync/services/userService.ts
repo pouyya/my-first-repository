@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { AccountSettingService } from './accountSettingService';
 import { icons } from '@simplepos/core/dist/metadata/itemIcons';
 import { OAuthService } from 'angular-oauth2-oidc';
+import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
+import _ from 'lodash';
 
 @Injectable()
 export class UserService {
@@ -24,7 +26,7 @@ export class UserService {
     await this.setSession(userSession);
   }
 
-  public async getUserClaims() {
+  public getUserClaims() {
     return this.oauthService.getIdentityClaims();
   }
 
@@ -61,9 +63,26 @@ export class UserService {
     return this.storage.set("simplepos_local_db", JSON.stringify(user));
   }
 
-  public async getUserEmail(): Promise<string> {
+  public getEmail(): string {
     const claims = this.getUserClaims();
 
     return claims && claims["email"];
   }
+
+  public getAccountName(): string {
+    const claims = this.getUserClaims();
+
+    return claims && claims["account_name"];
+  }
+
+  public ensureRequiredClaims(): boolean {
+    var claims = this.getUserClaims();
+
+    var keys = ["account_name", "email", "db_url", "db_critical_name",
+      "db_critical_local_name", "db_name", "db_name_local", "db_critical_name",
+      "db_critical_local_name", "db_audit_name", "db_audit_local_name"];
+
+    return claims && _.every(keys, key => !TypeHelper.isNullOrWhitespace(claims[key]));
+  }
+
 }
