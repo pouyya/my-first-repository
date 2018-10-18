@@ -1,6 +1,4 @@
 @import '../../theme/variables';
-@import '../../theme/variables.barber';
-@import '../../theme/variables.coffee-shop';
 
 basket {
   background-color: $basket-background-color;
@@ -11,8 +9,8 @@ basket {
 
 .basket {
   .name {
-    overflow:hidden;
-    white-space:normal;
+    overflow:hidden; 
+    white-space:normal; 
     font-weight: 500;
   }
   .change-large{
@@ -133,69 +131,3 @@ ion-item.item-md.item-block .item-inner {
 .table-arrangement {
   font-size: 1.3rem;
 }
-
-// Themes //
-
-.barber {
-
-  basket {
-    background-color: $basket-background-color-barber;
-  }
-
-  .bottom-component {
-    background-color: color($colors-barber, background-light);
-  }
-
-  .pay {
-    background-color: color($colors-barber, primary)
-  }
-
-  .return {
-    background-color: color($colors-barber, danger);
-  }
-
-  ion-list.search-list {
-    background-color: $tile-background-color-barber;
-  }
-
-  ion-list.search-list>ion-item {
-    background-color: $tile-background-color-barber;
-  }
-  .selected{
-    background-color: color($colors-barber, lighte-selected) !important;
-  }
-}
-
-
-.coffee-shop {
-
-  basket {
-    background-color: $basket-background-color-coffee-shop;
-  }
-
-  .bottom-component {
-    background-color: color($colors-coffee-shop, background-light);
-  }
-
-  .pay {
-     background-color: color($colors-coffee-shop, primary)
-  }
-
-  .return {
-    background-color: color($colors-coffee-shop, danger);
-  }
-
-  ion-list.search-list {
-    background-color: $tile-background-color-coffee-shop;
-  }
-
-  ion-list.search-list>ion-item {
-    background-color: $tile-background-color-coffee-shop;
-  }
-
-  .selected{
-    background-color: color($colors-coffee-shop, lighte-selected) !important;
-  }
-}
-
-// Themes //
