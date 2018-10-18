@@ -23,39 +23,40 @@ $font-path: "../assets/fonts";
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
+$base: #F09F3D;
 $colors-coffee-shop: (
-  primary:    #3DBFD9,
-  secondary:  #F8F8F8,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  warning:    yellow,
-  dark:       #343B48,
-  white:    #ffffff,
-  black:    #000000,
-  selected: #495361,
-  lighte-selected: #ecf7fd,
-  background-light: #d2edf6
+    primary:    $base,
+    secondary:  lighten(desaturate(adjust-hue($base, -33), 85.65), 38.24),
+    danger:     #f53d3d,
+    light:      lighten(desaturate(adjust-hue($base, -33), 85.65), 36.67),
+    warning:    yellow,
+    dark:       darken(saturate(adjust-hue($base, -3), 10.14), 40.39),
+    white:    #ffffff,
+    black:    #000000,
+    selected: darken(desaturate(adjust-hue($base, -3), 25.06), 32.16),
+    lighte-selected: lighten(desaturate(adjust-hue($base, 168), 4.69), 36.86),
+    background-light: lighten(desaturate(adjust-hue($base, -7), 65.99), 18.04)
 );
 
 $colors-md-coffee-shop: (
-  primary:    #3DBFD9,
-  secondary:  #F8F8F8,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #343B48,
-  white:    #ffffff,
-  warning:    yellow,
-  black:    #000000,
-  selected: #495361,
-  lighte-selected: #ecf7fd,
-  background-light: #d2edf6
+    primary:    $base,
+    secondary:  lighten(desaturate(adjust-hue($base, -33), 85.65), 38.24),
+    danger:     #f53d3d,
+    light:      lighten(desaturate(adjust-hue($base, -33), 85.65), 36.67),
+    warning:    yellow,
+    dark:       darken(saturate(adjust-hue($base, -3), 10.14), 40.39),
+    white:    #ffffff,
+    black:    #000000,
+    selected: darken(desaturate(adjust-hue($base, -3), 25.06), 32.16),
+    lighte-selected: lighten(desaturate(adjust-hue($base, 168), 4.69), 36.86),
+    background-light: lighten(desaturate(adjust-hue($base, -7), 65.99), 18.04)
 );
 
 $font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 $font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
-$background-color: #F8F8F8;
-$toolbar-background: #2E99DB;
+$background-color: lighten(desaturate(adjust-hue($base, -6), 38.28), 29.80);
+$toolbar-background: $base;
 $toolbar-text-color: #CBCFD2;
 $list-background-color-coffee-shop: #FFFFFF;
 $list-background-color-border-coffee-shop: #a9a9a9;
@@ -66,22 +67,22 @@ $tile-background-color-coffee-shop: #FFFFFF;
 $tile-background-color-border-coffee-shop: #F1F1F1;
 $tile-hover-background-color-coffee-shop: #62676F;
 $tile-hover-color: #FFFFFF;
-$basket-background-color-coffee-shop: #FFFFFF;
+$basket-background-color-coffee-shop: lighten(desaturate(adjust-hue($base, -7), 58.59), 24.31);
 
 $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
 
 $menu-width: 180px;
-$menu-item-color-coffee-shop: #B8B8B8;
+$menu-item-color-coffee-shop: color($colors-coffee-shop, white);
 $menu-item-selected-color-coffee-shop: color($colors-coffee-shop, white);
 
-$category: (active: #FFFFFF);
+$category: (active: darken(saturate(adjust-hue($base, -3), 10.14), 40.39));
 
 $text-input-highlight-color-valid: #F8F8F8;
 
-$sales-category-tile-btn-color-coffee-shop: #585858;
+$sales-category-tile-btn-color-coffee-shop: darken(saturate(adjust-hue($base, -3), 10.14), 40.39);
 $sales-category-selected-background-color-coffee-shop: color($colors-coffee-shop, lighte-selected);
-  // App iOS Variables
+// App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
 
@@ -132,135 +133,16 @@ $sales-category-selected-background-color-coffee-shop: color($colors-coffee-shop
 // ---------------------------------------------------
 // Styles that apply to the entire app
 .coffee-shop {
-  .insert-image {
-    height: 25%;
-    margin-left: 4%;
-    margin-right: 4%;
-    text-align: center;
-    font-weight: bold;
-    color: color($colors-coffee-shop, dark);
-    font-size: 15px;
-    border-radius: 3px;
-    .item-addImageLabel {
-      padding-top: 10px;
-    }
+  .header .toolbar-background {
+    border-color: color($colors-coffee-shop, primary);
+    background-color: color($colors-coffee-shop, primary);
   }
 
-  body ion-app {
-    overflow: none;
+  .content, .content-md {
+    background-color: $background-color;
   }
 
-  ion-page {
-    display: flex;
-  }
-  ion-scroll {
-    width: 100%;
-    height: 100%;
-  }
-  body.has-scrollbar scroll-content {
-    margin-right: -15px;
-  }
-  body.has-scrollbar ion-menu scroll-content {
-    margin-right: 0;
-  }
-  scroll-content {
-    overflow-y: scroll;
-  }
-
-  ion-alert {
-
-    .alert-wrapper {
-      border-radius: 0px;
-    }
-    .alert-ios .alert-wrapper {
-      overflow: hidden;
-      max-width: 270px;
-      border-radius: 0px;
-      background-color: #f8f8f8;
-      box-shadow: none;
-    }
-  }
-
-  ion-input {
-    background-color: color($colors-coffee-shop, white);
-    border-radius: 8px !important;
-    border-width: 2px;
-    border-color: #CFCFCF;
-    border-style: solid;
-    background-color: white;
-    margin: 5px;
-  }
-
-  ion-list {
-    background-color: transparent !important;
-  }
-
-  ion-item {
-    background-color: transparent !important;
-  }
-
-  // App iOS Styles
-  // --------------------------------------------------
-  // iOS only styles can go here
-
-  .ios {
-
-    // iOS Status Bar
-    //---------------------------
-    .statusbar-img-ios {
-      display: block !important;
-      position: absolute;
-      background-color: transparent;
-      padding: 5px 0;
-      top: 0px;
-      width: 100%;
-      height: auto;
-      z-index: 999;
-    }
-
-    .tabs-icon-text tabbar {
-      .tab-button[aria-selected=true],
-      .tab-button:hover:not(.disable-hover) {
-        color: #7e60ff;
-      }
-    }
-
-  }
-
-  // App Material Design Styles
-  // --------------------------------------------------
-  // Material Design only styles can go here
-
-  .md {
-
-    // Android Status Bar
-    //---------------------------
-    .statusbar-img-md {
-      display: block !important;
-      position: absolute;
-      background-color: transparent;
-      top: 0px;
-      width: 100%;
-      height: auto;
-      z-index: 999;
-    }
-
-    .tabs-icon-text ion-title div.toolbar-title {
-      color: #fff !important;
-    }
-
-    .tabs-icon-text tabbar {
-      background-color: #7e60ff;
-
-      a {
-        color: #fff !important;
-      }
-    }
-
-    .tabs-icon-text tab-highlight {
-      color: #fff;
-      background-color: #fff;
-    }
-
+  .menu-list {
+    background-color: color($colors-coffee-shop, dark);
   }
 }
