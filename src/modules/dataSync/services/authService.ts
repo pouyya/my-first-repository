@@ -17,7 +17,6 @@ export class AuthService {
 
   public async login(email: string, password: string) {
 
-    //TODO Ensure about the claims (all db users and email)
     if (!this.oauthDiscovered) {
       const authConfig: AuthConfig = {
         issuer: ConfigService.securityServerBaseUrl(),
