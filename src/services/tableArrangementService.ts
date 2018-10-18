@@ -66,6 +66,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
     }
 
     public async addTable(table: ITable, sectionId: string){
+
         const tableArrangement = await this.getTableArrangement();
         let section;
         if(!sectionId){
