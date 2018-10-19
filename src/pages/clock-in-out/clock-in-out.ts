@@ -13,7 +13,6 @@ import { POS } from '../../model/store';
 import { StoreService } from '../../services/storeService';
 import { SyncContext } from "../../services/SyncContext";
 import { DateTimeService } from './../../services/dateTimeService';
-import * as moment from 'moment-timezone';
 
 import _ from "lodash";
 import { MOMENT } from 'angular-calendar';
@@ -199,7 +198,7 @@ export class ClockInOutPage {
   public async markTime(button: any, time?: Date): Promise<any> {
     try {
 
-      let utcDate = this.dateTimeService.getCurrentUTCDate().toDate();
+      let utcDate = this.dateTimeService.getUTCDate().toDate();
       const type = await this.prepareAndInsertTimeStamp(utcDate, button);
       this.dismiss();
       let toast = this.toastCtrl.create({
@@ -222,7 +221,7 @@ export class ClockInOutPage {
     newTimestamp.employeeId = this.employee._id;
     newTimestamp.storeId = this.syncContext.currentStore._id;
     newTimestamp.time = time;
-    newTimestamp.createdAtLocalDate = moment(time).format();
+    newTimestamp.createdAtLocalDate = this.dateTimeService.getLocalDateString();
     newTimestamp.type = this.mappingTimestamp[button.next];
 
     if (button.next == WorkingStatusEnum.ClockedOut && this.employee.workingStatus.status === WorkingStatusEnum.BreakStart) {
@@ -230,7 +229,7 @@ export class ClockInOutPage {
       breakEnd.employeeId = this.employee._id;
       breakEnd.storeId = this.syncContext.currentStore._id;
       breakEnd.time = time;
-      breakEnd.createdAtLocalDate = moment(time).format();
+      breakEnd.createdAtLocalDate = this.dateTimeService.getLocalDateString();
       breakEnd.type = EmployeeTimestampService.BREAK_END;
       promises.push(this.employeeTimestampService.add(breakEnd));
     }
@@ -239,7 +238,7 @@ export class ClockInOutPage {
     this.employee.workingStatus.posId = this.syncContext.currentPos.id;
     this.employee.workingStatus.storeId = this.syncContext.currentStore._id;
     this.employee.workingStatus.time = time;
-    this.employee.workingStatus.createdAtLocalDate = moment(time).format();
+    this.employee.workingStatus.createdAtLocalDate = this.dateTimeService.getLocalDateString();
 
     promises.push(this.employeeTimestampService.add(newTimestamp));
     promises.push(this.employeeService.update(this.employee));

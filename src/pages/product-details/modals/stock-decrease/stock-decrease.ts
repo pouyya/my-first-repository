@@ -1,4 +1,3 @@
-import * as moment from 'moment-timezone';
 import _ from 'lodash';
 import { Reason } from './../../../../model/stockHistory';
 import { NavParams, ViewController } from 'ionic-angular';
@@ -8,6 +7,7 @@ import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
 import { EmployeeService } from '../../../../services/employeeService';
 import { SyncContext } from '../../../../services/SyncContext';
 import { InteractableStoreStock } from '../../InteractableStoreStock';
+import { DateTimeService } from '../../../../services/dateTimeService';
 
 @Component({
   selector: 'stock-decrease-modal',
@@ -24,7 +24,8 @@ export class StockDecreaseModal {
     private navParams: NavParams,
     private viewCtrl: ViewController,
     private employeeService: EmployeeService,
-    private syncContext: SyncContext
+    private syncContext: SyncContext,
+    private dateTimeService: DateTimeService
   ) {
     let decreaseReasons: string[] = [
       Reason.InternalUse,
@@ -56,8 +57,8 @@ export class StockDecreaseModal {
   }
 
   public decrease() {
-    this.stock.createdAt = moment().utc().format();
-    this.stock.createdAtLocalDate = moment().format();
+    this.stock.createdAt = this.dateTimeService.getUTCDateString();
+    this.stock.createdAtLocalDate = this.dateTimeService.getLocalDateString();
     this.stock.createdBy = this.employeeService.getEmployee()._id;
     this.stock.value = Number(this.stock.value) * -1;
     if (this.stock.value != 0) {

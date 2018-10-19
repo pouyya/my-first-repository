@@ -25,7 +25,7 @@ export class ErrorLoggingService {
     }
 
     public log (message: string, extra){
-        if(ENV.logsEnabled){
+        if(ENV.logError){
             Pro.monitoring.log(message, extra);
         }
     }

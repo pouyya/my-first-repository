@@ -65,12 +65,12 @@
         </ion-row>
         <div>
           <ion-row class="row-border" *ngFor="let sale of salesSummary">
-            <ion-col>{{sale.date | localDate:'DD MMM YYYY'}}</ion-col>
+            <ion-col>{{sale.date | localDate:'ddd DD MMM YY'}}</ion-col>
             <ion-col>{{sale.noOfSales}}</ion-col>
-            <ion-col>{{sale.netAmount}}</ion-col>
-            <ion-col>{{sale.taxAmount}}</ion-col>
-            <ion-col>{{sale.total}}</ion-col>
-            <ion-col>{{sale.saleAverage}}</ion-col>
+            <ion-col>${{sale.netAmount | number : '1.2-2'}}</ion-col>
+            <ion-col>${{sale.taxAmount | number : '1.2-2'}}</ion-col>
+            <ion-col>${{sale.total | number : '1.2-2'}}</ion-col>
+            <ion-col>${{sale.saleAverage | number : '1.2-2'}}</ion-col>
           </ion-row>
         </div>
       </ion-grid>

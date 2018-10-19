@@ -1,5 +1,4 @@
 import { EmployeeService } from './../../services/employeeService';
-import * as moment from 'moment';
 import { LoadingController, AlertController, NavController, ToastController } from 'ionic-angular';
 import { Component, ChangeDetectorRef } from '@angular/core';
 
@@ -178,7 +177,7 @@ export class OpenCloseRegister {
 
       loader.setContent("Saving and Printing Closure..");
 
-      this.closure.closeTime = this.dateTimeService.getCurrentUTCDate().toString();
+      this.closure.closeTime = this.dateTimeService.getUTCDateString();
       this.closure.closureNumber = await this.fountainService.getClosureNumber();
       await this.closureService.add(this.closure);
 

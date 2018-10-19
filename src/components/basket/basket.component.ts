@@ -198,6 +198,9 @@ export class BasketComponent {
     }
   }
 
+  public isItemsInBasket() {
+    return this.sale.items.length>0;
+  }
 
   private updateQuantity(basketItem: BasketItem, items?: [BasketItem]) {
     const saleItems = items || this.sale.items;
@@ -438,7 +441,7 @@ export class BasketComponent {
         if (this.sale.tableId) {
           const table = this.tables[this.sale.tableId];
           table.status = TableStatus.Active;
-          this.tableArrangementService.updateTable(table, null);
+          this.tableArrangementService.updateTable(table, null,null);
         }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
@@ -485,7 +488,7 @@ export class BasketComponent {
                 const table = this.tables[this.sale.tableId];
                 table.status = TableStatus.Closed;
                 table.numberOfGuests = 0;
-                this.tableArrangementService.updateTable(table, null);
+                this.tableArrangementService.updateTable(table, null,null);
               }
               this.unattachCustomer();
               this.isSaleParked && this.saleParked.emit(false);
@@ -514,26 +517,6 @@ export class BasketComponent {
     modal.present();
   }
 
-  public cancelSearch($event) {
-    this.searchInput = "";
-    this.searchBarEnabled = false;
-  }
-
-  public async searchCustomers($event: any) {
-    if (this.searchInput && this.searchInput.trim() != '' && this.searchInput.length > 1) {
-      try {
-        let customers: Customer[] = await this.customerService.searchByName(this.searchInput);
-        this.searchedCustomers = customers;
-        return;
-      } catch (err) {
-        return Promise.reject(err);
-      }
-    } else {
-      this.searchedCustomers = [];
-      return await Promise.resolve([]);
-    }
-  }
-
   public openSearchbar() {
     if (this.sale.items.length > 0) {
       this.searchBarEnabled = true;
@@ -543,14 +526,6 @@ export class BasketComponent {
     }
   }
 
-  public async assignCustomer(customer: Customer) {
-    this.customer = customer;
-    this.sale.customerKey = this.customer._id;
-    await this.salesService.update(this.sale);
-    this.salesService.manageSaleId(this.sale);
-    this.searchBarEnabled = false;
-    this.onAttachCustomer.emit({ isAttached: true, customerName: this.customer.fullname });
-  }
 
   public async unassignCustomer() {
     this.customer = null;
@@ -563,31 +538,15 @@ export class BasketComponent {
     }
   }
 
-  public createCustomer() {
-    let modal = this.modalCtrl.create(CreateCustomerModal, {
-      searchInput: this.searchInput
-    });
+  public selectOrCreateCustomer() {
+    let modal = this.modalCtrl.create(CreateCustomerModal);
     modal.onDidDismiss(customer => {
       if (customer) {
         this.customer = customer;
-        this.onAttachCustomer.emit({ isAttached: true, customerName: this.customer.fullname });
         this.sale.customerKey = this.customer._id;
         this.salesService.update(this.sale);
-      }
-    });
-    modal.present();
-  }
-
-  public editCustomer() {
-    let modal = this.modalCtrl.create(CreateCustomerModal, {
-      customer: this.customer
-    });
-    modal.onDidDismiss(customer => {
-      if (customer) {
-        this.customer = customer;
+        this.salesService.manageSaleId(this.sale);
         this.onAttachCustomer.emit({ isAttached: true, customerName: this.customer.fullname });
-        this.sale.customerKey = this.customer._id;
-        this.salesService.update(this.sale);
       }
     });
     modal.present();
@@ -648,7 +607,7 @@ export class BasketComponent {
       if (this.table) {
         this.table.status = TableStatus.Closed;
         this.table.numberOfGuests = 0;
-        await this.tableArrangementService.updateTable(this.table, null);
+        await this.tableArrangementService.updateTable(this.table, null,null);
       }
     }
     this.table = null;

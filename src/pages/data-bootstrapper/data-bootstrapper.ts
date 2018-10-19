@@ -110,7 +110,7 @@ export class DataBootstrapper {
         let store = await this.storeService.get(this._user.currentStore);
         this.securityMessage = `To open the app for shop ${store.name}, please provide your PIN number`;
         loader.dismiss();
-        this.pingService.init();
+        this.pingService.init(this.navCtrl);
         await this.openNextPage();
       }
     });
@@ -147,7 +147,7 @@ export class DataBootstrapper {
     }
     this.syncContext.initialize(currentStore, currentPos.id);
     this.syncContext.appTimezone = accountSettings.timeOffset;
-    this.pingService.init();
+    this.pingService.init(this.navCtrl);
     this.navCtrl.setRoot(this._initialPage);
   }
 

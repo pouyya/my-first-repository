@@ -21,6 +21,5 @@ export const ENV = {
   appSee: {
     apikey: "4ab58eb9940440b2a77518b94b722bde"
   },
-  logError: false,
-  logsEnabled: true
+  logError: false
 };

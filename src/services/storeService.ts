@@ -4,14 +4,15 @@ import { Store, POS, Device } from '../model/store'
 import { BaseEntityService } from "@simplepos/core/dist/services/baseEntityService";
 import { SyncContext } from "./SyncContext";
 import * as moment from "moment-timezone";
-import { PrintService } from './printService';
+import { DateTimeService } from './dateTimeService';
 
 @Injectable()
 export class StoreService extends BaseEntityService<Store> {
 
   constructor(
     private appService: AppService,
-    private syncContext: SyncContext) {
+    private syncContext: SyncContext,
+    private dateTimeService: DateTimeService) {
     super(Store);
   }
 
@@ -43,7 +44,7 @@ export class StoreService extends BaseEntityService<Store> {
   }
 
   public openRegister(register: POS, openingAmount: number, openingNote: string): Promise<Store> {
-    register.openTime = moment().utc().format();
+    register.openTime =  this.dateTimeService.getUTCDateString();
     register.status = true;
     register.openingAmount = Number(openingAmount);
     register.openingNote = openingNote;

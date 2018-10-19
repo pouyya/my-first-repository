@@ -15,6 +15,7 @@ import { BaseEntityService, SortOptions } from "@simplepos/core/dist/services/ba
 import { BaseTaxIterface } from '../model/baseTaxIterface';
 import { StockHistoryService } from './stockHistoryService';
 import { SyncContext } from "./SyncContext";
+import { DateTimeService } from './dateTimeService';
 
 @Injectable()
 export class SalesServices extends BaseEntityService<Sale> {
@@ -30,7 +31,8 @@ export class SalesServices extends BaseEntityService<Sale> {
 		private salesTaxService: SalesTaxService,
 		private groupSalesTaxService: GroupSalesTaxService,
 		private stockHistoryService: StockHistoryService,
-		private syncContext: SyncContext
+		private syncContext: SyncContext,
+		private dateTimeService: DateTimeService
 	) {
 		super(Sale);
 	}
@@ -52,21 +54,21 @@ export class SalesServices extends BaseEntityService<Sale> {
 				}
 			}
 
-			return SalesServices._createDefaultObject(posId);
+			return this._createDefaultObject(posId);
 
 		} catch (error) {
 
 			if (error.name === GlobalConstants.NOT_FOUND) {
-				return SalesServices._createDefaultObject(posId);
+				return this._createDefaultObject(posId);
 			}
 
 			return Promise.reject(error);
 		}
 	}
 
-	private static _createDefaultObject(posID: string): Sale {
+	private _createDefaultObject(posID: string): Sale {
 		let sale = new Sale();
-		sale._id = moment().utc().format();
+		sale._id = this.dateTimeService.getUTCDateString();
 		sale.posID = posID;
 		sale.subTotal = 0;
 		sale.taxTotal = 0;
@@ -136,32 +138,32 @@ export class SalesServices extends BaseEntityService<Sale> {
 			query.selector['created'] = { $exists: true };
 
 			if (timeFrame.endDate) {
-                query.selector['created']['$lte'] = timeFrame.endDate;
+				query.selector['created']['$lte'] = timeFrame.endDate;
 			}
 
 			if (timeFrame.startDate) {
-                query.selector['created']['$gte'] = timeFrame.startDate;
+				query.selector['created']['$gte'] = timeFrame.startDate;
 			}
 		}
 
 		if (employeeId) {
-            query.selector['items']= {
-                    $elemMatch: {
-                    employeeId: {
-                        $eq: employeeId
-                    }
-                }
-            };
+			query.selector['items'] = {
+				$elemMatch: {
+					employeeId: {
+						$eq: employeeId
+					}
+				}
+			};
 		}
 
 		if (paymentType) {
-            query.selector["payments"] = {
-                $elemMatch: {
-                    type: {
-                        $eq: paymentType
-                    }
-                }
-            }
+			query.selector["payments"] = {
+				$elemMatch: {
+					type: {
+						$eq: paymentType
+					}
+				}
+			}
 		}
 		query.sort = [{
 			_id: sort || SortOptions.DESC
@@ -252,14 +254,14 @@ export class SalesServices extends BaseEntityService<Sale> {
 		}
 	}
 
-	public async getParkedSalesCount(){
-        let query: any = {
-            selector: {
-                $and: []
-            }
-        };
-        query.selector.$and.push({ posID : this.syncContext.currentPos.id});
-        query.selector.$and.push({ state : 'parked'});
+	public async getParkedSalesCount() {
+		let query: any = {
+			selector: {
+				$and: []
+			}
+		};
+		query.selector.$and.push({ posID: this.syncContext.currentPos.id });
+		query.selector.$and.push({ state: 'parked' });
 		const data = await super.findBy(query);
 
 		return data.length;
@@ -354,14 +356,14 @@ export class SalesServices extends BaseEntityService<Sale> {
 				if (item.modifierItems && item.modifierItems.length > 0) {
 					item.modifierItems.forEach(modifierItem => {
 						if (modifierItem.stockControl) {
-							var stockHistory = StockHistoryService.createStockForSale(modifierItem.purchsableItemId, storeId, modifierItem.quantity);
+							var stockHistory = this.stockHistoryService.createStockForSale(modifierItem.purchsableItemId, storeId, modifierItem.quantity);
 							stockUpdates.push(this.stockHistoryService.add(stockHistory));
 						}
 					});
 				}
 
 				if (item.stockControl) {
-					var stockHistory = StockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
+					var stockHistory = this.stockHistoryService.createStockForSale(item.purchsableItemId, storeId, item.quantity);
 					stockUpdates.push(this.stockHistoryService.add(stockHistory));
 				}
 			}
