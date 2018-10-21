@@ -1,4 +1,6 @@
 @import '../../theme/variables';
+@import '../../theme/variables.barber';
+@import '../../theme/variables.coffee-shop';
 
 basket {
   background-color: $basket-background-color;
@@ -9,8 +11,8 @@ basket {
 
 .basket {
   .name {
-    overflow:hidden; 
-    white-space:normal; 
+    overflow:hidden;
+    white-space:normal;
     font-weight: 500;
   }
   .change-large{
@@ -94,11 +96,12 @@ ion-searchbar.searchbar-md {
 
 ion-list.search-list {
   position: absolute;
-  left: 1%;
-  width: 98%;
-  border-bottom: 1px solid lightgrey;
   z-index: 1;
-  background-color: $tile-background-color !important;
+  top: 47px;
+  width: 96.5%;
+  transform: translateX(-50%);
+  left: 49.9%;
+  background-color: $tile-background-color;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
@@ -131,3 +134,69 @@ ion-item.item-md.item-block .item-inner {
 .table-arrangement {
   font-size: 1.3rem;
 }
+
+// Themes //
+
+.barber {
+
+  basket {
+    background-color: $basket-background-color-barber;
+  }
+
+  .bottom-component {
+    background-color: color($colors-barber, background-light);
+  }
+
+  .pay {
+    background-color: color($colors-barber, primary)
+  }
+
+  .return {
+    background-color: color($colors-barber, danger);
+  }
+
+  ion-list.search-list {
+    background-color: $tile-background-color-barber;
+  }
+
+  ion-list.search-list>ion-item {
+    background-color: $tile-background-color-barber;
+  }
+  .selected{
+    background-color: color($colors-barber, lighte-selected) !important;
+  }
+}
+
+
+.coffee-shop {
+
+  basket {
+    background-color: $basket-background-color-coffee-shop;
+  }
+
+  .bottom-component {
+    background-color: color($colors-coffee-shop, background-light);
+  }
+
+  .pay {
+     background-color: color($colors-coffee-shop, primary)
+  }
+
+  .return {
+    background-color: color($colors-coffee-shop, danger);
+  }
+
+  ion-list.search-list {
+    background-color: $tile-background-color-coffee-shop;
+  }
+
+  ion-list.search-list>ion-item {
+    background-color: $tile-background-color-coffee-shop;
+  }
+
+  .selected{
+    background-color: color($colors-coffee-shop, lighte-selected) !important;
+  }
+}
+
+// Themes //
