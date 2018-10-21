@@ -1,5 +1,8 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController } from 'ionic-angular';
+import {
+    Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController,
+    Events
+} from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -30,6 +33,7 @@ export class SimplePOSApp implements OnInit {
   public moduleName: string;
   public currentPage: any;
   private alive: boolean = true;
+  public theme: string = '';
 
   constructor(
     public platform: Platform,
@@ -47,7 +51,8 @@ export class SimplePOSApp implements OnInit {
     private printService: PrintService,
     private securityService: SecurityService,
     private syncContext: SyncContext, // used in view
-    private menuController: MenuController
+    private menuController: MenuController,
+    public events: Events
   ) {
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
@@ -75,7 +80,12 @@ export class SimplePOSApp implements OnInit {
           await this.menuController.close();
         }
       }
-    })
+    });
+
+    this.events.subscribe('theme:initialized', (theme, time) => {
+        this.theme = theme;
+    });
+
     var eligibleForDeploy = await this.deployService.eligibleForDeploy();
     this.rootPage = this.currentPage = eligibleForDeploy ? DeployPage : await this.deployService.getNextPageAfterDeploy();
   }
