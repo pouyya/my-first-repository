@@ -1,8 +1,4 @@
 @import "../../theme/variables";
-@import "../../theme/variables.barber";
-@import "../../theme/variables.coffee-shop";
-
-
 .tile-col {
   padding: 0px;
 }
@@ -42,19 +38,3 @@
   z-index: 1;
 }
 
-
-// Themes //
-.barber {
-  .tile {
-    background: $tile-background-color-barber;
-    border: 1px solid $tile-background-color-border-barber;
-  }
-}
-
-.coffee-shop {
-  .tile {
-    background: $tile-background-color-coffee-shop;
-    border: 1px solid $tile-background-color-border-coffee-shop;
-  }
-}
-// Themes //

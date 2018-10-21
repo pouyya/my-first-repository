@@ -65,7 +65,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         return tableArrangement.sections.filter(section => section.storeId === this.syncContext.currentStore._id);
     }
 
-    public async addTable(table: ITable, sectionId: string, sectionId2: string) {
+    public async addTable(table: ITable, sectionId: string) {
         const tableArrangement = await this.getTableArrangement();
         let section;
         if (!sectionId) {
@@ -85,15 +85,8 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         const tableArrangement = await this.getTableArrangement();
         let section;
         if (sectionId != toSectionId)
-            this.moveTable(tableData, toSectionId, sectionId);
+            this.moveTable(tableData, sectionId, toSectionId);
         else {
-
-            if (!sectionId) {
-                section = this.getSectionFromTableId(tableData.id, tableArrangement);
-            } else {
-                const sections = tableArrangement.sections.filter(section => section.id === sectionId);
-                sections.length && (section = sections[0]);
-            }
 
             if (section) {
                 let tableIndex = _.findIndex(section.tables, { id: tableData.id });
@@ -125,7 +118,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
 
     public async moveTable(table: ITable, sourceSectionId: string, destinationSectionId: string) {
         await this.deleteTable(table.id, sourceSectionId);
-        await this.addTable(table, destinationSectionId, null);
+        await this.addTable(table, destinationSectionId);
     }
 
     public async addSection(section: ISection) {

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { NavController, NavParams, ModalController, ToastController } from 'ionic-angular';
 import { Utilities } from "../../utility";
 import { TableArrangementService } from "../../services/tableArrangementService";
-import { TableStatus } from "../../model/tableArrangement";
+import { TableStatus, ITable } from "../../model/tableArrangement";
 import { Events } from 'ionic-angular';
 
 @Component({
@@ -63,19 +63,18 @@ export class TableDetails {
         message: `Section '${this.tableItem.name}' has been ` + (!this.moved ? (this.isNew ? `created` : `updated`) : `moved`) + ` successfully!`,
         duration: 3000
       });
+
       const section = _.find(this.sections, { id: this.selectedSection });
       const tableList = await this.tableArrangementService.getStoreTables(section.storeId);
-      const tableNames = _.filter(tableList, { id: this.tableItem.id }).map(item => item.name);
-
-      if ((tableNames as any).includes(this.tableItem.name)) {
+      const twinTable = _.find(tableList, { name: this.tableItem.name }) as ITable;
+      if (twinTable && twinTable.id != this.tableItem.id) {
         toast.setMessage(`Table already present with the name '${this.tableItem.name}'. Please use a different name.`);
         toast.present();
         return;
       }
 
-      await this.tableArrangementService[this.isNew ? 'addTable' : 'updateTable'](this.tableItem, this.selectedSection, this.selectedSection);
-
-
+      this.isNew ? await this.tableArrangementService.addTable(this.tableItem, this.selectedSection) : await this.tableArrangementService.updateTable(this.tableItem, this.fromSection, this.selectedSection);
+      toast.present();
       this.events.publish('selectedSection', this.selectedSection);
       this.navCtrl.pop();
     } catch (err) {

@@ -1,6 +1,4 @@
 @import '../../theme/variables';
-@import '../../theme/variables.barber';
-@import '../../theme/variables.coffee-shop';
 
 preferences {
 
@@ -82,52 +80,3 @@ preferences {
     background-color: transparent !important;
   }
 }
-
-
-// Themes //
-.barber {
-  preferences {
-    .sales-category {
-      background-color: $tile-background-color-barber;
-      button {
-        color: $sales-category-tile-btn-color-barber;
-        background-color: $tile-background-color-barber;
-      }
-      .activeCategory {
-        color: color($colors-barber, dark);
-        background-color: $list-background-color-barber;
-        .category-icon {
-          color: color($colors-barber, dark);
-        }
-      }
-    }
-
-    .basket-component {
-      background-color: $basket-background-color-barber;
-    }
-  }
-}
-
-.coffee-shop {
-  preferences {
-    .sales-category {
-      background-color: $tile-background-color-coffee-shop;
-      button {
-        color: $sales-category-tile-btn-color-coffee-shop;
-        background-color: $tile-background-color-coffee-shop;
-      }
-      .activeCategory {
-        color: color($colors-coffee-shop, dark);
-        background-color: $list-background-color-coffee-shop;
-        .category-icon {
-          color: color($colors-coffee-shop, dark);
-        }
-      }
-    }
-
-    .basket-component {
-      background-color: $basket-background-color-coffee-shop;
-    }
-  }
-}
-// Themes //
