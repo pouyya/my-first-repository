@@ -66,6 +66,7 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
     }
 
     public async addTable(table: ITable, sectionId: string){
+
         const tableArrangement = await this.getTableArrangement();
         let section;
         if(!sectionId){
@@ -81,26 +82,32 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         }
     }
 
-    public async updateTable(tableData: ITable, sectionId: string){
+    public async updateTable(tableData: ITable, sectionId: string, toSectionId: string) {
         const tableArrangement = await this.getTableArrangement();
         let section;
-        if(!sectionId){
+        if (sectionId != toSectionId)
+        this.moveTable(tableData, sectionId, toSectionId);
+    else {
+
+        if (!sectionId) {
             section = this.getSectionFromTableId(tableData.id, tableArrangement);
-        }else{
+        } else {
             const sections = tableArrangement.sections.filter(section => section.id === sectionId);
-            sections.length && ( section = sections[0] );
+            sections.length && (section = sections[0]);
         }
 
-        if(section){
-            let tableIndex = _.findIndex(section.tables, {id: tableData.id});
-            if(tableIndex != -1){
+
+        if (section) {
+            let tableIndex = _.findIndex(section.tables, { id: tableData.id });
+            if (tableIndex != -1) {
                 section.tables[tableIndex] = { ...section.tables[tableIndex], ...tableData };
                 await this.update(tableArrangement);
             }
-        }
+
 
     }
-
+}
+    }
     public async deleteTable(tableId: string, sectionId: string){
         const tableArrangement = await this.getTableArrangement();
         let section;
@@ -117,7 +124,12 @@ export class TableArrangementService extends BaseEntityService<TableArrangement>
         }
     }
 
-    public async addSection(section: ISection){
+    public async moveTable(table: ITable, sourceSectionId: string, destinationSectionId: string) {
+        await this.deleteTable(table.id, sourceSectionId);
+        await this.addTable(table, destinationSectionId);
+    }
+
+    public async addSection(section: ISection) {
         const tableArrangement = await this.getTableArrangement();
         section.tables = [];
         tableArrangement.sections.push(section);
