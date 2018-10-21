@@ -69,20 +69,13 @@ export class UserService {
     return claims && claims["email"];
   }
 
-  public getAccountName(): string {
-    const claims = this.getUserClaims();
-
-    return claims && claims["account_name"];
-  }
-
   public ensureRequiredClaims(): boolean {
     var claims = this.getUserClaims();
 
-    var keys = ["account_name", "email", "db_url", "db_critical_name",
+    var keys = ["email", "db_url", "db_critical_name",
       "db_critical_local_name", "db_name", "db_name_local", "db_critical_name",
       "db_critical_local_name", "db_audit_name", "db_audit_local_name"];
 
     return claims && _.every(keys, key => !TypeHelper.isNullOrWhitespace(claims[key]));
   }
-
 }
