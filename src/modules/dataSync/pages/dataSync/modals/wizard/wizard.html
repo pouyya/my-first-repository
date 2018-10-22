@@ -34,6 +34,10 @@
     <ion-wizard-step>
       <ion-list class="list-padding">
         <ion-item>
+          <ion-label class="item-name" stacked>Shop name*</ion-label>
+          <ion-input [(ngModel)]="storeName" (ngModelChange)="onFieldChanged()" type="text" required name="storeName"></ion-input>
+        </ion-item>
+        <ion-item>
           <ion-label class="item-name" stacked>Business Type*</ion-label>
           <ion-select [(ngModel)]="selectedBusiness" (ngModelChange)="onFieldChanged()">
             <ion-option [value]="business" *ngFor="let business of businesses">{{business.name}}</ion-option>
@@ -58,14 +62,14 @@
         <ion-item>
           <ion-label class="item-name" stacked>State</ion-label>
           <ion-input [(ngModel)]="state" (ngModelChange)="onFieldChanged()" type="text" required name="state"></ion-input>
-        </ion-item>        
+        </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Post code</ion-label>
           <ion-input [(ngModel)]="postCode" (ngModelChange)="onFieldChanged()" type="text" required name="postCode"></ion-input>
         </ion-item>
         <ion-item>
-          <searchable-ion-select isModal="true" name="country" valueField="code" [(ngModel)]="country" title="Country" textField="name"
-            [items]="countries">
+          <searchable-ion-select isModal="true" name="country" valueField="code" [(ngModel)]="country" title="Country"
+            textField="name" [items]="countries">
           </searchable-ion-select>
         </ion-item>
         <ion-item>

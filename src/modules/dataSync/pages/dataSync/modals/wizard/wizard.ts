@@ -29,6 +29,7 @@ export class Wizard {
 
     public firstName: string = "";
     public lastName: string = "";
+    public storeName: string = "";
     public taxFileNumber: string = "";
     public phone: string = "";
     public address: string = "";
@@ -89,9 +90,9 @@ export class Wizard {
         var criticalDb = await this.businessService.getDataTemplate(this.selectedBusiness, DBType.Critical);
 
         criticalDb = criticalDb
-            .replace("{StoreName}", this.userService.getAccountName())
             .replace("{FirstName}", this.firstName)
             .replace("{LastName}", this.lastName)
+            .replace("{StoreName}", this.storeName)
             .replace("{TaxFileNumber}", this.taxFileNumber)
             .replace("{EmailAddress}", this.userService.getEmail())
             .replace("{Phone}", this.phone)
@@ -127,7 +128,7 @@ export class Wizard {
         if (this.currentStep === 1 && (this.firstName == "" || this.lastName == "")) {
             this.stepCondition = false;
         }
-        else if (this.currentStep === 2 && (!this.selectedBusiness || this.taxFileNumber == "" || this.phone == "" || this.address == "" || this.adminPin == "" || this.timeZone)) {
+        else if (this.currentStep === 2 && (this.storeName == "" || !this.selectedBusiness || this.taxFileNumber == "" || this.phone == "" || this.address == "" || this.adminPin == "" || this.timeZone)) {
             this.stepCondition = false;
         } else {
             this.stepCondition = true
