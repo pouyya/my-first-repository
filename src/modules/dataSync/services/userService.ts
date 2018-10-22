@@ -78,7 +78,7 @@ export class UserService {
   public ensureRequiredClaims(): boolean {
     var claims = this.getUserClaims();
 
-    var keys = ["account_name", "email", "db_url", "db_critical_name",
+    var keys = [ "email", "db_url", "db_critical_name",
       "db_critical_local_name", "db_name", "db_name_local", "db_critical_name",
       "db_critical_local_name", "db_audit_name", "db_audit_local_name"];
 
