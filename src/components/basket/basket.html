@@ -1,6 +1,6 @@
 <ion-grid class="action-buttons basket">
   <ion-row>
-    <ion-col col-xl-6 col-lg-6 class="customer-container pull-left">
+    <ion-col col-xl-5 col-lg-5 class="customer-container pull-left">
       <ion-item item-content *ngIf="customer" tappable>
         <ion-label color="primary">
           {{ customer.firstName }} {{ customer.lastName }}
@@ -22,7 +22,7 @@
         </ion-label>
       </ion-item>
     </ion-col>
-    <ion-col col-xl-4 col-lg-4 class="pull-right">
+    <ion-col col-xl-5 col-lg-5 class="pull-right">
       <button ion-button clear (click)="selectOrCreateCustomer()" [disabled]="sale && sale.customerKey">
         <ion-icon name="person-add"></ion-icon>
       </button>
