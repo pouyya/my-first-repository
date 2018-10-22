@@ -26,7 +26,7 @@ function clip() {
 };
 
 var business = {
-  types: ["barber", "coffee-shop", "health-and-beauty", "other"]
+  types: ["barber", "coffeeshop", "other"]
 };
 
 gulp.task("build-scripts", function () {
@@ -57,8 +57,8 @@ gulp.task("build-scripts", function () {
         return gulp
           .src([
             scriptsPath + folder + "/views/*.json",
-            scriptsPath + folder + "/business-data/" + type + "-data.json",
-            scriptsPath + folder + "/base-data.json",
+            scriptsPath + folder + "/business/" + type + ".json",
+            scriptsPath + folder + "/base.json",
           ])
           .pipe(clip())
           .pipe(concat(folder + ".json", { newLine: "," }))

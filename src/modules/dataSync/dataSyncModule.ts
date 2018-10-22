@@ -14,29 +14,31 @@ import { CommonModule } from '@angular/common';
 import { DataBootstrapper } from '../../pages/data-bootstrapper/data-bootstrapper';
 import { IonSimpleWizardModule } from "../../components/ion-simple-wizard/simple-wizard.module";
 import { Wizard } from "./pages/dataSync/modals/wizard/wizard";
-import {SharedModule} from "../shared.module";
+import { SharedModule } from "../shared.module";
+import { SearchableIonSelectModule } from '../../components/searchable-ion-select/searchable-ion-select.module';
 
 @NgModule({
-	imports: [CommonModule, SharedModule, IonSimpleWizardModule, IonicPageModule.forChild(DataSync)],
+	imports: [CommonModule, SharedModule, IonSimpleWizardModule, 
+		IonicPageModule.forChild(DataSync), SearchableIonSelectModule],
 
 	declarations: [
-		LoginPage, 
-		DataSync, 
-		DataBootstrapper, 
-		LogOut, 
+		LoginPage,
+		DataSync,
+		DataBootstrapper,
+		LogOut,
 		ForgotPassword,
 		Wizard
 	],
 
 	entryComponents: [
-		LoginPage, 
-		DataSync, 
-		DataBootstrapper, 
-		LogOut, 
+		LoginPage,
+		DataSync,
+		DataBootstrapper,
+		LogOut,
 		ForgotPassword,
 		Wizard
-        ],
-	providers: [  ]
+	],
+	providers: []
 })
 export class DataSyncModule {
 

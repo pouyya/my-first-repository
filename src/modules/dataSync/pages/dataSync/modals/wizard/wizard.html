@@ -13,34 +13,65 @@
 
 <ion-content>
 
-  <ion-simple-wizard [(step)]="step" [showSteps]="false" (finish)="onFinish()" [finishIcon]="'done-all'" [(stepCondition)]="stepCondition">
+  <ion-simple-wizard [(step)]="step" [showSteps]="false" (finish)="onFinish()" [finishIcon]="'done-all'"
+    [(stepCondition)]="stepCondition">
     <ion-wizard-step>
       <div class="wizard-info">
         <p style="font-size:35px;">Welcome to the login wizard.</p>
         <p>This wizard will guide you through the the fields which are required when registering in the app.</p>
+        <ion-list class="list-padding">
+          <ion-item>
+            <ion-label class="item-name" stacked>First name*</ion-label>
+            <ion-input [(ngModel)]="firstName" (ngModelChange)="onFieldChanged()" type="text" required name="firstName"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label class="item-name" stacked>Last name*</ion-label>
+            <ion-input [(ngModel)]="lastName" (ngModelChange)="onFieldChanged()" type="text" required name="lastName"></ion-input>
+          </ion-item>
+        </ion-list>
       </div>
     </ion-wizard-step>
     <ion-wizard-step>
       <ion-list class="list-padding">
         <ion-item>
+          <ion-label class="item-name" stacked>Business Type*</ion-label>
+          <ion-select [(ngModel)]="selectedBusiness" (ngModelChange)="onFieldChanged()">
+            <ion-option [value]="business" *ngFor="let business of businesses">{{business.name}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
           <ion-label class="item-name" stacked>{{ 'TaxFileNumber' | translator }}*</ion-label>
-          <ion-input [(ngModel)]="store.taxFileNumber" (ngModelChange)="onFieldChanged()" type="number" name="taxFileNumber"></ion-input>
+          <ion-input [(ngModel)]="taxFileNumber" (ngModelChange)="onFieldChanged()" type="number" required name="taxFileNumber"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Phone number*</ion-label>
-          <ion-input [(ngModel)]="store.phone" (ngModelChange)="onFieldChanged()" type="text" name="phoneNumber"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label class="item-name" stacked>City</ion-label>
-          <ion-input [disabled]="true" type="text" [(ngModel)]="store.city" name="city"></ion-input>
-        </ion-item>
-        <ion-item >
-          <ion-label class="item-name" stacked>Country</ion-label>
-          <ion-input [disabled]="true" type="text" [(ngModel)]="store.country" name="country"></ion-input>
+          <ion-input [(ngModel)]="phone" (ngModelChange)="onFieldChanged()" type="text" required name="phoneNumber"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Physical address*</ion-label>
-          <ion-input [(ngModel)]="store.address" (ngModelChange)="onFieldChanged()" type="text" name="address"></ion-input>
+          <ion-input [(ngModel)]="address" (ngModelChange)="onFieldChanged()" type="text" name="address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>City</ion-label>
+          <ion-input [(ngModel)]="city" (ngModelChange)="onFieldChanged()" type="text" required name="city"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="item-name" stacked>State</ion-label>
+          <ion-input [(ngModel)]="state" (ngModelChange)="onFieldChanged()" type="text" required name="state"></ion-input>
+        </ion-item>        
+        <ion-item>
+          <ion-label class="item-name" stacked>Post code</ion-label>
+          <ion-input [(ngModel)]="postCode" (ngModelChange)="onFieldChanged()" type="text" required name="postCode"></ion-input>
+        </ion-item>
+        <ion-item>
+          <searchable-ion-select isModal="true" name="country" valueField="code" [(ngModel)]="country" title="Country" textField="name"
+            [items]="countries">
+          </searchable-ion-select>
+        </ion-item>
+        <ion-item>
+          <searchable-ion-select isModal="true" name="timeOffset" [(ngModel)]="timeOffset" title="Time Offset"
+            valueField="code" textField="name" [items]="timeZones">
+          </searchable-ion-select>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Admin Pin*</ion-label>
@@ -52,15 +83,15 @@
       <ion-list>
         <ion-item>
           <ion-label class="item-name" stacked>Twitter</ion-label>
-          <ion-input [(ngModel)]="store.twitter" type="text" name="twitter"></ion-input>
+          <ion-input [(ngModel)]="twitter" type="text" name="twitter"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Facebook</ion-label>
-          <ion-input [(ngModel)]="store.facebook" type="text" name="facebook"></ion-input>
+          <ion-input [(ngModel)]="facebook" type="text" name="facebook"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>Instagram</ion-label>
-          <ion-input [(ngModel)]="store.instagram" type="text" name="instagram"></ion-input>
+          <ion-input [(ngModel)]="instagram" type="text" name="instagram"></ion-input>
         </ion-item>
       </ion-list>
     </ion-wizard-step>

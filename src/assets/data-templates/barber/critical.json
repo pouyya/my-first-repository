@@ -1,4 +1,14 @@
 {
+  "docs": [
+      {
+      "_id": "_design/customer",
+      "views": {
+        "get_all_with_fullname": {
+          "map": "function (doc) {\n  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'Customer') {\n    var newDoc = {};\n    Object.keys(doc).forEach(function (key) {\n      newDoc[key] = doc[key];\n    });\n    newDoc['fullname'] = (doc.firstName + \" \" + doc.lastName).trim();\n    emit(doc._id, newDoc);\n  }\n}"
+        }
+      },
+      "language": "javascript"
+    },{
   "_id": "2018-01-02T05:55:34.8190000",
   "entityTypeName": "Store",
   "entityTypeNames": [
@@ -10,8 +20,8 @@
   "suburb": "",
   "postCode": "{PostCode}",
   "state": "{StateName}",
-  "country": "{CountryName}",
-  "phone": "",
+  "country": "{Country}",
+  "phone": "{Phone}",
   "printReceiptAtEndOfSale": null,
   "POS": [
     {
@@ -43,11 +53,14 @@
   "orderNum": null,
   "supplierReturnPrefix": null,
   "supplierReturnNum": null,
-  "taxFileNumber": null,
-  "city": "{CityName}",
+  "taxFileNumber": "{TaxFileNumber}",
+  "address": "{Address}",
+  "city": "{City}",
   "timezone": "{TimeZone}",
   "email": "{EmailAddress}",
-  "twitter": "",
+  "twitter": "{Twitter}",
+  "facebook": "{Facebook}",
+  "instagram": "{Instagram}",
   "saleLastNumber": 0
 },
 {
@@ -71,7 +84,8 @@
   },
   "timeOffset": "{TimeZone}",
   "businessType": "{BusinessType}",
-  "saleNumberPrefix": ""
+  "saleNumberPrefix": "",
+  "isInitialized": true
 },
 {
   "_id": "2018-01-02T06:01:49.9750000",
@@ -2133,4 +2147,64 @@
       "saleTaxEntity": "SalesTax"
     }
   ]
+},{
+  "_id": "2017-07-25T10:22:51.163Z",
+  "entityTypeName": "SalesTax",
+  "entityTypeNames": [
+    "SalesTax",
+    "DBBasedEntity"
+  ],
+  "isDefault": true,
+  "name": "GST",
+  "rate": 10,
+  "noOfTaxes": 0
+},
+{
+  "_id": "2017-08-08T06:33:10.955Z",
+  "entityTypeName": "Employee",
+  "entityTypeNames": [
+    "Employee",
+    "DBBasedEntity"
+  ],
+  "firstName": "{FirstName}",
+  "lastName": "{LastName}",
+  "store": [
+    {
+      "id": "2017-08-17T07:32:00.173Z",
+      "role": "admin"
+    }
+  ],
+  "roles": [],
+  "isActive": true,
+  "isAdmin": true,
+  "pin": {AdminPin}
+},
+{
+  "_id": "2018-01-31T09:36:48.8240000",
+  "entityTypeName": "Role",
+  "entityTypeNames": [
+    "Role",
+    "DBBasedEntity"
+  ],
+  "name": "Manager",
+  "accessRightItems": [
+    "OpenCloseRegister",
+    "MoneyInOut",
+    "OpenCashDrawer"
+  ]
+},
+{
+  "_id": "2018-01-31T09:43:28.7960000",
+  "entityTypeName": "Role",
+  "entityTypeNames": [
+    "Role",
+    "DBBasedEntity"
+  ],
+  "name": "Staff",
+  "accessRightItems": [
+    "MoneyInOut",
+    "OpenCashDrawer"
+  ]
+}
+]
 }

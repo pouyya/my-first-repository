@@ -4,6 +4,7 @@ import { barberIcons } from '@simplepos/core/dist/metadata/BarberIcons';
 import { coffeeIcons } from '@simplepos/core/dist/metadata/CoffeeIcons';
 import { icons } from '@simplepos/core/dist/metadata/itemIcons';
 import { AccountSettingService } from './../../modules/dataSync/services/accountSettingService';
+import { Business } from './../../model/business';
 
 @Component({
   selector: 'icon-select',
@@ -29,9 +30,9 @@ export class IconSelectComponent {
 
     this.businessType = accountSettings.businessType;
     this.icons = _.values(icons);
-    if (this.businessType == "barber")
+    if (this.businessType == Business.Barber.id)
       this.icons = _.values(barberIcons);
-    if (this.businessType == "coffee-shop")
+    if (this.businessType == Business.Coffeeshop.id)
       this.icons = _.values(coffeeIcons);
 
     this.icons.unshift({ name: 'No icon', type: '' });

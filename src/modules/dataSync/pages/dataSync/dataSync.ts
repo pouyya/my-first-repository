@@ -9,7 +9,6 @@ import { DBIndex } from '@simplepos/core/dist/db/dbIndex';
 import { PlatformService } from '../../../../services/platformService';
 import { AccountSettingService } from "../../services/accountSettingService";
 import { Wizard } from "./modals/wizard/wizard";
-import { EmployeeService } from "../../../../services/employeeService";
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -20,31 +19,33 @@ export class DataSync {
 
   public updateText: String = '';
   private isNavigated = false;
-  private user;
   private accountSettings;
 
   constructor(private userService: UserService,
     private navCtrl: NavController,
     private platformService: PlatformService,
     private accountSettingsService: AccountSettingService,
-    private employeeService: EmployeeService,
     private modalCtrl: ModalController,
     private translateService: TranslateService, ) {
   }
 
   async ionViewDidLoad() {
-    this.user = await this.userService.getDeviceUser();
+    const claims = this.userService.getUserClaims();
 
-    ConfigService.externalDBUrl = this.user.settings.db_url;
+    if (!claims) {
+      throw new Error("Can't load users claims, please make sure user is logged in and IDS sent all claims");
+    }
 
-    ConfigService.externalCriticalDBName = this.user.settings.db_critical_name;
-    ConfigService.internalCriticalDBName = this.user.settings.db_critical_local_name;
+    ConfigService.externalDBUrl = claims["db_url"];
 
-    ConfigService.externalDBName = this.user.settings.db_name;
-    ConfigService.internalDBName = this.user.settings.db_local_name;
+    ConfigService.externalCriticalDBName = claims["db_critical_name"];
+    ConfigService.internalCriticalDBName = claims["db_critical_local_name"];
 
-    ConfigService.externalAuditDBName = this.user.settings.db_audit_name;
-    ConfigService.internalAuditDBName = this.user.settings.db_audit_local_name;
+    ConfigService.externalDBName = claims["db_name"];
+    ConfigService.internalDBName = claims["db_name_local"];
+
+    ConfigService.externalAuditDBName = claims["db_audit_name"];
+    ConfigService.internalAuditDBName = claims["db_audit_local_name"];
 
     this.updateText = "Check for data update!";
 
@@ -57,7 +58,7 @@ export class DataSync {
       ConfigService.internalDBName,
       ConfigService.currentAuditDBUrl,
       ConfigService.internalAuditDBName,
-      this.user.access_token,
+      this.userService.getAccessToken(),
       [
         <DBIndex>{ name: 'orderEntityTypeName', fields: ['order', 'entityTypeName', 'entityTypeNames'] },
         <DBIndex>{ name: 'orderNameEntityTypeName', fields: ['order', 'name', 'entityTypeName', 'entityTypeNames'] }],
@@ -73,7 +74,12 @@ export class DataSync {
             this.accountSettings = await this.accountSettingsService.getCurrentSetting();
             this.translateService.setDefaultLang('au');
             this.translateService.use('au');
-            this.accountSettings.isInitialized ? this.navCtrl.setRoot(DataBootstrapper) : this.showWizardModal();
+
+            if (this.accountSettings && this.accountSettings.isInitialized) {
+              this.navCtrl.setRoot(DataBootstrapper)
+            } else {
+              this.showWizardModal()
+            }
           }
           else {
             this.updateText = "Loading your company data " + Math.round(data.progress * 100) + "%";
@@ -83,20 +89,14 @@ export class DataSync {
     );
   }
 
-  private showWizardModal() {
-    let modal = this.modalCtrl.create(Wizard, { currentStore: this.user.currentStore }, { enableBackdropDismiss: false });
+  private async showWizardModal() {
+    const user = await this.userService.getUser(false);
+    let modal = this.modalCtrl.create(Wizard, { currentStore: user.currentStore }, { enableBackdropDismiss: false });
     modal.onDidDismiss(async data => {
       if (!data || !data.status) {
         return;
       }
-      if (data.adminPin) {
-        const employees = await this.employeeService.getAll();
-        const employee = employees[0];
-        employee.pin = Number(data.adminPin);
-        await this.employeeService.update(employee);
-      }
-      this.accountSettings.isInitialized = true;
-      await this.accountSettingsService.update(this.accountSettings);
+
       this.navCtrl.setRoot(DataBootstrapper, { afterSetupLogin: true })
     });
     modal.present();

@@ -1,0 +1,1093 @@
+{
+  "docs": [
+      {
+      "_id": "_design/customer",
+      "views": {
+        "get_all_with_fullname": {
+          "map": "function (doc) {\n  if(doc.hasOwnProperty('entityTypeName') && doc.entityTypeName == 'Customer') {\n    var newDoc = {};\n    Object.keys(doc).forEach(function (key) {\n      newDoc[key] = doc[key];\n    });\n    newDoc['fullname'] = (doc.firstName + \" \" + doc.lastName).trim();\n    emit(doc._id, newDoc);\n  }\n}"
+        }
+      },
+      "language": "javascript"
+    },{
+  "_id": "2018-01-02T05:55:34.8190000",
+  "entityTypeName": "Store",
+  "entityTypeNames": [
+    "Store",
+    "DBBasedEntity"
+  ],
+  "name": "{StoreName}",
+  "street": "",
+  "suburb": "",
+  "postCode": "{PostCode}",
+  "state": "{StateName}",
+  "country": "{Country}",
+  "phone": "{Phone}",
+  "printReceiptAtEndOfSale": null,
+  "POS": [
+    {
+      "id": "2018-01-02T06:00:59.9610000",
+      "emailReceipt": true,
+      "printReceipt": true,
+      "printNoteOnReceipt": true,
+      "showDiscount": true,
+      "selectUserForNextSale": false,
+      "status": false,
+      "openingAmount": null,
+      "cashMovements": [],
+      "name": "Main",
+      "openTime": null,
+      "openingNote": null,
+      "categorySort": [],
+      "productCategorySort": {
+        "2018-06-20T16:27:50.7370000": [
+          "2018-06-20T16:30:50.5330000",
+          "2018-06-20T16:41:21.6700000",
+          "2018-06-20T16:30:50.5380000",
+          "2018-06-20T16:30:50.5390000",
+          "2018-06-20T16:30:50.5400000",
+          "2018-06-20T16:54:29.5660000",
+          "2018-06-20T16:30:50.5410000",
+          "2018-06-20T16:41:21.6720000",
+          "2018-06-20T16:30:50.5320000",
+          "2018-06-20T16:30:50.5340000",
+          "2018-06-20T16:30:50.5350000",
+          "2018-06-20T16:30:50.5360000",
+          "2018-06-20T16:30:50.5370000",
+          "2018-06-20T16:41:21.6710000",
+          "2018-06-20T16:54:29.5640000",
+          "2018-06-20T16:54:29.5670000",
+          "2018-06-20T16:30:50.5420000",
+          "2018-06-20T16:41:21.6730000",
+          "2018-06-20T16:30:50.5430000",
+          "2018-06-20T16:59:42.4560000"
+        ],
+        "2018-06-20T16:30:50.5200000": [
+          "2018-06-20T16:30:50.5440000",
+          "2018-06-20T16:59:42.4570000",
+          "2018-06-20T16:30:50.5450000",
+          "2018-06-20T16:30:50.5460000",
+          "2018-06-20T16:59:42.4580000",
+          "2018-06-20T16:30:50.5470000",
+          "2018-06-20T16:41:21.6740000",
+          "2018-06-20T16:30:50.5480000"
+        ]
+      },
+      "categoryColor": {},
+      "productColor": {}
+    }
+  ],
+  "devices": [],
+  "openingAmount": null,
+  "openTime": null,
+  "status": false,
+  "openingNote": null,
+  "cashMovements": [],
+  "orderNumPrefix": null,
+  "orderNum": null,
+  "supplierReturnPrefix": null,
+  "supplierReturnNum": null,
+  "taxFileNumber": "{TaxFileNumber}",
+  "address": "{Address}",
+  "city": "{City}",
+  "timezone": "{TimeZone}",
+  "email": "{EmailAddress}",
+  "twitter": "{Twitter}",
+  "facebook": "{Facebook}",
+  "instagram": "{Instagram}",
+  "saleLastNumber": 0
+},
+{
+  "_id": "2017-11-29T05:35:15.263Z",
+  "entityTypeName": "AccountSetting",
+  "entityTypeNames": [
+    "AccountSetting",
+    "DBBasedEntity"
+  ],
+  "name": "{StoreName}",
+  "receiptFooterMessage": "<b>Tell us what you think</b>\nTo provide feedback call us",
+  "taxType": true,
+  "screenAwake": true,
+  "trackEmployeeSales": false,
+  "defaultTax": "2017-07-25T10:22:51.163Z",
+  "taxEntity": "SalesTax",
+  "defaultIcon": {
+    "name": "icon-cffshp-chalkboard",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "timeOffset": "{TimeZone}",
+  "businessType": "{BusinessType}",
+  "saleNumberPrefix": "",
+  "isInitialized": true
+},
+{
+  "_id": "2018-06-20T16:27:50.7370000",
+  "entityTypeName": "Category",
+  "entityTypeNames": [
+    "Category",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "name": "Coffee",
+  "icon": {
+    "name": "icon-cffshp-coffee-13",
+    "type": "svg",
+    "noOfPaths": 17
+  }
+},
+{
+  "_id": "2018-06-20T16:30:50.5200000",
+  "entityTypeName": "Category",
+  "entityTypeNames": [
+    "Category",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "name": "Food",
+  "icon": {
+    "name": "icon-cffshp-barber-shop-1",
+    "type": "svg",
+    "noOfPaths": 17
+  }
+},
+{
+  "_id": "2018-06-20T16:30:50.5320000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Almond Milk",
+  "icon": {
+    "name": "icon-cffshp-milk",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5330000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Cappuccino",
+  "icon": {
+    "name": "icon-cffshp-cappuccino-2",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5340000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Cream",
+  "icon": {
+    "name": "icon-cffshp-meringue",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5350000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Decaf",
+  "icon": {
+    "name": "icon-cffshp-chocolate",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5360000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Extra Hot",
+  "icon": {
+    "name": "icon-cffshp-cookies",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5370000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Extra shot",
+  "icon": {
+    "name": "icon-cffshp-sugar-1",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5380000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Flat White",
+  "icon": {
+    "name": "icon-cffshp-barman",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5390000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Latte",
+  "icon": {
+    "name": "icon-cffshp-hot-chocolate",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5400000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Long Black",
+  "icon": {
+    "name": "icon-cffshp-couch",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5410000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Mocha",
+  "icon": {
+    "name": "icon-cffshp-coffee-10",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5420000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Soy",
+  "icon": {
+    "name": "icon-cffshp-coffee-9",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5430000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Sweetener",
+  "icon": {
+    "name": "icon-cffshp-irish-coffee",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:30:50.5440000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Antipasto Plate",
+  "icon": {
+    "name": "icon-cffshp-coffee-8",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5450000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "BLT",
+  "icon": {
+    "name": "icon-cffshp-coffee-7",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5460000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Breaky Roll",
+  "icon": {
+    "name": "icon-cffshp-breakfast-1",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5470000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Fruit Danish",
+  "icon": {
+    "name": "icon-cffshp-fruit",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:30:50.5480000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Granola",
+  "icon": {
+    "name": "icon-cffshp-clock-2",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:41:21.6700000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Espresso",
+  "icon": {
+    "name": "icon-cffshp-lemonade",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:41:21.6710000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Full Cream",
+  "icon": {
+    "name": "icon-cffshp-milkshake",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:41:21.6720000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Piccolo",
+  "icon": {
+    "name": "icon-cffshp-coffee-machine",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:41:21.6730000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Sugar",
+  "icon": {
+    "name": "icon-cffshp-tea-bag",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:41:21.6740000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Fruit Salad",
+  "icon": {
+    "name": "icon-cffshp-salad",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:54:29.5640000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Large",
+  "icon": {
+    "name": "icon-cffshp-coffee-5",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:54:29.5660000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Macchiato",
+  "icon": {
+    "name": "icon-cffshp-frappe",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:54:29.5670000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Skim",
+  "icon": {
+    "name": "icon-cffshp-pudding",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:59:42.4560000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:27:50.7370000"
+  ],
+  "name": "Warm",
+  "icon": {
+    "name": "icon-cffshp-mixer",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": true
+},
+{
+  "_id": "2018-06-20T16:59:42.4570000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Bacon and Egg Panini",
+  "icon": {
+    "name": "icon-cffshp-bacon",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2018-06-20T16:59:42.4580000",
+  "entityTypeName": "Product",
+  "entityTypeNames": [
+    "Product",
+    "PurchasableItem",
+    "DBBasedEntity"
+  ],
+  "order": 0,
+  "stockControl": false,
+  "barcode": null,
+  "categoryIDs": [
+    "2018-06-20T16:30:50.5200000"
+  ],
+  "name": "Chicken Mayo Panini",
+  "icon": {
+    "name": "icon-cffshp-bartender",
+    "type": "svg",
+    "noOfPaths": 17
+  },
+  "isModifier": false
+},
+{
+  "_id": "2017-07-19T21:43:48.073Z",
+  "name": "Default PriceBook",
+  "entityTypeName": "PriceBook",
+  "entityTypeNames": [
+    "PriceBook",
+    "DBBasedEntity"
+  ],
+  "priority": 999999999,
+  "criteria": [],
+  "purchasableItems": [
+    {
+      "id": "2018-06-20T16:59:42.4560000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:59:42.4570000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:59:42.4580000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 1,
+      "markup": 263.636,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5330000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5320000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5340000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5350000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5360000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5370000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5380000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5390000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5400000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5410000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5420000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5430000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5440000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5450000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5460000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5470000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:30:50.5480000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:41:21.6700000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:41:21.6710000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:41:21.6720000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:41:21.6730000",
+      "retailPrice": 1.81818,
+      "inclusivePrice": 2,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:41:21.6740000",
+      "retailPrice": 4.54545,
+      "inclusivePrice": 5,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:54:29.5640000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:54:29.5660000",
+      "retailPrice": 3.63636,
+      "inclusivePrice": 4,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    },
+    {
+      "id": "2018-06-20T16:54:29.5670000",
+      "retailPrice": 2.72727,
+      "inclusivePrice": 3,
+      "supplyPrice": 0,
+      "markup": null,
+      "salesTaxId": null,
+      "saleTaxEntity": "SalesTax"
+    }
+  ]
+},{
+  "_id": "2017-07-25T10:22:51.163Z",
+  "entityTypeName": "SalesTax",
+  "entityTypeNames": [
+    "SalesTax",
+    "DBBasedEntity"
+  ],
+  "isDefault": true,
+  "name": "GST",
+  "rate": 10,
+  "noOfTaxes": 0
+},
+{
+  "_id": "2017-08-08T06:33:10.955Z",
+  "entityTypeName": "Employee",
+  "entityTypeNames": [
+    "Employee",
+    "DBBasedEntity"
+  ],
+  "firstName": "{FirstName}",
+  "lastName": "{LastName}",
+  "store": [
+    {
+      "id": "2017-08-17T07:32:00.173Z",
+      "role": "admin"
+    }
+  ],
+  "roles": [],
+  "isActive": true,
+  "isAdmin": true,
+  "pin": {AdminPin}
+},
+{
+  "_id": "2018-01-31T09:36:48.8240000",
+  "entityTypeName": "Role",
+  "entityTypeNames": [
+    "Role",
+    "DBBasedEntity"
+  ],
+  "name": "Manager",
+  "accessRightItems": [
+    "OpenCloseRegister",
+    "MoneyInOut",
+    "OpenCashDrawer"
+  ]
+},
+{
+  "_id": "2018-01-31T09:43:28.7960000",
+  "entityTypeName": "Role",
+  "entityTypeNames": [
+    "Role",
+    "DBBasedEntity"
+  ],
+  "name": "Staff",
+  "accessRightItems": [
+    "MoneyInOut",
+    "OpenCashDrawer"
+  ]
+}
+]
+}

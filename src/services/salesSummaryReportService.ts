@@ -9,7 +9,7 @@ export class SalesSummaryReportService {
 	constructor(private http: Http, private userService: UserService) { }
 
 	public async getSalesSummary(currentPosId: string, fromDate: string, toDate: string) {
-		let token = await this.userService.getUserToken();
+		let token = await this.userService.getAccessToken();
 		return this.http
 			.get(
 				ConfigService.salesReportEndPoint() +

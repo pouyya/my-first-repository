@@ -7,9 +7,10 @@ import { AuthService } from '../../services/authService';
 import { DataSync } from '../dataSync/dataSync';
 import { BoostraperModule } from '../../../bootstraperModule';
 import { PageModule } from '../../../../metadata/pageModule';
-import { UserService } from '../../services/userService';
-import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { ENV } from '@app/env';
+import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
+import { UserService } from '../../../../modules/dataSync/services/userService';
+import { ConfigService } from '../../../../modules/dataSync/services/configService';
+
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -28,45 +29,74 @@ export class LoginPage {
     private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private iab: InAppBrowser,
-    private userService: UserService) { }
+    private userService: UserService) {
+  }
 
   public async login(): Promise<any> {
 
+    this.userLogin(this.email, this.password);
+  }
+
+  async userLogin(email: string, password: string) {
     let loader = this.loading.create({
       content: 'Logging In...'
     });
 
     await loader.present();
 
-    this.authService.login(this.email, this.password).subscribe(
-      async data => {
+    try {
+      await this.authService.login(email, password);
+      if (this.userService.ensureRequiredClaims()) {
+        await this.userService.initializeUserProfile();
         await this.navigateToDataSync();
-        loader.dismiss();
-      },
-      error => {
-        let toast = this.toastCtrl.create({
-          message: 'Invalid Email/Password!',
-          duration: 3000
-        });
-        toast.present();
-        loader.dismiss();
-      });
+      } else {
+        this.authService.logout();
+        this.showMessage("The minimum requirement is not available for your account. Please contact support.");
+      }
+    } catch (error) {
+      var message = (error && error.status === 0) ? 'There is no internet connection pleas check your internet connection!' : 'Invalid Email/Password!';
+      this.showMessage(message);
+    } finally {
+      loader.dismiss();
+    }
+  }
+
+  private showMessage(message: string) {
+    let toast = this.toastCtrl.create({
+      message,
+      duration: 3000
+    });
+    toast.present();
+  }
+
+  async getValue(browser: InAppBrowserObject, key: string) {
+    var currentValue = await browser.executeScript({ code: `(function() { var currentValue = document.getElementsByName('${key}'); if(currentValue && currentValue[0] && currentValue[0].value) return currentValue[0].value; })()` });
+    if (currentValue && currentValue[0]) {
+      return currentValue[0];
+    }
+    return null;
   }
 
   public register(): void {
-    const browser = this.iab.create(`${ENV.service.baseUrl}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
-    var token;
+    const browser = this.iab.create(`${ConfigService.securityServerBaseUrl()}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
+    var email;
+    var password;
     var bridgeInterval;
 
-    browser.on('loadstop').subscribe(event => {
+    var _this = this;
+
+    browser.on('loadstop').subscribe(function () {
       bridgeInterval = setInterval(async function () {
-        var tokenResult = await browser.executeScript({ code: "(function() { var token = document.getElementsByName('token'); if(token && token[0] && token[0].value) return token[0].value; })()" });
-        if (tokenResult && tokenResult[0]) {
-          token = tokenResult[0];
+        var isRegistered = await _this.getValue(browser, 'isRegistered');
+        if (isRegistered) {
+
+          email = await _this.getValue(browser, 'email');
+          password = await _this.getValue(browser, 'password');
+
           browser.close();
         }
 
-        var closeResult = await browser.executeScript({ code: "(function() { var close = document.getElementsByName('forcetoclose'); if(close && close[0] && close[0].value) return true; })()" });
+        var closeResult = await _this.getValue(browser, 'forcetoclose');
         if (closeResult && closeResult[0]) {
           browser.close();
         }
@@ -74,33 +104,12 @@ export class LoginPage {
 
     });
 
-    var _this = this;
-
-    browser.on('exit').subscribe(async function () {
+    browser.on('exit').subscribe(function () {
       clearInterval(bridgeInterval);
-      if (token) {
-        let loader = _this.loading.create({
-          content: 'Logging In...'
-        });
-
-        await loader.present();
-
-        try {
-          await _this.userService.setAccessToken(token)
-          await _this.authService.getUserProfile(token);
-          await _this.navigateToDataSync();
-          loader.dismiss();
-        } catch (error) {
-          let toast = _this.toastCtrl.create({
-            message: 'Invalid Email/Password!',
-            duration: 3000
-          });
-          toast.present();
-        } finally {
-          loader.dismiss();
-        }
+      if (email && password) {
+        _this.userLogin(email, password);
       }
-    });
+    }.bind(this));
   }
 
   public forgotPassword(): void {

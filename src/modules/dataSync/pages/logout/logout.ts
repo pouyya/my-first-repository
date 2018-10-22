@@ -4,6 +4,7 @@ import { LoadingController, NavController, AlertController, MenuController } fro
 import { Storage } from '@ionic/storage';
 import { LoginPage } from "../login/login";
 import {PingService} from "../../../../services/pingService";
+import { AuthService } from '../../../../modules/dataSync/services/authService';
 
 @Component({
   selector: 'logout',
@@ -17,7 +18,8 @@ export class LogOut {
     private navCtrl: NavController,
     private storage: Storage,
     private alertCtrl: AlertController,
-    private menuController: MenuController) {
+    private menuController: MenuController,
+    private authService: AuthService) {
   }
 
   async ionViewCanEnter(): Promise<boolean> {
@@ -49,6 +51,7 @@ export class LogOut {
     try {
       await loader.present();
       await this.menuController.close();
+      this.authService.logout()
       await this.storage.clear();
       await DBService.pouchDBProvider.destroyInternals();
       this.pingService.stop();

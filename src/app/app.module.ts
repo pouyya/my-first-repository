@@ -5,6 +5,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { OAuthModule } from 'angular-oauth2-oidc';
 import { DatePipe } from '@angular/common';
 import { MatInputModule, MatGridListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,7 +19,6 @@ import { Insomnia } from '@ionic-native/insomnia';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Network } from '@ionic-native/network';
 import { SharedModule } from './../modules/shared.module';
-import { authProvider } from './../modules/auth.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SortablejsModule } from 'angular-sortablejs';
@@ -196,6 +196,7 @@ import { TableArrangementService } from "../services/tableArrangementService";
 import { SelectTablesModal } from "../pages/table/modal/select-table/select-tables";
 import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
 import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attach-customer";
+import { BusinessService } from '../services/businessService';
 
 @NgModule({
   declarations: [
@@ -288,6 +289,7 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     FormsModule,
     HttpModule,
     HttpClientModule,
+    OAuthModule.forRoot(),
     IonicModule.forRoot(SimplePOSApp,
       {
         mode: 'md',
@@ -488,7 +490,6 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     LocalDatePipe,
     TranslateService,
     TranslatorPipe,
-    authProvider,
     PlatformService,
     AccountSettingService,
     RoleService,
@@ -500,7 +501,8 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     EmailService,
     DeployService,
     SyncContext,
-    DeleteAccountService
+    DeleteAccountService,
+    BusinessService
   ]
 })
 export class AppModule {
