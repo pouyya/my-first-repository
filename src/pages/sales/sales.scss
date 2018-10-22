@@ -36,13 +36,21 @@ sales {
   
   .sales-category {
     background-color: $tile-background-color;
+    ion-label {
+      white-space: normal;
+      color: #5e5e5e;
+      font-family: "Segoe UI";
+      font-size: 24pt;
+      p {
+        font-size: inherit;
+        color: inherit;
+        font-family: inherit;
+      }
+    }
     button {
       text-align: center;
       color: $sales-category-tile-btn-color;
       background-color: $tile-background-color;
-      ion-label {
-        white-space: normal;
-      }
       .category-icon {
         padding-bottom: 10px;
         display: block;
@@ -85,6 +93,11 @@ sales {
     flex-direction: column;
     justify-content: flex-start;
     background-color: $basket-background-color;
+    ion-label {
+      font-family: "Segoe UI";
+      font-size: 20pt;
+      color: #000000;
+    }
   }
   
   ion-scroll {

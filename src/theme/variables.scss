@@ -132,6 +132,11 @@ $sales-category-selected-background-color: color($colors, lighte-selected);
 // ---------------------------------------------------
 // Styles that apply to the entire app
 
+ion-title {
+  font-family: "Segoe UI";
+  font-size: 16pt;
+  color: #ffffff;
+}
 .insert-image{
       height: 25%;
       margin-left: 4%;
