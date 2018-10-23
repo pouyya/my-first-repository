@@ -33,7 +33,7 @@
   </ion-row>
     <ion-row *ngIf="!allowDragSupport">
         <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let tile of items; let i = index" class="tile-col">
-            <ion-card *ngIf="!tile.thumbnail" tappable [class.pulse]="tile === selectedTile" class="tile animated" [style.background-color]="syncContext.currentPos.productColor && syncContext.currentPos.productColor[tile._id] || tile.color" (click)="selectItem(tile)">
+            <ion-card *ngIf="tile.icon" tappable [class.pulse]="tile === selectedTile" class="tile animated" [style.background-color]="syncContext.currentPos.productColor && syncContext.currentPos.productColor[tile._id] || tile.color" (click)="selectItem(tile)">
                 <ion-card-content class="tile-content">
                      <sp-icon [icon]="tile.icon"></sp-icon>
                 </ion-card-content>
@@ -53,6 +53,19 @@
 
                 <span class="bottom-right" *ngIf="tile.isModifier">M</span>
             </ion-card>
+
+
+            <ion-card tappable class="tile tile-color" *ngIf="!tile.thumbnail && !tile.icon" [style.background-color]="syncContext.currentPos.productColor && syncContext.currentPos.productColor[tile._id] || tile.color">
+               <div [style.top]="tile.isModifier ? '30%': '38%'">
+                   <div *ngIf="tile.isModifier" center text-center>
+                       <h2 class="modifier-item">M</h2>
+                   </div>
+                   <div class="name" center text-center>
+                       <h2>{{ tile.name }}</h2>
+                   </div>
+               </div>
+            </ion-card>
+
         </ion-col>
         <ion-col text-center *ngIf="items.length === 0">{{emptyListMessage || 'Please use back office to add new products and services.'}}</ion-col>
     </ion-row>
