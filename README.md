@@ -10,7 +10,7 @@ SimplePOS Enterprise Client
 - install latest nodejs (we need npm module) - https://nodejs.org/en/download/
 - Get latest code from 'development' branch
 - in root of project get latest ionic (npm i -g ionic)
-- get access to private npm (Please visit https://code.pos.app/root/simplepos/wikis/setup-npm-package)
+- get access to private npm (Please visit https://code.pos.app/root/simplepos/wikis/development/setup-npm-package)
 - run 'npm i'
 - run 'ionic serve -b'
 
