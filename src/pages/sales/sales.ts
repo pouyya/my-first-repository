@@ -69,7 +69,6 @@ export class Sales implements OnDestroy {
   public selectedEmployee: Employee = null;
   public user: UserSession;
   private alive: boolean = true;
-  private isTableEnabled: boolean = false;
   public iconTakeaway: string = "person-add";
 
   constructor(

@@ -22,11 +22,16 @@ export class PurchasableItemInfoComponent {
   public calculateDiscount(item: BasketItem) {
     item.discount = this.helperService.round2Dec(Number(item.discount));
     item.finalPrice = this.calcService.calcItemDiscount(item.systemPrice, item.discount);
+    item.modifierItems.forEach((modifier,i) => {
+      modifier.discount=item.discount;
+      modifier.finalPrice= this.calcService.calcItemDiscount(modifier.systemPrice, modifier.discount);
+      item.modifierItems[i]=modifier;
+    });
   }
 
   public updatePrice(item: BasketItem) {
     item.finalPrice = Number(item.finalPrice);
-
+    
     if (item.systemPrice !== 0) {
       item.discount = this.helperService.round2Dec(this.calcService.findDiscountPercent(item.systemPrice, item.finalPrice));
     } else {

@@ -5,7 +5,7 @@
     <ion-col col-md-4>
       <ion-item item-content>
         <ion-label color="primary" stacked>Quantity</ion-label>
-        <ion-input type="number" [(ngModel)]="item.quantity" (change)="addQuantity(item)">
+        <ion-input type="number" min="0" [(ngModel)]="item.quantity" (change)="addQuantity(item)">
         </ion-input>
       </ion-item>
     </ion-col>
