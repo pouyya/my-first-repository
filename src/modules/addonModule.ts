@@ -18,7 +18,7 @@ export class AddonModule implements ModuleBase {
         { title: 'Add-ons', icon: 'infinite', component: AddonDashboard },
         {
             title: 'Table Management', icon: 'aperture', component: Sections, isAddon: true,
-            isEnabled: null
+            isEnabled: null, isHide: true
         },
         { title: 'Back Office', icon: 'build', component: HomePage }
     ];
