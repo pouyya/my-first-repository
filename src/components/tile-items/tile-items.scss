@@ -32,28 +32,6 @@
     font-family: "Segoe UI";
     color: #1f1f1f;
   }
-
-  &.tile-color {
-    > div {
-      position: relative !important;
-    }
-
-    .modifier-item {
-      background-color: rgba(0,0,0,0.5);
-      border-radius: 30px;
-      width: 30px;
-      height: 30px;
-      line-height: 28px;
-      margin-left: 40%;
-      color: #FFF;
-    }
-    .name {
-      h2 {
-        color:white;
-        font-weight: 500;
-      }
-    }
-  }
 }
 
 .tile-content {
