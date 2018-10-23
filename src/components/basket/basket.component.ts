@@ -291,7 +291,8 @@ export class BasketComponent {
 
     this.totalExternalValue -= this.sale.items.reduce((initialVal, item) => {
       if (item.discount) {
-        initialVal += item.quantity * (item.systemPrice * item.discount / 100);
+        initialVal += item.quantity * (item.finalPrice * item.discount / 100);
+       
       }
       return initialVal;
     }, 0)
