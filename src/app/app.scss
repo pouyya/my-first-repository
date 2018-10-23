@@ -47,7 +47,7 @@
   .menu-item {
     background-color: color($colors, dark) !important;
     color: $menu-item-color;
-
+    font-family: "Segoe UI";
     .item-inner{
       border: 0 !important;
     }
@@ -65,6 +65,14 @@ ion-title.ion-title-center {
 
 .header-toolbar {
   background-color: color($colors, dark);
+}
+
+
+ion-title
+{
+  .toolbar-title {
+  font-family: "Segoe UI";
+  }
 }
 
 ion-icon {

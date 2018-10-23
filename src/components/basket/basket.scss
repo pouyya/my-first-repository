@@ -31,10 +31,12 @@ basket {
 .top-component {
   overflow-y: auto;
   min-height: 320px;
-  height: calc(75% - 65px);
+  height: calc(75% - 65px); 
 }
 
 .bottom-component {
+  font-family: "Segoe UI Semibold";
+  color: black;
   width: 100%;
   min-height: 130px;
   position: relative;
@@ -47,7 +49,8 @@ basket {
 .pay-button {
   padding-bottom: 0px;
   height: 40px;
-  font-size: large;
+  font-family: "Segoe UI Semibold";
+  color: #000000;
 }
 
 .pay-button > span{
