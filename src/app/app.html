@@ -73,7 +73,7 @@
     <ion-content class="menu-list">
       <ion-list>
         <div *ngFor="let p of currentModule.pages">
-          <button *ngIf="(!(p.isHide==true)) || addonMenuVisibility" menuClose ion-item (click)="openPage(p)" large
+          <button *ngIf="(!(p.isAddon==true)) || addonMenuVisibility" menuClose ion-item (click)="openPage(p)" large
             [ngClass]="isTypeOf(currentPage, p) ? 'menu-item current' : 'menu-item'">
             <ion-icon name='{{p.icon}}' item-left></ion-icon>
             <label padding-left item-left>{{p.title}}</label>
