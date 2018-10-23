@@ -188,6 +188,7 @@ import { CreateStoreModal } from '../pages/store-details/modals/create-store/cre
 import { PingService } from "../services/pingService";
 import { AddonDashboard } from "../pages/addon-dashboard/addon-dashboard";
 import { AddonService } from "../services/addonService";
+import { AddonsService } from "../services/addonsService";
 import { SectionDetails } from "../pages/section-details/section-details";
 import { Sections } from "../pages/section/sections";
 import { Tables } from "../pages/table/tables";
@@ -453,6 +454,7 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     CategoryService,
     TableArrangementService,
     AddonService,
+    AddonsService,
     EmployeeService,
     TaxService,
     CalculatorService,

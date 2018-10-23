@@ -15,7 +15,7 @@
 </ion-header>
 <ion-content>
   <ion-list inset *ngFor="let addon of addons ; let idx=index">
-    <ion-item>
+    <ion-item *ngIf="addontoggleVisibility">
       <ion-label>{{addon.name}}</ion-label>
       <ion-toggle [(ngModel)]="addon.isEnabled" (ionChange)="onChange(addon)"></ion-toggle>
     </ion-item>
