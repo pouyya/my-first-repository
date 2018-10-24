@@ -197,6 +197,7 @@ import { TableArrangementService } from "../services/tableArrangementService";
 import { SelectTablesModal } from "../pages/table/modal/select-table/select-tables";
 import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
 import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attach-customer";
+import {Deeplinks} from "@ionic-native/deeplinks";
 
 @NgModule({
   declarations: [
@@ -437,6 +438,7 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
+    Deeplinks,
     Network,
     PinDialog,
     Dialogs,

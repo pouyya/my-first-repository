@@ -20,6 +20,8 @@ import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
 import { DeployService } from '../services/deployService';
 import { NetworkService } from '../services/networkService'
+import {Deeplinks} from "@ionic-native/deeplinks";
+import {AboutPage} from "../pages/about/about";
 import { ADDONS } from "../metadata/addons";
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 import { AddonsService } from '../services/addonsService';
@@ -58,6 +60,7 @@ export class SimplePOSApp implements OnInit {
     private securityService: SecurityService,
     private syncContext: SyncContext, // used in view
     private menuController: MenuController,
+    private deeplinks: Deeplinks,
     private accountSettingService: AccountSettingService,
     private addonsService: AddonsService,
     public events: Events
@@ -112,9 +115,20 @@ export class SimplePOSApp implements OnInit {
       this.statusBar.styleDefault();
       this.statusBar.overlaysWebView(false);
       this.hideSplashScreen();
+      this.addDeeplinksListener();
     });
   }
 
+  addDeeplinksListener(){
+      this.deeplinks.routeWithNavController(this.nav,{
+          '/about': AboutPage
+      }).subscribe(match => {
+          alert('Successfully matched route:' + JSON.stringify(match));
+      }, nomatch => {
+          alert('Got a deeplink that didn\'t match:' + JSON.stringify(nomatch));
+      });
+
+  }
   hideSplashScreen() {
     if (this.splashScreen) {
       setTimeout(() => {
