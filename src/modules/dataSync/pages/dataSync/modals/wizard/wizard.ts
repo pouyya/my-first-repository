@@ -6,8 +6,8 @@ import { DBService } from '@simplepos/core/dist/services/dBService';
 import { UserService } from '../../../../../../modules/dataSync/services/userService';
 import { TypeHelper } from '@simplepos/core/dist/utility/typeHelper';
 import { DB } from '@simplepos/core/dist/db/db';
-import moment from 'moment';
 import { ResourceService } from '../../../../../../services/resourceService';
+import { DateTimeService } from '../../../../../../services/dateTimeService';
 
 @Component({
     selector: "wizard",
@@ -58,7 +58,8 @@ export class Wizard {
     constructor(public navCtrl: NavController, public viewCtrl: ViewController,
         public alertCtrl: AlertController, public events: Events,
         private loading: LoadingController, private businessService: BusinessService,
-        private userService: UserService, private resourceService: ResourceService) {
+        private userService: UserService, private resourceService: ResourceService,
+        private dateTimeService: DateTimeService) {
         this.step = 1;
         this.currentStep = this.step;
         this.stepCondition = true;
@@ -74,12 +75,7 @@ export class Wizard {
         });
 
         this.businesses = this.businessService.getAll();
-        this.timeZones = moment.tz.names().map(timezone => {
-            return <{ code: string, name: string }>{
-                code: timezone,
-                name: timezone
-            }
-        });
+        this.timeZones = this.dateTimeService.getAllTimeZones();
         this.countries = await this.resourceService.getCountries();
 
         await loader.dismiss();

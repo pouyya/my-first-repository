@@ -28,6 +28,15 @@ export class DateTimeService {
     return this.syncContext.timezone ? utc.tz(this.syncContext.timezone) : utc.local();
   }
 
+  public getAllTimeZones(): Array<{ code: string, name: string }> {
+    return moment.tz.names().map(timezone => {
+      return <{ code: string, name: string }>{
+        code: timezone,
+        name: timezone
+      }
+    });
+  }
+
   public format(date: Date | string, format: string): string {
     return moment(date).format(format);
   }

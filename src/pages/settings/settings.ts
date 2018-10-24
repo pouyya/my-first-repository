@@ -14,6 +14,7 @@ import { UserService } from '../../modules/dataSync/services/userService';
 import { AccountSettingService } from '../../modules/dataSync/services/accountSettingService';
 import { SyncContext } from "../../services/SyncContext";
 import { ResourceService } from '../../services/resourceService';
+import { DateTimeService } from '../../services/dateTimeService';
 
 @PageModule(() => SettingsModule)
 @SecurityModule(SecurityAccessRightRepo.Settings)
@@ -45,7 +46,7 @@ export class Settings {
     private accountSettingService: AccountSettingService,
     private syncContext: SyncContext,
     private resourceService: ResourceService,
-
+    private dateTimeService: DateTimeService
   ) {
     this.cdr.detach();
     this.taxTypes = [
@@ -69,12 +70,7 @@ export class Settings {
         this.salesTaxes = results[0];
         this.setting = results[1];
         this.accountSetting = results[2];
-        this.timezones = moment.tz.names().map(timezone => {
-          return <{ code: string, name: string }>{
-            code: timezone,
-            name: timezone
-          }
-        });
+        this.timezones = this.dateTimeService.getAllTimeZones();
         this.selectedType = !this.accountSetting.taxType ? 0 : 1;
         this.selectedTax = this.accountSetting.defaultTax;
         this.accountSetting.timeOffset &&
