@@ -73,7 +73,7 @@ $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
 
 $menu-width: 180px;
-$menu-item-color-coffee-shop: color($colors-coffee-shop, white);
+$menu-item-color-coffee-shop: #b2adab;
 $menu-item-selected-color-coffee-shop: color($colors-coffee-shop, white);
 
 $category: (active: darken(saturate(adjust-hue($base, -3), 10.14), 40.39));
