@@ -158,6 +158,6 @@
         <variable name="URL_SCHEME" value="simplepos" />
         <variable name="DEEPLINK_SCHEME" value="https" />
         <variable name="DEEPLINK_HOST" value="pos.app" />
-        <variable name="ANDROID_PATH_PREFIX" value="C:/Program Files/Git/" />
+        <variable name="ANDROID_PATH_PREFIX" value="/" />
     </plugin>
 </widget>

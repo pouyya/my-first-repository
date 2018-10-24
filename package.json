@@ -181,7 +181,7 @@
         "URL_SCHEME": "simplepos",
         "DEEPLINK_SCHEME": "https",
         "DEEPLINK_HOST": "pos.app",
-        "ANDROID_PATH_PREFIX": "C:/Program Files/Git/",
+        "ANDROID_PATH_PREFIX": "/",
         "ANDROID_2_PATH_PREFIX": "/",
         "ANDROID_3_PATH_PREFIX": "/",
         "ANDROID_4_PATH_PREFIX": "/",
