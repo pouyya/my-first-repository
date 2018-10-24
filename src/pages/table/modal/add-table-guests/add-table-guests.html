@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Add Table Guests
+      Book table for {{table.numberOfGuests}} guest(s) {{table.size?"up to "+table.size:""}}
     </ion-title>
     <ion-buttons end>
       <button ion-button (click)="dismiss()">
