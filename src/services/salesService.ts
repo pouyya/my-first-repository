@@ -395,10 +395,9 @@ export class SalesServices extends BaseEntityService<Sale> {
 		if (sale.items.length > 0) {
 			for (let item of sale.items) {
 				taxTotal += item.finalPrice * item.quantity;
-				if(item.modifierItems){
+				if (item.modifierItems) {
 					item.modifierItems.forEach(modifier => {
-					taxTotal+=modifier.finalPrice * modifier.quantity;
-						
+						taxTotal += modifier.finalPrice * modifier.quantity;
 					});
 				}
 			}
