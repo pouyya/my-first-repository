@@ -1,0 +1,147 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/v2/theming/
+$font-path: "../assets/fonts";
+
+@import "ionic.globals";
+
+
+// Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass variables found in Ionic's source scss files.
+// To view all the possible Ionic variables, see:
+// http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
+
+
+
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+$base: #BEBCBE;
+$colors-barber: (
+    primary:    $base,
+    secondary:  lighten(desaturate(adjust-hue($base, -33), 85.65), 38.24),
+    danger:     #f53d3d,
+    light:      lighten(desaturate(adjust-hue($base, -33), 85.65), 36.67),
+    warning:    yellow,
+    dark:       darken(saturate($base, 0.92), 58.04),
+    white:    #ffffff,
+    black:    #000000,
+    selected: darken(desaturate(adjust-hue($base, -3), 25.06), 32.16),
+    lighte-selected: darken(saturate($base, 0.07), 49.41),
+    background-light: lighten(saturate($base, 0.66), 7.84)
+);
+
+$colors-md-barber: (
+    primary:    $base,
+    secondary:  lighten(desaturate(adjust-hue($base, -33), 85.65), 38.24),
+    danger:     #f53d3d,
+    light:      lighten(desaturate(adjust-hue($base, -33), 85.65), 36.67),
+    warning:    yellow,
+    dark:       darken(saturate($base, 0.92), 58.04),
+    white:    #ffffff,
+    black:    #000000,
+    selected: darken(desaturate(adjust-hue($base, -3), 25.06), 32.16),
+    lighte-selected: darken(saturate($base, 0.07), 49.41),
+    background-light: lighten(saturate($base, 0.66), 7.84)
+);
+
+$font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+$font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+
+$background-color: lighten(saturate($base, 2.65), 16.47);
+$toolbar-background: $base;
+$toolbar-text-color: #CBCFD2;
+$list-background-color-barber: #FFFFFF;
+$list-background-color-border-barber: #a9a9a9;
+$list-md-border-color:#FFFFFF;
+$toolbar-md-text-color-barber: #CBCFD2;
+$button-background-color: #3A4953;
+$tile-background-color-barber: #FFFFFF;
+$tile-background-color-border-barber: #F1F1F1;
+$tile-hover-background-color-barber: #62676F;
+$tile-hover-color: #FFFFFF;
+$basket-background-color-barber: lighten(saturate($base, 1.19), 11.37);
+
+$split-pane-side-min-width : 100px;
+$split-pane-side-max-width : 180px;
+
+$menu-width: 180px;
+$menu-item-color-barber: #b2adab;
+$menu-item-selected-color-barber: color($colors-barber, white);
+
+$category: (active: darken(saturate($base, 0.92), 58.04));
+
+$text-input-highlight-color-valid: #F8F8F8;
+
+$sales-category-tile-btn-color-barber: darken(saturate($base, 0.92), 58.04);
+$sales-category-selected-background-color-barber: color($colors-barber, lighte-selected);
+  // App iOS Variables
+// --------------------------------------------------
+// iOS only Sass variables can go here
+
+
+
+
+// App Material Design Variables
+// --------------------------------------------------
+// Material Design only Sass variables can go here
+
+
+
+
+// App Windows Variables
+// --------------------------------------------------
+// Windows only Sass variables can go here
+
+
+
+
+// App Theme
+// --------------------------------------------------
+// Ionic apps can have different themes applied, which can
+// then be future customized. This import comes last
+// so that the above variables are used and Ionic's
+// default are overridden.
+
+@import "ionic.theme.default";
+
+// Ionicons
+// --------------------------------------------------
+// The premium icon font for Ionic. For more info, please see:
+// http://ionicframework.com/docs/v2/ionicons/
+
+@import "ionic.ionicons";
+
+
+// Fonts
+// --------------------------------------------------
+
+@import "lato";
+@import "roboto";
+@import "noto-sans";
+@import "flaticon";
+
+
+// Global Styles
+// ---------------------------------------------------
+// Styles that apply to the entire app
+.barber {
+  .header .toolbar-background {
+     border-color: color($colors-barber, primary);
+     background-color: color($colors-barber, primary);
+   }
+
+  .content, .content-md {
+    background-color: $background-color;
+  }
+
+  .menu-list {
+    background-color: color($colors-barber, dark);
+  }
+}

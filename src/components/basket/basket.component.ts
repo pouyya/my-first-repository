@@ -174,8 +174,16 @@ export class BasketComponent {
         var basketItem = this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
         if (purchasableItem.isModifier) {
           const item = this.selectedItem || this.sale.items[this.sale.items.length - 1];
-          !item.modifierItems && (item.modifierItems = []);
-          this.updateQuantity(basketItem, item.modifierItems);
+          let seperateItem = item;
+          if(item.quantity > 1){
+            item.quantity -= 1;
+            seperateItem = _.clone(item);
+            seperateItem.quantity = 1;
+            this.sale.items.push(seperateItem);
+            this.selectItem(seperateItem);
+          }
+          !seperateItem.modifierItems && (seperateItem.modifierItems = []);
+          this.updateQuantity(basketItem, seperateItem.modifierItems);
         } else {
           this.updateQuantity(basketItem);
         }
@@ -441,7 +449,7 @@ export class BasketComponent {
         if (this.sale.tableId) {
           const table = this.tables[this.sale.tableId];
           table.status = TableStatus.Active;
-          this.tableArrangementService.updateTable(table, null,null);
+          this.tableArrangementService.updateTable(table, null, null);
         }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',

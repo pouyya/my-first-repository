@@ -64,38 +64,43 @@ Note: ${this.productionLinePrinterProviderContext.sale.notes}
                             <td>${basketItem.quantity}</td>
                             <td>${TypeHelper.encodeHtml(basketItem.name)}</td>
                         </tr>`;
-                if (!TypeHelper.isNullOrWhitespace(basketItem.notes)) {
-                    basketItems += `<tr>
-                    <td> Note</td>
-                    <td> ${TypeHelper.encodeHtml(basketItem.notes)}</td>
-                </tr>`;
 
-                    this.lineCounter++;
-
-                }
                 if (basketItem.modifierItems) {
                     for (let basketItemModifier of basketItem.modifierItems) {
                         basketItems += `<tr>
-                        <td> + ${basketItemModifier.quantity}</td>
-                        <td>   ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
+                        <td> +${basketItemModifier.quantity}</td>
+                        <td> ${TypeHelper.encodeHtml(basketItemModifier.name)}</td>
                     </tr>`;
 
                         this.lineCounter++;
 
                         if (!TypeHelper.isNullOrWhitespace(basketItemModifier.notes)) {
                             basketItems += `<tr>
-                            <td>   Note:</td>
+                            <td>--></td>
                             <td>   ${TypeHelper.encodeHtml(basketItemModifier.notes)}</td>
                         </tr>`;
                             this.lineCounter++;
                         }
                     }
                 }
+
+                if (!TypeHelper.isNullOrWhitespace(basketItem.notes)) {
+                    basketItems += `<tr>
+                    <td>--></td>
+                    <td> ${TypeHelper.encodeHtml(basketItem.notes)}</td>
+                </tr>`;
+
+                    this.lineCounter++;
+                }
+
+                basketItems += `<tr>
+                    <td>--</td>
+                    <td>------------------</td>
+                </tr>`
             }
 
             this.buffer += basketItems + `</table>
             </h1>
-            <hr>
             <br>`;
 
             this.lineCounter++;
