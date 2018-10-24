@@ -68,7 +68,7 @@ export class Sales implements OnDestroy {
   public employees: any[] = [];
   public selectedEmployee: Employee = null;
   public user: UserSession;
-  private isTableEnabled: boolean;
+  private isTableEnabled: boolean = false;
   private alive: boolean = true;
   public iconTakeaway: string = "person-add";
 
