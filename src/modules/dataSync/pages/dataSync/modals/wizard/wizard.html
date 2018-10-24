@@ -38,10 +38,9 @@
           <ion-input [(ngModel)]="storeName" (ngModelChange)="onFieldChanged()" type="text" required name="storeName"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="item-name" stacked>Business Type*</ion-label>
-          <ion-select [(ngModel)]="selectedBusiness" (ngModelChange)="onFieldChanged()">
-            <ion-option [value]="business" *ngFor="let business of businesses">{{business.name}}</ion-option>
-          </ion-select>
+            <searchable-ion-select isModal="true" name="selectedBusiness" [(ngModel)]="selectedBusiness" title="Business Type*"
+              textField="name" [items]="businesses">
+          </searchable-ion-select>          
         </ion-item>
         <ion-item>
           <ion-label class="item-name" stacked>{{ 'TaxFileNumber' | translator }}*</ion-label>
