@@ -5,7 +5,7 @@
     </button>
     <ion-title class="ion-title-center">Sales</ion-title>
 
-    <ion-buttons style="display: inline-flex;" right>
+    <ion-buttons *ngIf="syncContext.currentPos.status" style="display: inline-flex;" right>
       <button *ngIf="isTableEnabled" class="big_icon" no-margin ion-button (click)="openAttachCustomerPopup()">
         <ion-icon [name]="iconTakeaway"></ion-icon>
       </button>

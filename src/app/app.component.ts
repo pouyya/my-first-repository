@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import {
-    Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController,
-    Events
+  Nav, Platform, ModalController, LoadingController, ToastController, ViewController, MenuController,
+  Events
 } from 'ionic-angular';
 import { Insomnia } from '@ionic-native/insomnia';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -20,6 +20,9 @@ import { StoreService } from "../services/storeService";
 import { SyncContext } from "../services/SyncContext";
 import { DeployService } from '../services/deployService';
 import { NetworkService } from '../services/networkService'
+import { ADDONS } from "../metadata/addons";
+import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
+import { AddonsService } from '../services/addonsService';
 
 @Component({
   selector: 'app',
@@ -33,7 +36,10 @@ export class SimplePOSApp implements OnInit {
   public moduleName: string;
   public currentPage: any;
   private alive: boolean = true;
+  private addonMenuVisibility: boolean = false;
+  private myBusinessType: string;
   public theme: string = '';
+  private addonsStatus;
 
   constructor(
     public platform: Platform,
@@ -52,8 +58,14 @@ export class SimplePOSApp implements OnInit {
     private securityService: SecurityService,
     private syncContext: SyncContext, // used in view
     private menuController: MenuController,
+    private accountSettingService: AccountSettingService,
+    private addonsService: AddonsService,
     public events: Events
   ) {
+    this.addonsService.statusAddonsConfirmed$.subscribe(
+      status => {
+        this.addonMenuVisibility = status;
+      });
     this.currentModule = this.moduleService.getCurrentModule();
     this.moduleName = this.currentModule.constructor.name;
     this.initializeApp();
@@ -83,7 +95,7 @@ export class SimplePOSApp implements OnInit {
     });
 
     this.events.subscribe('theme:initialized', (theme, time) => {
-        this.theme = theme;
+      this.theme = theme;
     });
 
     var eligibleForDeploy = await this.deployService.eligibleForDeploy();
@@ -111,6 +123,29 @@ export class SimplePOSApp implements OnInit {
     }
   }
 
+  async setVisibilityFlagByBusinessType() {
+    await this.getBusinessType();
+
+    let addonsBusiness = ADDONS.map((addon) => {
+      return addon.businessType;
+    });
+
+    if (addonsBusiness[0].length == 0) {
+      this.addonMenuVisibility = true;
+    }
+    else if (addonsBusiness[0].indexOf(this.myBusinessType) != -1) {
+      this.addonMenuVisibility = true;
+    }
+    else {
+      this.addonMenuVisibility = false;
+    }
+  }
+
+  async getBusinessType() {
+    let accountSettings = await this.accountSettingService.getCurrentSetting();
+    this.myBusinessType = accountSettings.businessType;
+  }
+
   switchRegister() {
     let modal = this.modalCtrl.create(SwitchPosModal);
     modal.onDidDismiss(data => {
@@ -127,18 +162,21 @@ export class SimplePOSApp implements OnInit {
   }
 
   async openPage(page) {
-    if (page.hasOwnProperty('isAddon') && page.isAddon){
+    if (page.hasOwnProperty('isAddon') && page.isAddon) {
       const isEnabled = await page.isEnabled();
-      if(!isEnabled){
+      if (!isEnabled) {
         let toast = this.toastController.create({
-            message: "This Addon is not enabled",
-            duration: 3000
+          message: "This Addon is not enabled",
+          duration: 3000
         });
 
         toast.present();
         return;
       }
     }
+
+    await this.setVisibilityFlagByBusinessType();
+
     if (page.hasOwnProperty('modal') && page.modal) {
       let modal = this.modalCtrl.create(page.component);
       modal.onDidDismiss(data => {
