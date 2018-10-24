@@ -141,7 +141,15 @@ $sales-category-selected-background-color-barber: color($colors-barber, lighte-s
     background-color: $background-color;
   }
 
-  .menu-list {
-    background-color: color($colors-barber, dark);
+  ion-menu {
+
+    .header .toolbar-background {
+      border-color: color($colors-barber, dark);
+      background-color: color($colors-barber, dark);
+    }
+
+    .menu-list {
+      background-color: color($colors-barber, dark);
+    }
   }
 }
