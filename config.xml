@@ -157,16 +157,16 @@
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
         <variable name="URL_SCHEME" value="simplepos" />
         <variable name="DEEPLINK_SCHEME" value="https" />
-        <variable name="DEEPLINK_HOST" value="accounts-dev.pos.app" />
+        <variable name="DEEPLINK_HOST" value="pos.app" />
         <variable name="ANDROID_PATH_PREFIX" value="C:/Program Files/Git/" />
-        <variable name="DEEPLINK_2_HOST" value="accounts-stage.pos.app" />
-        <variable name="ANDROID_2_PATH_PREFIX" value="C:/Program Files/Git/" />
-        <variable name="DEEPLINK_3_HOST" value="accounts.pos.app" />
-        <variable name="ANDROID_3_PATH_PREFIX" value="C:/Program Files/Git/" />
+        <variable name="ANDROID_2_PATH_PREFIX" value="/" />
+        <variable name="ANDROID_3_PATH_PREFIX" value="/" />
         <variable name="ANDROID_4_PATH_PREFIX" value="/" />
         <variable name="ANDROID_5_PATH_PREFIX" value="/" />
         <variable name="DEEPLINK_2_SCHEME" value=" " />
+        <variable name="DEEPLINK_2_HOST" value=" " />
         <variable name="DEEPLINK_3_SCHEME" value=" " />
+        <variable name="DEEPLINK_3_HOST" value=" " />
         <variable name="DEEPLINK_4_SCHEME" value=" " />
         <variable name="DEEPLINK_4_HOST" value=" " />
         <variable name="DEEPLINK_5_SCHEME" value=" " />
