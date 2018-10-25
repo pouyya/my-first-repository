@@ -78,7 +78,7 @@ export class LoginPage {
   }
 
   public register(): void {
-    const browser = this.iab.create(`${ConfigService.securityServerBaseUrl()}/register?mobile=1`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
+    const browser = this.iab.create(`${ConfigService.securityServerBaseUrl()}/register?ismobile=true`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
     var email;
     var password;
     var bridgeInterval;
@@ -109,14 +109,31 @@ export class LoginPage {
       if (email && password) {
         _this.userLogin(email, password);
       }
-    }.bind(this));
+    });
   }
 
   public forgotPassword(): void {
-    let modal = this.modalCtrl.create(ForgotPassword);
-    modal.onDidDismiss(data => {
+    const browser = this.iab.create(`${ConfigService.securityServerBaseUrl()}/forgottenpassword?ismobile=true`, '_blank', 'location=no,clearcache=yes,clearsessioncache=yes,useWideViewPort=yes');
+    var bridgeInterval;
+
+    var _this = this;
+
+    browser.on('loadstop').subscribe(function () {
+      bridgeInterval = setInterval(async function () {
+
+        var closeResult = await _this.getValue(browser, 'forcetoclose');
+        if (closeResult && closeResult[0]) {
+          setTimeout(function () {
+            browser.close();
+          }, 8000);          
+        }
+      }, 500);
+
     });
-    modal.present();
+
+    browser.on('exit').subscribe(function () {
+      clearInterval(bridgeInterval);
+    });
   }
 
   navigateToDataSync() {
