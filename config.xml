@@ -120,9 +120,6 @@
         <splash height="1280" src="resources/wp8/splash/SplashScreenImage.png" width="768" />
     </platform>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
-    <engine name="ios" spec="4.5.5" />
-    <engine name="browser" spec="5.0.3" />
-    <engine name="android" spec="7.0.0" />
     <plugin name="cordova-plugin-device" spec="^1.1.7" />
     <plugin name="cordova-plugin-sqlite-2" spec="^1.0.5" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.1.2" />
@@ -160,4 +157,7 @@
         <variable name="DEEPLINK_HOST" value="pos.app" />
         <variable name="ANDROID_PATH_PREFIX" value="/" />
     </plugin>
+    <engine name="browser" spec="5.0.3" />
+    <engine name="android" spec="6.3.0" />
+    <engine name="ios" spec="4.5.5" />
 </widget>

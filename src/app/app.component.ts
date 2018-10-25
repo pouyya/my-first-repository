@@ -115,20 +115,9 @@ export class SimplePOSApp implements OnInit {
       this.statusBar.styleDefault();
       this.statusBar.overlaysWebView(false);
       this.hideSplashScreen();
-      this.addDeeplinksListener();
     });
   }
 
-  addDeeplinksListener(){
-      this.deeplinks.routeWithNavController(this.nav,{
-          '/about': AboutPage
-      }).subscribe(match => {
-          alert('Successfully matched route:' + JSON.stringify(match));
-      }, nomatch => {
-          alert('Got a deeplink that didn\'t match:' + JSON.stringify(nomatch));
-      });
-
-  }
   hideSplashScreen() {
     if (this.splashScreen) {
       setTimeout(() => {
