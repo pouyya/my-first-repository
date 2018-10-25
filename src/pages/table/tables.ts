@@ -45,7 +45,7 @@ export class Tables {
       this.storeList = await this.storeService.getAll();
       this.sectionList = await this.tableArrangementService.getAllSections() || [];
       if (!this.selectedSection) {
-        if (this.sectionList.length) {
+        if (this.sectionList.length>0) {
           this.selectedSection = this.sectionList[0].id;
         }
       }
@@ -80,14 +80,14 @@ export class Tables {
       return;
     }
     const sections: any = this.sectionList.filter(section => section.id === this.selectedSection);
-    sections.length && (this.tables = sections[0].tables || []);
+   ( sections.length>0) && (this.tables = sections[0].tables || []);
   }
 
   public filterByStore() {
     this.tables = [];
     this.sections = this.sectionList.filter(section => section.storeId === this.selectedStore);
-    this.selectedSection = this.sections[0].id || "";
-    this.sections.length && (this.tables = this.sections[0].tables || []);
+    this.selectedSection =(this.sections.length>0)?  this.sections[0].id : "";
+    (this.sections.length>0) && (this.tables = this.sections[0].tables || []);
     this.filterBySection();
   }
 
