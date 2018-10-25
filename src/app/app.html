@@ -18,51 +18,27 @@
 
   <ion-menu [content]="content" side="left" id="leftMenu" enable-menu-with-back-views="true" style="width: 180px">
 
-    <ion-header *ngIf="moduleName == 'BackOfficeModule'">
+    <ion-header *ngIf="moduleName != 'SalesModule'">
       <ion-toolbar>
-        <ion-title>SimplePOS</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'SettingsModule'">
-      <ion-toolbar>
-        <ion-title>Settings</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'SalesTaxModule'">
-      <ion-toolbar>
-        <ion-title>Sales Tax</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'InventoryModule'">
-      <ion-toolbar>
-        <ion-title>Inventory</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'HumanResourceModule'">
-      <ion-toolbar>
-        <ion-title>Human Resource</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'ReportModule'">
-      <ion-toolbar>
-        <ion-title>Reports</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'AddonModule'">
-      <ion-toolbar>
-        <ion-title>Add-ons</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-header *ngIf="moduleName == 'TableManagementModule'">
-      <ion-toolbar>
-        <ion-title>Table Management</ion-title>
+        <img class="menu-img" src="assets/img/logo.png" width="40px" height="40px"/>
+        <ion-title *ngIf="moduleName == 'BackOfficeModule'" class="module-title">SimplePOS</ion-title>
+        <ion-title *ngIf="moduleName == 'SettingsModule'" class="module-title" >Settings</ion-title>
+        <ion-title *ngIf="moduleName == 'SalesTaxModule'" class="module-title" >Sales Tax</ion-title>
+        <ion-title *ngIf="moduleName == 'InventoryModule'" class="module-title" >Inventory</ion-title>
+        <ion-title *ngIf="moduleName == 'HumanResourceModule'" class="module-title" >Human Resource</ion-title>
+        <ion-title *ngIf="moduleName == 'ReportModule'" class="module-title" >Reports</ion-title>
+        <ion-title *ngIf="moduleName == 'AddonModule'" class="module-title" >Add-ons</ion-title>
+        <ion-title *ngIf="moduleName == 'TableManagementModule'" class="module-title" >Table Management</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-header *ngIf="moduleName == 'SalesModule' && syncContext.currentPos && syncContext.currentStore" class="header-toolbar">
-      <ion-title>{{syncContext.currentStore.name}}</ion-title>
-      <ion-title>
-        <small>{{syncContext.currentPos.name}}</small>
-      </ion-title>
+      <img class="menu-img" src="assets/img/logo.png"/>
+      <div class="module-title">
+        <ion-title>{{syncContext.currentStore.name}}</ion-title>
+        <ion-title>
+          <small>{{syncContext.currentPos.name}}</small>
+        </ion-title>
+      </div>
       <ion-title>
         <small>
           <button ion-button full small color="primary" (click)="switchRegister()">Switch</button>
