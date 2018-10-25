@@ -9,6 +9,8 @@ import { TableDetails } from "../table-details/table-details";
 import { ITable } from "../../model/tableArrangement";
 import { TableArrangementService } from "../../services/tableArrangementService";
 import { Events } from 'ionic-angular';
+import { ISection } from "../../model/tableArrangement";
+import { SyncContext } from "../../services/SyncContext";
 
 @SecurityModule(SecurityAccessRightRepo.TableManagement)
 @PageModule(() => TableManagementModule)
@@ -21,25 +23,33 @@ export class Tables {
   public tables: ITable[] = [];
   public sectionList = [];
   public selectedSection = "";
+  public sections: ISection[] = [];
+  public storeList = [];
+  public selectedStore = "";
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     private tableArrangementService: TableArrangementService,
     private storeService: StoreService,
     public events: Events,
-    private loading: LoadingController) {
-  }
+    private loading: LoadingController,
+    private syncContext: SyncContext
+  ) { }
 
   async ionViewDidEnter() {
+    if (!this.selectedStore)
+      this.selectedStore = this.syncContext.currentStore._id;
     let loader = this.loading.create({ content: 'Loading Tables...' });
     await loader.present();
     try {
+      this.storeList = await this.storeService.getAll();
       this.sectionList = await this.tableArrangementService.getAllSections() || [];
       if (!this.selectedSection) {
         if (this.sectionList.length) {
           this.selectedSection = this.sectionList[0].id;
         }
       }
-      this.filterBySection();
+      this.filterByStore();
       loader.dismiss();
     } catch (err) {
       console.error(new Error(err));
@@ -72,4 +82,13 @@ export class Tables {
     const sections: any = this.sectionList.filter(section => section.id === this.selectedSection);
     sections.length && (this.tables = sections[0].tables || []);
   }
+
+  public filterByStore() {
+    this.tables = [];
+    this.sections = this.sectionList.filter(section => section.storeId === this.selectedStore);
+    this.selectedSection = this.sections[0].id || "";
+    this.sections.length && (this.tables = this.sections[0].tables || []);
+    this.filterBySection();
+  }
+
 } 

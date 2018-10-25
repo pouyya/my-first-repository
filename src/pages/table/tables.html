@@ -15,16 +15,26 @@
 </ion-header>
 <ion-content>
   <ion-grid>
-  <ion-row>
-    <ion-col col-md-6>
-      <ion-item no-padding>
-        <ion-label stacked>Section</ion-label>
-        <ion-select [(ngModel)]="selectedSection" (ngModelChange)="filterBySection()">
-          <ion-option *ngFor="let section of sectionList" [value]="section.id">{{ section.name }}</ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-col>
-  </ion-row>
+    <ion-row>
+      <ion-col col-md-6>
+        <ion-item no-padding>
+          <ion-label stacked>Store</ion-label>
+          <ion-select [(ngModel)]="selectedStore" (ngModelChange)="filterByStore()">
+            <ion-option *ngFor="let store of storeList" [value]="store._id">{{ store.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-md-6>
+        <ion-item no-padding>
+          <ion-label stacked>Section</ion-label>
+          <ion-select [(ngModel)]="selectedSection" (ngModelChange)="filterBySection()">
+            <ion-option *ngFor="let section of sections" [value]="section.id">{{ section.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
   </ion-grid>
   <tile-items [items]="tables" [emptyListMessage]="emptyListMessage" (onSelect)="onSelectTile($event)">
   </tile-items>
