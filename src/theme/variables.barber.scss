@@ -55,6 +55,7 @@ $font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !defa
 $font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
 $background-color: lighten(saturate($base, 2.65), 16.47);
+$fast-payment-button-barber: #999999;
 $toolbar-background: $base;
 $toolbar-text-color: #CBCFD2;
 $list-background-color-barber: #FFFFFF;
@@ -67,6 +68,9 @@ $tile-background-color-border-barber: #F1F1F1;
 $tile-hover-background-color-barber: #62676F;
 $tile-hover-color: #FFFFFF;
 $basket-background-color-barber: lighten(saturate($base, 1.19), 11.37);
+$action-toolbar-background-color-barber: lighten(desaturate(adjust-hue($base, -4), 25.65), 32.16);
+$basket-tile-background-color-barber: lighten(desaturate(adjust-hue($base, -3), 62.12), 20.98);
+$basket-tile-item-selected-barber: lighten(desaturate(adjust-hue($base, -20), 62.12), 20.98);
 
 $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
@@ -80,7 +84,7 @@ $category: (active: darken(saturate($base, 0.92), 58.04));
 $text-input-highlight-color-valid: #F8F8F8;
 
 $sales-category-tile-btn-color-barber: darken(saturate($base, 0.92), 58.04);
-$sales-category-selected-background-color-barber: color($colors-barber, lighte-selected);
+$sales-category-selected-background-color-barber: $base;
   // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
