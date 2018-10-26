@@ -13,9 +13,9 @@ basket {
   height: 100%;
 
   .actions-container {
-    height: 15%;
+    height: 20%;
     ion-grid {
-      ion-row {
+      ion-row.action-buttons {
         text-align: center;
         ion-col {
           max-width: 14%;
@@ -29,10 +29,15 @@ basket {
           }
         }
       }
+      ion-row.customer-info {
+        font-weight: bold;
+        ion-col {
+        }
+      }
     }
   }
   .products-container {
-    height: 55%;
+    height: 52%;
     overflow-y: scroll;
     ion-item {
       border: 1px solid white;
@@ -45,8 +50,8 @@ basket {
     }
   }
   .payment-container {
-    height: 30%;
-    padding-top: 4%;
+    height: 21%;
+    padding-top: 2%;
     ion-grid {
       margin: 0px;
       padding: 0px;
@@ -147,9 +152,14 @@ ion-item.item-md.item-block .item-inner {
   }
 
   .basket {
+    .pay-button {
+      &.fast {
+        background-color: $fast-payment-button-barber;
+      }
+    }
     .actions-container {
       ion-grid {
-        ion-row {
+        ion-row.action-buttons {
           ion-col {
             background-color: $action-toolbar-background-color-barber;
           }
@@ -179,9 +189,15 @@ ion-item.item-md.item-block .item-inner {
     background-color: $basket-background-color-coffee-shop;
   }
   .basket {
+
+    .pay-button {
+      &.fast {
+        background-color: $fast-payment-button-coffee-shop;
+      }
+    }
     .actions-container {
       ion-grid {
-        ion-row {
+        ion-row.action-buttons {
           ion-col {
             background-color: $action-toolbar-background-color-coffee-shop;
           }

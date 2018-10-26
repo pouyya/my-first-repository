@@ -55,6 +55,7 @@ $font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !defa
 $font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
 $background-color: lighten(saturate($base, 2.65), 16.47);
+$fast-payment-button-barber: #999999;
 $toolbar-background: $base;
 $toolbar-text-color: #CBCFD2;
 $list-background-color-barber: #FFFFFF;
@@ -83,7 +84,7 @@ $category: (active: darken(saturate($base, 0.92), 58.04));
 $text-input-highlight-color-valid: #F8F8F8;
 
 $sales-category-tile-btn-color-barber: darken(saturate($base, 0.92), 58.04);
-$sales-category-selected-background-color-barber: color($colors-barber, lighte-selected);
+$sales-category-selected-background-color-barber: $base;
   // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
