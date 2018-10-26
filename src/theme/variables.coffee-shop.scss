@@ -56,6 +56,7 @@ $font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !defa
 $font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
 
 $background-color: lighten(desaturate(adjust-hue($base, -6), 38.28), 29.80);
+$action-toolbar-background-color-coffee-shop: lighten(desaturate(adjust-hue($base, -4), 25.65), 32.16);
 $toolbar-background: $base;
 $toolbar-text-color: #CBCFD2;
 $list-background-color-coffee-shop: #FFFFFF;
@@ -67,7 +68,9 @@ $tile-background-color-coffee-shop: #FFFFFF;
 $tile-background-color-border-coffee-shop: #F1F1F1;
 $tile-hover-background-color-coffee-shop: #62676F;
 $tile-hover-color: #FFFFFF;
-$basket-background-color-coffee-shop: lighten(desaturate(adjust-hue($base, -7), 58.59), 24.31);
+$basket-background-color-coffee-shop: lighten(desaturate(adjust-hue($base, -3), 57.74), 24.12);
+$basket-tile-background-color-coffee-shop: lighten(desaturate(adjust-hue($base, -3), 62.12), 20.98);
+$basket-tile-item-selected-coffee-shop: lighten(desaturate(adjust-hue($base, -20), 62.12), 20.98);
 
 $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
