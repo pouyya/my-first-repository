@@ -174,8 +174,16 @@ export class BasketComponent {
         var basketItem = this.createBasketItem(purchasableItem, categoryId, this.user.settings.taxType, itemPrice, currentEmployeeId, stockControl);
         if (purchasableItem.isModifier) {
           const item = this.selectedItem || this.sale.items[this.sale.items.length - 1];
-          !item.modifierItems && (item.modifierItems = []);
-          this.updateQuantity(basketItem, item.modifierItems);
+          let seperateItem = item;
+          if(item.quantity > 1){
+            item.quantity -= 1;
+            seperateItem = _.clone(item);
+            seperateItem.quantity = 1;
+            this.sale.items.push(seperateItem);
+            this.selectItem(seperateItem);
+          }
+          !seperateItem.modifierItems && (seperateItem.modifierItems = []);
+          this.updateQuantity(basketItem, seperateItem.modifierItems);
         } else {
           this.updateQuantity(basketItem);
         }
@@ -199,7 +207,7 @@ export class BasketComponent {
   }
 
   public isItemsInBasket() {
-    return this.sale.items.length>0;
+    return this.sale.items.length > 0;
   }
 
   private updateQuantity(basketItem: BasketItem, items?: [BasketItem]) {
@@ -291,7 +299,7 @@ export class BasketComponent {
 
     this.totalExternalValue -= this.sale.items.reduce((initialVal, item) => {
       if (item.discount) {
-        initialVal += item.quantity * (item.systemPrice * item.discount / 100);
+        initialVal += item.quantity * (item.finalPrice * item.discount / 100);
       }
       return initialVal;
     }, 0)
@@ -441,7 +449,7 @@ export class BasketComponent {
         if (this.sale.tableId) {
           const table = this.tables[this.sale.tableId];
           table.status = TableStatus.Active;
-          this.tableArrangementService.updateTable(table, null,null);
+          this.tableArrangementService.updateTable(table, null, null);
         }
         let confirm = this.alertController.create({
           title: 'Sale Parked!',
@@ -488,7 +496,7 @@ export class BasketComponent {
                 const table = this.tables[this.sale.tableId];
                 table.status = TableStatus.Closed;
                 table.numberOfGuests = 0;
-                this.tableArrangementService.updateTable(table, null,null);
+                this.tableArrangementService.updateTable(table, null, null);
               }
               this.unattachCustomer();
               this.isSaleParked && this.saleParked.emit(false);
@@ -607,7 +615,7 @@ export class BasketComponent {
       if (this.table) {
         this.table.status = TableStatus.Closed;
         this.table.numberOfGuests = 0;
-        await this.tableArrangementService.updateTable(this.table, null,null);
+        await this.tableArrangementService.updateTable(this.table, null, null);
       }
     }
     this.table = null;

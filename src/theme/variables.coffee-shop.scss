@@ -1,0 +1,148 @@
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/v2/theming/
+$font-path: "../assets/fonts";
+
+@import "ionic.globals";
+
+
+// Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass variables found in Ionic's source scss files.
+// To view all the possible Ionic variables, see:
+// http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
+
+
+
+
+// Named Color Variables
+// --------------------------------------------------
+// Named colors makes it easy to reuse colors on various components.
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+
+$base: #F09F3D;
+$colors-coffee-shop: (
+    primary:    $base,
+    secondary:  lighten(desaturate(adjust-hue($base, -33), 85.65), 38.24),
+    danger:     #f53d3d,
+    light:      lighten(desaturate(adjust-hue($base, -33), 85.65), 36.67),
+    warning:    yellow,
+    dark:       darken(saturate(adjust-hue($base, -3), 10.14), 40.39),
+    white:    #ffffff,
+    black:    #000000,
+    selected: darken(desaturate(adjust-hue($base, -3), 25.06), 32.16),
+    lighte-selected: lighten(desaturate(adjust-hue($base, 168), 4.69), 36.86),
+    background-light: lighten(desaturate(adjust-hue($base, -7), 65.99), 18.04)
+);
+
+$colors-md-coffee-shop: (
+    primary:    $base,
+    secondary:  lighten(desaturate(adjust-hue($base, -33), 85.65), 38.24),
+    danger:     #f53d3d,
+    light:      lighten(desaturate(adjust-hue($base, -33), 85.65), 36.67),
+    warning:    yellow,
+    dark:       darken(saturate(adjust-hue($base, -3), 10.14), 40.39),
+    white:    #ffffff,
+    black:    #000000,
+    selected: darken(desaturate(adjust-hue($base, -3), 25.06), 32.16),
+    lighte-selected: lighten(desaturate(adjust-hue($base, 168), 4.69), 36.86),
+    background-light: lighten(desaturate(adjust-hue($base, -7), 65.99), 18.04)
+);
+
+$font-family-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+$font-family-md-base: "Roboto Light", "LatoWeb", "Helvetica Neue", sans-serif !default;
+
+$background-color: lighten(desaturate(adjust-hue($base, -6), 38.28), 29.80);
+$toolbar-background: $base;
+$toolbar-text-color: #CBCFD2;
+$list-background-color-coffee-shop: #FFFFFF;
+$list-background-color-border-coffee-shop: #a9a9a9;
+$list-md-border-color:#FFFFFF;
+$toolbar-md-text-color-coffee-shop: #CBCFD2;
+$button-background-color: #3A4953;
+$tile-background-color-coffee-shop: #FFFFFF;
+$tile-background-color-border-coffee-shop: #F1F1F1;
+$tile-hover-background-color-coffee-shop: #62676F;
+$tile-hover-color: #FFFFFF;
+$basket-background-color-coffee-shop: lighten(desaturate(adjust-hue($base, -7), 58.59), 24.31);
+
+$split-pane-side-min-width : 100px;
+$split-pane-side-max-width : 180px;
+
+$menu-width: 180px;
+$menu-item-color-coffee-shop: #b2adab;
+$menu-item-selected-color-coffee-shop: color($colors-coffee-shop, white);
+
+$category: (active: darken(saturate(adjust-hue($base, -3), 10.14), 40.39));
+
+$text-input-highlight-color-valid: #F8F8F8;
+
+$sales-category-tile-btn-color-coffee-shop: darken(saturate(adjust-hue($base, -3), 10.14), 40.39);
+$sales-category-selected-background-color-coffee-shop: color($colors-coffee-shop, lighte-selected);
+// App iOS Variables
+// --------------------------------------------------
+// iOS only Sass variables can go here
+
+
+
+
+// App Material Design Variables
+// --------------------------------------------------
+// Material Design only Sass variables can go here
+
+
+
+
+// App Windows Variables
+// --------------------------------------------------
+// Windows only Sass variables can go here
+
+
+
+
+// App Theme
+// --------------------------------------------------
+// Ionic apps can have different themes applied, which can
+// then be future customized. This import comes last
+// so that the above variables are used and Ionic's
+// default are overridden.
+
+@import "ionic.theme.default";
+
+// Ionicons
+// --------------------------------------------------
+// The premium icon font for Ionic. For more info, please see:
+// http://ionicframework.com/docs/v2/ionicons/
+
+@import "ionic.ionicons";
+
+
+// Fonts
+// --------------------------------------------------
+
+@import "lato";
+@import "roboto";
+@import "noto-sans";
+@import "flaticon";
+
+
+// Global Styles
+// ---------------------------------------------------
+// Styles that apply to the entire app
+.coffee-shop {
+  .header .toolbar-background {
+    border-color: color($colors-coffee-shop, primary);
+    background-color: color($colors-coffee-shop, primary);
+  }
+
+  .content, .content-md {
+    background-color: $background-color;
+  }
+
+  .menu-list {
+    background-color: color($colors-coffee-shop, dark);
+  }
+}

@@ -188,6 +188,7 @@ import { CreateStoreModal } from '../pages/store-details/modals/create-store/cre
 import { PingService } from "../services/pingService";
 import { AddonDashboard } from "../pages/addon-dashboard/addon-dashboard";
 import { AddonService } from "../services/addonService";
+import { AddonsService } from "../services/addonsService";
 import { SectionDetails } from "../pages/section-details/section-details";
 import { Sections } from "../pages/section/sections";
 import { Tables } from "../pages/table/tables";
@@ -196,6 +197,7 @@ import { TableArrangementService } from "../services/tableArrangementService";
 import { SelectTablesModal } from "../pages/table/modal/select-table/select-tables";
 import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
 import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attach-customer";
+import {Deeplinks} from "@ionic-native/deeplinks";
 
 @NgModule({
   declarations: [
@@ -436,6 +438,7 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     { provide: ErrorHandler, useClass: AppErrorHandler },
     StatusBar,
     SplashScreen,
+    Deeplinks,
     Network,
     PinDialog,
     Dialogs,
@@ -453,6 +456,7 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     CategoryService,
     TableArrangementService,
     AddonService,
+    AddonsService,
     EmployeeService,
     TaxService,
     CalculatorService,

@@ -36,7 +36,11 @@ export class DiscountSurchargeModal {
   }
 
   public confirmChanges() {
-    if (this.value > 0) {
+    if (!this.value){
+      this.value=0;
+    }
+    if ( this.value >= 0) {
+     
       if (this.action == DiscountSurchargeModal.DISCOUNT && this.inputType == DiscountSurchargeModal.CASH && this.total - this.value < 0) {
         this.toast("Final result value must be positive");
       }
