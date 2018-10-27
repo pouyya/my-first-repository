@@ -5,15 +5,16 @@ import {ModalController} from "ionic-angular";
 import {SyncContext} from "../../services/SyncContext";
 
 @Component({
-  selector: 'tile-items',
-  templateUrl: 'tile-items.html',
-  styleUrls: ['/components/tile-items/tile-items.scss']
+  selector: 'postile-items',
+  templateUrl: 'postile-items.html',
+  styleUrls: ['/components/postile-items/postile-items.scss']
 })
-export class TileItemsComponent {
+export class POSTileItemsComponent {
   @Input() allowDragSupport: boolean;
   @Input() items: Array<any>;
   @Input() activeEmployee: any | null;
-  @Input() emptyListMessage: string | null; 
+  @Input() emptyListMessage: string | null;
+  @Input() viewType: string | null;
   @Output() onSelect = new EventEmitter<Object>();
   @Output() onPositionChange = new EventEmitter();
   @Output() onColorSelected = new EventEmitter();
