@@ -80,7 +80,7 @@ $category: (active: darken(saturate($base, 0.92), 58.04));
 $text-input-highlight-color-valid: #F8F8F8;
 
 $sales-category-tile-btn-color-barber: darken(saturate($base, 0.92), 58.04);
-$sales-category-selected-background-color-barber: color($colors-barber, lighte-selected);
+$sales-category-selected-background-color-barber:$base;;
   // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here
