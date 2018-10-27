@@ -149,4 +149,47 @@ $sales-category-selected-background-color-coffee-shop: $base;
   .menu-list {
     background-color: color($colors-coffee-shop, dark);
   }
+  ion-menu {
+
+    .header .toolbar-background {
+      border-color: color($colors-coffee-shop, dark);
+      background-color: color($colors-coffee-shop, dark);
+    }
+
+    .menu-list {
+      background-color: color($colors-coffee-shop, dark);
+    }
+
+    ion-toolbar {
+      .menu-img {
+        display:inline-block;
+        margin-left: 5px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .module-title {
+        display:inline-block;
+
+        .toolbar-title{
+          padding-left: 5px;
+          font-size: 10pt;
+          line-height: 45px;
+        }
+      }
+    }
+
+    .header-toolbar {
+      .menu-img {
+        display:inline-block;
+        margin: 5px 0 0 5px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .module-title {
+        display:inline-block;
+      }
+    }
+  }
 }
