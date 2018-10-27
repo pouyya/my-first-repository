@@ -88,8 +88,8 @@
             </ion-col>
           </ion-row>
         </ion-grid>
-        <tile-items [items]="activeCategory.purchasableItems" [activeEmployee]="selectedEmployee" [viewType]="sales" (onSelect)="onSelectTile($event)">
-        </tile-items>
+        <postile-items [items]="activeCategory.purchasableItems" [activeEmployee]="selectedEmployee" [viewType]="sales" (onSelect)="onSelectTile($event)">
+        </postile-items>
       </ion-col>
       <ion-col col-4>
         <basket class="basket-component" [employees]="employees" [user]="user" (paymentCompleted)="paymentCompleted()"

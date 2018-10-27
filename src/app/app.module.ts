@@ -84,6 +84,7 @@ import { DeleteAccount } from '../pages/delete-account/delete-account';
 
 // components
 import { TileItemsModule } from '../components/tile-items/tile-items.module';
+import { POSTileItemsModule } from '../components/postile-items/postile-items.module';
 import { BasketModule } from './../components/basket/basket.module';
 import { PurchasableItemInfoModule } from './../components/purchasable-item-info/purchasable-item-info.module';
 import { PurchasableItemPriceModule } from './../components/purchasable-item-price/purchasable-item-price.module';
@@ -334,6 +335,7 @@ import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attac
     DateDurationPickerModule,
     ImportExportModule,
     TileItemsModule,
+    POSTileItemsModule,
     BasketModule,
     PurchasableItemInfoModule,
     PurchasableItemPriceModule,
