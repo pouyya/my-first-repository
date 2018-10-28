@@ -1,4 +1,3 @@
-import { ForgotPassword } from './modals/forgot-password/forgot-password';
 import { ModalController, NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { LoadingController } from 'ionic-angular';
@@ -10,7 +9,6 @@ import { PageModule } from '../../../../metadata/pageModule';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 import { UserService } from '../../../../modules/dataSync/services/userService';
 import { ConfigService } from '../../../../modules/dataSync/services/configService';
-
 
 @PageModule(() => BoostraperModule)
 @Component({
