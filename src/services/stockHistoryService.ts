@@ -1,20 +1,18 @@
 import _ from 'lodash';
-import * as moment from 'moment';
 import { StockHistory, Reason } from './../model/stockHistory';
 import { Injectable } from '@angular/core';
 import { BaseEntityService } from '@simplepos/core/dist/services/baseEntityService';
-import { Http, Response } from '@angular/http';
+import { Response } from '@angular/http';
 import { ConfigService } from './../modules/dataSync/services/configService';
-import { UserService } from '../modules/dataSync/services/userService';
 import { DateTimeService } from './dateTimeService';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class StockHistoryService extends BaseEntityService<StockHistory> {
 
 	readonly view_stock_per_store = "inventory/stock_per_store";
 
-	constructor(private http: Http,
-		private userService: UserService,
+	constructor(private http: HttpClient,
 		private dateTimeService: DateTimeService) {
 		super(StockHistory);
 	}
@@ -111,10 +109,9 @@ export class StockHistoryService extends BaseEntityService<StockHistory> {
 	}
 
 	public async getStockMovement(storeId: string, fromDate: string, toDate: string) {
-		let token = await this.userService.getAccessToken();
 		return this.http
 			.get(ConfigService.inventoryReportUrl() +
-				`?fromDate=${fromDate}&toDate=${toDate}&currentStoreId=${storeId}&token=${token}`)
+				`?fromDate=${fromDate}&toDate=${toDate}&currentStoreId=${storeId}`)
 			.map((response: Response) => <StockMovement[]>response.json());
 	}
 }

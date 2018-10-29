@@ -21,7 +21,6 @@ import { SyncContext } from "../services/SyncContext";
 import { DeployService } from '../services/deployService';
 import { NetworkService } from '../services/networkService'
 import {Deeplinks} from "@ionic-native/deeplinks";
-import {AboutPage} from "../pages/about/about";
 import { ADDONS } from "../metadata/addons";
 import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 import { AddonsService } from '../services/addonsService';

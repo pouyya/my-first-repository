@@ -15,7 +15,7 @@ export const ENV = {
     serverUrl: "https://accounts-stage.pos.app",
     clientId: "app",
     clientSecret: "secret",
-    clientScope: "openid"
+    clientScope: "openid api"
   },
   ionicDeploy: {
     appId: "22d41469",

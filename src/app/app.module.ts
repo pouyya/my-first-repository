@@ -153,7 +153,7 @@ import { SupplierService } from '../services/supplierService';
 import { OrderService } from './../services/orderService';
 import { ResourceService } from '../services/resourceService';
 import { DataSyncModule } from '../modules/dataSync/dataSyncModule';
-import { AccountSettingService } from './../modules/dataSync/services/accountSettingService';
+import { AccountSettingService } from '../modules/dataSync/services/accountSettingService';
 import { PaymentService } from '../services/paymentService';
 import { AuditService } from '../services/auditService';
 import { SyncContext } from "../services/SyncContext";
@@ -199,7 +199,8 @@ import { SelectTablesModal } from "../pages/table/modal/select-table/select-tabl
 import { AddTableGuestsModal } from "../pages/table/modal/add-table-guests/add-table-guests";
 import { AttachCustomerModal } from "../pages/sales/modals/attach-customer/attach-customer";
 import { BusinessService } from '../services/businessService';
-import {Deeplinks} from "@ionic-native/deeplinks";
+import { Deeplinks } from "@ionic-native/deeplinks";
+import { ConfigService } from '../modules/dataSync/services/configService';
 
 @NgModule({
   declarations: [
@@ -292,7 +293,17 @@ import {Deeplinks} from "@ionic-native/deeplinks";
     FormsModule,
     HttpModule,
     HttpClientModule,
-    OAuthModule.forRoot(),
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: [
+          ConfigService.statusEndPoint(),
+          ConfigService.inventoryReportUrl(),
+          ConfigService.salesReportEndPoint(),
+          ConfigService.staffAttendanceReport(),
+        ],
+        sendAccessToken: true
+      }
+    }),
     IonicModule.forRoot(SimplePOSApp,
       {
         mode: 'md',
