@@ -42,7 +42,7 @@ export class BasketComponent {
   public customer: Customer;
   public balance: number = 0;
   public disablePaymentBtn = false;
-  public payBtnText = "Pay";
+  public payBtnText = "DONE";
   public employeesHash: any;
   public searchBarEnabled: boolean = true;
   public showSearchCancel: boolean = false;
