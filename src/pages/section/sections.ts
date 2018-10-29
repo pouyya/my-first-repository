@@ -18,7 +18,7 @@ import { Events } from 'ionic-angular';
   templateUrl: 'sections.html'
 })
 export class Sections {
-  public emptyListMessage: string;
+  public emptyListMessage: string = "No sections present for this store";
   public sectionList: ISection[] = [];
   public sections: ISection[] = [];
   public storeList = [];
@@ -35,7 +35,6 @@ export class Sections {
   async ionViewDidEnter() {
     let loader = this.loading.create({ content: 'Loading Sections...' });
     await loader.present();
-    this.emptyListMessage = "No sections present for this store";
     try {
       this.storeList = await this.storeService.getAll();
       this.sectionList = await this.tableArrangementService.getAllSections();
