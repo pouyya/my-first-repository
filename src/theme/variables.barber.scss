@@ -71,6 +71,8 @@ $basket-background-color-barber: lighten(saturate($base, 1.19), 11.37);
 $action-toolbar-background-color-barber: lighten(desaturate(adjust-hue($base, -4), 25.65), 32.16);
 $basket-tile-background-color-barber: lighten(desaturate(adjust-hue($base, -3), 62.12), 20.98);
 $basket-tile-item-selected-barber: lighten(desaturate(adjust-hue($base, -20), 62.12), 20.98);
+$pos-tile-icon-modifier-background-barber: red;
+$pos-tile-icon-background-barber: #EFE1D4;
 
 $split-pane-side-min-width : 100px;
 $split-pane-side-max-width : 180px;
