@@ -86,7 +86,10 @@ export class Tables {
   public filterByStore() {
     this.tables = [];
     this.sections = this.sectionList.filter(section => section.storeId === this.selectedStore);
-    this.selectedSection =(this.sections.length>0)?  this.sections[0].id : "";
+    if(!this.selectedSection){
+      this.selectedSection =(this.sections.length>0)?  this.sections[0].id : "";
+
+    }
     (this.sections.length>0) && (this.tables = this.sections[0].tables || []);
     this.filterBySection();
   }
