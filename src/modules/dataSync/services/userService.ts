@@ -38,6 +38,10 @@ export class UserService {
     return this.oauthService.hasValidAccessToken();
   }
 
+  public loadUserProfile(): Promise<object> {
+    return this.oauthService.loadUserProfile();
+  }
+
   public async getUser(locaAccountSetting: boolean = true): Promise<UserSession> {
     var userRawJson = await this.storage.get("simplepos_local_db");
     if (userRawJson) {

@@ -1,43 +1,24 @@
 <ion-header>
   <ion-navbar>
     <ion-buttons end network-monitor></ion-buttons>
-    <ion-title class="ion-title-center">Login</ion-title>
+    <ion-title class="ion-title-center">SimplePOS - Soul of business</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content class="login-content" padding>
   <ion-grid class="login-box">
-    <form (ngSubmit)="login()" #registerForm="ngForm">
-      <ion-row>
-        <ion-col col-md-12>
-          <ion-list inset>
-            <ion-item>
-              <ion-input type="text" placeholder="Email " name="email" [(ngModel)]="email" required></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input type="password" placeholder="Password" name="password" [(ngModel)]="password" required></ion-input>
-            </ion-item>
-          </ion-list>
-        </ion-col>
-      </ion-row>
 
       <ion-row>
         <ion-col col-md-12 class="signup-col">
-          <button ion-button class="submit-btn" full type="submit" [disabled]="!registerForm.form.valid">Login</button>
+          <button ion-button class="submit-btn" full (click)="login()">Sign Up/In</button>
+        </ion-col>
+      </ion-row>
+      
+      <ion-row>
+        <ion-col col-md-12 class="signup-col">
+          <button ion-button class="submit-btn" full (click)="forgotPassword()">Forgotten Password</button>
         </ion-col>
       </ion-row>
 
-      <ion-row>
-        <ion-col col-md-12>
-          <a class="link" text-center (click)="forgotPassword()">Forgotten Password</a>
-        </ion-col>
-      </ion-row>
-
-      <ion-row>
-        <ion-col col-md-12>
-          <a class="link" text-center (click)="register()">Register</a>
-        </ion-col>
-      </ion-row>
-    </form>
   </ion-grid>
 </ion-content>
