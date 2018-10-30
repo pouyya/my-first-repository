@@ -7,6 +7,7 @@ import { PageModule } from '../../../../metadata/pageModule';
 import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 import { UserService } from '../../../../modules/dataSync/services/userService';
 import { ConfigService } from '../../../../modules/dataSync/services/configService';
+import { PlatformService } from '../../../../services/platformService';
 
 @PageModule(() => BoostraperModule)
 @Component({
@@ -21,7 +22,31 @@ export class LoginPage {
     private authService: AuthService,
     private toastCtrl: ToastController,
     private iab: InAppBrowser,
-    private userService: UserService) {
+    private userService: UserService,
+    private platformService: PlatformService) {
+  }
+  async ionViewDidLoad() {
+    var tokenData = this.authService.fetchToken(window.location.href);
+    if (tokenData && tokenData.id_token && tokenData.access_token) {
+      await this.tryLogin(tokenData);
+    }
+  }
+
+  private async tryLogin(tokenData: any) {
+    const keyValuePair = `#id_token=${encodeURIComponent(tokenData.id_token)}&access_token=${encodeURIComponent(tokenData.access_token)}`;
+    await this.authService.tryLogin({
+      customHashFragment: keyValuePair,
+      disableOAuth2StateCheck: true
+    });
+    await this.userService.loadUserProfile();
+    if (this.userService.ensureRequiredClaims()) {
+      await this.userService.initializeUserProfile();
+      await this.navigateToDataSync();
+    }
+    else {
+      this.authService.logout();
+      this.showMessage("The minimum requirement is not available for your account. Please contact support.");
+    }
   }
 
   public async login(): Promise<any> {
@@ -33,19 +58,11 @@ export class LoginPage {
     await loader.present();
 
     try {
-      const success = await this.idsLogin();
-      const keyValuePair = `#id_token=${encodeURIComponent(success.id_token)}&access_token=${encodeURIComponent(success.access_token)}`;
-      await this.authService.tryLogin({
-        customHashFragment: keyValuePair,
-        disableOAuth2StateCheck: true
-      });
-      await this.userService.loadUserProfile();
-      if (this.userService.ensureRequiredClaims()) {
-        await this.userService.initializeUserProfile();
-        await this.navigateToDataSync();
+      if (this.platformService.isMobileDevice()) {
+        const tokenData = await this.idsLogin();
+        await this.tryLogin(tokenData);
       } else {
-        this.authService.logout();
-        this.showMessage("The minimum requirement is not available for your account. Please contact support.");
+        await this.authService.initImplicitFlow();
       }
     }
     catch (error) {
@@ -77,12 +94,9 @@ export class LoginPage {
             if ((event.url).indexOf('http://localhost:8100') === 0) {
               browser.on('exit').subscribe(() => { });
               browser.close();
-              const responseParameters = ((event.url).split('#')[1]).split('&');
-              const parsedResponse = {};
-              for (let i = 0; i < responseParameters.length; i++) {
-                parsedResponse[responseParameters[i].split('=')[0]] =
-                  responseParameters[i].split('=')[1];
-              }
+
+              var parsedResponse = this.authService.fetchToken(event.url);
+
               const defaultError = 'Problem authenticating with SimplePOS IDS';
               if (parsedResponse['state'] !== state) {
                 reject(defaultError);
