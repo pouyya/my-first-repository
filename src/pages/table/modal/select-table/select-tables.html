@@ -18,14 +18,14 @@
         Section
       </ion-col>
     </ion-row>
-    <tile-items [items]="sections" [emptyListMessage]="emptyListSectionMessage" (onSelect)="onSelectSection($event)">
+    <tile-items class="section" [items]="sections" [emptyListMessage]="emptyListSectionMessage" (onSelect)="onSelectSection($event)">
     </tile-items>
     <ion-row>
       <ion-col class="heading" text-center>
         Tables
       </ion-col>
     </ion-row>
-    <tile-items [items]="tables" [emptyListMessage]="emptyListTableMessage" (onSelect)="onSelectTable($event)">
+    <tile-items class="table" [items]="tables" [emptyListMessage]="emptyListTableMessage" (onSelect)="onSelectTable($event)">
     </tile-items>
   </ion-grid>
-</ion-content>
+</ion-content> 
