@@ -271,7 +271,7 @@ export class Sales implements OnDestroy {
 
     modal.onDidDismiss(async (res) => {
       if (res && res.table) {
-        await this._basketComponent.attachTable(res.table);
+        await this._basketComponent.attachTable(res.table.id);
 
         if (res.table.status === TableStatus.Active) {
           if (!this.basketComponent.isItemsInBasket()){

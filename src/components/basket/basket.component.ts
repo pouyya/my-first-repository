@@ -594,10 +594,10 @@ export class BasketComponent {
   }
 
 
-  public attachTable(table) {
-    this.table = table;
+  public attachTable(tableId) {
+    this.table = this.tables[tableId];
     if (this.sale) {
-      this.sale.tableId = this.table.id;
+      this.sale.tableId = tableId;
       this.sale.tableName = this.table.name;
       this.sale.type = SaleType.DineIn;
       this.unattachCustomer();
