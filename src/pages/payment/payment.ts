@@ -73,8 +73,10 @@ export class PaymentsPage {
 
     this.amount = sale.taxTotal - totalPayments;
 
-    if (Math.abs(totalPayments) >= Math.abs(sale.taxTotal)) {
-      totalPayments != 0 && (this.change = totalPayments - this.sale.taxTotal);
+    if (Math.abs(Number(totalPayments.toFixed(2))) >= Math.abs(Number(sale.taxTotal.toFixed(2)))) {
+      if(totalPayments != 0){
+        this.change = Number((totalPayments - this.sale.taxTotal).toFixed(2));
+      }
       await this.completeSale(totalPayments)
     }
 

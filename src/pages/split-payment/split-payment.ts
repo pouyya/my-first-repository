@@ -13,7 +13,6 @@ export class SplitPaymentPage {
   public sale: Sale;
   public amount: number;
   public change: number;
-  public doRefund: boolean;
   public moneySplit: any[] = [];
   public paid: any[] = [];
   private splitCallback: any;
@@ -50,12 +49,17 @@ export class SplitPaymentPage {
       this.moneySplit.push(avg);
     }
     const finalVal = (this.sum - (avg * (splitsCount-1)));
-    this.moneySplit.push(Number(finalVal.toFixed(2)));
+    if(finalVal > 0){
+      this.moneySplit.push(Number(finalVal.toFixed(2)));
+    }
   }
 
   public checkout(index) {
     this.paid.push({ amount : this.moneySplit[index]});
     this.sum -= this.moneySplit[index];
+    if(Number(this.sum.toFixed(2)) == 0 || Number(this.sum.toFixed(2)) < 0){
+      this.sum = 0;
+    }
     this.moneySplit.splice(index, 1);
   }
 
