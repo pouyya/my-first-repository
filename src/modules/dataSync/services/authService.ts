@@ -22,6 +22,37 @@ export class AuthService {
     return this.oauthService.createAndSaveNonce();
   }
 
+  public fetchToken(url: string): any {
+    const parsedResponse = {};
+    if (url) {
+      var urlParameter = url.split('#')[1];
+      if (urlParameter) {
+        const responseParameters = urlParameter.split('&');
+        for (let i = 0; i < responseParameters.length; i++) {
+          parsedResponse[responseParameters[i].split('=')[0]] =
+            responseParameters[i].split('=')[1];
+        }
+      }
+    }
+
+    return parsedResponse;
+  }
+
+  public async initImplicitFlow(additionalState?: string, params?: string | object) {
+
+    await this.makeSureDiscovered();
+
+    this.oauthService.initImplicitFlow(additionalState, params);
+  }
+
+
+  public async loadDiscoveryDocumentAndLogin(options?: LoginOptions): Promise<boolean> {
+
+    await this.makeSureDiscovered();
+
+    return this.oauthService.loadDiscoveryDocumentAndLogin(options);
+  }
+
   public async tryLogin(options?: LoginOptions): Promise<void> {
 
     await this.makeSureDiscovered();
