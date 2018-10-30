@@ -36,7 +36,14 @@
           <ion-col col-3 col-lg-3 col-md-4 col-sm-6 *ngFor="let tile of items; let i = index" class="tile-col">
               <ion-card *ngIf="tile.icon" tappable [class.pulse]="tile === selectedTile" class="tile animated" [style.background-color]="syncContext.currentPos.productColor && syncContext.currentPos.productColor[tile._id] || tile.color" (click)="selectItem(tile)">
                   <ion-card-content class="tile-content">
-                       <sp-icon [icon]="tile.icon"></sp-icon>
+                      <div class="tile-icon-container">
+                          <div *ngIf="tile.isModifier" class="modifier">
+                              M
+                          </div>
+                          <div class="icon">
+                              <sp-icon [icon]="tile.icon"></sp-icon>
+                          </div>
+                      </div>
                   </ion-card-content>
   
                   <ion-row>
@@ -44,7 +51,6 @@
                           <h2>{{ tile.name }}</h2>
                       </ion-col>
                   </ion-row>
-                  <span class="bottom-right" *ngIf="tile.isModifier">M</span>
               </ion-card>
   
               <ion-card *ngIf="tile.thumbnail" tappable class="tile" (click)="selectItem(tile)">
