@@ -3,4 +3,26 @@ select-tables-modal {
   .heading {
     font-size: 2rem;
   }
+
+  .section {
+    .tile {
+
+    }
+  }
+
+  .table {
+    .open {
+      ion-card {
+        background-color: rgb(157, 240, 255);
+      }
+    }
+    .active {
+      ion-card {
+        background-color: rgb(28, 255, 133);
+      }
+    }
+    .tile {
+      background-color: rgb(233, 236, 236);
+    }
+  }
 }

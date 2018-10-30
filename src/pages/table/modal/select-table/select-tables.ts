@@ -47,20 +47,9 @@ export class SelectTablesModal {
         if (this.selectedSection) {
             delete this.selectedSection.color;
         }
-        section.color = "rgb(233, 236, 236)";
         this.selectedSection = section;
         this.tables = section.tables.map((table: any) => {
-            switch (table.status) {
-                case TableStatus.Open:
-                    table.color = "rgb(157, 240, 255)";
-                    break;
-                case TableStatus.Active:
-                    table.color = "rgb(28, 255, 133)";
-                    break;
-                case TableStatus.Closed:
-                    delete table.color;
-                    break;
-            }
+            table.class = table.status;
             return table;
         });
     }
@@ -68,18 +57,19 @@ export class SelectTablesModal {
     public onSelectTable(table) {
         if (table.status === TableStatus.Closed) {
             let modal = this.modalCtrl.create(AddTableGuestsModal, { table, selectedSection: this.selectedSection });
-            modal.onDidDismiss((res) => {
+            modal.onDidDismiss(async (res) => {
                 if (res && res.table) {
                     table = res.table;
                     if  (this.isItemsInBasket){
-                        table.color = "rgb(28, 255, 133)";
                         table.status=TableStatus.Active;
+                        await this.tableArrangementService.updateTable(table, this.selectedSection.id, this.selectedSection.id);
+                        table.class = table.status;
                         this.viewCtrl.dismiss({ table, status: table.status });
                     }
                     else{
-                        table.color = "rgb(157, 240, 255)";
+                        table.status=TableStatus.Open;
+                        table.class = table.status;
                     }
-                 
                 }
             });
             modal.present();
